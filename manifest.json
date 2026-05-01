@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Kick Chat Translator",
+  "version": "1.0.0",
+  "description": "Auto-translates Kick.com chat messages to English in real-time. No API key required.",
+  "icons": {
+    "16": "public/icons/icon16.png",
+    "48": "public/icons/icon48.png",
+    "128": "public/icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "dist/popup/popup.html",
+    "default_icon": {
+      "16": "public/icons/icon16.png",
+      "48": "public/icons/icon48.png"
+    }
+  },
+  "background": {
+    "service_worker": "dist/background/serviceWorker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://kick.com/*", "https://www.kick.com/*"],
+      "js": ["dist/content/index.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://api.mymemory.translated.net/*",
+    "https://libretranslate.com/*"
+  ]
+}
