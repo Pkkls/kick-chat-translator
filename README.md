@@ -10,7 +10,7 @@ Extension Chrome (Manifest V3) qui traduit automatiquement les messages du chat 
 | **MyMemory** | Non | ⭐⭐⭐ | ~1000 req/jour |
 
 Sans clé DeepL, MyMemory est utilisé en fallback automatique.
-
+Prend les contextes de phrases pour les traductions avancées en Coréen / Mandarin / Russe
 ## Installation (dev)
 
 ### Prérequis
