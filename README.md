@@ -12,8 +12,7 @@ Extension Chrome (Manifest V3) qui traduit automatiquement les messages du chat 
 Sans clé DeepL, MyMemory est utilisé en fallback automatique.
 Prend les contextes de phrases pour les traductions avancées en Coréen / Mandarin / Russe
 
-La clef DeepL est vraiment conseillée !  Il faut cependant créer un compte developpeur sur DeepL et ajouter sa carte bancaire  - 0€ prélevé
-https://www.deepl.com/fr/checkout?is_api=true
+
 ## Installation (dev)
 
 ### Prérequis
@@ -54,6 +53,7 @@ npm run dev
 3. Copier la clé API (se termine par `:fx`)
 4. Coller dans le popup de l'extension → Save
 
+La clef DeepL est vraiment conseillée ! Il faut cependant créer un compte developpeur sur DeepL et ajouter sa carte bancaire - 0€ prélevé https://www.deepl.com/fr/checkout?is_api=true
 ## Architecture
 
 ```
