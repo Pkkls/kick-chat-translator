@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body { color-scheme: dark; }
+}
+
+@layer components {
+  .kt-select { @apply w-full appearance-none rounded-md border border-kick-border bg-kick-surface px-3 py-2 text-sm text-kick-text outline-none focus:border-kick-primary; }
+  .kt-input { @apply w-full rounded-md border border-kick-border bg-kick-surface px-3 py-2 text-sm text-kick-text outline-none focus:border-kick-primary placeholder:text-kick-muted; }
+  .kt-textarea { @apply w-full min-h-[110px] rounded-md border border-kick-border bg-kick-surface px-3 py-2 text-sm text-kick-text outline-none focus:border-kick-primary placeholder:text-kick-muted font-mono leading-relaxed; }
+  .kt-label { @apply text-[11px] uppercase tracking-wider text-kick-muted; }
+  .kt-btn { @apply rounded-md bg-kick-primary px-3 py-2 text-sm font-semibold text-kick-dark hover:brightness-95 transition; }
+  .kt-btn-ghost { @apply rounded-md border border-kick-border bg-transparent px-3 py-2 text-sm font-medium text-kick-text hover:bg-kick-surface transition; }
+  .kt-card { @apply rounded-lg border border-kick-border bg-kick-surface p-5; }
+  .kt-row { @apply flex flex-col gap-1.5; }
+}

@@ -1,0 +1,73 @@
+.kt-translation {
+  display: block;
+  margin-top: 2px;
+  padding: 2px 6px;
+  background: rgba(83, 252, 24, 0.06);
+  border-left: 2px solid rgba(83, 252, 24, 0.55);
+  border-radius: 0 4px 4px 0;
+  font-size: 0.9em;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.kt-translation-inline {
+  margin-left: 6px;
+  padding: 1px 5px;
+  background: rgba(83, 252, 24, 0.12);
+  border-radius: 3px;
+  font-size: 0.85em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.kt-flag {
+  display: inline-block;
+  font-size: 0.75em;
+  font-weight: 600;
+  opacity: 0.7;
+  letter-spacing: 0.02em;
+  margin-right: 4px;
+  text-transform: uppercase;
+}
+
+.kt-provider {
+  font-size: 0.65em;
+  opacity: 0.45;
+  margin-left: 6px;
+}
+
+.kt-loading {
+  opacity: 0.4;
+  font-size: 0.75em;
+  margin-left: 4px;
+  font-style: italic;
+}
+
+.kt-hover-trigger {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  background: rgba(83, 252, 24, 0.15);
+  border: 1px solid rgba(83, 252, 24, 0.4);
+  border-radius: 3px;
+  font-size: 0.7em;
+  color: rgba(83, 252, 24, 0.9);
+  cursor: pointer;
+  user-select: none;
+}
+.kt-hover-trigger:hover {
+  background: rgba(83, 252, 24, 0.25);
+}
+
+.kt-error {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.75em;
+  color: rgba(240, 78, 78, 0.7);
+  font-style: italic;
+}
+
+@media (prefers-color-scheme: light) {
+  .kt-translation { color: rgba(20, 25, 35, 0.85); background: rgba(0, 0, 0, 0.05); }
+  .kt-translation-inline { color: rgba(20, 25, 35, 0.85); }
+}

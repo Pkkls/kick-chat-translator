@@ -1,0 +1,87 @@
+import { STORAGE_KEY_STATS } from '~/shared/constants';
+import type { ProviderId, UsageStats } from '~/shared/types';
+
+function todayKey(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function empty(): UsageStats {
+  return {
+    totalRequests: 0,
+    totalCacheHits: 0,
+    totalErrors: 0,
+    byProvider: {},
+    byLang: {},
+    charsSent: 0,
+    todayKey: todayKey(),
+  };
+}
+
+export class StatsTracker {
+  private state: UsageStats = empty();
+  private dirty = false;
+  private flushHandle: ReturnType<typeof setTimeout> | undefined;
+
+  async load(): Promise<UsageStats> {
+    const stored = await chrome.storage.local.get(STORAGE_KEY_STATS);
+    const v = stored[STORAGE_KEY_STATS] as UsageStats | undefined;
+    if (v && v.todayKey === todayKey()) {
+      this.state = v;
+    } else {
+      this.state = empty();
+      await this.persist();
+    }
+    return this.state;
+  }
+
+  current(): UsageStats {
+    return this.state;
+  }
+
+  recordRequest(provider: ProviderId, sourceLang: string, chars: number, cached: boolean): void {
+    this.rollover();
+    this.state.totalRequests += 1;
+    if (cached) this.state.totalCacheHits += 1;
+    else {
+      this.state.byProvider[provider] = (this.state.byProvider[provider] ?? 0) + 1;
+      this.state.charsSent += chars;
+    }
+    if (sourceLang) {
+      this.state.byLang[sourceLang] = (this.state.byLang[sourceLang] ?? 0) + 1;
+    }
+    this.scheduleFlush();
+  }
+
+  recordError(): void {
+    this.rollover();
+    this.state.totalErrors += 1;
+    this.scheduleFlush();
+  }
+
+  async reset(): Promise<UsageStats> {
+    this.state = empty();
+    await this.persist();
+    return this.state;
+  }
+
+  private rollover(): void {
+    const k = todayKey();
+    if (this.state.todayKey !== k) {
+      this.state = empty();
+    }
+  }
+
+  private scheduleFlush(): void {
+    this.dirty = true;
+    if (this.flushHandle) return;
+    this.flushHandle = setTimeout(() => {
+      this.flushHandle = undefined;
+      if (this.dirty) void this.persist();
+    }, 1500);
+  }
+
+  private async persist(): Promise<void> {
+    this.dirty = false;
+    await chrome.storage.local.set({ [STORAGE_KEY_STATS]: this.state });
+  }
+}

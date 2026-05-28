@@ -1,18 +1,59 @@
 {
   "name": "kick-chat-translator",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
+  "description": "Real-time multi-provider chat translator for Kick.com — pro Chrome/Firefox extension.",
+  "license": "MIT",
+  "author": "Pkkls",
+  "homepage": "https://github.com/Pkkls/kick-chat-translator",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pkkls/kick-chat-translator.git"
+  },
+  "type": "module",
   "scripts": {
-    "build": "webpack --mode production",
-    "dev": "webpack --mode development --watch",
-    "type-check": "tsc --noEmit"
+    "dev": "vite",
+    "build": "tsc -b --noEmit && vite build",
+    "build:firefox": "BROWSER=firefox vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --noEmit",
+    "lint": "eslint . --ext .ts,.tsx --max-warnings 0",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,html,json}\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:cov": "vitest run --coverage",
+    "icons": "tsx scripts/generate-icons.ts",
+    "pack": "tsx scripts/pack.ts",
+    "release:check": "npm run typecheck && npm run lint && npm run test && npm run build"
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.270",
-    "copy-webpack-plugin": "^12.0.2",
-    "ts-loader": "^9.5.1",
-    "typescript": "^5.4.5",
-    "webpack": "^5.91.0",
-    "webpack-cli": "^5.1.4"
+    "@crxjs/vite-plugin": "^2.0.0-beta.28",
+    "@preact/preset-vite": "^2.9.1",
+    "@types/chrome": "^0.0.283",
+    "@types/node": "^22.7.4",
+    "@typescript-eslint/eslint-plugin": "^8.8.0",
+    "@typescript-eslint/parser": "^8.8.0",
+    "@vitest/coverage-v8": "^2.1.2",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "happy-dom": "^15.7.4",
+    "postcss": "^8.4.47",
+    "prettier": "^3.3.3",
+    "sharp": "^0.33.5",
+    "tailwindcss": "^3.4.13",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.8",
+    "vitest": "^2.1.2"
+  },
+  "dependencies": {
+    "franc-min": "^6.2.0",
+    "idb-keyval": "^6.2.1",
+    "preact": "^10.24.2",
+    "zod": "^3.23.8"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

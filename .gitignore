@@ -1,1 +1,12 @@
 node_modules/
+dist/
+release/
+coverage/
+*.log
+.DS_Store
+.idea/
+.vscode/
+*.zip
+*.tsbuildinfo
+.env
+.env.local
