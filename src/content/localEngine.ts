@@ -1,0 +1,183 @@
+import { rootLogger } from '~/shared/logger';
+
+const log = rootLogger.child('local');
+
+// On-device translation via Chromium's built-in Translator API (Chrome >= 138).
+// Runs in the CONTENT SCRIPT (page window) because:
+//   - the API global lives in window/page contexts, not reliably in MV3 SWs;
+//   - the first model download per language pair REQUIRES a user gesture, which
+//     we can only obtain from a click inside the page (the floating bar button).
+// Once a pair's model is downloaded it becomes "available" and translates
+// locally, unlimited, offline, instantly — no per-IP ceiling.
+
+export type PairState = 'unknown' | 'unavailable' | 'downloadable' | 'downloading' | 'available';
+
+interface TranslatorInstance {
+  translate(text: string): Promise<string>;
+}
+interface TranslatorCtor {
+  availability(opts: { sourceLanguage: string; targetLanguage: string }): Promise<PairState>;
+  create(opts: {
+    sourceLanguage: string;
+    targetLanguage: string;
+    monitor?: (m: EventTarget) => void;
+  }): Promise<TranslatorInstance>;
+}
+
+function ctor(): TranslatorCtor | undefined {
+  return (self as unknown as { Translator?: TranslatorCtor }).Translator;
+}
+
+function pairKey(src: string, tgt: string): string {
+  return `${src}>${tgt}`;
+}
+
+function norm(code: string): string {
+  return code.toLowerCase().split('-')[0] ?? code.toLowerCase();
+}
+
+type StateListener = () => void;
+
+class LocalEngine {
+  private state = new Map<string, PairState>();
+  private instances = new Map<string, TranslatorInstance>();
+  private progress = new Map<string, number>();
+  private seen = new Set<string>();
+  private listeners = new Set<StateListener>();
+
+  present(): boolean {
+    return ctor() !== undefined;
+  }
+
+  onChange(cb: StateListener): () => void {
+    this.listeners.add(cb);
+    return () => this.listeners.delete(cb);
+  }
+
+  private emit(): void {
+    for (const cb of this.listeners) cb();
+  }
+
+  stateOf(src: string, tgt: string): PairState {
+    return this.state.get(pairKey(norm(src), norm(tgt))) ?? 'unknown';
+  }
+
+  progressOf(src: string, tgt: string): number {
+    return this.progress.get(pairKey(norm(src), norm(tgt))) ?? 0;
+  }
+
+  isReady(src: string, tgt: string): boolean {
+    return this.stateOf(src, tgt) === 'available';
+  }
+
+  /** Note a language pair we've seen in chat; probe its availability lazily. */
+  noteSeen(src: string, tgt: string): void {
+    const s = norm(src);
+    const t = norm(tgt);
+    if (!s || s === 'auto' || s === 'und' || s === t) return;
+    const key = pairKey(s, t);
+    this.seen.add(key);
+    if (!this.state.has(key)) void this.probe(s, t);
+  }
+
+  /** True if any seen source language has a downloaded model for this target. */
+  hasReadyForTarget(tgt: string): boolean {
+    const suffix = `>${norm(tgt)}`;
+    for (const key of this.seen) {
+      if (key.endsWith(suffix) && this.state.get(key) === 'available') return true;
+    }
+    return false;
+  }
+
+  /** Pairs we've seen that could be enabled with one user gesture. */
+  downloadablePairs(): { src: string; tgt: string }[] {
+    const out: { src: string; tgt: string }[] = [];
+    for (const key of this.seen) {
+      const st = this.state.get(key);
+      if (st === 'downloadable' || st === 'downloading') {
+        const [src, tgt] = key.split('>');
+        if (src && tgt) out.push({ src, tgt });
+      }
+    }
+    return out;
+  }
+
+  async probe(src: string, tgt: string): Promise<PairState> {
+    const c = ctor();
+    const key = pairKey(norm(src), norm(tgt));
+    if (!c) {
+      this.state.set(key, 'unavailable');
+      this.emit();
+      return 'unavailable';
+    }
+    try {
+      const a = await c.availability({ sourceLanguage: norm(src), targetLanguage: norm(tgt) });
+      this.state.set(key, a);
+      this.emit();
+      return a;
+    } catch (err: unknown) {
+      log.debug('availability failed', err);
+      this.state.set(key, 'unavailable');
+      this.emit();
+      return 'unavailable';
+    }
+  }
+
+  /**
+   * MUST be invoked from within a user-gesture handler the first time a pair is
+   * downloaded. Creates (and downloads) translators for the given pairs.
+   */
+  async download(pairs: { src: string; tgt: string }[]): Promise<void> {
+    const c = ctor();
+    if (!c) return;
+    for (const { src, tgt } of pairs) {
+      const key = pairKey(norm(src), norm(tgt));
+      if (this.instances.has(key)) continue;
+      this.state.set(key, 'downloading');
+      this.emit();
+      try {
+        const inst = await c.create({
+          sourceLanguage: norm(src),
+          targetLanguage: norm(tgt),
+          monitor: (m) => {
+            m.addEventListener('downloadprogress', (ev: Event) => {
+              const e = ev as Event & { loaded?: number };
+              this.progress.set(key, typeof e.loaded === 'number' ? e.loaded : 0);
+              this.emit();
+            });
+          },
+        });
+        this.instances.set(key, inst);
+        this.state.set(key, 'available');
+        this.progress.set(key, 1);
+        this.emit();
+        log.info('on-device ready:', key);
+      } catch (err: unknown) {
+        log.warn('download failed', key, err);
+        this.state.set(key, 'downloadable');
+        this.emit();
+      }
+    }
+  }
+
+  /** Translate locally. Throws if the pair isn't ready (caller falls back to cloud). */
+  async translate(src: string, tgt: string, text: string): Promise<string> {
+    const c = ctor();
+    if (!c) throw new Error('local_absent');
+    const s = norm(src);
+    const t = norm(tgt);
+    const key = pairKey(s, t);
+    let inst = this.instances.get(key);
+    if (!inst) {
+      if (this.state.get(key) !== 'available') throw new Error('not_ready');
+      // 'available' means create() works without a gesture.
+      inst = await c.create({ sourceLanguage: s, targetLanguage: t });
+      this.instances.set(key, inst);
+    }
+    const out = await inst.translate(text);
+    if (!out.trim()) throw new Error('empty');
+    return out;
+  }
+}
+
+export const localEngine = new LocalEngine();

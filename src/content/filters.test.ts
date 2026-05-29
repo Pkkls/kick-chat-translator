@@ -1,0 +1,80 @@
+import { describe, expect, it } from 'vitest';
+import { defaultSettings } from '~/shared/settings';
+import {
+  isNoise,
+  isSameLanguageAsTarget,
+  shouldDropBySourceLang,
+  shouldDropByUserOrChannel,
+} from './filters';
+
+describe('shouldDropByUserOrChannel', () => {
+  it('drops common bots when ignoreBots is on', () => {
+    const s = { ...defaultSettings(), ignoreBots: true };
+    expect(shouldDropByUserOrChannel({ username: 'streamelements', channel: 'foo', isBot: false }, s)).toBe('bot');
+  });
+
+  it('drops blacklisted users', () => {
+    const s = { ...defaultSettings(), blacklistUsers: ['spammer'] };
+    expect(shouldDropByUserOrChannel({ username: 'spammer', channel: 'foo', isBot: false }, s)).toBe('user_blacklisted');
+  });
+
+  it('enforces whitelist when non-empty', () => {
+    const s = { ...defaultSettings(), whitelistChannels: ['adin'] };
+    expect(shouldDropByUserOrChannel({ username: 'someone', channel: 'foo', isBot: false }, s)).toBe(
+      'channel_not_whitelisted',
+    );
+  });
+
+  it('passes by default', () => {
+    expect(
+      shouldDropByUserOrChannel({ username: 'someone', channel: 'foo', isBot: false }, defaultSettings()),
+    ).toBeUndefined();
+  });
+});
+
+describe('shouldDropBySourceLang', () => {
+  it('returns undefined when allowlist empty', () => {
+    expect(shouldDropBySourceLang('ja', defaultSettings())).toBeUndefined();
+  });
+  it('drops langs not in allowlist', () => {
+    const s = { ...defaultSettings(), sourceLangAllowlist: ['ja', 'ko'] };
+    expect(shouldDropBySourceLang('fr', s)).toBe('lang_not_allowed');
+    expect(shouldDropBySourceLang('ja', s)).toBeUndefined();
+  });
+});
+
+describe('isSameLanguageAsTarget', () => {
+  it('compares case-insensitively', () => {
+    expect(isSameLanguageAsTarget('EN', 'en')).toBe(true);
+    expect(isSameLanguageAsTarget('ja', 'en')).toBe(false);
+  });
+});
+
+describe('isNoise', () => {
+  it('flags emoji-only', () => {
+    expect(isNoise('🤣🤣🤣')).toBe(true);
+    expect(isNoise('😂')).toBe(true);
+  });
+  it('flags laughter / w-spam (multi-language)', () => {
+    expect(isNoise('wwwww')).toBe(true);
+    expect(isNoise('WWWWWWWW')).toBe(true);
+    expect(isNoise('jajajaja')).toBe(true);
+    expect(isNoise('lolol')).toBe(true);
+    expect(isNoise('kkkkkk')).toBe(true); // BR
+    expect(isNoise('rsrs')).toBe(true); // BR
+    expect(isNoise('huehue')).toBe(true); // BR
+    expect(isNoise('xddd')).toBe(true);
+    expect(isNoise('hehe')).toBe(true);
+    expect(isNoise('uwu')).toBe(true);
+  });
+  it('flags single repeated char and punctuation', () => {
+    expect(isNoise('ーーーー')).toBe(true);
+    expect(isNoise('!!!')).toBe(true);
+    expect(isNoise('123')).toBe(true);
+  });
+  it('does NOT flag real messages', () => {
+    expect(isNoise('その意味は')).toBe(false);
+    expect(isNoise('hola amigo')).toBe(false);
+    expect(isNoise('下ネタきも')).toBe(false);
+  });
+});
