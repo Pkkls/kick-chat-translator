@@ -22,7 +22,8 @@ async function main(): Promise<void> {
   if (!existsSync(RELEASE)) mkdirSync(RELEASE, { recursive: true });
 
   const pkg = JSON.parse(await readFile(resolve(ROOT, 'package.json'), 'utf8')) as PackageJson;
-  const tag = process.env.BROWSER === 'firefox' ? 'firefox' : 'chrome';
+  // "chromium" covers Chrome, Brave and Edge — they all load the same build.
+  const tag = process.env.BROWSER === 'firefox' ? 'firefox' : 'chromium';
   const zipName = `kick-chat-translator-${pkg.version}-${tag}.zip`;
   const zipPath = resolve(RELEASE, zipName);
 
