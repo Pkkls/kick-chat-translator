@@ -1,5 +1,5 @@
-import type { ProviderId, ProviderStatus, TranslationOutcome, TranslationRequest } from '~/shared/types';
-import type { Settings } from '~/shared/settings';
+import type { ProviderStatus, TranslationOutcome, TranslationRequest } from '~/shared/types';
+import type { CloudProviderId, Settings } from '~/shared/settings';
 import { rootLogger } from '~/shared/logger';
 import { decodeHtmlEntities } from '~/shared/decode';
 import { ConcurrencyQueue } from '../queue';
@@ -7,13 +7,13 @@ import { googleProvider } from './google';
 import { deeplProvider } from './deepl';
 import { myMemoryProvider } from './mymemory';
 import { lingvaProvider } from './lingva';
-import { localProvider } from './local';
 import { ProviderError, type ProviderContext, type TranslationProvider } from './types';
 
 const log = rootLogger.child('translator');
 
-const PROVIDERS: Record<ProviderId, TranslationProvider> = {
-  local: localProvider,
+// On-device ('local') runs in the content script (localEngine.ts) — the SW chain
+// is cloud-only.
+const PROVIDERS: Record<CloudProviderId, TranslationProvider> = {
   google: googleProvider,
   deepl: deeplProvider,
   mymemory: myMemoryProvider,
@@ -28,8 +28,7 @@ interface ProviderHealth {
   cooldownUntilMs: number;
 }
 
-const health: Record<ProviderId, ProviderHealth> = {
-  local: { consecutiveFailures: 0, cooldownUntilMs: 0 },
+const health: Record<CloudProviderId, ProviderHealth> = {
   google: { consecutiveFailures: 0, cooldownUntilMs: 0 },
   deepl: { consecutiveFailures: 0, cooldownUntilMs: 0 },
   mymemory: { consecutiveFailures: 0, cooldownUntilMs: 0 },
@@ -45,7 +44,7 @@ function buildContext(settings: Settings, signal?: AbortSignal): ProviderContext
   };
 }
 
-function markFailure(id: ProviderId, code: string, message: string): void {
+function markFailure(id: CloudProviderId, code: string, message: string): void {
   const h = health[id];
   h.lastError = message;
   h.lastErrorMs = Date.now();
@@ -65,7 +64,7 @@ function markFailure(id: ProviderId, code: string, message: string): void {
   h.cooldownUntilMs = Date.now() + backoffMs;
 }
 
-function markSuccess(id: ProviderId): void {
+function markSuccess(id: CloudProviderId): void {
   const h = health[id];
   h.consecutiveFailures = 0;
   h.cooldownUntilMs = 0;
@@ -73,7 +72,7 @@ function markSuccess(id: ProviderId): void {
   h.lastUsedMs = Date.now();
 }
 
-function ok(req: TranslationRequest, id: ProviderId, translatedText: string, detectedLang: string): TranslationOutcome {
+function ok(req: TranslationRequest, id: CloudProviderId, translatedText: string, detectedLang: string): TranslationOutcome {
   return {
     ok: true,
     result: {
@@ -86,7 +85,7 @@ function ok(req: TranslationRequest, id: ProviderId, translatedText: string, det
   };
 }
 
-function eligibleOrder(settings: Settings, ctx: ProviderContext): ProviderId[] {
+function eligibleOrder(settings: Settings, ctx: ProviderContext): CloudProviderId[] {
   const live = settings.providerOrder.filter((id) => {
     const provider = PROVIDERS[id];
     if (!provider) return false;
@@ -173,7 +172,7 @@ export async function translateGroup(
   return reqs.map((req, i) => results[i] ?? failOutcome(req, lastError));
 }
 
-function asProviderError(id: ProviderId, err: unknown): ProviderError {
+function asProviderError(id: CloudProviderId, err: unknown): ProviderError {
   return err instanceof ProviderError
     ? err
     : new ProviderError(id, 'unknown', err instanceof Error ? err.message : String(err));
