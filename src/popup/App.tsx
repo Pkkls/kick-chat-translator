@@ -8,10 +8,23 @@ import { Toggle } from './components/Toggle';
 import { ProviderPill } from './components/ProviderPill';
 import { StatsBar } from './components/StatsBar';
 
+interface DeeplUsage {
+  configured: boolean;
+  count: number;
+  limit: number;
+}
+
+function fmtK(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${Math.round(n / 1_000)}k`;
+  return String(n);
+}
+
 export function App() {
   const [settings, setSettings] = useState<Settings>(defaultSettings());
   const [stats, setStats] = useState<UsageStats | undefined>(undefined);
   const [providers, setProviders] = useState<ProviderStatus[]>([]);
+  const [deepl, setDeepl] = useState<DeeplUsage | undefined>(undefined);
   const [savedAt, setSavedAt] = useState<number | undefined>(undefined);
 
   useEffect(() => {
@@ -25,6 +38,8 @@ export function App() {
     if (statsRes.type === 'stats') setStats(statsRes.payload);
     const provRes = await send({ type: 'providers.status' });
     if (provRes.type === 'providers') setProviders(provRes.payload);
+    const deeplRes = await send({ type: 'deepl.usage' });
+    if (deeplRes.type === 'deepl.usage') setDeepl(deeplRes.payload);
   }
 
   async function patch<K extends keyof Settings>(key: K, value: Settings[K]) {
@@ -115,6 +130,22 @@ export function App() {
             <ProviderPill key={p.id} status={p} />
           ))}
         </div>
+        {deepl?.configured && deepl.limit > 0 && (
+          <div class="pt-1">
+            <div class="flex items-center justify-between text-[10px] text-kick-muted">
+              <span>DeepL quota</span>
+              <span>
+                {fmtK(deepl.count)} / {fmtK(deepl.limit)} ({Math.round((deepl.count / deepl.limit) * 100)}%)
+              </span>
+            </div>
+            <div class="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-kick-border">
+              <div
+                class="h-full rounded-full bg-kick-primary"
+                style={{ width: `${Math.min(100, (deepl.count / deepl.limit) * 100)}%` }}
+              />
+            </div>
+          </div>
+        )}
       </section>
 
       {settings.popupShowsStats && stats && (

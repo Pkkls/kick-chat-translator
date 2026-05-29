@@ -11,6 +11,7 @@ export type RuntimeMessage =
   | { type: 'cache.clear' }
   | { type: 'open.options' }
   | { type: 'stats.local'; payload: { lang: string; chars: number } }
+  | { type: 'deepl.usage' }
   | { type: 'ping' };
 
 export type RuntimeResponse =
@@ -18,6 +19,7 @@ export type RuntimeResponse =
   | { type: 'settings'; payload: Settings }
   | { type: 'stats'; payload: UsageStats }
   | { type: 'providers'; payload: ProviderStatus[] }
+  | { type: 'deepl.usage'; payload: { configured: boolean; count: number; limit: number } }
   | { type: 'ack' }
   | { type: 'error'; payload: { message: string } };
 

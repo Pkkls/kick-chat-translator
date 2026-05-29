@@ -31,8 +31,14 @@ export const LINGVA_POOL = [
 export const GOOGLE_CLIENTS = ['gtx', 'dict-chrome-ex'];
 
 export const DEEPL_BATCH_MAX = 40; // DeepL accepts up to 50 text params; stay under.
-export const BATCH_WINDOW_MS = 400; // coalescing window
+// Coalescing window: short enough to keep latency low on quiet chats; busy chats
+// hit BATCH_MAX_ITEMS well before this elapses, so batching is preserved.
+export const BATCH_WINDOW_MS = 180;
 export const BATCH_MAX_ITEMS = 40; // flush size — aligned with DeepL's batch cap (fewer requests)
+
+// DeepL usage endpoints (quota display in the popup).
+export const DEEPL_USAGE_FREE = 'https://api-free.deepl.com/v2/usage';
+export const DEEPL_USAGE_PRO = 'https://api.deepl.com/v2/usage';
 
 // MyMemory: a contact email lifts the anon cap (5k → 50k words/day). Optional.
 export const MYMEMORY_CONTACT = '';

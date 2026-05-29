@@ -1,6 +1,7 @@
 import type { ProviderId, ProviderStatus, TranslationOutcome, TranslationRequest } from '~/shared/types';
 import type { Settings } from '~/shared/settings';
 import { rootLogger } from '~/shared/logger';
+import { decodeHtmlEntities } from '~/shared/decode';
 import { ConcurrencyQueue } from '../queue';
 import { googleProvider } from './google';
 import { deeplProvider } from './deepl';
@@ -66,7 +67,7 @@ function ok(req: TranslationRequest, id: ProviderId, translatedText: string, det
     ok: true,
     result: {
       messageId: req.messageId,
-      translatedText,
+      translatedText: decodeHtmlEntities(translatedText),
       detectedLang: detectedLang.toLowerCase(),
       provider: id,
       cached: false,

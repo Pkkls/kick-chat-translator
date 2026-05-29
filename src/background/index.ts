@@ -7,6 +7,7 @@ import { StatsTracker } from './stats';
 import { TranslationCoalescer } from './coalescer';
 import { anyProviderReady, getProviderStatus } from './translator';
 import { installKeepalive } from './keepalive';
+import { DEEPL_USAGE_FREE, DEEPL_USAGE_PRO } from '~/shared/constants';
 import type { ProviderId, TranslationOutcome, TranslationRequest } from '~/shared/types';
 
 const log = rootLogger.child('sw');
@@ -68,6 +69,38 @@ async function handleTranslate(req: TranslationRequest): Promise<TranslationOutc
   return coalescer.submit(req);
 }
 
+interface DeeplUsage {
+  configured: boolean;
+  count: number;
+  limit: number;
+}
+let deeplUsageCache: { at: number; value: DeeplUsage } | undefined;
+
+async function fetchDeeplUsage(): Promise<DeeplUsage> {
+  if (!settings.deeplApiKey) return { configured: false, count: 0, limit: 0 };
+  // Throttle: DeepL counts usage calls lightly, but no need to hammer.
+  if (deeplUsageCache && Date.now() - deeplUsageCache.at < 30_000) {
+    return deeplUsageCache.value;
+  }
+  const url = settings.deeplPlan === 'pro' ? DEEPL_USAGE_PRO : DEEPL_USAGE_FREE;
+  try {
+    const res = await fetch(url, {
+      headers: { Authorization: `DeepL-Auth-Key ${settings.deeplApiKey}` },
+    });
+    if (!res.ok) return { configured: true, count: 0, limit: 0 };
+    const j = (await res.json()) as { character_count?: number; character_limit?: number };
+    const value: DeeplUsage = {
+      configured: true,
+      count: j.character_count ?? 0,
+      limit: j.character_limit ?? 0,
+    };
+    deeplUsageCache = { at: Date.now(), value };
+    return value;
+  } catch {
+    return { configured: true, count: 0, limit: 0 };
+  }
+}
+
 async function init(): Promise<void> {
   settings = await loadSettings();
   applySettings(settings);
@@ -104,6 +137,8 @@ onMessage(async (msg): Promise<RuntimeResponse | void> => {
     }
     case 'providers.status':
       return { type: 'providers', payload: getProviderStatus(settings) };
+    case 'deepl.usage':
+      return { type: 'deepl.usage', payload: await fetchDeeplUsage() };
     case 'cache.clear':
       await cache.clear();
       return { type: 'ack' };
