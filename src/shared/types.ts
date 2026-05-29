@@ -35,6 +35,10 @@ export interface TranslationRequest {
   targetLang: string;
   sourceLangHint?: string;
   channel?: string;
+  /** Surrounding chat lines (untranslated) to disambiguate — DeepL `context`. */
+  context?: string;
+  /** Force a fresh translation, bypassing the cache (re-translate button). */
+  noCache?: boolean;
 }
 
 export interface TranslationResult {

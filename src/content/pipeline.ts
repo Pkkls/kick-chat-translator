@@ -1,14 +1,16 @@
 import type { Settings } from '~/shared/settings';
-import type { TranslationOutcome, TranslationResult } from '~/shared/types';
+import type { ProviderId, TranslationOutcome, TranslationResult } from '~/shared/types';
 import { MAX_TEXT_LENGTH, MIN_TEXT_LENGTH } from '~/shared/constants';
 import { rootLogger } from '~/shared/logger';
 import { send } from '~/shared/messages';
+import { isSlangOnly } from '~/shared/glossary';
 import { parseKickContent } from './emoteParser';
 import { extractMessageText } from './selectors';
 import { detectLanguage } from './langDetect';
 import { isNoise, isSameLanguageAsTarget, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
-import { inject, removeAllArtifacts, showError, showLoading } from './injector';
+import { inject, incrementFloatingCount, removeAllArtifacts, showError, showLoading } from './injector';
 import { localEngine } from './localEngine';
+import { memCache } from './memcache';
 
 const log = rootLogger.child('pipeline');
 
@@ -30,14 +32,22 @@ export interface IncomingWsMessage {
   isBot: boolean;
 }
 
-/** Result of the cheap pre-checks shared by both ingestion paths. */
 interface Prepared {
   real: string;
   detected: string | undefined;
 }
 
+interface RawResult {
+  translatedText: string;
+  detectedLang: string;
+  provider: ProviderId;
+}
+
+const CONTEXT_LINES = 2;
+
 export class TranslationPipeline {
   private settings: Settings;
+  private recent = new Map<string, string[]>();
 
   constructor(settings: Settings) {
     this.settings = settings;
@@ -47,45 +57,42 @@ export class TranslationPipeline {
     this.settings = next;
   }
 
-  /**
-   * Run all cheap filters (no network, single franc-min call) and return the
-   * translatable text + detected language, or undefined to skip the message.
-   */
+  /** Cheap filters + a single franc-min call. Returns undefined to skip. */
   private prepare(rawText: string, meta: { username: string; channel: string; isBot: boolean }): Prepared | undefined {
     if (!this.settings.enabled) return undefined;
     if (shouldDropByUserOrChannel(meta, this.settings)) return undefined;
 
     const { realText } = parseKickContent(rawText);
-    // Emote-only / @mention-only / url-only messages have no real words → skip.
     if (realText.length < MIN_TEXT_LENGTH || realText.length > MAX_TEXT_LENGTH) return undefined;
-    if (isNoise(realText)) return undefined; // emoji / kkkk / rsrs / xd / digits …
+    if (isNoise(realText)) return undefined; // emoji / kkkk / rsrs / xd / digits
+    if (isSlangOnly(realText)) return undefined; // poggers / copium / kekw …
 
-    const detected = detectLanguage(realText); // franc-min — called ONCE per message
-    if (this.settings.ignoreEnglish && this.settings.targetLang === 'en' && detected === 'en') {
-      return undefined;
-    }
+    const detected = detectLanguage(realText);
+    if (this.settings.ignoreEnglish && this.settings.targetLang === 'en' && detected === 'en') return undefined;
     if (isSameLanguageAsTarget(detected, this.settings.targetLang)) return undefined;
     if (shouldDropBySourceLang(detected, this.settings)) return undefined;
 
     return { real: realText, detected };
   }
 
-  /** Cache-warm via the cloud chain when a message arrives over WS (cloud path only). */
+  /** Rolling per-channel context (previous lines) for DeepL disambiguation. */
+  private contextFor(channel: string, current: string): string {
+    const buf = this.recent.get(channel) ?? [];
+    const ctx = buf.slice(-CONTEXT_LINES).join(' ');
+    buf.push(current);
+    if (buf.length > CONTEXT_LINES + 1) buf.shift();
+    this.recent.set(channel, buf);
+    return ctx;
+  }
+
   async onWebSocketMessage(msg: IncomingWsMessage): Promise<void> {
-    if (this.settings.engineMode === 'local-only') return; // local can't run from the SW
+    if (this.settings.engineMode === 'local-only') return;
     const prepared = this.prepare(msg.text, msg);
     if (!prepared) return;
     try {
       await send({
         type: 'translate',
-        payload: {
-          messageId: `ws:${msg.id}`,
-          text: prepared.real,
-          targetLang: this.settings.targetLang,
-          // No sourceLangHint: cloud providers (esp. DeepL) auto-detect more
-          // reliably than franc-min on short chat text.
-          channel: msg.channel,
-        },
+        payload: { messageId: `ws:${msg.id}`, text: prepared.real, targetLang: this.settings.targetLang, channel: msg.channel },
       });
     } catch (err: unknown) {
       log.debug('ws warmup failed', err);
@@ -98,19 +105,27 @@ export class TranslationPipeline {
     const { real, detected } = prepared;
     const target = this.settings.targetLang;
 
-    // ── On-device first (Chrome; absent on Brave → falls straight to cloud) ──
+    // ── 0. In-tab memory cache: instant, zero round-trip ──
+    const mem = memCache.get(real, target);
+    if (mem) {
+      this.applyTranslation(msg, real, mem, { store: false });
+      return;
+    }
+
+    // ── 1. On-device (Chrome; absent on Brave → straight to cloud) ──
     if (
       this.settings.localEnabled &&
       this.settings.engineMode !== 'cloud-first' &&
       detected &&
-      localEngine.present() // skip the whole local branch on Brave (no Translator API)
+      localEngine.present()
     ) {
       localEngine.noteSeen(detected, target);
       if (localEngine.isReady(detected, target)) {
         showLoading(msg.injectionTarget);
         try {
           const translatedText = await localEngine.translate(detected, target, real);
-          this.finishLocal(msg, real, translatedText, detected);
+          this.applyTranslation(msg, real, { translatedText, detectedLang: detected, provider: 'local' }, { store: true });
+          void send({ type: 'stats.local', payload: { lang: detected, chars: real.length } }).catch(() => undefined);
           return;
         } catch (err: unknown) {
           log.debug('local translate failed, falling back', err);
@@ -126,82 +141,102 @@ export class TranslationPipeline {
       return;
     }
 
-    await this.translateViaCloud(msg, real);
-  }
-
-  /**
-   * Guard against virtual-scroll recycling: by the time a translation returns,
-   * the row's node may have been reused for a newer message. If the row left the
-   * DOM or its text changed, drop the result instead of mislabelling a message.
-   */
-  private rowRecycled(msg: IncomingDomMessage): boolean {
-    return !msg.rowElement.isConnected || extractMessageText(msg.rowElement) !== msg.text;
-  }
-
-  private finishLocal(msg: IncomingDomMessage, real: string, translatedText: string, detected: string): void {
-    if (this.rowRecycled(msg)) return; // node reused for another message — leave it alone
-    if (!translatedText || translatedText.trim().toLowerCase() === real.trim().toLowerCase()) {
-      removeAllArtifacts(msg.injectionTarget);
-      return;
-    }
-    const result: TranslationResult = {
-      messageId: msg.id,
-      translatedText,
-      detectedLang: detected,
-      provider: 'local',
-      cached: false,
-    };
-    inject(msg.injectionTarget, result, this.settings);
-    void send({ type: 'stats.local', payload: { lang: detected, chars: real.length } }).catch(() => undefined);
-  }
-
-  private async translateViaCloud(msg: IncomingDomMessage, real: string): Promise<void> {
+    // ── 2. Cloud chain (coalesced + batched in the SW) ──
+    const context = this.contextFor(msg.channel, real);
     showLoading(msg.injectionTarget);
-    let outcome: TranslationOutcome;
-    try {
-      const res = await send({
-        type: 'translate',
-        payload: {
-          messageId: msg.id,
-          text: real,
-          targetLang: this.settings.targetLang,
-          // No sourceLangHint: let cloud providers auto-detect (more accurate
-          // than franc-min on short text, avoids forcing a wrong source on DeepL).
-          channel: msg.channel,
-        },
-      });
-      if (res.type !== 'translate.result') throw new Error('Unexpected response');
-      outcome = res.payload;
-    } catch (err: unknown) {
-      log.warn('cloud translate failed', err);
+    const outcome = await this.requestCloud(real, target, msg.channel, context, false);
+    if (!outcome) {
       if (this.settings.debug) showError(msg.injectionTarget, 'translate failed');
       else removeAllArtifacts(msg.injectionTarget);
       return;
     }
-
     if (!outcome.ok) {
-      // Saturation / all providers down → skip silently (no orphan spinner).
       if (this.settings.debug) showError(msg.injectionTarget, outcome.error.code);
       else removeAllArtifacts(msg.injectionTarget);
       return;
     }
-    if (!outcome.result.translatedText) {
+    this.applyTranslation(msg, real, outcome.result, { store: true });
+  }
+
+  /** ⟳ button: re-translate ignoring caches (and skip the same-lang guard). */
+  private async forceRetranslate(msg: IncomingDomMessage, real: string): Promise<void> {
+    showLoading(msg.injectionTarget);
+    const outcome = await this.requestCloud(real, this.settings.targetLang, msg.channel, '', true);
+    if (!outcome || !outcome.ok) {
       removeAllArtifacts(msg.injectionTarget);
       return;
     }
-    // Row may have been recycled by the virtual scroller while we awaited the network.
-    if (this.rowRecycled(msg)) return;
-    if (
-      isSameLanguageAsTarget(outcome.result.detectedLang, this.settings.targetLang) &&
-      this.settings.ignoreEnglish
-    ) {
+    this.applyTranslation(msg, real, outcome.result, { store: true, force: true });
+  }
+
+  private async requestCloud(
+    text: string,
+    target: string,
+    channel: string,
+    context: string,
+    noCache: boolean,
+  ): Promise<TranslationOutcome | undefined> {
+    try {
+      const res = await send({
+        type: 'translate',
+        payload: {
+          messageId: 'dom',
+          text,
+          targetLang: target,
+          channel,
+          ...(context ? { context } : {}),
+          ...(noCache ? { noCache: true } : {}),
+        },
+      });
+      return res.type === 'translate.result' ? res.payload : undefined;
+    } catch (err: unknown) {
+      log.warn('cloud translate failed', err);
+      return undefined;
+    }
+  }
+
+  private applyTranslation(
+    msg: IncomingDomMessage,
+    real: string,
+    result: RawResult,
+    opts: { store: boolean; force?: boolean },
+  ): void {
+    if (this.rowRecycled(msg)) return; // node reused for another message — leave it alone
+    const tt = result.translatedText;
+    if (!tt) {
       removeAllArtifacts(msg.injectionTarget);
       return;
     }
-    if (outcome.result.translatedText.trim().toLowerCase() === real.trim().toLowerCase()) {
-      removeAllArtifacts(msg.injectionTarget);
-      return;
+    if (!opts.force) {
+      if (isSameLanguageAsTarget(result.detectedLang, this.settings.targetLang) && this.settings.ignoreEnglish) {
+        removeAllArtifacts(msg.injectionTarget);
+        return;
+      }
+      if (tt.trim().toLowerCase() === real.trim().toLowerCase()) {
+        removeAllArtifacts(msg.injectionTarget);
+        return;
+      }
     }
-    inject(msg.injectionTarget, outcome.result, this.settings);
+    if (opts.store) {
+      memCache.set(real, this.settings.targetLang, {
+        translatedText: tt,
+        detectedLang: result.detectedLang,
+        provider: result.provider,
+      });
+    }
+    const full: TranslationResult = {
+      messageId: msg.id,
+      translatedText: tt,
+      detectedLang: result.detectedLang,
+      provider: result.provider,
+      cached: false,
+    };
+    inject(msg.injectionTarget, full, this.settings, () => void this.forceRetranslate(msg, real));
+    incrementFloatingCount();
+  }
+
+  /** Virtual-scroll guard: row reused for a newer message while we awaited. */
+  private rowRecycled(msg: IncomingDomMessage): boolean {
+    return !msg.rowElement.isConnected || extractMessageText(msg.rowElement) !== msg.text;
   }
 }

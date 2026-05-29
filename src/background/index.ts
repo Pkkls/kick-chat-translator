@@ -41,20 +41,22 @@ async function handleTranslate(req: TranslationRequest): Promise<TranslationOutc
     return { ok: false, error: { code: 'disabled', message: 'Extension disabled' } };
   }
 
-  const cached = await cache.get(req.text, req.targetLang);
-  if (cached) {
-    const provider = cached.provider as ProviderId;
-    stats.recordRequest(provider, cached.detectedLang, req.text.length, true);
-    return {
-      ok: true,
-      result: {
-        messageId: req.messageId,
-        translatedText: cached.translatedText,
-        detectedLang: cached.detectedLang,
-        provider,
-        cached: true,
-      },
-    };
+  if (!req.noCache) {
+    const cached = await cache.get(req.text, req.targetLang);
+    if (cached) {
+      const provider = cached.provider as ProviderId;
+      stats.recordRequest(provider, cached.detectedLang, req.text.length, true);
+      return {
+        ok: true,
+        result: {
+          messageId: req.messageId,
+          translatedText: cached.translatedText,
+          detectedLang: cached.detectedLang,
+          provider,
+          cached: true,
+        },
+      };
+    }
   }
 
   if (req.channel && !bucketFor(req.channel).tryTake()) {

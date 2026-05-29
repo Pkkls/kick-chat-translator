@@ -39,24 +39,22 @@ export function showError(targetEl: Element, msg: string): void {
   targetEl.appendChild(span);
 }
 
-export function inject(targetEl: Element, result: TranslationResult, settings: Settings): void {
+export function inject(
+  targetEl: Element,
+  result: TranslationResult,
+  settings: Settings,
+  onRetry?: () => void,
+): void {
   removeAllArtifacts(targetEl);
   const flag = settings.showSourceBadge ? langFlag(result.detectedLang) : '';
   const provider = settings.showProviderBadge ? result.provider : '';
 
-  switch (settings.displayStyle) {
-    case 'inline':
-      injectInline(targetEl, result.translatedText, flag, provider);
-      return;
-    case 'replace':
-      // Replace-mode without dropping original is just below-mode; with showOriginal false
-      // we still keep original visible because the virtual scroll DOM is structurally rigid.
-      injectBelow(targetEl, result.translatedText, flag, provider);
-      return;
-    case 'below':
-    default:
-      injectBelow(targetEl, result.translatedText, flag, provider);
-  }
+  const inline = settings.displayStyle === 'inline';
+  const el = document.createElement(inline ? 'span' : 'div');
+  el.className = inline ? TRANS_INLINE_CLASS : TRANS_CLASS;
+  el.appendChild(withBadges(result.translatedText, flag, provider));
+  if (onRetry) el.appendChild(makeRetry(onRetry));
+  targetEl.appendChild(el);
 }
 
 function withBadges(text: string, flag: string, provider: string): DocumentFragment {
@@ -77,18 +75,18 @@ function withBadges(text: string, flag: string, provider: string): DocumentFragm
   return frag;
 }
 
-function injectBelow(targetEl: Element, text: string, flag: string, provider: string): void {
-  const div = document.createElement('div');
-  div.className = TRANS_CLASS;
-  div.appendChild(withBadges(text, flag, provider));
-  targetEl.appendChild(div);
-}
-
-function injectInline(targetEl: Element, text: string, flag: string, provider: string): void {
-  const span = document.createElement('span');
-  span.className = TRANS_INLINE_CLASS;
-  span.appendChild(withBadges(text, flag, provider));
-  targetEl.appendChild(span);
+function makeRetry(onRetry: () => void): HTMLElement {
+  const btn = document.createElement('span');
+  btn.className = 'kt-retry';
+  btn.textContent = '⟳';
+  btn.title = 'Re-translate (try again, ignore cache)';
+  btn.setAttribute('role', 'button');
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onRetry();
+  });
+  return btn;
 }
 
 // ─── Floating bar pinned at top of the chat panel ────────────────────────────
@@ -124,6 +122,12 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
   label.className = 'kt-float-label';
   bar.appendChild(label);
 
+  const count = document.createElement('span');
+  count.className = 'kt-float-count';
+  count.dataset.n = '0';
+  count.style.display = 'none';
+  bar.appendChild(count);
+
   const localChip = document.createElement('button');
   localChip.type = 'button';
   localChip.className = 'kt-float-local';
@@ -151,7 +155,9 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
 
   bar.addEventListener('click', (e) => {
     const t = e.target as Node;
-    if (t === opts || t === localChip || opts.contains(t) || localChip.contains(t)) return;
+    if (t === opts || t === localChip || count.contains(t) || opts.contains(t) || localChip.contains(t)) {
+      return;
+    }
     e.preventDefault();
     e.stopPropagation();
     const enabled = bar.dataset.enabled !== 'true';
@@ -172,6 +178,16 @@ export function updateFloatingBar(settings: Settings): void {
   const bar = document.querySelector<HTMLElement>(`#${FLOAT_ID}`);
   const label = bar?.querySelector<HTMLElement>('.kt-float-label');
   if (bar && label) setBarEnabled(bar, label, settings.enabled, settings.targetLang);
+}
+
+/** Bump the session translation counter shown in the floating bar. */
+export function incrementFloatingCount(): void {
+  const count = document.querySelector<HTMLElement>(`#${FLOAT_ID} .kt-float-count`);
+  if (!count) return;
+  const n = Number(count.dataset.n ?? '0') + 1;
+  count.dataset.n = String(n);
+  count.textContent = `· ${n}`;
+  count.style.display = '';
 }
 
 export function updateLocalChip(state: LocalChipState): void {

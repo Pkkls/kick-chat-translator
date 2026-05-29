@@ -50,6 +50,8 @@ async function translate(req: TranslationRequest, ctx: ProviderContext): Promise
   form.set('text', req.text);
   form.set('target_lang', deeplLangCode(req.targetLang));
   if (req.sourceLangHint) form.set('source_lang', deeplLangCode(req.sourceLangHint));
+  // Untranslated context improves disambiguation on short chat lines.
+  if (req.context) form.set('context', req.context);
 
   const data = await postForm(form, ctx);
   const first = data.translations[0];
