@@ -6,6 +6,8 @@
 A pro browser extension that translates [Kick.com](https://kick.com) chat in
 real time. Multi-provider, WebSocket-native, fast, and private.
 
+> 🆕 **New user?** Start with the friendly **[User Guide → TUTORIAL.md](TUTORIAL.md)**.
+
 ## Highlights
 
 - **WebSocket-first** — listens directly to Kick's Pusher chat stream
