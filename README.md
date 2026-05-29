@@ -70,8 +70,8 @@ button.
 ### DeepL key (recommended for best quality)
 
 1. Sign up at <https://www.deepl.com/pro#developer> — the **Free** plan
-   gives you 500k chars/month.
-2. Copy the API key (it ends with `:fx`).
+   gives you 1Million chars/month.
+2. Copy theAPI key (it ends with `:fx`).
 3. Paste it in **Options → Providers → DeepL**.
 
 Without a DeepL key, the chain defaults to **Google** (free, no key) +
