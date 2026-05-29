@@ -10,6 +10,7 @@ interface Props {
 export function AdvancedSection({ settings, onPatch }: Props) {
   const [confirmClear, setConfirmClear] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
+  const [confirmResetAll, setConfirmResetAll] = useState(false);
 
   return (
     <>
@@ -149,7 +150,25 @@ export function AdvancedSection({ settings, onPatch }: Props) {
           >
             {confirmReset ? 'click again to confirm' : 'Reset usage stats'}
           </button>
+          <button
+            class="kt-btn-ghost"
+            onClick={() => {
+              if (!confirmResetAll) {
+                setConfirmResetAll(true);
+                setTimeout(() => setConfirmResetAll(false), 2500);
+                return;
+              }
+              setConfirmResetAll(false);
+              void send({ type: 'settings.reset' }).then(() => location.reload());
+            }}
+          >
+            {confirmResetAll ? 'click again to confirm' : 'Reset all settings to defaults'}
+          </button>
         </div>
+        <p class="text-[11px] text-kick-muted">
+          “Reset all settings” restores defaults — use it if translations stop appearing
+          because a filter (whitelist / source-language allowlist) was left active.
+        </p>
       </section>
     </>
   );

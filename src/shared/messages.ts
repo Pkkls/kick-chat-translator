@@ -5,6 +5,7 @@ export type RuntimeMessage =
   | { type: 'translate'; payload: TranslationRequest }
   | { type: 'settings.get' }
   | { type: 'settings.set'; payload: Partial<Settings> }
+  | { type: 'settings.reset' }
   | { type: 'stats.get' }
   | { type: 'stats.reset' }
   | { type: 'providers.status' }

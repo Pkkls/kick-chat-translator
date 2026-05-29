@@ -77,6 +77,13 @@ export async function saveSettings(patch: Partial<Settings>): Promise<Settings> 
   return next;
 }
 
+/** Overwrite all settings with defaults (used by the "Reset" button). */
+export async function resetSettings(): Promise<Settings> {
+  const fresh = defaultSettings();
+  await chrome.storage.sync.set({ [STORAGE_KEY_SETTINGS]: fresh });
+  return fresh;
+}
+
 export function watchSettings(cb: (next: Settings) => void): () => void {
   const handler = (
     changes: { [key: string]: chrome.storage.StorageChange },

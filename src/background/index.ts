@@ -1,4 +1,4 @@
-import { defaultSettings, loadSettings, saveSettings, watchSettings, type Settings } from '~/shared/settings';
+import { defaultSettings, loadSettings, resetSettings, saveSettings, watchSettings, type Settings } from '~/shared/settings';
 import { onMessage, type RuntimeResponse } from '~/shared/messages';
 import { rootLogger } from '~/shared/logger';
 import { TranslationCache } from './cache';
@@ -130,6 +130,11 @@ onMessage(async (msg): Promise<RuntimeResponse | void> => {
       const next = await saveSettings(msg.payload);
       applySettings(next);
       return { type: 'settings', payload: next };
+    }
+    case 'settings.reset': {
+      const fresh = await resetSettings();
+      applySettings(fresh);
+      return { type: 'settings', payload: fresh };
     }
     case 'stats.get':
       return { type: 'stats', payload: stats.current() };
