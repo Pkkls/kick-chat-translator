@@ -32,7 +32,7 @@ export const GOOGLE_CLIENTS = ['gtx', 'dict-chrome-ex'];
 
 export const DEEPL_BATCH_MAX = 40; // DeepL accepts up to 50 text params; stay under.
 export const BATCH_WINDOW_MS = 400; // coalescing window
-export const BATCH_MAX_ITEMS = 24; // max messages dispatched together
+export const BATCH_MAX_ITEMS = 40; // flush size — aligned with DeepL's batch cap (fewer requests)
 
 // MyMemory: a contact email lifts the anon cap (5k → 50k words/day). Optional.
 export const MYMEMORY_CONTACT = '';

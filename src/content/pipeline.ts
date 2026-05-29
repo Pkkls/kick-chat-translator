@@ -98,7 +98,12 @@ export class TranslationPipeline {
     const target = this.settings.targetLang;
 
     // ── On-device first (Chrome; absent on Brave → falls straight to cloud) ──
-    if (this.settings.localEnabled && this.settings.engineMode !== 'cloud-first' && detected) {
+    if (
+      this.settings.localEnabled &&
+      this.settings.engineMode !== 'cloud-first' &&
+      detected &&
+      localEngine.present() // skip the whole local branch on Brave (no Translator API)
+    ) {
       localEngine.noteSeen(detected, target);
       if (localEngine.isReady(detected, target)) {
         showLoading(msg.injectionTarget);

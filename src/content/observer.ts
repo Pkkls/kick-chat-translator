@@ -76,33 +76,24 @@ export class ChatObserver {
 
     for (const row of findAllRows(container)) this.process(row);
 
-    // Virtual scrollers RECYCLE DOM nodes — the same `[data-index]` node sees its
-    // text content swapped as the list shifts. So watch BOTH childList (new rows)
-    // and the subtree for any descendant text changes.
+    // Virtual scrollers recycle DOM nodes: when a row is reused its inner content
+    // is REPLACED (a childList mutation on the subtree), so childList+subtree is
+    // sufficient. We deliberately do NOT watch characterData/attributes — on a
+    // fast chat those fire constantly and would thrash the callback for no gain.
     this.listObserver = new MutationObserver((mutations) => {
       const candidates = new Set<Element>();
       for (const mut of mutations) {
-        if (mut.type === 'childList') {
-          for (const node of mut.addedNodes) {
-            if (!(node instanceof Element)) continue;
-            if (matchesMessageRow(node)) candidates.add(node);
+        for (const node of mut.addedNodes) {
+          if (!(node instanceof Element)) continue;
+          if (matchesMessageRow(node)) candidates.add(node);
+          else {
             for (const row of findAllRows(node)) candidates.add(row);
           }
-        } else if (mut.type === 'characterData' || mut.type === 'attributes') {
-          let walker: Element | null = mut.target.parentElement;
-          while (walker && !matchesMessageRow(walker)) walker = walker.parentElement;
-          if (walker) candidates.add(walker);
         }
       }
       for (const row of candidates) this.process(row);
     });
-    this.listObserver.observe(container, {
-      childList: true,
-      subtree: true,
-      characterData: true,
-      attributes: true,
-      attributeFilter: ['data-index'],
-    });
+    this.listObserver.observe(container, { childList: true, subtree: true });
 
     // Detect re-mount of the container (channel switch) at the document level.
     const watcher = new MutationObserver(() => {
@@ -130,6 +121,8 @@ export class ChatObserver {
     }
     this.seenIds.add(id);
     row.setAttribute(PROCESSED_MARK, id);
+    // Bound memory on long sessions (hours of fast chat).
+    if (this.seenIds.size > 4000) this.cap(3000);
 
     this.cb({
       rowElement: row,

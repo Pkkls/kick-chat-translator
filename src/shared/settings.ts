@@ -39,7 +39,7 @@ export const SettingsSchema = z.object({
   sourceLangAllowlist: z.array(z.string()).default([]),
 
   // Performance
-  cacheMaxEntries: z.number().int().positive().max(20_000).default(2_000),
+  cacheMaxEntries: z.number().int().positive().max(20_000).default(5_000),
   cacheTtlHours: z.number().int().positive().max(720).default(24),
   concurrency: z.number().int().min(1).max(16).default(4),
   perChannelBudgetPerMin: z.number().int().min(10).max(2000).default(200),
