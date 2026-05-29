@@ -48,6 +48,8 @@ const CONTEXT_LINES = 2;
 export class TranslationPipeline {
   private settings: Settings;
   private recent = new Map<string, string[]>();
+  /** Whether this tab is currently allowed to translate (false when tab hidden). */
+  private active = true;
 
   constructor(settings: Settings) {
     this.settings = settings;
@@ -57,9 +59,14 @@ export class TranslationPipeline {
     this.settings = next;
   }
 
+  setActive(v: boolean): void {
+    this.active = v;
+  }
+
   /** Cheap filters + a single franc-min call. Returns undefined to skip. */
   private prepare(rawText: string, meta: { username: string; channel: string; isBot: boolean }): Prepared | undefined {
     if (!this.settings.enabled) return undefined;
+    if (!this.active) return undefined; // tab hidden → don't burn quota
     if (shouldDropByUserOrChannel(meta, this.settings)) return undefined;
 
     const { realText } = parseKickContent(rawText);

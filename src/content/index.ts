@@ -129,6 +129,19 @@ async function main(): Promise<void> {
   }) as typeof history.pushState;
   window.addEventListener('popstate', () => void attachForRoute());
 
+  // Auto-pause when the tab is hidden so background tabs don't burn quota.
+  function applyVisibility(): void {
+    const paused = settings.pauseWhenHidden && document.hidden;
+    pipeline.setActive(!paused);
+    if (paused) {
+      observer.stop();
+    } else if (settings.enabled && currentSlug) {
+      observer.start(); // re-attach + re-scan current chat
+    }
+  }
+  document.addEventListener('visibilitychange', applyVisibility);
+  applyVisibility(); // tab may start in the background
+
   watchSettings((next) => {
     const wasEnabled = settings.enabled;
     settings = next;
@@ -142,6 +155,7 @@ async function main(): Promise<void> {
       observer.stop();
       pusher?.stop();
     }
+    applyVisibility(); // re-evaluate (pauseWhenHidden may have changed)
     if (next.showFloatingBar) mountBar();
     else unmountFloatingBar();
   });

@@ -46,6 +46,9 @@ export const SettingsSchema = z.object({
 
   // Connection strategy
   connectionMode: z.enum(['auto', 'websocket', 'dom']).default('auto'),
+  // Pause translating in tabs that aren't visible — stops background tabs from
+  // burning provider quota (DeepL) while you're not watching.
+  pauseWhenHidden: z.boolean().default(true),
   debug: z.boolean().default(false),
 
   // UI

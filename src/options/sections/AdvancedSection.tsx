@@ -32,6 +32,20 @@ export function AdvancedSection({ settings, onPatch }: Props) {
             WebSocket directly listens to Kick's chat events for lower CPU / faster pre-translation.
           </p>
         </div>
+        <label class="flex items-center justify-between gap-3 rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
+          <span class="text-sm">
+            Pause when tab is hidden
+            <span class="block text-[11px] text-kick-muted">
+              Background Kick tabs won't translate (saves DeepL quota while you're away).
+            </span>
+          </span>
+          <input
+            type="checkbox"
+            class="h-4 w-4 accent-kick-primary"
+            checked={settings.pauseWhenHidden}
+            onChange={(e) => onPatch({ pauseWhenHidden: (e.target as HTMLInputElement).checked })}
+          />
+        </label>
       </section>
 
       <section class="kt-card space-y-4">
