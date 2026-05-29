@@ -75,7 +75,10 @@ button.
 3. Paste it in **Options → Providers → DeepL**.
 
 Without a DeepL key, the chain defaults to **Google** (free, no key) +
-**MyMemory** fallback.
+**MyMemory** fallback. I really recommend to use DeepL api Key , because it provides context all over the chat.
+
+
+
 
 ## Architecture
 
