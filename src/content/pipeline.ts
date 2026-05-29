@@ -4,6 +4,7 @@ import { MAX_TEXT_LENGTH, MIN_TEXT_LENGTH } from '~/shared/constants';
 import { rootLogger } from '~/shared/logger';
 import { send } from '~/shared/messages';
 import { parseKickContent } from './emoteParser';
+import { extractMessageText } from './selectors';
 import { detectLanguage } from './langDetect';
 import { isNoise, isSameLanguageAsTarget, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
 import { inject, removeAllArtifacts, showError, showLoading } from './injector';
@@ -128,7 +129,17 @@ export class TranslationPipeline {
     await this.translateViaCloud(msg, real);
   }
 
+  /**
+   * Guard against virtual-scroll recycling: by the time a translation returns,
+   * the row's node may have been reused for a newer message. If the row left the
+   * DOM or its text changed, drop the result instead of mislabelling a message.
+   */
+  private rowRecycled(msg: IncomingDomMessage): boolean {
+    return !msg.rowElement.isConnected || extractMessageText(msg.rowElement) !== msg.text;
+  }
+
   private finishLocal(msg: IncomingDomMessage, real: string, translatedText: string, detected: string): void {
+    if (this.rowRecycled(msg)) return; // node reused for another message — leave it alone
     if (!translatedText || translatedText.trim().toLowerCase() === real.trim().toLowerCase()) {
       removeAllArtifacts(msg.injectionTarget);
       return;
@@ -178,6 +189,8 @@ export class TranslationPipeline {
       removeAllArtifacts(msg.injectionTarget);
       return;
     }
+    // Row may have been recycled by the virtual scroller while we awaited the network.
+    if (this.rowRecycled(msg)) return;
     if (
       isSameLanguageAsTarget(outcome.result.detectedLang, this.settings.targetLang) &&
       this.settings.ignoreEnglish
