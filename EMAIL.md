@@ -1,7 +1,6 @@
 # Presentation email — Kick Chat Translator → Kick staff
 
-> English (Kick staff). A French version is at the bottom. Replace **[bracketed]**
-> bits and attach the 3 screenshots described under "Attachments".
+> Replace **[bracketed]** bits and attach the 3 screenshots described under "Attachments".
 
 ---
 
@@ -33,6 +32,7 @@ Each message keeps the original and shows the translation right underneath, with
 - **Breaks the language barrier** between your global creators and viewers — more watch time, more chatting, more cross-region discovery.
 - **Zero friction for viewers**: install, open a stream, done. A floating toggle turns it on/off per session.
 - **Respectful of the platform**: it reads the public chat the same way the page renders it, caches aggressively, batches requests, applies a per-channel rate budget, and **auto-pauses in background tabs**. No private endpoints, no auth scraping, no spam.
+- **Plays nice with 7TV**: it auto-detects whether the viewer has the 7TV extension installed (7TV changes how chat is rendered) and reads messages correctly in both cases — no double text, emotes left untouched.
 
 ### It's completely free
 
@@ -68,25 +68,3 @@ Best,
 
 > Tip: open a busy non-English stream (e.g. a JP/ES/PT channel), let chat fill with
 > translations, then screenshot the chat panel for #1.
-
----
-
-## Version française (si tu préfères envoyer en FR)
-
-**Objet : Kick Chat Translator — extension gratuite et open-source de traduction du chat en temps réel (vos retours ?)**
-
-Bonjour l'équipe Kick,
-
-Je suis **[ton nom]**, développeur indépendant et viewer Kick. J'ai créé **Kick Chat Translator**, une extension qui traduit le chat de kick.com **en temps réel**, pour suivre les streams dans n'importe quelle langue.
-
-**Pourquoi c'est bien pour Kick :** ça casse la barrière de la langue entre vos créateurs et viewers internationaux (plus de watch time, plus d'échanges, plus de découverte cross-régions). Zéro friction : on installe, on ouvre un stream, c'est tout. Et c'est respectueux de la plateforme : lecture du chat public, cache + batching, budget par channel, **pause auto dans les onglets en arrière-plan**, aucun endpoint privé.
-
-**C'est 100 % gratuit :** open-source (MIT), pas de pub, pas de compte, pas de tracking, aucun serveur de mon côté. Sur **Chrome**, traduction **on-device** (illimitée, locale, sans clé ni réseau). Sur les autres navigateurs (Brave), repli cloud : le meilleur moteur, **DeepL**, demande juste une **clé gratuite** à récupérer en 2 min (DeepL Free = 1M caractères/mois, **0 €**) ; Google/MyMemory marchent **sans clé**.
-
-**Côté technique :** MV3, Chrome + Firefox, permissions minimales, multi-provider avec failover, 57 tests, open-source. Code : **[lien GitHub]** — justification des permissions et confidentialité dans `SUBMISSION.md` / `PRIVACY.md`.
-
-**Une demande :** si Kick propose un moyen **officiel de lire les events du chat**, je bascule dessus avec plaisir. Et si une mise en avant communautaire est possible, je suis partant.
-
-Merci, et dispo pour une démo live quand vous voulez.
-
-**[ton nom]** — **[contact]**

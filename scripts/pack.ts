@@ -1,4 +1,4 @@
-import { mkdirSync, createWriteStream, readdirSync, statSync, existsSync, rmSync } from 'node:fs';
+import { mkdirSync, readdirSync, statSync, existsSync, rmSync, readFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
@@ -36,8 +36,7 @@ async function main(): Promise<void> {
 
 function sha256(path: string): string {
   const hash = createHash('sha256');
-  const buf = require('node:fs').readFileSync(path) as Buffer;
-  hash.update(buf);
+  hash.update(readFileSync(path));
   return hash.digest('hex');
 }
 
