@@ -1,12 +1,14 @@
-# Presentation email — Kick Chat Translator → Kick staff
+# Presentation email — Kick Chat Translator → Kick (staff + engineering)
 
-> Replace **[bracketed]** bits and attach the 3 screenshots described under "Attachments".
+> Replace **[bracketed]** bits and attach the screenshots listed at the bottom.
+> Written for two audiences: a friendly top half for anyone, a technical deep-dive
+> for your engineers/reviewers.
 
 ---
 
 ## Subject
 
-**Kick Chat Translator — a free, open-source real-time chat translator for Kick (looking for your feedback)**
+**Kick Chat Translator — free, open-source, real-time chat translation for Kick (feedback welcome)**
 
 ---
 
@@ -14,45 +16,68 @@
 
 Hi Kick team,
 
-I'm **[your name]**, an independent developer and Kick viewer. I built **Kick Chat Translator**, a browser extension that translates kick.com chat **in real time**, so anyone can follow non-English streams (and non-English chatters can be understood on English streams).
+I'm **[your name]**, an independent developer and Kick viewer. I built **Kick Chat Translator**, a browser extension that translates kick.com chat **in real time** so viewers can follow any stream regardless of language — and chatters in any language can be understood.
 
-I'd love your feedback — and, if you like it, any thoughts on making it official or featuring it for the community.
+It's **free and open-source**, there's no business behind it, and I'd genuinely value your feedback. **I'm happy to receive any feedback from your team, and — if it's legally fine on your side — I'm glad to share the project with Kick** (code, design, or hand it over / collaborate, whatever works for you).
 
-**See it in action** (Japanese stream → English, live):
+### See it in action (live, multiple languages → English)
 
-> rein2052: やば → *Oh no*
-> giyu_gun_ch: アブねぇー → *That was close!*
-> edamame55: 中身なんてどうでもいいのか → *Does it even matter what's inside?*
-> 44ka: しかもそれを放送するっていうね → *And they're actually going to air that, too.*
+- 🇯🇵 `バーテンって資格必要なの？` → **"Do you need a license to be a bartender?"**
+- 🇪🇸 `no hay manera` → **"There's no way"**
+- 🇸🇦 `أه` → **"Ah"** · `كيف حالك` → **"How are you doing?"**
+- 🇫🇷 (mixed in an Arabic chat) `ils ont pas les droits fifa` → **"They don't have the FIFA rights"**
 
-Each message keeps the original and shows the translation right underneath, with a source-language tag. (Screenshots attached.)
+Each message keeps the original and shows the translation underneath, with a small source-language tag. (Screenshots attached.)
 
-### Why it's good for Kick
+---
 
-- **Breaks the language barrier** between your global creators and viewers — more watch time, more chatting, more cross-region discovery.
-- **Zero friction for viewers**: install, open a stream, done. A floating toggle turns it on/off per session.
-- **Respectful of the platform**: it reads the public chat the same way the page renders it, caches aggressively, batches requests, applies a per-channel rate budget, and **auto-pauses in background tabs**. No private endpoints, no auth scraping, no spam.
-- **Plays nice with 7TV**: it auto-detects whether the viewer has the 7TV extension installed (7TV changes how chat is rendered) and reads messages correctly in both cases — no double text, emotes left untouched.
+## Part 1 — For everyone (what it does, why it helps Kick)
 
-### It's completely free
+- **Breaks the language barrier** between your global creators and viewers → more watch time, more chatting, more cross-region discovery.
+- **Zero friction**: install, open a stream, done. A floating bar at the top of chat toggles it on/off.
+- **Free, period**: no ads, no account, no paywall, no subscription. The best engine (DeepL) only needs the *viewer's own* **free** API key (1M characters/month, **0 €**); Google/MyMemory work with **no key at all**.
+- **Private**: no tracking, no analytics, no backend — there is no server on my side.
+- **Plays nice with 7TV**: auto-detects whether the viewer runs 7TV (which changes how chat is rendered) and reads messages correctly either way.
 
-- **100% free and open-source (MIT)** — no ads, no accounts, no paywall, no monetization. I'm not selling anything.
-- **No tracking, no telemetry, no backend.** Nothing is collected; there's literally no server on my side. (Full privacy policy in the repo.)
-- Where the browser exposes the built-in **Translator API** (Chrome today), it can translate **fully on-device** — unlimited, instant, private, **no key and no network at all**.
-- Where that API isn't available (e.g. **Brave**), it falls back to cloud translators. The best one, **DeepL**, just needs a **free** API key the user grabs in ~2 minutes (DeepL Free = 1M characters/month, **0 €**). Google/MyMemory work with **no key** as well.
+---
 
-### Under the hood (for your reviewers)
+## Part 2 — Technical deep-dive (for your engineers / reviewers)
 
-- Manifest V3, **Chromium (Chrome, Brave, Edge) + Firefox**, minimal permissions (`storage`, `alarms`, and only the chat + chosen translation hosts). No `tabs`, no `<all_urls>`.
-- Multi-provider chain with automatic failover, IndexedDB cache, on-device + cloud, spam/emote filtering, 57 unit tests, CI.
+**Stack & packaging**
+- Manifest V3. Built with Vite + `@crxjs/vite-plugin`, TypeScript (strict), Preact + Tailwind for popup/options. One source tree → **Chromium (Chrome, Brave, Edge)** and **Firefox** builds.
+- 57 unit tests (Vitest), ESLint (0 warnings), GitHub Actions CI (typecheck + lint + test + build).
+
+**How chat is read**
+- Primary path is the rendered DOM of the chat panel (`#channel-chatroom` virtualised list). We also have a Pusher WebSocket client for `App\Events\ChatMessageEvent`; on the public web app it's rejected for anonymous clients (close code `4001`), so the DOM path is what runs today. **A virtual-scroll recycling guard** verifies a row still holds the same message before injecting, so translations never attach to the wrong message.
+- **This is exactly where we'd love guidance** — see "One ask" below.
+
+**Translation engines (multi-provider, automatic failover)**
+- **On-device**: Chromium's built-in **Translator API** (`Translator.availability/create`) when present (Chrome today). Unlimited, on-device, no network, no key. Brave currently disables it → we fall back to cloud automatically.
+- **Cloud chain** (user-ordered): **DeepL** (native batch, up to ~40 texts/request), **Google** (web endpoint), **MyMemory**, **Lingva**. Providers auto-detect source language (more reliable than client-side detection on short chat); a failing provider gets an **error-aware cooldown** (transient 429 → seconds; quota/auth → minutes) so we never hammer anyone.
+
+**Performance & platform-friendliness**
+- Request **coalescing** (≈180 ms window) + **batching**, an in-tab LRU memory cache **and** a persistent IndexedDB cache (cosmetically-normalised keys, so "wwww"/"WWWW" collapse) → very high cache-hit ratio on busy chat.
+- **Per-channel token-bucket rate budget** caps outbound calls.
+- **Auto-pause when the tab is hidden** (live `document.visibilityState`) → background tabs generate zero traffic and burn zero quota.
+- **Noise filtering**: emotes, emoji-only, laughter (`kkkk`/`jaja`/`lol`/`rsrs`/…) and streaming slang are skipped before any network call.
+
+**Security & privacy (permissions justified)**
+- Permissions: `storage`, `alarms`, host access to `kick.com` + the chosen translation hosts only. **No** `tabs`, **no** `<all_urls>`, no cookie/history/credential access.
+- A message's text is sent only to the translator the user selected, only to translate it. On-device mode sends nothing off the machine. No data is collected by me; there is no backend.
+- See `SUBMISSION.md` (permission table + reviewer notes) and `PRIVACY.md`.
+
+---
+
+## One ask / offer
+
+The only "gray area" is that I read chat from the DOM (and try the public Pusher feed). **If Kick has — or would point me to — an official, supported way to read chat events**, I'll switch to it immediately and drop DOM reading entirely. I want this to align with how you'd prefer third parties to integrate.
+
+And again: **happy to hear your feedback, and to share the project with Kick if that's legal/agreeable on your end.**
+
 - Source: **[https://github.com/Pkkls/kick-chat-translator]**
-- Permissions justification & privacy notes: `SUBMISSION.md` and `PRIVACY.md` in the repo.
+- User guide: `TUTORIAL.md` · Reviewer notes: `SUBMISSION.md` · Privacy: `PRIVACY.md`
 
-### One ask / offer
-
-If Kick exposed (or pointed me to) an **official way to read chat events**, I'd happily switch to it and drop the DOM-based reading entirely — happy to align with whatever you'd prefer. And if there's a path to listing it as a recommended/curated extension for the community, I'm in.
-
-Thanks for building a platform worth translating for — happy to demo it live or answer anything.
+Thanks for building a platform worth translating for — I'm happy to demo it live or answer anything.
 
 Best,
 **[your name]**
@@ -60,11 +85,12 @@ Best,
 
 ---
 
-## Attachments (screenshots to include)
+## Attachments (screenshots)
 
-1. **Live translation** — a stream's chat with green translations under each foreign message (the Japanese→English view). *Best single "wow" shot.*
-2. **The toolbar popup** — target language, provider status pills, and the DeepL quota bar.
-3. **The options page** — the "Engine" card (on-device + cloud fallback) and the provider chain, to show how configurable/clean it is.
+1. **Japanese → English** — chat with green translations under each message *(the cleanest "wow" shot)*.
+2. **Spanish → English** — same, on a Spanish stream.
+3. **Arabic → English** — shows it handles RTL + mixed-language (Arabic/French/romanized) chat.
+4. **Options → Providers/Engine** — engine strategy, on-device toggle, provider chain, DeepL key.
+5. **Popup** — target language, provider status pills, DeepL quota bar.
 
-> Tip: open a busy non-English stream (e.g. a JP/ES/PT channel), let chat fill with
-> translations, then screenshot the chat panel for #1.
+> Capture 1–3 by opening a JP/ES/AR stream and screenshotting the chat panel.
