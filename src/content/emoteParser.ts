@@ -7,8 +7,10 @@ const MENTION_RE = /(^|[\s,.!?])@([a-z0-9_]{2,32})/gi;
 const URL_RE = /\bhttps?:\/\/[^\s<>"']+/gi;
 
 export interface ParsedContent {
-  /** Plain readable text (no markup) — what we send to the translator. */
+  /** Readable text with placeholders (`:emote:`, `[link]`, `@user`). */
   plain: string;
+  /** ONLY the human words — emotes / mentions / urls removed. What we translate. */
+  realText: string;
   tokens: TextToken[];
 }
 
@@ -83,7 +85,13 @@ export function parseKickContent(content: string): ParsedContent {
   }
 
   const plain = plainParts.join('').replace(/\s+/g, ' ').trim();
-  return { plain, tokens };
+  const realText = tokens
+    .filter((t): t is { kind: 'text'; value: string } => t.kind === 'text')
+    .map((t) => t.value)
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return { plain, realText, tokens };
 }
 
 function overlaps(markers: Marker[], start: number, end: number): boolean {

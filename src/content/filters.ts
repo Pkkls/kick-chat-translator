@@ -49,8 +49,13 @@ export function isNoise(text: string): boolean {
   const lower = stripped.toLowerCase();
   // single character repeated (wwww, ーーー, 草草草, !!!)
   if (/^(.)\1*$/u.test(lower)) return true;
-  // laughter variants (wwww, kkkk, lol/lolol, jajaja, hahaha)
-  if (/^(?:w+|ｗ+|k{2,}|x{2,}|(?:l+o+)+l*|(?:ja){2,}|(?:ha){2,}|(?:ah){2,})$/i.test(lower)) {
+  // laughter variants across languages:
+  //  EN wwww/lol/lolol/haha · BR-PT kkkk/rsrs/huehue · ES jaja · xd/xddd · hehe/hihi · uwu/owo
+  if (
+    /^(?:w+|ｗ+|k{2,}|x{2,}|x+d+|(?:rs)+|(?:hue)+|(?:l+o+)+l*|(?:ja){2,}|(?:ha){2,}|(?:ah){2,}|(?:he){2,}|(?:hi){2,}|u?wu|owo)$/i.test(
+      lower,
+    )
+  ) {
     return true;
   }
   // digits / punctuation only

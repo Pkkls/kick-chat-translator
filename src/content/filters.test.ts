@@ -55,11 +55,17 @@ describe('isNoise', () => {
     expect(isNoise('🤣🤣🤣')).toBe(true);
     expect(isNoise('😂')).toBe(true);
   });
-  it('flags laughter / w-spam', () => {
+  it('flags laughter / w-spam (multi-language)', () => {
     expect(isNoise('wwwww')).toBe(true);
     expect(isNoise('WWWWWWWW')).toBe(true);
     expect(isNoise('jajajaja')).toBe(true);
     expect(isNoise('lolol')).toBe(true);
+    expect(isNoise('kkkkkk')).toBe(true); // BR
+    expect(isNoise('rsrs')).toBe(true); // BR
+    expect(isNoise('huehue')).toBe(true); // BR
+    expect(isNoise('xddd')).toBe(true);
+    expect(isNoise('hehe')).toBe(true);
+    expect(isNoise('uwu')).toBe(true);
   });
   it('flags single repeated char and punctuation', () => {
     expect(isNoise('ーーーー')).toBe(true);

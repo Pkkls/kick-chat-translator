@@ -1,10 +1,27 @@
 import { describe, expect, it } from 'vitest';
 import { parseKickContent } from './emoteParser';
 
+describe('realText (what we actually translate)', () => {
+  it('drops emote-only messages to empty realText', () => {
+    expect(parseKickContent('[emote:1:KEKW] [emote:2:PepeLaugh]').realText).toBe('');
+  });
+  it('drops url-only messages to empty realText', () => {
+    expect(parseKickContent('https://discord.gg/foo').realText).toBe('');
+  });
+  it('drops mention-only messages to empty realText', () => {
+    expect(parseKickContent('@joao').realText).toBe('');
+  });
+  it('keeps the real words, removing emotes/mentions/urls', () => {
+    const r = parseKickContent('@joao vamos [emote:1:KEKW] https://x.io agora');
+    expect(r.realText).toBe('vamos  agora'.replace(/\s+/g, ' ').trim());
+  });
+});
+
 describe('parseKickContent', () => {
   it('returns plain text untouched when there are no markers', () => {
     const r = parseKickContent('hello world');
     expect(r.plain).toBe('hello world');
+    expect(r.realText).toBe('hello world');
     expect(r.tokens).toEqual([{ kind: 'text', value: 'hello world' }]);
   });
 
