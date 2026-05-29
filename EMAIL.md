@@ -38,12 +38,12 @@ Each message keeps the original and shows the translation right underneath, with
 
 - **100% free and open-source (MIT)** — no ads, no accounts, no paywall, no monetization. I'm not selling anything.
 - **No tracking, no telemetry, no backend.** Nothing is collected; there's literally no server on my side. (Full privacy policy in the repo.)
-- On **Chrome** it can translate **fully on-device** (Chromium's built-in Translator API) — unlimited, instant, private, **no key and no network at all**.
-- On browsers without that API (e.g. Brave), it falls back to cloud translators. The best one, **DeepL**, just needs a **free** API key the user grabs in ~2 minutes (DeepL Free = 1M characters/month, **0 €**). Google/MyMemory work with **no key** as well.
+- Where the browser exposes the built-in **Translator API** (Chrome today), it can translate **fully on-device** — unlimited, instant, private, **no key and no network at all**.
+- Where that API isn't available (e.g. **Brave**), it falls back to cloud translators. The best one, **DeepL**, just needs a **free** API key the user grabs in ~2 minutes (DeepL Free = 1M characters/month, **0 €**). Google/MyMemory work with **no key** as well.
 
 ### Under the hood (for your reviewers)
 
-- Manifest V3, Chrome + Firefox, minimal permissions (`storage`, `alarms`, and only the chat + chosen translation hosts). No `tabs`, no `<all_urls>`.
+- Manifest V3, **Chromium (Chrome, Brave, Edge) + Firefox**, minimal permissions (`storage`, `alarms`, and only the chat + chosen translation hosts). No `tabs`, no `<all_urls>`.
 - Multi-provider chain with automatic failover, IndexedDB cache, on-device + cloud, spam/emote filtering, 57 unit tests, CI.
 - Source: **[https://github.com/Pkkls/kick-chat-translator]**
 - Permissions justification & privacy notes: `SUBMISSION.md` and `PRIVACY.md` in the repo.
