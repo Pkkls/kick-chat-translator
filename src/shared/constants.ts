@@ -1,7 +1,10 @@
 export const EXT_NAME = 'Kick Chat Translator';
 export const EXT_PREFIX = '[KickTranslator]';
 
-export const KICK_PUSHER_KEY = 'eb1d5f283081a78b932c';
+// Pusher app key used by kick.com's public chat client.
+// Refresh this from the live page (search the HTML for a 20-char hex string)
+// if the WS starts rejecting connections with code 4001.
+export const KICK_PUSHER_KEY = '3437aaddcdf6922d623e';
 export const KICK_PUSHER_CLUSTER = 'us2';
 export const KICK_PUSHER_WS = `wss://ws-${KICK_PUSHER_CLUSTER}.pusher.com/app/${KICK_PUSHER_KEY}?protocol=7&client=js&version=8.4.0&flash=false`;
 
@@ -15,6 +18,24 @@ export const PROVIDER_ENDPOINTS = {
   myMemory: 'https://api.mymemory.translated.net/get',
   lingvaDefault: 'https://lingva.lunar.icu',
 } as const;
+
+// Public Lingva instances, rotated round-robin to spread load / dodge per-host 500s.
+export const LINGVA_POOL = [
+  'https://lingva.lunar.icu',
+  'https://translate.plausibility.cloud',
+  'https://lingva.garudalinux.org',
+  'https://lingva.ml',
+];
+
+// Google web-endpoint client params; rotating helps avoid per-(IP,client) throttling.
+export const GOOGLE_CLIENTS = ['gtx', 'dict-chrome-ex'];
+
+export const DEEPL_BATCH_MAX = 40; // DeepL accepts up to 50 text params; stay under.
+export const BATCH_WINDOW_MS = 400; // coalescing window
+export const BATCH_MAX_ITEMS = 24; // max messages dispatched together
+
+// MyMemory: a contact email lifts the anon cap (5k → 50k words/day). Optional.
+export const MYMEMORY_CONTACT = '';
 
 export const CACHE_DB = 'kt-cache';
 export const CACHE_STORE = 'translations';

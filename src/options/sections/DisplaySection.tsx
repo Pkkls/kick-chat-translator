@@ -29,7 +29,7 @@ export function DisplaySection({ settings, onPatch }: Props) {
 
       <section class="kt-card space-y-3">
         <h2 class="text-sm font-semibold">Display style</h2>
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-3 gap-2">
           <StyleCard
             active={settings.displayStyle === 'below'}
             label="Below"
@@ -45,17 +45,16 @@ export function DisplaySection({ settings, onPatch }: Props) {
           <StyleCard
             active={settings.displayStyle === 'replace'}
             label="Replace"
-            desc="Replace the message text."
+            desc="Below the message (compat — Kick virtual scroll can't be replaced in-place)."
             onClick={() => onPatch({ displayStyle: 'replace' })}
-          />
-          <StyleCard
-            active={settings.displayStyle === 'hover'}
-            label="Hover"
-            desc="Show a 'translate' button. Click to translate."
-            onClick={() => onPatch({ displayStyle: 'hover' })}
           />
         </div>
 
+        <ToggleRow
+          checked={settings.showFloatingBar}
+          onChange={(v) => onPatch({ showFloatingBar: v })}
+          label="Show floating bar at top of chat (toggle live)"
+        />
         <ToggleRow
           checked={settings.showOriginal}
           onChange={(v) => onPatch({ showOriginal: v })}

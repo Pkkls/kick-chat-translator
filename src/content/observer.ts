@@ -1,10 +1,22 @@
-import { SELECTORS, pickAll, pickFirst, extractMessageId, extractMessageText } from './selectors';
+import {
+  SELECTORS,
+  buildSyntheticId,
+  extractMessageText,
+  extractUsername,
+  findAllRows,
+  matchesMessageRow,
+  pickFirst,
+  pickInjectionTarget,
+} from './selectors';
 import { rootLogger } from '~/shared/logger';
 
 const log = rootLogger.child('observer');
 
 export interface DomMessage {
-  element: Element;
+  /** The row element (`div[data-index]`). */
+  rowElement: Element;
+  /** Container we should append translations into (kept INSIDE the message bubble). */
+  injectionTarget: Element;
   id: string;
   text: string;
   usernameGuess: string | undefined;
@@ -12,8 +24,10 @@ export interface DomMessage {
 
 type Callback = (msg: DomMessage) => void;
 
+const PROCESSED_MARK = 'data-kt-id';
+
 export class ChatObserver {
-  private observer: MutationObserver | undefined;
+  private listObserver: MutationObserver | undefined;
   private container: Element | undefined;
   private pollHandle: ReturnType<typeof setTimeout> | undefined;
   private seenIds = new Set<string>();
@@ -33,16 +47,15 @@ export class ChatObserver {
   stop(): void {
     this.running = false;
     if (this.pollHandle) clearTimeout(this.pollHandle);
-    this.observer?.disconnect();
-    this.observer = undefined;
+    this.listObserver?.disconnect();
+    this.listObserver = undefined;
     this.container = undefined;
     this.seenIds.clear();
   }
 
-  /** Force re-scan (e.g., on channel switch). */
   reset(): void {
-    this.observer?.disconnect();
-    this.observer = undefined;
+    this.listObserver?.disconnect();
+    this.listObserver = undefined;
     this.container = undefined;
     this.seenIds.clear();
     if (this.running) this.tryAttach();
@@ -54,75 +67,81 @@ export class ChatObserver {
       this.attach(container);
       return;
     }
-    this.pollHandle = setTimeout(() => this.tryAttach(), 600);
+    this.pollHandle = setTimeout(() => this.tryAttach(), 500);
   }
 
   private attach(container: Element): void {
-    log.debug('attached', container.tagName, container.className);
+    log.debug('attached to', container.tagName, container.className);
     this.container = container;
 
-    for (const el of pickAll(container, SELECTORS.messages)) {
-      this.process(el);
-    }
+    for (const row of findAllRows(container)) this.process(row);
 
-    this.observer = new MutationObserver((mutations) => {
+    // Virtual scrollers RECYCLE DOM nodes — the same `[data-index]` node sees its
+    // text content swapped as the list shifts. So watch BOTH childList (new rows)
+    // and the subtree for any descendant text changes.
+    this.listObserver = new MutationObserver((mutations) => {
+      const candidates = new Set<Element>();
       for (const mut of mutations) {
-        for (const node of mut.addedNodes) {
-          if (!(node instanceof Element)) continue;
-          // direct match
-          if (this.matches(node)) this.process(node);
-          // descendants
-          for (const child of pickAll(node, SELECTORS.messages)) this.process(child);
+        if (mut.type === 'childList') {
+          for (const node of mut.addedNodes) {
+            if (!(node instanceof Element)) continue;
+            if (matchesMessageRow(node)) candidates.add(node);
+            for (const row of findAllRows(node)) candidates.add(row);
+          }
+        } else if (mut.type === 'characterData' || mut.type === 'attributes') {
+          let walker: Element | null = mut.target.parentElement;
+          while (walker && !matchesMessageRow(walker)) walker = walker.parentElement;
+          if (walker) candidates.add(walker);
         }
       }
+      for (const row of candidates) this.process(row);
     });
-    this.observer.observe(container, { childList: true, subtree: true });
+    this.listObserver.observe(container, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+      attributes: true,
+      attributeFilter: ['data-index'],
+    });
 
-    // Re-attach on detach (channel change)
+    // Detect re-mount of the container (channel switch) at the document level.
     const watcher = new MutationObserver(() => {
       if (!document.contains(container)) {
-        log.debug('container detached, re-scanning');
+        log.debug('container removed, rescanning');
         watcher.disconnect();
-        this.observer?.disconnect();
-        this.observer = undefined;
-        this.container = undefined;
-        this.seenIds.clear();
-        if (this.running) this.tryAttach();
+        this.reset();
       }
     });
     watcher.observe(document.body, { childList: true, subtree: true });
   }
 
-  private matches(el: Element): boolean {
-    for (const sel of SELECTORS.messages) {
-      try {
-        if (el.matches(sel)) return true;
-      } catch {
-        /* invalid selector, ignore */
-      }
-    }
-    return false;
-  }
+  private process(row: Element): void {
+    const text = extractMessageText(row);
+    if (!text) return;
+    const username = extractUsername(row) ?? '';
+    const id = buildSyntheticId(row, username, text);
 
-  private process(el: Element): void {
-    let id = extractMessageId(el);
-    const text = extractMessageText(el);
-    if (!text || text.length === 0) return;
-    if (!id) {
-      // fallback: deterministic id from position + text prefix
-      const idx = Array.from(el.parentElement?.children ?? []).indexOf(el);
-      id = `dom_${idx}_${text.slice(0, 16).replace(/\s+/g, '_')}`;
+    // If the row already carries our id mark AND it matches, we already processed it.
+    const prev = row.getAttribute(PROCESSED_MARK);
+    if (prev === id) return;
+    if (this.seenIds.has(id)) {
+      row.setAttribute(PROCESSED_MARK, id);
+      return;
     }
-    if (this.seenIds.has(id)) return;
     this.seenIds.add(id);
-    const usernameEl = el.querySelector('[class*="username"], [class*="user-name"], .chat-message-identity');
-    const usernameGuess = usernameEl?.textContent?.trim().toLowerCase();
-    this.cb({ element: el, id, text, usernameGuess });
+    row.setAttribute(PROCESSED_MARK, id);
+
+    this.cb({
+      rowElement: row,
+      injectionTarget: pickInjectionTarget(row),
+      id,
+      text,
+      usernameGuess: username || undefined,
+    });
   }
 
   cap(maxSeen = 5000): void {
     if (this.seenIds.size <= maxSeen) return;
-    // simple trim: rebuild keeping last N
     const arr = Array.from(this.seenIds);
     this.seenIds = new Set(arr.slice(-maxSeen));
   }

@@ -1,6 +1,6 @@
-export type ProviderId = 'google' | 'deepl' | 'mymemory' | 'lingva';
+export type ProviderId = 'local' | 'google' | 'deepl' | 'mymemory' | 'lingva';
 
-export type DisplayStyle = 'below' | 'inline' | 'replace' | 'hover';
+export type DisplayStyle = 'below' | 'inline' | 'replace';
 
 export type Theme = 'dark' | 'light' | 'system';
 

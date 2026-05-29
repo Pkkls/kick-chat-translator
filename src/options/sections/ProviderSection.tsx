@@ -1,7 +1,8 @@
-import type { Settings } from '~/shared/settings';
-import type { ProviderId, ProviderStatus } from '~/shared/types';
+import type { CloudProviderId, Settings } from '~/shared/settings';
+import type { ProviderStatus } from '~/shared/types';
+import { EngineCard } from './EngineCard';
 
-const PROVIDER_LABELS: Record<ProviderId, string> = {
+const PROVIDER_LABELS: Record<CloudProviderId, string> = {
   google: 'Google Translate (free, no key)',
   deepl: 'DeepL (best quality, needs key)',
   mymemory: 'MyMemory (free, ~1000/day)',
@@ -15,7 +16,7 @@ interface Props {
 }
 
 export function ProviderSection({ settings, providers, onPatch }: Props) {
-  function move(id: ProviderId, dir: -1 | 1) {
+  function move(id: CloudProviderId, dir: -1 | 1) {
     const order = [...settings.providerOrder];
     const idx = order.indexOf(id);
     if (idx < 0) return;
@@ -29,7 +30,7 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
     onPatch({ providerOrder: order });
   }
 
-  function toggle(id: ProviderId) {
+  function toggle(id: CloudProviderId) {
     const order = [...settings.providerOrder];
     const idx = order.indexOf(id);
     if (idx >= 0) order.splice(idx, 1);
@@ -37,14 +38,17 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
     onPatch({ providerOrder: order });
   }
 
-  const all: ProviderId[] = ['google', 'deepl', 'mymemory', 'lingva'];
+  const all: CloudProviderId[] = ['google', 'deepl', 'mymemory', 'lingva'];
 
   return (
     <>
+      <EngineCard settings={settings} onPatch={onPatch} />
+
       <section class="kt-card">
-        <h2 class="text-sm font-semibold mb-3">Provider chain</h2>
+        <h2 class="text-sm font-semibold mb-3">Cloud fallback chain</h2>
         <p class="text-xs text-kick-muted mb-3">
-          Providers are tried in order. Failing ones are temporarily skipped (exponential cooldown).
+          Used when on-device is off or a language pair isn’t downloaded. Providers are tried in
+          order; failing ones are temporarily skipped (exponential cooldown).
         </p>
         <ul class="flex flex-col gap-1.5">
           {settings.providerOrder.map((id, i) => {

@@ -7,7 +7,6 @@ const STYLE_ID = 'kt-inject-style';
 const TRANS_CLASS = 'kt-translation';
 const TRANS_INLINE_CLASS = 'kt-translation-inline';
 const LOADING_CLASS = 'kt-loading';
-const HOVER_CLASS = 'kt-hover-trigger';
 const ERROR_CLASS = 'kt-error';
 
 export function ensureStyles(): void {
@@ -18,63 +17,45 @@ export function ensureStyles(): void {
   document.documentElement.appendChild(style);
 }
 
-export function removeAllArtifacts(messageEl: Element): void {
-  messageEl
-    .querySelectorAll(`.${TRANS_CLASS}, .${TRANS_INLINE_CLASS}, .${LOADING_CLASS}, .${HOVER_CLASS}, .${ERROR_CLASS}`)
+export function removeAllArtifacts(targetEl: Element): void {
+  targetEl
+    .querySelectorAll(`:scope > .${TRANS_CLASS}, :scope > .${TRANS_INLINE_CLASS}, :scope > .${LOADING_CLASS}, :scope > .${ERROR_CLASS}`)
     .forEach((n) => n.remove());
 }
 
-export function showLoading(messageEl: Element): void {
-  if (messageEl.querySelector(`.${LOADING_CLASS}`)) return;
+export function showLoading(targetEl: Element): void {
+  if (targetEl.querySelector(`:scope > .${LOADING_CLASS}`)) return;
   const span = document.createElement('span');
   span.className = LOADING_CLASS;
-  span.textContent = '…';
-  messageEl.appendChild(span);
+  span.textContent = ' …';
+  targetEl.appendChild(span);
 }
 
-export function showError(messageEl: Element, msg: string): void {
-  removeAllArtifacts(messageEl);
+export function showError(targetEl: Element, msg: string): void {
+  removeAllArtifacts(targetEl);
   const span = document.createElement('span');
   span.className = ERROR_CLASS;
   span.textContent = msg;
-  messageEl.appendChild(span);
+  targetEl.appendChild(span);
 }
 
-export function showHoverTrigger(messageEl: Element, onClick: () => void): void {
-  if (messageEl.querySelector(`.${HOVER_CLASS}`)) return;
-  const btn = document.createElement('button');
-  btn.className = HOVER_CLASS;
-  btn.type = 'button';
-  btn.textContent = 'translate';
-  btn.addEventListener(
-    'click',
-    (ev) => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      btn.remove();
-      onClick();
-    },
-    { once: true },
-  );
-  messageEl.appendChild(btn);
-}
-
-export function inject(messageEl: Element, result: TranslationResult, settings: Settings): void {
-  removeAllArtifacts(messageEl);
+export function inject(targetEl: Element, result: TranslationResult, settings: Settings): void {
+  removeAllArtifacts(targetEl);
   const flag = settings.showSourceBadge ? langFlag(result.detectedLang) : '';
   const provider = settings.showProviderBadge ? result.provider : '';
 
   switch (settings.displayStyle) {
     case 'inline':
-      injectInline(messageEl, result.translatedText, flag, provider);
+      injectInline(targetEl, result.translatedText, flag, provider);
       return;
     case 'replace':
-      injectReplace(messageEl, result.translatedText, flag, provider, settings.showOriginal);
+      // Replace-mode without dropping original is just below-mode; with showOriginal false
+      // we still keep original visible because the virtual scroll DOM is structurally rigid.
+      injectBelow(targetEl, result.translatedText, flag, provider);
       return;
     case 'below':
-    case 'hover':
     default:
-      injectBelow(messageEl, result.translatedText, flag, provider);
+      injectBelow(targetEl, result.translatedText, flag, provider);
   }
 }
 
@@ -96,37 +77,130 @@ function withBadges(text: string, flag: string, provider: string): DocumentFragm
   return frag;
 }
 
-function injectBelow(messageEl: Element, text: string, flag: string, provider: string): void {
+function injectBelow(targetEl: Element, text: string, flag: string, provider: string): void {
   const div = document.createElement('div');
   div.className = TRANS_CLASS;
   div.appendChild(withBadges(text, flag, provider));
-  messageEl.appendChild(div);
+  targetEl.appendChild(div);
 }
 
-function injectInline(messageEl: Element, text: string, flag: string, provider: string): void {
+function injectInline(targetEl: Element, text: string, flag: string, provider: string): void {
   const span = document.createElement('span');
   span.className = TRANS_INLINE_CLASS;
   span.appendChild(withBadges(text, flag, provider));
-  messageEl.appendChild(span);
+  targetEl.appendChild(span);
 }
 
-function injectReplace(
-  messageEl: Element,
-  text: string,
-  flag: string,
-  provider: string,
-  showOriginal: boolean,
-): void {
-  if (showOriginal) {
-    injectBelow(messageEl, text, flag, provider);
-    return;
+// ─── Floating bar pinned at top of the chat panel ────────────────────────────
+
+const FLOAT_ID = 'kt-floating-bar';
+
+export interface FloatingBarHandlers {
+  onToggle: (enabled: boolean) => void;
+  onOpenOptions: () => void;
+  /** Invoked from a real click (user gesture) so on-device models can download. */
+  onEnableLocal: () => void;
+}
+
+export type LocalChipState =
+  | { kind: 'hidden' }
+  | { kind: 'download'; label: string }
+  | { kind: 'downloading'; pct: number }
+  | { kind: 'ready' };
+
+export function mountFloatingBar(container: Element, settings: Settings, h: FloatingBarHandlers): void {
+  const host = container.closest('#channel-chatroom') ?? container;
+  if (host.querySelector(`#${FLOAT_ID}`)) return;
+
+  const bar = document.createElement('div');
+  bar.id = FLOAT_ID;
+  bar.className = 'kt-float';
+
+  const dot = document.createElement('span');
+  dot.className = 'kt-float-dot';
+  bar.appendChild(dot);
+
+  const label = document.createElement('span');
+  label.className = 'kt-float-label';
+  bar.appendChild(label);
+
+  const localChip = document.createElement('button');
+  localChip.type = 'button';
+  localChip.className = 'kt-float-local';
+  localChip.style.display = 'none';
+  localChip.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    h.onEnableLocal(); // user gesture — allows model download
+  });
+  bar.appendChild(localChip);
+
+  const opts = document.createElement('button');
+  opts.type = 'button';
+  opts.className = 'kt-float-opts';
+  opts.title = 'Options';
+  opts.textContent = '⚙';
+  opts.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    h.onOpenOptions();
+  });
+  bar.appendChild(opts);
+
+  setBarEnabled(bar, label, settings.enabled, settings.targetLang);
+
+  bar.addEventListener('click', (e) => {
+    const t = e.target as Node;
+    if (t === opts || t === localChip || opts.contains(t) || localChip.contains(t)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const enabled = bar.dataset.enabled !== 'true';
+    setBarEnabled(bar, label, enabled, bar.dataset.lang ?? settings.targetLang);
+    h.onToggle(enabled);
+  });
+
+  host.insertBefore(bar, host.firstChild);
+}
+
+function setBarEnabled(bar: HTMLElement, label: HTMLElement, enabled: boolean, lang: string): void {
+  bar.dataset.enabled = String(enabled);
+  bar.dataset.lang = lang;
+  label.textContent = enabled ? `Translating → ${lang.toUpperCase()}` : 'Translation off';
+}
+
+export function updateFloatingBar(settings: Settings): void {
+  const bar = document.querySelector<HTMLElement>(`#${FLOAT_ID}`);
+  const label = bar?.querySelector<HTMLElement>('.kt-float-label');
+  if (bar && label) setBarEnabled(bar, label, settings.enabled, settings.targetLang);
+}
+
+export function updateLocalChip(state: LocalChipState): void {
+  const chip = document.querySelector<HTMLButtonElement>(`#${FLOAT_ID} .kt-float-local`);
+  if (!chip) return;
+  switch (state.kind) {
+    case 'hidden':
+      chip.style.display = 'none';
+      return;
+    case 'download':
+      chip.style.display = '';
+      chip.dataset.state = 'download';
+      chip.textContent = `⬇ Local (${state.label})`;
+      chip.title = 'Download on-device model — unlimited local translation';
+      return;
+    case 'downloading':
+      chip.style.display = '';
+      chip.dataset.state = 'downloading';
+      chip.textContent = `Downloading ${Math.round(state.pct * 100)}%`;
+      return;
+    case 'ready':
+      chip.style.display = '';
+      chip.dataset.state = 'ready';
+      chip.textContent = 'Local ✓';
+      chip.title = 'Translating on-device (unlimited, offline)';
+      return;
   }
-  // Replace text nodes of the deepest text container with translation
-  const target = messageEl.querySelector('.chat-entry-content, [class*="message-content"]') ?? messageEl;
-  const original = target.cloneNode(true) as Element;
-  original.classList.add('kt-orig-hidden');
-  (original as HTMLElement).style.display = 'none';
-  target.replaceChildren();
-  target.appendChild(withBadges(text, flag, provider));
-  target.appendChild(original);
+}
+
+export function unmountFloatingBar(): void {
+  document.querySelector(`#${FLOAT_ID}`)?.remove();
 }

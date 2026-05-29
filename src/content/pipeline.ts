@@ -1,24 +1,19 @@
 import type { Settings } from '~/shared/settings';
-import type { TranslationOutcome } from '~/shared/types';
+import type { TranslationOutcome, TranslationResult } from '~/shared/types';
 import { MAX_TEXT_LENGTH, MIN_TEXT_LENGTH } from '~/shared/constants';
 import { rootLogger } from '~/shared/logger';
 import { send } from '~/shared/messages';
 import { parseKickContent } from './emoteParser';
 import { detectLanguage, isLikelyEnglish } from './langDetect';
-import { isSameLanguageAsTarget, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
-import { inject, removeAllArtifacts, showError, showHoverTrigger, showLoading } from './injector';
+import { isNoise, isSameLanguageAsTarget, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
+import { inject, removeAllArtifacts, showError, showLoading } from './injector';
+import { localEngine } from './localEngine';
 
 const log = rootLogger.child('pipeline');
 
-interface PendingDom {
-  element: Element;
-  text: string;
-  channel: string;
-  username: string;
-}
-
 export interface IncomingDomMessage {
-  element: Element;
+  rowElement: Element;
+  injectionTarget: Element;
   id: string;
   text: string;
   channel: string;
@@ -35,7 +30,6 @@ export interface IncomingWsMessage {
 }
 
 export class TranslationPipeline {
-  private pending = new Map<string, PendingDom>();
   private settings: Settings;
 
   constructor(settings: Settings) {
@@ -46,14 +40,13 @@ export class TranslationPipeline {
     this.settings = next;
   }
 
-  /** Pre-translate (cache warm) when a message arrives via WS. */
+  /** Cache-warm via the cloud chain when a message arrives over WS (cloud path only). */
   async onWebSocketMessage(msg: IncomingWsMessage): Promise<void> {
     if (!this.settings.enabled) return;
-    const drop = shouldDropByUserOrChannel(msg, this.settings);
-    if (drop) return;
+    if (this.settings.engineMode === 'local-only') return; // local can't run from SW
+    if (shouldDropByUserOrChannel(msg, this.settings)) return;
     const { plain } = parseKickContent(msg.text);
     if (!this.passLengthAndLang(plain)) return;
-
     try {
       await send({
         type: 'translate',
@@ -71,43 +64,74 @@ export class TranslationPipeline {
 
   async onDomMessage(msg: IncomingDomMessage): Promise<void> {
     if (!this.settings.enabled) return;
-
-    const drop = shouldDropByUserOrChannel(msg, this.settings);
-    if (drop) return;
+    if (shouldDropByUserOrChannel(msg, this.settings)) return;
 
     const { plain } = parseKickContent(msg.text);
     if (!this.passLengthAndLang(plain)) return;
 
     const detected = detectLanguage(plain);
     if (isSameLanguageAsTarget(detected, this.settings.targetLang)) return;
+    if (shouldDropBySourceLang(detected, this.settings)) return;
 
-    const dropLang = shouldDropBySourceLang(detected, this.settings);
-    if (dropLang) return;
+    const target = this.settings.targetLang;
 
-    // Hover mode: don't auto-translate
-    if (this.settings.displayStyle === 'hover') {
-      showHoverTrigger(msg.element, () => {
-        void this.translateAndInject(msg, plain, detected);
-      });
+    // ── On-device first ──────────────────────────────────────────────
+    if (this.settings.localEnabled && this.settings.engineMode !== 'cloud-first' && detected) {
+      localEngine.noteSeen(detected, target);
+      if (localEngine.isReady(detected, target)) {
+        showLoading(msg.injectionTarget);
+        try {
+          const translatedText = await localEngine.translate(detected, target, plain);
+          this.finishLocal(msg, plain, translatedText, detected);
+          return;
+        } catch (err: unknown) {
+          log.debug('local translate failed, falling back', err);
+        }
+      } else if (this.settings.engineMode === 'local-only') {
+        // model not downloaded yet → can't translate without a gesture; skip silently
+        removeAllArtifacts(msg.injectionTarget);
+        return;
+      }
+    }
+
+    if (this.settings.engineMode === 'local-only') {
+      removeAllArtifacts(msg.injectionTarget);
       return;
     }
 
-    await this.translateAndInject(msg, plain, detected);
+    // ── Cloud fallback (coalesced + batched in the SW) ───────────────
+    await this.translateViaCloud(msg, plain, detected);
   }
 
-  private async translateAndInject(
+  private finishLocal(
+    msg: IncomingDomMessage,
+    plain: string,
+    translatedText: string,
+    detected: string,
+  ): void {
+    if (!translatedText || translatedText.trim().toLowerCase() === plain.trim().toLowerCase()) {
+      removeAllArtifacts(msg.injectionTarget);
+      return;
+    }
+    const result: TranslationResult = {
+      messageId: msg.id,
+      translatedText,
+      detectedLang: detected,
+      provider: 'local',
+      cached: false,
+    };
+    inject(msg.injectionTarget, result, this.settings);
+    void send({ type: 'stats.local', payload: { lang: detected, chars: plain.length } }).catch(
+      () => undefined,
+    );
+  }
+
+  private async translateViaCloud(
     msg: IncomingDomMessage,
     plain: string,
     detected: string | undefined,
   ): Promise<void> {
-    this.pending.set(msg.id, {
-      element: msg.element,
-      text: plain,
-      channel: msg.channel,
-      username: msg.username,
-    });
-    showLoading(msg.element);
-
+    showLoading(msg.injectionTarget);
     let outcome: TranslationOutcome;
     try {
       const res = await send({
@@ -120,55 +144,46 @@ export class TranslationPipeline {
           channel: msg.channel,
         },
       });
-      if (res.type !== 'translate.result') {
-        throw new Error('Unexpected response');
-      }
+      if (res.type !== 'translate.result') throw new Error('Unexpected response');
       outcome = res.payload;
     } catch (err: unknown) {
-      log.warn('translate failed', err);
-      if (this.settings.debug) showError(msg.element, 'translate failed');
-      else removeAllArtifacts(msg.element);
-      this.pending.delete(msg.id);
+      log.warn('cloud translate failed', err);
+      if (this.settings.debug) showError(msg.injectionTarget, 'translate failed');
+      else removeAllArtifacts(msg.injectionTarget);
       return;
     }
-
-    this.pending.delete(msg.id);
 
     if (!outcome.ok) {
-      if (this.settings.debug) showError(msg.element, outcome.error.code);
-      else removeAllArtifacts(msg.element);
+      // Saturation / all providers down → skip silently (no orphan spinner).
+      if (this.settings.debug) showError(msg.injectionTarget, outcome.error.code);
+      else removeAllArtifacts(msg.injectionTarget);
       return;
     }
-
     if (!outcome.result.translatedText) {
-      removeAllArtifacts(msg.element);
+      removeAllArtifacts(msg.injectionTarget);
       return;
     }
-
     if (
       isSameLanguageAsTarget(outcome.result.detectedLang, this.settings.targetLang) &&
       this.settings.ignoreEnglish
     ) {
-      removeAllArtifacts(msg.element);
+      removeAllArtifacts(msg.injectionTarget);
       return;
     }
-
-    // Sanity guard: identical text → don't display
     if (outcome.result.translatedText.trim().toLowerCase() === plain.trim().toLowerCase()) {
-      removeAllArtifacts(msg.element);
+      removeAllArtifacts(msg.injectionTarget);
       return;
     }
-
-    inject(msg.element, outcome.result, this.settings);
+    inject(msg.injectionTarget, outcome.result, this.settings);
   }
 
   private passLengthAndLang(text: string): boolean {
     if (text.length < MIN_TEXT_LENGTH) return false;
     if (text.length > MAX_TEXT_LENGTH) return false;
-    if (this.settings.ignoreEnglish && isLikelyEnglish(text)) {
-      if (this.settings.targetLang === 'en') return false;
+    if (isNoise(text)) return false;
+    if (this.settings.ignoreEnglish && this.settings.targetLang === 'en' && isLikelyEnglish(text)) {
+      return false;
     }
     return true;
   }
 }
-

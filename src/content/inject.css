@@ -1,7 +1,7 @@
 .kt-translation {
   display: block;
   margin-top: 2px;
-  padding: 2px 6px;
+  padding: 2px 6px 2px 8px;
   background: rgba(83, 252, 24, 0.06);
   border-left: 2px solid rgba(83, 252, 24, 0.55);
   border-radius: 0 4px 4px 0;
@@ -22,18 +22,23 @@
 
 .kt-flag {
   display: inline-block;
-  font-size: 0.75em;
-  font-weight: 600;
-  opacity: 0.7;
-  letter-spacing: 0.02em;
-  margin-right: 4px;
+  font-size: 0.7em;
+  font-weight: 700;
+  opacity: 0.65;
+  letter-spacing: 0.04em;
+  margin-right: 5px;
+  padding: 0 4px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.06);
   text-transform: uppercase;
+  vertical-align: middle;
 }
 
 .kt-provider {
-  font-size: 0.65em;
-  opacity: 0.45;
+  font-size: 0.62em;
+  opacity: 0.4;
   margin-left: 6px;
+  font-family: ui-monospace, monospace;
 }
 
 .kt-loading {
@@ -43,31 +48,100 @@
   font-style: italic;
 }
 
-.kt-hover-trigger {
-  display: inline-block;
-  margin-left: 6px;
-  padding: 1px 6px;
-  background: rgba(83, 252, 24, 0.15);
-  border: 1px solid rgba(83, 252, 24, 0.4);
-  border-radius: 3px;
-  font-size: 0.7em;
-  color: rgba(83, 252, 24, 0.9);
-  cursor: pointer;
-  user-select: none;
-}
-.kt-hover-trigger:hover {
-  background: rgba(83, 252, 24, 0.25);
-}
-
 .kt-error {
   display: block;
   margin-top: 2px;
-  font-size: 0.75em;
+  font-size: 0.7em;
   color: rgba(240, 78, 78, 0.7);
   font-style: italic;
+}
+
+/* ─── Floating bar at top of #channel-chatroom ───────────────────────── */
+
+.kt-float {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(10, 14, 18, 0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(83, 252, 24, 0.2);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.78);
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  z-index: 50;
+  transition: background 0.15s;
+}
+.kt-float:hover {
+  background: rgba(20, 28, 38, 0.95);
+}
+
+.kt-float-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(160, 160, 160, 0.5);
+  flex-shrink: 0;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.kt-float[data-enabled="true"] .kt-float-dot {
+  background: #53fc18;
+  box-shadow: 0 0 8px rgba(83, 252, 24, 0.6);
+}
+
+.kt-float-label {
+  flex: 1;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.kt-float-opts {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 2px 6px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  cursor: pointer;
+  line-height: 1;
+}
+.kt-float-opts:hover {
+  border-color: rgba(83, 252, 24, 0.4);
+  color: #53fc18;
+}
+
+.kt-float-local {
+  background: rgba(83, 252, 24, 0.12);
+  border: 1px solid rgba(83, 252, 24, 0.35);
+  border-radius: 4px;
+  padding: 2px 8px;
+  color: #53fc18;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.kt-float-local:hover {
+  background: rgba(83, 252, 24, 0.2);
+}
+.kt-float-local[data-state='downloading'] {
+  cursor: progress;
+  opacity: 0.8;
+}
+.kt-float-local[data-state='ready'] {
+  background: transparent;
+  border-color: rgba(83, 252, 24, 0.25);
+  cursor: default;
 }
 
 @media (prefers-color-scheme: light) {
   .kt-translation { color: rgba(20, 25, 35, 0.85); background: rgba(0, 0, 0, 0.05); }
   .kt-translation-inline { color: rgba(20, 25, 35, 0.85); }
+  .kt-flag { background: rgba(0, 0, 0, 0.06); }
+  .kt-float { background: rgba(245, 247, 250, 0.9); color: rgba(20, 25, 35, 0.85); }
 }

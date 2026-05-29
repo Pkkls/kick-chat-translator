@@ -1,4 +1,4 @@
-import { PROVIDER_ENDPOINTS } from '~/shared/constants';
+import { MYMEMORY_CONTACT, PROVIDER_ENDPOINTS } from '~/shared/constants';
 import type { TranslationRequest } from '~/shared/types';
 import { ProviderError, type ProviderContext, type ProviderResult, type TranslationProvider } from './types';
 
@@ -13,10 +13,11 @@ async function call(req: TranslationRequest, ctx: ProviderContext): Promise<Prov
   const url = new URL(PROVIDER_ENDPOINTS.myMemory);
   url.searchParams.set('q', req.text);
   url.searchParams.set('langpair', `${req.sourceLangHint ?? 'autodetect'}|${req.targetLang}`);
+  if (MYMEMORY_CONTACT) url.searchParams.set('de', MYMEMORY_CONTACT);
 
   const res = await fetch(url.toString(), { signal: ctx.signal, credentials: 'omit' });
   if (res.status === 429) {
-    throw new ProviderError('mymemory', 'rate_limit', 'MyMemory: rate-limited (daily cap?)');
+    throw new ProviderError('mymemory', 'rate_limit', 'MyMemory: rate-limited');
   }
   if (!res.ok) {
     throw new ProviderError('mymemory', `http_${res.status}`, `MyMemory HTTP ${res.status}`);
@@ -24,14 +25,21 @@ async function call(req: TranslationRequest, ctx: ProviderContext): Promise<Prov
   const data = (await res.json()) as MyMemoryResponse;
 
   const status = Number(data.responseStatus);
+  const details = data.responseDetails ?? '';
+  // MyMemory signals daily-cap with a 200 body, not a 429.
+  if (status === 429 || /USED ALL AVAILABLE FREE TRANSLATIONS|MYMEMORY WARNING/i.test(details)) {
+    throw new ProviderError('mymemory', 'rate_limit', 'MyMemory: daily cap reached');
+  }
   if (status !== 200) {
-    throw new ProviderError('mymemory', 'api', data.responseDetails ?? `Status ${status}`);
+    throw new ProviderError('mymemory', 'api', details || `Status ${status}`);
   }
 
-  const detected =
-    data.matches?.[0]?.language ?? data.responseData.detectedLanguage ?? 'auto';
+  const translated = data.responseData.translatedText;
+  if (!translated) throw new ProviderError('mymemory', 'empty', 'MyMemory: empty');
+
+  const detected = data.matches?.[0]?.language ?? data.responseData.detectedLanguage ?? 'auto';
   return {
-    translatedText: data.responseData.translatedText,
+    translatedText: translated,
     detectedLang: detected.toLowerCase().split('-')[0] ?? detected.toLowerCase(),
   };
 }
@@ -39,6 +47,7 @@ async function call(req: TranslationRequest, ctx: ProviderContext): Promise<Prov
 export const myMemoryProvider: TranslationProvider = {
   id: 'mymemory',
   requiresKey: false,
+  supportsBatch: false,
   isConfigured: () => true,
   translate: call,
 };

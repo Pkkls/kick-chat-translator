@@ -9,6 +9,8 @@ export type RuntimeMessage =
   | { type: 'stats.reset' }
   | { type: 'providers.status' }
   | { type: 'cache.clear' }
+  | { type: 'open.options' }
+  | { type: 'stats.local'; payload: { lang: string; chars: number } }
   | { type: 'ping' };
 
 export type RuntimeResponse =

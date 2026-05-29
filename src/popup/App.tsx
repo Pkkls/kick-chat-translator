@@ -87,7 +87,6 @@ export function App() {
               <option value="below">Below original</option>
               <option value="inline">Inline</option>
               <option value="replace">Replace</option>
-              <option value="hover">Hover (on demand)</option>
             </select>
           </div>
         </div>

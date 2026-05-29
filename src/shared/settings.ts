@@ -5,13 +5,25 @@ export const ProviderOrderSchema = z.array(
   z.enum(['google', 'deepl', 'mymemory', 'lingva']),
 );
 
+/** Cloud-chain providers (on-device 'local' runs in the content script, not here). */
+export type CloudProviderId = z.infer<typeof ProviderOrderSchema>[number];
+
 export const SettingsSchema = z.object({
   enabled: z.boolean().default(true),
   targetLang: z.string().default('en'),
-  displayStyle: z.enum(['below', 'inline', 'replace', 'hover']).default('below'),
+  displayStyle: z.enum(['below', 'inline', 'replace']).default('below'),
   showOriginal: z.boolean().default(true),
   showSourceBadge: z.boolean().default(true),
   showProviderBadge: z.boolean().default(false),
+  showFloatingBar: z.boolean().default(true),
+
+  // Engine strategy.
+  // local-first : on-device Chromium Translator when the model is downloaded, else cloud.
+  // cloud-first : always cloud chain; on-device only if cloud fails.
+  // local-only  : on-device only, never hit the network.
+  engineMode: z.enum(['local-first', 'cloud-first', 'local-only']).default('local-first'),
+  localEnabled: z.boolean().default(true),
+  localAutoDownload: z.boolean().default(false), // download new pairs as soon as a gesture allows
 
   providerOrder: ProviderOrderSchema.default(['google', 'mymemory', 'lingva']),
   deeplApiKey: z.string().default(''),

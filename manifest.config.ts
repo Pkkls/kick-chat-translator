@@ -9,7 +9,6 @@ export default defineManifest({
   short_name: 'Kick Translator',
   version: pkg.version,
   description: pkg.description,
-  default_locale: 'en',
   icons: {
     16: 'public/icons/icon16.png',
     32: 'public/icons/icon32.png',

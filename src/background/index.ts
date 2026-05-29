@@ -2,9 +2,10 @@ import { defaultSettings, loadSettings, saveSettings, watchSettings, type Settin
 import { onMessage, type RuntimeResponse } from '~/shared/messages';
 import { rootLogger } from '~/shared/logger';
 import { TranslationCache } from './cache';
-import { ConcurrencyQueue, TokenBucket } from './queue';
+import { TokenBucket } from './queue';
 import { StatsTracker } from './stats';
-import { getProviderStatus, translateWithFallback } from './translator';
+import { TranslationCoalescer } from './coalescer';
+import { anyProviderReady, getProviderStatus } from './translator';
 import { installKeepalive } from './keepalive';
 import type { ProviderId, TranslationOutcome, TranslationRequest } from '~/shared/types';
 
@@ -12,9 +13,9 @@ const log = rootLogger.child('sw');
 
 let settings: Settings = defaultSettings();
 const cache = new TranslationCache(settings.cacheMaxEntries, settings.cacheTtlHours * 3_600_000);
-const queue = new ConcurrencyQueue(settings.concurrency);
 const stats = new StatsTracker();
 const channelBuckets = new Map<string, TokenBucket>();
+const coalescer = new TranslationCoalescer({ getSettings: () => settings, cache, stats });
 
 function bucketFor(channel: string): TokenBucket {
   let b = channelBuckets.get(channel);
@@ -28,7 +29,6 @@ function bucketFor(channel: string): TokenBucket {
 function applySettings(next: Settings): void {
   settings = next;
   cache.setConfig(next.cacheMaxEntries, next.cacheTtlHours * 3_600_000);
-  queue.setLimit(next.concurrency);
   for (const b of channelBuckets.values()) {
     b.setRate(next.perChannelBudgetPerMin, next.perChannelBudgetPerMin);
   }
@@ -60,23 +60,12 @@ async function handleTranslate(req: TranslationRequest): Promise<TranslationOutc
     return { ok: false, error: { code: 'channel_budget', message: 'Channel budget exhausted' } };
   }
 
-  const outcome = await queue.add(() => translateWithFallback(req, settings));
-  if (outcome.ok) {
-    await cache.set(req.text, req.targetLang, {
-      translatedText: outcome.result.translatedText,
-      detectedLang: outcome.result.detectedLang,
-      provider: outcome.result.provider,
-    });
-    stats.recordRequest(
-      outcome.result.provider,
-      outcome.result.detectedLang,
-      req.text.length,
-      false,
-    );
-  } else {
-    stats.recordError();
+  // Skip-silent: if every cloud provider is cooling down, fail fast (no queue buildup).
+  if (!anyProviderReady(settings)) {
+    return { ok: false, error: { code: 'saturated', message: 'No provider available' } };
   }
-  return outcome;
+
+  return coalescer.submit(req);
 }
 
 async function init(): Promise<void> {
@@ -89,7 +78,6 @@ async function init(): Promise<void> {
 }
 
 void init();
-
 watchSettings(applySettings);
 
 onMessage(async (msg): Promise<RuntimeResponse | void> => {
@@ -98,6 +86,9 @@ onMessage(async (msg): Promise<RuntimeResponse | void> => {
       const outcome = await handleTranslate(msg.payload);
       return { type: 'translate.result', payload: outcome };
     }
+    case 'stats.local':
+      stats.recordRequest('local', msg.payload.lang, msg.payload.chars, false);
+      return { type: 'ack' };
     case 'settings.get':
       return { type: 'settings', payload: settings };
     case 'settings.set': {
@@ -115,6 +106,9 @@ onMessage(async (msg): Promise<RuntimeResponse | void> => {
       return { type: 'providers', payload: getProviderStatus(settings) };
     case 'cache.clear':
       await cache.clear();
+      return { type: 'ack' };
+    case 'open.options':
+      await chrome.runtime.openOptionsPage();
       return { type: 'ack' };
     case 'ping':
       return { type: 'ack' };

@@ -1,45 +1,28 @@
+/**
+ * Kick chat DOM selectors as of 2026.
+ *
+ * Modern Kick uses a virtualised list (react-virtuoso style) where each chat row
+ * is an `<div data-index="N">` positioned absolutely. `data-index` is RECYCLED
+ * by the virtualiser — it is not a stable message ID.
+ *
+ * 7TV (a popular emote extension) wraps text tokens in `span.seventv-text-token`
+ * and adds the class `seventv-chat-observer` to the scroll container.
+ */
+
 export const SELECTORS = {
   containers: [
+    '#channel-chatroom .no-scrollbar',
+    '#channel-chatroom [class*="virtuoso"]',
+    '#channel-chatroom',
+    // Legacy fallbacks
     '#chatroom-messages',
     '[data-chat-id]',
     '[data-testid="chat-messages"]',
-    '.chatroom-messages',
-    '.chat-messages-container',
-    '.messages-list',
-    '#chat-messages',
-    '.chat-entries',
-    '[class*="chatroom"] [class*="messages"]',
-    '[class*="chat-list"]',
-    '[class*="message-list"]',
   ],
-  messages: [
-    '[data-chat-entry]',
-    '[data-chat-entry-id]',
-    'div[id^="chat-entry-"]',
-    '.chat-entry',
-    '.chat-message-item',
-    '[class*="chat-entry"]',
-    '[class*="chat-message"]',
-    '[class*="message-item"]',
-    'li[data-id]',
-  ],
-  messageText: [
-    '[data-chat-entry-content]',
-    '.chat-entry-content',
-    '.chat-message-content',
-    '.message-text',
-    '[class*="message-content"]',
-    '[class*="chat-content"]',
-    'span[class*="text"]',
-  ],
-};
+  messageRows: ['div[data-index]'],
+} as const;
 
-export const ID_ATTRS = [
-  'data-chat-entry-id',
-  'data-id',
-  'data-message-id',
-  'id',
-];
+export const NON_CHAT_TEXT_CLASSES = ['text-neutral']; // timestamp
 
 export function pickFirst(root: ParentNode, list: readonly string[]): Element | null {
   for (const sel of list) {
@@ -53,31 +36,75 @@ export function pickFirst(root: ParentNode, list: readonly string[]): Element | 
   return null;
 }
 
-export function pickAll(root: ParentNode, list: readonly string[]): Element[] {
-  for (const sel of list) {
-    try {
-      const found = root.querySelectorAll(sel);
-      if (found.length > 0) return Array.from(found);
-    } catch {
-      /* ignore */
-    }
-  }
-  return [];
+export function findAllRows(container: ParentNode): Element[] {
+  return Array.from(container.querySelectorAll('div[data-index]'));
 }
 
-export function extractMessageId(el: Element): string | undefined {
-  for (const attr of ID_ATTRS) {
-    const val = el.getAttribute(attr);
-    if (val) {
-      // id attr often "chat-entry-<ulid>" — keep just the ulid for consistency with WS
-      const stripped = val.replace(/^chat-entry-/, '');
-      return stripped;
-    }
-  }
-  return undefined;
+export function matchesMessageRow(el: Element): boolean {
+  return el instanceof HTMLElement && el.hasAttribute('data-index');
 }
 
-export function extractMessageText(el: Element): string {
-  const textEl = pickFirst(el, SELECTORS.messageText) ?? el;
-  return (textEl.textContent ?? '').trim();
+/**
+ * Extract just the message body (text only — no timestamp, no username, no separator),
+ * preferring 7TV-tokenised text when present to avoid the native+7TV duplicate text bug.
+ */
+export function extractMessageText(row: Element): string {
+  const sevenTv = row.querySelectorAll<HTMLElement>('span.seventv-text-token');
+  if (sevenTv.length > 0) {
+    return joinTexts(Array.from(sevenTv));
+  }
+  // Native Kick: text spans have class "font-normal" but NOT "font-bold" (which is username/separator)
+  const native = Array.from(row.querySelectorAll<HTMLElement>('span.font-normal')).filter(
+    (s) => !s.classList.contains('font-bold'),
+  );
+  return joinTexts(native);
+}
+
+function joinTexts(els: HTMLElement[]): string {
+  return els
+    .map((e) => e.textContent ?? '')
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Best-effort username extraction (lowercased). */
+export function extractUsername(row: Element): string | undefined {
+  // Kick wraps the username in a button with title=<user> on hover-tooltipped variants
+  const btn = row.querySelector('button[title]');
+  const fromTitle = btn?.getAttribute('title');
+  if (fromTitle) return fromTitle.trim().toLowerCase();
+  // Otherwise: the styled (colored) bold span is the username
+  const styled = row.querySelector('span.inline-flex.font-bold[style*="color"]');
+  if (styled?.textContent) return styled.textContent.trim().toLowerCase();
+  const anyBold = row.querySelector('button span.font-bold, button span[style*="color"]');
+  return anyBold?.textContent?.trim().toLowerCase() ?? undefined;
+}
+
+/**
+ * Pick the deepest container we should append our translation to,
+ * so it stays inside the message bubble (rounded-lg padding) rather than
+ * sitting outside the message row.
+ */
+export function pickInjectionTarget(row: Element): Element {
+  return (
+    row.querySelector('div.w-full.min-w-0.shrink-0') ??
+    row.querySelector('div.group') ??
+    (row.firstElementChild as Element | null) ??
+    row
+  );
+}
+
+/**
+ * Build a stable-enough ID for the row. `data-index` alone is reused by the
+ * virtualiser, so we combine it with a hash of (username + text prefix).
+ */
+export function buildSyntheticId(row: Element, username: string, text: string): string {
+  const idx = row.getAttribute('data-index') ?? 'x';
+  const seed = `${username}::${text}`;
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) {
+    h = (h * 31 + seed.charCodeAt(i)) | 0;
+  }
+  return `r${idx}_h${(h >>> 0).toString(36)}`;
 }

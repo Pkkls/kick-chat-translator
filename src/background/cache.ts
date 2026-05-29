@@ -12,6 +12,24 @@ interface CacheEntry {
   storedAtMs: number;
 }
 
+/**
+ * Normalize chat text so cosmetic variations collapse to the same cache key.
+ * Chat repeats heavily: "WWWW", "wwww", "草草草", "ezzzz", trailing punctuation.
+ * Collapsing them multiplies the cache hit-rate, which is the #1 lever against
+ * provider rate-limits.
+ */
+export function normalizeForKey(text: string): string {
+  return text
+    .trim()
+    .toLowerCase()
+    .normalize('NFKC')
+    .replace(/\s+/g, ' ')
+    // collapse a char repeated 3+ times down to 2 ("loooool" -> "lool", "草草草草" -> "草草")
+    .replace(/(.)\1{2,}/gu, '$1$1')
+    // drop trailing runs of punctuation / exclamations
+    .replace(/[!?.…~、。！？]+$/u, '');
+}
+
 export class TranslationCache {
   // In-memory layer to avoid IDB roundtrip in hot paths
   private mem = new Map<string, CacheEntry>();
@@ -27,7 +45,7 @@ export class TranslationCache {
   }
 
   key(text: string, targetLang: string): string {
-    return `${targetLang}::${text}`;
+    return `${targetLang}::${normalizeForKey(text)}`;
   }
 
   async get(text: string, targetLang: string): Promise<CacheEntry | undefined> {

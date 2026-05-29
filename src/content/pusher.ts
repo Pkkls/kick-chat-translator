@@ -151,9 +151,20 @@ export class KickPusherClient {
       case 'pusher:pong':
       case 'pusher_internal:subscription_succeeded':
         return;
-      case 'pusher:error':
+      case 'pusher:error': {
         log.warn('pusher error frame', frame.data);
+        try {
+          const data = JSON.parse(frame.data) as { code?: number };
+          // 4001 = app key invalid; retrying won't help, give up for this session
+          if (data.code === 4001) {
+            this.destroyed = true;
+            this.ws?.close();
+          }
+        } catch {
+          /* ignore */
+        }
         return;
+      }
       case 'App\\Events\\ChatMessageEvent': {
         try {
           const msg = JSON.parse(frame.data) as KickChatMessage;
