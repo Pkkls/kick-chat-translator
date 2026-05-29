@@ -45,12 +45,23 @@ function buildContext(settings: Settings, signal?: AbortSignal): ProviderContext
   };
 }
 
-function markFailure(id: ProviderId, message: string): void {
+function markFailure(id: ProviderId, code: string, message: string): void {
   const h = health[id];
   h.lastError = message;
   h.lastErrorMs = Date.now();
   h.consecutiveFailures += 1;
-  const backoffMs = Math.min(5 * 60_000, 2000 * 2 ** (h.consecutiveFailures - 1));
+  const cf = h.consecutiveFailures;
+  let backoffMs: number;
+  if (code === 'rate_limit') {
+    // Transient throttle — recover fast (seconds), never black out for minutes.
+    backoffMs = Math.min(10_000, 1500 * 2 ** (cf - 1));
+  } else if (code === 'quota' || code === 'auth' || code === 'no_key') {
+    // Configuration / monthly-quota problems won't fix themselves soon.
+    backoffMs = 5 * 60_000;
+  } else {
+    // Network / unknown — moderate exponential, capped at 1 min.
+    backoffMs = Math.min(60_000, 2000 * 2 ** (cf - 1));
+  }
   h.cooldownUntilMs = Date.now() + backoffMs;
 }
 
@@ -129,7 +140,7 @@ export async function translateGroup(
       } catch (err: unknown) {
         lastError = asProviderError(id, err);
         log.warn(`batch ${id} failed:`, lastError.code, lastError.message);
-        markFailure(id, lastError.message);
+        markFailure(id, lastError.code, lastError.message);
         // fall through to next provider with the same unresolved set
         continue;
       }
@@ -156,7 +167,7 @@ export async function translateGroup(
       ),
     );
     if (anySuccess) markSuccess(id);
-    else if (anyFail) markFailure(id, lastError?.message ?? 'failed');
+    else if (anyFail) markFailure(id, lastError?.code ?? 'unknown', lastError?.message ?? 'failed');
   }
 
   return reqs.map((req, i) => results[i] ?? failOutcome(req, lastError));

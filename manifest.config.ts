@@ -41,13 +41,12 @@ export default defineManifest({
   permissions: ['storage', 'alarms'],
   host_permissions: [
     'https://kick.com/*',
-    'https://api-translate.googleapis.com/*',
     'https://translate.googleapis.com/*',
     'https://api-free.deepl.com/*',
     'https://api.deepl.com/*',
     'https://api.mymemory.translated.net/*',
-    'https://lingva.ml/*',
     'https://lingva.lunar.icu/*',
+    'https://lingva.ml/*',
   ],
   web_accessible_resources: [
     {

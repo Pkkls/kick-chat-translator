@@ -20,12 +20,8 @@ export const PROVIDER_ENDPOINTS = {
 } as const;
 
 // Public Lingva instances, rotated round-robin to spread load / dodge per-host 500s.
-export const LINGVA_POOL = [
-  'https://lingva.lunar.icu',
-  'https://translate.plausibility.cloud',
-  'https://lingva.garudalinux.org',
-  'https://lingva.ml',
-];
+// Keep in sync with host_permissions in manifest.config.ts.
+export const LINGVA_POOL = ['https://lingva.lunar.icu', 'https://lingva.ml'];
 
 // Google web-endpoint client params; rotating helps avoid per-(IP,client) throttling.
 export const GOOGLE_CLIENTS = ['gtx', 'dict-chrome-ex'];

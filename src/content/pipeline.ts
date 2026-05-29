@@ -87,6 +87,11 @@ export class TranslationPipeline {
     buf.push(current);
     if (buf.length > CONTEXT_LINES + 1) buf.shift();
     this.recent.set(channel, buf);
+    // Bound the map so visiting many channels in one session can't leak.
+    if (this.recent.size > 20) {
+      const oldest = this.recent.keys().next().value;
+      if (oldest !== undefined && oldest !== channel) this.recent.delete(oldest);
+    }
     return ctx;
   }
 

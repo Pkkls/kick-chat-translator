@@ -23,7 +23,6 @@ export const SettingsSchema = z.object({
   // local-only  : on-device only, never hit the network.
   engineMode: z.enum(['local-first', 'cloud-first', 'local-only']).default('local-first'),
   localEnabled: z.boolean().default(true),
-  localAutoDownload: z.boolean().default(false), // download new pairs as soon as a gesture allows
 
   providerOrder: ProviderOrderSchema.default(['google', 'mymemory', 'lingva']),
   deeplApiKey: z.string().default(''),
@@ -52,7 +51,6 @@ export const SettingsSchema = z.object({
   debug: z.boolean().default(false),
 
   // UI
-  theme: z.enum(['dark', 'light', 'system']).default('dark'),
   popupShowsStats: z.boolean().default(true),
 });
 
