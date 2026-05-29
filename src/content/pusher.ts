@@ -99,6 +99,13 @@ export class KickPusherClient {
     this.ws.addEventListener('close', (ev) => {
       log.debug('WS closed', ev.code);
       if (this.pingTimer) clearInterval(this.pingTimer);
+      // Pusher protocol: close codes 4000–4099 are fatal — reconnecting with the
+      // same params will never succeed (4001 = app key not in this cluster, which
+      // is what Kick returns to anonymous web clients). Stop the reconnect loop.
+      if (ev.code >= 4000 && ev.code <= 4099) {
+        this.destroyed = true;
+        return;
+      }
       if (!this.destroyed) this.scheduleReconnect();
     });
 
