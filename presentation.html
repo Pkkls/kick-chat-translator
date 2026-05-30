@@ -61,6 +61,16 @@
   figure.shot .ph{min-height:180px;display:flex;align-items:center;justify-content:center;
     color:var(--mut);font-size:14px;background:repeating-linear-gradient(45deg,#11161800,#11161800 10px,#1b212366 10px,#1b212366 20px)}
   figcaption{padding:12px 14px;font-size:13.5px;color:var(--mut);border-top:1px solid var(--line)}
+  /* live chat demos (no images needed — always render) */
+  .demos{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:16px;margin-bottom:34px}
+  .demo{background:var(--panel);border:1px solid var(--line);border-radius:var(--rad);overflow:hidden}
+  .demo .dh{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line);font-size:13px;color:var(--mut)}
+  .demo .dh i{font-style:normal;opacity:.7}
+  .demo .chat{padding:13px 14px;display:grid;gap:12px;font-size:15px}
+  .demo .m .u{font-weight:700;margin-right:6px}
+  .demo .m .o{color:var(--txt)}
+  .demo .m .tr{margin-top:3px;color:var(--accent);font-size:14px;display:flex;gap:7px;align-items:baseline;line-height:1.4}
+  .demo .m .tr .bdg{flex:none;font-size:10px;font-weight:700;color:var(--mut);border:1px solid var(--line);border-radius:5px;padding:1px 5px;background:var(--bg)}
 
   ol.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:14px}
   ol.steps li{position:relative;padding:16px 18px 16px 58px;background:var(--panel);
@@ -146,27 +156,52 @@
 <section id="screens">
   <div class="wrap">
     <h2><span class="en">See it in action</span><span class="ja">実際の動作</span></h2>
-    <p class="lead"><span class="en">Live translations on real chats, plus the settings you control.</span><span class="ja">実際のチャットでの翻訳例と、自由に変更できる設定画面です。</span></p>
+    <p class="lead"><span class="en">Exactly how it looks in chat: the original is kept, the translation appears underneath with a language tag. You pick the target language — English here, and Japanese for a Japanese viewer.</span><span class="ja">チャットでの実際の見え方です。原文は残り、その下に言語タグ付きで翻訳が表示されます。翻訳先の言語は自由に選べます（ここでは英語、そして日本のユーザー向けに日本語）。</span></p>
+
+    <div class="demos">
+      <div class="demo">
+        <div class="dh">🇯🇵 <span class="en">Japanese → English</span><span class="ja">日本語 → 英語</span></div>
+        <div class="chat">
+          <div class="m"><b class="u" style="color:#f59e0b">sora</b><span class="o">バーテンって資格必要なの？</span><div class="tr"><span class="bdg">JA</span> Do you need a license to be a bartender?</div></div>
+          <div class="m"><b class="u" style="color:#38bdf8">kenta</b><span class="o">初見です、よろしく！</span><div class="tr"><span class="bdg">JA</span> First time here, nice to meet you!</div></div>
+          <div class="m"><b class="u" style="color:#f472b6">mio</b><span class="o">この配信ほんと好き</span><div class="tr"><span class="bdg">JA</span> I really love this stream</div></div>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="dh">🇪🇸 <span class="en">Spanish → English</span><span class="ja">スペイン語 → 英語</span></div>
+        <div class="chat">
+          <div class="m"><b class="u" style="color:#34d399">mateo</b><span class="o">¿alguien sabe cuándo empieza?</span><div class="tr"><span class="bdg">ES</span> does anyone know when it starts?</div></div>
+          <div class="m"><b class="u" style="color:#a78bfa">lucía</b><span class="o">qué golazo tío</span><div class="tr"><span class="bdg">ES</span> what a great goal, man</div></div>
+          <div class="m"><b class="u" style="color:#fb7185">diego</b><span class="o">no hay manera jajaja</span><div class="tr"><span class="bdg">ES</span> there's no way hahaha</div></div>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="dh">🇸🇦 <span class="en">Arabic → English</span><span class="ja">アラビア語 → 英語</span></div>
+        <div class="chat">
+          <div class="m"><b class="u" style="color:#22d3ee">omar</b><span class="o" dir="rtl">كيف حالك؟</span><div class="tr"><span class="bdg">AR</span> How are you?</div></div>
+          <div class="m"><b class="u" style="color:#facc15">layla</b><span class="o" dir="rtl">هذا البث رائع</span><div class="tr"><span class="bdg">AR</span> This stream is great</div></div>
+          <div class="m"><b class="u" style="color:#4ade80">sami</b><span class="o" dir="rtl">من أين أنت؟</span><div class="tr"><span class="bdg">AR</span> Where are you from?</div></div>
+        </div>
+      </div>
+
+      <div class="demo">
+        <div class="dh">🗾 <span class="en">English → Japanese <i>(a Japanese viewer's screen)</i></span><span class="ja">英語 → 日本語 <i>(日本のユーザーの画面)</i></span></div>
+        <div class="chat">
+          <div class="m"><b class="u" style="color:#60a5fa">alex</b><span class="o">where is he from?</span><div class="tr"><span class="bdg">EN</span> 彼はどこ出身？</div></div>
+          <div class="m"><b class="u" style="color:#f472b6">sam</b><span class="o">that last play was insane</span><div class="tr"><span class="bdg">EN</span> 今のプレイ、やばかった</div></div>
+          <div class="m"><b class="u" style="color:#fbbf24">jay</b><span class="o">good game everyone</span><div class="tr"><span class="bdg">EN</span> みんなお疲れさま</div></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin:8px 0 16px"><span class="en">The settings you control</span><span class="ja">変更できる設定</span></h3>
     <div class="shots">
-      <figure class="shot">
-        <img src="screenshots/01-japanese.png" alt="Japanese chat translated to English" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="ph" style="display:none">📷 01-japanese.png</div>
-        <figcaption><span class="en">Japanese → English, live under each message.</span><span class="ja">日本語 → 英語。各メッセージの下にリアルタイム表示。</span></figcaption>
-      </figure>
-      <figure class="shot">
-        <img src="screenshots/02-spanish.png" alt="Spanish chat translated to English" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="ph" style="display:none">📷 02-spanish.png</div>
-        <figcaption><span class="en">Spanish → English on a busy chat.</span><span class="ja">スペイン語 → 英語。にぎやかなチャットでも対応。</span></figcaption>
-      </figure>
-      <figure class="shot">
-        <img src="screenshots/03-arabic.png" alt="Arabic chat translated to English" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="ph" style="display:none">📷 03-arabic.png</div>
-        <figcaption><span class="en">Arabic → English — right-to-left and mixed-language handled.</span><span class="ja">アラビア語 → 英語。右から左の表記や混在言語にも対応。</span></figcaption>
-      </figure>
       <figure class="shot">
         <img src="screenshots/04-options.png" alt="Options page" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="ph" style="display:none">📷 04-options.png</div>
-        <figcaption><span class="en">Options — engine strategy, provider chain, DeepL key.</span><span class="ja">設定画面 — エンジン方式・プロバイダー順・DeepL キー。</span></figcaption>
+        <figcaption><span class="en">Options — target language, engine strategy, provider chain, DeepL key.</span><span class="ja">設定画面 — 翻訳先の言語・エンジン方式・プロバイダー順・DeepL キー。</span></figcaption>
       </figure>
       <figure class="shot">
         <img src="screenshots/05-popup.png" alt="Toolbar popup" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
