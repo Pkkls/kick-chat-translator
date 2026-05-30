@@ -71,9 +71,17 @@ async function main(): Promise<void> {
   }
   localEngine.onChange(refreshChip);
 
+  let barPolling = false;
   function mountBar(): void {
     if (!settings.showFloatingBar) return;
+    if (document.getElementById('kt-floating-bar')) return; // already mounted
+    if (barPolling) return; // a host-search loop is already running
+    barPolling = true;
     const tryMount = (attempt = 0): void => {
+      if (document.getElementById('kt-floating-bar')) {
+        barPolling = false;
+        return;
+      }
       const host = document.querySelector('#channel-chatroom');
       if (host) {
         mountFloatingBar(host, settings, {
@@ -85,11 +93,29 @@ async function main(): Promise<void> {
           },
         });
         refreshChip();
+        barPolling = false;
         return;
       }
       if (attempt < 30) setTimeout(() => tryMount(attempt + 1), 400);
+      else barPolling = false;
     };
     tryMount();
+  }
+
+  // Kick's SPA re-renders the chat subtree, which can wipe the floating bar even
+  // when #channel-chatroom itself stays mounted (the message observer keeps
+  // working via its own re-attach watcher, but the bar would silently vanish and
+  // the user loses the on/off toggle). Re-add it whenever it goes missing.
+  let barGuardScheduled = false;
+  function watchBar(): void {
+    new MutationObserver(() => {
+      if (barGuardScheduled) return;
+      barGuardScheduled = true;
+      requestAnimationFrame(() => {
+        barGuardScheduled = false;
+        if (settings.showFloatingBar && !document.getElementById('kt-floating-bar')) mountBar();
+      });
+    }).observe(document.body, { childList: true, subtree: true });
   }
 
   async function attachForRoute(): Promise<void> {
@@ -121,6 +147,7 @@ async function main(): Promise<void> {
 
   if (settings.enabled) void attachForRoute();
   if (settings.showFloatingBar) mountBar();
+  watchBar();
 
   const origPush = history.pushState.bind(history);
   history.pushState = ((...args: Parameters<typeof origPush>): void => {
