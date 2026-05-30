@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kick Chat Translator — read every chat, in your language</title>
+<meta name="description" content="Free, open-source, real-time chat translation for Kick.com. Multi-provider, private, works in any language." />
+<style>
+  :root{
+    --bg:#0b0e0f; --panel:#14181a; --panel2:#1b2123; --line:#273033;
+    --txt:#e8edee; --mut:#9aa7ab; --accent:#53fc18; --accent2:#00e701; --rad:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--txt);
+    font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:980px;margin:0 auto;padding:0 20px}
+
+  /* language toggle */
+  body[data-lang="en"] .ja{display:none}
+  body[data-lang="ja"] .en{display:none}
+  header.top{position:sticky;top:0;z-index:10;backdrop-filter:blur(8px);
+    background:rgba(11,14,15,.82);border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px}
+  .logo{width:30px;height:30px;border-radius:8px;background:var(--accent);
+    color:#04210a;display:grid;place-items:center;font-weight:900;font-size:18px}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+  .seg button{appearance:none;border:0;background:transparent;color:var(--mut);
+    padding:7px 14px;font:inherit;font-size:14px;cursor:pointer}
+  .seg button[aria-pressed="true"]{background:var(--accent);color:#04210a;font-weight:700}
+
+  .hero{padding:70px 0 40px;text-align:center}
+  .hero h1{font-size:clamp(30px,6vw,52px);line-height:1.1;margin:0 0 14px}
+  .hero .sub{color:var(--mut);font-size:clamp(16px,2.5vw,20px);max-width:620px;margin:0 auto}
+  .pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:26px 0 0}
+  .pill{border:1px solid var(--line);background:var(--panel);border-radius:999px;
+    padding:6px 13px;font-size:13px;color:var(--mut)}
+  .pill b{color:var(--accent)}
+  .cta{margin:30px 0 0;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-block;padding:13px 22px;border-radius:12px;font-weight:700}
+  .btn.primary{background:var(--accent);color:#04210a}
+  .btn.ghost{border:1px solid var(--line);color:var(--txt)}
+
+  section{padding:46px 0;border-top:1px solid var(--line)}
+  h2{font-size:clamp(22px,4vw,30px);margin:0 0 8px}
+  .lead{color:var(--mut);margin:0 0 28px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--rad);padding:20px}
+  .card .ic{font-size:22px}
+  .card h3{margin:10px 0 6px;font-size:17px}
+  .card p{margin:0;color:var(--mut);font-size:14.5px}
+
+  .shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+  figure.shot{margin:0;background:var(--panel);border:1px solid var(--line);
+    border-radius:var(--rad);overflow:hidden}
+  figure.shot img{display:block;width:100%;height:auto}
+  figure.shot .ph{min-height:180px;display:flex;align-items:center;justify-content:center;
+    color:var(--mut);font-size:14px;background:repeating-linear-gradient(45deg,#11161800,#11161800 10px,#1b212366 10px,#1b212366 20px)}
+  figcaption{padding:12px 14px;font-size:13.5px;color:var(--mut);border-top:1px solid var(--line)}
+
+  ol.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:14px}
+  ol.steps li{position:relative;padding:16px 18px 16px 58px;background:var(--panel);
+    border:1px solid var(--line);border-radius:var(--rad)}
+  ol.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:16px;top:50%;
+    transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:var(--accent);
+    color:#04210a;font-weight:800;display:grid;place-items:center}
+  ol.steps b{color:var(--txt)}
+  code,kbd{background:var(--panel2);border:1px solid var(--line);border-radius:6px;
+    padding:1px 6px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em}
+  .note{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--accent);
+    border-radius:10px;padding:14px 16px;color:var(--mut);font-size:14.5px;margin-top:18px}
+  .note b{color:var(--txt)}
+  footer{padding:40px 0 60px;border-top:1px solid var(--line);color:var(--mut);text-align:center;font-size:14px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><span class="logo">K</span> Kick Chat Translator</div>
+    <div class="seg" role="group" aria-label="Language">
+      <button data-lang-btn="en" aria-pressed="true" onclick="setLang('en')">EN</button>
+      <button data-lang-btn="ja" aria-pressed="false" onclick="setLang('ja')">日本語</button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero wrap">
+  <h1>
+    <span class="en">Read every chat,<br>in your language.</span>
+    <span class="ja">すべてのチャットを、<br>あなたの言語で。</span>
+  </h1>
+  <p class="sub">
+    <span class="en">Real-time chat translation for Kick.com. Free, open-source, private — and it just works in any language.</span>
+    <span class="ja">Kick.com のチャットをリアルタイムで翻訳するブラウザ拡張機能。無料・オープンソース・プライバシー重視。どんな言語のチャットもそのまま読めます。</span>
+  </p>
+  <div class="pills">
+    <span class="pill"><b>$0</b> <span class="en">free</span><span class="ja">無料</span></span>
+    <span class="pill"><span class="en">open source</span><span class="ja">オープンソース</span></span>
+    <span class="pill"><span class="en">no account</span><span class="ja">アカウント不要</span></span>
+    <span class="pill">Brave · Chrome · Edge</span>
+    <span class="pill"><span class="en">7TV-aware</span><span class="ja">7TV 対応</span></span>
+  </div>
+  <div class="cta">
+    <a class="btn primary" href="#install"><span class="en">Install in 2 minutes</span><span class="ja">2分でインストール</span></a>
+    <a class="btn ghost" href="https://github.com/Pkkls/kick-chat-translator" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</div>
+
+<!-- WHAT -->
+<section id="features">
+  <div class="wrap">
+    <h2><span class="en">What it does</span><span class="ja">できること</span></h2>
+    <p class="lead">
+      <span class="en">Open a stream — a small bar appears at the top of chat and foreign messages get an English line underneath. That's it.</span>
+      <span class="ja">配信を開くと、チャット上部に小さなバーが表示され、外国語のメッセージの下に翻訳が追加されます。設定は不要です。</span>
+    </p>
+    <div class="grid">
+      <div class="card"><div class="ic">⚡</div>
+        <h3><span class="en">Real-time, under each message</span><span class="ja">リアルタイム翻訳</span></h3>
+        <p><span class="en">Translations appear live beneath the original, with a small source-language tag. You always keep the original.</span><span class="ja">原文の下に翻訳をその場で表示。言語タグ付きで、元のメッセージはそのまま残ります。</span></p></div>
+      <div class="card"><div class="ic">🌍</div>
+        <h3><span class="en">Any language</span><span class="ja">あらゆる言語に対応</span></h3>
+        <p><span class="en">Japanese, Spanish, Arabic, and everything else → into the language you choose.</span><span class="ja">日本語・スペイン語・アラビア語など、あらゆる言語をお好みの言語へ翻訳します。</span></p></div>
+      <div class="card"><div class="ic">🔁</div>
+        <h3><span class="en">Multi-engine, auto-failover</span><span class="ja">複数エンジン・自動切替</span></h3>
+        <p><span class="en">DeepL, Google, MyMemory and Lingva in a chain — if one is busy, the next takes over. It never runs dry.</span><span class="ja">DeepL・Google・MyMemory・Lingva を連携。一つが混雑しても次が引き継ぐので、翻訳が止まりません。</span></p></div>
+      <div class="card"><div class="ic">🖥️</div>
+        <h3><span class="en">On-device on Chrome / Edge</span><span class="ja">Chrome / Edge は端末内翻訳</span></h3>
+        <p><span class="en">Where the browser supports it, translate fully on your device — free, unlimited, no network. (Brave falls back to the cloud automatically.)</span><span class="ja">対応ブラウザでは端末内で翻訳でき、無料・無制限・通信なし。（Brave では自動的にクラウドに切り替わります。）</span></p></div>
+      <div class="card"><div class="ic">🧩</div>
+        <h3><span class="en">7TV-aware</span><span class="ja">7TV を自動判別</span></h3>
+        <p><span class="en">Detects whether you run 7TV (it changes how chat is rendered) and reads messages correctly either way.</span><span class="ja">7TV の有無（チャットの描画方法が変わります）を自動で判別し、どちらでも正しく読み取ります。</span></p></div>
+      <div class="card"><div class="ic">🔒</div>
+        <h3><span class="en">Private by design</span><span class="ja">プライバシー設計</span></h3>
+        <p><span class="en">No account, no tracking, no server on our side. Text goes only to the translator you chose.</span><span class="ja">アカウント不要・追跡なし・独自サーバーなし。テキストは選択した翻訳エンジンにのみ送信されます。</span></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREENSHOTS -->
+<section id="screens">
+  <div class="wrap">
+    <h2><span class="en">See it in action</span><span class="ja">実際の動作</span></h2>
+    <p class="lead"><span class="en">Live translations on real chats, plus the settings you control.</span><span class="ja">実際のチャットでの翻訳例と、自由に変更できる設定画面です。</span></p>
+    <div class="shots">
+      <figure class="shot">
+        <img src="screenshots/01-japanese.png" alt="Japanese chat translated to English" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="ph" style="display:none">📷 01-japanese.png</div>
+        <figcaption><span class="en">Japanese → English, live under each message.</span><span class="ja">日本語 → 英語。各メッセージの下にリアルタイム表示。</span></figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="screenshots/02-spanish.png" alt="Spanish chat translated to English" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="ph" style="display:none">📷 02-spanish.png</div>
+        <figcaption><span class="en">Spanish → English on a busy chat.</span><span class="ja">スペイン語 → 英語。にぎやかなチャットでも対応。</span></figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="screenshots/03-arabic.png" alt="Arabic chat translated to English" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="ph" style="display:none">📷 03-arabic.png</div>
+        <figcaption><span class="en">Arabic → English — right-to-left and mixed-language handled.</span><span class="ja">アラビア語 → 英語。右から左の表記や混在言語にも対応。</span></figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="screenshots/04-options.png" alt="Options page" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="ph" style="display:none">📷 04-options.png</div>
+        <figcaption><span class="en">Options — engine strategy, provider chain, DeepL key.</span><span class="ja">設定画面 — エンジン方式・プロバイダー順・DeepL キー。</span></figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="screenshots/05-popup.png" alt="Toolbar popup" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="ph" style="display:none">📷 05-popup.png</div>
+        <figcaption><span class="en">Popup — target language, provider status, DeepL quota, today's counts.</span><span class="ja">ポップアップ — 翻訳先の言語・プロバイダー状態・DeepL 使用量・本日の件数。</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- INSTALL / TUTORIAL -->
+<section id="install">
+  <div class="wrap">
+    <h2><span class="en">Install in 2 minutes</span><span class="ja">2分でインストール</span></h2>
+    <p class="lead"><span class="en">No build, no command line. Download one ZIP and load it. Works on Brave, Chrome and Edge.</span><span class="ja">ビルドもコマンド操作も不要。ZIP を1つダウンロードして読み込むだけ。Brave・Chrome・Edge で動作します。</span></p>
+    <ol class="steps">
+      <li>
+        <span class="en"><b>Download the ZIP.</b> Get the ready-to-use file <code>kick-chat-translator-…-chromium.zip</code> from the <a href="https://github.com/Pkkls/kick-chat-translator/releases/latest" target="_blank" rel="noopener">Releases page</a>.</span>
+        <span class="ja"><b>ZIP をダウンロード。</b> <a href="https://github.com/Pkkls/kick-chat-translator/releases/latest" target="_blank" rel="noopener">Releases ページ</a>からそのまま使える <code>kick-chat-translator-…-chromium.zip</code> を入手します。</span>
+      </li>
+      <li>
+        <span class="en"><b>Unzip it.</b> You'll get a folder containing <code>manifest.json</code>. Keep it somewhere you won't delete.</span>
+        <span class="ja"><b>展開する。</b> <code>manifest.json</code> が入ったフォルダができます。消さない場所に置いてください。</span>
+      </li>
+      <li>
+        <span class="en"><b>Open your extensions page.</b> <code>brave://extensions</code> · <code>chrome://extensions</code> · <code>edge://extensions</code>.</span>
+        <span class="ja"><b>拡張機能ページを開く。</b> <code>brave://extensions</code> ／ <code>chrome://extensions</code> ／ <code>edge://extensions</code>。</span>
+      </li>
+      <li>
+        <span class="en"><b>Turn on Developer mode</b> (toggle, top-right).</span>
+        <span class="ja"><b>デベロッパーモードをオン</b>（右上のトグル）。</span>
+      </li>
+      <li>
+        <span class="en"><b>Click "Load unpacked"</b> and select the <b>unzipped folder</b> (the one with <code>manifest.json</code> in it).</span>
+        <span class="ja"><b>「パッケージ化されていない拡張機能を読み込む」</b>をクリックし、<b>展開したフォルダ</b>（<code>manifest.json</code> が入っているもの）を選びます。</span>
+      </li>
+      <li>
+        <span class="en"><b>Open any Kick stream.</b> A green <b>"Translating → EN"</b> bar appears at the top of chat. Done. ✅</span>
+        <span class="ja"><b>Kick の配信を開く。</b> チャット上部に緑色の <b>「Translating → EN」</b> バーが表示されれば完了です。✅</span>
+      </li>
+    </ol>
+    <div class="note">
+      <span class="en"><b>Change your language:</b> click the <kbd>⚙</kbd> on the bar to open Options, then pick your target language and display style.</span>
+      <span class="ja"><b>言語を変える:</b> バーの <kbd>⚙</kbd> から設定を開き、翻訳先の言語や表示スタイルを選べます。</span>
+    </div>
+  </div>
+</section>
+
+<!-- DEEPL -->
+<section id="quality">
+  <div class="wrap">
+    <h2><span class="en">Best quality (optional): a free DeepL key</span><span class="ja">最高品質にする（任意）: 無料の DeepL キー</span></h2>
+    <p class="lead"><span class="en">It works out of the box with Google &amp; MyMemory (no key). For the nicest results, add a free DeepL key — it's €0.</span><span class="ja">初期状態でも Google・MyMemory（キー不要）で動作します。より自然な翻訳には、無料の DeepL キーを追加してください。料金は0円です。</span></p>
+    <ol class="steps">
+      <li><span class="en">Sign up for <b>DeepL API Free</b> at <a href="https://www.deepl.com/pro-api" target="_blank" rel="noopener">deepl.com/pro-api</a> — <b>1,000,000 characters/month, €0</b>.</span><span class="ja"><a href="https://www.deepl.com/pro-api" target="_blank" rel="noopener">deepl.com/pro-api</a> で <b>DeepL API Free</b> に登録します。<b>月100万文字まで0円</b>です。</span></li>
+      <li><span class="en">Copy your key (it ends with <code>:fx</code>).</span><span class="ja">キー（末尾が <code>:fx</code>）をコピーします。</span></li>
+      <li><span class="en">In <b>Options → Providers</b>: paste the key, set <b>Plan = Free</b>, and move <b>DeepL</b> to the top of the chain.</span><span class="ja"><b>設定 → プロバイダー</b>でキーを貼り付け、<b>プラン = Free</b> にして、<b>DeepL</b> を一番上に移動します。</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<section id="privacy">
+  <div class="wrap">
+    <h2><span class="en">Privacy</span><span class="ja">プライバシー</span></h2>
+    <div class="grid">
+      <div class="card"><h3><span class="en">No account, no tracking</span><span class="ja">アカウント不要・追跡なし</span></h3><p><span class="en">No analytics, no telemetry, no sign-up. There is no server on our side.</span><span class="ja">解析・テレメトリ・登録は一切なし。独自サーバーもありません。</span></p></div>
+      <div class="card"><h3><span class="en">Your text, your provider</span><span class="ja">テキストは選んだ先のみ</span></h3><p><span class="en">A message's text goes only to the translator you picked, only to translate it. On-device mode sends nothing off your machine.</span><span class="ja">メッセージは選択した翻訳エンジンにのみ、翻訳目的でのみ送信されます。端末内モードでは外部に一切送信しません。</span></p></div>
+      <div class="card"><h3><span class="en">Minimal permissions</span><span class="ja">最小限の権限</span></h3><p><span class="en">Access to kick.com and the chosen translation hosts only — no browsing history, cookies or credentials.</span><span class="ja">kick.com と選択した翻訳先のみにアクセス。閲覧履歴・Cookie・認証情報には触れません。</span></p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><span class="en">Free &amp; open-source · MIT license</span><span class="ja">無料・オープンソース · MIT ライセンス</span></p>
+    <p><a href="https://github.com/Pkkls/kick-chat-translator" target="_blank" rel="noopener">github.com/Pkkls/kick-chat-translator</a></p>
+    <p style="opacity:.6"><span class="en">Not affiliated with Kick. "Kick" and "7TV" belong to their respective owners.</span><span class="ja">Kick とは無関係の非公式プロジェクトです。「Kick」「7TV」は各権利者に帰属します。</span></p>
+  </div>
+</footer>
+
+<script>
+  function setLang(l){
+    document.documentElement.lang = l;
+    document.body.dataset.lang = l;
+    document.querySelectorAll('[data-lang-btn]').forEach(function(b){
+      b.setAttribute('aria-pressed', b.dataset.langBtn === l ? 'true' : 'false');
+    });
+    try{ localStorage.setItem('kct-lang', l); }catch(e){}
+  }
+  // restore last choice, else follow the browser
+  (function(){
+    var saved;
+    try{ saved = localStorage.getItem('kct-lang'); }catch(e){}
+    var l = saved || ((navigator.language||'').toLowerCase().startsWith('ja') ? 'ja' : 'en');
+    setLang(l);
+  })();
+</script>
+</body>
+</html>

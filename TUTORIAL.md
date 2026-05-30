@@ -28,7 +28,7 @@ You'll load it as an "unpacked extension" (it's not on the Web Store yet).
    - **Brave** → `brave://extensions`
    - **Edge** → `edge://extensions`
 3. Turn on **Developer mode** (top-right toggle).
-4. Click **Load unpacked** → select the unzipped **`dist`** folder.
+4. Click **Load unpacked** → select the **unzipped folder** (the one containing `manifest.json`).
 5. (Optional) Pin the icon so it's always visible.
 
 Open a Kick stream and you're ready.
