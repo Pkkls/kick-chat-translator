@@ -10,19 +10,10 @@ otros idiomas aparecen traducidos debajo. Eso es todo.
 
 Funciona en **Brave, Chrome y Edge**. Compatible con 7TV.
 
-```
-kenta:  初見です、よろしく！
-   JA   primera vez aquí, ¡encantado!
-
-alex:   that last play was insane
-   EN   esa última jugada fue una locura
-
-omar:   كيف حالك؟
-   AR   ¿cómo estás?
-```
+![Chat japonés traducido al inglés](screenshots/japanese-chat.jpg)
 
 El idioma de destino se puede cambiar. Si lo pones en español,
-todo se traduce al español.
+todo se traduce al español. 30 idiomas disponibles.
 
 ---
 

@@ -10,19 +10,10 @@ Kick.com のチャットをリアルタイムで翻訳するブラウザ拡張�
 
 **Brave・Chrome・Edge** で動く。7TV にも対応。
 
-```
-alex:   where is he from?
-   EN   彼はどこ出身？
-
-lucía:  qué golazo tío
-   ES   すごいゴールだな
-
-omar:   كيف حالك؟
-   AR   元気ですか？
-```
+![日本語チャットの翻訳例](screenshots/japanese-chat.jpg)
 
 翻訳先の言語は自由に選べる。日本語に設定すれば、
-すべてのメッセージが日本語で読める。
+すべてのメッセージが日本語で読める。30言語対応。
 
 ---
 

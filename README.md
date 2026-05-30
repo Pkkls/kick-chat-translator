@@ -10,19 +10,10 @@ a translation underneath. That's it.
 
 Works on **Brave, Chrome and Edge**. Handles 7TV.
 
-```
-sora:   バーテンって資格必要なの？
-   JA   Do you need a license to be a bartender?
-
-mateo:  ¿alguien sabe cuándo empieza?
-   ES   does anyone know when it starts?
-
-omar:   كيف حالك؟
-   AR   How are you?
-```
+![Japanese chat translated to English](screenshots/japanese-chat.jpg)
 
 Target language is configurable — a Japanese viewer can set it to Japanese
-and read everything in Japanese.
+and read everything in Japanese. 30 languages supported.
 
 ---
 
