@@ -9,6 +9,46 @@ const TRANS_INLINE_CLASS = 'kt-translation-inline';
 const LOADING_CLASS = 'kt-loading';
 const ERROR_CLASS = 'kt-error';
 
+/** #7 — Show a temporary toast at bottom-right (auto-fades after 3s). */
+export function showToast(message: string): void {
+  // Don't spam toasts — max 1 visible at a time.
+  const existing = document.querySelector('.kt-toast');
+  if (existing) existing.remove();
+  const el = document.createElement('div');
+  el.className = 'kt-toast';
+  el.textContent = message;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
+
+/** #8 — Copy translation text to clipboard on click. */
+function attachCopyHandler(el: HTMLElement, text: string): void {
+  el.addEventListener('click', (e) => {
+    e.stopPropagation();
+    void navigator.clipboard.writeText(text).then(() => {
+      const orig = el.style.opacity;
+      el.style.opacity = '0.4';
+      setTimeout(() => (el.style.opacity = orig), 300);
+    });
+  });
+}
+
+/** #2 — Hover placeholder for lazy translate mode. */
+export function injectHoverPlaceholder(
+  target: Element,
+  onHover: () => void,
+): void {
+  if (target.querySelector('.kt-hover-placeholder')) return;
+  const ph = document.createElement('span');
+  ph.className = 'kt-hover-placeholder';
+  ph.textContent = '⟶ hover to translate';
+  ph.addEventListener('mouseenter', () => {
+    ph.remove();
+    onHover();
+  }, { once: true });
+  target.appendChild(ph);
+}
+
 export function ensureStyles(): void {
   if (document.getElementById(STYLE_ID)) return;
   const style = document.createElement('style');
@@ -49,11 +89,15 @@ export function inject(
   const flag = settings.showSourceBadge ? langFlag(result.detectedLang) : '';
   const provider = settings.showProviderBadge ? result.provider : '';
 
-  const inline = settings.displayStyle === 'inline';
-  const el = document.createElement(inline ? 'span' : 'div');
-  el.className = inline ? TRANS_INLINE_CLASS : TRANS_CLASS;
+  const style = settings.displayStyle;
+  const compact = style === 'replace'; // reuse 'replace' as compact inline
+  const inline = style === 'inline';
+  const el = document.createElement(inline || compact ? 'span' : 'div');
+  el.className = compact ? 'kt-translation-compact' : inline ? TRANS_INLINE_CLASS : TRANS_CLASS;
   el.appendChild(withBadges(result.translatedText, flag, provider));
   if (onRetry) el.appendChild(makeRetry(onRetry));
+  // #8 — Click-to-copy translation.
+  attachCopyHandler(el as HTMLElement, result.translatedText);
   targetEl.appendChild(el);
 }
 

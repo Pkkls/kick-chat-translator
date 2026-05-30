@@ -14,9 +14,9 @@ function nextClient(): string {
   return c;
 }
 
-async function call(req: TranslationRequest, ctx: ProviderContext): Promise<ProviderResult> {
+async function tryWithClient(req: TranslationRequest, client: string, signal?: AbortSignal): Promise<ProviderResult> {
   const url = new URL(PROVIDER_ENDPOINTS.google);
-  url.searchParams.set('client', nextClient());
+  url.searchParams.set('client', client);
   url.searchParams.set('sl', req.sourceLangHint ?? 'auto');
   url.searchParams.set('tl', req.targetLang);
   url.searchParams.set('dt', 't');
@@ -24,7 +24,7 @@ async function call(req: TranslationRequest, ctx: ProviderContext): Promise<Prov
 
   let res: Response;
   try {
-    res = await fetch(url.toString(), { method: 'GET', signal: ctx.signal, credentials: 'omit' });
+    res = await fetch(url.toString(), { method: 'GET', signal, credentials: 'omit' });
   } catch (err: unknown) {
     throw new ProviderError('google', 'network', err instanceof Error ? err.message : 'fetch failed');
   }
@@ -36,7 +36,6 @@ async function call(req: TranslationRequest, ctx: ProviderContext): Promise<Prov
   try {
     data = await res.json();
   } catch {
-    // Non-JSON body = challenge / block page → treat as soft rate-limit.
     throw new ProviderError('google', 'rate_limit', 'Google: non-JSON (soft block)');
   }
 
@@ -46,7 +45,6 @@ async function call(req: TranslationRequest, ctx: ProviderContext): Promise<Prov
 
   const segments = data[0];
   if (!Array.isArray(segments) || segments.length === 0) {
-    // Empty segments with HTTP 200 == soft ban. Back off, don't mark "ok".
     throw new ProviderError('google', 'rate_limit', 'Google: empty segments (soft block)');
   }
 
@@ -60,6 +58,22 @@ async function call(req: TranslationRequest, ctx: ProviderContext): Promise<Prov
 
   const detected = typeof data[2] === 'string' ? data[2] : 'auto';
   return { translatedText: translated, detectedLang: detected };
+}
+
+// Smart client rotation: on rate-limit, immediately retry with the alternate
+// client instead of failing the whole request. Doubles effective free capacity.
+async function call(req: TranslationRequest, ctx: ProviderContext): Promise<ProviderResult> {
+  const primary = nextClient();
+  try {
+    return await tryWithClient(req, primary, ctx.signal);
+  } catch (err: unknown) {
+    if (err instanceof ProviderError && err.code === 'rate_limit') {
+      // Try the other client before giving up.
+      const fallback = GOOGLE_CLIENTS.find((c) => c !== primary) ?? primary;
+      if (fallback !== primary) return tryWithClient(req, fallback, ctx.signal);
+    }
+    throw err;
+  }
 }
 
 export const googleProvider: TranslationProvider = {

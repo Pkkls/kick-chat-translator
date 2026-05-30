@@ -31,3 +31,26 @@ export function isSlangOnly(text: string): boolean {
   if (tokens.length === 0) return false;
   return tokens.every((t) => SLANG.has(t));
 }
+
+/**
+ * Apply user-defined glossary replacements to a translated string.
+ * Each entry is "source→replacement". Case-insensitive word boundary replace.
+ */
+export function applyUserGlossary(text: string, entries: string[]): string {
+  if (entries.length === 0) return text;
+  let out = text;
+  for (const entry of entries) {
+    const sep = entry.indexOf('→');
+    if (sep < 1) continue;
+    const from = entry.slice(0, sep).trim();
+    const to = entry.slice(sep + 1).trim();
+    if (!from) continue;
+    try {
+      const re = new RegExp(`\\b${from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+      out = out.replace(re, to);
+    } catch {
+      // Invalid regex char in user input — skip silently.
+    }
+  }
+  return out;
+}

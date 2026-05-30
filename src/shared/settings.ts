@@ -11,7 +11,8 @@ export type CloudProviderId = z.infer<typeof ProviderOrderSchema>[number];
 export const SettingsSchema = z.object({
   enabled: z.boolean().default(true),
   targetLang: z.string().default('en'),
-  displayStyle: z.enum(['below', 'inline', 'replace']).default('below'),
+  // 'hover' = lazy mode: translation only fetched+shown on mouse hover (saves ~10x quota).
+  displayStyle: z.enum(['below', 'inline', 'replace', 'hover']).default('below'),
   showOriginal: z.boolean().default(true),
   showSourceBadge: z.boolean().default(true),
   showProviderBadge: z.boolean().default(false),
@@ -41,6 +42,10 @@ export const SettingsSchema = z.object({
   blacklistChannels: z.array(z.string()).default([]),
   whitelistChannels: z.array(z.string()).default([]),
   sourceLangAllowlist: z.array(z.string()).default([]),
+
+  // User glossary: custom find→replace applied after translation.
+  // Each entry: "source→replacement" (e.g. "草→lol", "kusa→lol").
+  glossary: z.array(z.string()).default([]),
 
   // Performance
   cacheMaxEntries: z.number().int().positive().max(50_000).default(15_000),

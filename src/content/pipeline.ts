@@ -3,12 +3,12 @@ import type { ProviderId, TranslationOutcome, TranslationResult } from '~/shared
 import { MAX_TEXT_LENGTH, MIN_TEXT_LENGTH } from '~/shared/constants';
 import { rootLogger } from '~/shared/logger';
 import { send } from '~/shared/messages';
-import { isSlangOnly } from '~/shared/glossary';
+import { applyUserGlossary, isSlangOnly } from '~/shared/glossary';
 import { parseKickContent } from './emoteParser';
 import { extractMessageText } from './selectors';
 import { detectLanguage } from './langDetect';
 import { isNoise, isSameLanguageAsTarget, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
-import { inject, incrementFloatingCount, removeAllArtifacts, showError, showLoading, updateActiveProvider } from './injector';
+import { inject, incrementFloatingCount, injectHoverPlaceholder, removeAllArtifacts, showError, showLoading, showToast, updateActiveProvider } from './injector';
 import { localEngine } from './localEngine';
 import { memCache } from './memcache';
 
@@ -80,11 +80,12 @@ export class TranslationPipeline {
     return { real: realText, detected };
   }
 
-  /** Rolling per-channel context (previous lines) for DeepL disambiguation. */
-  private contextFor(channel: string, current: string): string {
+  /** Rolling per-channel context (previous lines) for DeepL disambiguation.
+   *  Formatted as "username: message" so DeepL understands it's a dialogue. */
+  private contextFor(channel: string, current: string, username?: string): string {
     const buf = this.recent.get(channel) ?? [];
-    const ctx = buf.slice(-CONTEXT_LINES).join(' ');
-    buf.push(current);
+    const ctx = buf.slice(-CONTEXT_LINES).join('\n');
+    buf.push(username ? `${username}: ${current}` : current);
     if (buf.length > CONTEXT_LINES + 1) buf.shift();
     this.recent.set(channel, buf);
     // Bound the map so visiting many channels in one session can't leak.
@@ -151,17 +152,37 @@ export class TranslationPipeline {
       return;
     }
 
-    // ── 2. Cloud chain (coalesced + batched in the SW) ──
-    const context = this.contextFor(msg.channel, real);
+    // ── 2. Hover-to-translate: just show a placeholder, translate on hover ──
+    if (this.settings.displayStyle === 'hover') {
+      injectHoverPlaceholder(msg.injectionTarget, () => {
+        void this.translateAndApply(msg, real);
+      });
+      return;
+    }
+
+    // ── 3. Cloud chain (coalesced + batched in the SW) ──
+    void this.translateAndApply(msg, real);
+  }
+
+  /** Shared cloud translate + apply, used by both normal flow and hover-to-translate. */
+  private async translateAndApply(msg: IncomingDomMessage, real: string): Promise<void> {
+    const context = this.contextFor(msg.channel, real, msg.username);
     showLoading(msg.injectionTarget);
-    const outcome = await this.requestCloud(real, target, msg.channel, context, false);
+    const outcome = await this.requestCloud(real, this.settings.targetLang, msg.channel, context, false);
     if (!outcome) {
       if (this.settings.debug) showError(msg.injectionTarget, 'translate failed');
       else removeAllArtifacts(msg.injectionTarget);
       return;
     }
     if (!outcome.ok) {
-      if (this.settings.debug) showError(msg.injectionTarget, outcome.error.code);
+      // #7 — Toast on notable failures (max 1 per 30s to avoid spam).
+      const code = outcome.error.code;
+      if (code === 'saturated' || code === 'no_provider') {
+        this.maybeToast('All translation providers are down — retrying shortly');
+      } else if (code === 'quota' || outcome.error.message?.includes('quota')) {
+        this.maybeToast(`${outcome.error.provider ?? 'Provider'} quota reached — falling back`);
+      }
+      if (this.settings.debug) showError(msg.injectionTarget, code);
       else removeAllArtifacts(msg.injectionTarget);
       return;
     }
@@ -212,7 +233,7 @@ export class TranslationPipeline {
     opts: { store: boolean; force?: boolean },
   ): void {
     if (this.rowRecycled(msg)) return; // node reused for another message — leave it alone
-    const tt = result.translatedText;
+    const tt = applyUserGlossary(result.translatedText, this.settings.glossary);
     if (!tt) {
       removeAllArtifacts(msg.injectionTarget);
       return;
@@ -244,6 +265,14 @@ export class TranslationPipeline {
     inject(msg.injectionTarget, full, this.settings, () => void this.forceRetranslate(msg, real));
     incrementFloatingCount();
     updateActiveProvider(result.provider);
+  }
+
+  /** #7 — Rate-limited toast: max 1 every 30s. */
+  private lastToastMs = 0;
+  private maybeToast(msg: string): void {
+    if (Date.now() - this.lastToastMs < 30_000) return;
+    this.lastToastMs = Date.now();
+    showToast(msg);
   }
 
   /** Virtual-scroll guard: row reused for a newer message while we awaited. */

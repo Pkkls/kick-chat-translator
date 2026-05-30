@@ -74,6 +74,54 @@
   opacity: 1 !important;
 }
 
+/* #8 Click-to-copy: cursor hint */
+.kt-translation, .kt-translation-inline {
+  cursor: copy;
+}
+
+/* #2 Hover-to-translate: hidden until hovered */
+.kt-hover-placeholder {
+  display: block;
+  margin-top: 2px;
+  padding: 1px 8px;
+  font-size: 0.75em;
+  color: rgba(83, 252, 24, 0.3);
+  cursor: pointer;
+  user-select: none;
+}
+.kt-hover-placeholder:hover {
+  color: rgba(83, 252, 24, 0.7);
+}
+
+/* #9 Compact mode: inline after message */
+.kt-translation-compact {
+  display: inline;
+  margin-left: 6px;
+  font-size: 0.8em;
+  color: rgba(255, 255, 255, 0.45);
+  font-style: italic;
+}
+
+/* #7 Toast notification */
+.kt-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 8px 16px;
+  background: rgba(10, 14, 18, 0.92);
+  border: 1px solid rgba(83, 252, 24, 0.3);
+  border-radius: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  z-index: 10000;
+  pointer-events: none;
+  animation: kt-fade 3s ease-out forwards;
+}
+@keyframes kt-fade {
+  0%, 70% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 /* ─── Floating bar at top of #channel-chatroom ───────────────────────── */
 
 .kt-float {
