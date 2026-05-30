@@ -3,147 +3,83 @@
 [![CI](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml/badge.svg)](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A pro browser extension that translates [Kick.com](https://kick.com) chat in
-real time. Multi-provider, WebSocket-native, fast, and private.
+**🌐 Language:** English · [日本語](README.ja.md) · [Español](README.es.md) · [Português (BR)](README.pt-BR.md)
 
-> 🆕 **New user?** Start with the friendly **[User Guide → TUTORIAL.md](TUTORIAL.md)**.
-> 🎬 **Presentation:** open **[`presentation.html`](presentation.html)** — a visual, bilingual (EN / 日本語) overview + install guide.
+> Read every Kick.com chat in **your** language — live. Free, open-source, private.
 
-## Highlights
+A browser extension (**Brave · Chrome · Edge**) that translates kick.com chat in real
+time. Open a stream and messages in other languages get a translation right
+underneath — in whatever language you choose.
 
-- **WebSocket-first** — listens directly to Kick's Pusher chat stream
-  (`App\Events\ChatMessageEvent`), with a DOM observer fallback. No
-  selector-fragility, no polling, near-zero CPU.
-- **Multi-provider chain with auto-failover** — Google Translate
-  (free, no key), DeepL (best quality, optional key), MyMemory, and any
-  Lingva / LibreTranslate instance. Re-order them in the options page.
-- **IndexedDB cache** — translations survive service-worker idles, with TTL
-  and an LRU cap. Big cache-hit ratio on busy channels.
-- **Smart skipping** — `franc-min` language detection, common-bot allowlist,
-  per-channel allow / blocklist, source-language allowlist.
-- **Per-channel rate budget** — token-bucket caps how many provider calls
-  per minute per channel so a giga-chat doesn't burn your DeepL quota.
-- **Multiple display modes** — below, inline, replace, or hover-to-translate
-  (cheap mode).
-- **No tracking, no telemetry, no account.** See [PRIVACY.md](PRIVACY.md).
-- **Chrome + Firefox MV3** from one source tree.
+🎬 **Visual overview:** open [`presentation.html`](presentation.html) (EN / 日本語) ·
+🆕 **Step-by-step:** [User Guide → TUTORIAL.md](TUTORIAL.md)
 
-## Install
+## See it in action
 
-### From source (dev)
+| In chat | Translation |
+|---|---|
+| 🇯🇵 バーテンって資格必要なの？ | Do you need a license to be a bartender? |
+| 🇪🇸 ¿alguien sabe cuándo empieza? | does anyone know when it starts? |
+| 🇧🇷 que jogada absurda mano | what an absurd play, dude |
+| 🇸🇦 كيف حالك؟ | How are you? |
+
+You always keep the original; the translation appears below with a language tag.
+
+## Why you'll like it
+
+- ⚡ **Real-time**, under each message.
+- 🌍 **Any language, any direction** — pick your target (English, 日本語, Español, Português…). A Japanese viewer sees everything in Japanese.
+- 🔁 **Multi-engine with auto-failover** — DeepL, Google, MyMemory, Lingva. It never runs dry.
+- 🖥️ **On-device on Chrome / Edge** — free, unlimited, offline (Brave uses the cloud automatically).
+- 🧩 **7TV-aware** — reads chat correctly whether or not you run 7TV.
+- 🔒 **Private** — no account, no tracking, no server.
+
+## Install in 2 minutes (no build, no command line)
+
+1. **Download** `kick-chat-translator-…-chromium.zip` from the [Releases page][releases].
+2. **Unzip** it — you get a folder containing `manifest.json`.
+3. Open `brave://extensions` · `chrome://extensions` · `edge://extensions`.
+4. Turn on **Developer mode** (top-right).
+5. Click **Load unpacked** and select the **unzipped folder**.
+6. Open any Kick stream — a green **Translating → EN** bar appears at the top of chat. ✅
+
+## Choose your language
+
+Click the **⚙** on the chat bar (or the toolbar icon → Options) → **Display → Target
+language**. 30 languages including Japanese (日本語), Spanish, Portuguese, Arabic,
+Korean, Chinese… Everything then translates into that language.
+
+## Best quality (optional): a free DeepL key
+
+It works out of the box with Google & MyMemory (no key). For the nicest results, add
+a **free** DeepL key (€0, 1,000,000 characters/month):
+
+1. Sign up for **DeepL API Free** at <https://www.deepl.com/pro-api>.
+2. Copy your key (it ends with `:fx`).
+3. **Options → Providers**: paste it, set **Plan = Free**, and move **DeepL** to the top.
+
+## Privacy
+
+No account, no analytics, no server on our side. A message's text goes only to the
+translator you chose, only to translate it. On-device mode sends nothing off your
+machine. See [PRIVACY.md](PRIVACY.md).
+
+## For developers
 
 ```bash
 git clone https://github.com/Pkkls/kick-chat-translator.git
 cd kick-chat-translator
 npm ci
-npm run build        # → dist/
+npm run build          # → dist/  (then "Load unpacked" the dist folder)
 ```
 
-Then load `dist/` as an unpacked extension:
-
-- **Chrome**: `chrome://extensions` → enable Developer mode → "Load
-  unpacked" → pick `dist/`.
-- **Firefox**: build with `npm run build:firefox`, then
-  `about:debugging#/runtime/this-firefox` → "Load Temporary Add-on" →
-  pick `dist/manifest.json`.
-
-### Dev mode (HMR)
-
-```bash
-npm run dev
-```
-
-Load `dist/` once; Vite watches and rebuilds on save, the popup and options
-page hot-reload.
-
-## Configuration
-
-Right-click the toolbar icon → **Options**, or use the popup's **Options**
-button.
-
-| Tab | Purpose |
-|---|---|
-| **Providers** | Order providers, paste your DeepL key, set a custom Lingva instance. |
-| **Display** | Target language, where the translation appears, badges. |
-| **Filters** | Skip bots, blacklist users/channels, restrict source languages. |
-| **Advanced** | Cache size, TTL, concurrency, per-channel budget, connection mode, debug. |
-
-### DeepL key (recommended for best quality)
-
-1. Sign up at <https://www.deepl.com/pro#developer> — the **Free** plan
-   gives you 500k chars/month.
-2. Copy the API key (it ends with `:fx`).
-3. Paste it in **Options → Providers → DeepL**.
-
-Without a DeepL key, the chain defaults to **Google** (free, no key) +
-**MyMemory** fallback.
-
-## Architecture
-
-```
-src/
-├── background/                # Service worker
-│   ├── index.ts               # message router + lifecycle
-│   ├── translator/            # provider strategies + dispatcher
-│   │   ├── google.ts          # translate.googleapis.com (no key)
-│   │   ├── deepl.ts           # DeepL Free/Pro
-│   │   ├── mymemory.ts        # MyMemory
-│   │   └── lingva.ts          # Lingva / LibreTranslate
-│   ├── cache.ts               # IndexedDB cache with mem-LRU front
-│   ├── queue.ts               # ConcurrencyQueue + TokenBucket
-│   ├── stats.ts               # Daily usage tracker
-│   └── keepalive.ts           # chrome.alarms heartbeat
-├── content/                   # Content script (kick.com)
-│   ├── index.ts               # SPA-aware bootstrapper
-│   ├── pusher.ts              # WebSocket client for Kick's Pusher
-│   ├── kickApi.ts             # chatroom id lookup
-│   ├── observer.ts            # MutationObserver fallback
-│   ├── emoteParser.ts         # [emote:id:name] / @mentions / URLs
-│   ├── langDetect.ts          # franc-min wrapper
-│   ├── filters.ts             # bot / channel / lang rules
-│   ├── injector.ts            # DOM injection (4 display modes)
-│   ├── selectors.ts           # Kick DOM selectors with fallbacks
-│   └── pipeline.ts            # message → translate → inject
-├── popup/                     # Toolbar popup (Preact + Tailwind)
-├── options/                   # Options page (Preact + Tailwind)
-└── shared/                    # types, settings, messages, languages, logger
-```
-
-### Why this architecture?
-
-- **Background = stateless dispatcher.** Translates, caches, tracks
-  usage. Everything important survives a service-worker idle through
-  IndexedDB and chrome.storage.
-- **Content script holds the WebSocket.** Service workers can't keep a
-  WS alive reliably under MV3, so the WS lives in the content script
-  (one per kick.com tab, dies with the tab — fine).
-- **WebSocket warms the cache; the DOM observer triggers injection.**
-  This makes the pipeline robust to either side stalling and dedups
-  through the cache key (`text :: targetLang`).
-- **Provider strategy pattern** with per-provider cooldowns prevents
-  one dead backend (e.g. quota'd DeepL) from blocking everyone else.
-
-## Scripts
-
-| Script | What it does |
-|---|---|
-| `npm run dev` | Vite dev mode with HMR. |
-| `npm run build` | Production build. |
-| `npm run build:firefox` | Production build with Firefox manifest. |
-| `npm run typecheck` | `tsc --noEmit` over the whole tree. |
-| `npm run lint` | ESLint, zero warnings tolerated. |
-| `npm run test` | Vitest unit suite. |
-| `npm run test:cov` | With coverage. |
-| `npm run icons` | Regenerate PNG icons from `public/icons/icon.svg`. |
-| `npm run pack` | Produce a Chrome Web Store `.zip` in `release/`. |
-| `npm run release:check` | typecheck + lint + test + build. |
-
-## Privacy
-
-See [PRIVACY.md](PRIVACY.md). Short version: nothing is collected.
-Translation requests go straight to the provider you picked, never
-through us. There is no "us" — no backend exists.
+`npm run dev` for HMR · `npm run release:check` (typecheck + lint + test + build) ·
+`npm run pack` builds the Chromium zip. Stack: **MV3, Vite + `@crxjs/vite-plugin`,
+TypeScript (strict), Preact + Tailwind**; the content script is shipped as a classic
+IIFE for reliable injection. Reviewer notes & permission table: [SUBMISSION.md](SUBMISSION.md).
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE) · Not affiliated with Kick. "Kick" and "7TV" belong to their respective owners.
+
+[releases]: https://github.com/Pkkls/kick-chat-translator/releases/latest
