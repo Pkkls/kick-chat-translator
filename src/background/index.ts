@@ -126,6 +126,15 @@ async function fetchDeeplUsage(): Promise<DeeplUsage> {
   }
 }
 
+// Auto-refresh DeepL usage every 5 min so budget pacing reacts in near-real-time.
+function scheduleDeeplUsageRefresh(): void {
+  setInterval(() => {
+    if (settings.deeplApiKey && settings.providerOrder.includes('deepl')) {
+      void fetchDeeplUsage();
+    }
+  }, 5 * 60_000);
+}
+
 async function init(): Promise<void> {
   settings = await loadSettings();
   applySettings(settings);
@@ -133,6 +142,9 @@ async function init(): Promise<void> {
   await cache.warm();
   log.info('Service worker initialized');
   installKeepalive();
+  scheduleDeeplUsageRefresh();
+  // Seed the budget pacing on startup.
+  if (settings.deeplApiKey) void fetchDeeplUsage();
 }
 
 void init();

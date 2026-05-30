@@ -48,9 +48,13 @@ const CONTEXT_LINES = 2;
 export class TranslationPipeline {
   private settings: Settings;
   private recent = new Map<string, string[]>();
+  /** Per-user dedup: skip identical messages spammed by the same user. */
+  private userDedup = new Map<string, string>();
 
   constructor(settings: Settings) {
     this.settings = settings;
+    // Bound dedup map size.
+    setInterval(() => { if (this.userDedup.size > 200) this.userDedup.clear(); }, 60_000);
   }
 
   updateSettings(next: Settings): void {
@@ -66,6 +70,12 @@ export class TranslationPipeline {
       return undefined;
     }
     if (shouldDropByUserOrChannel(meta, this.settings)) return undefined;
+
+    // Per-user dedup: if this user just sent the exact same message, skip it.
+    // Common in chat spam — saves a provider call + avoids duplicate translations.
+    const dedupKey = meta.username.toLowerCase();
+    if (dedupKey && this.userDedup.get(dedupKey) === rawText) return undefined;
+    if (dedupKey) this.userDedup.set(dedupKey, rawText);
 
     const { realText } = parseKickContent(rawText);
     if (realText.length < MIN_TEXT_LENGTH || realText.length > MAX_TEXT_LENGTH) return undefined;
@@ -265,7 +275,15 @@ export class TranslationPipeline {
     inject(msg.injectionTarget, full, this.settings, () => void this.forceRetranslate(msg, real));
     incrementFloatingCount();
     updateActiveProvider(result.provider);
+    // Provider switch notification.
+    if (this.lastProvider && this.lastProvider !== result.provider) {
+      this.maybeToast(`Switched to ${result.provider}`);
+    }
+    this.lastProvider = result.provider;
   }
+
+  /** Track provider switches to notify the user. */
+  private lastProvider: string | undefined;
 
   /** #7 — Rate-limited toast: max 1 every 30s. */
   private lastToastMs = 0;

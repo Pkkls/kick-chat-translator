@@ -76,10 +76,33 @@ async function call(req: TranslationRequest, ctx: ProviderContext): Promise<Prov
   }
 }
 
+// Batch: join texts with \n, Google preserves newlines in output.
+async function batchCall(reqs: TranslationRequest[], ctx: ProviderContext): Promise<ProviderResult[]> {
+  if (reqs.length <= 1) {
+    const r = await call(reqs[0]!, ctx);
+    return [r];
+  }
+  const joined = reqs.map((r) => r.text).join('\n');
+  const fakeReq: TranslationRequest = { ...reqs[0]!, text: joined };
+  const result = await call(fakeReq, ctx);
+  const lines = result.translatedText.split('\n');
+  // If Google merged/split lines differently, fall back to per-item.
+  if (lines.length !== reqs.length) {
+    const results: ProviderResult[] = [];
+    for (const r of reqs) results.push(await call(r, ctx));
+    return results;
+  }
+  return lines.map((line) => ({
+    translatedText: line,
+    detectedLang: result.detectedLang,
+  }));
+}
+
 export const googleProvider: TranslationProvider = {
   id: 'google',
   requiresKey: false,
-  supportsBatch: false,
+  supportsBatch: true,
   isConfigured: () => true,
   translate: call,
+  translateBatch: batchCall,
 };

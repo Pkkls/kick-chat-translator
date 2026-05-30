@@ -85,13 +85,38 @@ export function parseKickContent(content: string): ParsedContent {
   }
 
   const plain = plainParts.join('').replace(/\s+/g, ' ').trim();
-  const realText = tokens
+  const rawReal = tokens
     .filter((t): t is { kind: 'text'; value: string } => t.kind === 'text')
     .map((t) => t.value)
     .join(' ')
     .replace(/\s+/g, ' ')
     .trim();
+  // Strip inline emote names: tokens like "namedarumajankiss2", "LUL", "KEKW",
+  // "xqcL", "pepeLaugh" that are concatenated with real text. These are typically
+  // camelCase/PascalCase with digits, or ALL-CAPS 3+ letter words that aren't real
+  // words. We strip them to recover the translatable text underneath.
+  const realText = stripInlineEmoteNames(rawReal);
   return { plain, realText, tokens };
+}
+
+/**
+ * Strip words that look like emote names from extracted text.
+ * Patterns:
+ * - camelCase/PascalCase with digits (namedarumajankiss2, xqcL, pepeLaugh)
+ * - ALL-CAPS 3+ letters that aren't common words (KEKW, LULW, OMEGALUL)
+ * - Words starting with lowercase then uppercase mid-word (catJam, monkaS)
+ * Preserves real text around them.
+ */
+function stripInlineEmoteNames(text: string): string {
+  return text
+    // Token with mixed case + digits, typically emote names (namedarumajankiss2, xqcL3)
+    .replace(/\b[a-zA-Z]*[a-z][A-Z][a-zA-Z0-9]*\b/g, ' ')
+    // Token that's all lowercase+digits but >12 chars and no spaces — likely concatenated emote slug
+    .replace(/\b[a-z]{3,}[a-z0-9]{10,}\b/g, ' ')
+    // Known emote suffixes (common Kick/BTTV/7TV patterns)
+    .replace(/\b\w+(kiss|wave|hug|love|dab|pog|kek|lul|gg|ez|clap|jam|hype)\d*\b/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function overlaps(markers: Marker[], start: number, end: number): boolean {

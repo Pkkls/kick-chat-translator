@@ -62,7 +62,17 @@ export function extractMessageText(row: Element): string {
 
 function joinTexts(els: HTMLElement[]): string {
   return els
-    .map((e) => e.textContent ?? '')
+    .map((e) => {
+      // Skip elements that are just emote image alt-text containers.
+      // Kick renders custom emotes as <img alt="emoteName"> inside text spans.
+      if (e.children.length === 1 && e.children[0] instanceof HTMLImageElement) return '';
+      // Filter out <img> alt text from mixed content spans.
+      const text = Array.from(e.childNodes)
+        .filter((n) => n.nodeType === Node.TEXT_NODE)
+        .map((n) => n.textContent ?? '')
+        .join('');
+      return text || (e.textContent ?? '');
+    })
     .join(' ')
     .replace(/\s+/g, ' ')
     .trim();
