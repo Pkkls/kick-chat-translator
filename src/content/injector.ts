@@ -224,6 +224,25 @@ export function updateFloatingBar(settings: Settings): void {
   if (bar && label) setBarEnabled(bar, label, settings.enabled, settings.targetLang);
 }
 
+/** Show/hide a throttle indicator on the floating bar. */
+export function showThrottleIndicator(throttled: boolean): void {
+  const bar = document.querySelector<HTMLElement>(`#${FLOAT_ID}`);
+  if (!bar) return;
+  let ind = bar.querySelector<HTMLElement>('.kt-float-throttle');
+  if (throttled && !ind) {
+    ind = document.createElement('span');
+    ind.className = 'kt-float-throttle';
+    ind.textContent = '⏳'; // ⏳
+    ind.title = 'Rate-limited — some messages skipped';
+    ind.style.cssText = 'font-size:11px;opacity:.6;margin-left:2px';
+    const count = bar.querySelector('.kt-float-count');
+    if (count) count.before(ind);
+    else bar.appendChild(ind);
+  } else if (!throttled && ind) {
+    ind.remove();
+  }
+}
+
 /** Update the floating bar to show which provider handled the last translation. */
 export function updateActiveProvider(provider: string): void {
   const bar = document.querySelector<HTMLElement>(`#${FLOAT_ID}`);

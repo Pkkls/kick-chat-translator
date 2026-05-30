@@ -46,6 +46,7 @@ export interface UsageStats {
   totalErrors: number;
   byProvider: Partial<Record<ProviderId, number>>;
   byLang: Record<string, number>;
+  byChannel: Record<string, number>;
   charsSent: number;
   todayKey: string;
 }

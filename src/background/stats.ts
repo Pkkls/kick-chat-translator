@@ -12,6 +12,7 @@ function empty(): UsageStats {
     totalErrors: 0,
     byProvider: {},
     byLang: {},
+    byChannel: {},
     charsSent: 0,
     todayKey: todayKey(),
   };
@@ -38,7 +39,7 @@ export class StatsTracker {
     return this.state;
   }
 
-  recordRequest(provider: ProviderId, sourceLang: string, chars: number, cached: boolean): void {
+  recordRequest(provider: ProviderId, sourceLang: string, chars: number, cached: boolean, channel?: string): void {
     this.rollover();
     this.state.totalRequests += 1;
     if (cached) this.state.totalCacheHits += 1;
@@ -48,6 +49,9 @@ export class StatsTracker {
     }
     if (sourceLang) {
       this.state.byLang[sourceLang] = (this.state.byLang[sourceLang] ?? 0) + 1;
+    }
+    if (channel) {
+      this.state.byChannel[channel] = (this.state.byChannel[channel] ?? 0) + 1;
     }
     this.scheduleFlush();
   }

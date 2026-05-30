@@ -29,8 +29,22 @@ export class TranslationCoalescer {
   private pending: Entry[] = [];
   private byKey = new Map<string, Entry>();
   private timer: ReturnType<typeof setTimeout> | undefined;
+  /** Adaptive batch window: track message rate to auto-tune. */
+  private recentSubmits: number[] = [];
 
   constructor(private deps: CoalescerDeps) {}
+
+  /** Adaptive window: 50ms on slow chats, up to 300ms on fast chats. */
+  private adaptiveWindowMs(): number {
+    const now = Date.now();
+    // Keep only the last 10s of submit timestamps.
+    this.recentSubmits = this.recentSubmits.filter((t) => now - t < 10_000);
+    this.recentSubmits.push(now);
+    const rate = this.recentSubmits.length; // msgs in last 10s
+    if (rate < 3) return 50; // slow chat: low latency
+    if (rate < 10) return BATCH_WINDOW_MS; // normal: default 180ms
+    return 300; // fast chat: batch more aggressively
+  }
 
   submit(req: TranslationRequest): Promise<TranslationOutcome> {
     const key = this.deps.cache.key(req.text, req.targetLang);
@@ -46,7 +60,7 @@ export class TranslationCoalescer {
     if (this.pending.length >= BATCH_MAX_ITEMS) {
       void this.flush();
     } else if (!this.timer) {
-      this.timer = setTimeout(() => void this.flush(), BATCH_WINDOW_MS);
+      this.timer = setTimeout(() => void this.flush(), this.adaptiveWindowMs());
     }
     return p;
   }
@@ -98,10 +112,10 @@ export class TranslationCoalescer {
         detectedLang: outcome.result.detectedLang,
         provider: outcome.result.provider,
       });
-      stats.recordRequest(outcome.result.provider, outcome.result.detectedLang, entry.req.text.length, false);
+      stats.recordRequest(outcome.result.provider, outcome.result.detectedLang, entry.req.text.length, false, entry.req.channel);
       // Extra callers that shared this in-flight translation count as cache hits.
       for (let k = 1; k < dedupCount; k++) {
-        stats.recordRequest(outcome.result.provider, outcome.result.detectedLang, 0, true);
+        stats.recordRequest(outcome.result.provider, outcome.result.detectedLang, 0, true, entry.req.channel);
       }
     } else {
       stats.recordError();

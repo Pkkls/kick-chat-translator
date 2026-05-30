@@ -7,7 +7,7 @@ import { StatsTracker } from './stats';
 import { TranslationCoalescer } from './coalescer';
 import { anyProviderReady, getProviderStatus, setDeeplUsagePct } from './translator';
 import { installKeepalive } from './keepalive';
-import { DEEPL_USAGE_FREE, DEEPL_USAGE_PRO } from '~/shared/constants';
+import { DEEPL_USAGE_FREE, DEEPL_USAGE_PRO, STORAGE_KEY_SETTINGS } from '~/shared/constants';
 import type { ProviderId, TranslationOutcome, TranslationRequest } from '~/shared/types';
 
 const log = rootLogger.child('sw');
@@ -28,6 +28,12 @@ function bucketFor(channel: string): TokenBucket {
 }
 
 function applySettings(next: Settings): void {
+  // Auto-promote DeepL to #1 when a key is configured but DeepL is missing from the chain.
+  if (next.deeplApiKey && !next.providerOrder.includes('deepl')) {
+    next = { ...next, providerOrder: ['deepl', ...next.providerOrder] };
+    void chrome.storage.sync.set({ [STORAGE_KEY_SETTINGS]: next });
+    log.info('DeepL key detected, auto-added to provider chain as #1');
+  }
   settings = next;
   cache.setConfig(next.cacheMaxEntries, next.cacheTtlHours * 3_600_000);
   for (const b of channelBuckets.values()) {
@@ -66,7 +72,7 @@ async function handleTranslate(req: TranslationRequest): Promise<TranslationOutc
     const cached = await cache.get(req.text, req.targetLang);
     if (cached) {
       const provider = cached.provider as ProviderId;
-      stats.recordRequest(provider, cached.detectedLang, req.text.length, true);
+      stats.recordRequest(provider, cached.detectedLang, req.text.length, true, req.channel);
       return {
         ok: true,
         result: {

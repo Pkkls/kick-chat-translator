@@ -72,6 +72,7 @@ function markSuccess(id: CloudProviderId): void {
   h.cooldownUntilMs = 0;
   h.lastError = undefined;
   h.lastUsedMs = Date.now();
+  stickyProvider = id;
 }
 
 function ok(req: TranslationRequest, id: CloudProviderId, translatedText: string, detectedLang: string): TranslationOutcome {
@@ -99,26 +100,35 @@ function isDeeplBudgetExhausted(ctx: ProviderContext): boolean {
   return deeplUsagePct >= ctx.deeplBudgetPct;
 }
 
+// Provider sticky: prefer the last provider that succeeded to avoid unnecessary
+// switching (and toast spam). Only overridden when that provider enters cooldown.
+let stickyProvider: CloudProviderId | undefined;
+
 function eligibleOrder(settings: Settings, ctx: ProviderContext): CloudProviderId[] {
   const live = settings.providerOrder.filter((id) => {
     const provider = PROVIDERS[id];
     if (!provider) return false;
     if (provider.requiresKey && !provider.isConfigured(ctx)) return false;
     if (health[id].cooldownUntilMs > Date.now()) return false;
-    // DeepL budget pacing: skip DeepL if monthly budget % reached.
     if (id === 'deepl' && isDeeplBudgetExhausted(ctx)) return false;
     return true;
   });
-  if (live.length > 0) return live;
-  // Everyone cooling down: try the one recovering soonest (still respects config).
-  return [...settings.providerOrder]
-    .filter((id) => {
-      const p = PROVIDERS[id];
-      if (!p || (p.requiresKey && !p.isConfigured(ctx))) return false;
-      if (id === 'deepl' && isDeeplBudgetExhausted(ctx)) return false;
-      return true;
-    })
-    .sort((a, b) => health[a].cooldownUntilMs - health[b].cooldownUntilMs);
+  if (live.length === 0) {
+    // Everyone cooling down: try the one recovering soonest (still respects config).
+    return [...settings.providerOrder]
+      .filter((id) => {
+        const p = PROVIDERS[id];
+        if (!p || (p.requiresKey && !p.isConfigured(ctx))) return false;
+        if (id === 'deepl' && isDeeplBudgetExhausted(ctx)) return false;
+        return true;
+      })
+      .sort((a, b) => health[a].cooldownUntilMs - health[b].cooldownUntilMs);
+  }
+  // Sticky: if the last successful provider is still live, put it first.
+  if (stickyProvider && live.includes(stickyProvider) && live[0] !== stickyProvider) {
+    return [stickyProvider, ...live.filter((id) => id !== stickyProvider)];
+  }
+  return live;
 }
 
 /**

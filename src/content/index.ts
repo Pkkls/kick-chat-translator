@@ -179,6 +179,31 @@ async function main(): Promise<void> {
     }
   });
 
+  // Prefetch on scroll-stop: when the user scrolls up to read old messages and
+  // pauses, translate any visible rows that don't have a translation yet.
+  let scrollTimer: ReturnType<typeof setTimeout> | undefined;
+  const chatContainer = document.querySelector('#channel-chatroom .no-scrollbar');
+  if (chatContainer) {
+    chatContainer.addEventListener('scroll', () => {
+      if (scrollTimer) clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        if (!settings.enabled) return;
+        const rows = chatContainer.querySelectorAll('div[data-index][data-kt-id]');
+        let retried = 0;
+        for (const row of rows) {
+          if (row.querySelector('.kt-translation, .kt-translation-inline')) continue;
+          row.removeAttribute('data-kt-id');
+          retried++;
+        }
+        if (retried > 0) {
+          log.debug(`Scroll-stop prefetch: retrying ${retried} untranslated rows`);
+          observer.reset();
+          observer.start();
+        }
+      }, 800);
+    }, { passive: true });
+  }
+
   // Note: the "pause when hidden" quota guard lives in the pipeline, which reads
   // document.hidden live per message. The observer stays running (cheap when the
   // tab is hidden since translation bails immediately) — this avoids any

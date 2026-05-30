@@ -8,7 +8,7 @@ import { parseKickContent } from './emoteParser';
 import { extractMessageText } from './selectors';
 import { detectLanguage } from './langDetect';
 import { isNoise, isSameLanguageAsTarget, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
-import { inject, incrementFloatingCount, injectHoverPlaceholder, removeAllArtifacts, showError, showLoading, showToast, updateActiveProvider } from './injector';
+import { inject, incrementFloatingCount, injectHoverPlaceholder, removeAllArtifacts, showError, showLoading, showThrottleIndicator, showToast, updateActiveProvider } from './injector';
 import { localEngine } from './localEngine';
 import { memCache } from './memcache';
 
@@ -165,20 +165,20 @@ export class TranslationPipeline {
     // ── 2. Hover-to-translate: just show a placeholder, translate on hover ──
     if (this.settings.displayStyle === 'hover') {
       injectHoverPlaceholder(msg.injectionTarget, () => {
-        void this.translateAndApply(msg, real);
+        void this.translateAndApply(msg, real, detected);
       });
       return;
     }
 
     // ── 3. Cloud chain (coalesced + batched in the SW) ──
-    void this.translateAndApply(msg, real);
+    void this.translateAndApply(msg, real, detected);
   }
 
   /** Shared cloud translate + apply, used by both normal flow and hover-to-translate. */
-  private async translateAndApply(msg: IncomingDomMessage, real: string): Promise<void> {
+  private async translateAndApply(msg: IncomingDomMessage, real: string, sourceLang?: string): Promise<void> {
     const context = this.contextFor(msg.channel, real, msg.username);
     showLoading(msg.injectionTarget);
-    const outcome = await this.requestCloud(real, this.settings.targetLang, msg.channel, context, false);
+    const outcome = await this.requestCloud(real, this.settings.targetLang, msg.channel, context, false, sourceLang);
     if (!outcome) {
       if (this.settings.debug) showError(msg.injectionTarget, 'translate failed');
       else removeAllArtifacts(msg.injectionTarget);
@@ -187,6 +187,10 @@ export class TranslationPipeline {
     if (!outcome.ok) {
       // #7 — Toast on notable failures (max 1 per 30s to avoid spam).
       const code = outcome.error.code;
+      if (code === 'channel_budget') {
+        showThrottleIndicator(true);
+        setTimeout(() => showThrottleIndicator(false), 5000);
+      }
       if (code === 'saturated' || code === 'no_provider') {
         this.maybeToast('All translation providers are down — retrying shortly');
       } else if (code === 'quota' || outcome.error.message?.includes('quota')) {
@@ -216,6 +220,7 @@ export class TranslationPipeline {
     channel: string,
     context: string,
     noCache: boolean,
+    sourceLang?: string,
   ): Promise<TranslationOutcome | undefined> {
     try {
       const res = await send({
@@ -225,6 +230,7 @@ export class TranslationPipeline {
           text,
           targetLang: target,
           channel,
+          ...(sourceLang ? { sourceLangHint: sourceLang } : {}),
           ...(context ? { context } : {}),
           ...(noCache ? { noCache: true } : {}),
         },
@@ -242,7 +248,14 @@ export class TranslationPipeline {
     result: RawResult,
     opts: { store: boolean; force?: boolean },
   ): void {
-    if (this.rowRecycled(msg)) return; // node reused for another message — leave it alone
+    // If the original row was recycled by virtual scroll, try to find another
+    // visible row that still holds the same text and inject there instead of
+    // silently dropping the translation we just paid for.
+    if (this.rowRecycled(msg)) {
+      const rescued = this.findRowWithText(msg.text);
+      if (!rescued) return;
+      msg = { ...msg, rowElement: rescued.row, injectionTarget: rescued.target };
+    }
     const tt = applyUserGlossary(result.translatedText, this.settings.glossary);
     if (!tt) {
       removeAllArtifacts(msg.injectionTarget);
@@ -296,5 +309,17 @@ export class TranslationPipeline {
   /** Virtual-scroll guard: row reused for a newer message while we awaited. */
   private rowRecycled(msg: IncomingDomMessage): boolean {
     return !msg.rowElement.isConnected || extractMessageText(msg.rowElement) !== msg.text;
+  }
+
+  /** Scan visible rows for one that still holds the given text (recycled-row rescue). */
+  private findRowWithText(text: string): { row: Element; target: Element } | undefined {
+    const rows = document.querySelectorAll('#channel-chatroom div[data-index]');
+    for (const row of rows) {
+      if (extractMessageText(row) === text && !row.querySelector('.kt-translation, .kt-translation-inline')) {
+        const target = row.querySelector('div.w-full.min-w-0.shrink-0') ?? row.querySelector('div.group') ?? row.firstElementChild ?? row;
+        return { row, target };
+      }
+    }
+    return undefined;
   }
 }
