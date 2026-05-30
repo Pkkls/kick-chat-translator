@@ -1,80 +1,81 @@
 # Kick Chat Translator
 
 [![CI](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml/badge.svg)](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**🌐 Idioma:** [English](README.md) · [日本語](README.ja.md) · [Español](README.es.md) · Português (BR)
+[English](README.md) · [日本語](README.ja.md) · [Español](README.es.md)
 
-> Leia qualquer chat da Kick.com no **seu** idioma, em tempo real. Grátis, de código aberto e privado.
+Traduz o chat da Kick.com em tempo real. Você abre uma live, as mensagens em
+outros idiomas aparecem traduzidas logo abaixo. Só isso.
 
-Uma extensão para **Brave · Chrome · Edge** que traduz o chat da kick.com em tempo real.
-Abra uma live e as mensagens em outros idiomas aparecem traduzidas logo abaixo, no
-idioma que você escolher.
+Funciona no **Brave, Chrome e Edge**. Compatível com 7TV.
 
-🎬 **Visão geral (visual):** [`presentation.html`](presentation.html) (EN / 日本語) ·
-🆕 **Guia passo a passo:** [TUTORIAL.md](TUTORIAL.md)
+```
+kenta:  初見です、よろしく！
+   JA   primeira vez aqui, prazer!
 
-## Exemplos (→ Português)
+alex:   that last play was insane
+   EN   aquela jogada foi insana
 
-| Chat | Tradução |
-|---|---|
-| 🇯🇵 バーテンって資格必要なの？ | precisa de licença pra ser bartender? |
-| 🇬🇧 that last play was insane | aquela última jogada foi insana |
-| 🇪🇸 ¿alguien sabe cuándo empieza? | alguém sabe quando começa? |
-| 🇸🇦 كيف حالك؟ | como você está? |
+omar:   كيف حالك؟
+   AR   como você está?
+```
 
-A mensagem original é mantida; a tradução aparece abaixo com uma etiqueta de idioma.
+O idioma de destino é configurável. Se botar em português,
+tudo aparece em português.
 
-## Por que você vai gostar
+---
 
-- ⚡ **Em tempo real**, abaixo de cada mensagem.
-- 🌍 **Qualquer idioma, em qualquer direção** — escolha o idioma de destino (English, 日本語, Español, Português…).
-- 🔁 **Vários motores com troca automática** — DeepL, Google, MyMemory, Lingva. Nunca fica sem recursos.
-- 🖥️ **No dispositivo no Chrome / Edge** — grátis, ilimitado e offline (o Brave usa a nuvem automaticamente).
-- 🧩 **Compatível com 7TV** — lê o chat corretamente com ou sem 7TV.
-- 🔒 **Privado** — sem conta, sem rastreamento, sem servidor.
+## Instalação
 
-## Instale em 2 minutos (sem compilar, sem terminal)
+Baixe o zip em [Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+e descompacte.
 
-1. **Baixe** `kick-chat-translator-…-chromium.zip` na [página de Releases][releases].
-2. **Descompacte**: você terá uma pasta com `manifest.json`.
-3. Abra `brave://extensions` · `chrome://extensions` · `edge://extensions`.
-4. Ative o **Modo do desenvolvedor** (canto superior direito).
-5. Clique em **Carregar sem compactação** e selecione a **pasta descompactada**.
-6. Abra qualquer live da Kick: uma barra verde aparece no topo do chat. ✅
+1. Abra `brave://extensions` (ou `chrome://extensions`, `edge://extensions`)
+2. Ative o **Modo do desenvolvedor**
+3. **Carregar sem compactação** → selecione a pasta
 
-## Escolha o seu idioma
+Abra uma live da Kick. Barra verde no topo do chat = funcionando.
 
-Clique na **⚙** da barra (ou no ícone da extensão → Opções) → **Exibição → Idioma de
-destino**. 30 idiomas, incluindo português, japonês, espanhol, árabe… Tudo é traduzido
-para esse idioma.
+## Motores de tradução
 
-## Melhor qualidade (opcional): chave gratuita da DeepL
+Quatro provedores em cadeia — se um cai, o próximo assume:
 
-Funciona de imediato com Google e MyMemory (sem chave). Para os melhores resultados,
-adicione uma chave **gratuita** da DeepL (R$ 0, 1.000.000 de caracteres por mês):
+| Provedor | Chave? | Nota |
+|---|---|---|
+| Google | Não | Padrão, funciona direto |
+| DeepL | Sim (grátis) | Melhor qualidade. [Chave grátis](https://www.deepl.com/pro-api) (1M caracteres/mês, R$ 0) |
+| MyMemory | Não | Reserva |
+| Lingva | Não | Reserva |
 
-1. Crie uma conta **DeepL API Free** em <https://www.deepl.com/pro-api>.
-2. Copie a sua chave (termina em `:fx`).
-3. Em **Opções → Provedores**: cole a chave, defina **Plano = Free** e mova a **DeepL** para o topo.
+No Chrome/Edge tem tradução local também (sem rede, sem limite).
+Brave ainda não suporta, usa a nuvem.
+
+A ordem se muda nos ajustes.
+
+## Ajustes
+
+Clique na engrenagem da barra, ou clique com botão direito no ícone → Opções.
+
+- **Idioma de destino** — para qual idioma traduzir (30 disponíveis)
+- **Ordem dos provedores** — arraste pra reordenar, cole sua chave DeepL
+- **Filtros** — pular bots, bloquear usuários/canais, restringir idiomas de origem
+- **Pausa automática** — abas em segundo plano não traduzem (economiza cota DeepL)
 
 ## Privacidade
 
-Sem conta, sem análises e sem servidor do nosso lado. O texto de uma mensagem vai apenas
-para o tradutor que você escolheu, só para traduzir. O modo no dispositivo não envia nada
-para fora do seu computador. Veja [PRIVACY.md](PRIVACY.md).
+Sem conta, sem analytics, sem servidor. As mensagens vão só pro tradutor
+que você escolheu. No modo local, nem isso. [Detalhes](PRIVACY.md)
 
-## Para desenvolvedores
+---
 
-Para compilar a partir do código-fonte e ver a arquitetura, consulte o
-[README.md](README.md) em inglês.
+## Compilar do código
 
 ```bash
-npm ci && npm run build   # → dist/
+git clone https://github.com/Pkkls/kick-chat-translator.git
+cd kick-chat-translator
+npm ci
+npm run build
 ```
 
-## Licença
-
-[MIT](LICENSE) · Projeto sem afiliação com a Kick. "Kick" e "7TV" pertencem aos seus respectivos donos.
-
-[releases]: https://github.com/Pkkls/kick-chat-translator/releases/latest
+Licença MIT. Sem afiliação com a Kick.
