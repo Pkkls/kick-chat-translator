@@ -79,4 +79,4 @@ if (!existsSync(out)) throw new Error('[bundle-content] content bundle was not e
 assertClassic(out);
 patchManifest();
 const kb = (statSync(out).size / 1024).toFixed(1);
-console.log(`[bundle-content] ${MANIFEST_REF} (${kb} KB, classic IIFE) — manifest repointed`);
+console.info(`[bundle-content] ${MANIFEST_REF} (${kb} KB, classic IIFE) — manifest repointed`);
