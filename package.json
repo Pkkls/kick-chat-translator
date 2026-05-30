@@ -13,8 +13,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b --noEmit && vite build",
-    "build:firefox": "BROWSER=firefox vite build",
+    "build": "tsc -b --noEmit && vite build && tsx scripts/bundle-content.ts",
+    "build:firefox": "BROWSER=firefox vite build && tsx scripts/bundle-content.ts",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
     "lint": "eslint . --ext .ts,.tsx --max-warnings 0",
