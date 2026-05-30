@@ -27,6 +27,15 @@ real time. Multi-provider, WebSocket-native, fast, and private.
 - **No tracking, no telemetry, no account.** See [PRIVACY.md](PRIVACY.md).
 - **Chrome + Firefox MV3** from one source tree.
 
+- <img width="356" height="587" alt="image" src="https://github.com/user-attachments/assets/c7ca57cb-0a5d-44f8-adeb-7b69dcf815de" />
+
+<img width="329" height="550" alt="image" src="https://github.com/user-attachments/assets/188cf192-f440-45a5-b1c4-58f98701106f" />
+<img width="352" height="129" alt="image" src="https://github.com/user-attachments/assets/d3dd0471-4d4b-44c9-99ce-869f78cb4c17" />
+<img width="1243" height="798" alt="image" src="https://github.com/user-attachments/assets/1f8fb0dc-07cb-4641-8136-eac2dacfb6de" />
+<img width="1169" height="946" alt="image" src="https://github.com/user-attachments/assets/6186771f-2bdf-4dd5-8367-abda95f1f361" />
+
+
+
 ## Install
 
 ### From source (dev)
