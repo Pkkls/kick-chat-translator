@@ -180,6 +180,21 @@ export function updateFloatingBar(settings: Settings): void {
   if (bar && label) setBarEnabled(bar, label, settings.enabled, settings.targetLang);
 }
 
+/** Update the floating bar to show which provider handled the last translation. */
+export function updateActiveProvider(provider: string): void {
+  const bar = document.querySelector<HTMLElement>(`#${FLOAT_ID}`);
+  if (!bar) return;
+  let badge = bar.querySelector<HTMLElement>('.kt-float-provider');
+  if (!badge) {
+    badge = document.createElement('span');
+    badge.className = 'kt-float-provider';
+    badge.style.cssText = 'font-size:10px;opacity:.5;margin-left:4px;text-transform:uppercase';
+    const label = bar.querySelector('.kt-float-label');
+    if (label) label.after(badge);
+  }
+  badge.textContent = provider;
+}
+
 /** Bump the session translation counter shown in the floating bar. */
 export function incrementFloatingCount(): void {
   const count = document.querySelector<HTMLElement>(`#${FLOAT_ID} .kt-float-count`);

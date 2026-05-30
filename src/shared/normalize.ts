@@ -12,7 +12,8 @@ export function normalizeForKey(text: string): string {
     .normalize('NFKC')
     .replace(/\s+/g, ' ')
     .replace(/(.)\1{2,}/gu, '$1$1')
-    .replace(/[!?.…~、。！？]+$/u, '');
+    // Strip ALL trailing AND leading punctuation/symbols — "¿hola!" = "hola" = "hola."
+    .replace(/^[\s\p{P}\p{S}]+|[\s\p{P}\p{S}]+$/gu, '');
 }
 
 export function cacheKey(text: string, targetLang: string): string {

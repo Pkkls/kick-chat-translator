@@ -27,7 +27,12 @@ export const SettingsSchema = z.object({
   providerOrder: ProviderOrderSchema.default(['google', 'mymemory', 'lingva']),
   deeplApiKey: z.string().default(''),
   deeplPlan: z.enum(['free', 'pro']).default('free'),
+  // Stop using DeepL when monthly quota reaches this %, to spread it across the month.
+  // 0 = no limit (use until exhausted). Useful for Free-tier users (1M chars/month).
+  deeplBudgetPct: z.number().int().min(0).max(100).default(0),
   lingvaInstance: z.string().url().or(z.literal('')).default(''),
+  // MyMemory: providing an email lifts the anonymous cap from 5k to 50k words/day.
+  myMemoryEmail: z.string().email().or(z.literal('')).default(''),
 
   // Filters
   ignoreEnglish: z.boolean().default(true),
@@ -82,6 +87,21 @@ export async function resetSettings(): Promise<Settings> {
   const fresh = defaultSettings();
   await chrome.storage.sync.set({ [STORAGE_KEY_SETTINGS]: fresh });
   return fresh;
+}
+
+/** Export all settings as a JSON string (for backup / transfer). */
+export async function exportSettings(): Promise<string> {
+  const s = await loadSettings();
+  return JSON.stringify(s, null, 2);
+}
+
+/** Import settings from a JSON string. Returns the imported settings. */
+export async function importSettings(json: string): Promise<Settings> {
+  const raw: unknown = JSON.parse(json);
+  const parsed = SettingsSchema.safeParse(raw);
+  if (!parsed.success) throw new Error('Invalid settings JSON');
+  await chrome.storage.sync.set({ [STORAGE_KEY_SETTINGS]: parsed.data });
+  return parsed.data;
 }
 
 export function watchSettings(cb: (next: Settings) => void): () => void {

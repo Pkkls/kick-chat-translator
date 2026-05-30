@@ -20,7 +20,7 @@ describe('googleProvider', () => {
 
     const res = await googleProvider.translate(
       { messageId: '1', text: 'こんにちは', targetLang: 'en' },
-      { deeplApiKey: '', deeplPlan: 'free', lingvaInstance: '' },
+      { deeplApiKey: '', deeplPlan: 'free', deeplBudgetPct: 0, lingvaInstance: '', myMemoryEmail: '' },
     );
 
     expect(res.translatedText).toBe('Hello');
@@ -32,7 +32,7 @@ describe('googleProvider', () => {
     await expect(
       googleProvider.translate(
         { messageId: '1', text: 'x', targetLang: 'en' },
-        { deeplApiKey: '', deeplPlan: 'free', lingvaInstance: '' },
+        { deeplApiKey: '', deeplPlan: 'free', deeplBudgetPct: 0, lingvaInstance: '', myMemoryEmail: '' },
       ),
     ).rejects.toBeInstanceOf(ProviderError);
   });

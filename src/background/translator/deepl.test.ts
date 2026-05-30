@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { deeplProvider } from './deepl';
 import { ProviderError } from './types';
 
-const baseCtx = { deeplApiKey: '', deeplPlan: 'free' as const, lingvaInstance: '' };
+const baseCtx = { deeplApiKey: '', deeplPlan: 'free' as const, deeplBudgetPct: 0, lingvaInstance: '', myMemoryEmail: '' };
 
 describe('deeplProvider', () => {
   const originalFetch = globalThis.fetch;

@@ -106,15 +106,17 @@ async function main(): Promise<void> {
   // when #channel-chatroom itself stays mounted (the message observer keeps
   // working via its own re-attach watcher, but the bar would silently vanish and
   // the user loses the on/off toggle). Re-add it whenever it goes missing.
-  let barGuardScheduled = false;
+  // Bar re-mount guard: debounce with 500ms timeout instead of rAF.
+  // On a fast chat rAF fires every frame (16ms), creating noise. 500ms is calm and
+  // still fast enough to re-mount the bar before the user notices.
+  let barGuardTimer: ReturnType<typeof setTimeout> | undefined;
   function watchBar(): void {
     new MutationObserver(() => {
-      if (barGuardScheduled) return;
-      barGuardScheduled = true;
-      requestAnimationFrame(() => {
-        barGuardScheduled = false;
+      if (barGuardTimer) return;
+      barGuardTimer = setTimeout(() => {
+        barGuardTimer = undefined;
         if (settings.showFloatingBar && !document.getElementById('kt-floating-bar')) mountBar();
-      });
+      }, 500);
     }).observe(document.body, { childList: true, subtree: true });
   }
 
@@ -155,6 +157,27 @@ async function main(): Promise<void> {
     void attachForRoute();
   }) as typeof history.pushState;
   window.addEventListener('popstate', () => void attachForRoute());
+
+  // Retry on focus: when pauseWhenHidden is ON and the user comes back to this tab,
+  // messages that arrived while hidden are marked (data-kt-id) but never translated.
+  // Sweep visible rows that have no translation and re-submit them.
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden || !settings.enabled || !settings.pauseWhenHidden) return;
+    const rows = document.querySelectorAll('#channel-chatroom div[data-index][data-kt-id]');
+    let retried = 0;
+    for (const row of rows) {
+      // Already has a translation → skip.
+      if (row.querySelector('.kt-translation, .kt-translation-inline')) continue;
+      // Remove the mark so the observer re-processes it.
+      row.removeAttribute('data-kt-id');
+      retried++;
+    }
+    if (retried > 0) {
+      log.debug(`Tab visible again, retrying ${retried} untranslated rows`);
+      observer.reset();
+      observer.start();
+    }
+  });
 
   // Note: the "pause when hidden" quota guard lives in the pipeline, which reads
   // document.hidden live per message. The observer stays running (cheap when the

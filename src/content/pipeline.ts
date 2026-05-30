@@ -8,7 +8,7 @@ import { parseKickContent } from './emoteParser';
 import { extractMessageText } from './selectors';
 import { detectLanguage } from './langDetect';
 import { isNoise, isSameLanguageAsTarget, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
-import { inject, incrementFloatingCount, removeAllArtifacts, showError, showLoading } from './injector';
+import { inject, incrementFloatingCount, removeAllArtifacts, showError, showLoading, updateActiveProvider } from './injector';
 import { localEngine } from './localEngine';
 import { memCache } from './memcache';
 
@@ -243,6 +243,7 @@ export class TranslationPipeline {
     };
     inject(msg.injectionTarget, full, this.settings, () => void this.forceRetranslate(msg, real));
     incrementFloatingCount();
+    updateActiveProvider(result.provider);
   }
 
   /** Virtual-scroll guard: row reused for a newer message while we awaited. */

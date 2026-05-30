@@ -13,7 +13,9 @@ async function call(req: TranslationRequest, ctx: ProviderContext): Promise<Prov
   const url = new URL(PROVIDER_ENDPOINTS.myMemory);
   url.searchParams.set('q', req.text);
   url.searchParams.set('langpair', `${req.sourceLangHint ?? 'autodetect'}|${req.targetLang}`);
-  if (MYMEMORY_CONTACT) url.searchParams.set('de', MYMEMORY_CONTACT);
+  // An email lifts MyMemory's anon cap from 5k → 50k words/day.
+  const email = ctx.myMemoryEmail || MYMEMORY_CONTACT;
+  if (email) url.searchParams.set('de', email);
 
   const res = await fetch(url.toString(), { signal: ctx.signal, credentials: 'omit' });
   if (res.status === 429) {

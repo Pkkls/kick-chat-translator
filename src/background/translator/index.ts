@@ -39,7 +39,9 @@ function buildContext(settings: Settings, signal?: AbortSignal): ProviderContext
   return {
     deeplApiKey: settings.deeplApiKey,
     deeplPlan: settings.deeplPlan,
+    deeplBudgetPct: settings.deeplBudgetPct,
     lingvaInstance: settings.lingvaInstance,
+    myMemoryEmail: settings.myMemoryEmail,
     signal,
   };
 }
@@ -85,12 +87,26 @@ function ok(req: TranslationRequest, id: CloudProviderId, translatedText: string
   };
 }
 
+// DeepL budget pacing: the SW sets this from the usage cache so the translator
+// can skip DeepL when the user's monthly budget % is reached.
+let deeplUsagePct = 0;
+export function setDeeplUsagePct(pct: number): void {
+  deeplUsagePct = pct;
+}
+
+function isDeeplBudgetExhausted(ctx: ProviderContext): boolean {
+  if (ctx.deeplBudgetPct <= 0) return false; // 0 = no limit
+  return deeplUsagePct >= ctx.deeplBudgetPct;
+}
+
 function eligibleOrder(settings: Settings, ctx: ProviderContext): CloudProviderId[] {
   const live = settings.providerOrder.filter((id) => {
     const provider = PROVIDERS[id];
     if (!provider) return false;
     if (provider.requiresKey && !provider.isConfigured(ctx)) return false;
     if (health[id].cooldownUntilMs > Date.now()) return false;
+    // DeepL budget pacing: skip DeepL if monthly budget % reached.
+    if (id === 'deepl' && isDeeplBudgetExhausted(ctx)) return false;
     return true;
   });
   if (live.length > 0) return live;
@@ -98,7 +114,9 @@ function eligibleOrder(settings: Settings, ctx: ProviderContext): CloudProviderI
   return [...settings.providerOrder]
     .filter((id) => {
       const p = PROVIDERS[id];
-      return Boolean(p) && (!p!.requiresKey || p!.isConfigured(ctx));
+      if (!p || (p.requiresKey && !p.isConfigured(ctx))) return false;
+      if (id === 'deepl' && isDeeplBudgetExhausted(ctx)) return false;
+      return true;
     })
     .sort((a, b) => health[a].cooldownUntilMs - health[b].cooldownUntilMs);
 }
@@ -200,15 +218,19 @@ export async function translateWithFallback(
 
 export function getProviderStatus(settings: Settings): ProviderStatus[] {
   const ctx = buildContext(settings);
+  const now = Date.now();
   return settings.providerOrder.map((id) => {
     const provider = PROVIDERS[id];
     const h = health[id];
     const configured = provider ? !provider.requiresKey || provider.isConfigured(ctx) : false;
+    const budgetPaused = id === 'deepl' && isDeeplBudgetExhausted(ctx);
+    const cooldownLeft = h.cooldownUntilMs > now ? Math.ceil((h.cooldownUntilMs - now) / 1000) : 0;
     return {
       id,
-      available: Boolean(provider) && configured && h.cooldownUntilMs <= Date.now(),
-      lastError: h.lastError,
+      available: Boolean(provider) && configured && h.cooldownUntilMs <= now && !budgetPaused,
+      lastError: budgetPaused ? `Budget paused (${deeplUsagePct}% used)` : h.lastError,
       lastUsedMs: h.lastUsedMs,
+      cooldownLeftSec: cooldownLeft,
     };
   });
 }

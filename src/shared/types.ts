@@ -36,6 +36,8 @@ export interface ProviderStatus {
   remainingDaily?: number;
   lastError?: string;
   lastUsedMs?: number;
+  /** Seconds until this provider exits its error cooldown (0 = ready). */
+  cooldownLeftSec?: number;
 }
 
 export interface UsageStats {

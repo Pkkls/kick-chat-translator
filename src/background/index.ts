@@ -5,7 +5,7 @@ import { TranslationCache } from './cache';
 import { TokenBucket } from './queue';
 import { StatsTracker } from './stats';
 import { TranslationCoalescer } from './coalescer';
-import { anyProviderReady, getProviderStatus } from './translator';
+import { anyProviderReady, getProviderStatus, setDeeplUsagePct } from './translator';
 import { installKeepalive } from './keepalive';
 import { DEEPL_USAGE_FREE, DEEPL_USAGE_PRO } from '~/shared/constants';
 import type { ProviderId, TranslationOutcome, TranslationRequest } from '~/shared/types';
@@ -36,9 +36,30 @@ function applySettings(next: Settings): void {
   rootLogger.setEnabled(next.debug);
 }
 
+// Quick ASCII heuristic: if the target is EN and the text is >80% basic Latin,
+// it's almost certainly already English — skip the provider call entirely.
+// This avoids wasting DeepL quota on the ~100 EN messages/day franc mislabels.
+function looksLikeTargetLang(text: string, target: string): boolean {
+  if (target !== 'en') return false; // only EN heuristic for now
+  if (text.length < 4) return false;
+  let ascii = 0;
+  for (let i = 0; i < text.length; i++) {
+    const c = text.charCodeAt(i);
+    if (c < 128) ascii++;
+  }
+  return ascii / text.length > 0.85;
+}
+
 async function handleTranslate(req: TranslationRequest): Promise<TranslationOutcome> {
   if (!settings.enabled) {
     return { ok: false, error: { code: 'disabled', message: 'Extension disabled' } };
+  }
+
+  // Same-language short-circuit: if the text obviously matches the target, don't
+  // waste a provider call. The content script's franc detection already catches
+  // most cases, but franc mislabels ~3% of short EN texts as foreign.
+  if (!req.noCache && looksLikeTargetLang(req.text, req.targetLang)) {
+    return { ok: false, error: { code: 'same_lang', message: 'Text appears to already be in target language' } };
   }
 
   if (!req.noCache) {
@@ -97,6 +118,8 @@ async function fetchDeeplUsage(): Promise<DeeplUsage> {
       limit: j.character_limit ?? 0,
     };
     deeplUsageCache = { at: Date.now(), value };
+    // Feed the translator's budget pacing.
+    if (value.limit > 0) setDeeplUsagePct(Math.round((value.count / value.limit) * 100));
     return value;
   } catch {
     return { configured: true, count: 0, limit: 0 };

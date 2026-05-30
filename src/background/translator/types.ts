@@ -8,7 +8,9 @@ export interface ProviderResult {
 export interface ProviderContext {
   deeplApiKey: string;
   deeplPlan: 'free' | 'pro';
+  deeplBudgetPct: number;
   lingvaInstance: string;
+  myMemoryEmail: string;
   signal?: AbortSignal;
 }
 
