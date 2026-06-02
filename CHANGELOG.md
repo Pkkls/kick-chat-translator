@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] — 2026-06-02
+
+Quality + reach polish, and a correct two-store release pipeline.
+
+### Added
+- **Budget-aware DeepL routing** (`deeplSmartRouting`, default on): DeepL is spent only
+  on the European language pairs where it measurably beats the free engines; other
+  targets (Japanese, Korean, Chinese, Arabic, Hindi, Thai…) demote it to a last-resort
+  fallback — stretching the Free **1,000,000 chars/month** quota much further. Toggle in
+  Options → Providers → DeepL.
+
+### Changed / Fixed
+- **Compose panel placement** now tracks the **visual viewport**, so it rides above the
+  on-screen keyboard instead of hiding behind it, and lifts clear of Kick's emote / emoji
+  picker when one opens over the composer.
+- **MyMemory** regional codes: variants are sent as RFC-3066 (`pt-BR`, `zh-CN`, `zh-TW`,
+  `no`) instead of a bare 2-letter code, improving 3rd-tier fallback quality.
+- **Release pipeline**: the Chrome and Firefox bundles are now packed from their *own*
+  builds — previously the published `-chromium` asset actually contained the Firefox
+  build and no correct Firefox zip was produced. `build:firefox` is now cross-platform
+  (`cross-env`); new `package:all` produces both store zips locally.
+- Corrected the stale DeepL Free quota copy (500k → 1,000,000 chars/month).
+
+### Tests
+- 116 unit tests (was 91): budget routing, MyMemory code mapping, compose-panel geometry.
+
 ## [2.1.0] — 2026-06-02
 
 International auto-detection + a compose preview. Works for any user on any channel

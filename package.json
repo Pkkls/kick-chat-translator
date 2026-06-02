@@ -1,6 +1,6 @@
 {
   "name": "kick-chat-translator",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "private": true,
   "description": "Real-time multi-provider chat translator for Kick.com — pro Chrome/Firefox extension.",
   "license": "MIT",
@@ -14,7 +14,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b --noEmit && vite build && tsx scripts/bundle-content.ts",
-    "build:firefox": "BROWSER=firefox vite build && tsx scripts/bundle-content.ts",
+    "build:firefox": "cross-env BROWSER=firefox vite build && tsx scripts/bundle-content.ts",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
     "lint": "eslint . --ext .ts,.tsx --max-warnings 0",
@@ -24,6 +24,8 @@
     "test:cov": "vitest run --coverage",
     "icons": "tsx scripts/generate-icons.ts",
     "pack": "tsx scripts/pack.ts",
+    "pack:firefox": "cross-env BROWSER=firefox tsx scripts/pack.ts",
+    "package:all": "npm run build && npm run pack && npm run build:firefox && npm run pack:firefox",
     "release:check": "npm run typecheck && npm run lint && npm run test && npm run build"
   },
   "devDependencies": {
@@ -35,6 +37,7 @@
     "@typescript-eslint/parser": "^8.8.0",
     "@vitest/coverage-v8": "^2.1.2",
     "autoprefixer": "^10.4.20",
+    "cross-env": "^7.0.3",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
     "happy-dom": "^15.7.4",

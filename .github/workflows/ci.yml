@@ -32,9 +32,10 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm run build
-      - run: npm run build:firefox
-      - run: npm run pack
+      - run: npm run build           # chromium → dist/
+      - run: npm run pack            # → release/…-chromium.zip
+      - run: npm run build:firefox   # rebuild dist/ as the Firefox bundle
+      - run: npm run pack:firefox    # → release/…-firefox.zip
       - uses: actions/upload-artifact@v4
         with:
           name: extension-bundles
