@@ -21,6 +21,8 @@ import {
   RateLimiter,
   Sequencer,
   decideComposeAction,
+  maskProtected,
+  unmaskProtected,
 } from './composeLogic';
 import {
   insertIntoComposer,
@@ -238,13 +240,15 @@ export class ComposeController {
     }
 
     const id = this.seq.next();
+    // Protect @handles and URLs from being translated/mangled in your own message.
+    const { masked, tokens } = maskProtected(trimmed);
     updateComposePreview({ kind: 'loading' });
     try {
       const res = await send({
         type: 'translate',
         payload: {
           messageId: `compose:${id}`,
-          text: trimmed,
+          text: masked,
           targetLang: target,
           sourceLangHint: detected,
           // We translate the user's chosen source language on purpose — don't let
@@ -258,15 +262,16 @@ export class ComposeController {
 
       if (res.type === 'translate.result' && res.payload.ok) {
         const r = res.payload.result;
+        const finalText = unmaskProtected(r.translatedText, tokens);
         setComposeThrottle(false);
         memCache.set(trimmed, target, {
-          translatedText: r.translatedText,
+          translatedText: finalText,
           detectedLang: r.detectedLang,
           provider: r.provider,
         });
         this.lastSource = trimmed;
-        this.lastTranslation = r.translatedText;
-        updateComposePreview({ kind: 'ready', text: r.translatedText, provider: r.provider });
+        this.lastTranslation = finalText;
+        updateComposePreview({ kind: 'ready', text: finalText, provider: r.provider });
       } else {
         // No valid translation for the current text (provider failed, or a guard
         // rejected it) — hide rather than leave a stale result from earlier text.

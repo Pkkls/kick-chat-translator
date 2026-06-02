@@ -5,6 +5,8 @@ import {
   Sequencer,
   decideComposeAction,
   isLinkOrMentionOnly,
+  maskProtected,
+  unmaskProtected,
 } from './composeLogic';
 
 describe('decideComposeAction', () => {
@@ -48,6 +50,30 @@ describe('decideComposeAction', () => {
   it('skips link/mention-only input', () => {
     expect(decideComposeAction('https://kick.com/foo', undefined, undefined, 'en')).toBe('skip-noise');
     expect(decideComposeAction('@alice @bob', undefined, undefined, 'en')).toBe('skip-noise');
+  });
+
+  it('skips pure streaming slang (gg/ez/poggers)', () => {
+    expect(decideComposeAction('gg ez poggers', undefined, undefined, 'en')).toBe('skip-noise');
+  });
+});
+
+describe('maskProtected / unmaskProtected', () => {
+  it('shields @handles and URLs, then restores them', () => {
+    const { masked, tokens } = maskProtected('hey @cool.user check https://kick.com/x nice');
+    expect(masked).not.toContain('@cool.user');
+    expect(masked).not.toContain('https://');
+    expect(tokens).toEqual(['@cool.user', 'https://kick.com/x']);
+    // A translator that keeps the placeholders → handles/links come back intact.
+    const translated = masked.replace('hey', 'salut').replace('check', 'regarde').replace('nice', 'sympa');
+    const restored = unmaskProtected(translated, tokens);
+    expect(restored).toContain('@cool.user');
+    expect(restored).toContain('https://kick.com/x');
+  });
+  it('is a no-op when there is nothing to protect', () => {
+    const { masked, tokens } = maskProtected('bonjour tout le monde');
+    expect(masked).toBe('bonjour tout le monde');
+    expect(tokens).toEqual([]);
+    expect(unmaskProtected('hello everyone', tokens)).toBe('hello everyone');
   });
 });
 

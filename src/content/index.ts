@@ -4,6 +4,7 @@ import { TranslationPipeline } from './pipeline';
 import {
   ensureStyles,
   mountFloatingBar,
+  showToast,
   unmountFloatingBar,
   updateFloatingBar,
   updateLocalChip,
@@ -12,12 +13,15 @@ import {
 import { ChatObserver } from './observer';
 import { ComposeController } from './compose';
 import { KickPusherClient } from './pusher';
+import { SELECTORS, findComposer, pickFirst } from './selectors';
 import { extractChannelSlug, fetchChannelLangIso, fetchChatroomId } from './kickApi';
 import { localEngine } from './localEngine';
 import { logPlatform, refresh7TV } from './platform';
 import { langFlag } from '~/shared/languages';
 
 const log = rootLogger.child('content');
+// One-shot guard so the "Kick DOM changed" warning toast shows at most once per page.
+let domWarned = false;
 
 async function main(): Promise<void> {
   let settings: Settings = await loadSettings();
@@ -122,6 +126,23 @@ async function main(): Promise<void> {
     }).observe(document.body, { childList: true, subtree: true });
   }
 
+  // If the chat panel is present but neither the message list nor the composer can
+  // be found after a grace period, Kick almost certainly changed its DOM — surface
+  // it once instead of failing silently (so the user knows to update the extension).
+  function scheduleHealthCheck(slug: string): void {
+    setTimeout(() => {
+      if (currentSlug !== slug) return; // navigated away
+      if (!document.querySelector('#channel-chatroom')) return; // no chat view at all
+      const containerFound = pickFirst(document, SELECTORS.containers) !== null;
+      const composerFound = findComposer() !== null;
+      if (!containerFound && !composerFound && !domWarned) {
+        domWarned = true;
+        log.warn('chat container & composer not found — Kick DOM likely changed');
+        showToast('Kick Chat Translator: chat not found — Kick may have updated. An extension update may be needed.');
+      }
+    }, 12_000);
+  }
+
   async function attachForRoute(): Promise<void> {
     const slug = extractChannelSlug(location.pathname);
     if (slug === currentSlug) return;
@@ -143,6 +164,7 @@ async function main(): Promise<void> {
     mountBar();
     // Compose preview self-gates on composeEnabled and finds the composer itself.
     compose.start();
+    scheduleHealthCheck(slug);
 
     // Auto-detect the channel's chat language (Kick API) → the compose target in
     // 'auto' mode, so the user writes in the channel's language with no setup.
