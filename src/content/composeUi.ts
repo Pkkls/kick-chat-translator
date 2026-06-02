@@ -25,7 +25,6 @@ export interface ComposeUiHandlers {
 interface ComposeUi {
   panel: HTMLElement;
   textEl: HTMLElement;
-  providerEl: HTMLElement;
   targetEl: HTMLElement;
   composer: HTMLElement;
   reposition: () => void;
@@ -55,11 +54,6 @@ export function mountComposePreview(
   panel.className = 'kt-compose';
   panel.dataset.state = 'hidden';
 
-  const arrow = document.createElement('span');
-  arrow.className = 'kt-compose-arrow';
-  arrow.textContent = '➜';
-  panel.appendChild(arrow);
-
   // Read-only badge of the auto-detected output language (the channel's language).
   // No manual picker — the target is detected, not configured.
   const targetEl = document.createElement('span');
@@ -67,20 +61,18 @@ export function mountComposePreview(
   setTargetBadge(targetEl, targetLang);
   panel.appendChild(targetEl);
 
+  // The translation — the hero of the chip, full width.
   const textEl = document.createElement('span');
   textEl.className = 'kt-compose-text';
   textEl.dir = 'auto'; // render RTL languages (Arabic/Hebrew/Persian) correctly
   panel.appendChild(textEl);
 
-  const providerEl = document.createElement('span');
-  providerEl.className = 'kt-compose-provider';
-  panel.appendChild(providerEl);
-
-  const hint = document.createElement('span');
-  hint.className = 'kt-compose-hint';
-  hint.textContent = 'click · Ctrl+↵';
-  hint.title = 'Click the translation or press Ctrl/Cmd+Enter to insert it · Esc to dismiss';
-  panel.appendChild(hint);
+  // Subtle insert cue. The whole chip is clickable; this just signals the action.
+  const insert = document.createElement('span');
+  insert.className = 'kt-compose-insert';
+  insert.textContent = '↵';
+  insert.title = 'Insert · Ctrl/Cmd+Enter · Esc to dismiss';
+  panel.appendChild(insert);
 
   // Clicking the translation inserts it (mousedown, so the composer doesn't lose
   // focus to a real click first — keeps the caret where the user expects).
@@ -105,7 +97,7 @@ export function mountComposePreview(
     resizeObs.observe(composer);
   }
 
-  ui = { panel, textEl, providerEl, targetEl, composer, reposition, resizeObs };
+  ui = { panel, textEl, targetEl, composer, reposition, resizeObs };
 
   window.addEventListener('scroll', reposition, { passive: true, capture: true });
   window.addEventListener('resize', reposition, { passive: true });
@@ -115,15 +107,19 @@ export function mountComposePreview(
 function positionPanel(panel: HTMLElement, composer: HTMLElement): void {
   const r = composer.getBoundingClientRect();
   if (r.width === 0 && r.height === 0) return; // composer detached / hidden
-  panel.style.left = `${Math.round(r.left)}px`;
-  panel.style.width = `${Math.round(r.width)}px`;
+  const width = Math.round(r.width);
+  // Clamp into the viewport so the chip can never render off-screen.
+  const maxLeft = Math.max(4, window.innerWidth - width - 4);
+  const left = Math.min(Math.max(4, Math.round(r.left)), maxLeft);
+  panel.style.left = `${left}px`;
+  panel.style.width = `${width}px`;
   // Sit just above the composer, measured from the viewport bottom.
   panel.style.bottom = `${Math.round(window.innerHeight - r.top + 6)}px`;
 }
 
 export function updateComposePreview(state: ComposeUiState): void {
   if (!ui) return;
-  const { panel, textEl, providerEl } = ui;
+  const { panel, textEl } = ui;
   switch (state.kind) {
     case 'hidden':
       panel.dataset.state = 'hidden';
@@ -136,7 +132,6 @@ export function updateComposePreview(state: ComposeUiState): void {
       return;
     case 'ready':
       textEl.textContent = state.text;
-      providerEl.textContent = state.provider.toUpperCase();
       panel.dataset.state = 'ready';
       ui.reposition();
       return;

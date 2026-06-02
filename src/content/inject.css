@@ -220,26 +220,26 @@
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   max-width: 100vw;
-  padding: 7px 10px;
-  background: rgba(10, 14, 18, 0.94);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(83, 252, 24, 0.32);
-  border-radius: 8px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+  padding: 8px 11px;
+  background: rgba(16, 20, 26, 0.96);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(83, 252, 24, 0.18);
+  border-radius: 11px;
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.32);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 13px;
-  line-height: 1.35;
-  color: rgba(255, 255, 255, 0.92);
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.95);
   cursor: pointer;
   user-select: none;
   /* GPU-only transition — no layout, no reflow on the input. */
   opacity: 0;
-  transform: translateY(4px);
+  transform: translateY(5px);
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  transition: opacity 0.16s ease, transform 0.16s ease, border-color 0.16s ease;
   will-change: opacity, transform;
 }
 .kt-compose[data-state='ready'],
@@ -250,32 +250,24 @@
   pointer-events: auto;
 }
 .kt-compose:hover {
-  border-color: rgba(83, 252, 24, 0.55);
+  border-color: rgba(83, 252, 24, 0.45);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
-.kt-compose-arrow {
-  flex-shrink: 0;
-  font-size: 12px;
-  color: #53fc18;
-  opacity: 0.85;
-}
-.kt-compose[data-state='loading'] .kt-compose-arrow {
-  animation: kt-compose-pulse 0.9s ease-in-out infinite;
-}
-
+/* Small language tag — quiet, just enough to know the output language. */
 .kt-compose-target {
   flex-shrink: 0;
-  padding: 1px 6px;
-  background: rgba(83, 252, 24, 0.14);
-  border: 1px solid rgba(83, 252, 24, 0.3);
-  border-radius: 4px;
+  padding: 1.5px 6px;
+  background: rgba(83, 252, 24, 0.13);
+  border-radius: 5px;
   color: #53fc18;
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
+/* The translation — the hero. */
 .kt-compose-text {
   flex: 1 1 auto;
   min-width: 0;
@@ -283,36 +275,33 @@
   word-break: break-word;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 .kt-compose[data-state='loading'] .kt-compose-text {
-  opacity: 0.5;
+  opacity: 0.45;
   animation: kt-compose-pulse 0.9s ease-in-out infinite;
 }
 
-.kt-compose-provider {
+/* Subtle insert cue (whole chip is clickable). Brightens on hover. */
+.kt-compose-insert {
   flex-shrink: 0;
-  font-size: 9px;
-  letter-spacing: 0.03em;
-  opacity: 0.45;
-  font-family: ui-monospace, monospace;
+  font-size: 13px;
+  line-height: 1;
+  color: #53fc18;
+  opacity: 0.5;
+  transition: opacity 0.12s ease;
 }
-
-.kt-compose-hint {
-  flex-shrink: 0;
-  font-size: 10px;
-  opacity: 0.4;
-  white-space: nowrap;
+.kt-compose:hover .kt-compose-insert {
+  opacity: 0.95;
 }
-/* Subtle rate-limit indicator. */
-.kt-compose[data-throttled='true'] .kt-compose-hint::after {
-  content: ' · ⏳';
+.kt-compose[data-throttled='true'] .kt-compose-insert {
+  opacity: 0.25;
 }
 
 @keyframes kt-compose-pulse {
   0%, 100% { opacity: 0.85; }
-  50% { opacity: 0.35; }
+  50% { opacity: 0.4; }
 }
 
 /* Auto light/dark: follow the OS scheme for all injected UI. */
@@ -349,12 +338,9 @@
     color: rgba(40, 150, 20, 0.8);
   }
   .kt-compose {
-    background: rgba(248, 250, 252, 0.96);
-    color: rgba(20, 25, 35, 0.92);
-    border-color: rgba(40, 170, 20, 0.4);
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
-  }
-  .kt-compose-arrow {
-    color: rgba(40, 150, 20, 0.95);
+    background: rgba(248, 250, 252, 0.97);
+    color: rgba(20, 25, 35, 0.95);
+    border-color: rgba(40, 170, 20, 0.3);
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.16);
   }
 }
