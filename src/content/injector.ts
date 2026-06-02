@@ -1,7 +1,7 @@
 import injectCss from './inject.css?inline';
 import type { TranslationResult } from '~/shared/types';
 import type { Settings } from '~/shared/settings';
-import { langFlag } from '~/shared/languages';
+import { langFlag, resolveBrowserLang } from '~/shared/languages';
 
 const STYLE_ID = 'kt-inject-style';
 const TRANS_CLASS = 'kt-translation';
@@ -215,7 +215,9 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
 function setBarEnabled(bar: HTMLElement, label: HTMLElement, enabled: boolean, lang: string): void {
   bar.dataset.enabled = String(enabled);
   bar.dataset.lang = lang;
-  label.textContent = enabled ? `Translating → ${lang.toUpperCase()}` : 'Translation off';
+  // Show the resolved language, not the 'auto' sentinel.
+  const shown = lang === 'auto' ? resolveBrowserLang() : lang;
+  label.textContent = enabled ? `Translating → ${shown.toUpperCase()}` : 'Translation off';
 }
 
 export function updateFloatingBar(settings: Settings): void {
