@@ -14,11 +14,17 @@ function nextClient(): string {
   return c;
 }
 
+// Google's web endpoint wants regional tags for Chinese; base codes elsewhere.
+const GOOGLE_CODES: Record<string, string> = { zh: 'zh-CN', 'zh-tw': 'zh-TW', 'pt-br': 'pt' };
+function googleLangCode(code: string): string {
+  return GOOGLE_CODES[code.toLowerCase()] ?? code.toLowerCase();
+}
+
 async function tryWithClient(req: TranslationRequest, client: string, signal?: AbortSignal): Promise<ProviderResult> {
   const url = new URL(PROVIDER_ENDPOINTS.google);
   url.searchParams.set('client', client);
-  url.searchParams.set('sl', req.sourceLangHint ?? 'auto');
-  url.searchParams.set('tl', req.targetLang);
+  url.searchParams.set('sl', req.sourceLangHint ? googleLangCode(req.sourceLangHint) : 'auto');
+  url.searchParams.set('tl', googleLangCode(req.targetLang));
   url.searchParams.set('dt', 't');
   url.searchParams.set('q', req.text);
 

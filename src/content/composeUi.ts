@@ -7,7 +7,7 @@
  * state transitions keep the previous text on screen until the next one is ready,
  * so the panel never flashes empty while a request is in flight.
  */
-import { langFlag } from '~/shared/languages';
+import { getLang, langFlag } from '~/shared/languages';
 import { showToast } from './injector';
 
 const COMPOSE_ID = 'kt-compose-bar';
@@ -64,12 +64,12 @@ export function mountComposePreview(
   // No manual picker — the target is detected, not configured.
   const targetEl = document.createElement('span');
   targetEl.className = 'kt-compose-target';
-  targetEl.textContent = langFlag(targetLang);
-  targetEl.title = 'Auto-detected channel language';
+  setTargetBadge(targetEl, targetLang);
   panel.appendChild(targetEl);
 
   const textEl = document.createElement('span');
   textEl.className = 'kt-compose-text';
+  textEl.dir = 'auto'; // render RTL languages (Arabic/Hebrew/Persian) correctly
   panel.appendChild(textEl);
 
   const providerEl = document.createElement('span');
@@ -141,7 +141,12 @@ export function updateComposePreview(state: ComposeUiState): void {
 
 /** Update the target badge when the detected channel language (or override) changes. */
 export function setComposeTargetLang(lang: string): void {
-  if (ui) ui.targetEl.textContent = langFlag(lang);
+  if (ui) setTargetBadge(ui.targetEl, lang);
+}
+
+function setTargetBadge(el: HTMLElement, lang: string): void {
+  el.textContent = langFlag(lang);
+  el.title = `Auto · writing in ${getLang(lang)?.native ?? lang.toUpperCase()}`;
 }
 
 export function isComposePreviewMounted(): boolean {

@@ -1,7 +1,7 @@
 import injectCss from './inject.css?inline';
 import type { TranslationResult } from '~/shared/types';
 import type { Settings } from '~/shared/settings';
-import { langFlag, resolveBrowserLang } from '~/shared/languages';
+import { getLang, langFlag, resolveBrowserLang } from '~/shared/languages';
 
 const STYLE_ID = 'kt-inject-style';
 const TRANS_CLASS = 'kt-translation';
@@ -94,22 +94,27 @@ export function inject(
   const inline = style === 'inline';
   const el = document.createElement(inline || compact ? 'span' : 'div');
   el.className = compact ? 'kt-translation-compact' : inline ? TRANS_INLINE_CLASS : TRANS_CLASS;
-  el.appendChild(withBadges(result.translatedText, flag, provider));
+  el.appendChild(withBadges(result.translatedText, flag, provider, result.detectedLang));
   if (onRetry) el.appendChild(makeRetry(onRetry));
   // #8 — Click-to-copy translation.
   attachCopyHandler(el as HTMLElement, result.translatedText);
   targetEl.appendChild(el);
 }
 
-function withBadges(text: string, flag: string, provider: string): DocumentFragment {
+function withBadges(text: string, flag: string, provider: string, detectedLang?: string): DocumentFragment {
   const frag = document.createDocumentFragment();
   if (flag) {
     const f = document.createElement('span');
     f.className = 'kt-flag';
     f.textContent = flag;
+    if (detectedLang) f.title = `from ${getLang(detectedLang)?.native ?? detectedLang.toUpperCase()}`;
     frag.appendChild(f);
   }
-  frag.appendChild(document.createTextNode(text));
+  // dir="auto" so RTL translations (Arabic/Hebrew/Persian) render correctly.
+  const t = document.createElement('span');
+  t.dir = 'auto';
+  t.textContent = text;
+  frag.appendChild(t);
   if (provider) {
     const p = document.createElement('span');
     p.className = 'kt-provider';

@@ -9,7 +9,8 @@ export const LANGUAGES: readonly LangInfo[] = [
   { code: 'en', label: 'English', native: 'English', flag: 'EN' },
   { code: 'fr', label: 'French', native: 'Français', flag: 'FR' },
   { code: 'es', label: 'Spanish', native: 'Español', flag: 'ES' },
-  { code: 'pt', label: 'Portuguese', native: 'Português', flag: 'PT' },
+  { code: 'pt', label: 'Portuguese (Portugal)', native: 'Português', flag: 'PT' },
+  { code: 'pt-br', label: 'Portuguese (Brazil)', native: 'Português (BR)', flag: 'BR' },
   { code: 'de', label: 'German', native: 'Deutsch', flag: 'DE' },
   { code: 'it', label: 'Italian', native: 'Italiano', flag: 'IT' },
   { code: 'nl', label: 'Dutch', native: 'Nederlands', flag: 'NL' },
@@ -37,7 +38,20 @@ export const LANGUAGES: readonly LangInfo[] = [
   { code: 'el', label: 'Greek', native: 'Ελληνικά', flag: 'EL' },
   { code: 'hu', label: 'Hungarian', native: 'Magyar', flag: 'HU' },
   { code: 'bg', label: 'Bulgarian', native: 'Български', flag: 'BG' },
+  { code: 'ca', label: 'Catalan', native: 'Català', flag: 'CA' },
+  { code: 'sl', label: 'Slovenian', native: 'Slovenščina', flag: 'SI' },
+  { code: 'et', label: 'Estonian', native: 'Eesti', flag: 'EE' },
+  { code: 'lt', label: 'Lithuanian', native: 'Lietuvių', flag: 'LT' },
+  { code: 'lv', label: 'Latvian', native: 'Latviešu', flag: 'LV' },
+  { code: 'fa', label: 'Persian', native: 'فارسی', flag: 'FA' },
+  { code: 'bn', label: 'Bengali', native: 'বাংলা', flag: 'BN' },
+  { code: 'ta', label: 'Tamil', native: 'தமிழ்', flag: 'TA' },
+  { code: 'ms', label: 'Malay', native: 'Bahasa Melayu', flag: 'MS' },
+  { code: 'tl', label: 'Filipino', native: 'Filipino', flag: 'PH' },
 ];
+
+/** The 'use the detected language' sentinel stored in settings. */
+export const AUTO = 'auto';
 
 const BY_CODE = new Map(LANGUAGES.map((l) => [l.code.toLowerCase(), l]));
 
@@ -75,6 +89,19 @@ const FRANC_MAP: Record<string, string> = {
   ell: 'el',
   hun: 'hu',
   bul: 'bg',
+  cat: 'ca',
+  slv: 'sl',
+  est: 'et',
+  lit: 'lt',
+  lav: 'lv',
+  pes: 'fa',
+  fas: 'fa',
+  ben: 'bn',
+  tam: 'ta',
+  msa: 'ms',
+  zsm: 'ms',
+  tgl: 'tl',
+  fil: 'tl',
 };
 
 export function francToIso2(francCode: string): string | undefined {
@@ -85,13 +112,40 @@ export function getLang(code: string): LangInfo | undefined {
   return BY_CODE.get(code.toLowerCase());
 }
 
+// Locale / region tags → our canonical codes, keeping the regional variants we
+// actually support (pt-BR, zh-TW) distinct from their base language.
+const REGION_VARIANTS: Record<string, string> = {
+  'pt-br': 'pt-br',
+  'pt-pt': 'pt',
+  'zh-tw': 'zh-tw',
+  'zh-hant': 'zh-tw',
+  'zh-hk': 'zh-tw',
+  'zh-mo': 'zh-tw',
+  'zh-cn': 'zh',
+  'zh-hans': 'zh',
+  'zh-sg': 'zh',
+  nb: 'no',
+  nn: 'no',
+};
+
 export function normalizeLang(raw: string): string {
-  const lower = raw.toLowerCase().split(/[-_]/)[0] ?? raw.toLowerCase();
-  return BY_CODE.has(lower) ? lower : raw.toLowerCase();
+  const lower = raw.toLowerCase().trim().replace('_', '-');
+  if (BY_CODE.has(lower)) return lower; // exact match incl. 'pt-br' / 'zh-tw'
+  const variant = REGION_VARIANTS[lower];
+  if (variant) return variant;
+  const base = lower.split('-')[0] ?? lower; // strip region → base language
+  return BY_CODE.has(base) ? base : lower;
 }
 
 export function langFlag(code: string): string {
   return getLang(code)?.flag ?? code.toUpperCase().slice(0, 2);
+}
+
+const RTL_LANGS = new Set(['ar', 'he', 'fa', 'ur']);
+
+/** Right-to-left script? Drives `dir="auto"`/RTL rendering of translated text. */
+export function isRtl(code: string): boolean {
+  return RTL_LANGS.has(normalizeLang(code));
 }
 
 /** Is this language code one we support translating to? */
@@ -105,10 +159,15 @@ export function isSupportedLang(code: string): boolean {
  * "fr-FR" → "fr"; falls back to English when the locale isn't one we support.
  */
 export function resolveBrowserLang(): string {
-  const raw =
-    typeof navigator !== 'undefined' ? navigator.language || navigator.languages?.[0] || '' : '';
-  const code = normalizeLang(raw || 'en');
-  return BY_CODE.has(code) ? code : 'en';
+  const candidates =
+    typeof navigator !== 'undefined'
+      ? [navigator.language, ...(navigator.languages ?? [])].filter((c): c is string => Boolean(c))
+      : [];
+  for (const c of candidates) {
+    const code = normalizeLang(c);
+    if (BY_CODE.has(code)) return code;
+  }
+  return 'en';
 }
 
 /**
