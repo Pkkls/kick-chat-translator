@@ -12,8 +12,13 @@ Works on **Brave, Chrome and Edge**. Handles 7TV.
 
 ![Japanese chat translated to English](screenshots/japanese-chat.jpg)
 
-Target language is configurable — a Japanese viewer can set it to Japanese
-and read everything in Japanese. 30 languages supported.
+**Zero config.** It reads incoming chat in *your* browser language, and when you
+type, a live preview shows your message in the *channel's* language — auto-detected
+from Kick — above the chat box. Click it or press **Ctrl/Cmd+Enter** to insert. Both
+directions are automatic; you never pick a language (you still can, in settings).
+
+**31 languages**, including right-to-left (Arabic, Hebrew, Persian) and regional
+variants (Brazilian Portuguese, Traditional Chinese).
 
 ---
 

@@ -53,4 +53,28 @@ describe('deeplProvider', () => {
       ),
     ).rejects.toBeInstanceOf(ProviderError);
   });
+
+  it('skips unsupported targets without hitting the network', async () => {
+    const fetchSpy = vi.fn();
+    globalThis.fetch = fetchSpy as unknown as typeof fetch;
+    await expect(
+      deeplProvider.translate({ messageId: '1', text: 'hi', targetLang: 'tl' }, { ...baseCtx, deeplApiKey: 'k:fx' }),
+    ).rejects.toMatchObject({ code: 'unsupported' });
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it('maps pt-br to the PT-BR target code', async () => {
+    let sentBody = '';
+    globalThis.fetch = vi.fn(async (_url: unknown, init: { body?: string }) => {
+      sentBody = String(init.body);
+      return new Response(JSON.stringify({ translations: [{ detected_source_language: 'EN', text: 'olá' }] }), {
+        status: 200,
+      });
+    }) as unknown as typeof fetch;
+    await deeplProvider.translate(
+      { messageId: '1', text: 'hi', targetLang: 'pt-br' },
+      { ...baseCtx, deeplApiKey: 'k:fx' },
+    );
+    expect(sentBody).toContain('target_lang=PT-BR');
+  });
 });

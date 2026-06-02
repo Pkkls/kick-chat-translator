@@ -19,6 +19,16 @@ describe('detectLanguage', () => {
     expect(detectLanguage('안녕하세요 만나서 반갑습니다')).toBe('ko');
   });
 
+  it('detects Chinese (pure Han) as zh, not Japanese', () => {
+    const r = detectLanguage('我们今天天气很好一起出去玩吧朋友们');
+    expect(r).not.toBe('ja');
+    expect(['zh', undefined]).toContain(r);
+  });
+
+  it('keeps Japanese with kana as ja', () => {
+    expect(detectLanguage('これはテストです')).toBe('ja');
+  });
+
   it('returns undefined or en for empty/very ambiguous inputs', () => {
     const r = detectLanguage('xx');
     expect([undefined, 'en']).toContain(r);

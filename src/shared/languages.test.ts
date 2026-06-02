@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { getLang, isSupportedLang, resolveBrowserLang, resolveTargetLang } from './languages';
+import {
+  getLang,
+  isRtl,
+  isSupportedLang,
+  normalizeLang,
+  resolveBrowserLang,
+  resolveTargetLang,
+} from './languages';
 
 describe('isSupportedLang', () => {
   it('knows supported languages, case-insensitively', () => {
@@ -35,5 +42,38 @@ describe('resolveTargetLang', () => {
 describe('resolveBrowserLang', () => {
   it('always returns a supported code', () => {
     expect(isSupportedLang(resolveBrowserLang())).toBe(true);
+  });
+});
+
+describe('normalizeLang — regional variants', () => {
+  it('keeps supported regional variants distinct', () => {
+    expect(normalizeLang('pt-BR')).toBe('pt-br');
+    expect(normalizeLang('zh-TW')).toBe('zh-tw');
+    expect(normalizeLang('zh-Hant')).toBe('zh-tw');
+  });
+  it('folds region tags into the base language otherwise', () => {
+    expect(normalizeLang('en-US')).toBe('en');
+    expect(normalizeLang('pt-PT')).toBe('pt');
+    expect(normalizeLang('zh-CN')).toBe('zh');
+    expect(normalizeLang('fr_FR')).toBe('fr');
+    expect(normalizeLang('nb')).toBe('no');
+  });
+});
+
+describe('new languages', () => {
+  it('includes the additions', () => {
+    for (const c of ['sk', 'sl', 'et', 'lt', 'lv', 'ca', 'fa', 'bn', 'ta', 'ms', 'tl', 'pt-br']) {
+      expect(getLang(c), c).toBeDefined();
+    }
+  });
+});
+
+describe('isRtl', () => {
+  it('flags right-to-left scripts', () => {
+    expect(isRtl('ar')).toBe(true);
+    expect(isRtl('he')).toBe(true);
+    expect(isRtl('fa')).toBe(true);
+    expect(isRtl('en')).toBe(false);
+    expect(isRtl('ja')).toBe(false);
   });
 });

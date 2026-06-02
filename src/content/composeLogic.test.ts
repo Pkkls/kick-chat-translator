@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { RateLimiter, Sequencer, decideComposeAction } from './composeLogic';
+import {
+  COMPOSE_MAX_LEN,
+  RateLimiter,
+  Sequencer,
+  decideComposeAction,
+  isLinkOrMentionOnly,
+} from './composeLogic';
 
 describe('decideComposeAction', () => {
   it('skips empty / whitespace-only input', () => {
@@ -33,6 +39,28 @@ describe('decideComposeAction', () => {
 
   it('translates fresh foreign text', () => {
     expect(decideComposeAction('bonjour tout le monde', undefined, 'fr', 'en')).toBe('translate');
+  });
+
+  it('skips text longer than the cap', () => {
+    expect(decideComposeAction('a'.repeat(COMPOSE_MAX_LEN + 1), undefined, 'fr', 'en')).toBe('skip-long');
+  });
+
+  it('skips link/mention-only input', () => {
+    expect(decideComposeAction('https://kick.com/foo', undefined, undefined, 'en')).toBe('skip-noise');
+    expect(decideComposeAction('@alice @bob', undefined, undefined, 'en')).toBe('skip-noise');
+  });
+});
+
+describe('isLinkOrMentionOnly', () => {
+  it('detects link/mention-only text', () => {
+    expect(isLinkOrMentionOnly('https://example.com')).toBe(true);
+    expect(isLinkOrMentionOnly('@user')).toBe(true);
+    expect(isLinkOrMentionOnly('@user https://x.io')).toBe(true);
+  });
+  it('passes text with real words', () => {
+    expect(isLinkOrMentionOnly('@user check this https://x.io')).toBe(false);
+    expect(isLinkOrMentionOnly('bonjour')).toBe(false);
+    expect(isLinkOrMentionOnly('')).toBe(false);
   });
 });
 

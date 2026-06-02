@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] — 2026-06-02
+
+International auto-detection + a compose preview. Works for any user on any channel
+with zero configuration.
+
+### Added
+- **Compose preview** — translate what *you* type, live, in a floating panel above the
+  chat box; click or **Ctrl/Cmd+Enter** to insert, **Esc** to dismiss.
+- **Zero-config language detection, both directions:** reading target defaults to your
+  **browser language** (`targetLang: 'auto'`); compose target is the **channel's
+  language**, auto-detected from Kick's API (`livestream.lang_iso`) — no manual picking.
+- **+11 languages** (31 total): Catalan, Slovenian, Estonian, Lithuanian, Latvian,
+  Persian, Bengali, Tamil, Malay, Filipino, Slovak; plus **Brazilian Portuguese**.
+- **RTL rendering** (`dir="auto"`) for Arabic / Hebrew / Persian.
+
+### Changed / Fixed
+- Chinese is no longer mislabelled as Japanese (kana-vs-Han script detection).
+- Regional variants kept distinct (pt-BR, zh-TW); base-language comparison avoids
+  pointless self-translation.
+- DeepL: correct `PT-BR` / `ZH-HANS` / `ZH-HANT` / `NB` targets, valid base-code
+  `source_lang` (was sending an invalid `EN-US`), and unsupported targets skip cleanly
+  to Google without cooling DeepL down. Google: regional `tl` codes.
+- Channel-meta fetches de-duplicated and tolerant of Cloudflare 403/503; invalid
+  language settings coerced back to `auto`.
+- Floating bar showed the literal `AUTO` sentinel instead of the resolved language.
+- Compose was blocked for ASCII source languages (bonjour → "good") by the background's
+  English-only same-language heuristic.
+
+### Tests
+- 91 unit tests (was 57).
+
 ## [2.0.0] — 2026-05-28
 
 Complete rewrite. Not backwards-compatible with 1.x settings.
