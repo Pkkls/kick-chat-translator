@@ -92,7 +92,10 @@ export function mountComposePreview(
 
   document.body.appendChild(panel);
 
-  const reposition = (): void => positionPanel(panel, composer);
+  const reposition = (): void => {
+    if (panel.dataset.state === 'hidden') return; // no layout work while not shown
+    positionPanel(panel, composer);
+  };
 
   // Track the composer's box so the panel stays glued to it when the input grows
   // to multiple lines — fires only on a real size change, never on the keystroke path.

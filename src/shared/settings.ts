@@ -1,5 +1,13 @@
 import { z } from 'zod';
 import { STORAGE_KEY_SETTINGS } from './constants';
+import { AUTO, isSupportedLang } from './languages';
+
+// A language setting is either 'auto' or a supported ISO code; anything else
+// (stale value from an older build, hand-edited storage) is coerced back to 'auto'.
+const langSetting = z
+  .string()
+  .default(AUTO)
+  .transform((v) => (v === AUTO || isSupportedLang(v) ? v : AUTO));
 
 export const ProviderOrderSchema = z.array(
   z.enum(['google', 'deepl', 'mymemory', 'lingva']),
@@ -12,7 +20,7 @@ export const SettingsSchema = z.object({
   enabled: z.boolean().default(true),
   // 'auto' = read in the browser's own language (resolveBrowserLang). Works for any
   // user, anywhere, with no configuration. An explicit ISO code overrides it.
-  targetLang: z.string().default('auto'),
+  targetLang: langSetting,
   // 'hover' = lazy mode: translation only fetched+shown on mouse hover (saves ~10x quota).
   displayStyle: z.enum(['below', 'inline', 'replace', 'hover']).default('below'),
   showOriginal: z.boolean().default(true),
@@ -71,7 +79,7 @@ export const SettingsSchema = z.object({
   composeEnabled: z.boolean().default(true),
   // 'auto' = write in the *channel's* language, detected from Kick's API
   // (livestream.lang_iso). No manual language picking. An explicit code overrides it.
-  composeTargetLang: z.string().default('auto'),
+  composeTargetLang: langSetting,
   // 'insert' drops the translation into the chat box (you press Enter); 'copy'
   // puts it on the clipboard instead (safe fallback if Kick's editor rejects writes).
   composeInsertMode: z.enum(['insert', 'copy']).default('insert'),
