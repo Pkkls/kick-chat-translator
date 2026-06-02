@@ -78,7 +78,8 @@ export function mountComposePreview(
 
   const hint = document.createElement('span');
   hint.className = 'kt-compose-hint';
-  hint.textContent = 'click to insert';
+  hint.textContent = 'click · Ctrl+↵';
+  hint.title = 'Click the translation or press Ctrl/Cmd+Enter to insert it · Esc to dismiss';
   panel.appendChild(hint);
 
   // Clicking the translation inserts it (mousedown, so the composer doesn't lose
@@ -151,6 +152,16 @@ function setTargetBadge(el: HTMLElement, lang: string): void {
 
 export function isComposePreviewMounted(): boolean {
   return ui !== undefined && document.getElementById(COMPOSE_ID) !== null;
+}
+
+/** True when a translation is currently on screen (used for keyboard shortcuts). */
+export function isComposePreviewVisible(): boolean {
+  return ui?.panel.dataset.state === 'ready';
+}
+
+/** Toggle a subtle rate-limit indicator on the panel. */
+export function setComposeThrottle(on: boolean): void {
+  if (ui) ui.panel.dataset.throttled = on ? 'true' : 'false';
 }
 
 export function unmountComposePreview(): void {

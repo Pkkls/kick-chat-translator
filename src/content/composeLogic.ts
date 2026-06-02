@@ -11,6 +11,8 @@ import { isNoise, isSameLanguageAsTarget } from './filters';
 export const COMPOSE_DEBOUNCE_MS = 320;
 /** Don't bother translating fragments shorter than this. */
 export const COMPOSE_MIN_LEN = 2;
+/** Don't translate anything longer than this — chat lines are short; huge input is a paste. */
+export const COMPOSE_MAX_LEN = 500;
 /** Safety net against pathological typing — caps network calls per rolling minute. */
 export const COMPOSE_MAX_PER_MIN = 30;
 
@@ -18,9 +20,20 @@ export type ComposeAction =
   | 'translate'
   | 'skip-empty'
   | 'skip-short'
+  | 'skip-long'
   | 'skip-noise'
   | 'skip-same-lang'
   | 'skip-unchanged';
+
+/** True when the text is nothing but links and/or @mentions — nothing to translate. */
+export function isLinkOrMentionOnly(text: string): boolean {
+  if (!/\S/.test(text)) return false;
+  const stripped = text
+    .replace(/https?:\/\/\S+/gi, ' ')
+    .replace(/@\w+/g, ' ')
+    .replace(/[\s\p{P}\p{S}]+/gu, '');
+  return stripped.length === 0;
+}
 
 /**
  * Decide whether the currently-typed text warrants a (network) translation.
@@ -43,7 +56,8 @@ export function decideComposeAction(
   const t = text.trim();
   if (t.length === 0) return 'skip-empty';
   if (t.length < minLen) return 'skip-short';
-  if (isNoise(t)) return 'skip-noise';
+  if (t.length > COMPOSE_MAX_LEN) return 'skip-long';
+  if (isNoise(t) || isLinkOrMentionOnly(t)) return 'skip-noise';
   // Only skip on a *confident* same-language detection — undefined means "let the
   // provider auto-detect", which is correct for short/ambiguous input.
   if (detected && isSameLanguageAsTarget(detected, target)) return 'skip-same-lang';

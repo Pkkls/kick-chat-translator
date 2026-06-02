@@ -305,6 +305,10 @@
   opacity: 0.4;
   white-space: nowrap;
 }
+/* Subtle rate-limit indicator. */
+.kt-compose[data-throttled='true'] .kt-compose-hint::after {
+  content: ' · ⏳';
+}
 
 @keyframes kt-compose-pulse {
   0%, 100% { opacity: 0.85; }

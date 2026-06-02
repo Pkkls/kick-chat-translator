@@ -25,9 +25,11 @@ import {
 import {
   insertIntoComposer,
   isComposePreviewMounted,
+  isComposePreviewVisible,
   mountComposePreview,
   readComposerText,
   setComposeTargetLang,
+  setComposeThrottle,
   unmountComposePreview,
   updateComposePreview,
 } from './composeUi';
@@ -38,6 +40,7 @@ export class ComposeController {
   private settings: Settings;
   private composer: HTMLElement | undefined;
   private readonly onInput = (): void => this.scheduleEvaluate();
+  private readonly onKeydown = (e: KeyboardEvent): void => this.handleKeydown(e);
   private debounceTimer: ReturnType<typeof setTimeout> | undefined;
   private pollTimer: ReturnType<typeof setTimeout> | undefined;
   private polling = false;
@@ -158,6 +161,7 @@ export class ComposeController {
     this.detachComposer();
     this.composer = composer;
     composer.addEventListener('input', this.onInput);
+    composer.addEventListener('keydown', this.onKeydown);
     mountComposePreview(composer, this.resolveTarget(), {
       onInsert: () => this.handleInsert(),
     });
@@ -168,6 +172,7 @@ export class ComposeController {
 
   private detachComposer(): void {
     this.composer?.removeEventListener('input', this.onInput);
+    this.composer?.removeEventListener('keydown', this.onKeydown);
     this.composer = undefined;
   }
 
@@ -219,6 +224,7 @@ export class ComposeController {
     // Instant path: in-tab cache hit, zero network, no spinner.
     const cached = memCache.get(trimmed, target);
     if (cached) {
+      setComposeThrottle(false);
       this.lastSource = trimmed;
       this.lastTranslation = cached.translatedText;
       updateComposePreview({ kind: 'ready', text: cached.translatedText, provider: cached.provider });
@@ -227,6 +233,7 @@ export class ComposeController {
 
     if (!this.limiter.tryAcquire()) {
       log.debug('compose rate-limited, skipping network for now');
+      setComposeThrottle(true);
       return; // keep last preview; next pause will retry as the window slides
     }
 
@@ -251,6 +258,7 @@ export class ComposeController {
 
       if (res.type === 'translate.result' && res.payload.ok) {
         const r = res.payload.result;
+        setComposeThrottle(false);
         memCache.set(trimmed, target, {
           translatedText: r.translatedText,
           detectedLang: r.detectedLang,
@@ -279,5 +287,24 @@ export class ComposeController {
   private handleInsert(): void {
     if (!this.composer || !this.lastTranslation) return;
     insertIntoComposer(this.composer, this.lastTranslation, this.settings.composeInsertMode);
+  }
+
+  /** Keyboard: Ctrl/Cmd+Enter inserts the preview; Esc dismisses it — only while shown. */
+  private handleKeydown(e: KeyboardEvent): void {
+    if (!isComposePreviewVisible()) return;
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.handleInsert();
+    } else if (e.key === 'Escape') {
+      this.dismiss();
+    }
+  }
+
+  /** Hide the preview and mark the current text handled (re-shows when it changes). */
+  private dismiss(): void {
+    this.lastSource = this.composer ? readComposerText(this.composer).trim() : undefined;
+    this.lastTranslation = '';
+    updateComposePreview({ kind: 'hidden' });
   }
 }
