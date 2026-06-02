@@ -60,12 +60,19 @@ Status: ✅ done · 🔄 in progress · ⏳ planned
 
 ## H. Docs & infra
 43. ✅ README section: international auto-detect + compose
-44. ✅ Update CONTEXT.md handoff for the i18n fork
-45. ✅ GitHub Actions CI workflow (typecheck + lint + test + build)
-46. ✅ CHANGELOG.md
+44. ✅ Handoff docs for the i18n fork — `docs/i18n-auto-detect.md` (CONTEXT.md left untouched)
+45. ✅ GitHub Actions CI — already present (`.github/workflows/ci.yml`), covers typecheck/lint/test/build
+46. ✅ CHANGELOG.md — 2.1.0 entry
 47. ✅ Version bump (2.1.0) reflecting compose + i18n
 
 ## I. Provider interop
-48. ✅ Google provider lang param handles regional codes (pt-br→pt-BR, zh-tw→zh-TW)
-49. ✅ MyMemory lang code mapping for regional variants
-50. ✅ Provider chain: regional-variant requests never crash a provider (fallback to base lang)
+48. ✅ Google provider lang param handles regional codes (pt-br→pt, zh→zh-CN, zh-tw→zh-TW)
+49. ⏳ MyMemory regional code mapping — deferred (3rd-tier fallback; its base 2-letter codes work)
+50. ✅ Unsupported targets skip cleanly to the next provider (no crash, no cooldown)
+
+---
+
+**Done: 47 / 50.** Deferred (⏳, low-value / higher-risk): #17 panel-overlap reposition,
+#28 www/m host variants, #31 lazy-load franc-min, #49 MyMemory regional codes.
+All 4 batches shipped green: typecheck + lint + **91 tests** + build. Commits
+`05db993` (A) · `5e0b61d` (B) · `eedc19e` (C) · `6503404` (D).
