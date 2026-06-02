@@ -1,178 +1,95 @@
-# Kick Chat Translator — Full Project Context
+# Kick Chat Translator — Full Project Context (v2.1.0)
 
-Hand this file to a new Claude session to resume work with full context.
+Hand this file to a new Claude session to resume with full context.
 
 ## What it is
 
-Browser extension (MV3) that translates Kick.com chat in real time. Foreign messages get a green translation underneath. Works on **Brave, Chrome, Edge**. Open source, MIT, repo: `Pkkls/kick-chat-translator`.
+MV3 browser extension that translates Kick.com chat **in both directions, automatically**:
 
-## Repo layout
+- **Incoming (reading)** — foreign chat gets a translation under each message, in *your* language.
+- **Outgoing (compose)** — what *you* type gets a live preview in the *channel's* language, in a floating chip above the chat box; click it or press **Ctrl/⌘+Enter** to insert.
 
-Single repo: `C:\Users\kil\Downloads\kick-chat-translator` (branch: `master` only, `v2-rewrite` deleted).
+Zero config — both languages are auto-detected. Works on **Brave, Chrome, Edge** (+ a Firefox build). Open source, MIT. Repo: `Pkkls/kick-chat-translator`. Main clone: `C:\Users\kil\Downloads\kick-chat-translator`. Branch `master` = **v2.1.0**.
+
+## Two directions (the headline)
+
+- **Reading target** = `targetLang` (default `'auto'` → browser language via `resolveBrowserLang`).
+- **Writing target** = `composeTargetLang` (default `'auto'` → the channel's language from Kick's API `livestream.lang_iso`).
+- **31 languages**, incl. RTL (ar/he/fa) and regional variants (pt-BR, zh-TW).
+
+## Repo layout (key files)
 
 ```
-src/
-├── background/           # Service worker
-│   ├── index.ts          # Message router, DeepL usage, settings, cache
-│   ├── translator/       # Provider chain
-│   │   ├── index.ts      # eligibleOrder, health, sticky provider, DeepL budget pacing
-│   │   ├── deepl.ts      # DeepL Free/Pro, native batch
-│   │   ├── google.ts     # Google web endpoint, smart client rotation, batch via \n
-│   │   ├── mymemory.ts   # MyMemory, email param for 50k/day
-│   │   ├── lingva.ts     # Lingva/LibreTranslate
-│   │   └── types.ts      # ProviderContext, ProviderError
-│   ├── cache.ts          # IndexedDB + in-memory LRU (idb-keyval)
-│   ├── coalescer.ts      # Request batching with adaptive window (50-300ms)
-│   ├── queue.ts          # ConcurrencyQueue + TokenBucket
-│   ├── stats.ts          # Daily stats in chrome.storage.local (byProvider, byLang, byChannel)
-│   └── keepalive.ts      # chrome.alarms heartbeat
-├── content/              # Content script (kick.com) — ships as classic IIFE
-│   ├── index.ts          # SPA-aware boot, bar mount/guard, retry-on-focus, scroll prefetch
-│   ├── pipeline.ts       # Message flow: prepare→detect→cache→local→cloud→apply
-│   ├── observer.ts       # MutationObserver on virtual-scroll chat, self-healing re-attach
-│   ├── pusher.ts         # WebSocket client (Pusher), 4001 terminal close
-│   ├── selectors.ts      # DOM selectors, extractMessageText, 7TV-aware, img-alt filter
-│   ├── emoteParser.ts    # [emote:id:name] + inline emote name stripping
-│   ├── langDetect.ts     # Hybrid: Unicode script pre-check + franc-min
-│   ├── filters.ts        # isNoise, shouldDrop, isSameLanguageAsTarget
-│   ├── injector.ts       # DOM injection, floating bar, toast, click-to-copy, hover placeholder
-│   ├── localEngine.ts    # On-device Chromium Translator API (Chrome only, not Brave)
-│   ├── memcache.ts       # In-tab LRU (1500 entries)
-│   ├── inject.css        # All injected styles (dark/light, compact, hover, toast)
-│   ├── kickApi.ts        # Chatroom ID lookup
-│   └── platform.ts       # 7TV detection, platform logging
-├── popup/                # Toolbar popup (Preact + Tailwind)
-├── options/              # Options page (Preact + Tailwind)
-└── shared/
-    ├── settings.ts       # Zod schema, load/save/watch/export/import/reset
-    ├── types.ts          # TranslationRequest, TranslationOutcome, UsageStats, ProviderStatus
-    ├── constants.ts      # Endpoints, Pusher key, batch config, bot list
-    ├── normalize.ts      # Cache key normalization (NFKC, collapse repeats, strip punct)
-    ├── glossary.ts       # SLANG set + isSlangOnly + applyUserGlossary
-    ├── languages.ts      # 30 languages, franc→ISO2 mapping
-    ├── messages.ts       # Chrome runtime message types
-    ├── logger.ts         # Prefixed console logger
-    └── decode.ts         # HTML entity decoder
+src/background/   service worker
+  index.ts        handleTranslate, looksLikeTargetLang guard (skipSameLangGuard opt-out), DeepL usage
+  coalescer.ts    batch window; translator/ dispatches the chain
+  translator/     index.ts (chain + health + cooldowns), deepl.ts, google.ts, mymemory.ts, lingva.ts
+  cache.ts stats.ts keepalive.ts queue.ts
+src/content/      content script (classic IIFE)
+  index.ts        boot, route attach, compose+observer wiring, DOM-health toast (#5)
+  pipeline.ts     incoming flow; dynamic context (6 lines) for subject-dropping langs
+  observer.ts     virtual-scroll MutationObserver; pusher.ts (WS); selectors.ts (+ findComposer)
+  langDetect.ts   Unicode-script pre-check + franc-min
+  filters.ts injector.ts (incoming inject + floating bar)
+  compose.ts      controller; composeUi.ts (épuré chip + Lexical insertion); composeLogic.ts (pure)
+  localEngine.ts  on-device Chromium Translator API; memcache.ts
+src/shared/
+  settings.ts     Zod schema, 'auto' sentinels, langSetting coercion
+  languages.ts    31 langs, resolveBrowserLang, normalizeLang (regional), isRtl
+  langTiers.ts    isContextCritical (wrong-person set) + DEEPL_PREMIUM (European)
+  glossary.ts (isSlangOnly), normalize.ts, types.ts (skipSameLangGuard), messages.ts
+src/popup/ src/options/   Preact + Tailwind UI (Auto options exposed)
 ```
-
-## Stack
-
-- **Build**: Vite + `@crxjs/vite-plugin`, then `scripts/bundle-content.ts` re-bundles content script as classic IIFE (fixes Brave ESM loader race)
-- **UI**: Preact + Tailwind (popup + options)
-- **Test**: Vitest (57 tests), ESLint (0 warnings), GitHub Actions CI
-- **Types**: TypeScript strict
 
 ## Key architecture decisions
 
-1. **Content script = classic IIFE** (not crxjs ESM loader). Root cause fix for "extension doesn't launch on Brave, need several F5". `scripts/bundle-content.ts` does Vite lib-mode rebuild post-build.
+1. **Content script = classic IIFE** (`scripts/bundle-content.ts`) — fixes the Brave ESM-loader race.
+2. **Provider chain** DeepL → Google → MyMemory → Lingva, per-provider error cooldowns; DeepL auto-promoted to #1 when a key is set. **On-device** (Chromium Translator API) on Chrome via `localEngine`; Brave falls back to cloud.
+3. **Ingestion**: Pusher WS (`App\Events\ChatMessageEvent`, key `3437aaddcdf6922d623e`, cluster us2, channels `chatrooms.{id}.v2`) + DOM observer fallback.
+4. **Compose**: finds the Lexical composer, passive `input` listener, 320 ms debounce, seq-guard (no flicker), in-tab cache, masks @handles/URLs, skips slang. Inserts via synthetic `beforeinput`.
+5. **Translation quality**: subject-dropping sources (`ja ko zh zh-tw vi th ar`) get **6 context lines** (vs 2) fed into DeepL's `context` param → fixes the wrong-person bug. See `src/shared/langTiers.ts` + `docs/translation-quality.md`.
 
-2. **On-device first on Chrome** (`engineMode: local-first`). Chromium Translator API = free/unlimited/offline. Brave disables it → auto-fallback to cloud.
+## Build / test
 
-3. **Cloud chain with failover**: DeepL (batch) → Google (batch via \n) → MyMemory → Lingva. Error-aware cooldowns (rate_limit = seconds, quota = 5 min). Provider sticky (stay on last success).
-
-4. **DeepL auto-promote**: when a key is configured but DeepL is missing from `providerOrder`, auto-insert at #1 and persist.
-
-5. **DeepL budget pacing**: `deeplBudgetPct` setting → stop using DeepL at N% of monthly quota. `deeplUsagePct` fed from `/v2/usage` every 5 min.
-
-6. **Virtual scroll handling**: Kick uses `div[data-index]` recycled rows. Observer marks rows with `data-kt-id`. Recycled-row rescue: if translation arrives after row recycled, scan visible rows for matching text.
-
-7. **Pause when hidden**: live `document.hidden` check per message. Retry-on-focus sweeps untranslated rows on `visibilitychange`.
-
-8. **Floating bar self-heal**: MutationObserver on body re-mounts bar when Kick's SPA wipes the chat subtree (500ms debounce).
-
-## Settings (Zod schema, chrome.storage.sync)
-
-Key fields: `enabled`, `targetLang` (default 'en'), `displayStyle` ('below'|'inline'|'replace'|'hover'), `engineMode` ('local-first'|'cloud-first'|'local-only'), `providerOrder`, `deeplApiKey`, `deeplPlan`, `deeplBudgetPct`, `myMemoryEmail`, `glossary` (user custom replacements), `pauseWhenHidden`, `cacheMaxEntries` (15k), `cacheTtlHours` (72h), `perChannelBudgetPerMin` (200).
-
-## Features implemented (this session, ~30 total)
-
-### Reliability
-- Classic IIFE content script (Brave injection fix)
-- Floating bar self-heal on SPA re-render
-- Retry on tab focus (pauseWhenHidden catch-up)
-- Recycled-row rescue (translation → find matching visible row)
-- Prefetch on scroll-stop (old messages on demand)
-
-### Quota optimization
-- DeepL budget pacing (spread across month)
-- DeepL auto-promote to #1 when key configured
-- MyMemory email param (5k→50k words/day)
-- Same-language short-circuit (skip EN→EN, ~100 calls/day saved)
-- Google smart client rotation (retry alternate client on 429)
-- Google batch (join via \n, 2-3x fewer requests)
-- Adaptive batch window (50ms slow / 180ms normal / 300ms fast chat)
-- Per-user message dedup (skip identical consecutive spam)
-- Aggressive cache key normalization (strip all punct, NFKC)
-- Cache 15k entries / 72h TTL (was 5k/24h)
-- Provider sticky (avoid ping-pong switching)
-
-### Quality
-- Hybrid language detection (Unicode script + franc-min)
-- Emote name stripping (namedarumajankiss2 etc. removed before translation)
-- User glossary (custom post-translation replacements)
-- DeepL context as "username: message" dialogue format
-- Source-lang hint passed to providers (Google faster with sl=ja vs sl=auto)
-
-### UX
-- Provider badge on floating bar (shows DEEPL/GOOGLE/etc.)
-- Toast notifications (provider down, quota reached, provider switch)
-- Click-to-copy translation
-- Hover-to-translate mode (10x quota savings)
-- Throttle indicator (⏳ on bar when budget limits)
-- Stats by channel
-- Settings export/import helpers
-
-## Docs in repo
-
-- `README.md` — EN, user-first, real screenshot
-- `README.ja.md` / `README.es.md` / `README.pt-BR.md` — native translations
-- `presentation.html` — bilingual EN/JA landing page with live chat demos
-- `TUTORIAL.md` — user guide
-- `EMAIL.md` — pitch email for Kick staff (EN, two-audience)
-- `SUBMISSION.md` — store listing + permission justification
-- `PRIVACY.md` — privacy policy
-- `screenshots/japanese-chat.jpg` — real screenshot from live stream
-
-## User's setup
-
-- **Primary browser**: Brave (on-device disabled, cloud only)
-- **Also testing on**: Chrome (on-device available, needs model download)
-- **DeepL key**: configured (Free plan, `:fx` suffix). Key is NOT in the repo (verified).
-- **Heavy JP usage**: ~3700 translations/day, 90% Japanese streams
-- **pauseWhenHidden**: OFF on both browsers (needed for MCP background testing)
-- **7TV**: installed
-
-## Build commands
-
-```bash
+```
 npm ci
-npm run build          # tsc + vite + bundle-content.ts (classic IIFE)
-npm run test           # 57 tests
+npm run build          # tsc -b + vite + bundle-content.ts (classic IIFE)
+npm run test           # 99 tests (vitest)
 npm run lint           # 0 warnings
-npm run pack           # → release/kick-chat-translator-2.0.0-chromium.zip
 npm run release:check  # typecheck + lint + test + build
 ```
+Pushing a `v*` tag triggers `.github/workflows/release.yml` → build + pack + publish a GitHub Release.
 
-## Git
+## State
 
-- Single branch: `master`
-- Remote: `https://github.com/Pkkls/kick-chat-translator.git`
-- CI: GitHub Actions (typecheck + lint + test + build chrome/firefox)
-- Latest commit: `a887b2a`
-- `dist/` loaded as unpacked extension on both Brave and Chrome
+- `master` = **v2.1.0**, pushed. **Release v2.1.0** published (chromium zip).
+- **Presentation** (EN / 日本語 / ES / PT): `presentation.html`, **live on GitHub Pages** → <https://pkkls.github.io/kick-chat-translator/presentation.html>
+- The i18n dev repo (`Pkkls/kick-chat-translator-i18n`) + the "KCT i18n" loaded extension are now **redundant** (everything merged into main).
 
-## Known issues / next steps
+## Gotchas (hard-won — read before touching the DOM)
 
-- Chrome on-device needs manual model download (click "⬇ Local (JA)" chip)
-- No Firefox testing done yet (build exists: `npm run build:firefox`)
-- Options page doesn't yet expose: glossary editor, DeepL budget slider, MyMemory email field, settings export/import buttons, hover-to-translate toggle
-- No GitHub Release published yet (user's action: `gh release create v2.0.0 ...`)
-- Repo is public but no release zip uploaded
+1. **Kick composer = Lexical** (`#channel-chatroom div[contenteditable="true"][data-testid="chat-input"].editor-input`). `document.execCommand` is **silently ignored**; insert via a synthetic `InputEvent('beforeinput', {inputType:'insertText'|'deleteContentBackward', data})` over a Range select-all. Lexical reconciles **async** (~1 frame → verify after ~150 ms). To fire the content script's `input` listener you need **real keystrokes** (a synthetic beforeinput inserts but doesn't trigger it).
+2. Background `looksLikeTargetLang` (>85% ASCII ⇒ "English") blocked compose for Latin source langs → compose sets `skipSameLangGuard: true`.
+3. franc CJK split: kana ⇒ `ja`; pure Han ⇒ undefined → franc ⇒ `zh` (don't mislabel Chinese as Japanese).
+4. **Cloudflare blocks Node `fetch` of kick.com/api (403)** → inspect the API only from a logged-in browser. `lang_iso` lives in `livestream.lang_iso` and only when the channel is **live**.
+5. **MCP Claude-in-Chrome forces `https://`** → can't open `chrome://`/`file://`, can't reload extensions, can't save a screenshot to a file. Pages https URLs DO work.
+6. **Cache**: after a push, hard-refresh (Ctrl+Shift+R) or add `?cb=`; GitHub Pages rebuild ~1 min.
+7. **No engine recovers a dropped subject** — context is the only lever, and the `context` param only helps **DeepL** (Google's web endpoint ignores it). DeepL's measurable edge is **European pairs**, not Asian.
+8. `dist/` (gitignored) and `.github/` (dotdir) are **invisible to Glob/Grep** → use `ls`/Read.
 
-## Important constraints
+## Settings (Zod, `chrome.storage.sync`)
 
-- NEVER commit the DeepL API key (hard red flag, verified clean)
-- NEVER make the repo public/private (access-control = user's action)
-- User preference: no useless feature suggestions, stay focused
-- User preference: no hardcoded streamer names in code/placeholders
-- Brave is primary target, Chrome secondary
+`enabled`, `targetLang` (`'auto'`|code), `composeEnabled`, `composeTargetLang` (`'auto'`|code), `composeInsertMode` (`insert`|`copy`), `displayStyle`, `engineMode`, `providerOrder`, `deeplApiKey`/`deeplPlan`/`deeplBudgetPct`, `myMemoryEmail`, `glossary`, `pauseWhenHidden`, `debug`, …
+
+## Constraints
+
+- **NEVER commit the DeepL API key** (verified clean).
+- Terse, anti-slop, **international** (no Japanese bias), **no hardcoded streamer names** in code/placeholders, DeepL-first, no useless feature suggestions.
+- Making the repo public/private and store-account creation are the **user's** actions.
+
+## Next / deferred (user-ranked)
+
+- **#1 Publish to the Chrome Web Store / Firefox AMO / Edge Add-ons** (assets ready: `SUBMISSION.md`, `PRIVACY.md`) — *later, but yes*.
+- **#3 Compose on-device** on Chrome (route compose through `localEngine` to save DeepL budget) — *later*.
+- **#6 IRLToolkit chat reader** (streamers read translated chat on a 2nd screen) — *not now*.
+- Also open: budget-aware per-language provider routing (`langTiers.ts` ready), MyMemory regional codes, lazy-load franc-min.
