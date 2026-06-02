@@ -110,6 +110,54 @@ export class Sequencer {
   }
 }
 
+export interface PanelGeom {
+  left: number;
+  width: number;
+  bottom: number;
+}
+
+/** Viewport facts the panel placement needs — passed in so the math stays pure. */
+export interface PanelViewport {
+  innerWidth: number;
+  innerHeight: number;
+  /** Height hidden behind an on-screen keyboard (visualViewport bottom inset), px. */
+  keyboardInset: number;
+}
+
+/** Gap between the panel and whatever it sits above. */
+export const COMPOSE_PANEL_GAP = 6;
+/** Keep at least this much of the viewport above the panel so its top never clips. */
+export const COMPOSE_PANEL_TOP_MARGIN = 30;
+
+/**
+ * Fixed-position geometry for the compose panel: glued just above the composer,
+ * clamped fully inside the viewport, lifted clear of the on-screen keyboard
+ * (`keyboardInset`) and of any overlay that opens over the composer (`obstacleTop`,
+ * a viewport-relative Y). Pure so the placement is unit-tested without a DOM.
+ *
+ * `bottom` is a CSS `bottom` offset (distance from the viewport's bottom edge).
+ */
+export function computePanelGeom(
+  rect: { left: number; top: number; width: number },
+  vp: PanelViewport,
+  obstacleTop?: number,
+): PanelGeom {
+  const width = Math.round(rect.width);
+  const maxLeft = Math.max(4, vp.innerWidth - width - 4);
+  const left = Math.min(Math.max(4, Math.round(rect.left)), maxLeft);
+
+  const keyboardFloor = Math.max(0, Math.round(vp.keyboardInset)) + 4;
+  let bottom = Math.round(vp.innerHeight - rect.top + COMPOSE_PANEL_GAP);
+  // If an overlay (emote/emoji picker) opens above the composer, clear it.
+  if (obstacleTop !== undefined && obstacleTop < rect.top) {
+    bottom = Math.max(bottom, Math.round(vp.innerHeight - obstacleTop + COMPOSE_PANEL_GAP));
+  }
+  // Keep the top edge on-screen, then never let the keyboard cover it.
+  bottom = Math.min(bottom, vp.innerHeight - COMPOSE_PANEL_TOP_MARGIN);
+  bottom = Math.max(bottom, keyboardFloor);
+  return { left, width, bottom };
+}
+
 /** Sliding-window rate limiter. */
 export class RateLimiter {
   private hits: number[] = [];

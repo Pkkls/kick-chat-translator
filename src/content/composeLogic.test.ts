@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
   COMPOSE_MAX_LEN,
+  COMPOSE_PANEL_TOP_MARGIN,
   RateLimiter,
   Sequencer,
+  computePanelGeom,
   decideComposeAction,
   isLinkOrMentionOnly,
   maskProtected,
@@ -115,5 +117,41 @@ describe('RateLimiter', () => {
     expect(rl.tryAcquire(0)).toBe(true);
     expect(rl.tryAcquire(500)).toBe(false);
     expect(rl.tryAcquire(1001)).toBe(true);
+  });
+});
+
+describe('computePanelGeom', () => {
+  const VP = { innerWidth: 1000, innerHeight: 800, keyboardInset: 0 };
+
+  it('sits just above the composer, matching its width', () => {
+    const g = computePanelGeom({ left: 100, top: 700, width: 300 }, VP);
+    expect(g.left).toBe(100);
+    expect(g.width).toBe(300);
+    expect(g.bottom).toBe(106); // 800 - 700 + 6 gap
+  });
+
+  it('clamps horizontally so the chip never leaves the viewport', () => {
+    expect(computePanelGeom({ left: 950, top: 700, width: 300 }, VP).left).toBe(696); // 1000-300-4
+    expect(computePanelGeom({ left: -50, top: 700, width: 300 }, VP).left).toBe(4);
+  });
+
+  it('lifts above the on-screen keyboard', () => {
+    const g = computePanelGeom({ left: 100, top: 760, width: 300 }, { ...VP, keyboardInset: 300 });
+    expect(g.bottom).toBe(304); // keyboard floor 300+4 beats the 46px composer-relative offset
+  });
+
+  it('rises above an overlay that opens over the composer', () => {
+    const g = computePanelGeom({ left: 100, top: 700, width: 300 }, VP, 500);
+    expect(g.bottom).toBe(306); // 800 - 500 + 6
+  });
+
+  it('ignores an overlay that is below the composer top', () => {
+    const g = computePanelGeom({ left: 100, top: 400, width: 300 }, VP, 600);
+    expect(g.bottom).toBe(406); // 800 - 400 + 6, obstacle ignored
+  });
+
+  it('keeps the top edge on-screen for a tall stack', () => {
+    const g = computePanelGeom({ left: 100, top: 20, width: 300 }, VP);
+    expect(g.bottom).toBe(VP.innerHeight - COMPOSE_PANEL_TOP_MARGIN); // 770
   });
 });

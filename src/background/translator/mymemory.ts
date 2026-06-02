@@ -9,10 +9,32 @@ interface MyMemoryResponse {
   matches?: { language?: string }[];
 }
 
+// MyMemory expects RFC-3066 codes. A bare 2-letter code resolves to the dominant
+// region, which mistranslates the variants we keep distinct (pt-br vs pt, the two
+// Chinese scripts). Map those explicitly; everything else passes as its base code.
+const MYMEMORY_CODES: Record<string, string> = {
+  'pt-br': 'pt-BR',
+  pt: 'pt-PT',
+  zh: 'zh-CN',
+  'zh-cn': 'zh-CN',
+  'zh-hans': 'zh-CN',
+  'zh-tw': 'zh-TW',
+  'zh-hant': 'zh-TW',
+  nb: 'no',
+  nn: 'no',
+};
+
+/** Map an internal ISO code to the closest code MyMemory expects (or autodetect). */
+export function toMyMemoryCode(code: string | undefined): string {
+  if (!code || code === 'auto') return 'autodetect';
+  const c = code.toLowerCase();
+  return MYMEMORY_CODES[c] ?? c.split('-')[0] ?? c;
+}
+
 async function call(req: TranslationRequest, ctx: ProviderContext): Promise<ProviderResult> {
   const url = new URL(PROVIDER_ENDPOINTS.myMemory);
   url.searchParams.set('q', req.text);
-  url.searchParams.set('langpair', `${req.sourceLangHint ?? 'autodetect'}|${req.targetLang}`);
+  url.searchParams.set('langpair', `${toMyMemoryCode(req.sourceLangHint)}|${toMyMemoryCode(req.targetLang)}`);
   // An email lifts MyMemory's anon cap from 5k → 50k words/day.
   const email = ctx.myMemoryEmail || MYMEMORY_CONTACT;
   if (email) url.searchParams.set('de', email);

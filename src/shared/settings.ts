@@ -41,6 +41,10 @@ export const SettingsSchema = z.object({
   // Stop using DeepL when monthly quota reaches this %, to spread it across the month.
   // 0 = no limit (use until exhausted). Useful for Free-tier users (1M chars/month).
   deeplBudgetPct: z.number().int().min(0).max(100).default(0),
+  // Budget-aware routing: spend the limited DeepL quota only on the European pairs
+  // where it measurably beats the free engines; for other targets (Asian/Indic/RTL,
+  // where Google is as good) DeepL drops to a last resort. Stretches the Free tier.
+  deeplSmartRouting: z.boolean().default(true),
   lingvaInstance: z.string().url().or(z.literal('')).default(''),
   // MyMemory: providing an email lifts the anonymous cap from 5k to 50k words/day.
   myMemoryEmail: z.string().email().or(z.literal('')).default(''),

@@ -8,6 +8,7 @@
  * so the panel never flashes empty while a request is in flight.
  */
 import { getLang, langFlag } from '~/shared/languages';
+import { computePanelGeom } from './composeLogic';
 import { showToast } from './injector';
 
 const COMPOSE_ID = 'kt-compose-bar';
@@ -101,20 +102,64 @@ export function mountComposePreview(
 
   window.addEventListener('scroll', reposition, { passive: true, capture: true });
   window.addEventListener('resize', reposition, { passive: true });
+  // The on-screen keyboard / pinch-zoom move the visual viewport without firing a
+  // window resize — track it so the panel stays put above the keyboard.
+  window.visualViewport?.addEventListener('resize', reposition);
+  window.visualViewport?.addEventListener('scroll', reposition);
   reposition();
 }
 
 function positionPanel(panel: HTMLElement, composer: HTMLElement): void {
   const r = composer.getBoundingClientRect();
   if (r.width === 0 && r.height === 0) return; // composer detached / hidden
-  const width = Math.round(r.width);
-  // Clamp into the viewport so the chip can never render off-screen.
-  const maxLeft = Math.max(4, window.innerWidth - width - 4);
-  const left = Math.min(Math.max(4, Math.round(r.left)), maxLeft);
-  panel.style.left = `${left}px`;
-  panel.style.width = `${width}px`;
-  // Sit just above the composer, measured from the viewport bottom.
-  panel.style.bottom = `${Math.round(window.innerHeight - r.top + 6)}px`;
+  // Track the *visual* viewport so the panel rides above the on-screen keyboard
+  // (which shrinks visualViewport without touching innerHeight) instead of hiding
+  // behind it. Falls back to the layout viewport on desktop.
+  const vv = window.visualViewport;
+  const keyboardInset = vv ? Math.max(0, window.innerHeight - vv.height - vv.offsetTop) : 0;
+  const geom = computePanelGeom(
+    { left: r.left, top: r.top, width: r.width },
+    { innerWidth: window.innerWidth, innerHeight: window.innerHeight, keyboardInset },
+    findOverlayTopAbove(composer, r.top),
+  );
+  panel.style.left = `${geom.left}px`;
+  panel.style.width = `${geom.width}px`;
+  panel.style.bottom = `${geom.bottom}px`;
+}
+
+// Overlays Kick pops up over the composer (emote / emoji picker, autocomplete) that
+// our panel must not overlap. Selector-light + size-gated so it ignores the small
+// toggle buttons and never dodges ordinary chat content.
+const OVERLAY_SELECTORS = [
+  '[data-testid*="emote" i]',
+  '[data-testid*="emoji" i]',
+  '[class*="emote-picker" i]',
+  '[class*="emoji-picker" i]',
+  '[role="dialog"]',
+  '[role="listbox"]',
+];
+
+/**
+ * Viewport-relative top of an overlay that opens *above* the composer, or undefined
+ * when none is open — so the panel can sit above the overlay rather than under it.
+ */
+function findOverlayTopAbove(composer: HTMLElement, composerTop: number): number | undefined {
+  for (const sel of OVERLAY_SELECTORS) {
+    let nodes: NodeListOf<HTMLElement>;
+    try {
+      nodes = document.querySelectorAll<HTMLElement>(sel);
+    } catch {
+      continue; // invalid selector, skip
+    }
+    for (const el of nodes) {
+      if (el.id === COMPOSE_ID || el.contains(composer) || composer.contains(el)) continue;
+      const box = el.getBoundingClientRect();
+      if (box.width < 40 || box.height < 40) continue; // ignore icons / toggle buttons
+      // A popover sitting above the composer (not the chat list below, nor a side panel).
+      if (box.top < composerTop && box.bottom <= composerTop + 8) return box.top;
+    }
+  }
+  return undefined;
 }
 
 export function updateComposePreview(state: ComposeUiState): void {
@@ -166,6 +211,8 @@ export function unmountComposePreview(): void {
   if (ui) {
     window.removeEventListener('scroll', ui.reposition, { capture: true } as EventListenerOptions);
     window.removeEventListener('resize', ui.reposition);
+    window.visualViewport?.removeEventListener('resize', ui.reposition);
+    window.visualViewport?.removeEventListener('scroll', ui.reposition);
     ui.resizeObs?.disconnect();
   }
   document.getElementById(COMPOSE_ID)?.remove();

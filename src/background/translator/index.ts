@@ -2,6 +2,7 @@ import type { ProviderStatus, TranslationOutcome, TranslationRequest } from '~/s
 import type { CloudProviderId, Settings } from '~/shared/settings';
 import { rootLogger } from '~/shared/logger';
 import { decodeHtmlEntities } from '~/shared/decode';
+import { isDeeplPremium, routeForBudget } from '~/shared/langTiers';
 import { ConcurrencyQueue } from '../queue';
 import { googleProvider } from './google';
 import { deeplProvider } from './deepl';
@@ -107,28 +108,39 @@ function isDeeplBudgetExhausted(ctx: ProviderContext): boolean {
 // switching (and toast spam). Only overridden when that provider enters cooldown.
 let stickyProvider: CloudProviderId | undefined;
 
-function eligibleOrder(settings: Settings, ctx: ProviderContext): CloudProviderId[] {
-  const live = settings.providerOrder.filter((id) => {
-    const provider = PROVIDERS[id];
-    if (!provider) return false;
-    if (provider.requiresKey && !provider.isConfigured(ctx)) return false;
-    if (health[id].cooldownUntilMs > Date.now()) return false;
-    if (id === 'deepl' && isDeeplBudgetExhausted(ctx)) return false;
-    return true;
-  });
+/** Configured + not budget-blocked (ignores transient cooldown). */
+function isConfiguredAndAllowed(id: CloudProviderId, ctx: ProviderContext): boolean {
+  const p = PROVIDERS[id];
+  if (!p) return false;
+  if (p.requiresKey && !p.isConfigured(ctx)) return false;
+  if (id === 'deepl' && isDeeplBudgetExhausted(ctx)) return false;
+  return true;
+}
+
+function eligibleOrder(settings: Settings, ctx: ProviderContext, targetLang?: string): CloudProviderId[] {
+  const smart = settings.deeplSmartRouting;
+  // Budget-aware: for targets DeepL doesn't measurably win at, push it to the end
+  // so the free engines spend first and the DeepL quota lasts.
+  const baseOrder = routeForBudget(settings.providerOrder, targetLang, smart);
+  const deeplDemoted = smart && !isDeeplPremium(targetLang);
+
+  const live = baseOrder.filter(
+    (id) => isConfiguredAndAllowed(id, ctx) && health[id].cooldownUntilMs <= Date.now(),
+  );
   if (live.length === 0) {
     // Everyone cooling down: try the one recovering soonest (still respects config).
-    return [...settings.providerOrder]
-      .filter((id) => {
-        const p = PROVIDERS[id];
-        if (!p || (p.requiresKey && !p.isConfigured(ctx))) return false;
-        if (id === 'deepl' && isDeeplBudgetExhausted(ctx)) return false;
-        return true;
-      })
+    return baseOrder
+      .filter((id) => isConfiguredAndAllowed(id, ctx))
       .sort((a, b) => health[a].cooldownUntilMs - health[b].cooldownUntilMs);
   }
-  // Sticky: if the last successful provider is still live, put it first.
-  if (stickyProvider && live.includes(stickyProvider) && live[0] !== stickyProvider) {
+  // Sticky: keep the last good provider first to avoid churn — but never re-promote
+  // DeepL when budget routing has deliberately demoted it for this target.
+  if (
+    stickyProvider &&
+    !(deeplDemoted && stickyProvider === 'deepl') &&
+    live.includes(stickyProvider) &&
+    live[0] !== stickyProvider
+  ) {
     return [stickyProvider, ...live.filter((id) => id !== stickyProvider)];
   }
   return live;
@@ -150,7 +162,7 @@ export async function translateGroup(
   const unresolved = new Set<number>(reqs.map((_, i) => i));
   let lastError: ProviderError | undefined;
 
-  for (const id of eligibleOrder(settings, ctx)) {
+  for (const id of eligibleOrder(settings, ctx, reqs[0]?.targetLang)) {
     if (unresolved.size === 0) break;
     const provider = PROVIDERS[id];
     if (!provider) continue;

@@ -95,7 +95,7 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
             onInput={(e) => onPatch({ deeplApiKey: (e.target as HTMLInputElement).value.trim() })}
           />
           <p class="text-[11px] text-kick-muted">
-            Free plan: 500k chars/month. Key ends with <code>:fx</code>. Get one at{' '}
+            Free plan: 1,000,000 chars/month. Key ends with <code>:fx</code>. Get one at{' '}
             <a class="text-kick-primary underline" href="https://www.deepl.com/pro#developer" target="_blank" rel="noreferrer">
               deepl.com/pro#developer
             </a>
@@ -113,6 +113,19 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
             <option value="pro">Pro (api.deepl.com)</option>
           </select>
         </div>
+        <label class="kt-row flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            class="accent-kick-primary"
+            checked={settings.deeplSmartRouting}
+            onChange={(e) => onPatch({ deeplSmartRouting: (e.target as HTMLInputElement).checked })}
+          />
+          <span class="text-sm">Smart budget routing</span>
+        </label>
+        <p class="text-[11px] text-kick-muted -mt-2">
+          Spend DeepL only on the European languages it clearly wins at; other targets (Japanese,
+          Arabic, Hindi…) use the free engines first, so your DeepL quota lasts much longer.
+        </p>
       </section>
 
       <section class="kt-card space-y-3">

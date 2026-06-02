@@ -42,3 +42,22 @@ export function isDeeplPremium(code: string | undefined): boolean {
   const c = code.toLowerCase();
   return DEEPL_PREMIUM.has(c) || DEEPL_PREMIUM.has(baseLang(c));
 }
+
+/**
+ * Budget-aware provider ordering. When smart routing is on and the target is NOT a
+ * language DeepL measurably wins at (`isDeeplPremium`), demote DeepL to the end of
+ * the chain so the free engines spend first and the limited DeepL quota is conserved
+ * for the European pairs where it actually helps. DeepL stays in the chain as a last
+ * resort (never dropped) so no target becomes untranslatable. A no-op when routing is
+ * off, the target is premium, or DeepL is absent / already last.
+ */
+export function routeForBudget<T extends string>(
+  order: readonly T[],
+  targetLang: string | undefined,
+  smartRouting: boolean,
+): T[] {
+  if (!smartRouting || isDeeplPremium(targetLang)) return [...order];
+  const i = order.indexOf('deepl' as T);
+  if (i === -1 || i === order.length - 1) return [...order];
+  return [...order.filter((id) => id !== ('deepl' as T)), 'deepl' as T];
+}

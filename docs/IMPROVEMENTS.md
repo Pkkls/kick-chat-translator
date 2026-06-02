@@ -21,7 +21,7 @@ Status: ✅ done · 🔄 in progress · ⏳ planned
 14. ✅ Rate-limit hint: subtle ⏳ on the panel when throttled (was silent)
 15. ✅ Compose target badge shows the language NAME on hover (title)
 16. ✅ Distinct loading state styling (don't reuse arrow pulse only)
-17. ⏳ Reposition compose panel above on-screen keyboards / emote picker overlap
+17. ✅ Reposition compose panel above on-screen keyboards / emote picker overlap — visualViewport-aware (rides above the keyboard) + size-gated overlay avoidance, pure `computePanelGeom` unit-tested
 18. ✅ Skip compose for URL-only / mention-only typed text
 
 ## C. Incoming (reading) quality
@@ -41,7 +41,12 @@ Status: ✅ done · 🔄 in progress · ⏳ planned
 ## E. Performance
 29. ✅ `fetchChannelLangIso` reuses the chatroom-id fetch (one request) — verified, documented
 30. ✅ ResizeObserver callback guarded (no work when panel hidden)
-31. ⏳ Lazy-load franc-min off the hot path (bundle parse cost) — deferred (risk vs reward)
+31. ✖️ Lazy-load franc-min off the hot path — **WON'T-DO (build constraint).** The content
+    script ships as a single *classic IIFE* (`scripts/bundle-content.ts`: `inlineDynamicImports`
+    + `assertClassic` throws on any `import(`) so it injects deterministically on Brave. A
+    dynamic `import('franc-min')` therefore fails the build; moving detection to the SW trades
+    the one-time parse for a per-message round-trip (net worse latency). franc stays statically
+    bundled — the cost is one-time at content-script load, not on the per-message hot path.
 32. ✅ memCache key reuse via shared `cacheKey` (no duplicate normalization)
 
 ## F. Tests
@@ -67,12 +72,21 @@ Status: ✅ done · 🔄 in progress · ⏳ planned
 
 ## I. Provider interop
 48. ✅ Google provider lang param handles regional codes (pt-br→pt, zh→zh-CN, zh-tw→zh-TW)
-49. ⏳ MyMemory regional code mapping — deferred (3rd-tier fallback; its base 2-letter codes work)
+49. ✅ MyMemory regional code mapping — `toMyMemoryCode()` maps the variants we keep distinct
+    to RFC-3066 (pt-br→pt-BR, pt→pt-PT, zh→zh-CN, zh-tw/zh-hant→zh-TW, nb/nn→no); base 2-letter otherwise
 50. ✅ Unsupported targets skip cleanly to the next provider (no crash, no cooldown)
 
 ---
 
-**Done: 47 / 50.** Deferred (⏳, low-value / higher-risk): #17 panel-overlap reposition,
-#28 www/m host variants, #31 lazy-load franc-min, #49 MyMemory regional codes.
-All 4 batches shipped green: typecheck + lint + **91 tests** + build. Commits
-`05db993` (A) · `5e0b61d` (B) · `eedc19e` (C) · `6503404` (D).
+**Done: 49 / 50.** #31 lazy-load franc-min resolved as **won't-do** (build is a single classic
+IIFE — see above). #28 www/m host variants still deferred (slug extraction is already
+pathname-based; the gap is only a `m.kick.com` content-script match, low value).
+
+**Plus** a 5th, separate enhancement landed alongside #17/#49: **budget-aware DeepL routing** —
+`routeForBudget()` wires the `DEEPL_PREMIUM` tier into the provider chain so DeepL is only
+spent on the European pairs it measurably wins at; non-premium targets (ja/ko/zh/ar/hi/th…)
+demote it to a last-resort fallback, stretching the Free 1M/month quota. Setting
+`deeplSmartRouting` (default on), surfaced in Options → Providers → DeepL.
+
+Batches A–D shipped green earlier (`05db993` · `5e0b61d` · `eedc19e` · `6503404`); this
+polish pass adds **116 tests** + green typecheck/lint/build.

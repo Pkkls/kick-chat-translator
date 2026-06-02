@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isContextCritical, isDeeplPremium } from './langTiers';
+import { isContextCritical, isDeeplPremium, routeForBudget } from './langTiers';
 
 describe('isContextCritical', () => {
   it('flags subject-dropping languages that misattribute person', () => {
@@ -29,5 +29,42 @@ describe('isDeeplPremium', () => {
     for (const c of ['ja', 'ko', 'zh', 'hi', 'th', 'ar']) {
       expect(isDeeplPremium(c), c).toBe(false);
     }
+  });
+});
+
+describe('routeForBudget', () => {
+  const ORDER = ['deepl', 'google', 'mymemory', 'lingva'] as const;
+
+  it('keeps DeepL first for premium European targets', () => {
+    expect(routeForBudget(ORDER, 'fr', true)).toEqual(['deepl', 'google', 'mymemory', 'lingva']);
+    expect(routeForBudget(ORDER, 'pt-br', true)).toEqual(['deepl', 'google', 'mymemory', 'lingva']);
+  });
+
+  it('demotes DeepL to last for non-premium targets (conserves quota)', () => {
+    expect(routeForBudget(ORDER, 'ja', true)).toEqual(['google', 'mymemory', 'lingva', 'deepl']);
+    expect(routeForBudget(ORDER, 'ar', true)).toEqual(['google', 'mymemory', 'lingva', 'deepl']);
+  });
+
+  it('never drops DeepL — it stays as a last-resort fallback', () => {
+    expect(routeForBudget(ORDER, 'th', true)).toContain('deepl');
+  });
+
+  it('is a no-op when smart routing is off', () => {
+    expect(routeForBudget(ORDER, 'ja', false)).toEqual([...ORDER]);
+  });
+
+  it('is a no-op when DeepL is absent or already last', () => {
+    expect(routeForBudget(['google', 'mymemory'], 'ja', true)).toEqual(['google', 'mymemory']);
+    expect(routeForBudget(['google', 'deepl'], 'ja', true)).toEqual(['google', 'deepl']);
+  });
+
+  it('treats an unknown / undefined target as non-premium (demotes)', () => {
+    expect(routeForBudget(ORDER, undefined, true)).toEqual(['google', 'mymemory', 'lingva', 'deepl']);
+  });
+
+  it('does not mutate the input order', () => {
+    const input = [...ORDER];
+    routeForBudget(input, 'ja', true);
+    expect(input).toEqual([...ORDER]);
   });
 });
