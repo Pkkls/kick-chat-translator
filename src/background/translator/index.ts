@@ -47,6 +47,9 @@ function buildContext(settings: Settings, signal?: AbortSignal): ProviderContext
 }
 
 function markFailure(id: CloudProviderId, code: string, message: string): void {
+  // 'unsupported' = the provider can't translate to this target — not a health
+  // problem. Skip it for this request without cooling the provider down.
+  if (code === 'unsupported') return;
   const h = health[id];
   h.lastError = message;
   h.lastErrorMs = Date.now();

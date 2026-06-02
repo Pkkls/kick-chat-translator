@@ -26,9 +26,16 @@ export function shouldDropBySourceLang(detected: string | undefined, settings: S
   return undefined;
 }
 
+const baseLang = (code: string): string => code.toLowerCase().split('-')[0] ?? code.toLowerCase();
+
+/**
+ * Same language as the target? Compares base languages so regional variants count
+ * as a match (pt ≡ pt-BR, zh ≡ zh-TW) — no point translating a message that's
+ * already in the reader's language.
+ */
 export function isSameLanguageAsTarget(detected: string | undefined, target: string): boolean {
   if (!detected) return false;
-  return detected.toLowerCase() === target.toLowerCase();
+  return baseLang(detected) === baseLang(target);
 }
 
 const EMOJI_OR_SYMBOL = /[\p{Emoji_Presentation}\p{Extended_Pictographic}\p{P}\p{S}\s]/u;

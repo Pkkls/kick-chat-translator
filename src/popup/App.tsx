@@ -82,6 +82,7 @@ export function App() {
           value={settings.targetLang}
           onChange={(e) => void patch('targetLang', (e.target as HTMLSelectElement).value)}
         >
+          <option value="auto">Auto — your language</option>
           {LANGUAGES.map((l) => (
             <option key={l.code} value={l.code}>
               {l.label} ({l.native})
@@ -118,6 +119,34 @@ export function App() {
             label="lang badge"
           />
         </div>
+      </section>
+
+      <section class="kt-card flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <label class="kt-label">Translate what I type</label>
+          <Toggle
+            checked={settings.composeEnabled}
+            onChange={(v) => void patch('composeEnabled', v)}
+            label="enable"
+          />
+        </div>
+        {settings.composeEnabled && (
+          <>
+            <select
+              class="kt-select"
+              value={settings.composeTargetLang}
+              onChange={(e) => void patch('composeTargetLang', (e.target as HTMLSelectElement).value)}
+            >
+              <option value="auto">Auto — channel language</option>
+              {LANGUAGES.map((l) => (
+                <option key={l.code} value={l.code}>
+                  {l.label} ({l.native})
+                </option>
+              ))}
+            </select>
+            <span class="text-[10px] text-kick-muted">Auto-detects the channel's language. Preview shows above the chat box — click it to insert.</span>
+          </>
+        )}
       </section>
 
       <section class="kt-card flex flex-col gap-2">

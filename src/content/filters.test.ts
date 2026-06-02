@@ -48,6 +48,14 @@ describe('isSameLanguageAsTarget', () => {
     expect(isSameLanguageAsTarget('EN', 'en')).toBe(true);
     expect(isSameLanguageAsTarget('ja', 'en')).toBe(false);
   });
+  it('treats regional variants as the same base language', () => {
+    expect(isSameLanguageAsTarget('pt', 'pt-br')).toBe(true);
+    expect(isSameLanguageAsTarget('zh', 'zh-tw')).toBe(true);
+    expect(isSameLanguageAsTarget('pt', 'es')).toBe(false);
+  });
+  it('is false when detection is undefined', () => {
+    expect(isSameLanguageAsTarget(undefined, 'en')).toBe(false);
+  });
 });
 
 describe('isNoise', () => {

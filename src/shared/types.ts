@@ -16,6 +16,13 @@ export interface TranslationRequest {
   context?: string;
   /** Force a fresh translation, bypassing the cache (re-translate button). */
   noCache?: boolean;
+  /**
+   * Skip the background "text already looks like the target language" heuristic.
+   * That guard assumes ASCII == English, which is right for *incoming* chat but
+   * wrong for the compose preview, where the user deliberately types an ASCII
+   * source language (French, Spanish, …) to translate INTO the target.
+   */
+  skipSameLangGuard?: boolean;
 }
 
 export interface TranslationResult {

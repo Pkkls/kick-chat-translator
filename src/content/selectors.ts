@@ -24,6 +24,30 @@ export const SELECTORS = {
 
 export const NON_CHAT_TEXT_CLASSES = ['text-neutral']; // timestamp
 
+/**
+ * Candidate selectors for Kick's chat *composer* (the box you type into), ordered
+ * most-specific first. Verified live (2026): Kick renders a Lexical editor —
+ * `div.editor-input[role="textbox"][contenteditable="true"][data-testid="chat-input"]`.
+ * The first and `[data-testid="chat-input"]` selectors both match it; the rest cover
+ * legacy/mobile textarea layouts. If Kick renames things the feature simply doesn't
+ * mount (graceful no-op).
+ */
+export const COMPOSE_SELECTORS = [
+  '#channel-chatroom div[contenteditable="true"]',
+  '#channel-chatroom [role="textbox"][contenteditable="true"]',
+  '#channel-chatroom textarea',
+  '[data-testid="chat-input"]',
+  '[data-testid="message-input"]',
+  'div[contenteditable="true"][data-editor]',
+  '[contenteditable="true"][role="textbox"]',
+] as const;
+
+/** Find the chat composer element, or null when not present (e.g. not on a channel page). */
+export function findComposer(root: ParentNode = document): HTMLElement | null {
+  const el = pickFirst(root, COMPOSE_SELECTORS);
+  return el instanceof HTMLElement ? el : null;
+}
+
 export function pickFirst(root: ParentNode, list: readonly string[]): Element | null {
   for (const sel of list) {
     try {

@@ -7,6 +7,7 @@ import { applyUserGlossary, isSlangOnly } from '~/shared/glossary';
 import { parseKickContent } from './emoteParser';
 import { extractMessageText } from './selectors';
 import { detectLanguage } from './langDetect';
+import { resolveBrowserLang } from '~/shared/languages';
 import { isNoise, isSameLanguageAsTarget, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
 import { inject, incrementFloatingCount, injectHoverPlaceholder, removeAllArtifacts, showError, showLoading, showThrottleIndicator, showToast, updateActiveProvider } from './injector';
 import { localEngine } from './localEngine';
@@ -61,6 +62,11 @@ export class TranslationPipeline {
     this.settings = next;
   }
 
+  /** Reading target — resolves the 'auto' sentinel to the user's browser language. */
+  private get effTarget(): string {
+    return this.effTarget === 'auto' ? resolveBrowserLang() : this.effTarget;
+  }
+
   /** Cheap filters + a single franc-min call. Returns undefined to skip. */
   private prepare(rawText: string, meta: { username: string; channel: string; isBot: boolean }): Prepared | undefined {
     if (!this.settings.enabled) return undefined;
@@ -83,8 +89,8 @@ export class TranslationPipeline {
     if (isSlangOnly(realText)) return undefined; // poggers / copium / kekw …
 
     const detected = detectLanguage(realText);
-    if (this.settings.ignoreEnglish && this.settings.targetLang === 'en' && detected === 'en') return undefined;
-    if (isSameLanguageAsTarget(detected, this.settings.targetLang)) return undefined;
+    if (this.settings.ignoreEnglish && this.effTarget === 'en' && detected === 'en') return undefined;
+    if (isSameLanguageAsTarget(detected, this.effTarget)) return undefined;
     if (shouldDropBySourceLang(detected, this.settings)) return undefined;
 
     return { real: realText, detected };
@@ -113,7 +119,7 @@ export class TranslationPipeline {
     try {
       await send({
         type: 'translate',
-        payload: { messageId: `ws:${msg.id}`, text: prepared.real, targetLang: this.settings.targetLang, channel: msg.channel },
+        payload: { messageId: `ws:${msg.id}`, text: prepared.real, targetLang: this.effTarget, channel: msg.channel },
       });
     } catch (err: unknown) {
       log.debug('ws warmup failed', err);
@@ -124,7 +130,7 @@ export class TranslationPipeline {
     const prepared = this.prepare(msg.text, msg);
     if (!prepared) return;
     const { real, detected } = prepared;
-    const target = this.settings.targetLang;
+    const target = this.effTarget;
 
     // ── 0. In-tab memory cache: instant, zero round-trip ──
     const mem = memCache.get(real, target);
@@ -178,7 +184,7 @@ export class TranslationPipeline {
   private async translateAndApply(msg: IncomingDomMessage, real: string, sourceLang?: string): Promise<void> {
     const context = this.contextFor(msg.channel, real, msg.username);
     showLoading(msg.injectionTarget);
-    const outcome = await this.requestCloud(real, this.settings.targetLang, msg.channel, context, false, sourceLang);
+    const outcome = await this.requestCloud(real, this.effTarget, msg.channel, context, false, sourceLang);
     if (!outcome) {
       if (this.settings.debug) showError(msg.injectionTarget, 'translate failed');
       else removeAllArtifacts(msg.injectionTarget);
@@ -206,7 +212,7 @@ export class TranslationPipeline {
   /** ⟳ button: re-translate ignoring caches (and skip the same-lang guard). */
   private async forceRetranslate(msg: IncomingDomMessage, real: string): Promise<void> {
     showLoading(msg.injectionTarget);
-    const outcome = await this.requestCloud(real, this.settings.targetLang, msg.channel, '', true);
+    const outcome = await this.requestCloud(real, this.effTarget, msg.channel, '', true);
     if (!outcome || !outcome.ok) {
       removeAllArtifacts(msg.injectionTarget);
       return;
@@ -262,7 +268,7 @@ export class TranslationPipeline {
       return;
     }
     if (!opts.force) {
-      if (isSameLanguageAsTarget(result.detectedLang, this.settings.targetLang) && this.settings.ignoreEnglish) {
+      if (isSameLanguageAsTarget(result.detectedLang, this.effTarget) && this.settings.ignoreEnglish) {
         removeAllArtifacts(msg.injectionTarget);
         return;
       }
@@ -272,7 +278,7 @@ export class TranslationPipeline {
       }
     }
     if (opts.store) {
-      memCache.set(real, this.settings.targetLang, {
+      memCache.set(real, this.effTarget, {
         translatedText: tt,
         detectedLang: result.detectedLang,
         provider: result.provider,
