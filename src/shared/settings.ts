@@ -10,7 +10,9 @@ export type CloudProviderId = z.infer<typeof ProviderOrderSchema>[number];
 
 export const SettingsSchema = z.object({
   enabled: z.boolean().default(true),
-  targetLang: z.string().default('en'),
+  // 'auto' = read in the browser's own language (resolveBrowserLang). Works for any
+  // user, anywhere, with no configuration. An explicit ISO code overrides it.
+  targetLang: z.string().default('auto'),
   // 'hover' = lazy mode: translation only fetched+shown on mouse hover (saves ~10x quota).
   displayStyle: z.enum(['below', 'inline', 'replace', 'hover']).default('below'),
   showOriginal: z.boolean().default(true),
@@ -67,7 +69,9 @@ export const SettingsSchema = z.object({
   // Source language is auto-detected; output goes to composeTargetLang.
   // Runs through the same DeepL-first cloud chain as incoming translation.
   composeEnabled: z.boolean().default(true),
-  composeTargetLang: z.string().default('en'),
+  // 'auto' = write in the *channel's* language, detected from Kick's API
+  // (livestream.lang_iso). No manual language picking. An explicit code overrides it.
+  composeTargetLang: z.string().default('auto'),
   // 'insert' drops the translation into the chat box (you press Enter); 'copy'
   // puts it on the clipboard instead (safe fallback if Kick's editor rejects writes).
   composeInsertMode: z.enum(['insert', 'copy']).default('insert'),

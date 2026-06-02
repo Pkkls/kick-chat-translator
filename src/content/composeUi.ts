@@ -7,7 +7,7 @@
  * state transitions keep the previous text on screen until the next one is ready,
  * so the panel never flashes empty while a request is in flight.
  */
-import { LANGUAGES } from '~/shared/languages';
+import { langFlag } from '~/shared/languages';
 import { showToast } from './injector';
 
 const COMPOSE_ID = 'kt-compose-bar';
@@ -18,17 +18,15 @@ export type ComposeUiState =
   | { kind: 'ready'; text: string; provider: string };
 
 export interface ComposeUiHandlers {
-  /** User clicked the translation (everything except the language picker). */
+  /** User clicked the translation to insert it into the chat box. */
   onInsert: () => void;
-  /** User changed the output language in the picker. */
-  onChangeTarget: (lang: string) => void;
 }
 
 interface ComposeUi {
   panel: HTMLElement;
   textEl: HTMLElement;
   providerEl: HTMLElement;
-  langSelect: HTMLSelectElement;
+  targetEl: HTMLElement;
   composer: HTMLElement;
   reposition: () => void;
   resizeObs: ResizeObserver | undefined;
@@ -62,21 +60,13 @@ export function mountComposePreview(
   arrow.textContent = '➜';
   panel.appendChild(arrow);
 
-  const langSelect = document.createElement('select');
-  langSelect.className = 'kt-compose-lang';
-  langSelect.title = 'Output language';
-  for (const l of LANGUAGES) {
-    const opt = document.createElement('option');
-    opt.value = l.code;
-    opt.textContent = `${l.flag} ${l.native}`;
-    langSelect.appendChild(opt);
-  }
-  langSelect.value = targetLang;
-  // The picker must not trigger the insert click.
-  langSelect.addEventListener('click', (e) => e.stopPropagation());
-  langSelect.addEventListener('mousedown', (e) => e.stopPropagation());
-  langSelect.addEventListener('change', () => handlers.onChangeTarget(langSelect.value));
-  panel.appendChild(langSelect);
+  // Read-only badge of the auto-detected output language (the channel's language).
+  // No manual picker — the target is detected, not configured.
+  const targetEl = document.createElement('span');
+  targetEl.className = 'kt-compose-target';
+  targetEl.textContent = langFlag(targetLang);
+  targetEl.title = 'Auto-detected channel language';
+  panel.appendChild(targetEl);
 
   const textEl = document.createElement('span');
   textEl.className = 'kt-compose-text';
@@ -94,7 +84,6 @@ export function mountComposePreview(
   // Clicking the translation inserts it (mousedown, so the composer doesn't lose
   // focus to a real click first — keeps the caret where the user expects).
   panel.addEventListener('mousedown', (e) => {
-    if (e.target === langSelect) return;
     e.preventDefault();
     e.stopPropagation();
     handlers.onInsert();
@@ -112,7 +101,7 @@ export function mountComposePreview(
     resizeObs.observe(composer);
   }
 
-  ui = { panel, textEl, providerEl, langSelect, composer, reposition, resizeObs };
+  ui = { panel, textEl, providerEl, targetEl, composer, reposition, resizeObs };
 
   window.addEventListener('scroll', reposition, { passive: true, capture: true });
   window.addEventListener('resize', reposition, { passive: true });
@@ -150,9 +139,9 @@ export function updateComposePreview(state: ComposeUiState): void {
   }
 }
 
-/** Sync the picker when the output language is changed elsewhere (popup/options). */
+/** Update the target badge when the detected channel language (or override) changes. */
 export function setComposeTargetLang(lang: string): void {
-  if (ui && ui.langSelect.value !== lang) ui.langSelect.value = lang;
+  if (ui) ui.targetEl.textContent = langFlag(lang);
 }
 
 export function isComposePreviewMounted(): boolean {

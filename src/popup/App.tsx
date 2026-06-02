@@ -82,6 +82,7 @@ export function App() {
           value={settings.targetLang}
           onChange={(e) => void patch('targetLang', (e.target as HTMLSelectElement).value)}
         >
+          <option value="auto">Auto — your language</option>
           {LANGUAGES.map((l) => (
             <option key={l.code} value={l.code}>
               {l.label} ({l.native})
@@ -136,13 +137,14 @@ export function App() {
               value={settings.composeTargetLang}
               onChange={(e) => void patch('composeTargetLang', (e.target as HTMLSelectElement).value)}
             >
+              <option value="auto">Auto — channel language</option>
               {LANGUAGES.map((l) => (
                 <option key={l.code} value={l.code}>
                   {l.label} ({l.native})
                 </option>
               ))}
             </select>
-            <span class="text-[10px] text-kick-muted">Preview shows above the chat box. Click it to drop the translation in.</span>
+            <span class="text-[10px] text-kick-muted">Auto-detects the channel's language. Preview shows above the chat box — click it to insert.</span>
           </>
         )}
       </section>

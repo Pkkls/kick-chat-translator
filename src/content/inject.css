@@ -263,19 +263,17 @@
   animation: kt-compose-pulse 0.9s ease-in-out infinite;
 }
 
-.kt-compose-lang {
+.kt-compose-target {
   flex-shrink: 0;
-  max-width: 92px;
-  padding: 1px 4px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 1px 6px;
+  background: rgba(83, 252, 24, 0.14);
+  border: 1px solid rgba(83, 252, 24, 0.3);
   border-radius: 4px;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 11px;
-  cursor: pointer;
-}
-.kt-compose-lang:hover {
-  border-color: rgba(83, 252, 24, 0.4);
+  color: #53fc18;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 .kt-compose-text {
@@ -354,10 +352,5 @@
   }
   .kt-compose-arrow {
     color: rgba(40, 150, 20, 0.95);
-  }
-  .kt-compose-lang {
-    background: rgba(0, 0, 0, 0.05);
-    border-color: rgba(0, 0, 0, 0.15);
-    color: rgba(20, 25, 35, 0.85);
   }
 }

@@ -12,7 +12,7 @@ import {
 import { ChatObserver } from './observer';
 import { ComposeController } from './compose';
 import { KickPusherClient } from './pusher';
-import { extractChannelSlug, fetchChatroomId } from './kickApi';
+import { extractChannelSlug, fetchChannelLangIso, fetchChatroomId } from './kickApi';
 import { localEngine } from './localEngine';
 import { logPlatform, refresh7TV } from './platform';
 import { langFlag } from '~/shared/languages';
@@ -132,6 +132,7 @@ async function main(): Promise<void> {
       observer.stop();
       unmountFloatingBar();
       compose.stop();
+      compose.setChannelLang(undefined);
       return;
     }
 
@@ -142,6 +143,10 @@ async function main(): Promise<void> {
     mountBar();
     // Compose preview self-gates on composeEnabled and finds the composer itself.
     compose.start();
+
+    // Auto-detect the channel's chat language (Kick API) → the compose target in
+    // 'auto' mode, so the user writes in the channel's language with no setup.
+    void fetchChannelLangIso(slug).then((lang) => compose.setChannelLang(lang));
 
     if (pusher && settings.connectionMode !== 'dom') {
       const id = await fetchChatroomId(slug);

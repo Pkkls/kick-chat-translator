@@ -10,7 +10,6 @@
  * input listener is passive and the heavy work is fully off the keystroke path.
  */
 import type { Settings } from '~/shared/settings';
-import { saveSettings } from '~/shared/settings';
 import { rootLogger } from '~/shared/logger';
 import { send } from '~/shared/messages';
 import { detectLanguage } from './langDetect';
@@ -50,6 +49,8 @@ export class ComposeController {
   private lastSource: string | undefined;
   /** Last translation shown — what a click inserts. */
   private lastTranslation = '';
+  /** Channel's chat language (ISO-2) from Kick's API — the auto compose target. */
+  private channelLang: string | undefined;
   private running = false;
 
   constructor(settings: Settings) {
@@ -89,12 +90,34 @@ export class ComposeController {
       this.stop();
       return;
     }
-    // Output language changed live → re-sync the picker and re-translate now.
+    // Output language override changed (options) → re-sync the badge + re-translate.
     if (next.composeEnabled && next.composeTargetLang !== prevTarget) {
-      setComposeTargetLang(next.composeTargetLang);
+      setComposeTargetLang(this.resolveTarget());
       this.lastSource = undefined;
       void this.evaluate();
     }
+  }
+
+  /**
+   * The channel's chat language, set from Kick's API on each route change. When the
+   * target is 'auto' (the default), this becomes the compose target — so the user
+   * writes in whatever language the channel speaks, with zero configuration.
+   */
+  setChannelLang(lang: string | undefined): void {
+    if (lang === this.channelLang) return;
+    this.channelLang = lang;
+    if (this.running && this.settings.composeTargetLang === 'auto') {
+      setComposeTargetLang(this.resolveTarget());
+      this.lastSource = undefined;
+      void this.evaluate();
+    }
+  }
+
+  /** Effective output language: the detected channel language in 'auto' mode. */
+  private resolveTarget(): string {
+    return this.settings.composeTargetLang === 'auto'
+      ? this.channelLang ?? 'en'
+      : this.settings.composeTargetLang;
   }
 
   // ─── Attach / self-heal ────────────────────────────────────────────────────
@@ -135,9 +158,8 @@ export class ComposeController {
     this.detachComposer();
     this.composer = composer;
     composer.addEventListener('input', this.onInput);
-    mountComposePreview(composer, this.settings.composeTargetLang, {
+    mountComposePreview(composer, this.resolveTarget(), {
       onInsert: () => this.handleInsert(),
-      onChangeTarget: (lang) => this.handleChangeTarget(lang),
     });
     this.lastSource = undefined;
     log.debug('bound to composer', composer.tagName);
@@ -181,7 +203,7 @@ export class ComposeController {
 
     const raw = readComposerText(composer);
     const trimmed = raw.trim();
-    const target = this.settings.composeTargetLang;
+    const target = this.resolveTarget();
     const detected = trimmed ? detectLanguage(trimmed) : undefined;
 
     const action = decideComposeAction(trimmed, this.lastSource, detected, target);
@@ -257,13 +279,5 @@ export class ComposeController {
   private handleInsert(): void {
     if (!this.composer || !this.lastTranslation) return;
     insertIntoComposer(this.composer, this.lastTranslation, this.settings.composeInsertMode);
-  }
-
-  private handleChangeTarget(lang: string): void {
-    if (lang === this.settings.composeTargetLang) return;
-    this.settings = { ...this.settings, composeTargetLang: lang };
-    this.lastSource = undefined;
-    void saveSettings({ composeTargetLang: lang });
-    void this.evaluate();
   }
 }

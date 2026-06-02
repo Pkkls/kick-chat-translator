@@ -5,7 +5,8 @@ describe('SettingsSchema', () => {
   it('fills defaults for missing fields', () => {
     const s = SettingsSchema.parse({});
     expect(s.enabled).toBe(true);
-    expect(s.targetLang).toBe('en');
+    expect(s.targetLang).toBe('auto');
+    expect(s.composeTargetLang).toBe('auto');
     expect(s.providerOrder).toEqual(['google', 'mymemory', 'lingva']);
   });
 

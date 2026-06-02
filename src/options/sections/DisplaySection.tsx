@@ -18,6 +18,7 @@ export function DisplaySection({ settings, onPatch }: Props) {
             value={settings.targetLang}
             onChange={(e) => onPatch({ targetLang: (e.target as HTMLSelectElement).value })}
           >
+            <option value="auto">Auto — your browser language</option>
             {LANGUAGES.map((l) => (
               <option key={l.code} value={l.code}>
                 {l.label} ({l.native})
@@ -25,6 +26,7 @@ export function DisplaySection({ settings, onPatch }: Props) {
             ))}
           </select>
         </div>
+        <p class="text-[11px] text-kick-muted">Auto reads incoming chat in your own language, detected from the browser.</p>
       </section>
 
       <section class="kt-card space-y-3">
@@ -90,6 +92,7 @@ export function DisplaySection({ settings, onPatch }: Props) {
             value={settings.composeTargetLang}
             onChange={(e) => onPatch({ composeTargetLang: (e.target as HTMLSelectElement).value })}
           >
+            <option value="auto">Auto — the channel's language</option>
             {LANGUAGES.map((l) => (
               <option key={l.code} value={l.code}>
                 {l.label} ({l.native})
@@ -97,6 +100,7 @@ export function DisplaySection({ settings, onPatch }: Props) {
             ))}
           </select>
         </div>
+        <p class="text-[11px] text-kick-muted">Auto detects the channel's broadcast language from Kick — no manual picking.</p>
         <ToggleRow
           checked={settings.composeInsertMode === 'insert'}
           onChange={(v) => onPatch({ composeInsertMode: v ? 'insert' : 'copy' })}
