@@ -122,6 +122,33 @@ export function App() {
 
       <section class="kt-card flex flex-col gap-2">
         <div class="flex items-center justify-between">
+          <label class="kt-label">Translate what I type</label>
+          <Toggle
+            checked={settings.composeEnabled}
+            onChange={(v) => void patch('composeEnabled', v)}
+            label="enable"
+          />
+        </div>
+        {settings.composeEnabled && (
+          <>
+            <select
+              class="kt-select"
+              value={settings.composeTargetLang}
+              onChange={(e) => void patch('composeTargetLang', (e.target as HTMLSelectElement).value)}
+            >
+              {LANGUAGES.map((l) => (
+                <option key={l.code} value={l.code}>
+                  {l.label} ({l.native})
+                </option>
+              ))}
+            </select>
+            <span class="text-[10px] text-kick-muted">Preview shows above the chat box. Click it to drop the translation in.</span>
+          </>
+        )}
+      </section>
+
+      <section class="kt-card flex flex-col gap-2">
+        <div class="flex items-center justify-between">
           <span class="kt-label">Providers</span>
           <span class="text-[10px] text-kick-muted">order in options</span>
         </div>

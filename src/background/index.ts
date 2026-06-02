@@ -64,7 +64,9 @@ async function handleTranslate(req: TranslationRequest): Promise<TranslationOutc
   // Same-language short-circuit: if the text obviously matches the target, don't
   // waste a provider call. The content script's franc detection already catches
   // most cases, but franc mislabels ~3% of short EN texts as foreign.
-  if (!req.noCache && looksLikeTargetLang(req.text, req.targetLang)) {
+  // Compose preview opts out (skipSameLangGuard): the user types an ASCII source
+  // language on purpose, so "looks like English" must NOT block it.
+  if (!req.noCache && !req.skipSameLangGuard && looksLikeTargetLang(req.text, req.targetLang)) {
     return { ok: false, error: { code: 'same_lang', message: 'Text appears to already be in target language' } };
   }
 

@@ -62,6 +62,15 @@ export const SettingsSchema = z.object({
 
   // UI
   popupShowsStats: z.boolean().default(true),
+
+  // Compose preview: translate what *you* type before you send it.
+  // Source language is auto-detected; output goes to composeTargetLang.
+  // Runs through the same DeepL-first cloud chain as incoming translation.
+  composeEnabled: z.boolean().default(true),
+  composeTargetLang: z.string().default('en'),
+  // 'insert' drops the translation into the chat box (you press Enter); 'copy'
+  // puts it on the clipboard instead (safe fallback if Kick's editor rejects writes).
+  composeInsertMode: z.enum(['insert', 'copy']).default('insert'),
 });
 
 export type Settings = z.infer<typeof SettingsSchema>;

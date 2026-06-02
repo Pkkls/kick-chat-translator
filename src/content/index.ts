@@ -10,6 +10,7 @@ import {
   type LocalChipState,
 } from './injector';
 import { ChatObserver } from './observer';
+import { ComposeController } from './compose';
 import { KickPusherClient } from './pusher';
 import { extractChannelSlug, fetchChatroomId } from './kickApi';
 import { localEngine } from './localEngine';
@@ -25,6 +26,7 @@ async function main(): Promise<void> {
   ensureStyles();
 
   const pipeline = new TranslationPipeline(settings);
+  const compose = new ComposeController(settings);
   let currentSlug: string | undefined;
 
   const observer = new ChatObserver((msg) => {
@@ -129,6 +131,7 @@ async function main(): Promise<void> {
     if (!slug) {
       observer.stop();
       unmountFloatingBar();
+      compose.stop();
       return;
     }
 
@@ -137,6 +140,8 @@ async function main(): Promise<void> {
     observer.reset();
     observer.start();
     mountBar();
+    // Compose preview self-gates on composeEnabled and finds the composer itself.
+    compose.start();
 
     if (pusher && settings.connectionMode !== 'dom') {
       const id = await fetchChatroomId(slug);
@@ -147,7 +152,9 @@ async function main(): Promise<void> {
     }
   }
 
-  if (settings.enabled) void attachForRoute();
+  // Compose preview is independent of the incoming-translation master switch, so
+  // attach the route machinery when either feature is on.
+  if (settings.enabled || settings.composeEnabled) void attachForRoute();
   if (settings.showFloatingBar) mountBar();
   watchBar();
 
@@ -213,6 +220,7 @@ async function main(): Promise<void> {
     const wasEnabled = settings.enabled;
     settings = next;
     pipeline.updateSettings(next);
+    compose.updateSettings(next);
     rootLogger.setEnabled(next.debug);
     updateFloatingBar(next);
     refreshChip();
