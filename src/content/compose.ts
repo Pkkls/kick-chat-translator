@@ -287,6 +287,8 @@ export class ComposeController {
   private handleInsert(): void {
     if (!this.composer || !this.lastTranslation) return;
     insertIntoComposer(this.composer, this.lastTranslation, this.settings.composeInsertMode);
+    // The preview did its job — hide it (the synthetic insert doesn't re-fire `input`).
+    this.dismiss();
   }
 
   /** Keyboard: Ctrl/Cmd+Enter inserts the preview; Esc dismisses it — only while shown. */
