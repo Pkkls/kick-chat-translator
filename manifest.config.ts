@@ -5,8 +5,8 @@ const isFirefox = process.env.BROWSER === 'firefox';
 
 export default defineManifest({
   manifest_version: 3,
-  name: 'Kick Chat Translator (i18n dev)',
-  short_name: 'KCT i18n',
+  name: 'Kick Chat Translator',
+  short_name: 'Kick Translator',
   version: pkg.version,
   description: pkg.description,
   icons: {
@@ -21,7 +21,7 @@ export default defineManifest({
       16: 'public/icons/icon16.png',
       32: 'public/icons/icon32.png',
     },
-    default_title: 'Kick Chat Translator (i18n dev)',
+    default_title: 'Kick Chat Translator',
   },
   options_ui: {
     page: 'src/options/index.html',
