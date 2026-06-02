@@ -8,6 +8,7 @@ import { parseKickContent } from './emoteParser';
 import { extractMessageText } from './selectors';
 import { detectLanguage } from './langDetect';
 import { resolveBrowserLang } from '~/shared/languages';
+import { isContextCritical } from '~/shared/langTiers';
 import { isNoise, isSameLanguageAsTarget, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
 import { inject, incrementFloatingCount, injectHoverPlaceholder, removeAllArtifacts, showError, showLoading, showThrottleIndicator, showToast, updateActiveProvider } from './injector';
 import { localEngine } from './localEngine';
@@ -45,6 +46,10 @@ interface RawResult {
 }
 
 const CONTEXT_LINES = 2;
+// Pro-drop, no-person-marking sources (ja/ko/zh/vi/th/ar) drop the subject; feeding
+// more prior dialogue lets DeepL's `context` infer the right person ("he", not "I").
+const CONTEXT_LINES_HARD = 6;
+const MAX_CONTEXT_KEEP = CONTEXT_LINES_HARD + 1;
 
 export class TranslationPipeline {
   private settings: Settings;
@@ -98,11 +103,11 @@ export class TranslationPipeline {
 
   /** Rolling per-channel context (previous lines) for DeepL disambiguation.
    *  Formatted as "username: message" so DeepL understands it's a dialogue. */
-  private contextFor(channel: string, current: string, username?: string): string {
+  private contextFor(channel: string, current: string, username: string | undefined, lines: number): string {
     const buf = this.recent.get(channel) ?? [];
-    const ctx = buf.slice(-CONTEXT_LINES).join('\n');
+    const ctx = buf.slice(-lines).join('\n');
     buf.push(username ? `${username}: ${current}` : current);
-    if (buf.length > CONTEXT_LINES + 1) buf.shift();
+    if (buf.length > MAX_CONTEXT_KEEP) buf.shift();
     this.recent.set(channel, buf);
     // Bound the map so visiting many channels in one session can't leak.
     if (this.recent.size > 20) {
@@ -182,7 +187,10 @@ export class TranslationPipeline {
 
   /** Shared cloud translate + apply, used by both normal flow and hover-to-translate. */
   private async translateAndApply(msg: IncomingDomMessage, real: string, sourceLang?: string): Promise<void> {
-    const context = this.contextFor(msg.channel, real, msg.username);
+    // Subject-dropping languages need more prior dialogue so the engine infers the
+    // right person; everything else gets the cheap 2-line window.
+    const lines = isContextCritical(sourceLang) ? CONTEXT_LINES_HARD : CONTEXT_LINES;
+    const context = this.contextFor(msg.channel, real, msg.username, lines);
     showLoading(msg.injectionTarget);
     const outcome = await this.requestCloud(real, this.effTarget, msg.channel, context, false, sourceLang);
     if (!outcome) {
