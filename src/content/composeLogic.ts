@@ -6,6 +6,7 @@
  * ordering, and rate limiting — are deterministic and unit-testable in isolation.
  */
 import { isNoise, isSameLanguageAsTarget } from './filters';
+import { isSlangOnly } from '~/shared/glossary';
 
 /** Wait this long after the last keystroke before translating the settled text. */
 export const COMPOSE_DEBOUNCE_MS = 320;
@@ -35,6 +36,28 @@ export function isLinkOrMentionOnly(text: string): boolean {
   return stripped.length === 0;
 }
 
+// @handles and URLs the translator must leave untouched in YOUR outgoing message.
+const PROTECT_RE = /(?:https?:\/\/\S+|@[\w.]+)/g;
+
+/**
+ * Replace @mentions and URLs with inert placeholders so the translation engine
+ * doesn't mangle a username or link in the message you're composing. Restore them
+ * after translation with {@link unmaskProtected}.
+ */
+export function maskProtected(text: string): { masked: string; tokens: string[] } {
+  const tokens: string[] = [];
+  const masked = text.replace(PROTECT_RE, (m) => {
+    tokens.push(m);
+    return `⟦${tokens.length - 1}⟧`;
+  });
+  return { masked, tokens };
+}
+
+export function unmaskProtected(text: string, tokens: string[]): string {
+  if (tokens.length === 0) return text;
+  return text.replace(/⟦(\d+)⟧/g, (whole, n: string) => tokens[Number(n)] ?? whole);
+}
+
 /**
  * Decide whether the currently-typed text warrants a (network) translation.
  * All cheap gates run before any request is issued — this is the first line of
@@ -57,7 +80,8 @@ export function decideComposeAction(
   if (t.length === 0) return 'skip-empty';
   if (t.length < minLen) return 'skip-short';
   if (t.length > COMPOSE_MAX_LEN) return 'skip-long';
-  if (isNoise(t) || isLinkOrMentionOnly(t)) return 'skip-noise';
+  // Don't translate when *you* type pure streaming slang/emotes or only handles/links.
+  if (isNoise(t) || isLinkOrMentionOnly(t) || isSlangOnly(t)) return 'skip-noise';
   // Only skip on a *confident* same-language detection — undefined means "let the
   // provider auto-detect", which is correct for short/ambiguous input.
   if (detected && isSameLanguageAsTarget(detected, target)) return 'skip-same-lang';
