@@ -59,8 +59,10 @@ export default defineManifest({
     browser_specific_settings: {
       gecko: {
         id: 'kick-translator@pkkls.dev',
-        strict_min_version: '109.0',
-        data_collection_permissions: { required: ['none'] },
+        // FF 121+ : ES-module background scripts (`background.type: module`) and
+        // storage.session both require it. (`data_collection_permissions` would force
+        // 140+, so it's declared in the AMO listing instead — see SUBMISSION.md.)
+        strict_min_version: '121.0',
       },
     },
   }),

@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.1] — 2026-06-03
+
+### Fixed
+- **Firefox build compatibility.** `strict_min_version` is now `121.0` (the version that supports
+  ES-module background scripts and `storage.session`) instead of an incorrect `109.0` that left the
+  background non-functional on Firefox 109–120 and failed `web-ext lint`. The keepalive now guards
+  `storage.session`. `web-ext lint` → 0 errors. (Promise-based `chrome.*` works natively on Firefox MV3,
+  so no polyfill is needed.)
+
 ## [2.4.0] — 2026-06-03
 
 ### Improved

@@ -91,9 +91,10 @@ account, no telemetry, no backend.
 
 ## Firefox / AMO notes
 
-- The Firefox build sets `browser_specific_settings.gecko.id = kick-translator@pkkls.dev`,
-  `strict_min_version = 109.0`, and declares **no data collection**
-  (`data_collection_permissions: { required: ['none'] }`).
+- The Firefox build sets `browser_specific_settings.gecko.id = kick-translator@pkkls.dev` and
+  `strict_min_version = 121.0` (the version that supports ES-module background scripts +
+  `storage.session`). Data collection: **none** — declare it in the AMO submission form (the manifest
+  `data_collection_permissions` field would force `strict_min_version` 140+). `web-ext lint` → 0 errors.
 - AMO requires **source code + build instructions** for extensions with built/minified
   sources. Provide the repository URL and:
 

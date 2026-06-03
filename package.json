@@ -1,6 +1,6 @@
 {
   "name": "kick-chat-translator",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "private": true,
   "description": "Real-time multi-provider chat translator for Kick.com — pro Chrome/Firefox extension.",
   "license": "MIT",
