@@ -11,17 +11,17 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
       - run: npm run release:check     # typecheck + lint + test + build (chromium → dist/)
       - run: npm run pack              # → release/…-chromium.zip
       - run: npm run build:firefox     # rebuild dist/ as the Firefox bundle
       - run: npm run pack:firefox      # → release/…-firefox.zip
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           files: release/*.zip
           generate_release_notes: true
