@@ -105,6 +105,8 @@
     transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:var(--accent);
     color:#04210a;font-weight:800;display:grid;place-items:center}
   ol.steps b{color:var(--txt)}
+  h3.bh{margin:30px 0 12px;font-size:16px;color:var(--txt)}
+  h3.bh:first-of-type{margin-top:4px}
   code,kbd{background:var(--panel2);border:1px solid var(--line);border-radius:6px;
     padding:1px 6px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.9em}
   .note{background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--accent);
@@ -145,10 +147,11 @@
     <span class="pill"><span class="en">open source</span><span class="ja">オープンソース</span><span class="es">código abierto</span><span class="pt">código aberto</span></span>
     <span class="pill"><span class="en">no account</span><span class="ja">アカウント不要</span><span class="es">sin cuenta</span><span class="pt">sem conta</span></span>
     <span class="pill"><b>31</b> <span class="en">languages</span><span class="ja">言語</span><span class="es">idiomas</span><span class="pt">idiomas</span></span>
-    <span class="pill">Brave · Chrome · Edge</span>
+    <span class="pill">Brave · Chrome · Edge · Firefox</span>
   </div>
   <div class="cta">
     <a class="btn primary" href="#install"><span class="en">Install in 2 minutes</span><span class="ja">2分でインストール</span><span class="es">Instala en 2 minutos</span><span class="pt">Instale em 2 minutos</span></a>
+    <a class="btn ghost" href="#use"><span class="en">How to use it</span><span class="ja">使い方</span><span class="es">Cómo usarla</span><span class="pt">Como usar</span></a>
     <a class="btn ghost" href="https://github.com/Pkkls/kick-chat-translator" target="_blank" rel="noopener">GitHub</a>
   </div>
 </div>
@@ -228,7 +231,7 @@
         <p><span class="en">DeepL, Google, MyMemory and Lingva in a chain — if one is busy, the next takes over.</span><span class="ja">DeepL・Google・MyMemory・Lingva を連携。混雑しても次が引き継ぎます。</span><span class="es">DeepL, Google, MyMemory y Lingva en cadena: si uno está ocupado, sigue el siguiente.</span><span class="pt">DeepL, Google, MyMemory e Lingva em cadeia: se um falha, o próximo assume.</span></p></div>
       <div class="card"><div class="ic">🖥️</div>
         <h3><span class="en">On-device on Chrome / Edge</span><span class="ja">Chrome / Edge は端末内翻訳</span><span class="es">En el dispositivo en Chrome / Edge</span><span class="pt">No dispositivo no Chrome / Edge</span></h3>
-        <p><span class="en">Where supported, translate fully on-device — free, unlimited, no network. (Brave falls back to the cloud.)</span><span class="ja">対応環境では端末内で翻訳。無料・無制限・通信なし。（Brave は自動でクラウドに切替。）</span><span class="es">Donde se admite, traduce todo en el dispositivo: gratis, ilimitado, sin red. (Brave usa la nube.)</span><span class="pt">Onde houver suporte, traduz tudo no dispositivo: grátis, ilimitado, sem rede. (No Brave, usa a nuvem.)</span></p></div>
+        <p><span class="en">Where supported, translate fully on-device — free, unlimited, no network. (Brave and Firefox fall back to the cloud.)</span><span class="ja">対応環境では端末内で翻訳。無料・無制限・通信なし。（Brave・Firefox は自動でクラウドに切替。）</span><span class="es">Donde se admite, traduce todo en el dispositivo: gratis, ilimitado, sin red. (Brave y Firefox usan la nube.)</span><span class="pt">Onde houver suporte, traduz tudo no dispositivo: grátis, ilimitado, sem rede. (No Brave e no Firefox, usa a nuvem.)</span></p></div>
       <div class="card"><div class="ic">🔒</div>
         <h3><span class="en">Private by design</span><span class="ja">プライバシー設計</span><span class="es">Privada por diseño</span><span class="pt">Privada por design</span></h3>
         <p><span class="en">No account, no tracking, no server on our side. Text goes only to the translator you chose.</span><span class="ja">アカウント不要・追跡なし・独自サーバーなし。テキストは選んだ翻訳先にのみ送信。</span><span class="es">Sin cuenta, sin rastreo, sin servidor propio. El texto va solo al traductor que elijas.</span><span class="pt">Sem conta, sem rastreio, sem servidor nosso. O texto vai só para o tradutor que você escolher.</span></p></div>
@@ -241,6 +244,34 @@
       <div class="card"><div class="ic">⬆️</div>
         <h3><span class="en">Stays up to date <span class="new">NEW</span></span><span class="ja">常に最新へ <span class="new">NEW</span></span><span class="es">Siempre al día <span class="new">NEW</span></span><span class="pt">Sempre atualizado <span class="new">NEW</span></span></h3>
         <p><span class="en">The popup checks for new releases and shows an "update available" button — one click takes you to the download.</span><span class="ja">ポップアップが新バージョンを確認し「アップデートあり」ボタンを表示。1クリックでダウンロードへ。</span><span class="es">El popup comprueba si hay versiones nuevas y muestra un botón de «actualización disponible»; un clic te lleva a la descarga.</span><span class="pt">O popup verifica novas versões e mostra um botão de "atualização disponível"; um clique leva ao download.</span></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO USE -->
+<section id="use">
+  <div class="wrap">
+    <h2><span class="en">How to use it</span><span class="ja">使い方</span><span class="es">Cómo usarla</span><span class="pt">Como usar</span></h2>
+    <p class="lead"><span class="en">Nothing to configure. Open any Kick stream — here's what you'll see and do.</span><span class="ja">設定は不要。Kick の配信を開くだけ。見え方と操作はこちら。</span><span class="es">Nada que configurar. Abre un directo de Kick: esto es lo que verás y harás.</span><span class="pt">Nada para configurar. Abra uma live da Kick: é isto que você verá e fará.</span></p>
+    <div class="grid">
+      <div class="card"><div class="ic">🟢</div>
+        <h3><span class="en">The bar above chat</span><span class="ja">チャット上部のバー</span><span class="es">La barra sobre el chat</span><span class="pt">A barra acima do chat</span></h3>
+        <p><span class="en">A small bar shows <b>🟢 Translating → EN</b>. Click it to turn translation on/off; the <b>⚙</b> opens all Options.</span><span class="ja">小さなバーに <b>🟢 Translating → EN</b>。クリックで翻訳のオン/オフ、<b>⚙</b> で設定を開きます。</span><span class="es">Una barra muestra <b>🟢 Translating → EN</b>. Haz clic para activar/desactivar la traducción; la <b>⚙</b> abre las Opciones.</span><span class="pt">Uma barra mostra <b>🟢 Translating → EN</b>. Clique para ligar/desligar a tradução; a <b>⚙</b> abre as Opções.</span></p></div>
+      <div class="card"><div class="ic">⬇</div>
+        <h3><span class="en">Reading chat</span><span class="ja">チャットを読む</span><span class="es">Leer el chat</span><span class="pt">Ler o chat</span></h3>
+        <p><span class="en">Foreign messages get a translation underneath, with a language tag — automatically. Hover one and click <b>⟳</b> to redo it.</span><span class="ja">外国語メッセージの下に、言語タグ付きで翻訳が自動表示。カーソルを乗せて <b>⟳</b> で訳し直し。</span><span class="es">Los mensajes en otro idioma reciben una traducción debajo, con etiqueta de idioma, automáticamente. Pasa el cursor y haz clic en <b>⟳</b> para rehacerla.</span><span class="pt">As mensagens em outro idioma recebem uma tradução abaixo, com etiqueta de idioma, automaticamente. Passe o mouse e clique em <b>⟳</b> para refazer.</span></p></div>
+      <div class="card"><div class="ic">⬆</div>
+        <h3><span class="en">Writing a reply</span><span class="ja">返信を書く</span><span class="es">Escribir una respuesta</span><span class="pt">Escrever uma resposta</span></h3>
+        <p><span class="en">Type in your own language. A preview chip appears above the box in the channel's language — click it or press <kbd>Ctrl/⌘+Enter</kbd> to insert, then send as usual.</span><span class="ja">自分の言語で入力すると、チャンネルの言語の訳がチャット欄の上にプレビュー表示。クリックまたは <kbd>Ctrl/⌘+Enter</kbd> で挿入し、いつも通り送信。</span><span class="es">Escribe en tu idioma. Aparece una vista previa sobre la caja en el idioma del canal: haz clic o pulsa <kbd>Ctrl/⌘+Enter</kbd> para insertarla y envía como siempre.</span><span class="pt">Digite no seu idioma. Surge uma prévia acima da caixa no idioma do canal: clique ou pressione <kbd>Ctrl/⌘+Enter</kbd> para inserir e envie normalmente.</span></p></div>
+      <div class="card"><div class="ic">💎</div>
+        <h3><span class="en">Best quality (optional)</span><span class="ja">最高品質（任意）</span><span class="es">Mejor calidad (opcional)</span><span class="pt">Melhor qualidade (opcional)</span></h3>
+        <p><span class="en">Add a free <a href="https://www.deepl.com/pro-api" target="_blank" rel="noopener">DeepL API</a> key in <b>Options → Providers</b> for the most natural results — especially into Japanese.</span><span class="ja">無料の <a href="https://www.deepl.com/pro-api" target="_blank" rel="noopener">DeepL API</a> キーを <b>設定 → プロバイダー</b> に追加すると、特に日本語への翻訳がより自然になります。</span><span class="es">Añade una clave gratis de <a href="https://www.deepl.com/pro-api" target="_blank" rel="noopener">DeepL API</a> en <b>Opciones → Proveedores</b> para los resultados más naturales, sobre todo al japonés.</span><span class="pt">Adicione uma chave grátis da <a href="https://www.deepl.com/pro-api" target="_blank" rel="noopener">DeepL API</a> em <b>Opções → Provedores</b> para os resultados mais naturais, principalmente para o japonês.</span></p></div>
+    </div>
+    <div class="note">
+      <span class="en"><b>Full step-by-step guide</b> (install, DeepL key, on-device, troubleshooting): <a href="https://github.com/Pkkls/kick-chat-translator/blob/master/TUTORIAL.md" target="_blank" rel="noopener">TUTORIAL.md</a>.</span>
+      <span class="ja"><b>詳しい手順ガイド</b>（インストール・DeepL キー・端末内翻訳・トラブル対処）: <a href="https://github.com/Pkkls/kick-chat-translator/blob/master/TUTORIAL.md" target="_blank" rel="noopener">TUTORIAL.md</a></span>
+      <span class="es"><b>Guía completa paso a paso</b> (instalación, clave DeepL, en el dispositivo, solución de problemas): <a href="https://github.com/Pkkls/kick-chat-translator/blob/master/TUTORIAL.md" target="_blank" rel="noopener">TUTORIAL.md</a>.</span>
+      <span class="pt"><b>Guia completo passo a passo</b> (instalação, chave DeepL, no dispositivo, solução de problemas): <a href="https://github.com/Pkkls/kick-chat-translator/blob/master/TUTORIAL.md" target="_blank" rel="noopener">TUTORIAL.md</a>.</span>
     </div>
   </div>
 </section>
@@ -290,13 +321,21 @@
 <section id="install">
   <div class="wrap">
     <h2><span class="en">Install in 2 minutes</span><span class="ja">2分でインストール</span><span class="es">Instala en 2 minutos</span><span class="pt">Instale em 2 minutos</span></h2>
-    <p class="lead"><span class="en">No build, no command line. Download one ZIP and load it. Works on Brave, Chrome and Edge.</span><span class="ja">ビルドもコマンド操作も不要。ZIP を1つダウンロードして読み込むだけ。Brave・Chrome・Edge で動作します。</span><span class="es">Sin compilar ni terminal. Descarga un ZIP y cárgalo. Funciona en Brave, Chrome y Edge.</span><span class="pt">Sem compilar nem terminal. Baixe um ZIP e carregue-o. Funciona em Brave, Chrome e Edge.</span></p>
+    <p class="lead"><span class="en">No build, no command line. Download one ZIP and load it. Works on Brave, Chrome, Edge and Firefox.</span><span class="ja">ビルドもコマンド操作も不要。ZIP を1つダウンロードして読み込むだけ。Brave・Chrome・Edge・Firefox で動作します。</span><span class="es">Sin compilar ni terminal. Descarga un ZIP y cárgalo. Funciona en Brave, Chrome, Edge y Firefox.</span><span class="pt">Sem compilar nem terminal. Baixe um ZIP e carregue-o. Funciona em Brave, Chrome, Edge e Firefox.</span></p>
+    <h3 class="bh"><span class="en">Chrome · Brave · Edge</span><span class="ja">Chrome・Brave・Edge</span><span class="es">Chrome · Brave · Edge</span><span class="pt">Chrome · Brave · Edge</span></h3>
     <ol class="steps">
       <li><span class="en"><b>Download the ZIP</b> from the <a href="https://github.com/Pkkls/kick-chat-translator/releases/latest" target="_blank" rel="noopener">Releases page</a>.</span><span class="ja"><a href="https://github.com/Pkkls/kick-chat-translator/releases/latest" target="_blank" rel="noopener">Releases ページ</a>から <b>ZIP をダウンロード</b>。</span><span class="es"><b>Descarga el ZIP</b> desde la <a href="https://github.com/Pkkls/kick-chat-translator/releases/latest" target="_blank" rel="noopener">página de Releases</a>.</span><span class="pt"><b>Baixe o ZIP</b> na <a href="https://github.com/Pkkls/kick-chat-translator/releases/latest" target="_blank" rel="noopener">página de Releases</a>.</span></li>
       <li><span class="en"><b>Unzip it</b> — you'll get a folder with <code>manifest.json</code>.</span><span class="ja"><b>展開</b>すると <code>manifest.json</code> 入りのフォルダができます。</span><span class="es"><b>Descomprímelo</b>: obtendrás una carpeta con <code>manifest.json</code>.</span><span class="pt"><b>Descompacte</b>: você terá uma pasta com <code>manifest.json</code>.</span></li>
       <li><span class="en">Open <code>brave://extensions</code> (or <code>chrome://</code> / <code>edge://</code>) and turn on <b>Developer mode</b>.</span><span class="ja"><code>brave://extensions</code>（または <code>chrome://</code> ／ <code>edge://</code>）を開き、<b>デベロッパーモード</b>をオン。</span><span class="es">Abre <code>brave://extensions</code> (o <code>chrome://</code> / <code>edge://</code>) y activa el <b>Modo de desarrollador</b>.</span><span class="pt">Abra <code>brave://extensions</code> (ou <code>chrome://</code> / <code>edge://</code>) e ative o <b>Modo de desenvolvedor</b>.</span></li>
       <li><span class="en">Click <b>"Load unpacked"</b> and select the unzipped folder.</span><span class="ja"><b>「パッケージ化されていない拡張機能を読み込む」</b>で展開フォルダを選択。</span><span class="es">Haz clic en <b>"Cargar descomprimida"</b> y elige la carpeta.</span><span class="pt">Clique em <b>"Carregar sem compactação"</b> e selecione a pasta.</span></li>
       <li><span class="en"><b>Open any Kick stream.</b> A green bar at the top of chat = working. ✅</span><span class="ja"><b>Kick の配信を開く。</b> チャット上部に緑のバーが出れば完了。✅</span><span class="es"><b>Abre cualquier directo de Kick.</b> Una barra verde arriba del chat = funcionando. ✅</span><span class="pt"><b>Abra qualquer live da Kick.</b> Uma barra verde no topo do chat = funcionando. ✅</span></li>
+    </ol>
+    <h3 class="bh">Firefox <span class="en">(121+)</span><span class="ja">（121以上）</span><span class="es">(121+)</span><span class="pt">(121+)</span></h3>
+    <ol class="steps">
+      <li><span class="en"><b>Download</b> the <code>…-firefox.zip</code> from the <a href="https://github.com/Pkkls/kick-chat-translator/releases/latest" target="_blank" rel="noopener">Releases page</a> and unzip it. Firefox <b>121+</b> required.</span><span class="ja"><a href="https://github.com/Pkkls/kick-chat-translator/releases/latest" target="_blank" rel="noopener">Releases ページ</a>から <code>…-firefox.zip</code> を<b>ダウンロード</b>して展開。Firefox <b>121以上</b>が必要。</span><span class="es"><b>Descarga</b> el <code>…-firefox.zip</code> desde la <a href="https://github.com/Pkkls/kick-chat-translator/releases/latest" target="_blank" rel="noopener">página de Releases</a> y descomprímelo. Requiere Firefox <b>121+</b>.</span><span class="pt"><b>Baixe</b> o <code>…-firefox.zip</code> na <a href="https://github.com/Pkkls/kick-chat-translator/releases/latest" target="_blank" rel="noopener">página de Releases</a> e descompacte. Requer Firefox <b>121+</b>.</span></li>
+      <li><span class="en">Open <code>about:debugging#/runtime/this-firefox</code> in Firefox.</span><span class="ja">Firefox で <code>about:debugging#/runtime/this-firefox</code> を開く。</span><span class="es">Abre <code>about:debugging#/runtime/this-firefox</code> en Firefox.</span><span class="pt">Abra <code>about:debugging#/runtime/this-firefox</code> no Firefox.</span></li>
+      <li><span class="en">Click <b>"Load Temporary Add-on…"</b> and pick the <code>manifest.json</code> inside the unzipped folder.</span><span class="ja"><b>「一時的なアドオンを読み込む」</b>をクリックし、展開フォルダ内の <code>manifest.json</code> を選択。</span><span class="es">Haz clic en <b>"Cargar complemento temporal…"</b> y elige el <code>manifest.json</code> de la carpeta.</span><span class="pt">Clique em <b>"Carregar extensão temporária…"</b> e escolha o <code>manifest.json</code> da pasta.</span></li>
+      <li><span class="en"><b>Open any Kick stream.</b> Green bar = working. ✅ <i>Temporary install — Firefox removes it on restart, until the add-on is on Mozilla Add-ons.</i></span><span class="ja"><b>Kick の配信を開く。</b> 緑のバーが出れば完了。✅ <i>一時的な読み込みのため、Firefox を再起動すると消えます（AMO 公開までの暫定）。</i></span><span class="es"><b>Abre cualquier directo de Kick.</b> Barra verde = funcionando. ✅ <i>Instalación temporal: Firefox la quita al reiniciar, hasta que esté en Mozilla Add-ons.</i></span><span class="pt"><b>Abra qualquer live da Kick.</b> Barra verde = funcionando. ✅ <i>Instalação temporária: o Firefox a remove ao reiniciar, até a extensão estar no Mozilla Add-ons.</i></span></li>
     </ol>
     <div class="note">
       <span class="en"><b>Best quality (optional):</b> add a free <a href="https://www.deepl.com/pro-api" target="_blank" rel="noopener">DeepL API Free</a> key (1,000,000 chars/month, €0) in <b>Options → Providers</b> and move DeepL to the top.</span>

@@ -20,6 +20,8 @@ to translated chat in a few minutes. No coding needed.
 
 ## 📦 Install
 
+### Chrome / Brave / Edge
+
 You'll load it as an "unpacked extension" (it's not on the Web Store yet).
 
 1. Unzip `kick-chat-translator-…-chromium.zip` to a folder you'll keep.
@@ -32,6 +34,16 @@ You'll load it as an "unpacked extension" (it's not on the Web Store yet).
 5. (Optional) Pin the icon so it's always visible.
 
 Open a Kick stream and you're ready.
+
+### Firefox (121+)
+
+1. Unzip `kick-chat-translator-…-firefox.zip`.
+2. Open **`about:debugging#/runtime/this-firefox`**.
+3. Click **Load Temporary Add-on…** and select the **`manifest.json`** in the unzipped folder.
+4. Open a Kick stream — you're ready.
+
+> **Temporary install:** Firefox removes it when you restart the browser (until the
+> add-on is published on Mozilla Add-ons). Requires **Firefox 121+**.
 
 ---
 
