@@ -77,4 +77,34 @@ describe('deeplProvider', () => {
     );
     expect(sentBody).toContain('target_lang=PT-BR');
   });
+
+  it('sends formality=prefer_more for a formal compose into a supported target (JA)', async () => {
+    let sentBody = '';
+    globalThis.fetch = vi.fn(async (_url: unknown, init: { body?: string }) => {
+      sentBody = String(init.body);
+      return new Response(JSON.stringify({ translations: [{ detected_source_language: 'FR', text: 'こんにちは' }] }), {
+        status: 200,
+      });
+    }) as unknown as typeof fetch;
+    await deeplProvider.translate(
+      { messageId: '1', text: 'bonjour', targetLang: 'ja', formal: true },
+      { ...baseCtx, deeplApiKey: 'k:fx' },
+    );
+    expect(sentBody).toContain('formality=prefer_more');
+  });
+
+  it('omits formality on targets DeepL does not support it on (fi)', async () => {
+    let sentBody = '';
+    globalThis.fetch = vi.fn(async (_url: unknown, init: { body?: string }) => {
+      sentBody = String(init.body);
+      return new Response(JSON.stringify({ translations: [{ detected_source_language: 'FR', text: 'x' }] }), {
+        status: 200,
+      });
+    }) as unknown as typeof fetch;
+    await deeplProvider.translate(
+      { messageId: '1', text: 'bonjour', targetLang: 'fi', formal: true },
+      { ...baseCtx, deeplApiKey: 'k:fx' },
+    );
+    expect(sentBody).not.toContain('formality');
+  });
 });

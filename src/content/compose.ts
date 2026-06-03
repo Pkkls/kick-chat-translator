@@ -13,7 +13,7 @@ import type { Settings } from '~/shared/settings';
 import { rootLogger } from '~/shared/logger';
 import { send } from '~/shared/messages';
 import { detectLanguage } from './langDetect';
-import { findComposer } from './selectors';
+import { extractMessageText, findAllRows, findComposer } from './selectors';
 import { memCache } from './memcache';
 import {
   COMPOSE_DEBOUNCE_MS,
@@ -37,6 +37,25 @@ import {
 } from './composeUi';
 
 const log = rootLogger.child('compose');
+
+/**
+ * Last few channel chat lines (untranslated) → DeepL `context` so the outgoing
+ * translation fits the conversation's topic/register. DeepL does NOT bill context
+ * characters, so this is free quota-wise.
+ */
+function readRecentChatContext(): string {
+  try {
+    const container = document.querySelector('#channel-chatroom');
+    if (!container) return '';
+    return findAllRows(container)
+      .slice(-4)
+      .map((r) => extractMessageText(r))
+      .filter((t) => t.length > 0)
+      .join('\n');
+  } catch {
+    return '';
+  }
+}
 
 export class ComposeController {
   private settings: Settings;
@@ -258,6 +277,11 @@ export class ComposeController {
           text: masked,
           targetLang: target,
           sourceLangHint: detected,
+          // Recent channel lines → DeepL `context` (free, not billed) so the output
+          // fits the conversation's topic/register.
+          context: readRecentChatContext() || undefined,
+          // Outgoing message → prefer the polite register where supported (keigo for JA).
+          formal: true,
           // We translate the user's chosen source language on purpose — don't let
           // the background's "looks like English" guard block ASCII input.
           skipSameLangGuard: true,

@@ -23,6 +23,8 @@ export interface TranslationRequest {
    * source language (French, Spanish, …) to translate INTO the target.
    */
   skipSameLangGuard?: boolean;
+  /** Prefer the polite/formal register where the engine supports it (compose → others; keigo for JA). */
+  formal?: boolean;
 }
 
 export interface TranslationResult {

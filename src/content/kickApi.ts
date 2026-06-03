@@ -63,6 +63,11 @@ const metaCache = new Map<string, CachedMeta>();
 // accessors firing at once) into a single network request.
 const inflight = new Map<string, Promise<ChannelMeta>>();
 
+// Persisted last-known broadcast language per channel. `lang_iso` only exists while a
+// channel is LIVE; remembering it lets compose still target the right language when you
+// open the channel offline (instead of falling back to English).
+const LASTLANG_KEY = (slug: string): string => `kt.lastlang.${slug}`;
+
 async function fetchChannelMeta(slug: string): Promise<ChannelMeta> {
   const cached = metaCache.get(slug);
   // Serve from cache unless it's stale, or it's missing a language we might now find.
@@ -86,6 +91,13 @@ async function fetchChannelMeta(slug: string): Promise<ChannelMeta> {
         at: Date.now(),
       };
       metaCache.set(slug, meta);
+      if (meta.langIso) {
+        try {
+          void chrome.storage.local.set({ [LASTLANG_KEY(slug)]: meta.langIso });
+        } catch {
+          /* storage unavailable (e.g. unit tests) — non-fatal */
+        }
+      }
       return meta;
     } catch {
       return cached ?? {};
@@ -101,7 +113,19 @@ export async function fetchChatroomId(slug: string): Promise<number | undefined>
   return (await fetchChannelMeta(slug)).chatroomId;
 }
 
-/** The channel's chat language (ISO-2), or undefined when offline / unknown. */
+/**
+ * The channel's chat language (ISO-2). When live, the broadcast `lang_iso`; when
+ * offline/unknown, the last language we saw this channel broadcast in (persisted),
+ * so compose keeps targeting e.g. Japanese instead of defaulting to English.
+ */
 export async function fetchChannelLangIso(slug: string): Promise<string | undefined> {
-  return (await fetchChannelMeta(slug)).langIso;
+  const live = (await fetchChannelMeta(slug)).langIso;
+  if (live) return live;
+  try {
+    const stored = await chrome.storage.local.get(LASTLANG_KEY(slug));
+    const last = stored[LASTLANG_KEY(slug)];
+    return typeof last === 'string' ? last : undefined;
+  } catch {
+    return undefined;
+  }
 }

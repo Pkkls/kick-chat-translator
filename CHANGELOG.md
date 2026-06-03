@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] — 2026-06-03
+
+### Improved
+- **Outgoing (compose) quality, especially into Japanese.** The compose translation now feeds DeepL
+  the recent channel lines as `context` (free — DeepL doesn't bill context characters) so the wording
+  fits the conversation, and requests the **polite register** (`formality: prefer_more` → keigo for
+  Japanese) where DeepL supports it. Compose also **remembers a channel's broadcast language**, so an
+  offline Japanese channel still targets Japanese instead of defaulting to English.
+
 ## [2.3.1] — 2026-06-03
 
 ### Fixed

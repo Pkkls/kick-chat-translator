@@ -22,6 +22,9 @@ const DEEPL_SUPPORTED = new Set([
   'et', 'lt', 'lv', 'id',
 ]);
 
+// Targets where DeepL supports the `formality` parameter (politeness register).
+const DEEPL_FORMALITY = new Set(['de', 'fr', 'it', 'es', 'nl', 'pl', 'pt', 'pt-br', 'ja', 'ru']);
+
 function deeplTargetCode(code: string): string {
   const lower = code.toLowerCase();
   return DEEPL_TARGETS[lower] ?? lower.toUpperCase().split('-')[0] ?? lower.toUpperCase();
@@ -77,6 +80,10 @@ async function translate(req: TranslationRequest, ctx: ProviderContext): Promise
   if (req.sourceLangHint) form.set('source_lang', deeplSourceCode(req.sourceLangHint));
   // Untranslated context improves disambiguation on short chat lines.
   if (req.context) form.set('context', req.context);
+  // Compose (formal) → prefer the polite register where DeepL supports it (keigo for JA).
+  if (req.formal && DEEPL_FORMALITY.has(req.targetLang.toLowerCase())) {
+    form.set('formality', 'prefer_more');
+  }
 
   const data = await postForm(form, ctx);
   const first = data.translations[0];
