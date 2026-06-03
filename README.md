@@ -6,7 +6,10 @@
 [日本語](README.ja.md) · [Español](README.es.md) · [Português](README.pt-BR.md)
 
 Translates Kick.com chat in real time. You open a stream, foreign messages get
-a translation underneath. That's it.
+a translation underneath. That's it. 
+
+<img width="354" height="593" alt="image" src="https://github.com/user-attachments/assets/4f7ae414-6c2a-4ee5-b191-6af9e29d46ec" />
+
 
 Works on **Brave, Chrome and Edge**. Handles 7TV.
 
