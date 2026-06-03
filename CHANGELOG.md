@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.1] — 2026-06-03
+
+### Fixed
+- **Critical: incoming chat translation was completely broken** (v2.1.0–v2.2.0). The pipeline's
+  `effTarget` getter referenced itself instead of `settings.targetLang`, causing infinite recursion
+  (`RangeError`) on every incoming message — `prepare()` threw and the rejection was swallowed by the
+  observer, so messages were marked seen but never translated (0 requests reached the service worker).
+  Compose ("translate what I type") was unaffected. Added a regression test (`pipeline.test.ts`) and a
+  postmortem (`docs/postmortem-2026-06-03-efftarget-recursion.md`).
+
 ## [2.2.0] — 2026-06-02
 
 Quality + reach polish, and a correct two-store release pipeline.

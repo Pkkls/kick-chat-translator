@@ -67,9 +67,17 @@ export class TranslationPipeline {
     this.settings = next;
   }
 
-  /** Reading target — resolves the 'auto' sentinel to the user's browser language. */
+  /**
+   * Reading target — resolves the 'auto' sentinel to the user's browser language.
+   *
+   * ⚠️ Read from `this.settings.targetLang`, NEVER `this.effTarget`. Referencing the
+   * getter from inside itself is infinite recursion (`RangeError: Maximum call stack`).
+   * That exact typo shipped in v2.1.0–v2.2.0 and silently broke ALL incoming translation
+   * (`prepare()` threw on every message; the rejection was swallowed by the observer's
+   * `void onDomMessage(...)`). See pipeline.test.ts + docs/postmortem-2026-06-03-efftarget-recursion.md.
+   */
   private get effTarget(): string {
-    return this.effTarget === 'auto' ? resolveBrowserLang() : this.effTarget;
+    return this.settings.targetLang === 'auto' ? resolveBrowserLang() : this.settings.targetLang;
   }
 
   /** Cheap filters + a single franc-min call. Returns undefined to skip. */
