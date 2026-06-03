@@ -8,7 +8,7 @@
 Kick.com のチャットをリアルタイムで翻訳するブラウザ拡張機能。
 配信を開くと、外国語のメッセージの下に翻訳が出る。それだけ。
 
-**Brave・Chrome・Edge** で動く。7TV にも対応。
+**Brave・Chrome・Edge・Firefox** で動く。7TV にも対応。
 
 ![日本語チャットの翻訳例](screenshots/japanese-chat.jpg)
 
@@ -20,11 +20,19 @@ Kick.com のチャットをリアルタイムで翻訳するブラウザ拡張�
 ## インストール
 
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest)
-から zip をダウンロードして展開。
+から対応する zip をダウンロードして展開。
+
+**Chrome / Brave / Edge** — `…-chromium.zip`：
 
 1. `brave://extensions`（または `chrome://extensions`、`edge://extensions`）を開く
 2. **デベロッパーモード**をオン
 3. **パッケージ化されていない拡張機能を読み込む** → 展開したフォルダを選択
+
+**Firefox 121以上** — `…-firefox.zip`：
+
+1. `about:debugging#/runtime/this-firefox` を開く
+2. **「一時的なアドオンを読み込む」** → フォルダ内の `manifest.json` を選択
+   *（一時的な読み込み。Firefox を再起動すると消える。AMO 公開までの暫定。）*
 
 Kick の配信を開いて、チャット上部に緑のバーが出れば動作してる。
 
@@ -40,7 +48,7 @@ Kick の配信を開いて、チャット上部に緑のバーが出れば動作
 | Lingva | 不要 | フォールバック |
 
 Chrome/Edge では端末内翻訳も使える（通信なし・無制限）。
-Brave は未対応なので、自動的にクラウドを使う。
+Brave・Firefox は未対応なので、自動的にクラウドを使う。
 
 順番は設定で変更できる。
 

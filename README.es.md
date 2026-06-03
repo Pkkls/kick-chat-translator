@@ -8,7 +8,7 @@
 Traduce el chat de Kick.com en tiempo real. Abres un directo, los mensajes en
 otros idiomas aparecen traducidos debajo. Eso es todo.
 
-Funciona en **Brave, Chrome y Edge**. Compatible con 7TV.
+Funciona en **Brave, Chrome, Edge y Firefox**. Compatible con 7TV.
 
 ![Chat japonés traducido al inglés](screenshots/japanese-chat.jpg)
 
@@ -19,12 +19,20 @@ todo se traduce al español. 30 idiomas disponibles.
 
 ## Instalación
 
-Descarga el zip de [Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+Descarga el zip correcto de [Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest)
 y descomprímelo.
+
+**Chrome / Brave / Edge** — `…-chromium.zip`:
 
 1. Abre `brave://extensions` (o `chrome://extensions`, `edge://extensions`)
 2. Activa **Modo de desarrollador**
 3. **Cargar descomprimida** → selecciona la carpeta
+
+**Firefox 121+** — `…-firefox.zip`:
+
+1. Abre `about:debugging#/runtime/this-firefox`
+2. **Cargar complemento temporal…** → elige el `manifest.json` de la carpeta
+   *(temporal — Firefox lo quita al reiniciar, hasta que esté en Mozilla Add-ons)*
 
 Abre un directo de Kick. Si ves una barra verde arriba del chat, funciona.
 
@@ -40,7 +48,7 @@ Cuatro proveedores en cadena — si uno falla, el siguiente sigue:
 | Lingva | No | Respaldo |
 
 En Chrome/Edge también hay traducción local (sin red, sin límite).
-Brave no la soporta todavía, usa la nube.
+Brave y Firefox no la soportan todavía, usan la nube.
 
 El orden se cambia en los ajustes.
 

@@ -11,7 +11,7 @@ a translation underneath. That's it.
 <img width="354" height="593" alt="image" src="https://github.com/user-attachments/assets/4f7ae414-6c2a-4ee5-b191-6af9e29d46ec" />
 
 
-Works on **Brave, Chrome and Edge**. Handles 7TV.
+Works on **Brave, Chrome, Edge and Firefox**. Handles 7TV.
 
 ![Japanese chat translated to English](screenshots/japanese-chat.jpg)
 
@@ -27,12 +27,20 @@ variants (Brazilian Portuguese, Traditional Chinese).
 
 ## Install
 
-Download the zip from [Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest),
-unzip, then:
+Download the right zip from [Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+and unzip it.
+
+**Chrome / Brave / Edge** — `…-chromium.zip`:
 
 1. Go to `brave://extensions` (or `chrome://extensions`, `edge://extensions`)
 2. Enable **Developer mode**
 3. **Load unpacked** → select the unzipped folder
+
+**Firefox 121+** — `…-firefox.zip`:
+
+1. Go to `about:debugging#/runtime/this-firefox`
+2. **Load Temporary Add-on…** → select `manifest.json` in the unzipped folder
+   *(temporary — Firefox removes it on restart, until the add-on is on Mozilla Add-ons)*
 
 Open a Kick stream. Green bar at the top of chat = working.
 
@@ -48,7 +56,7 @@ Four providers in a chain — if one fails, the next picks up:
 | Lingva | No | Fallback | IT IS A SELF HOSTED LLM SERVER TRANSLATING AND COSTS AROUND 2GO RAM .  NOT RECOMMENDED. BUT GOOD FALLBACK
 
 On Chrome/Edge, there's also on-device translation (no network, no limit).
-Brave doesn't support it yet, so it uses the cloud chain.
+Brave and Firefox don't support it yet, so they use the cloud chain.
 
 You pick the order in the settings.
 
