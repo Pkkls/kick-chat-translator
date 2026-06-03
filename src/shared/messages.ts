@@ -1,5 +1,6 @@
 import type { ProviderStatus, TranslationOutcome, TranslationRequest, UsageStats } from './types';
 import type { Settings } from './settings';
+import type { UpdateStatus } from './version';
 
 export type RuntimeMessage =
   | { type: 'translate'; payload: TranslationRequest }
@@ -13,6 +14,7 @@ export type RuntimeMessage =
   | { type: 'open.options' }
   | { type: 'stats.local'; payload: { lang: string; chars: number } }
   | { type: 'deepl.usage' }
+  | { type: 'update.status'; force?: boolean }
   | { type: 'ping' };
 
 export type RuntimeResponse =
@@ -21,6 +23,7 @@ export type RuntimeResponse =
   | { type: 'stats'; payload: UsageStats }
   | { type: 'providers'; payload: ProviderStatus[] }
   | { type: 'deepl.usage'; payload: { configured: boolean; count: number; limit: number } }
+  | { type: 'update.info'; payload: UpdateStatus }
   | { type: 'ack' }
   | { type: 'error'; payload: { message: string } };
 

@@ -7,6 +7,7 @@ import { StatsTracker } from './stats';
 import { TranslationCoalescer } from './coalescer';
 import { anyProviderReady, getProviderStatus, setDeeplUsagePct } from './translator';
 import { installKeepalive } from './keepalive';
+import { getUpdateStatus } from './updateChecker';
 import { DEEPL_USAGE_FREE, DEEPL_USAGE_PRO, STORAGE_KEY_SETTINGS } from '~/shared/constants';
 import type { ProviderId, TranslationOutcome, TranslationRequest } from '~/shared/types';
 
@@ -195,6 +196,8 @@ onMessage(async (msg): Promise<RuntimeResponse | void> => {
     case 'open.options':
       await chrome.runtime.openOptionsPage();
       return { type: 'ack' };
+    case 'update.status':
+      return { type: 'update.info', payload: await getUpdateStatus(msg.force) };
     case 'ping':
       return { type: 'ack' };
     default:

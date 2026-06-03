@@ -4,6 +4,7 @@ import { defaultSettings } from '~/shared/settings';
 import { LANGUAGES } from '~/shared/languages';
 import { send } from '~/shared/messages';
 import type { ProviderStatus, UsageStats } from '~/shared/types';
+import type { UpdateStatus } from '~/shared/version';
 import { Toggle } from './components/Toggle';
 import { ProviderPill } from './components/ProviderPill';
 import { StatsBar } from './components/StatsBar';
@@ -25,6 +26,7 @@ export function App() {
   const [stats, setStats] = useState<UsageStats | undefined>(undefined);
   const [providers, setProviders] = useState<ProviderStatus[]>([]);
   const [deepl, setDeepl] = useState<DeeplUsage | undefined>(undefined);
+  const [update, setUpdate] = useState<UpdateStatus | undefined>(undefined);
   const [savedAt, setSavedAt] = useState<number | undefined>(undefined);
 
   useEffect(() => {
@@ -40,6 +42,8 @@ export function App() {
     if (provRes.type === 'providers') setProviders(provRes.payload);
     const deeplRes = await send({ type: 'deepl.usage' });
     if (deeplRes.type === 'deepl.usage') setDeepl(deeplRes.payload);
+    const upRes = await send({ type: 'update.status' });
+    if (upRes.type === 'update.info') setUpdate(upRes.payload);
   }
 
   async function patch<K extends keyof Settings>(key: K, value: Settings[K]) {
@@ -64,7 +68,7 @@ export function App() {
         </div>
         <div class="flex flex-col">
           <span class="text-sm font-semibold text-kick-text">Kick Translator</span>
-          <span class="text-[10px] text-kick-muted">v2 · {savedAt ? 'saved' : 'ready'}</span>
+          <span class="text-[10px] text-kick-muted">v{chrome.runtime.getManifest().version} · {savedAt ? 'saved' : 'ready'}</span>
         </div>
         <div class="ml-auto">
           <Toggle
@@ -74,6 +78,18 @@ export function App() {
           />
         </div>
       </header>
+
+      {update?.updateAvailable && (
+        <a
+          class="kt-btn flex items-center justify-center gap-1.5 text-xs font-semibold no-underline"
+          href={update.releaseUrl}
+          target="_blank"
+          rel="noreferrer"
+          title={`Installed v${update.current} · ${update.latest ?? '?'} available`}
+        >
+          ⬆ Update available — {update.latest}
+        </a>
+      )}
 
       <section class="kt-card flex flex-col gap-2">
         <label class="kt-label">Target language</label>

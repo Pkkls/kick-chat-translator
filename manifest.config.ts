@@ -41,6 +41,7 @@ export default defineManifest({
   permissions: ['storage', 'alarms'],
   host_permissions: [
     'https://kick.com/*',
+    'https://api.github.com/*',
     'https://translate.googleapis.com/*',
     'https://api-free.deepl.com/*',
     'https://api.deepl.com/*',

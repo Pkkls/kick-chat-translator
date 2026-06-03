@@ -53,6 +53,13 @@ export const KEEPALIVE_INTERVAL_SEC = 25;
 
 export const STORAGE_KEY_SETTINGS = 'kt.settings.v2';
 export const STORAGE_KEY_STATS = 'kt.stats.v1';
+export const STORAGE_KEY_UPDATE = 'kt.update.v1';
+
+// Self-update check: compare the installed version to the latest GitHub release.
+export const GITHUB_REPO = 'Pkkls/kick-chat-translator';
+export const GITHUB_LATEST_RELEASE_API = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
+export const GITHUB_RELEASES_URL = `https://github.com/${GITHUB_REPO}/releases/latest`;
+export const UPDATE_CHECK_TTL_MS = 6 * 60 * 60_000; // 6h
 
 export const COMMON_BOTS = new Set([
   'streamelements',
