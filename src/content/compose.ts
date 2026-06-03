@@ -163,6 +163,12 @@ export class ComposeController {
     this.detachComposer();
     this.composer = composer;
     composer.addEventListener('input', this.onInput);
+    // Kick's Lexical composer does NOT fire a catchable `input` event on
+    // delete-to-empty (it emits beforeinput/keyup only), so the preview used to
+    // stay up after you cleared the box. `keyup` fires on every key release —
+    // Backspace included, and after Enter sends — so re-evaluate there too: an
+    // empty box then resolves to 'skip-empty' and the panel hides.
+    composer.addEventListener('keyup', this.onInput);
     composer.addEventListener('keydown', this.onKeydown);
     mountComposePreview(composer, this.resolveTarget(), {
       onInsert: () => this.handleInsert(),
@@ -174,6 +180,7 @@ export class ComposeController {
 
   private detachComposer(): void {
     this.composer?.removeEventListener('input', this.onInput);
+    this.composer?.removeEventListener('keyup', this.onInput);
     this.composer?.removeEventListener('keydown', this.onKeydown);
     this.composer = undefined;
   }

@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.1] — 2026-06-03
+
+### Fixed
+- **Compose preview stayed up after you cleared the chat box.** Kick's Lexical composer never fires a
+  catchable `input` event on delete-to-empty (only `beforeinput`/`keyup`), so clearing your draft left
+  the translation panel visible. It now also re-evaluates on `keyup`, so an empty box hides the panel.
+
 ## [2.3.0] — 2026-06-03
 
 ### Added
