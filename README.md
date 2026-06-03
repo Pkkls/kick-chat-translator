@@ -45,7 +45,7 @@ Four providers in a chain — if one fails, the next picks up:
 | Google | No | Default, works out of the box |
 | DeepL | Yes (free) | Best quality. [Get a free key](https://www.deepl.com/pro-api) (1M chars/month, €0) |
 | MyMemory | No | Fallback |
-| Lingva | No | Fallback |
+| Lingva | No | Fallback | IT IS A SELF HOSTED LLM SERVER TRANSLATING AND COSTS AROUND 2GO RAM .  NOT RECOMMENDED. BUT GOOD FALLBACK
 
 On Chrome/Edge, there's also on-device translation (no network, no limit).
 Brave doesn't support it yet, so it uses the cloud chain.
