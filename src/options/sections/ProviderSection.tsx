@@ -1,5 +1,6 @@
 import type { CloudProviderId, Settings } from '~/shared/settings';
 import type { ProviderStatus } from '~/shared/types';
+import { useT } from '~/shared/i18nContext';
 import { EngineCard } from './EngineCard';
 
 const PROVIDER_LABELS: Record<CloudProviderId, string> = {
@@ -16,6 +17,8 @@ interface Props {
 }
 
 export function ProviderSection({ settings, providers, onPatch }: Props) {
+  const t = useT();
+
   function move(id: CloudProviderId, dir: -1 | 1) {
     const order = [...settings.providerOrder];
     const idx = order.indexOf(id);
@@ -45,10 +48,9 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
       <EngineCard settings={settings} onPatch={onPatch} />
 
       <section class="kt-card">
-        <h2 class="text-sm font-semibold mb-3">Cloud fallback chain</h2>
+        <h2 class="text-sm font-semibold mb-3">{t('Cloud fallback chain')}</h2>
         <p class="text-xs text-kick-muted mb-3">
-          Used when on-device is off or a language pair isn’t downloaded. Providers are tried in
-          order; failing ones are temporarily skipped (exponential cooldown).
+          {t('Used when on-device is off or a language pair isn\'t downloaded. Providers are tried in order; failing ones are temporarily skipped (exponential cooldown).')}
         </p>
         <ul class="flex flex-col gap-1.5">
           {settings.providerOrder.map((id, i) => {
@@ -59,10 +61,10 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
                 class="flex items-center gap-2 rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2"
               >
                 <span class="font-mono text-xs text-kick-muted w-5">{i + 1}.</span>
-                <span class="flex-1 text-sm">{PROVIDER_LABELS[id]}</span>
+                <span class="flex-1 text-sm">{t(PROVIDER_LABELS[id])}</span>
                 {status && (
                   <span class={`text-[10px] font-medium uppercase ${status.available ? 'text-kick-primary' : 'text-red-300'}`}>
-                    {status.available ? 'ok' : 'down'}
+                    {status.available ? t('ok') : t('down')}
                   </span>
                 )}
                 <button class="kt-btn-ghost py-1 px-2 text-xs" onClick={() => move(id, -1)}>↑</button>
@@ -77,7 +79,7 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
             .filter((id) => !settings.providerOrder.includes(id))
             .map((id) => (
               <button key={id} class="kt-btn-ghost text-xs" onClick={() => toggle(id)}>
-                + {PROVIDER_LABELS[id]}
+                + {t(PROVIDER_LABELS[id])}
               </button>
             ))}
         </div>
@@ -86,7 +88,7 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
       <section class="kt-card space-y-3">
         <h2 class="text-sm font-semibold">DeepL</h2>
         <div class="kt-row">
-          <label class="kt-label">API key</label>
+          <label class="kt-label">{t('API key')}</label>
           <input
             class="kt-input font-mono"
             type="password"
@@ -103,14 +105,14 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
           </p>
         </div>
         <div class="kt-row">
-          <label class="kt-label">Plan</label>
+          <label class="kt-label">{t('Plan')}</label>
           <select
             class="kt-select"
             value={settings.deeplPlan}
             onChange={(e) => onPatch({ deeplPlan: (e.target as HTMLSelectElement).value as 'free' | 'pro' })}
           >
-            <option value="free">Free (api-free.deepl.com)</option>
-            <option value="pro">Pro (api.deepl.com)</option>
+            <option value="free">{t('Free (api-free.deepl.com)')}</option>
+            <option value="pro">{t('Pro (api.deepl.com)')}</option>
           </select>
         </div>
         <label class="kt-row flex items-center gap-2 cursor-pointer">
@@ -120,18 +122,17 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
             checked={settings.deeplSmartRouting}
             onChange={(e) => onPatch({ deeplSmartRouting: (e.target as HTMLInputElement).checked })}
           />
-          <span class="text-sm">Smart budget routing</span>
+          <span class="text-sm">{t('Smart budget routing')}</span>
         </label>
         <p class="text-[11px] text-kick-muted -mt-2">
-          Spend DeepL only on the European languages it clearly wins at; other targets (Japanese,
-          Arabic, Hindi…) use the free engines first, so your DeepL quota lasts much longer.
+          {t('Spend DeepL only on the European languages it clearly wins at; other targets (Japanese, Arabic, Hindi…) use the free engines first, so your DeepL quota lasts much longer.')}
         </p>
       </section>
 
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">Lingva instance</h2>
+        <h2 class="text-sm font-semibold">{t('Lingva instance')}</h2>
         <div class="kt-row">
-          <label class="kt-label">Custom URL (optional)</label>
+          <label class="kt-label">{t('Custom URL (optional)')}</label>
           <input
             class="kt-input font-mono"
             type="url"
@@ -139,7 +140,7 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
             placeholder="https://lingva.lunar.icu"
             onInput={(e) => onPatch({ lingvaInstance: (e.target as HTMLInputElement).value.trim() })}
           />
-          <p class="text-[11px] text-kick-muted">Leave blank to use the default public instance.</p>
+          <p class="text-[11px] text-kick-muted">{t('Leave blank to use the default public instance.')}</p>
         </div>
       </section>
     </>

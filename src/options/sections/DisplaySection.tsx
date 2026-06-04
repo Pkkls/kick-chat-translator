@@ -1,5 +1,6 @@
 import type { Settings } from '~/shared/settings';
 import { LANGUAGES } from '~/shared/languages';
+import { useT } from '~/shared/i18nContext';
 
 interface Props {
   settings: Settings;
@@ -7,18 +8,19 @@ interface Props {
 }
 
 export function DisplaySection({ settings, onPatch }: Props) {
+  const t = useT();
   return (
     <>
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">Translation target</h2>
+        <h2 class="text-sm font-semibold">{t('Translation target')}</h2>
         <div class="kt-row">
-          <label class="kt-label">Translate everything to</label>
+          <label class="kt-label">{t('Translate everything to')}</label>
           <select
             class="kt-select"
             value={settings.targetLang}
             onChange={(e) => onPatch({ targetLang: (e.target as HTMLSelectElement).value })}
           >
-            <option value="auto">Auto — your browser language</option>
+            <option value="auto">{t('Auto — your browser language')}</option>
             {LANGUAGES.map((l) => (
               <option key={l.code} value={l.code}>
                 {l.label} ({l.native})
@@ -26,28 +28,28 @@ export function DisplaySection({ settings, onPatch }: Props) {
             ))}
           </select>
         </div>
-        <p class="text-[11px] text-kick-muted">Auto reads incoming chat in your own language, detected from the browser.</p>
+        <p class="text-[11px] text-kick-muted">{t('Auto reads incoming chat in your own language, detected from the browser.')}</p>
       </section>
 
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">Display style</h2>
+        <h2 class="text-sm font-semibold">{t('Display style')}</h2>
         <div class="grid grid-cols-3 gap-2">
           <StyleCard
             active={settings.displayStyle === 'below'}
-            label="Below"
-            desc="On a new line under the message."
+            label={t('Below')}
+            desc={t('On a new line under the message.')}
             onClick={() => onPatch({ displayStyle: 'below' })}
           />
           <StyleCard
             active={settings.displayStyle === 'inline'}
-            label="Inline"
-            desc="In a pill after the original text."
+            label={t('Inline')}
+            desc={t('In a pill after the original text.')}
             onClick={() => onPatch({ displayStyle: 'inline' })}
           />
           <StyleCard
             active={settings.displayStyle === 'replace'}
-            label="Replace"
-            desc="Below the message (compat — Kick virtual scroll can't be replaced in-place)."
+            label={t('Replace')}
+            desc={t('Below the message (compat — Kick virtual scroll can\'t be replaced in-place).')}
             onClick={() => onPatch({ displayStyle: 'replace' })}
           />
         </div>
@@ -55,44 +57,43 @@ export function DisplaySection({ settings, onPatch }: Props) {
         <ToggleRow
           checked={settings.showFloatingBar}
           onChange={(v) => onPatch({ showFloatingBar: v })}
-          label="Show floating bar at top of chat (toggle live)"
+          label={t('Show floating bar at top of chat (toggle live)')}
         />
         <ToggleRow
           checked={settings.showOriginal}
           onChange={(v) => onPatch({ showOriginal: v })}
-          label="Keep original text visible"
+          label={t('Keep original text visible')}
         />
         <ToggleRow
           checked={settings.showSourceBadge}
           onChange={(v) => onPatch({ showSourceBadge: v })}
-          label="Show source language badge"
+          label={t('Show source language badge')}
         />
         <ToggleRow
           checked={settings.showProviderBadge}
           onChange={(v) => onPatch({ showProviderBadge: v })}
-          label="Show which provider was used"
+          label={t('Show which provider was used')}
         />
       </section>
 
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">Compose preview</h2>
+        <h2 class="text-sm font-semibold">{t('Compose preview')}</h2>
         <p class="text-[12px] text-kick-muted">
-          Translate what <em>you</em> type before sending. A live preview appears above the chat box; click it to
-          drop the translation in. Uses the same DeepL-first chain as incoming chat.
+          {t('Translate what you type before sending. A live preview appears above the chat box; click it to drop the translation in. Uses the same DeepL-first chain as incoming chat.')}
         </p>
         <ToggleRow
           checked={settings.composeEnabled}
           onChange={(v) => onPatch({ composeEnabled: v })}
-          label="Enable compose preview"
+          label={t('Enable compose preview')}
         />
         <div class="kt-row">
-          <label class="kt-label">Write my messages in</label>
+          <label class="kt-label">{t('Write my messages in')}</label>
           <select
             class="kt-select"
             value={settings.composeTargetLang}
             onChange={(e) => onPatch({ composeTargetLang: (e.target as HTMLSelectElement).value })}
           >
-            <option value="auto">Auto — the channel's language</option>
+            <option value="auto">{t('Auto — the channel\'s language')}</option>
             {LANGUAGES.map((l) => (
               <option key={l.code} value={l.code}>
                 {l.label} ({l.native})
@@ -100,11 +101,11 @@ export function DisplaySection({ settings, onPatch }: Props) {
             ))}
           </select>
         </div>
-        <p class="text-[11px] text-kick-muted">Auto detects the channel's broadcast language from Kick — no manual picking.</p>
+        <p class="text-[11px] text-kick-muted">{t('Auto detects the channel\'s broadcast language from Kick — no manual picking.')}</p>
         <ToggleRow
           checked={settings.composeInsertMode === 'insert'}
           onChange={(v) => onPatch({ composeInsertMode: v ? 'insert' : 'copy' })}
-          label="Click inserts into the chat box (off = copy to clipboard instead)"
+          label={t('Click inserts into the chat box (off = copy to clipboard instead)')}
         />
       </section>
     </>

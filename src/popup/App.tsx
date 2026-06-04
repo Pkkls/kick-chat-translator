@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import type { Settings } from '~/shared/settings';
 import { defaultSettings } from '~/shared/settings';
 import { LANGUAGES } from '~/shared/languages';
 import { send } from '~/shared/messages';
+import { I18nProvider } from '~/shared/i18nContext';
+import { makeT, resolveUiLocale, isRtlLocale } from '~/shared/i18n';
 import type { ProviderStatus, UsageStats } from '~/shared/types';
 import type { UpdateStatus } from '~/shared/version';
 import { Toggle } from './components/Toggle';
@@ -29,9 +31,17 @@ export function App() {
   const [update, setUpdate] = useState<UpdateStatus | undefined>(undefined);
   const [savedAt, setSavedAt] = useState<number | undefined>(undefined);
 
+  const locale = resolveUiLocale(settings.uiLang);
+  const t = useMemo(() => makeT(locale), [locale]);
+
   useEffect(() => {
     void refresh().catch(() => undefined);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+    document.documentElement.dir = isRtlLocale(locale) ? 'rtl' : 'ltr';
+  }, [locale]);
 
   async function refresh() {
     const settingsRes = await send({ type: 'settings.get' });
@@ -61,6 +71,7 @@ export function App() {
   }
 
   return (
+    <I18nProvider value={t}>
     <div class="flex flex-col gap-3 p-4">
       <header class="flex items-center gap-2">
         <div class="flex h-6 w-6 items-center justify-center rounded bg-kick-primary text-kick-dark font-black text-sm">
@@ -68,13 +79,13 @@ export function App() {
         </div>
         <div class="flex flex-col">
           <span class="text-sm font-semibold text-kick-text">Kick Translator</span>
-          <span class="text-[10px] text-kick-muted">v{chrome.runtime.getManifest().version} · {savedAt ? 'saved' : 'ready'}</span>
+          <span class="text-[10px] text-kick-muted">v{chrome.runtime.getManifest().version} · {savedAt ? t('saved') : t('ready')}</span>
         </div>
         <div class="ml-auto">
           <Toggle
             checked={settings.enabled}
             onChange={(v) => void patch('enabled', v)}
-            label="enable"
+            label={t('enable')}
           />
         </div>
       </header>
@@ -87,18 +98,18 @@ export function App() {
           rel="noreferrer"
           title={`Installed v${update.current} · ${update.latest ?? '?'} available`}
         >
-          ⬆ Update available — {update.latest}
+          {t('⬆ Update available')} — {update.latest}
         </a>
       )}
 
       <section class="kt-card flex flex-col gap-2">
-        <label class="kt-label">Target language</label>
+        <label class="kt-label">{t('Target language')}</label>
         <select
           class="kt-select"
           value={settings.targetLang}
           onChange={(e) => void patch('targetLang', (e.target as HTMLSelectElement).value)}
         >
-          <option value="auto">Auto — your language</option>
+          <option value="auto">{t('Auto — your language')}</option>
           {LANGUAGES.map((l) => (
             <option key={l.code} value={l.code}>
               {l.label} ({l.native})
@@ -108,7 +119,7 @@ export function App() {
 
         <div class="flex gap-2">
           <div class="flex-1">
-            <label class="kt-label mb-1 block">Display</label>
+            <label class="kt-label mb-1 block">{t('Display')}</label>
             <select
               class="kt-select"
               value={settings.displayStyle}
@@ -116,9 +127,9 @@ export function App() {
                 void patch('displayStyle', (e.target as HTMLSelectElement).value as Settings['displayStyle'])
               }
             >
-              <option value="below">Below original</option>
-              <option value="inline">Inline</option>
-              <option value="replace">Replace</option>
+              <option value="below">{t('Below original')}</option>
+              <option value="inline">{t('Inline')}</option>
+              <option value="replace">{t('Replace')}</option>
             </select>
           </div>
         </div>
@@ -127,23 +138,23 @@ export function App() {
           <Toggle
             checked={settings.showOriginal}
             onChange={(v) => void patch('showOriginal', v)}
-            label="keep original"
+            label={t('keep original')}
           />
           <Toggle
             checked={settings.showSourceBadge}
             onChange={(v) => void patch('showSourceBadge', v)}
-            label="lang badge"
+            label={t('lang badge')}
           />
         </div>
       </section>
 
       <section class="kt-card flex flex-col gap-2">
         <div class="flex items-center justify-between">
-          <label class="kt-label">Translate what I type</label>
+          <label class="kt-label">{t('Translate what I type')}</label>
           <Toggle
             checked={settings.composeEnabled}
             onChange={(v) => void patch('composeEnabled', v)}
-            label="enable"
+            label={t('enable')}
           />
         </div>
         {settings.composeEnabled && (
@@ -153,22 +164,22 @@ export function App() {
               value={settings.composeTargetLang}
               onChange={(e) => void patch('composeTargetLang', (e.target as HTMLSelectElement).value)}
             >
-              <option value="auto">Auto — channel language</option>
+              <option value="auto">{t('Auto — channel language')}</option>
               {LANGUAGES.map((l) => (
                 <option key={l.code} value={l.code}>
                   {l.label} ({l.native})
                 </option>
               ))}
             </select>
-            <span class="text-[10px] text-kick-muted">Auto-detects the channel's language. Preview shows above the chat box — click it to insert.</span>
+            <span class="text-[10px] text-kick-muted">{t('Auto-detects the channel\'s language. Preview shows above the chat box — click it to insert.')}</span>
           </>
         )}
       </section>
 
       <section class="kt-card flex flex-col gap-2">
         <div class="flex items-center justify-between">
-          <span class="kt-label">Providers</span>
-          <span class="text-[10px] text-kick-muted">order in options</span>
+          <span class="kt-label">{t('Providers')}</span>
+          <span class="text-[10px] text-kick-muted">{t('order in options')}</span>
         </div>
         <div class="flex flex-wrap gap-1.5">
           {providers.map((p) => (
@@ -178,7 +189,7 @@ export function App() {
         {deepl?.configured && deepl.limit > 0 && (
           <div class="pt-1">
             <div class="flex items-center justify-between text-[10px] text-kick-muted">
-              <span>DeepL quota</span>
+              <span>{t('DeepL quota')}</span>
               <span>
                 {fmtK(deepl.count)} / {fmtK(deepl.limit)} ({Math.round((deepl.count / deepl.limit) * 100)}%)
               </span>
@@ -195,7 +206,7 @@ export function App() {
 
       {settings.popupShowsStats && stats && (
         <section class="kt-card">
-          <span class="kt-label">Today</span>
+          <span class="kt-label">{t('Today')}</span>
           <StatsBar stats={stats} />
         </section>
       )}
@@ -207,12 +218,13 @@ export function App() {
             send({ type: 'cache.clear' }).catch(() => undefined);
           }}
         >
-          Clear cache
+          {t('Clear cache')}
         </button>
         <button class="kt-btn" onClick={openOptions}>
-          Options
+          {t('Options')}
         </button>
       </footer>
     </div>
+    </I18nProvider>
   );
 }
