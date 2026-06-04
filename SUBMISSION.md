@@ -27,6 +27,8 @@ they arrive.
   spends your DeepL quota) when you're not watching.
 - **No account, no tracking, no telemetry.** Open-source (MIT).
 
+Not affiliated with or endorsed by Kick.
+
 ## Permissions justification (for reviewers)
 
 | Permission | Why |
@@ -41,9 +43,7 @@ and reads no data from other sites.
 
 ## Privacy
 
-See [PRIVACY.md](PRIVACY.md). Nothing is collected by us — there is no backend.
-Message text goes directly from the user's browser to the translation provider
-they configured (or never leaves the device when on-device translation is used).
+See [PRIVACY.md](PRIVACY.md). Chat message text (website content) is transmitted to the user-selected translation provider (Google, DeepL, MyMemory, or Lingva) solely to perform the translation. It is not collected, stored, sold, or used for any other purpose by this extension. In local-translation mode (Chrome/Edge built-in AI) nothing leaves the device.
 
 ## Abuse / rate-limit safety (for Kick staff)
 
@@ -78,9 +78,7 @@ both zips to the GitHub release. Node ≥20.
 
 ## Privacy policy
 
-<https://github.com/Pkkls/kick-chat-translator/blob/master/PRIVACY.md> — nothing is
-collected. Message text goes only to the translation provider the user selects; no
-account, no telemetry, no backend.
+<https://github.com/Pkkls/kick-chat-translator/blob/master/PRIVACY.md> — chat message text is transmitted to the user-selected translation provider solely to perform the translation; it is not collected, stored, or sold. In local-translation mode nothing leaves the device. No account, no telemetry, no backend.
 
 ## Screenshots (store listing)
 
@@ -111,8 +109,7 @@ account, no telemetry, no backend.
 2. Paste the short + long description and the permission justifications above.
 3. Add screenshots + the 128×128 icon (already in the zip).
 4. Set the privacy-policy URL and the single-purpose statement.
-5. Data-use disclosure: **no** data collected or sold; message text is sent to the
-   user-selected translator solely to translate it.
+5. Data-use disclosure: tick **"Website content"** in the CWS Data Use form (chat text is transmitted to the user-selected translation provider); leave all other types unticked. Tick the 3 certifications. Message text is not collected, stored, or sold.
 6. Submit for review.
 
 **Firefox AMO** (free):
