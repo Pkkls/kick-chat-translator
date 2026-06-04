@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import type { Settings } from '~/shared/settings';
+import { useT } from '~/shared/i18nContext';
 
 interface Props {
   settings: Settings;
@@ -21,6 +22,7 @@ function ctor(): TranslatorCtor | undefined {
 const COMMON_SOURCES = ['ja', 'ko', 'zh', 'es', 'pt', 'fr', 'de', 'ru', 'ar', 'tr'];
 
 export function EngineCard({ settings, onPatch }: Props) {
+  const t = useT();
   const present = ctor() !== undefined;
   const [probe, setProbe] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState<string | undefined>(undefined);
@@ -65,31 +67,30 @@ export function EngineCard({ settings, onPatch }: Props) {
   return (
     <section class="kt-card space-y-3">
       <div class="flex items-center justify-between">
-        <h2 class="text-sm font-semibold">Engine</h2>
+        <h2 class="text-sm font-semibold">{t('Engine')}</h2>
         <span class={`text-[11px] font-medium ${present ? 'text-kick-primary' : 'text-kick-muted'}`}>
-          on-device: {present ? 'available ✓' : 'not supported in this browser'}
+          {`${t('on-device:')} ${present ? t('available ✓') : t('not supported in this browser')}`}
         </span>
       </div>
 
       <div class="kt-row">
-        <label class="kt-label">Strategy</label>
+        <label class="kt-label">{t('Strategy')}</label>
         <select
           class="kt-select"
           value={settings.engineMode}
           onChange={(e) => onPatch({ engineMode: (e.target as HTMLSelectElement).value as Settings['engineMode'] })}
         >
-          <option value="local-first">On-device first, cloud fallback (recommended)</option>
-          <option value="cloud-first">Cloud first, on-device fallback</option>
-          <option value="local-only">On-device only (no network, no cloud)</option>
+          <option value="local-first">{t('On-device first, cloud fallback (recommended)')}</option>
+          <option value="cloud-first">{t('Cloud first, on-device fallback')}</option>
+          <option value="local-only">{t('On-device only (no network, no cloud)')}</option>
         </select>
         <p class="text-[11px] text-kick-muted">
-          On-device = local Chromium models: unlimited, instant, private, no rate-limit. Each
-          language needs a one-time model download (click a flag below, or the “Local” chip in chat).
+          {t('On-device = local Chromium models: unlimited, instant, private, no rate-limit. Each language needs a one-time model download (click a flag below, or the "Local" chip in chat).')}
         </p>
       </div>
 
       <label class="flex items-center justify-between gap-3 rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
-        <span class="text-sm">Enable on-device translation</span>
+        <span class="text-sm">{t('Enable on-device translation')}</span>
         <input
           type="checkbox"
           class="h-4 w-4 accent-kick-primary"
@@ -101,7 +102,7 @@ export function EngineCard({ settings, onPatch }: Props) {
       {present && (
         <div>
           <label class="kt-label mb-1 block">
-            Download models → {settings.targetLang.toUpperCase()}
+            {`${t('Download models →')} ${settings.targetLang.toUpperCase()}`}
           </label>
           <div class="flex flex-wrap gap-1.5">
             {COMMON_SOURCES.filter((s) => s !== settings.targetLang).map((s) => {

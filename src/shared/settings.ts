@@ -76,6 +76,8 @@ export const SettingsSchema = z.object({
 
   // UI
   popupShowsStats: z.boolean().default(true),
+  // Language of the extension's own UI (options + popup). 'auto' follows the browser.
+  uiLang: z.enum(['auto', 'en', 'ja', 'fr', 'zh', 'ar', 'ru', 'pt']).default('auto'),
 
   // Compose preview: translate what *you* type before you send it.
   // Source language is auto-detected; output goes to composeTargetLang.

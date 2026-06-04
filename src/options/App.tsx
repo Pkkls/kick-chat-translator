@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import type { Settings } from '~/shared/settings';
 import { defaultSettings } from '~/shared/settings';
 import { send } from '~/shared/messages';
+import { I18nProvider } from '~/shared/i18nContext';
+import { makeT, resolveUiLocale, isRtlLocale, UI_LOCALES, UI_LOCALE_NAMES } from '~/shared/i18n';
 import type { ProviderStatus } from '~/shared/types';
 import { ProviderSection } from './sections/ProviderSection';
 import { DisplaySection } from './sections/DisplaySection';
@@ -25,9 +27,17 @@ export function App() {
   const [tab, setTab] = useState<Tab>('providers');
   const [savedAt, setSavedAt] = useState<number | undefined>(undefined);
 
+  const locale = resolveUiLocale(settings.uiLang);
+  const t = useMemo(() => makeT(locale), [locale]);
+
   useEffect(() => {
     void refresh().catch(() => undefined);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+    document.documentElement.dir = isRtlLocale(locale) ? 'rtl' : 'ltr';
+  }, [locale]);
 
   async function refresh() {
     const settingsRes = await send({ type: 'settings.get' });
@@ -46,6 +56,7 @@ export function App() {
   }
 
   return (
+    <I18nProvider value={t}>
     <div class="mx-auto max-w-3xl px-6 py-10">
       <header class="mb-6 flex items-center gap-3">
         <div class="flex h-9 w-9 items-center justify-center rounded-md bg-kick-primary text-kick-dark font-black text-xl">
@@ -53,23 +64,38 @@ export function App() {
         </div>
         <div>
           <h1 class="text-xl font-semibold tracking-tight">Kick Chat Translator</h1>
-          <p class="text-xs text-kick-muted">v2 · options & preferences</p>
+          <p class="text-xs text-kick-muted">{t('v2 · options & preferences')}</p>
         </div>
-        {savedAt && <span class="ml-auto text-xs text-kick-primary">saved</span>}
+        <div class="ml-auto flex items-center gap-3">
+          {savedAt && <span class="text-xs text-kick-primary">{t('saved')}</span>}
+          <select
+            class="rounded border border-kick-border bg-transparent px-1.5 py-1 text-xs text-kick-text"
+            value={settings.uiLang}
+            onChange={(e) => void patch({ uiLang: (e.target as HTMLSelectElement).value as Settings['uiLang'] })}
+            title="Language"
+          >
+            <option value="auto">Auto</option>
+            {UI_LOCALES.map((l) => (
+              <option key={l} value={l}>
+                {UI_LOCALE_NAMES[l]}
+              </option>
+            ))}
+          </select>
+        </div>
       </header>
 
       <nav class="mb-5 flex gap-1 border-b border-kick-border">
-        {TABS.map((t) => (
+        {TABS.map((tb) => (
           <button
-            key={t.id}
+            key={tb.id}
             class={`px-4 py-2 text-sm border-b-2 transition ${
-              tab === t.id
+              tab === tb.id
                 ? 'border-kick-primary text-kick-text'
                 : 'border-transparent text-kick-muted hover:text-kick-text'
             }`}
-            onClick={() => setTab(t.id)}
+            onClick={() => setTab(tb.id)}
           >
-            {t.label}
+            {t(tb.label)}
           </button>
         ))}
       </nav>
@@ -82,5 +108,6 @@ export function App() {
         {tab === 'about' && <AboutSection />}
       </main>
     </div>
+    </I18nProvider>
   );
 }

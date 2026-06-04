@@ -1,6 +1,7 @@
 import { useState } from 'preact/hooks';
 import type { Settings } from '~/shared/settings';
 import { send } from '~/shared/messages';
+import { useT } from '~/shared/i18nContext';
 
 interface Props {
   settings: Settings;
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export function AdvancedSection({ settings, onPatch }: Props) {
+  const t = useT();
   const [confirmClear, setConfirmClear] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
   const [confirmResetAll, setConfirmResetAll] = useState(false);
@@ -15,9 +17,9 @@ export function AdvancedSection({ settings, onPatch }: Props) {
   return (
     <>
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">Connection</h2>
+        <h2 class="text-sm font-semibold">{t('Connection')}</h2>
         <div class="kt-row">
-          <label class="kt-label">Mode</label>
+          <label class="kt-label">{t('Mode')}</label>
           <select
             class="kt-select"
             value={settings.connectionMode}
@@ -25,19 +27,19 @@ export function AdvancedSection({ settings, onPatch }: Props) {
               onPatch({ connectionMode: (e.target as HTMLSelectElement).value as Settings['connectionMode'] })
             }
           >
-            <option value="auto">Auto (WebSocket + DOM fallback)</option>
-            <option value="websocket">WebSocket only</option>
-            <option value="dom">DOM observer only</option>
+            <option value="auto">{t('Auto (WebSocket + DOM fallback)')}</option>
+            <option value="websocket">{t('WebSocket only')}</option>
+            <option value="dom">{t('DOM observer only')}</option>
           </select>
           <p class="text-[11px] text-kick-muted">
-            WebSocket directly listens to Kick's chat events for lower CPU / faster pre-translation.
+            {t("WebSocket directly listens to Kick's chat events for lower CPU / faster pre-translation.")}
           </p>
         </div>
         <label class="flex items-center justify-between gap-3 rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
           <span class="text-sm">
-            Pause when tab is hidden
+            {t('Pause when tab is hidden')}
             <span class="block text-[11px] text-kick-muted">
-              Background Kick tabs won't translate (saves DeepL quota while you're away).
+              {t("Background Kick tabs won't translate (saves DeepL quota while you're away).")}
             </span>
           </span>
           <input
@@ -50,10 +52,10 @@ export function AdvancedSection({ settings, onPatch }: Props) {
       </section>
 
       <section class="kt-card space-y-4">
-        <h2 class="text-sm font-semibold">Cache & performance</h2>
+        <h2 class="text-sm font-semibold">{t('Cache & performance')}</h2>
         <Row
-          label="Cache max entries"
-          hint="Larger = more hits across sessions, more disk space."
+          label={t('Cache max entries')}
+          hint={t('Larger = more hits across sessions, more disk space.')}
           input={
             <input
               type="number"
@@ -67,8 +69,8 @@ export function AdvancedSection({ settings, onPatch }: Props) {
           }
         />
         <Row
-          label="Cache TTL (hours)"
-          hint="After this, entries expire."
+          label={t('Cache TTL (hours)')}
+          hint={t('After this, entries expire.')}
           input={
             <input
               type="number"
@@ -81,8 +83,8 @@ export function AdvancedSection({ settings, onPatch }: Props) {
           }
         />
         <Row
-          label="Concurrent translations"
-          hint="In-flight provider requests."
+          label={t('Concurrent translations')}
+          hint={t('In-flight provider requests.')}
           input={
             <input
               type="number"
@@ -95,8 +97,8 @@ export function AdvancedSection({ settings, onPatch }: Props) {
           }
         />
         <Row
-          label="Per-channel budget (req/min)"
-          hint="Hard cap to avoid hammering providers on fast chats."
+          label={t('Per-channel budget (req/min)')}
+          hint={t('Hard cap to avoid hammering providers on fast chats.')}
           input={
             <input
               type="number"
@@ -111,9 +113,9 @@ export function AdvancedSection({ settings, onPatch }: Props) {
       </section>
 
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">Debugging</h2>
+        <h2 class="text-sm font-semibold">{t('Debugging')}</h2>
         <label class="flex items-center justify-between gap-3 rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
-          <span class="text-sm">Verbose console logs</span>
+          <span class="text-sm">{t('Verbose console logs')}</span>
           <input
             type="checkbox"
             class="h-4 w-4 accent-kick-primary"
@@ -134,7 +136,7 @@ export function AdvancedSection({ settings, onPatch }: Props) {
               setConfirmClear(false);
             }}
           >
-            {confirmClear ? 'click again to confirm' : 'Clear translation cache'}
+            {confirmClear ? t('click again to confirm') : t('Clear translation cache')}
           </button>
           <button
             class="kt-btn-ghost"
@@ -148,7 +150,7 @@ export function AdvancedSection({ settings, onPatch }: Props) {
               setConfirmReset(false);
             }}
           >
-            {confirmReset ? 'click again to confirm' : 'Reset usage stats'}
+            {confirmReset ? t('click again to confirm') : t('Reset usage stats')}
           </button>
           <button
             class="kt-btn-ghost"
@@ -162,12 +164,11 @@ export function AdvancedSection({ settings, onPatch }: Props) {
               void send({ type: 'settings.reset' }).then(() => location.reload());
             }}
           >
-            {confirmResetAll ? 'click again to confirm' : 'Reset all settings to defaults'}
+            {confirmResetAll ? t('click again to confirm') : t('Reset all settings to defaults')}
           </button>
         </div>
         <p class="text-[11px] text-kick-muted">
-          “Reset all settings” restores defaults — use it if translations stop appearing
-          because a filter (whitelist / source-language allowlist) was left active.
+          {t('"Reset all settings" restores defaults — use it if translations stop appearing because a filter (whitelist / source-language allowlist) was left active.')}
         </p>
       </section>
     </>

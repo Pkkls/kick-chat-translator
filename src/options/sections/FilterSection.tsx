@@ -1,5 +1,6 @@
 import type { Settings } from '~/shared/settings';
 import { LANGUAGES } from '~/shared/languages';
+import { useT } from '~/shared/i18nContext';
 
 interface Props {
   settings: Settings;
@@ -14,26 +15,27 @@ function toList(v: string): string[] {
 }
 
 export function FilterSection({ settings, onPatch }: Props) {
+  const t = useT();
   return (
     <>
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">General</h2>
+        <h2 class="text-sm font-semibold">{t('General')}</h2>
         <ToggleRow
           checked={settings.ignoreEnglish}
           onChange={(v) => onPatch({ ignoreEnglish: v })}
-          label="Skip messages already in target language"
+          label={t('Skip messages already in target language')}
         />
         <ToggleRow
           checked={settings.ignoreBots}
           onChange={(v) => onPatch({ ignoreBots: v })}
-          label="Ignore common bot accounts (StreamElements, Nightbot, …)"
+          label={t('Ignore common bot accounts (StreamElements, Nightbot, …)')}
         />
       </section>
 
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">Source languages allowlist</h2>
+        <h2 class="text-sm font-semibold">{t('Source languages allowlist')}</h2>
         <p class="text-xs text-kick-muted">
-          Leave empty to translate every detected language. Pick specific ones to ONLY translate those (e.g. only JA + KO).
+          {t('Leave empty to translate every detected language. Pick specific ones to ONLY translate those (e.g. only JA + KO).')}
         </p>
         <div class="grid grid-cols-3 gap-1.5 max-h-[260px] overflow-auto pr-1">
           {LANGUAGES.map((l) => {
@@ -62,9 +64,9 @@ export function FilterSection({ settings, onPatch }: Props) {
       </section>
 
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">Channels & users</h2>
+        <h2 class="text-sm font-semibold">{t('Channels & users')}</h2>
         <div class="kt-row">
-          <label class="kt-label">Whitelist channels (only translate on these)</label>
+          <label class="kt-label">{t('Whitelist channels (only translate on these)')}</label>
           <textarea
             class="kt-textarea"
             value={settings.whitelistChannels.join('\n')}
@@ -73,7 +75,7 @@ export function FilterSection({ settings, onPatch }: Props) {
           />
         </div>
         <div class="kt-row">
-          <label class="kt-label">Blacklist channels</label>
+          <label class="kt-label">{t('Blacklist channels')}</label>
           <textarea
             class="kt-textarea"
             value={settings.blacklistChannels.join('\n')}
@@ -81,7 +83,7 @@ export function FilterSection({ settings, onPatch }: Props) {
           />
         </div>
         <div class="kt-row">
-          <label class="kt-label">Blacklist users</label>
+          <label class="kt-label">{t('Blacklist users')}</label>
           <textarea
             class="kt-textarea"
             value={settings.blacklistUsers.join('\n')}
