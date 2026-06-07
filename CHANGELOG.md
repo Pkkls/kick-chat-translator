@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] — 2026-06-04
+
+### Added
+- **The extension UI is now available in 7 languages** — English, Japanese, French, Chinese,
+  Arabic, Russian, and Portuguese. The options page and popup auto-detect your browser language
+  and can be switched live from a picker in the options header; Arabic renders right-to-left.
+  Missing strings fall back to English, so the UI is never blank.
+
+### Fixed
+- **Firefox (AMO) data-consent.** Added the now-required
+  `browser_specific_settings.gecko.data_collection_permissions` key, declaring that the extension
+  transmits chat message text (website content) to the user-selected translation provider and
+  nothing else. This unblocks Firefox Add-ons validation.
+
 ## [2.4.1] — 2026-06-03
 
 ### Fixed

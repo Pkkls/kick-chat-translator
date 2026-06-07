@@ -60,9 +60,12 @@ export default defineManifest({
       gecko: {
         id: 'kick-translator@pkkls.dev',
         // FF 121+ : ES-module background scripts (`background.type: module`) and
-        // storage.session both require it. (`data_collection_permissions` would force
-        // 140+, so it's declared in the AMO listing instead — see SUBMISSION.md.)
+        // storage.session both require it.
         strict_min_version: '121.0',
+        // Required by AMO for new submissions/versions. The extension transmits chat
+        // message text (website content) to the user-selected translation provider —
+        // nothing else; no analytics, no accounts. On-device mode transmits nothing.
+        data_collection_permissions: { required: ['websiteContent'] },
       },
     },
   }),
