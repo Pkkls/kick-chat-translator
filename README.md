@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml/badge.svg)](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=Chrome%20Web%20Store&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
+[![Firefox Add-on](https://img.shields.io/amo/v/kick-chat-translator?label=Firefox%20Add-on&color=53fc18)](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)
 
 [日本語](README.ja.md) · [Español](README.es.md) · [Português](README.pt-BR.md)
 
@@ -27,22 +29,21 @@ variants (Brazilian Portuguese, Traditional Chinese).
 
 ## Install
 
-Download the right zip from [Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest)
-and unzip it.
+**[➥ Chrome / Brave / Edge — Chrome Web Store](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)**
+&nbsp;·&nbsp;
+**[➥ Firefox — Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
-**Chrome / Brave / Edge** — `…-chromium.zip`:
+One click to install, then open a Kick stream — a green bar at the top of chat means it's working.
 
-1. Go to `brave://extensions` (or `chrome://extensions`, `edge://extensions`)
-2. Enable **Developer mode**
-3. **Load unpacked** → select the unzipped folder
+<details>
+<summary>Or install manually (unpacked / dev build)</summary>
 
-**Firefox 121+** — `…-firefox.zip`:
+Download the right zip from [Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest) and unzip it.
 
-1. Go to `about:debugging#/runtime/this-firefox`
-2. **Load Temporary Add-on…** → select `manifest.json` in the unzipped folder
-   *(temporary — Firefox removes it on restart, until the add-on is on Mozilla Add-ons)*
+- **Chrome / Brave / Edge** (`…-chromium.zip`): open `chrome://extensions` → enable **Developer mode** → **Load unpacked** → select the folder.
+- **Firefox 121+** (`…-firefox.zip`): open `about:debugging#/runtime/this-firefox` → **Load Temporary Add-on…** → select `manifest.json`.
 
-Open a Kick stream. Green bar at the top of chat = working.
+</details>
 
 ## Translation engines
 

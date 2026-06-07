@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml/badge.svg)](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=Chrome%20Web%20Store&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
+[![Firefox Add-on](https://img.shields.io/amo/v/kick-chat-translator?label=Firefox%20Add-on&color=53fc18)](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)
 
 [English](README.md) · [日本語](README.ja.md) · [Español](README.es.md)
 
@@ -19,6 +21,13 @@ tudo aparece em português. 30 idiomas disponíveis.
 
 ## Instalação
 
+**[➥ Chrome / Brave / Edge — Chrome Web Store](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)** · **[➥ Firefox — Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
+
+Um clique para instalar, depois abra uma live da Kick — barra verde no topo do chat significa que esta funcionando.
+
+<details>
+<summary>Ou instale manualmente (zip / build de desenvolvimento)</summary>
+
 Baixe o zip certo em [Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest)
 e descompacte.
 
@@ -32,9 +41,9 @@ e descompacte.
 
 1. Abra `about:debugging#/runtime/this-firefox`
 2. **Carregar extensão temporária…** → escolha o `manifest.json` da pasta
-   *(temporária — o Firefox a remove ao reiniciar, até estar no Mozilla Add-ons)*
+   *(temporária — o Firefox a remove ao reiniciar, ate estar no Mozilla Add-ons)*
 
-Abra uma live da Kick. Barra verde no topo do chat = funcionando.
+</details>
 
 ## Motores de tradução
 

@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml/badge.svg)](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=Chrome%20Web%20Store&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
+[![Firefox Add-on](https://img.shields.io/amo/v/kick-chat-translator?label=Firefox%20Add-on&color=53fc18)](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)
 
 [English](README.md) · [Español](README.es.md) · [Português](README.pt-BR.md)
 
@@ -19,6 +21,13 @@ Kick.com のチャットをリアルタイムで翻訳するブラウザ拡張�
 
 ## インストール
 
+**[➥ Chrome / Brave / Edge — Chrome Web Store](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)** · **[➥ Firefox — Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
+
+ワンクリックでインストール後、Kick の配信を開くだけ。チャット上部に緑のバーが出れば動作してる。
+
+<details>
+<summary>手動インストール（zip / 開発ビルド）</summary>
+
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest)
 から対応する zip をダウンロードして展開。
 
@@ -34,7 +43,7 @@ Kick.com のチャットをリアルタイムで翻訳するブラウザ拡張�
 2. **「一時的なアドオンを読み込む」** → フォルダ内の `manifest.json` を選択
    *（一時的な読み込み。Firefox を再起動すると消える。AMO 公開までの暫定。）*
 
-Kick の配信を開いて、チャット上部に緑のバーが出れば動作してる。
+</details>
 
 ## 翻訳エンジン
 
