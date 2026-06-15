@@ -79,6 +79,32 @@ No account, no analytics, no server. Messages go to the translation provider
 you picked and nowhere else. On-device mode doesn't even do that.
 [Details](PRIVACY.md)
 
+## FAQ
+
+**Q: The green bar disappeared / translation stopped working.**
+**A:** Refresh the page. Kick occasionally updates its interface, which can interrupt the extension's connection to the chat.
+
+**Q: Messages aren't being translated.**
+**A:** Open the extension settings and make sure the target language is different from the source language. Also check that at least one translation provider is enabled in the provider chain.
+
+**Q: Does it work on VOD replays?**
+**A:** Yes, the extension translates chat on both live streams and VOD replays.
+
+**Q: Which browsers are supported?**
+**A:** Chrome, Brave, Edge, and Firefox are all supported.
+
+**Q: Is my data safe?**
+**A:** The extension has no account system and collects no analytics. Chat messages are sent only to the translation provider you selected, and nowhere else.
+
+**Q: How do I get better translation quality?**
+**A:** Add a free DeepL API key in the extension settings. DeepL's free tier allows up to 1 million characters per month and consistently outperforms the default providers.
+
+**Q: Some messages show weird characters or aren't translated.**
+**A:** Very short messages and emote-only messages are intentionally skipped, as they rarely contain translatable text and would waste API calls.
+
+**Q: The extension broke after a Kick update.**
+**A:** Kick sometimes changes its chat structure, which can break message detection. Please open a [GitHub issue](https://github.com/Pkkls/kick-chat-translator/issues) and it will be patched as soon as possible.
+
 ## Supported languages
 
 English · French · Spanish · Portuguese · Portuguese (Brazil) · German · Italian · Dutch · Polish · Swedish · Czech · Slovak · Romanian · Russian · Ukrainian · Turkish · Arabic · Hebrew · Japanese · Korean · Chinese (Simplified) · Chinese (Traditional) · Thai · Vietnamese · Indonesian · Hindi · Finnish · Norwegian · Danish · Greek · Hungarian · Bulgarian · Catalan · Slovenian · Estonian · Lithuanian · Latvian · Persian · Bengali · Tamil · Malay · Filipino

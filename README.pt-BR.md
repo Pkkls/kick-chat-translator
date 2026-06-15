@@ -79,6 +79,32 @@ que você escolheu. No modo local, nem isso. [Detalhes](PRIVACY.md)
 
 ---
 
+## FAQ
+
+**Q: A barra verde desapareceu / a tradução parou de funcionar.**
+**A:** Atualize a página. O Kick atualiza sua interface ocasionalmente, o que pode interromper a conexão da extensão com o chat.
+
+**Q: As mensagens não estão sendo traduzidas.**
+**A:** Abra as configurações da extensão e verifique se o idioma de destino é diferente do idioma de origem. Confira também se pelo menos um provedor de tradução está ativado na cadeia de provedores.
+
+**Q: Funciona em replays de VOD?**
+**A:** Sim, a extensão traduz o chat tanto em transmissões ao vivo quanto em replays de VOD.
+
+**Q: Quais navegadores são suportados?**
+**A:** Chrome, Brave, Edge e Firefox são todos suportados.
+
+**Q: Meus dados estão seguros?**
+**A:** A extensão não possui sistema de contas e não coleta nenhum dado analítico. As mensagens do chat são enviadas apenas para o provedor de tradução que você selecionou, e para mais nenhum lugar.
+
+**Q: Como obter uma qualidade de tradução melhor?**
+**A:** Adicione uma chave de API gratuita do DeepL nas configurações da extensão. O plano gratuito do DeepL permite até 1 milhão de caracteres por mês e supera consistentemente os provedores padrão.
+
+**Q: Algumas mensagens mostram caracteres estranhos ou não são traduzidas.**
+**A:** Mensagens muito curtas e mensagens compostas apenas por emotes são ignoradas intencionalmente, pois raramente contêm texto traduzível e desperdiçariam chamadas de API.
+
+**Q: A extensão quebrou após uma atualização do Kick.**
+**A:** O Kick às vezes muda a estrutura do seu chat, o que pode quebrar a detecção de mensagens. Por favor, abra uma [issue no GitHub](https://github.com/Pkkls/kick-chat-translator/issues) e ela será corrigida o mais rápido possível.
+
 ## Compilar do código
 
 ```bash
