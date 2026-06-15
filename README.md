@@ -2,13 +2,15 @@
 
 [![CI](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml/badge.svg)](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/Pkkls/kick-chat-translator?style=flat&color=53fc18)](https://github.com/Pkkls/kick-chat-translator/stargazers)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=Chrome%20Web%20Store&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
+[![Chrome Users](https://img.shields.io/chrome-web-store/users/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=users&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
 [![Firefox Add-on](https://img.shields.io/amo/v/kick-chat-translator?label=Firefox%20Add-on&color=53fc18)](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)
 
 [日本語](README.ja.md) · [Español](README.es.md) · [Português](README.pt-BR.md)
 
-Translates Kick.com chat in real time. AND ALSO REPLAY VOD !! You open a stream, foreign messages get
-a translation underneath. That's it. 
+Translates Kick.com chat in real time — live streams and VOD replays. You open a stream, foreign messages get
+a translation underneath. That's it.
 
 <img width="354" height="593" alt="image" src="https://github.com/user-attachments/assets/4f7ae414-6c2a-4ee5-b191-6af9e29d46ec" />
 
@@ -22,7 +24,7 @@ type, a live preview shows your message in the *channel's* language — auto-det
 from Kick — above the chat box. Click it or press **Ctrl/Cmd+Enter** to insert. Both
 directions are automatic; you never pick a language (you still can, in settings).
 
-**31 languages**, including right-to-left (Arabic, Hebrew, Persian) and regional
+**42 languages**, including right-to-left (Arabic, Hebrew, Persian) and regional
 variants (Brazilian Portuguese, Traditional Chinese).
 
 ---
@@ -54,7 +56,7 @@ Four providers in a chain — if one fails, the next picks up:
 | Google | No | Default, works out of the box |
 | DeepL | Yes (free) | Best quality. [Get a free key](https://www.deepl.com/pro-api) (1M chars/month, €0) |
 | MyMemory | No | Fallback |
-| Lingva | No | Fallback | IT IS A SELF HOSTED LLM SERVER TRANSLATING AND COSTS AROUND 2GO RAM .  NOT RECOMMENDED. BUT GOOD FALLBACK
+| Lingva | No | Fallback (self-hosted only — ~2 GB RAM, not recommended unless you run your own instance) |
 
 On Chrome/Edge, there's also on-device translation (no network, no limit).
 Brave and Firefox don't support it yet, so they use the cloud chain.
@@ -65,7 +67,7 @@ You pick the order in the settings.
 
 Click the gear icon on the chat bar, or right-click the extension icon → Options.
 
-- **Target language** — what to translate into (30 languages)
+- **Target language** — what to translate into (42 languages)
 - **Provider order** — drag to reorder, paste your DeepL key
 - **Filters** — skip bots, blocklist users/channels, restrict source languages
 - **Auto-pause** — background tabs don't translate (saves your DeepL quota)
@@ -75,6 +77,19 @@ Click the gear icon on the chat bar, or right-click the extension icon → Optio
 No account, no analytics, no server. Messages go to the translation provider
 you picked and nowhere else. On-device mode doesn't even do that.
 [Details](PRIVACY.md)
+
+## Supported languages
+
+English · French · Spanish · Portuguese · Portuguese (Brazil) · German · Italian · Dutch · Polish · Swedish · Czech · Slovak · Romanian · Russian · Ukrainian · Turkish · Arabic · Hebrew · Japanese · Korean · Chinese (Simplified) · Chinese (Traditional) · Thai · Vietnamese · Indonesian · Hindi · Finnish · Norwegian · Danish · Greek · Hungarian · Bulgarian · Catalan · Slovenian · Estonian · Lithuanian · Latvian · Persian · Bengali · Tamil · Malay · Filipino
+
+## How it works
+
+1. A content script observes the Kick chat DOM and intercepts new messages.
+2. Each message is sent to the background service worker, which tries providers in order until one succeeds.
+3. The translated text is injected back into the DOM below the original message.
+4. For outgoing messages, the channel language is auto-detected via the Kick API, and a live preview is shown above the chat input.
+
+The extension never modifies the Kick page's own network requests and requires only `storage` and `host` permissions for kick.com.
 
 ---
 
