@@ -36,6 +36,7 @@ variants (Brazilian Portuguese, Traditional Chinese).
 **[➥ Firefox — Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
 One click to install, then open a Kick stream — a green bar at the top of chat means it's working.
+<img width="347" height="193" alt="image" src="https://github.com/user-attachments/assets/3973b7a0-4767-42a2-974c-7f94b2534595" />
 
 <details>
 <summary>Or install manually (unpacked / dev build)</summary>
