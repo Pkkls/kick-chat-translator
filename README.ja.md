@@ -2,7 +2,9 @@
 
 [![CI](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml/badge.svg)](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/Pkkls/kick-chat-translator?style=flat&color=53fc18)](https://github.com/Pkkls/kick-chat-translator/stargazers)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=Chrome%20Web%20Store&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
+[![Chrome Users](https://img.shields.io/chrome-web-store/users/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=users&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
 [![Firefox Add-on](https://img.shields.io/amo/v/kick-chat-translator?label=Firefox%20Add-on&color=53fc18)](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)
 
 [English](README.md) · [Español](README.es.md) · [Português](README.pt-BR.md)
@@ -15,7 +17,7 @@ Kick.com のチャットをリアルタイムで翻訳するブラウザ拡張�
 ![日本語チャットの翻訳例](screenshots/japanese-chat.jpg)
 
 翻訳先の言語は自由に選べる。日本語に設定すれば、
-すべてのメッセージが日本語で読める。30言語対応。
+すべてのメッセージが日本語で読める。42言語対応。
 
 ---
 
@@ -65,7 +67,7 @@ Brave・Firefox は未対応なので、自動的にクラウドを使う。
 
 チャットバーの歯車、または拡張機能アイコンを右クリック → オプション。
 
-- **翻訳先の言語** — 30言語から選択
+- **翻訳先の言語** — 42言語から選択
 - **プロバイダー順** — ドラッグで並べ替え、DeepL キーを入力
 - **フィルター** — ボットを除外、ユーザー/チャンネルのブロック、言語の制限
 - **自動一時停止** — バックグラウンドのタブは翻訳しない（DeepL の枠を節約）

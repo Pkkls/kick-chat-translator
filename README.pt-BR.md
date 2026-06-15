@@ -2,7 +2,9 @@
 
 [![CI](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml/badge.svg)](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/Pkkls/kick-chat-translator?style=flat&color=53fc18)](https://github.com/Pkkls/kick-chat-translator/stargazers)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=Chrome%20Web%20Store&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
+[![Chrome Users](https://img.shields.io/chrome-web-store/users/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=users&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
 [![Firefox Add-on](https://img.shields.io/amo/v/kick-chat-translator?label=Firefox%20Add-on&color=53fc18)](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)
 
 [English](README.md) · [日本語](README.ja.md) · [Español](README.es.md)
@@ -15,7 +17,7 @@ Funciona no **Brave, Chrome, Edge e Firefox**. Compatível com 7TV.
 ![Chat japonês traduzido para inglês](screenshots/japanese-chat.jpg)
 
 O idioma de destino é configurável. Se botar em português,
-tudo aparece em português. 30 idiomas disponíveis.
+tudo aparece em português. 42 idiomas disponíveis.
 
 ---
 
@@ -65,7 +67,7 @@ A ordem se muda nos ajustes.
 
 Clique na engrenagem da barra, ou clique com botão direito no ícone → Opções.
 
-- **Idioma de destino** — para qual idioma traduzir (30 disponíveis)
+- **Idioma de destino** — para qual idioma traduzir (42 disponíveis)
 - **Ordem dos provedores** — arraste pra reordenar, cole sua chave DeepL
 - **Filtros** — pular bots, bloquear usuários/canais, restringir idiomas de origem
 - **Pausa automática** — abas em segundo plano não traduzem (economiza cota DeepL)
