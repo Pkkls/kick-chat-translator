@@ -20,7 +20,7 @@ Funciona no **Brave, Chrome, Edge e Firefox**, e entende os emotes do 7TV.
 ![Chat japonês traduzido para inglês](screenshots/japanese-chat.jpg)
 
 **Configuração zero.** O chat recebido é traduzido para o idioma do *seu* navegador. Quando você digita, uma
-prévia mostra a sua mensagem no idioma *do canal* — detectado automaticamente a partir da Kick — logo acima da
+prévia mostra a sua mensagem no idioma *do canal* (detectado automaticamente a partir da Kick) logo acima da
 caixa de chat; clique nela ou pressione **Ctrl/Cmd+Enter** para enviar essa versão. As duas direções funcionam
 sozinhas, então você nunca precisa escolher um idioma. (Ainda assim, dá para escolher nas configurações.)
 
@@ -31,9 +31,9 @@ regionais (português do Brasil, chinês tradicional).
 
 ## Instalação
 
-**[➥ Chrome / Brave / Edge — Chrome Web Store](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)**
+**[➥ Chrome / Brave / Edge · Chrome Web Store](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)**
 &nbsp;·&nbsp;
-**[➥ Firefox — Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
+**[➥ Firefox · Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
 Um clique para instalar. Abra qualquer live da Kick: uma barra verde no topo do chat indica que está funcionando.
 <img width="347" height="193" alt="image" src="https://github.com/user-attachments/assets/3973b7a0-4767-42a2-974c-7f94b2534595" />
@@ -43,8 +43,8 @@ Um clique para instalar. Abra qualquer live da Kick: uma barra verde no topo do 
 
 Baixe o zip certo em [Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest) e descompacte.
 
-- **Chrome / Brave / Edge** (`…-chromium.zip`): abra `chrome://extensions` → ative o **Modo do desenvolvedor** → **Carregar sem compactação** → selecione a pasta.
-- **Firefox 121+** (`…-firefox.zip`): abra `about:debugging#/runtime/this-firefox` → **Carregar extensão temporária…** → selecione o `manifest.json`.
+- **Chrome / Brave / Edge** (`…-chromium.zip`): abra `chrome://extensions`, ative o **Modo do desenvolvedor**, clique em **Carregar sem compactação** e selecione a pasta.
+- **Firefox 121+** (`…-firefox.zip`): abra `about:debugging#/runtime/this-firefox`, clique em **Carregar extensão temporária…** e selecione o `manifest.json`.
 
 </details>
 
@@ -57,7 +57,7 @@ Quatro provedores em cadeia: se um cai, o próximo assume.
 | Google | Não | Padrão, funciona direto |
 | DeepL | Sim (grátis) | Melhor qualidade. [Pegue uma chave grátis](https://www.deepl.com/pro-api) (1M de caracteres/mês, R$ 0) |
 | MyMemory | Não | Reserva |
-| Lingva | Não | Reserva (apenas auto-hospedado — ~2 GB de RAM, não recomendado a menos que você rode sua própria instância) |
+| Lingva | Não | Reserva (apenas auto-hospedado: ~2 GB de RAM, não recomendado a menos que você rode sua própria instância) |
 
 No Chrome/Edge também há tradução local: sem rede e sem limite. Brave e Firefox ainda não suportam, então
 recorrem à cadeia na nuvem.
@@ -68,10 +68,10 @@ A ordem é você quem define nas configurações.
 
 Clique na engrenagem da barra do chat, ou clique com o botão direito no ícone da extensão → Opções.
 
-- **Idioma de destino** — para qual idioma tudo é traduzido (42 disponíveis)
-- **Ordem dos provedores** — arraste para reordenar, cole sua chave do DeepL
-- **Filtros** — pular bots, bloquear usuários ou canais, restringir os idiomas de origem
-- **Pausa automática** — abas em segundo plano param de traduzir (economiza sua cota do DeepL)
+- **Idioma de destino**: para qual idioma tudo é traduzido (42 disponíveis)
+- **Ordem dos provedores**: arraste para reordenar, cole sua chave do DeepL
+- **Filtros**: pular bots, bloquear usuários ou canais, restringir os idiomas de origem
+- **Pausa automática**: abas em segundo plano param de traduzir (economiza sua cota do DeepL)
 
 ## Privacidade
 
