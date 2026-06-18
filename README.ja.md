@@ -9,101 +9,115 @@
 
 [English](README.md) · [Español](README.es.md) · [Português](README.pt-BR.md)
 
-Kick.com のチャットをリアルタイムで翻訳するブラウザ拡張機能。
-配信を開くと、外国語のメッセージの下に翻訳が出る。それだけ。
+Kick.com のチャットをリアルタイムで翻訳します。ライブ配信でも VOD のアーカイブでも同じように動作します。
+配信を開くと、外国語のメッセージの下に翻訳が表示されます。設定は不要です。
 
-**Brave・Chrome・Edge・Firefox** で動く。7TV にも対応。
+<img width="354" height="593" alt="image" src="https://github.com/user-attachments/assets/4f7ae414-6c2a-4ee5-b191-6af9e29d46ec" />
+
+
+**Brave・Chrome・Edge・Firefox** で動作し、7TV のエモートにも対応しています。
 
 ![日本語チャットの翻訳例](screenshots/japanese-chat.jpg)
 
-翻訳先の言語は自由に選べる。日本語に設定すれば、
-すべてのメッセージが日本語で読める。42言語対応。
+**設定ゼロ。** 受信したチャットは*あなたのブラウザの*言語に翻訳されます。入力すると、あなたのメッセージを
+*配信チャンネルの*言語（Kick から自動判定）に直したプレビューがチャット欄の上に表示されます。それをクリック
+するか **Ctrl/Cmd+Enter** を押すと、その訳文を送信できます。どちらの方向も自動なので、言語を選ぶ必要は
+ありません。（もちろん設定で選ぶこともできます。）
+
+**42言語**に対応。右から左に書く言語（アラビア語・ヘブライ語・ペルシア語）や、地域変種
+（ブラジルポルトガル語・繁体字中国語）も含みます。
 
 ---
 
 ## インストール
 
-**[➥ Chrome / Brave / Edge — Chrome Web Store](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)** · **[➥ Firefox — Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
+**[➥ Chrome / Brave / Edge — Chrome Web Store](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)**
+&nbsp;·&nbsp;
+**[➥ Firefox — Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
-ワンクリックでインストール後、Kick の配信を開くだけ。チャット上部に緑のバーが出れば動作してる。
+ワンクリックでインストール。Kick の配信を開いて、チャット上部に緑のバーが出れば動作中です。
+<img width="347" height="193" alt="image" src="https://github.com/user-attachments/assets/3973b7a0-4767-42a2-974c-7f94b2534595" />
 
 <details>
-<summary>手動インストール（zip / 開発ビルド）</summary>
+<summary>手動でインストールする（展開済み / 開発ビルド）</summary>
 
-[Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest)
-から対応する zip をダウンロードして展開。
+[Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest) から対応する zip をダウンロードして展開します。
 
-**Chrome / Brave / Edge** — `…-chromium.zip`：
-
-1. `brave://extensions`（または `chrome://extensions`、`edge://extensions`）を開く
-2. **デベロッパーモード**をオン
-3. **パッケージ化されていない拡張機能を読み込む** → 展開したフォルダを選択
-
-**Firefox 121以上** — `…-firefox.zip`：
-
-1. `about:debugging#/runtime/this-firefox` を開く
-2. **「一時的なアドオンを読み込む」** → フォルダ内の `manifest.json` を選択
-   *（一時的な読み込み。Firefox を再起動すると消える。AMO 公開までの暫定。）*
+- **Chrome / Brave / Edge**（`…-chromium.zip`）：`chrome://extensions` を開く → **デベロッパーモード**をオン → **パッケージ化されていない拡張機能を読み込む** → フォルダを選択。
+- **Firefox 121以上**（`…-firefox.zip`）：`about:debugging#/runtime/this-firefox` を開く → **一時的なアドオンを読み込む…** → `manifest.json` を選択。
 
 </details>
 
 ## 翻訳エンジン
 
-4つのプロバイダーをチェーンで使う。1つが落ちたら次が引き継ぐ：
+4つのプロバイダーをチェーンで使います。1つが落ちたら次が引き継ぎます。
 
 | プロバイダー | キー | 備考 |
 |---|---|---|
 | Google | 不要 | デフォルト、そのまま動く |
 | DeepL | 必要（無料） | 品質最高。[無料キーを取得](https://www.deepl.com/pro-api)（月100万文字、0円） |
 | MyMemory | 不要 | フォールバック |
-| Lingva | 不要 | フォールバック |
+| Lingva | 不要 | フォールバック（自己ホストのみ — 約2GBのRAMが必要。自前のインスタンスを運用する場合以外は非推奨） |
 
-Chrome/Edge では端末内翻訳も使える（通信なし・無制限）。
-Brave・Firefox は未対応なので、自動的にクラウドを使う。
+Chrome/Edge では端末内翻訳も使えます（通信なし・上限なし）。Brave と Firefox はまだ未対応なので、
+クラウドのチェーンにフォールバックします。
 
-順番は設定で変更できる。
+順番は設定で自由に変更できます。
 
 ## 設定
 
 チャットバーの歯車、または拡張機能アイコンを右クリック → オプション。
 
-- **翻訳先の言語** — 42言語から選択
-- **プロバイダー順** — ドラッグで並べ替え、DeepL キーを入力
-- **フィルター** — ボットを除外、ユーザー/チャンネルのブロック、言語の制限
+- **翻訳先の言語** — すべてを何語に翻訳するか（42言語から選択）
+- **プロバイダー順** — ドラッグで並べ替え、DeepL キーを貼り付け
+- **フィルター** — ボットを除外、ユーザー/チャンネルのブロック、翻訳元の言語を制限
 - **自動一時停止** — バックグラウンドのタブは翻訳しない（DeepL の枠を節約）
 
 ## プライバシー
 
-アカウント不要、解析なし、サーバーなし。メッセージは選んだ翻訳エンジンにしか
-送らない。端末内モードならそれすらしない。[詳細](PRIVACY.md)
-
----
+アカウント不要、解析なし、こちらのサーバーもなし。メッセージは選んだ翻訳プロバイダーにしか送られず、
+それ以外には一切送りません。端末内モードならそれすらしません。[詳細](PRIVACY.md)
 
 ## FAQ
 
 **Q：緑のバーが消えた / 翻訳が止まった。**
-**A：** ページを更新してください。Kickがインターフェースを更新することがあり、その際に拡張機能のチャットへの接続が切れることがあります。
+**A：** ページを更新してください。Kick がインターフェースを更新することがあり、その際に拡張機能とチャットの接続が切れる場合があります。
 
 **Q：メッセージが翻訳されない。**
-**A：** 拡張機能の設定を開き、翻訳先の言語が翻訳元と異なることを確認してください。また、プロバイダーチェーンで少なくとも1つの翻訳プロバイダーが有効になっているかも確認してください。
+**A：** 設定を開き、翻訳先の言語が翻訳元と異なることを確認してください。また、チェーン内で少なくとも1つのプロバイダーが有効になっているかも確認してください。
 
-**Q：VODの録画再生でも動作しますか？**
-**A：** はい、ライブ配信とVOD再生の両方でチャットを翻訳できます。
+**Q：VOD の録画再生でも動作しますか？**
+**A：** はい、ライブ配信と VOD 再生の両方でチャットを翻訳します。
 
 **Q：対応ブラウザは？**
-**A：** Chrome、Brave、Edge、Firefoxに対応しています。
+**A：** Chrome、Brave、Edge、Firefox に対応しています。
 
 **Q：データは安全ですか？**
-**A：** この拡張機能にはアカウント機能がなく、分析データの収集も行いません。チャットメッセージは選択した翻訳プロバイダーにのみ送信され、それ以外には送られません。
+**A：** アカウント機能はなく、分析データの収集もありません。チャットメッセージは選択した翻訳プロバイダーにのみ送信され、それ以外には送られません。
 
 **Q：翻訳の精度を上げるには？**
-**A：** 拡張機能の設定で無料のDeepL APIキーを追加してください。DeepLの無料枠は月100万文字まで利用でき、デフォルトのプロバイダーより一貫して高品質な翻訳を提供します。
+**A：** 設定で無料の DeepL API キーを追加してください。DeepL の無料枠は月100万文字まで使え、デフォルトのプロバイダーより一貫して高品質です。
 
 **Q：一部のメッセージに文字化けや未翻訳がある。**
-**A：** 非常に短いメッセージやエモートのみのメッセージは意図的にスキップされます。翻訳可能なテキストが含まれることが少なく、APIの無駄遣いになるためです。
+**A：** 非常に短いメッセージやエモートだけのメッセージは意図的にスキップしています。翻訳できるテキストを含むことが少なく、API の無駄遣いになるためです。
 
-**Q：Kickのアップデート後に拡張機能が動かなくなった。**
-**A：** Kickがチャットの構造を変更することがあり、メッセージの検出が壊れる場合があります。[GitHubにIssue](https://github.com/Pkkls/kick-chat-translator/issues)を立てていただければ、できる限り早くパッチを当てます。
+**Q：Kick のアップデート後に拡張機能が動かなくなった。**
+**A：** Kick がチャットの構造を変更することがあり、メッセージの検出が壊れる場合があります。[GitHub に Issue](https://github.com/Pkkls/kick-chat-translator/issues) を立てていただければ、できる限り早く修正します。
+
+## 対応言語
+
+英語 · フランス語 · スペイン語 · ポルトガル語 · ポルトガル語（ブラジル） · ドイツ語 · イタリア語 · オランダ語 · ポーランド語 · スウェーデン語 · チェコ語 · スロバキア語 · ルーマニア語 · ロシア語 · ウクライナ語 · トルコ語 · アラビア語 · ヘブライ語 · 日本語 · 韓国語 · 中国語（簡体字） · 中国語（繁体字） · タイ語 · ベトナム語 · インドネシア語 · ヒンディー語 · フィンランド語 · ノルウェー語 · デンマーク語 · ギリシャ語 · ハンガリー語 · ブルガリア語 · カタルーニャ語 · スロベニア語 · エストニア語 · リトアニア語 · ラトビア語 · ペルシア語 · ベンガル語 · タミル語 · マレー語 · フィリピン語
+
+## 仕組み
+
+1. content script が Kick のチャット DOM を監視し、新しいメッセージを捕捉します。
+2. メッセージはバックグラウンドの service worker に渡され、いずれかが成功するまでプロバイダーを順番に試します。
+3. 翻訳結果が元のメッセージの下に DOM へ挿入されます。
+4. 送信メッセージについては、Kick の API を通じてチャンネルの言語を自動判定し、チャット入力欄の上にプレビューを表示します。
+
+拡張機能は Kick 自身のネットワークリクエストには一切手を加えません。必要なのは kick.com に対する `storage` と `host` 権限だけです。
+
+---
 
 ## ソースからビルド
 
@@ -111,7 +125,15 @@ Brave・Firefox は未対応なので、自動的にクラウドを使う。
 git clone https://github.com/Pkkls/kick-chat-translator.git
 cd kick-chat-translator
 npm ci
-npm run build
+npm run build     # 出力は dist/
 ```
 
-MIT ライセンス。Kick とは無関係。
+その他のコマンド：`npm run dev`（HMR）、`npm run test`、`npm run lint`、
+`npm run pack`（配布用 zip）。
+
+スタック：MV3、Vite、TypeScript、Preact、Tailwind。content script は
+Brave で確実に注入できるよう、クラシックな IIFE として配布されます。
+
+## ライセンス
+
+MIT。Kick とは無関係です。
