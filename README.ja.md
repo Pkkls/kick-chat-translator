@@ -31,9 +31,9 @@ Kick.com のチャットをリアルタイムで翻訳します。ライブ配�
 
 ## インストール
 
-**[➥ Chrome / Brave / Edge — Chrome Web Store](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)**
+**[➥ Chrome / Brave / Edge · Chrome Web Store](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)**
 &nbsp;·&nbsp;
-**[➥ Firefox — Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
+**[➥ Firefox · Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
 ワンクリックでインストール。Kick の配信を開いて、チャット上部に緑のバーが出れば動作中です。
 <img width="347" height="193" alt="image" src="https://github.com/user-attachments/assets/3973b7a0-4767-42a2-974c-7f94b2534595" />
@@ -43,8 +43,8 @@ Kick.com のチャットをリアルタイムで翻訳します。ライブ配�
 
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest) から対応する zip をダウンロードして展開します。
 
-- **Chrome / Brave / Edge**（`…-chromium.zip`）：`chrome://extensions` を開く → **デベロッパーモード**をオン → **パッケージ化されていない拡張機能を読み込む** → フォルダを選択。
-- **Firefox 121以上**（`…-firefox.zip`）：`about:debugging#/runtime/this-firefox` を開く → **一時的なアドオンを読み込む…** → `manifest.json` を選択。
+- **Chrome / Brave / Edge**（`…-chromium.zip`）：`chrome://extensions` を開き、**デベロッパーモード**をオンにして、**パッケージ化されていない拡張機能を読み込む** からフォルダを選択します。
+- **Firefox 121以上**（`…-firefox.zip`）：`about:debugging#/runtime/this-firefox` を開き、**一時的なアドオンを読み込む…** から `manifest.json` を選択します。
 
 </details>
 
@@ -57,7 +57,7 @@ Kick.com のチャットをリアルタイムで翻訳します。ライブ配�
 | Google | 不要 | デフォルト、そのまま動く |
 | DeepL | 必要（無料） | 品質最高。[無料キーを取得](https://www.deepl.com/pro-api)（月100万文字、0円） |
 | MyMemory | 不要 | フォールバック |
-| Lingva | 不要 | フォールバック（自己ホストのみ — 約2GBのRAMが必要。自前のインスタンスを運用する場合以外は非推奨） |
+| Lingva | 不要 | フォールバック（自己ホストのみ。約2GBのRAMが必要で、自前のインスタンスを運用する場合以外は非推奨） |
 
 Chrome/Edge では端末内翻訳も使えます（通信なし・上限なし）。Brave と Firefox はまだ未対応なので、
 クラウドのチェーンにフォールバックします。
@@ -68,10 +68,10 @@ Chrome/Edge では端末内翻訳も使えます（通信なし・上限なし�
 
 チャットバーの歯車、または拡張機能アイコンを右クリック → オプション。
 
-- **翻訳先の言語** — すべてを何語に翻訳するか（42言語から選択）
-- **プロバイダー順** — ドラッグで並べ替え、DeepL キーを貼り付け
-- **フィルター** — ボットを除外、ユーザー/チャンネルのブロック、翻訳元の言語を制限
-- **自動一時停止** — バックグラウンドのタブは翻訳しない（DeepL の枠を節約）
+- **翻訳先の言語**：すべてを何語に翻訳するか（42言語から選択）
+- **プロバイダー順**：ドラッグで並べ替え、DeepL キーを貼り付け
+- **フィルター**：ボットを除外、ユーザー/チャンネルのブロック、翻訳元の言語を制限
+- **自動一時停止**：バックグラウンドのタブは翻訳しない（DeepL の枠を節約）
 
 ## プライバシー
 
