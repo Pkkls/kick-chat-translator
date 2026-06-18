@@ -9,109 +9,131 @@
 
 [English](README.md) · [日本語](README.ja.md) · [Español](README.es.md)
 
-Traduz o chat da Kick.com em tempo real. Você abre uma live, as mensagens em
-outros idiomas aparecem traduzidas logo abaixo. Só isso.
+Tradução em tempo real do chat da Kick.com, tanto em lives quanto em replays de VOD. Você abre uma
+transmissão e qualquer mensagem em outro idioma aparece traduzida logo abaixo. Sem nada para configurar.
 
-Funciona no **Brave, Chrome, Edge e Firefox**. Compatível com 7TV.
+<img width="354" height="593" alt="image" src="https://github.com/user-attachments/assets/4f7ae414-6c2a-4ee5-b191-6af9e29d46ec" />
+
+
+Funciona no **Brave, Chrome, Edge e Firefox**, e entende os emotes do 7TV.
 
 ![Chat japonês traduzido para inglês](screenshots/japanese-chat.jpg)
 
-O idioma de destino é configurável. Se botar em português,
-tudo aparece em português. 42 idiomas disponíveis.
+**Configuração zero.** O chat recebido é traduzido para o idioma do *seu* navegador. Quando você digita, uma
+prévia mostra a sua mensagem no idioma *do canal* — detectado automaticamente a partir da Kick — logo acima da
+caixa de chat; clique nela ou pressione **Ctrl/Cmd+Enter** para enviar essa versão. As duas direções funcionam
+sozinhas, então você nunca precisa escolher um idioma. (Ainda assim, dá para escolher nas configurações.)
+
+**42 idiomas**, incluindo os de escrita da direita para a esquerda (árabe, hebraico, persa) e variantes
+regionais (português do Brasil, chinês tradicional).
 
 ---
 
 ## Instalação
 
-**[➥ Chrome / Brave / Edge — Chrome Web Store](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)** · **[➥ Firefox — Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
+**[➥ Chrome / Brave / Edge — Chrome Web Store](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)**
+&nbsp;·&nbsp;
+**[➥ Firefox — Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
-Um clique para instalar, depois abra uma live da Kick — barra verde no topo do chat significa que esta funcionando.
+Um clique para instalar. Abra qualquer live da Kick: uma barra verde no topo do chat indica que está funcionando.
+<img width="347" height="193" alt="image" src="https://github.com/user-attachments/assets/3973b7a0-4767-42a2-974c-7f94b2534595" />
 
 <details>
-<summary>Ou instale manualmente (zip / build de desenvolvimento)</summary>
+<summary>Ou instale manualmente (descompactada / build de desenvolvimento)</summary>
 
-Baixe o zip certo em [Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest)
-e descompacte.
+Baixe o zip certo em [Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest) e descompacte.
 
-**Chrome / Brave / Edge** — `…-chromium.zip`:
-
-1. Abra `brave://extensions` (ou `chrome://extensions`, `edge://extensions`)
-2. Ative o **Modo do desenvolvedor**
-3. **Carregar sem compactação** → selecione a pasta
-
-**Firefox 121+** — `…-firefox.zip`:
-
-1. Abra `about:debugging#/runtime/this-firefox`
-2. **Carregar extensão temporária…** → escolha o `manifest.json` da pasta
-   *(temporária — o Firefox a remove ao reiniciar, ate estar no Mozilla Add-ons)*
+- **Chrome / Brave / Edge** (`…-chromium.zip`): abra `chrome://extensions` → ative o **Modo do desenvolvedor** → **Carregar sem compactação** → selecione a pasta.
+- **Firefox 121+** (`…-firefox.zip`): abra `about:debugging#/runtime/this-firefox` → **Carregar extensão temporária…** → selecione o `manifest.json`.
 
 </details>
 
 ## Motores de tradução
 
-Quatro provedores em cadeia — se um cai, o próximo assume:
+Quatro provedores em cadeia: se um cai, o próximo assume.
 
 | Provedor | Chave? | Nota |
 |---|---|---|
 | Google | Não | Padrão, funciona direto |
-| DeepL | Sim (grátis) | Melhor qualidade. [Chave grátis](https://www.deepl.com/pro-api) (1M caracteres/mês, R$ 0) |
+| DeepL | Sim (grátis) | Melhor qualidade. [Pegue uma chave grátis](https://www.deepl.com/pro-api) (1M de caracteres/mês, R$ 0) |
 | MyMemory | Não | Reserva |
-| Lingva | Não | Reserva |
+| Lingva | Não | Reserva (apenas auto-hospedado — ~2 GB de RAM, não recomendado a menos que você rode sua própria instância) |
 
-No Chrome/Edge tem tradução local também (sem rede, sem limite).
-Brave e Firefox ainda não suportam, usam a nuvem.
+No Chrome/Edge também há tradução local: sem rede e sem limite. Brave e Firefox ainda não suportam, então
+recorrem à cadeia na nuvem.
 
-A ordem se muda nos ajustes.
+A ordem é você quem define nas configurações.
 
-## Ajustes
+## Configurações
 
-Clique na engrenagem da barra, ou clique com botão direito no ícone → Opções.
+Clique na engrenagem da barra do chat, ou clique com o botão direito no ícone da extensão → Opções.
 
-- **Idioma de destino** — para qual idioma traduzir (42 disponíveis)
-- **Ordem dos provedores** — arraste pra reordenar, cole sua chave DeepL
-- **Filtros** — pular bots, bloquear usuários/canais, restringir idiomas de origem
-- **Pausa automática** — abas em segundo plano não traduzem (economiza cota DeepL)
+- **Idioma de destino** — para qual idioma tudo é traduzido (42 disponíveis)
+- **Ordem dos provedores** — arraste para reordenar, cole sua chave do DeepL
+- **Filtros** — pular bots, bloquear usuários ou canais, restringir os idiomas de origem
+- **Pausa automática** — abas em segundo plano param de traduzir (economiza sua cota do DeepL)
 
 ## Privacidade
 
-Sem conta, sem analytics, sem servidor. As mensagens vão só pro tradutor
-que você escolheu. No modo local, nem isso. [Detalhes](PRIVACY.md)
-
----
+Sem conta, sem analytics, sem nenhum servidor meu. As mensagens vão para o provedor de tradução que você
+escolheu e para mais nenhum lugar; e no modo local, nem isso. [Detalhes](PRIVACY.md)
 
 ## FAQ
 
-**Q: A barra verde desapareceu / a tradução parou de funcionar.**
-**A:** Atualize a página. O Kick atualiza sua interface ocasionalmente, o que pode interromper a conexão da extensão com o chat.
+**P: A barra verde desapareceu / a tradução parou de funcionar.**
+**R:** Atualize a página. O Kick atualiza sua interface de vez em quando, o que pode interromper a conexão da extensão com o chat.
 
-**Q: As mensagens não estão sendo traduzidas.**
-**A:** Abra as configurações da extensão e verifique se o idioma de destino é diferente do idioma de origem. Confira também se pelo menos um provedor de tradução está ativado na cadeia de provedores.
+**P: As mensagens não estão sendo traduzidas.**
+**R:** Abra as configurações e verifique se o idioma de destino é diferente do de origem. Confira também se pelo menos um provedor está ativo na cadeia.
 
-**Q: Funciona em replays de VOD?**
-**A:** Sim, a extensão traduz o chat tanto em transmissões ao vivo quanto em replays de VOD.
+**P: Funciona em replays de VOD?**
+**R:** Sim, a extensão traduz o chat tanto em transmissões ao vivo quanto em replays de VOD.
 
-**Q: Quais navegadores são suportados?**
-**A:** Chrome, Brave, Edge e Firefox são todos suportados.
+**P: Quais navegadores são suportados?**
+**R:** Chrome, Brave, Edge e Firefox são todos suportados.
 
-**Q: Meus dados estão seguros?**
-**A:** A extensão não possui sistema de contas e não coleta nenhum dado analítico. As mensagens do chat são enviadas apenas para o provedor de tradução que você selecionou, e para mais nenhum lugar.
+**P: Meus dados estão seguros?**
+**R:** Não há sistema de contas nem coleta de dados analíticos. As mensagens do chat são enviadas apenas para o provedor de tradução que você selecionou, e para mais nenhum lugar.
 
-**Q: Como obter uma qualidade de tradução melhor?**
-**A:** Adicione uma chave de API gratuita do DeepL nas configurações da extensão. O plano gratuito do DeepL permite até 1 milhão de caracteres por mês e supera consistentemente os provedores padrão.
+**P: Como consigo uma qualidade de tradução melhor?**
+**R:** Adicione uma chave de API gratuita do DeepL nas configurações. O plano gratuito do DeepL cobre até 1 milhão de caracteres por mês e supera consistentemente os provedores padrão.
 
-**Q: Algumas mensagens mostram caracteres estranhos ou não são traduzidas.**
-**A:** Mensagens muito curtas e mensagens compostas apenas por emotes são ignoradas intencionalmente, pois raramente contêm texto traduzível e desperdiçariam chamadas de API.
+**P: Algumas mensagens mostram caracteres estranhos ou não são traduzidas.**
+**R:** Mensagens muito curtas e mensagens só com emotes são ignoradas de propósito: raramente contêm texto traduzível e desperdiçariam chamadas de API.
 
-**Q: A extensão quebrou após uma atualização do Kick.**
-**A:** O Kick às vezes muda a estrutura do seu chat, o que pode quebrar a detecção de mensagens. Por favor, abra uma [issue no GitHub](https://github.com/Pkkls/kick-chat-translator/issues) e ela será corrigida o mais rápido possível.
+**P: A extensão quebrou após uma atualização do Kick.**
+**R:** O Kick às vezes muda a estrutura do chat, o que pode quebrar a detecção de mensagens. Abra uma [issue no GitHub](https://github.com/Pkkls/kick-chat-translator/issues) e ela será corrigida o mais rápido possível.
 
-## Compilar do código
+## Idiomas suportados
+
+Inglês · Francês · Espanhol · Português · Português (Brasil) · Alemão · Italiano · Holandês · Polonês · Sueco · Tcheco · Eslovaco · Romeno · Russo · Ucraniano · Turco · Árabe · Hebraico · Japonês · Coreano · Chinês (simplificado) · Chinês (tradicional) · Tailandês · Vietnamita · Indonésio · Hindi · Finlandês · Norueguês · Dinamarquês · Grego · Húngaro · Búlgaro · Catalão · Esloveno · Estoniano · Lituano · Letão · Persa · Bengali · Tâmil · Malaio · Filipino
+
+## Como funciona
+
+1. Um content script observa o DOM do chat da Kick e captura cada mensagem nova.
+2. A mensagem é passada para o service worker em segundo plano, que tenta os provedores em ordem até um dar certo.
+3. A tradução é injetada de volta no DOM, abaixo da mensagem original.
+4. Para as mensagens enviadas, o idioma do canal é detectado automaticamente pela API da Kick e uma prévia aparece acima da caixa de chat.
+
+A extensão nunca mexe nas próprias requisições de rede da Kick; ela só precisa das permissões `storage` e `host` para kick.com.
+
+---
+
+## Compilar a partir do código
 
 ```bash
 git clone https://github.com/Pkkls/kick-chat-translator.git
 cd kick-chat-translator
 npm ci
-npm run build
+npm run build     # saída em dist/
 ```
 
-Licença MIT. Sem afiliação com a Kick.
+Outros comandos: `npm run dev` (HMR), `npm run test`, `npm run lint`,
+`npm run pack` (zip para distribuição).
+
+Stack: MV3, Vite, TypeScript, Preact, Tailwind. O content script é distribuído
+como um IIFE clássico para uma injeção confiável no Brave.
+
+## Licença
+
+MIT. Sem afiliação com a Kick.
