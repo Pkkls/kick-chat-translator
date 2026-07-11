@@ -9,7 +9,7 @@
 
 [日本語](README.ja.md) · [Español](README.es.md) · [Português](README.pt-BR.md)
 
-Real-time translation for Kick.com chat, on live streams and on VOD replays alike. Open a stream, and any
+Real-time translation for Kick.com chat, on live streams and VOD replays. Open a stream, and any
 message in another language gets its translation rendered right underneath. Nothing to set up.
 
 <img width="354" height="593" alt="image" src="https://github.com/user-attachments/assets/4f7ae414-6c2a-4ee5-b191-6af9e29d46ec" />
@@ -115,7 +115,7 @@ English · French · Spanish · Portuguese · Portuguese (Brazil) · German · I
 3. The translation is injected back into the DOM, beneath the original message.
 4. For outgoing messages, the channel's language is auto-detected through the Kick API and a live preview appears above the chat input.
 
-The extension never touches Kick's own network requests; it needs only the `storage` and `host` permissions for kick.com.
+The extension never touches Kick's own network requests. It needs only the `storage` and `host` permissions for kick.com.
 
 ---
 
