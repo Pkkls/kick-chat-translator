@@ -12,7 +12,7 @@
 Real-time translation for Kick.com chat, on live streams and VOD replays. Open a stream, and any
 message in another language gets its translation rendered right underneath. Nothing to set up.
 
-<img width="354" height="593" alt="image" src="https://github.com/user-attachments/assets/4f7ae414-6c2a-4ee5-b191-6af9e29d46ec" />
+<img width="354" height="593" alt="Kick chat with a translation under each foreign-language message" src="https://github.com/user-attachments/assets/4f7ae414-6c2a-4ee5-b191-6af9e29d46ec" />
 
 
 Runs on **Brave, Chrome, Edge and Firefox**, and understands 7TV emotes.
@@ -36,7 +36,7 @@ pick a language. (You still can, in settings.)
 **[➥ Firefox · Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
 One click to install. Open any Kick stream, and a green bar at the top of chat tells you it's live.
-<img width="347" height="193" alt="image" src="https://github.com/user-attachments/assets/3973b7a0-4767-42a2-974c-7f94b2534595" />
+<img width="347" height="193" alt="The green status bar at the top of chat" src="https://github.com/user-attachments/assets/3973b7a0-4767-42a2-974c-7f94b2534595" />
 
 <details>
 <summary>Or install manually (unpacked / dev build)</summary>
@@ -133,6 +133,13 @@ Other commands: `npm run dev` (HMR), `npm run test`, `npm run lint`,
 
 Stack: MV3, Vite, TypeScript, Preact, Tailwind. The content script ships as
 a classic IIFE for reliable injection on Brave.
+
+## Related projects
+
+- [kick-ad-blocker](https://github.com/Pkkls/kick-ad-blocker), blocks Kick's pre-roll and overlay ads
+- [kick-core](https://github.com/Pkkls/kick-core), the realtime gateway client shared across these extensions
+- [kickbus](https://github.com/Pkkls/kickbus), official Kick webhooks relayed to local bots over SSE
+- [kick-drops-miner](https://github.com/Pkkls/kick-drops-miner), Windows app that progresses Kick drop watch-time
 
 ## License
 
