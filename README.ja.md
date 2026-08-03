@@ -115,7 +115,9 @@ Chrome/Edge では端末内翻訳も使えます（通信なし・上限なし�
 3. 翻訳結果が元のメッセージの下に DOM へ挿入されます。
 4. 送信メッセージについては、Kick の API を通じてチャンネルの言語を自動判定し、チャット入力欄の上にプレビューを表示します。
 
-拡張機能は Kick 自身のネットワークリクエストには一切手を加えません。必要なのは kick.com に対する `storage` と `host` 権限だけです。
+拡張機能は Kick 自身のネットワークリクエストを傍受も改変もしません。
+
+要求するのは `storage` と `alarms`、そして kick.com、呼び出しうる各翻訳プロバイダ（Google、DeepL、MyMemory、2 つの Lingva インスタンス）、および `api.github.com` へのホストアクセスです。最後のものは更新確認で、最新リリースのタグを間隔を空けてキャッシュ付きで読み、新しい版があればポップアップにリンクを出すだけです。何も送信せず、自動更新もしません。
 
 ---
 
@@ -137,3 +139,10 @@ Brave で確実に注入できるよう、クラシックな IIFE として配�
 ## ライセンス
 
 MIT。Kick とは無関係です。
+
+## 関連プロジェクト
+
+- [kick-ad-blocker](https://github.com/Pkkls/kick-ad-blocker) — Kick の広告をブロックする拡張機能
+- [kick-core](https://github.com/Pkkls/kick-core) — これらの拡張機能が共有するリアルタイム gateway クライアント
+- [kickbus](https://github.com/Pkkls/kickbus) — Kick の公式 webhook をローカルの bot に SSE で中継
+- [kick-drops-miner](https://github.com/Pkkls/kick-drops-miner) — Kick の drop 視聴時間を進める Windows アプリ

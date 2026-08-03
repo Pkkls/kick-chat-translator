@@ -70,8 +70,14 @@ Click the gear on the chat bar, or right-click the extension icon → Options.
 
 - **Target language**: what everything is translated into (42 to choose from)
 - **Provider order**: drag to reorder, paste your DeepL key
-- **Filters**: skip bots, blocklist users or channels, restrict the source languages
+- **Engine mode**: on-device first, cloud first, or on-device only
+- **Display**: translation below the message, inline, replacing it, or on hover; original text, source language and provider badges each optional
+- **Compose preview**: on or off, its target language, and whether clicking it replaces your text or sends straight away
+- **Filters**: skip bots, blocklist users or channels, restrict the source languages, or whitelist channels
+- **Glossary**: find and replace pairs applied to the translation, for names and in-jokes that engines mangle
+- **Budget**: DeepL quota share and smart routing, per-channel rate limit, cache size and lifetime, concurrency
 - **Auto-pause**: background tabs stop translating (saves your DeepL quota)
+- **UI language** for the extension's own interface, and buttons to clear the cache or reset stats and settings
 
 ## Privacy
 
@@ -115,7 +121,9 @@ English · French · Spanish · Portuguese · Portuguese (Brazil) · German · I
 3. The translation is injected back into the DOM, beneath the original message.
 4. For outgoing messages, the channel's language is auto-detected through the Kick API and a live preview appears above the chat input.
 
-The extension never touches Kick's own network requests. It needs only the `storage` and `host` permissions for kick.com.
+The extension never intercepts or modifies Kick's own network requests.
+
+It asks for `storage` and `alarms`, and for host access to kick.com, to each translation provider it can call (Google, DeepL, MyMemory, the two Lingva instances), and to `api.github.com`. That last one is the update check: it reads the latest release tag, throttled and cached, and the popup offers a link when a newer version exists. Nothing is sent with that request and nothing auto-updates.
 
 ---
 
