@@ -127,4 +127,6 @@ export const fr: Record<string, string> = {
   "Import settings": "Importer les réglages",
   "Invalid settings file": "Fichier de réglages invalide",
   "cache hit rate, last 7 days": "taux de cache, 7 derniers jours",
+  "Minimum message length": "Longueur minimale des messages",
+  "Shorter messages are left alone. Raise it to spend less provider quota on busy chats.": "Les messages plus courts sont ignorés. Augmentez la valeur pour économiser le quota sur les chats actifs.",
 };

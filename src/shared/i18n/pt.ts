@@ -127,4 +127,6 @@ export const pt: Record<string, string> = {
   "Import settings": "Importar configurações",
   "Invalid settings file": "Arquivo de configurações inválido",
   "cache hit rate, last 7 days": "taxa de cache, últimos 7 dias",
+  "Minimum message length": "Tamanho mínimo da mensagem",
+  "Shorter messages are left alone. Raise it to spend less provider quota on busy chats.": "Mensagens menores não são traduzidas. Aumente o valor para gastar menos cota em chats movimentados.",
 };

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { STORAGE_KEY_SETTINGS } from './constants';
+import { MIN_TEXT_LENGTH, STORAGE_KEY_SETTINGS } from './constants';
 import { AUTO, isSupportedLang } from './languages';
 
 // A language setting is either 'auto' or a supported ISO code; anything else
@@ -50,6 +50,9 @@ export const SettingsSchema = z.object({
   myMemoryEmail: z.string().email().or(z.literal('')).default(''),
 
   // Filters
+  // Shorter messages are left untranslated. Defaults to the floor that used to be
+  // hardcoded, so an existing install keeps its current behaviour.
+  minTextLength: z.number().int().min(1).max(50).default(MIN_TEXT_LENGTH),
   ignoreEnglish: z.boolean().default(true),
   ignoreBots: z.boolean().default(true),
   blacklistUsers: z.array(z.string()).default([]),

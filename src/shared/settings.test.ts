@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { MIN_TEXT_LENGTH } from './constants';
 import { defaultSettings, parseSettingsJson, SettingsSchema } from './settings';
 
 describe('SettingsSchema', () => {
@@ -8,6 +9,18 @@ describe('SettingsSchema', () => {
     expect(s.targetLang).toBe('auto');
     expect(s.composeTargetLang).toBe('auto');
     expect(s.providerOrder).toEqual(['google', 'mymemory', 'lingva']);
+  });
+
+  it('defaults minTextLength to the previously hardcoded floor', () => {
+    expect(SettingsSchema.parse({}).minTextLength).toBe(MIN_TEXT_LENGTH);
+    // A record stored before the field existed must keep the old behaviour.
+    expect(SettingsSchema.parse({ ignoreEnglish: false }).minTextLength).toBe(MIN_TEXT_LENGTH);
+  });
+
+  it('rejects an out-of-range minTextLength', () => {
+    expect(SettingsSchema.safeParse({ minTextLength: 0 }).success).toBe(false);
+    expect(SettingsSchema.safeParse({ minTextLength: 51 }).success).toBe(false);
+    expect(SettingsSchema.safeParse({ minTextLength: 2.5 }).success).toBe(false);
   });
 
   it('rejects invalid lingva URL', () => {

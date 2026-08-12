@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Export / import your settings** from the Advanced tab. Export writes a JSON backup, import
   restores it and reloads the page. A backup from an older build still imports: missing fields
   fall back to their defaults and unknown ones are dropped, so the file never breaks storage.
+- **Minimum message length is now a setting** (Filters tab). The floor below which a message is
+  left untranslated used to be fixed at 2 characters; raise it to spend less provider quota on a
+  busy chat. Existing installs keep the old value, so nothing changes until you move it.
 - **Short messages are identified more reliably.** Under about 20 characters the language
   detector used to fall through to franc, which either gave up or answered confidently wrong
   ("ok merci" came back as Hungarian, and that wrong code was passed to the provider as the

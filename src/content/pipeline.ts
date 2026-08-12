@@ -1,6 +1,6 @@
 import type { Settings } from '~/shared/settings';
 import type { ProviderId, TranslationOutcome, TranslationResult } from '~/shared/types';
-import { MAX_TEXT_LENGTH, MIN_TEXT_LENGTH } from '~/shared/constants';
+import { MAX_TEXT_LENGTH } from '~/shared/constants';
 import { rootLogger } from '~/shared/logger';
 import { send } from '~/shared/messages';
 import { applyUserGlossary, isSlangOnly } from '~/shared/glossary';
@@ -97,7 +97,7 @@ export class TranslationPipeline {
     if (dedupKey) this.userDedup.set(dedupKey, rawText);
 
     const { realText } = parseKickContent(rawText);
-    if (realText.length < MIN_TEXT_LENGTH || realText.length > MAX_TEXT_LENGTH) return undefined;
+    if (realText.length < this.settings.minTextLength || realText.length > MAX_TEXT_LENGTH) return undefined;
     if (isNoise(realText)) return undefined; // emoji / kkkk / rsrs / xd / digits
     if (isSlangOnly(realText)) return undefined; // poggers / copium / kekw …
 

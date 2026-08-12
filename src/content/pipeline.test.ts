@@ -50,3 +50,30 @@ describe('TranslationPipeline — effTarget (regression)', () => {
     expect(sendMock.mock.calls[0]?.[0]?.payload?.targetLang).toBe('fr');
   });
 });
+
+describe('TranslationPipeline — minTextLength', () => {
+  const SHORT_JP = 'おはよう';
+
+  beforeEach(() => {
+    sendMock.mockReset();
+    sendMock.mockResolvedValue({ type: 'translate.result', payload: { ok: false, error: { code: 'x', message: 'x' } } });
+  });
+
+  it('translates a short message at the default floor', async () => {
+    const pipeline = new TranslationPipeline({ ...defaultSettings(), enabled: true, targetLang: 'fr', pauseWhenHidden: false });
+    await pipeline.onWebSocketMessage(wsMsg(SHORT_JP));
+    expect(sendMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('drops it once the configured floor is raised above its length', async () => {
+    const pipeline = new TranslationPipeline({
+      ...defaultSettings(),
+      enabled: true,
+      targetLang: 'fr',
+      pauseWhenHidden: false,
+      minTextLength: SHORT_JP.length + 1,
+    });
+    await pipeline.onWebSocketMessage(wsMsg(SHORT_JP));
+    expect(sendMock).not.toHaveBeenCalled();
+  });
+});

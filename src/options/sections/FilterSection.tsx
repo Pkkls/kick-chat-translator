@@ -30,6 +30,25 @@ export function FilterSection({ settings, onPatch }: Props) {
           onChange={(v) => onPatch({ ignoreBots: v })}
           label={t('Ignore common bot accounts (StreamElements, Nightbot, …)')}
         />
+        <div class="grid grid-cols-[1fr,140px] gap-3 items-start">
+          <div>
+            <div class="text-sm">{t('Minimum message length')}</div>
+            <div class="text-[11px] text-kick-muted">
+              {t('Shorter messages are left alone. Raise it to spend less provider quota on busy chats.')}
+            </div>
+          </div>
+          <input
+            type="number"
+            class="kt-input"
+            min={1}
+            max={50}
+            value={settings.minTextLength}
+            onInput={(e) => {
+              const v = Number((e.target as HTMLInputElement).value);
+              if (Number.isInteger(v) && v >= 1 && v <= 50) onPatch({ minTextLength: v });
+            }}
+          />
+        </div>
       </section>
 
       <section class="kt-card space-y-3">

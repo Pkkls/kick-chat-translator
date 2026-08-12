@@ -127,4 +127,6 @@ export const ja: Record<string, string> = {
   "Import settings": "設定をインポート",
   "Invalid settings file": "設定ファイルが無効です",
   "cache hit rate, last 7 days": "キャッシュ率（過去7日）",
+  "Minimum message length": "メッセージの最小文字数",
+  "Shorter messages are left alone. Raise it to spend less provider quota on busy chats.": "これより短いメッセージは翻訳しません。値を上げると、流速の速いチャットでの使用量を節約できます。",
 };

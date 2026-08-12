@@ -127,4 +127,6 @@ export const ru: Record<string, string> = {
   "Import settings": "Импорт настроек",
   "Invalid settings file": "Недопустимый файл настроек",
   "cache hit rate, last 7 days": "попадания в кэш, 7 дней",
+  "Minimum message length": "Минимальная длина сообщения",
+  "Shorter messages are left alone. Raise it to spend less provider quota on busy chats.": "Более короткие сообщения не переводятся. Увеличьте значение, чтобы экономить квоту в активных чатах.",
 };

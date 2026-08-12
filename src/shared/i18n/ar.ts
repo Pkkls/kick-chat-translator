@@ -127,4 +127,6 @@ export const ar: Record<string, string> = {
   "Import settings": "استيراد الإعدادات",
   "Invalid settings file": "ملف إعدادات غير صالح",
   "cache hit rate, last 7 days": "معدل التخزين المؤقت، آخر 7 أيام",
+  "Minimum message length": "الحد الأدنى لطول الرسالة",
+  "Shorter messages are left alone. Raise it to spend less provider quota on busy chats.": "الرسائل الأقصر من ذلك لا تُترجم. ارفع القيمة لتوفير الحصة في المحادثات السريعة.",
 };
