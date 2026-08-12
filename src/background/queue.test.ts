@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { ConcurrencyQueue, TokenBucket } from './queue';
 
 describe('ConcurrencyQueue', () => {
@@ -38,11 +38,19 @@ describe('TokenBucket', () => {
     expect(b.tryTake()).toBe(false);
   });
 
-  it('refills over time', async () => {
-    const b = new TokenBucket(1, 6000); // 6000/min = 100/s
-    expect(b.tryTake()).toBe(true);
-    expect(b.tryTake()).toBe(false);
-    await new Promise((r) => setTimeout(r, 50));
-    expect(b.tryTake()).toBe(true);
+  // Fake timers, not a real sleep: this bucket regains a token every 10ms, so on a
+  // busy machine enough wall time could pass between the first two calls for the
+  // refusal to refill and the assertion to flip.
+  it('refills over time', () => {
+    vi.useFakeTimers();
+    try {
+      const b = new TokenBucket(1, 6000); // 6000/min = 100/s
+      expect(b.tryTake()).toBe(true);
+      expect(b.tryTake()).toBe(false);
+      vi.advanceTimersByTime(50);
+      expect(b.tryTake()).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
