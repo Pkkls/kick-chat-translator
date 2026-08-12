@@ -126,4 +126,5 @@ export const ru: Record<string, string> = {
   "Export settings": "Экспорт настроек",
   "Import settings": "Импорт настроек",
   "Invalid settings file": "Недопустимый файл настроек",
+  "cache hit rate, last 7 days": "попадания в кэш, 7 дней",
 };

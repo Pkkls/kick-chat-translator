@@ -126,4 +126,5 @@ export const zh: Record<string, string> = {
   "Export settings": "导出设置",
   "Import settings": "导入设置",
   "Invalid settings file": "设置文件无效",
+  "cache hit rate, last 7 days": "缓存命中率（近7天）",
 };

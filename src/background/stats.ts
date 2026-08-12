@@ -1,5 +1,7 @@
 import { STORAGE_KEY_STATS } from '~/shared/constants';
-import type { ProviderId, UsageStats } from '~/shared/types';
+import type { DayStat, ProviderId, UsageStats } from '~/shared/types';
+
+const HISTORY_DAYS = 7;
 
 function todayKey(): string {
   return new Date().toISOString().slice(0, 10);
@@ -15,7 +17,24 @@ function empty(): UsageStats {
     byChannel: {},
     charsSent: 0,
     todayKey: todayKey(),
+    history: [],
   };
+}
+
+/**
+ * Fold a finished day into the retained history, newest last.
+ * A day with no requests is dropped rather than stored as 0%: an unused day is
+ * missing data, and charting it as a real hit rate would misreport it.
+ */
+export function archiveDay(prev: UsageStats, keep: number = HISTORY_DAYS): DayStat[] {
+  const prior = (prev.history ?? []).filter((d) => d.day !== prev.todayKey);
+  if (prev.totalRequests <= 0) return prior.slice(-keep);
+  const entry: DayStat = {
+    day: prev.todayKey,
+    requests: prev.totalRequests,
+    cacheHits: prev.totalCacheHits,
+  };
+  return [...prior, entry].slice(-keep);
 }
 
 export class StatsTracker {
@@ -27,9 +46,10 @@ export class StatsTracker {
     const stored = await chrome.storage.local.get(STORAGE_KEY_STATS);
     const v = stored[STORAGE_KEY_STATS] as UsageStats | undefined;
     if (v && v.todayKey === todayKey()) {
-      this.state = v;
+      this.state = { ...v, history: v.history ?? [] };
     } else {
-      this.state = empty();
+      // Day changed while the worker was down: keep the outgoing day before resetting.
+      this.state = { ...empty(), history: v ? archiveDay(v) : [] };
       await this.persist();
     }
     return this.state;
@@ -71,7 +91,7 @@ export class StatsTracker {
   private rollover(): void {
     const k = todayKey();
     if (this.state.todayKey !== k) {
-      this.state = empty();
+      this.state = { ...empty(), history: archiveDay(this.state) };
     }
   }
 

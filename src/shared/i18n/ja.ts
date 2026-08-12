@@ -126,4 +126,5 @@ export const ja: Record<string, string> = {
   "Export settings": "設定をエクスポート",
   "Import settings": "設定をインポート",
   "Invalid settings file": "設定ファイルが無効です",
+  "cache hit rate, last 7 days": "キャッシュ率（過去7日）",
 };

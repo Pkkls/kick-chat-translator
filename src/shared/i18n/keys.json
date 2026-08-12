@@ -124,5 +124,6 @@
   "Save your configuration to a JSON file, or restore it on another browser.",
   "Export settings",
   "Import settings",
-  "Invalid settings file"
+  "Invalid settings file",
+  "cache hit rate, last 7 days"
 ]

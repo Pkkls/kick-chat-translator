@@ -126,4 +126,5 @@ export const fr: Record<string, string> = {
   "Export settings": "Exporter les réglages",
   "Import settings": "Importer les réglages",
   "Invalid settings file": "Fichier de réglages invalide",
+  "cache hit rate, last 7 days": "taux de cache, 7 derniers jours",
 };

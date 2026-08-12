@@ -49,6 +49,13 @@ export interface ProviderStatus {
   cooldownLeftSec?: number;
 }
 
+/** One finished day of usage, retained so the popup can chart a trend. */
+export interface DayStat {
+  day: string;
+  requests: number;
+  cacheHits: number;
+}
+
 export interface UsageStats {
   totalRequests: number;
   totalCacheHits: number;
@@ -58,4 +65,6 @@ export interface UsageStats {
   byChannel: Record<string, number>;
   charsSent: number;
   todayKey: string;
+  /** Finished days, oldest first. Absent on records stored before this field existed. */
+  history?: DayStat[];
 }

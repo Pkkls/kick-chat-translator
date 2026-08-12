@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Export / import your settings** from the Advanced tab. Export writes a JSON backup, import
   restores it and reloads the page. A backup from an older build still imports: missing fields
   fall back to their defaults and unknown ones are dropped, so the file never breaks storage.
+- **Cache hit rate trend in the popup.** Usage stats now retain the last 7 days instead of being
+  wiped at midnight, and the popup draws them as a small bar chart under the counters. Days with
+  no traffic are skipped rather than drawn as 0%. The trend appears once two days have been
+  recorded, so it stays empty on a fresh install until history builds up.
 
 ## [2.5.0] — 2026-06-04
 

@@ -126,4 +126,5 @@ export const ar: Record<string, string> = {
   "Export settings": "تصدير الإعدادات",
   "Import settings": "استيراد الإعدادات",
   "Invalid settings file": "ملف إعدادات غير صالح",
+  "cache hit rate, last 7 days": "معدل التخزين المؤقت، آخر 7 أيام",
 };
