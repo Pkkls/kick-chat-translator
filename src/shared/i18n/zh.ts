@@ -121,4 +121,9 @@ export const zh: Record<string, string> = {
   "requests": "请求数",
   "cache": "缓存",
   "errors": "错误数",
+  "Backup": "备份",
+  "Save your configuration to a JSON file, or restore it on another browser.": "将配置保存为 JSON 文件，或在另一个浏览器中恢复。",
+  "Export settings": "导出设置",
+  "Import settings": "导入设置",
+  "Invalid settings file": "设置文件无效",
 };

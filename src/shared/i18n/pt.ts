@@ -121,4 +121,9 @@ export const pt: Record<string, string> = {
   "requests": "requisições",
   "cache": "cache",
   "errors": "erros",
+  "Backup": "Backup",
+  "Save your configuration to a JSON file, or restore it on another browser.": "Salve sua configuração num arquivo JSON, ou restaure-a noutro navegador.",
+  "Export settings": "Exportar configurações",
+  "Import settings": "Importar configurações",
+  "Invalid settings file": "Arquivo de configurações inválido",
 };

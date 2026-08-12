@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Export / import your settings** from the Advanced tab. Export writes a JSON backup, import
+  restores it and reloads the page. A backup from an older build still imports: missing fields
+  fall back to their defaults and unknown ones are dropped, so the file never breaks storage.
+
 ## [2.5.0] — 2026-06-04
 
 ### Added

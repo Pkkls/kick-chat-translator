@@ -119,5 +119,10 @@
   "cache",
   "errors",
   "available",
-  "unavailable"
+  "unavailable",
+  "Backup",
+  "Save your configuration to a JSON file, or restore it on another browser.",
+  "Export settings",
+  "Import settings",
+  "Invalid settings file"
 ]

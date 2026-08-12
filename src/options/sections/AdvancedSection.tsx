@@ -1,5 +1,5 @@
-import { useState } from 'preact/hooks';
-import type { Settings } from '~/shared/settings';
+import { useRef, useState } from 'preact/hooks';
+import { exportSettings, importSettings, type Settings } from '~/shared/settings';
 import { send } from '~/shared/messages';
 import { useT } from '~/shared/i18nContext';
 
@@ -13,6 +13,28 @@ export function AdvancedSection({ settings, onPatch }: Props) {
   const [confirmClear, setConfirmClear] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
   const [confirmResetAll, setConfirmResetAll] = useState(false);
+  const [importFailed, setImportFailed] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  async function runExport(): Promise<void> {
+    const url = URL.createObjectURL(
+      new Blob([await exportSettings()], { type: 'application/json' }),
+    );
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'kick-chat-translator-settings.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function runImport(file: File): Promise<void> {
+    try {
+      await importSettings(await file.text());
+      location.reload();
+    } catch {
+      setImportFailed(true);
+    }
+  }
 
   return (
     <>
@@ -110,6 +132,35 @@ export function AdvancedSection({ settings, onPatch }: Props) {
             />
           }
         />
+      </section>
+
+      <section class="kt-card space-y-3">
+        <h2 class="text-sm font-semibold">{t('Backup')}</h2>
+        <p class="text-[11px] text-kick-muted">
+          {t('Save your configuration to a JSON file, or restore it on another browser.')}
+        </p>
+        <div class="flex gap-2">
+          <button class="kt-btn-ghost" onClick={() => void runExport()}>
+            {t('Export settings')}
+          </button>
+          <button class="kt-btn-ghost" onClick={() => fileRef.current?.click()}>
+            {t('Import settings')}
+          </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="application/json,.json"
+            class="hidden"
+            onChange={(e) => {
+              const input = e.target as HTMLInputElement;
+              const file = input.files?.[0];
+              input.value = '';
+              setImportFailed(false);
+              if (file) void runImport(file);
+            }}
+          />
+        </div>
+        {importFailed && <p class="text-[11px] text-red-400">{t('Invalid settings file')}</p>}
       </section>
 
       <section class="kt-card space-y-3">

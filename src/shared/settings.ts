@@ -127,13 +127,23 @@ export async function exportSettings(): Promise<string> {
   return JSON.stringify(s, null, 2);
 }
 
-/** Import settings from a JSON string. Returns the imported settings. */
-export async function importSettings(json: string): Promise<Settings> {
+/**
+ * Parse + validate a settings backup. Throws when the payload is unusable.
+ * Missing fields fall back to defaults and unknown ones are dropped, so a file
+ * exported by an older or newer build still imports cleanly.
+ */
+export function parseSettingsJson(json: string): Settings {
   const raw: unknown = JSON.parse(json);
   const parsed = SettingsSchema.safeParse(raw);
   if (!parsed.success) throw new Error('Invalid settings JSON');
-  await chrome.storage.sync.set({ [STORAGE_KEY_SETTINGS]: parsed.data });
   return parsed.data;
+}
+
+/** Import settings from a JSON string. Returns the imported settings. */
+export async function importSettings(json: string): Promise<Settings> {
+  const next = parseSettingsJson(json);
+  await chrome.storage.sync.set({ [STORAGE_KEY_SETTINGS]: next });
+  return next;
 }
 
 export function watchSettings(cb: (next: Settings) => void): () => void {

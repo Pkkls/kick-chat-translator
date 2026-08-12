@@ -121,4 +121,9 @@ export const ar: Record<string, string> = {
   "requests": "طلبات",
   "cache": "تخزين مؤقت",
   "errors": "أخطاء",
+  "Backup": "نسخة احتياطية",
+  "Save your configuration to a JSON file, or restore it on another browser.": "احفظ إعداداتك في ملف JSON، أو استعدها في متصفح آخر.",
+  "Export settings": "تصدير الإعدادات",
+  "Import settings": "استيراد الإعدادات",
+  "Invalid settings file": "ملف إعدادات غير صالح",
 };

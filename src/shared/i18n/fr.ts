@@ -121,4 +121,9 @@ export const fr: Record<string, string> = {
   "requests": "requêtes",
   "cache": "cache",
   "errors": "erreurs",
+  "Backup": "Sauvegarde",
+  "Save your configuration to a JSON file, or restore it on another browser.": "Enregistrez votre configuration dans un fichier JSON, ou restaurez-la sur un autre navigateur.",
+  "Export settings": "Exporter les réglages",
+  "Import settings": "Importer les réglages",
+  "Invalid settings file": "Fichier de réglages invalide",
 };

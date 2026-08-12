@@ -121,4 +121,9 @@ export const ja: Record<string, string> = {
   "requests": "リクエスト",
   "cache": "キャッシュ",
   "errors": "エラー",
+  "Backup": "バックアップ",
+  "Save your configuration to a JSON file, or restore it on another browser.": "設定を JSON ファイルに保存し、別のブラウザーで復元できます。",
+  "Export settings": "設定をエクスポート",
+  "Import settings": "設定をインポート",
+  "Invalid settings file": "設定ファイルが無効です",
 };

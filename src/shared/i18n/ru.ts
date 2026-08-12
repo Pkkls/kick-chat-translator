@@ -121,4 +121,9 @@ export const ru: Record<string, string> = {
   "requests": "запросы",
   "cache": "кэш",
   "errors": "ошибки",
+  "Backup": "Резервная копия",
+  "Save your configuration to a JSON file, or restore it on another browser.": "Сохраните конфигурацию в файл JSON или восстановите её в другом браузере.",
+  "Export settings": "Экспорт настроек",
+  "Import settings": "Импорт настроек",
+  "Invalid settings file": "Недопустимый файл настроек",
 };
