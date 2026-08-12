@@ -1,6 +1,7 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { UsageStats } from '~/shared/types';
-import { archiveDay } from './stats';
+import { STORAGE_KEY_STATS } from '~/shared/constants';
+import { archiveDay, StatsTracker } from './stats';
 
 function day(todayKey: string, totalRequests: number, totalCacheHits: number, history?: UsageStats['history']): UsageStats {
   return {
@@ -15,6 +16,58 @@ function day(todayKey: string, totalRequests: number, totalCacheHits: number, hi
     history,
   };
 }
+
+function stubStorage(initial: Record<string, unknown>): void {
+  const store: Record<string, unknown> = { ...initial };
+  vi.stubGlobal('chrome', {
+    storage: {
+      local: {
+        get: (key: string) => Promise.resolve(key in store ? { [key]: store[key] } : {}),
+        set: (obj: Record<string, unknown>) => {
+          Object.assign(store, obj);
+          return Promise.resolve();
+        },
+      },
+    },
+  });
+}
+
+describe('StatsTracker.load', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  // The worker is normally restarted after midnight rather than kept alive across
+  // the rollover, so this is the path that actually retains a day.
+  it('archives the stored day when it loads on a later date', async () => {
+    stubStorage({ [STORAGE_KEY_STATS]: day('2020-01-01', 10, 4) });
+
+    const state = await new StatsTracker().load();
+
+    expect(state.todayKey).not.toBe('2020-01-01');
+    expect(state.totalRequests).toBe(0);
+    expect(state.history).toEqual([{ day: '2020-01-01', requests: 10, cacheHits: 4 }]);
+  });
+
+  it('keeps an unfinished day and tolerates a record without history', async () => {
+    const today = new Date().toISOString().slice(0, 10);
+    stubStorage({ [STORAGE_KEY_STATS]: day(today, 7, 3) });
+
+    const state = await new StatsTracker().load();
+
+    expect(state.totalRequests).toBe(7);
+    expect(state.history).toEqual([]);
+  });
+
+  it('starts clean when nothing is stored yet', async () => {
+    stubStorage({});
+
+    const state = await new StatsTracker().load();
+
+    expect(state.totalRequests).toBe(0);
+    expect(state.history).toEqual([]);
+  });
+});
 
 describe('archiveDay', () => {
   it('appends the finished day, newest last', () => {
