@@ -29,6 +29,29 @@ describe('detectLanguage', () => {
     expect(detectLanguage('これはテストです')).toBe('ja');
   });
 
+  it('identifies short foreign chat words instead of calling them English', () => {
+    expect(detectLanguage('hola')).toBe('es');
+    expect(detectLanguage('gracias')).toBe('es');
+    expect(detectLanguage('merci')).toBe('fr');
+    expect(detectLanguage('danke')).toBe('de');
+    expect(detectLanguage('grazie')).toBe('it');
+    expect(detectLanguage('obrigado')).toBe('pt');
+    expect(detectLanguage('tamam')).toBe('tr');
+  });
+
+  it('stays unsure when short words disagree rather than guessing', () => {
+    expect(detectLanguage('merci danke')).not.toBe('fr');
+    expect(detectLanguage('merci danke')).not.toBe('de');
+  });
+
+  it('still resolves a short message mixing English filler with a foreign word', () => {
+    expect(detectLanguage('ok merci')).toBe('fr');
+  });
+
+  it('leaves long messages to franc', () => {
+    expect(detectLanguage('hello, how are you doing today my friend')).toBe('en');
+  });
+
   it('returns undefined or en for empty/very ambiguous inputs', () => {
     const r = detectLanguage('xx');
     expect([undefined, 'en']).toContain(r);
