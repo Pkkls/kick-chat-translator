@@ -52,6 +52,13 @@ describe('detectLanguage', () => {
     expect(detectLanguage('hello, how are you doing today my friend')).toBe('en');
   });
 
+  it('falls back to English only for ASCII-only text franc cannot place', () => {
+    expect(detectLanguage('...!!')).toBe('en');
+    expect(detectLanguage('9 9 9')).toBe('en');
+    // Same fallback, non-ASCII input: must not be claimed as English.
+    expect(detectLanguage('日本')).toBeUndefined();
+  });
+
   it('returns undefined or en for empty/very ambiguous inputs', () => {
     const r = detectLanguage('xx');
     expect([undefined, 'en']).toContain(r);

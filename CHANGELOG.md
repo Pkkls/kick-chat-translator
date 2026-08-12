@@ -25,6 +25,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   no traffic are skipped rather than drawn as 0%. The trend appears once two days have been
   recorded, so it stays empty on a fresh install until history builds up.
 
+### Changed
+- The ASCII check in language detection now uses `\p{ASCII}` instead of a literal control-character
+  range. Same behaviour, but the source file no longer contains a NUL byte, so Git treats it as text
+  and changes to it show up as readable diffs.
+
 ### Fixed
 - **Glossary entries with non-Latin text now work.** Every rule whose source term was not plain
   ASCII was silently ignored, including the documented `草→lol` example, along with Cyrillic and
