@@ -1,7 +1,8 @@
 import { defaultSettings, loadSettings, resetSettings, saveSettings, watchSettings, type Settings } from '~/shared/settings';
 import { onMessage, type RuntimeResponse } from '~/shared/messages';
 import { rootLogger } from '~/shared/logger';
-import { TranslationCache } from './cache';
+import { TranslationCache, warmTargets } from './cache';
+import { resolveTargetLang } from '~/shared/languages';
 import { TokenBucket } from './queue';
 import { StatsTracker } from './stats';
 import { TranslationCoalescer } from './coalescer';
@@ -148,7 +149,7 @@ async function init(): Promise<void> {
   settings = await loadSettings();
   applySettings(settings);
   await stats.load();
-  await cache.warm();
+  await cache.warm(200, warmTargets(resolveTargetLang(settings.targetLang), stats.current().byLang));
   log.info('Service worker initialized');
   installKeepalive();
   scheduleDeeplUsageRefresh();

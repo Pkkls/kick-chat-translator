@@ -26,6 +26,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   recorded, so it stays empty on a fresh install until history builds up.
 
 ### Changed
+- **The cache now warms the languages you actually use.** On startup the worker pulled the first
+  200 stored translations into memory, but stored keys are ordered by target language, so it
+  loaded whichever language happened to sort first and often skipped yours entirely. It now warms
+  the language you read first, then the ones seen most in chat, so repeated lines are answered
+  from memory right away instead of going back to storage.
 - The ASCII check in language detection now uses `\p{ASCII}` instead of a literal control-character
   range. Same behaviour, but the source file no longer contains a NUL byte, so Git treats it as text
   and changes to it show up as readable diffs.
