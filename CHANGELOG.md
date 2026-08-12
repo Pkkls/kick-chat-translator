@@ -25,6 +25,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   no traffic are skipped rather than drawn as 0%. The trend appears once two days have been
   recorded, so it stays empty on a fresh install until history builds up.
 
+### Fixed
+- **Glossary entries with non-Latin text now work.** Every rule whose source term was not plain
+  ASCII was silently ignored, including the documented `草→lol` example, along with Cyrillic and
+  accented words like `café`. Rules on ASCII words still match whole words only.
+
 ## [2.5.0] — 2026-06-04
 
 ### Added

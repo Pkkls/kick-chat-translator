@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isSlangOnly } from './glossary';
+import { applyUserGlossary, isSlangOnly } from './glossary';
 
 describe('isSlangOnly', () => {
   it('flags pure streaming slang', () => {
@@ -15,5 +15,37 @@ describe('isSlangOnly', () => {
   });
   it('returns false on empty', () => {
     expect(isSlangOnly('')).toBe(false);
+  });
+});
+
+describe('applyUserGlossary', () => {
+  it('replaces a whole ASCII word only', () => {
+    expect(applyUserGlossary('kusa is here', ['kusa→lol'])).toBe('lol is here');
+    expect(applyUserGlossary('kusabi', ['kusa→lol'])).toBe('kusabi');
+  });
+
+  it('replaces non-ASCII terms, which word boundaries used to block', () => {
+    expect(applyUserGlossary('草', ['草→lol'])).toBe('lol');
+    expect(applyUserGlossary('привет all', ['привет→hi'])).toBe('hi all');
+    expect(applyUserGlossary('le café', ['café→coffee'])).toBe('le coffee');
+  });
+
+  it('keeps the leading boundary on a term that starts with a word character', () => {
+    expect(applyUserGlossary('decafé', ['café→coffee'])).toBe('decafé');
+  });
+
+  it('is case-insensitive and replaces every occurrence', () => {
+    expect(applyUserGlossary('GG and gg', ['gg→good game'])).toBe('good game and good game');
+  });
+
+  it('ignores malformed entries instead of throwing', () => {
+    expect(applyUserGlossary('text', [])).toBe('text');
+    expect(applyUserGlossary('text', ['no-separator'])).toBe('text');
+    expect(applyUserGlossary('text', ['→orphan'])).toBe('text');
+  });
+
+  it('treats regex metacharacters in the source as literals', () => {
+    expect(applyUserGlossary('a+b', ['a+b→sum'])).toBe('sum');
+    expect(applyUserGlossary('(o)', ['(o)→circle'])).toBe('circle');
   });
 });

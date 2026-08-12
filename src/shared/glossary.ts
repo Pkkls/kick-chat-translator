@@ -46,7 +46,13 @@ export function applyUserGlossary(text: string, entries: string[]): string {
     const to = entry.slice(sep + 1).trim();
     if (!from) continue;
     try {
-      const re = new RegExp(`\\b${from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+      // \b is ASCII-only, so anchoring both ends unconditionally made every
+      // non-ASCII term ("草→lol", "привет→hi", "café→coffee") match nothing.
+      // Anchor only the ends that actually begin or end on a word character.
+      const escaped = from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const lead = /^\w/.test(from) ? '\\b' : '';
+      const trail = /\w$/.test(from) ? '\\b' : '';
+      const re = new RegExp(`${lead}${escaped}${trail}`, 'gi');
       out = out.replace(re, to);
     } catch {
       // Invalid regex char in user input — skip silently.
