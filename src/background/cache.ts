@@ -1,7 +1,7 @@
 import { createStore, get, set, del, keys, clear } from 'idb-keyval';
 import { CACHE_DB, CACHE_STORE } from '~/shared/constants';
 import { rootLogger } from '~/shared/logger';
-import { normalizeForKey } from '~/shared/normalize';
+import { cacheKey, normalizeForKey } from '~/shared/normalize';
 
 // Re-export so existing importers (and tests) keep working.
 export { normalizeForKey };
@@ -31,7 +31,7 @@ export class TranslationCache {
   }
 
   key(text: string, targetLang: string): string {
-    return `${targetLang}::${normalizeForKey(text)}`;
+    return cacheKey(text, targetLang);
   }
 
   async get(text: string, targetLang: string): Promise<CacheEntry | undefined> {
