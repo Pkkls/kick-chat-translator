@@ -112,7 +112,12 @@ export function extractUsername(row: Element): string | undefined {
   const styled = row.querySelector('span.inline-flex.font-bold[style*="color"]');
   if (styled?.textContent) return styled.textContent.trim().toLowerCase();
   const anyBold = row.querySelector('button span.font-bold, button span[style*="color"]');
-  return anyBold?.textContent?.trim().toLowerCase() ?? undefined;
+  if (anyBold?.textContent) return anyBold.textContent.trim().toLowerCase();
+  // Current Kick (checked against live chat, 2026-08): the name is the button's
+  // own text with no inner span —
+  // <button class="inline font-bold" style="color:…">name</button>.
+  const nameButton = row.querySelector('button.font-bold');
+  return nameButton?.textContent?.trim().toLowerCase() ?? undefined;
 }
 
 /**

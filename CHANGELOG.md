@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- **Username detection was broken by a Kick layout change, which silently disabled the user
+  filters.** Kick now renders the sender's name directly on a button instead of inside a span, so
+  the extension read every message as having no author: blacklisted users were still translated,
+  the bot filter had nothing to match on, and the "same user repeated themselves" check never
+  fired, so spam was re-translated at your providers' expense. Checked against live chat, where
+  none of the previous detection paths matched a single message.
+
 ## [2.5.0] — 2026-06-04
 
 ### Added
