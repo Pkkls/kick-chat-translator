@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **Turkish names and words are now matched regardless of capitalisation.** Lowercasing a Turkish
+  capital İ leaves an extra invisible mark behind, so the same name written in a different case no
+  longer looked like the same name: a blacklisted Turkish user kept coming through, and the same
+  Turkish word in two capitalisations was translated and paid for twice instead of being reused
+  from cache. Dotted and dotless i stay distinct, as they are genuinely different letters.
 - **Username detection was broken by a Kick layout change, which silently disabled the user
   filters.** Kick now renders the sender's name directly on a button instead of inside a span, so
   the extension read every message as having no author: blacklisted users were still translated,

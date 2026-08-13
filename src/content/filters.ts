@@ -1,4 +1,5 @@
 import { COMMON_BOTS } from '~/shared/constants';
+import { foldCase } from '~/shared/normalize';
 import type { Settings } from '~/shared/settings';
 
 export interface MessageMeta {
@@ -11,7 +12,8 @@ export function shouldDropByUserOrChannel(meta: MessageMeta, settings: Settings)
   if (settings.ignoreBots && (meta.isBot || COMMON_BOTS.has(meta.username))) {
     return 'bot';
   }
-  if (settings.blacklistUsers.includes(meta.username)) return 'user_blacklisted';
+  const user = foldCase(meta.username);
+  if (settings.blacklistUsers.some((u) => foldCase(u) === user)) return 'user_blacklisted';
   if (settings.blacklistChannels.includes(meta.channel)) return 'channel_blacklisted';
   if (settings.whitelistChannels.length > 0 && !settings.whitelistChannels.includes(meta.channel)) {
     return 'channel_not_whitelisted';
