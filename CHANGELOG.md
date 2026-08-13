@@ -41,6 +41,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and changes to it show up as readable diffs.
 
 ### Fixed
+- **The Replace display style was unreadable.** Its translation had no green tint, no copy cursor
+  and a re-translate button that could never be revealed, because those three CSS rules named
+  `.kt-translation` and `.kt-translation-inline` but not the separate `.kt-translation-compact`
+  class that Replace actually uses. It now carries the same cue as the other styles, keeping its
+  smaller italic text, and it reads correctly on a light OS theme too. Inline gains the green
+  left edge that Below already had; Below and Hover are unchanged.
 - **The extension could bind to the wrong part of the chat page.** It picked the first element
   matching its chat-container selector. Kick's layout has three matching elements, and the first is
   a horizontal scroller that holds no messages: on the three channels checked, one offline and two

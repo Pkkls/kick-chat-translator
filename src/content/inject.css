@@ -15,7 +15,8 @@
   margin-left: 6px;
   padding: 1px 5px;
   background: rgba(83, 252, 24, 0.12);
-  border-radius: 3px;
+  border-left: 2px solid rgba(83, 252, 24, 0.55);
+  border-radius: 0 3px 3px 0;
   font-size: 0.85em;
   color: rgba(255, 255, 255, 0.7);
 }
@@ -67,7 +68,8 @@
   user-select: none;
 }
 .kt-translation:hover .kt-retry,
-.kt-translation-inline:hover .kt-retry {
+.kt-translation-inline:hover .kt-retry,
+.kt-translation-compact:hover .kt-retry {
   opacity: 0.7;
 }
 .kt-retry:hover {
@@ -75,7 +77,7 @@
 }
 
 /* #8 Click-to-copy: cursor hint */
-.kt-translation, .kt-translation-inline {
+.kt-translation, .kt-translation-inline, .kt-translation-compact {
   cursor: copy;
 }
 
@@ -93,12 +95,18 @@
   color: rgba(83, 252, 24, 0.7);
 }
 
-/* #9 Compact mode: inline after message */
+/* #9 Compact mode: inline after message. Same green cue as the other styles —
+   it reads as ours, not as part of what the user wrote. Italic and a smaller
+   size stay its own identity. */
 .kt-translation-compact {
   display: inline;
   margin-left: 6px;
+  padding: 1px 5px;
+  background: rgba(83, 252, 24, 0.12);
+  border-left: 2px solid rgba(83, 252, 24, 0.55);
+  border-radius: 0 3px 3px 0;
   font-size: 0.8em;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.7);
   font-style: italic;
 }
 
@@ -313,9 +321,11 @@
     background: rgba(0, 0, 0, 0.05);
     border-left-color: rgba(40, 170, 20, 0.6);
   }
-  .kt-translation-inline {
+  .kt-translation-inline,
+  .kt-translation-compact {
     color: rgba(20, 25, 35, 0.88);
     background: rgba(40, 170, 20, 0.12);
+    border-left-color: rgba(40, 170, 20, 0.6);
   }
   .kt-flag {
     background: rgba(0, 0, 0, 0.06);
