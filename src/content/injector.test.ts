@@ -118,6 +118,35 @@ describe('injector artifacts', () => {
     });
   });
 
+  // A line whose engine gave up lost its translation AND the retry button living
+  // inside it, so it became indistinguishable from a line that was never
+  // translated, with no way to ask again.
+  describe('a line whose engine gave up', () => {
+    it('keeps a way to try again', () => {
+      const target = document.createElement('div');
+      let retried = 0;
+      showError(target, 'quota', () => { retried++; });
+      const btn = target.querySelector<HTMLElement>('.kt-retry');
+      expect(btn).not.toBeNull();
+      btn?.click();
+      expect(retried).toBe(1);
+    });
+
+    // Callers that offer no retry keep the old, quieter marker.
+    it('offers no button when the caller passes no retry', () => {
+      const target = document.createElement('div');
+      showError(target, 'quota');
+      expect(target.querySelector('.kt-retry')).toBeNull();
+    });
+
+    // The button is opacity:0 until its own box is hovered. Forgetting the
+    // error box in that rule ships a button nothing can reveal, which is
+    // exactly how the Replace style lost its own retry.
+    it('can reveal that button on hover', () => {
+      expect(injectCss).toContain('.kt-error:hover .kt-retry');
+    });
+  });
+
   // `showOriginal` shipped as a stored setting no content-script code ever read.
   describe('hiding the original text', () => {
     it('marks the document root only when the original must be hidden', () => {

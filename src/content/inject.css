@@ -69,7 +69,8 @@
 }
 .kt-translation:hover .kt-retry,
 .kt-translation-inline:hover .kt-retry,
-.kt-translation-compact:hover .kt-retry {
+.kt-translation-compact:hover .kt-retry,
+.kt-error:hover .kt-retry {
   opacity: 0.7;
 }
 .kt-retry:hover {

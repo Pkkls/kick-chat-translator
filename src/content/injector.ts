@@ -92,11 +92,14 @@ export function showLoading(targetEl: Element): void {
   targetEl.appendChild(span);
 }
 
-export function showError(targetEl: Element, msg: string): void {
+export function showError(targetEl: Element, msg: string, onRetry?: () => void): void {
   removeAllArtifacts(targetEl);
   const span = document.createElement('span');
   span.className = ERROR_CLASS;
   span.textContent = msg;
+  // Without this the line is indistinguishable from one that was never
+  // translated, and there is nothing left to click to ask again.
+  if (onRetry) span.appendChild(makeRetry(onRetry));
   targetEl.appendChild(span);
 }
 

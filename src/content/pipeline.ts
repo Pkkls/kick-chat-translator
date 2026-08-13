@@ -211,8 +211,7 @@ export class TranslationPipeline {
     showLoading(msg.injectionTarget);
     const outcome = await this.requestCloud(real, this.effTarget, msg.channel, context, false, sourceLang);
     if (!outcome) {
-      if (this.settings.debug) showError(msg.injectionTarget, 'translate failed');
-      else removeAllArtifacts(msg.injectionTarget);
+      showError(msg.injectionTarget, 'translate failed', () => void this.forceRetranslate(msg, real));
       return;
     }
     if (!outcome.ok) {
@@ -227,8 +226,7 @@ export class TranslationPipeline {
       } else if (code === 'quota' || outcome.error.message?.includes('quota')) {
         this.maybeToast(`${outcome.error.provider ?? 'Provider'} quota reached — falling back`);
       }
-      if (this.settings.debug) showError(msg.injectionTarget, code);
-      else removeAllArtifacts(msg.injectionTarget);
+      showError(msg.injectionTarget, code, () => void this.forceRetranslate(msg, real));
       return;
     }
     this.applyTranslation(msg, real, outcome.result, { store: true });
@@ -239,7 +237,8 @@ export class TranslationPipeline {
     showLoading(msg.injectionTarget);
     const outcome = await this.requestCloud(real, this.effTarget, msg.channel, '', true);
     if (!outcome || !outcome.ok) {
-      removeAllArtifacts(msg.injectionTarget);
+      // A failed retry must not delete the button that started it.
+      showError(msg.injectionTarget, 'translate failed', () => void this.forceRetranslate(msg, real));
       return;
     }
     this.applyTranslation(msg, real, outcome.result, { store: true, force: true });

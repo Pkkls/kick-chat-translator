@@ -41,6 +41,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and changes to it show up as readable diffs.
 
 ### Fixed
+- **A line the translation services gave up on can now be retried.** It used to lose its translation
+  and, with it, the retry button that lived inside, so it looked exactly like a line that was never
+  meant to be translated and there was nothing left to click. Such a line now keeps a small marker
+  naming the reason, with the retry button on it. A retry that fails again keeps the button instead
+  of deleting it. Lines skipped on purpose, by the glossary, by the same language check or by the
+  identical text check, stay silent as before.
 - **Hiding the original now works on replies too.** With "Keep original text visible" turned off, a
   reply kept showing its original text while every other line hid it. Kick nests the message of a
   reply one level deeper than a plain line, and the rule only reached text sitting directly beside
