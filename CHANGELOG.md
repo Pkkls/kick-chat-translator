@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Incoming chat was no longer being translated at all on current Kick.** The extension picked the
+  first page element matching its chat-container selector, but Kick's layout now has three elements
+  matching it and only the second one holds the messages. The extension therefore watched an
+  element that never receives a message: it loaded, showed its bar, and silently translated
+  nothing. It now picks the candidate that actually holds chat messages, and keeps looking while
+  the chat is still empty instead of settling on the wrong one.
+
 ### Added
 - **Export / import your settings** from the Advanced tab. Export writes a JSON backup, import
   restores it and reloads the page. A backup from an older build still imports: missing fields

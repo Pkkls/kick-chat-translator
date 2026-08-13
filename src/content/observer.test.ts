@@ -27,7 +27,15 @@ class RecordingObserver {
 beforeEach(() => {
   created.length = 0;
   vi.stubGlobal('MutationObserver', RecordingObserver);
-  document.body.innerHTML = '<div id="channel-chatroom"></div>';
+  // Mirrors live Kick: several elements match the container selector and only one
+  // is the message list. The decoy comes first, as it does in the real page.
+  document.body.innerHTML =
+    '<div id="channel-chatroom">' +
+    '<div class="no-scrollbar" data-which="decoy"></div>' +
+    '<div class="no-scrollbar" data-which="messages">' +
+    '<div data-index="0"><button class="font-bold" style="color: rgb(1,2,3)">bob</button>' +
+    '<span class="font-normal">hola amigos</span></div>' +
+    '</div></div>';
 });
 
 afterEach(() => {
@@ -41,6 +49,17 @@ describe('ChatObserver lifecycle', () => {
     obs.start();
     expect(created.length).toBeGreaterThan(0);
     obs.stop();
+  });
+
+  // The failure this guards against is silent and total: binding to a container
+  // that matches the selector but holds no messages means nothing is ever
+  // translated, with no error anywhere.
+  it('delivers the messages already on screen when it attaches', () => {
+    const seen: string[] = [];
+    const obs = new ChatObserver((m) => seen.push(m.text));
+    obs.start();
+    obs.stop();
+    expect(seen).toEqual(['hola amigos']);
   });
 
   // Anything left observing document.body with subtree:true keeps running for the

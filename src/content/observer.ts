@@ -1,11 +1,10 @@
 import {
-  SELECTORS,
   buildSyntheticId,
   extractMessageText,
   extractUsername,
   findAllRows,
+  findChatContainer,
   matchesMessageRow,
-  pickFirst,
   pickInjectionTarget,
 } from './selectors';
 import { rootLogger } from '~/shared/logger';
@@ -67,7 +66,7 @@ export class ChatObserver {
   }
 
   private tryAttach(): void {
-    const container = pickFirst(document, SELECTORS.containers);
+    const container = findChatContainer(document);
     if (container) {
       this.attach(container);
       return;

@@ -60,6 +60,32 @@ export function pickFirst(root: ParentNode, list: readonly string[]): Element | 
   return null;
 }
 
+/**
+ * The chat container: the first candidate that actually holds message rows.
+ *
+ * Matching a container selector is not enough. On current Kick three elements
+ * match `#channel-chatroom .no-scrollbar` and only the second one is the message
+ * list, so taking the first match binds the observer to an element that never
+ * receives a message and nothing is ever translated.
+ *
+ * Returns null while no candidate holds a row yet (chat still empty), so the
+ * caller keeps polling rather than binding to the wrong element for good.
+ */
+export function findChatContainer(root: ParentNode = document): Element | null {
+  for (const sel of SELECTORS.containers) {
+    let nodes: NodeListOf<Element>;
+    try {
+      nodes = root.querySelectorAll(sel);
+    } catch {
+      continue; // invalid selector, ignore
+    }
+    for (const el of nodes) {
+      if (el.querySelector(SELECTORS.messageRows[0])) return el;
+    }
+  }
+  return null;
+}
+
 export function findAllRows(container: ParentNode): Element[] {
   return Array.from(container.querySelectorAll('div[data-index]'));
 }

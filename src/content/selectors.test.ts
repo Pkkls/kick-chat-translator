@@ -3,6 +3,7 @@ import {
   extractMessageText,
   extractUsername,
   findAllRows,
+  findChatContainer,
   matchesMessageRow,
   pickFirst,
   pickInjectionTarget,
@@ -109,5 +110,46 @@ describe('row and container selectors', () => {
     host.innerHTML = `<div id="channel-chatroom"><div class="no-scrollbar"></div></div>`;
     document.body.appendChild(host);
     expect(pickFirst(document, SELECTORS.containers)?.className).toBe('no-scrollbar');
+  });
+});
+
+describe('findChatContainer', () => {
+  // Reproduces the live Kick structure: several elements match the container
+  // selector and only one of them is the message list.
+  function threeCandidates(): void {
+    const host = document.createElement('div');
+    host.innerHTML = `
+      <div id="channel-chatroom">
+        <div class="no-scrollbar" data-which="empty-top"></div>
+        <div class="no-scrollbar" data-which="messages">
+          <div data-index="0"><span class="font-normal">hola</span></div>
+          <div data-index="1"><span class="font-normal">que tal</span></div>
+        </div>
+        <div class="no-scrollbar" data-which="empty-bottom"></div>
+      </div>`;
+    document.body.appendChild(host);
+  }
+
+  it('picks the candidate that actually holds message rows', () => {
+    threeCandidates();
+    const found = findChatContainer(document);
+    expect(found?.getAttribute('data-which')).toBe('messages');
+    expect(found?.querySelectorAll('div[data-index]')).toHaveLength(2);
+  });
+
+  it('does not settle for the first match when it holds no rows', () => {
+    threeCandidates();
+    // This is exactly what the old first-match behaviour returned.
+    expect(document.querySelector('#channel-chatroom .no-scrollbar')?.getAttribute('data-which')).toBe('empty-top');
+    expect(findChatContainer(document)?.getAttribute('data-which')).not.toBe('empty-top');
+  });
+
+  // Chat not rendered yet: returning null keeps the caller polling instead of
+  // binding to an element that will never receive a message.
+  it('returns null while no candidate holds a row', () => {
+    const host = document.createElement('div');
+    host.innerHTML = `<div id="channel-chatroom"><div class="no-scrollbar"></div></div>`;
+    document.body.appendChild(host);
+    expect(findChatContainer(document)).toBeNull();
   });
 });
