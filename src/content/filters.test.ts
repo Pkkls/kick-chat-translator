@@ -86,3 +86,30 @@ describe('isNoise', () => {
     expect(isNoise('下ネタきも')).toBe(false);
   });
 });
+
+describe('username matching across letter case', () => {
+  const drop = (name: string, blacklisted: string) =>
+    shouldDropByUserOrChannel(
+      { username: name.trim().toLowerCase(), channel: 'c', isBot: false },
+      // Stored exactly as the options page stores it.
+      { ...defaultSettings(), blacklistUsers: [blacklisted.trim().toLowerCase()] },
+    );
+
+  it('blocks an ASCII name whatever case it was typed in', () => {
+    expect(drop('Bob', 'bob')).toBe('user_blacklisted');
+    expect(drop('Bob', 'BOB')).toBe('user_blacklisted');
+  });
+
+  // Lowercasing Turkish İ in JS yields "i" plus a combining dot, and the number of
+  // those dots depends on how the name was capitalised, so the same name typed in
+  // a different case stopped matching itself.
+  it('blocks a Turkish name whatever case it was typed in', () => {
+    expect(drop('İbrahim', 'İbrahim')).toBe('user_blacklisted');
+    expect(drop('İbrahim', 'İBRAHİM')).toBe('user_blacklisted');
+    expect(drop('İBRAHİM', 'İbrahim')).toBe('user_blacklisted');
+  });
+
+  it('does not block a different name', () => {
+    expect(drop('İbrahim', 'mehmet')).toBeUndefined();
+  });
+});

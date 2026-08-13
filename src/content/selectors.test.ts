@@ -1,0 +1,113 @@
+import { afterEach, describe, expect, it } from 'vitest';
+import {
+  extractMessageText,
+  extractUsername,
+  findAllRows,
+  matchesMessageRow,
+  pickFirst,
+  pickInjectionTarget,
+  SELECTORS,
+} from './selectors';
+
+/**
+ * Markup copied from live kick.com chat (2026-08). The badges are <img>/<svg>
+ * inside <div>s, the name is a <button> carrying its own text, the separator and
+ * the timestamp are bold/semibold spans, and only the message body is font-normal.
+ */
+function liveRow(body: string, name = '8Iackmamba'): Element {
+  const host = document.createElement('div');
+  host.innerHTML = `
+    <div data-index="63" class="absolute inset-x-0 top-0">
+      <div class="group relative px-2 lg:px-3">
+        <div class="w-full min-w-0 shrink-0 rounded-lg px-2 break-words">
+          <span class="text-neutral pr-1 font-semibold">04:16 AM</span>
+          <div class="inline-flex min-w-0 flex-nowrap items-baseline rounded cursor-pointer">
+            <div class="flex items-center gap-1 self-center pr-1">
+              <div class="inline-flex shrink-0 items-center">
+                <div data-state="closed"><img alt="Level 39" src="badge.png"></div>
+              </div>
+            </div>
+            <button class="inline font-bold" data-prevent-expand="true" style="color: rgb(255, 255, 255);">${name}</button>
+          </div>
+          <span class="inline-flex font-bold" aria-hidden="true">:&nbsp;</span>
+          <span class="leading-[1.55] font-normal">${body}</span>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(host);
+  return host.querySelector('div[data-index]')!;
+}
+
+afterEach(() => {
+  document.body.innerHTML = '';
+});
+
+describe('extractUsername on the live Kick layout', () => {
+  // Regression: every earlier strategy looked for a title attribute or a span
+  // inside the button. Kick now puts the name straight on the button, so all of
+  // them returned undefined and the user blacklist silently stopped matching.
+  it('reads the name from the button itself', () => {
+    expect(extractUsername(liveRow('hola amigos'))).toBe('8iackmamba');
+  });
+
+  it('still reads a title attribute when one is present', () => {
+    const host = document.createElement('div');
+    host.innerHTML = `<div data-index="1"><button title="OldStyle">x</button></div>`;
+    document.body.appendChild(host);
+    expect(extractUsername(host.querySelector('div[data-index]')!)).toBe('oldstyle');
+  });
+
+  it('still reads a styled bold span when one is present', () => {
+    const host = document.createElement('div');
+    host.innerHTML = `<div data-index="1"><span class="inline-flex font-bold" style="color: rgb(1,2,3)">Legacy</span></div>`;
+    document.body.appendChild(host);
+    expect(extractUsername(host.querySelector('div[data-index]')!)).toBe('legacy');
+  });
+
+  it('returns undefined when there is no name at all', () => {
+    const host = document.createElement('div');
+    host.innerHTML = `<div data-index="1"><span class="font-normal">just text</span></div>`;
+    document.body.appendChild(host);
+    expect(extractUsername(host.querySelector('div[data-index]')!)).toBeUndefined();
+  });
+});
+
+describe('extractMessageText on the live Kick layout', () => {
+  it('takes the body without the timestamp, the name or the separator', () => {
+    expect(extractMessageText(liveRow('hola amigos'))).toBe('hola amigos');
+  });
+
+  it('treats an emote-only message as empty rather than as its alt text', () => {
+    const row = liveRow(
+      '<span class="relative" data-emote-name="Flowie"><img alt="Flowie" src="e.png"></span>',
+    );
+    expect(extractMessageText(row)).toBe('');
+  });
+
+  it('prefers 7TV tokens when that extension is present', () => {
+    const host = document.createElement('div');
+    host.innerHTML = `<div data-index="1">
+      <span class="font-normal">duplicated native text</span>
+      <span class="seventv-text-token">hello</span>
+      <span class="seventv-text-token">there</span>
+    </div>`;
+    document.body.appendChild(host);
+    expect(extractMessageText(host.querySelector('div[data-index]')!)).toBe('hello there');
+  });
+});
+
+describe('row and container selectors', () => {
+  it('finds the row and its injection target', () => {
+    const row = liveRow('hola');
+    expect(matchesMessageRow(row)).toBe(true);
+    expect(findAllRows(document.body)).toHaveLength(1);
+    expect(pickInjectionTarget(row).className).toContain('w-full');
+  });
+
+  it('picks the first container selector that matches', () => {
+    const host = document.createElement('div');
+    host.innerHTML = `<div id="channel-chatroom"><div class="no-scrollbar"></div></div>`;
+    document.body.appendChild(host);
+    expect(pickFirst(document, SELECTORS.containers)?.className).toBe('no-scrollbar');
+  });
+});

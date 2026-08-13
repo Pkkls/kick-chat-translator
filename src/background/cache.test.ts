@@ -138,3 +138,22 @@ describe('TranslationCache.warm', () => {
     expect(await storageReadsFor(cache, 'x', 'ar')).toEqual([]);
   });
 });
+
+describe('normalizeForKey across letter case', () => {
+  it('collapses ASCII case as before', () => {
+    expect(normalizeForKey('HOLA')).toBe(normalizeForKey('hola'));
+  });
+
+  // Turkish capitals lowercase to a letter plus a combining dot, so the same word
+  // written in two cases used to produce two cache entries and pay twice.
+  it('collapses Turkish case variants onto one key', () => {
+    expect(normalizeForKey('İYİ')).toBe(normalizeForKey('iyi'));
+    expect(normalizeForKey('İyi')).toBe(normalizeForKey('iyi'));
+  });
+
+  // Documented limit: dotless and dotted i are different letters. Folding them
+  // would be wrong everywhere else, so they stay distinct.
+  it('keeps dotless i distinct from plain i', () => {
+    expect(normalizeForKey('ışık')).not.toBe(normalizeForKey('isik'));
+  });
+});
