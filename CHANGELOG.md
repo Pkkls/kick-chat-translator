@@ -41,6 +41,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and changes to it show up as readable diffs.
 
 ### Fixed
+- **Nothing written in the Latin alphabet was translated when your language was English.** The
+  service worker refused to send a message to any engine when the target was English and the text
+  was more than 85% basic Latin characters, on the assumption that it was already English. An ASCII
+  ratio cannot tell English from Spanish, Turkish, Finnish, French or Portuguese, so it turned away
+  every one of them, while Japanese, Korean, Russian and Arabic went through untouched because of
+  their writing system. That is why a mixed chat looked like only the Japanese was being translated.
+  Measured on saved chat with an English target, the check dropped 66 of the 76 Spanish lines and 40
+  of the 51 Turkish lines that reached the worker, against 0 of 43 Korean. It is gone. Deciding what
+  is already in your language is left to the detector that honours your ignoreEnglish setting, which
+  runs before the worker is called at all.
 - **Spanish and Turkish messages often came back wrong, or not at all, while Japanese was fine.**
   The extension told the translation engine which language a message was in, including when that
   language had only been guessed at by the statistical detector. Measured on saved chat with an

@@ -282,9 +282,6 @@ export class ComposeController {
           context: readRecentChatContext() || undefined,
           // Outgoing message → prefer the polite register where supported (keigo for JA).
           formal: true,
-          // We translate the user's chosen source language on purpose — don't let
-          // the background's "looks like English" guard block ASCII input.
-          skipSameLangGuard: true,
         },
       });
       // Drop stale responses (user kept typing) or ones for text that's since changed.

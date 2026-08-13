@@ -44,33 +44,21 @@ function applySettings(next: Settings): void {
   rootLogger.setEnabled(next.debug);
 }
 
-// Quick ASCII heuristic: if the target is EN and the text is >80% basic Latin,
-// it's almost certainly already English — skip the provider call entirely.
-// This avoids wasting DeepL quota on the ~100 EN messages/day franc mislabels.
-function looksLikeTargetLang(text: string, target: string): boolean {
-  if (target !== 'en') return false; // only EN heuristic for now
-  if (text.length < 4) return false;
-  let ascii = 0;
-  for (let i = 0; i < text.length; i++) {
-    const c = text.charCodeAt(i);
-    if (c < 128) ascii++;
-  }
-  return ascii / text.length > 0.85;
-}
-
 async function handleTranslate(req: TranslationRequest): Promise<TranslationOutcome> {
   if (!settings.enabled) {
     return { ok: false, error: { code: 'disabled', message: 'Extension disabled' } };
   }
 
-  // Same-language short-circuit: if the text obviously matches the target, don't
-  // waste a provider call. The content script's franc detection already catches
-  // most cases, but franc mislabels ~3% of short EN texts as foreign.
-  // Compose preview opts out (skipSameLangGuard): the user types an ASCII source
-  // language on purpose, so "looks like English" must NOT block it.
-  if (!req.noCache && !req.skipSameLangGuard && looksLikeTargetLang(req.text, req.targetLang)) {
-    return { ok: false, error: { code: 'same_lang', message: 'Text appears to already be in target language' } };
-  }
+  // There used to be a same-language short-circuit here: with an English target,
+  // any text more than 85% basic Latin was declared already English and never
+  // sent to a provider. An ASCII ratio cannot tell English from any other language
+  // written in the Latin alphabet, so it refused Spanish, Turkish, Finnish,
+  // French and the rest, while Japanese and Korean went through untouched because
+  // of their script. Measured on saved chat with an English target it dropped 66
+  // of 76 Spanish lines, 40 of 51 Turkish, and 0 of 43 Korean.
+  // Deciding what is already in the user's language belongs to the content script,
+  // which runs a real detector and honours the ignoreEnglish setting before it
+  // ever calls in here.
 
   if (!req.noCache) {
     const cached = await cache.get(req.text, req.targetLang);
