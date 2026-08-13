@@ -50,3 +50,52 @@ describe('TranslationPipeline — effTarget (regression)', () => {
     expect(sendMock.mock.calls[0]?.[0]?.payload?.targetLang).toBe('fr');
   });
 });
+
+/**
+ * The websocket path only warms the cache — it never injects. The DOM path is the
+ * only one that puts a translation on screen. So anything the warm path does to
+ * shared state must not be able to suppress the display path.
+ */
+describe('TranslationPipeline — websocket warm vs DOM display', () => {
+  const domMsg = (text: string, username = 'user') => {
+    const rowElement = document.createElement('div');
+    const injectionTarget = document.createElement('div');
+    rowElement.appendChild(injectionTarget);
+    return { rowElement, injectionTarget, id: 'd1', text, channel: 'chan', username, isBot: false };
+  };
+
+  const makePipeline = () =>
+    new TranslationPipeline({ ...defaultSettings(), enabled: true, targetLang: 'fr', pauseWhenHidden: false });
+
+  beforeEach(() => {
+    sendMock.mockReset();
+    sendMock.mockResolvedValue({ type: 'translate.result', payload: { ok: false, error: { code: 'x', message: 'x' } } });
+  });
+
+  it('still displays a message the websocket already warmed', async () => {
+    const pipeline = makePipeline();
+    await pipeline.onWebSocketMessage(wsMsg(JP));
+    sendMock.mockClear();
+
+    await pipeline.onDomMessage(domMsg(JP));
+    expect(sendMock).toHaveBeenCalled();
+  });
+
+  it('still skips a message the same user just repeated', async () => {
+    const pipeline = makePipeline();
+    await pipeline.onDomMessage(domMsg(JP));
+    sendMock.mockClear();
+
+    await pipeline.onDomMessage(domMsg(JP));
+    expect(sendMock).not.toHaveBeenCalled();
+  });
+
+  it('keeps translating different users sending the same text', async () => {
+    const pipeline = makePipeline();
+    await pipeline.onDomMessage(domMsg(JP, 'alice'));
+    sendMock.mockClear();
+
+    await pipeline.onDomMessage(domMsg(JP, 'bob'));
+    expect(sendMock).toHaveBeenCalled();
+  });
+});

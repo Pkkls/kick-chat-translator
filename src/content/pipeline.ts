@@ -81,7 +81,11 @@ export class TranslationPipeline {
   }
 
   /** Cheap filters + a single franc-min call. Returns undefined to skip. */
-  private prepare(rawText: string, meta: { username: string; channel: string; isBot: boolean }): Prepared | undefined {
+  private prepare(
+    rawText: string,
+    meta: { username: string; channel: string; isBot: boolean },
+    opts: { dedup: boolean } = { dedup: true },
+  ): Prepared | undefined {
     if (!this.settings.enabled) return undefined;
     // Live visibility gate — read document.hidden each message so a backgrounded
     // tab never translates (no quota burn), with no stuck-paused state.
@@ -92,9 +96,14 @@ export class TranslationPipeline {
 
     // Per-user dedup: if this user just sent the exact same message, skip it.
     // Common in chat spam — saves a provider call + avoids duplicate translations.
-    const dedupKey = meta.username.toLowerCase();
-    if (dedupKey && this.userDedup.get(dedupKey) === rawText) return undefined;
-    if (dedupKey) this.userDedup.set(dedupKey, rawText);
+    // Only the DOM path takes part. It is the only path that displays, so letting
+    // the websocket warm pass claim the slot first would suppress the display of a
+    // message nobody has seen yet.
+    if (opts.dedup) {
+      const dedupKey = meta.username.toLowerCase();
+      if (dedupKey && this.userDedup.get(dedupKey) === rawText) return undefined;
+      if (dedupKey) this.userDedup.set(dedupKey, rawText);
+    }
 
     const { realText } = parseKickContent(rawText);
     if (realText.length < MIN_TEXT_LENGTH || realText.length > MAX_TEXT_LENGTH) return undefined;
@@ -127,7 +136,7 @@ export class TranslationPipeline {
 
   async onWebSocketMessage(msg: IncomingWsMessage): Promise<void> {
     if (this.settings.engineMode === 'local-only') return;
-    const prepared = this.prepare(msg.text, msg);
+    const prepared = this.prepare(msg.text, msg, { dedup: false });
     if (!prepared) return;
     try {
       await send({
