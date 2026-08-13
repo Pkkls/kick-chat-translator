@@ -10,7 +10,7 @@ import { detectLanguage } from './langDetect';
 import { resolveBrowserLang } from '~/shared/languages';
 import { isContextCritical } from '~/shared/langTiers';
 import { isNoise, isSameLanguageAsTarget, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
-import { inject, incrementFloatingCount, injectHoverPlaceholder, removeAllArtifacts, showError, showLoading, showThrottleIndicator, showToast, updateActiveProvider } from './injector';
+import { TRANSLATION_SELECTOR, inject, incrementFloatingCount, injectHoverPlaceholder, removeAllArtifacts, showError, showLoading, showThrottleIndicator, showToast, updateActiveProvider } from './injector';
 import { localEngine } from './localEngine';
 import { memCache } from './memcache';
 
@@ -346,7 +346,7 @@ export class TranslationPipeline {
   private findRowWithText(text: string): { row: Element; target: Element } | undefined {
     const rows = document.querySelectorAll('#channel-chatroom div[data-index]');
     for (const row of rows) {
-      if (extractMessageText(row) === text && !row.querySelector('.kt-translation, .kt-translation-inline')) {
+      if (extractMessageText(row) === text && !row.querySelector(TRANSLATION_SELECTOR)) {
         const target = row.querySelector('div.w-full.min-w-0.shrink-0') ?? row.querySelector('div.group') ?? row.firstElementChild ?? row;
         return { row, target };
       }

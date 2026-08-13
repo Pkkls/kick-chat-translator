@@ -12,6 +12,12 @@ const ERROR_CLASS = 'kt-error';
 // Every class we add under a chat line. Cleanup walks this list, so a display
 // style whose class is missing here would stack a copy per re-translation.
 const ARTIFACT_CLASSES = [TRANS_CLASS, TRANS_INLINE_CLASS, TRANS_COMPACT_CLASS, LOADING_CLASS, ERROR_CLASS];
+/** Matches a line that already carries a translation, whatever the display style.
+ *  Built from the class constants above so a style can never be remembered by one
+ *  caller and forgotten by another. */
+export const TRANSLATION_SELECTOR = [TRANS_CLASS, TRANS_INLINE_CLASS, TRANS_COMPACT_CLASS]
+  .map((c) => `.${c}`)
+  .join(', ');
 
 /** #7 — Show a temporary toast at bottom-right (auto-fades after 3s). */
 export function showToast(message: string): void {

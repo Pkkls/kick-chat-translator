@@ -2,6 +2,7 @@ import { loadSettings, saveSettings, watchSettings, type Settings } from '~/shar
 import { rootLogger } from '~/shared/logger';
 import { TranslationPipeline } from './pipeline';
 import {
+  TRANSLATION_SELECTOR,
   applyShowOriginal,
   ensureStyles,
   mountFloatingBar,
@@ -203,7 +204,7 @@ async function main(): Promise<void> {
     let retried = 0;
     for (const row of rows) {
       // Already has a translation → skip.
-      if (row.querySelector('.kt-translation, .kt-translation-inline')) continue;
+      if (row.querySelector(TRANSLATION_SELECTOR)) continue;
       // Remove the mark so the observer re-processes it.
       row.removeAttribute('data-kt-id');
       retried++;
@@ -227,7 +228,7 @@ async function main(): Promise<void> {
         const rows = chatContainer.querySelectorAll('div[data-index][data-kt-id]');
         let retried = 0;
         for (const row of rows) {
-          if (row.querySelector('.kt-translation, .kt-translation-inline')) continue;
+          if (row.querySelector(TRANSLATION_SELECTOR)) continue;
           row.removeAttribute('data-kt-id');
           retried++;
         }

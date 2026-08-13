@@ -46,6 +46,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   it off left the chat exactly as it was. Turning it off now hides Kick's own text on the lines that
   carry a translation, and only on those lines: a line that was never translated, or one the chat's
   virtual scrolling reused, keeps its text.
+- **The Replace display style paid for the same translation over and over.** Three checks asking
+  "has this line already been translated?" listed the Below and Inline classes but not the separate
+  class Replace uses, so on that style every translated line still read as untranslated. Coming
+  back to the tab, and every pause after scrolling, re-submitted every visible line to a translation
+  service. The same blind spot let the recycled-row rescue overwrite a line's translation with a
+  different message's. All three now share one selector built from the display styles themselves.
 - **The Replace display style described itself wrongly.** Its card in the options page said the
   translation appears below the message. It appears on the same line, right after it, in smaller
   italics. Corrected in English and in all six translated interfaces.

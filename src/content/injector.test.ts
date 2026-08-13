@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { defaultSettings } from '~/shared/settings';
 import type { Settings } from '~/shared/settings';
 import type { TranslationResult } from '~/shared/types';
-import { applyShowOriginal, inject, removeAllArtifacts, showError, showLoading } from './injector';
+import { TRANSLATION_SELECTOR, applyShowOriginal, inject, removeAllArtifacts, showError, showLoading } from './injector';
 // Read from disk: vitest runs with CSS processing off, so `?inline` imports
 // resolve to an empty string and would make these assertions pass on anything.
 const injectCss = readFileSync('src/content/inject.css', 'utf8');
@@ -98,6 +98,23 @@ describe('injector artifacts', () => {
 
     it('reveals the retry button on every style', () => {
       for (const cls of styleClasses) expect(injectCss).toContain(`.${cls}:hover .kt-retry`);
+    });
+  });
+
+  // The same suffixed-class trap, this time in the "has this line been translated
+  // already?" guards. Missing a style there does not just look wrong: the row reads
+  // as untranslated, so it gets re-submitted and paid for again.
+  describe('the already-translated guard', () => {
+    it.each(['below', 'inline', 'replace', 'hover'] as const)('finds a %s translation', (style) => {
+      const target = document.createElement('div');
+      inject(target, result('hola'), settingsWith(style));
+      expect(target.querySelector(TRANSLATION_SELECTOR)).not.toBeNull();
+    });
+
+    it('is not re-spelled by hand at any call site', () => {
+      for (const file of ['src/content/index.ts', 'src/content/pipeline.ts']) {
+        expect(readFileSync(file, 'utf8')).not.toContain("'.kt-translation, ");
+      }
     });
   });
 
