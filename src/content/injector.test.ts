@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { defaultSettings } from '~/shared/settings';
 import type { Settings } from '~/shared/settings';
 import type { TranslationResult } from '~/shared/types';
-import { inject, removeAllArtifacts, showError, showLoading } from './injector';
+import { applyShowOriginal, inject, removeAllArtifacts, showError, showLoading } from './injector';
 // Read from disk: vitest runs with CSS processing off, so `?inline` imports
 // resolve to an empty string and would make these assertions pass on anything.
 const injectCss = readFileSync('src/content/inject.css', 'utf8');
@@ -27,6 +27,7 @@ function artifacts(el: Element): Element[] {
 
 afterEach(() => {
   document.body.innerHTML = '';
+  document.documentElement.classList.remove('kt-hide-original');
 });
 
 describe('injector artifacts', () => {
@@ -97,6 +98,28 @@ describe('injector artifacts', () => {
 
     it('reveals the retry button on every style', () => {
       for (const cls of styleClasses) expect(injectCss).toContain(`.${cls}:hover .kt-retry`);
+    });
+  });
+
+  // `showOriginal` shipped as a stored setting no content-script code ever read.
+  describe('hiding the original text', () => {
+    it('marks the document root only when the original must be hidden', () => {
+      applyShowOriginal(false);
+      expect(document.documentElement.classList.contains('kt-hide-original')).toBe(true);
+      applyShowOriginal(true);
+      expect(document.documentElement.classList.contains('kt-hide-original')).toBe(false);
+    });
+
+    // The rule keys off our block being a *following sibling*, so a row the
+    // virtual scroller recycled without a translation shows its text again
+    // with no per-row bookkeeping to undo.
+    it('hides Kick text only on lines that carry a translation', () => {
+      const rule = /\.kt-hide-original[^{]*\{[^}]*\}/.exec(injectCss)?.[0] ?? '';
+      expect(rule).toMatch(/display:\s*none/);
+      expect(rule).toContain('span.font-normal');
+      for (const cls of ['kt-translation', 'kt-translation-inline', 'kt-translation-compact']) {
+        expect(rule).toContain(`~ .${cls}`);
+      }
     });
   });
 

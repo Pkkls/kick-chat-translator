@@ -110,6 +110,14 @@
   font-style: italic;
 }
 
+/* #32 "Keep original text visible" off. Kick renders the message body as a
+   `span.font-normal` sitting right before where we append, so matching on the
+   following sibling ties the hiding to the translation itself: a line the
+   virtual scroller recycled without one shows its text again on its own. */
+.kt-hide-original span.font-normal:has(~ .kt-translation, ~ .kt-translation-inline, ~ .kt-translation-compact) {
+  display: none;
+}
+
 /* #7 Toast notification */
 .kt-toast {
   position: fixed;

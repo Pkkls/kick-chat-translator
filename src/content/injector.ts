@@ -61,6 +61,17 @@ export function ensureStyles(): void {
   document.documentElement.appendChild(style);
 }
 
+/**
+ * `showOriginal` off — hide Kick's own message text and leave only ours.
+ *
+ * One class on the document root, then a CSS rule that only bites on lines
+ * already carrying a translation. Nothing is written per row, so the virtual
+ * scroller recycling a line can never leave it hidden with nothing to read.
+ */
+export function applyShowOriginal(showOriginal: boolean): void {
+  document.documentElement.classList.toggle('kt-hide-original', !showOriginal);
+}
+
 export function removeAllArtifacts(targetEl: Element): void {
   for (const child of [...targetEl.children]) {
     if (ARTIFACT_CLASSES.some((c) => child.classList.contains(c))) child.remove();

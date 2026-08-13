@@ -2,6 +2,7 @@ import { loadSettings, saveSettings, watchSettings, type Settings } from '~/shar
 import { rootLogger } from '~/shared/logger';
 import { TranslationPipeline } from './pipeline';
 import {
+  applyShowOriginal,
   ensureStyles,
   mountFloatingBar,
   showToast,
@@ -28,6 +29,7 @@ async function main(): Promise<void> {
   rootLogger.setEnabled(settings.debug);
 
   ensureStyles();
+  applyShowOriginal(settings.showOriginal);
 
   const pipeline = new TranslationPipeline(settings);
   const compose = new ComposeController(settings);
@@ -250,6 +252,7 @@ async function main(): Promise<void> {
     compose.updateSettings(next);
     rootLogger.setEnabled(next.debug);
     updateFloatingBar(next);
+    applyShowOriginal(next.showOriginal);
     refreshChip();
 
     if (next.enabled && !wasEnabled) void attachForRoute();
