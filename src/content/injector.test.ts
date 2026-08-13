@@ -127,16 +127,25 @@ describe('injector artifacts', () => {
       expect(document.documentElement.classList.contains('kt-hide-original')).toBe(false);
     });
 
-    // The rule keys off our block being a *following sibling*, so a row the
-    // virtual scroller recycled without a translation shows its text again
-    // with no per-row bookkeeping to undo.
+    // The rule keys off the element that HOLDS the translation, so a row the
+    // virtual scroller recycled without one shows its text again with no
+    // per-row bookkeeping to undo.
+    //
+    // Note on what this test can and cannot prove: it reads the rule as text.
+    // The DOM this suite runs on cannot evaluate `:has()` at all (a relative
+    // `~` throws, a relative `>` silently matches nothing), so no test here can
+    // exercise the selector against a row. The shapes it has to cover were
+    // measured in a browser instead, see the round 16 journal entry.
     it('hides Kick text only on lines that carry a translation', () => {
       const rule = /\.kt-hide-original[^{]*\{[^}]*\}/.exec(injectCss)?.[0] ?? '';
       expect(rule).toMatch(/display:\s*none/);
-      expect(rule).toContain('span.font-normal');
       for (const cls of ['kt-translation', 'kt-translation-inline', 'kt-translation-compact']) {
-        expect(rule).toContain(`~ .${cls}`);
+        // The holder is matched by its child, never by a sibling of the text:
+        // in a reply Kick nests the message a level deeper and a sibling rule
+        // cannot reach it.
+        expect(rule).toContain(`div:has(> .${cls}) span.font-normal`);
       }
+      expect(rule).not.toContain('~ .kt-translation');
     });
   });
 

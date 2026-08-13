@@ -110,11 +110,16 @@
   font-style: italic;
 }
 
-/* #32 "Keep original text visible" off. Kick renders the message body as a
-   `span.font-normal` sitting right before where we append, so matching on the
-   following sibling ties the hiding to the translation itself: a line the
-   virtual scroller recycled without one shows its text again on its own. */
-.kt-hide-original span.font-normal:has(~ .kt-translation, ~ .kt-translation-inline, ~ .kt-translation-compact) {
+/* #32 "Keep original text visible" off, widened by the #35 measurement.
+   Hiding stays tied to the translation being present, so a line the virtual
+   scroller recycled without one shows its own text again with nothing to undo.
+   Keying on the element that HOLDS the translation, rather than on a sibling of
+   the text, also reaches a reply, where Kick wraps the message one level deeper
+   than a plain line. The quoted parent of a reply carries no font-normal span,
+   so it stays readable. */
+.kt-hide-original div:has(> .kt-translation) span.font-normal,
+.kt-hide-original div:has(> .kt-translation-inline) span.font-normal,
+.kt-hide-original div:has(> .kt-translation-compact) span.font-normal {
   display: none;
 }
 

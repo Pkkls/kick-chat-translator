@@ -41,6 +41,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and changes to it show up as readable diffs.
 
 ### Fixed
+- **Hiding the original now works on replies too.** With "Keep original text visible" turned off, a
+  reply kept showing its original text while every other line hid it. Kick nests the message of a
+  reply one level deeper than a plain line, and the rule only reached text sitting directly beside
+  the translation. It now keys on the element holding the translation, which reaches both shapes.
+  The quoted message a reply points at stays readable, as it should.
 - **"Keep original text visible" now does something.** The switch was offered in both the options
   page and the popup and was saved correctly, but no part of the extension ever read it, so turning
   it off left the chat exactly as it was. Turning it off now hides Kick's own text on the lines that
