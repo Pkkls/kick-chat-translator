@@ -7,14 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
-- **The extension could bind to the wrong part of the chat page.** It picked the first element
-  matching its chat-container selector. Kick's layout has three matching elements, and the first is
-  a horizontal scroller that holds no messages: on the three channels checked, one offline and two
-  live, that element contained none of the chat. It now picks the candidate that actually holds
-  chat messages, and keeps looking while the chat is still empty instead of settling on the wrong
-  one.
-
 ### Added
 - **Export / import your settings** from the Advanced tab. Export writes a JSON backup, import
   restores it and reloads the page. A backup from an older build still imports: missing fields
@@ -22,12 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Minimum message length is now a setting** (Filters tab). The floor below which a message is
   left untranslated used to be fixed at 2 characters; raise it to spend less provider quota on a
   busy chat. Existing installs keep the old value, so nothing changes until you move it.
-- **Short messages are identified more reliably.** Under about 20 characters the language
-  detector used to fall through to franc, which either gave up or answered confidently wrong
-  ("ok merci" came back as Hungarian, and that wrong code was passed to the provider as the
-  source-language hint). Common chat words in Spanish, French, Portuguese, German, Italian and
-  Turkish are now recognised directly, and conflicting words leave the message unlabelled
-  instead of guessing.
+- **Common chat words are now recognised directly.** Below about 20 characters the statistical
+  language detector often gives up or answers confidently wrong ("ok merci" came back as
+  Hungarian, and that wrong code was passed to the translation service as the source language).
+  A short list of everyday words in Spanish, French, Portuguese, German, Italian and Turkish is
+  now checked first, and words that disagree with each other leave the message unlabelled rather
+  than guessing. This covers the words on that list; it is not a general accuracy improvement.
 - **Cache hit rate trend in the popup.** Usage stats now retain the last 7 days instead of being
   wiped at midnight, and the popup draws them as a small bar chart under the counters. Days with
   no traffic are skipped rather than drawn as 0%. The trend appears once two days have been
@@ -49,6 +41,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and changes to it show up as readable diffs.
 
 ### Fixed
+- **The extension could bind to the wrong part of the chat page.** It picked the first element
+  matching its chat-container selector. Kick's layout has three matching elements, and the first is
+  a horizontal scroller that holds no messages: on the three channels checked, one offline and two
+  live, that element contained none of the chat. It now picks the candidate that actually holds
+  chat messages, and keeps looking while the chat is still empty instead of settling on the wrong
+  one.
 - **Switching channels no longer leaves background watchers behind.** Each channel switch started a
   page-wide DOM watcher without dropping the previous one, so they piled up and every one of them
   ran on every change anywhere on the page. Long sessions hopping between channels should feel
