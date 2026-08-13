@@ -6,8 +6,12 @@ import { getLang, langFlag, resolveBrowserLang } from '~/shared/languages';
 const STYLE_ID = 'kt-inject-style';
 const TRANS_CLASS = 'kt-translation';
 const TRANS_INLINE_CLASS = 'kt-translation-inline';
+const TRANS_COMPACT_CLASS = 'kt-translation-compact';
 const LOADING_CLASS = 'kt-loading';
 const ERROR_CLASS = 'kt-error';
+// Every class we add under a chat line. Cleanup walks this list, so a display
+// style whose class is missing here would stack a copy per re-translation.
+const ARTIFACT_CLASSES = [TRANS_CLASS, TRANS_INLINE_CLASS, TRANS_COMPACT_CLASS, LOADING_CLASS, ERROR_CLASS];
 
 /** #7 — Show a temporary toast at bottom-right (auto-fades after 3s). */
 export function showToast(message: string): void {
@@ -58,9 +62,9 @@ export function ensureStyles(): void {
 }
 
 export function removeAllArtifacts(targetEl: Element): void {
-  targetEl
-    .querySelectorAll(`:scope > .${TRANS_CLASS}, :scope > .${TRANS_INLINE_CLASS}, :scope > .${LOADING_CLASS}, :scope > .${ERROR_CLASS}`)
-    .forEach((n) => n.remove());
+  for (const child of [...targetEl.children]) {
+    if (ARTIFACT_CLASSES.some((c) => child.classList.contains(c))) child.remove();
+  }
 }
 
 export function showLoading(targetEl: Element): void {
@@ -93,7 +97,7 @@ export function inject(
   const compact = style === 'replace'; // reuse 'replace' as compact inline
   const inline = style === 'inline';
   const el = document.createElement(inline || compact ? 'span' : 'div');
-  el.className = compact ? 'kt-translation-compact' : inline ? TRANS_INLINE_CLASS : TRANS_CLASS;
+  el.className = compact ? TRANS_COMPACT_CLASS : inline ? TRANS_INLINE_CLASS : TRANS_CLASS;
   el.appendChild(withBadges(result.translatedText, flag, provider, result.detectedLang));
   if (onRetry) el.appendChild(makeRetry(onRetry));
   // #8 — Click-to-copy translation.

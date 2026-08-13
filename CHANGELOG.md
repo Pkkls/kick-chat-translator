@@ -41,6 +41,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and changes to it show up as readable diffs.
 
 ### Fixed
+- **Compact display no longer stacks duplicate translations.** In the compact display style, a
+  re-translation (the retry button, or the same message being processed again) added a second
+  translation under the message instead of replacing the first, and they piled up. The other
+  display styles were unaffected.
 - **The compose preview no longer overwrites your clipboard for nothing.** When a translation came
   back identical to what you had typed, inserting it left the box looking unchanged, which the
   extension read as "the editor rejected it" and fell back to copying the text over whatever you
