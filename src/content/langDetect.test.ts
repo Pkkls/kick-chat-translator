@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { detectLanguage, isLikelyEnglish } from './langDetect';
+import { confidentLanguage, detectLanguage, isLikelyEnglish } from './langDetect';
 
 describe('detectLanguage', () => {
   it('returns en for short chat tokens like lol/gg', () => {
@@ -71,5 +71,22 @@ describe('isLikelyEnglish', () => {
   });
   it('does not flag clear Japanese', () => {
     expect(isLikelyEnglish('今日は良い天気ですね')).toBe(false);
+  });
+});
+
+// Korean chat writes laughter and short replies with bare jamo. They live in a
+// different Unicode block from syllables, so counting only syllables let two
+// jamo cancel out two syllables and drop the line below the majority threshold.
+describe('bare Korean letters count as Korean', () => {
+  it.each(['시발 ㅋㅋ', 'ㅇㅇ 안녕', 'ㅠㅠ 진짜'])('reads %s off its writing system', (line) => {
+    expect(confidentLanguage(line)).toBe('ko');
+  });
+
+  it('leaves a Latin line to the guesser', () => {
+    expect(confidentLanguage('Ese que te dijo eso es ateo')).toBeUndefined();
+  });
+
+  it('still reads Japanese off its writing system', () => {
+    expect(confidentLanguage('これはテストメッセージです')).toBe('ja');
   });
 });

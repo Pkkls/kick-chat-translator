@@ -52,6 +52,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   when it was read off the text, by chat-word lookup or writing system, and left out otherwise so
   the engine detects it itself. Wrong source languages went from 21 to 0 on the Spanish sample and
   11 to 0 on the Turkish one. English is still left untranslated when you asked for that.
+- **Korean written with bare letters was not recognised as Korean.** Chat writes laughter and short
+  replies as standalone jamo (ㅋㅋ, ㅠㅠ, ㅇㅇ), which sit in a different part of Unicode from
+  syllables. Only syllables were counted, so those letters padded the total without counting as
+  Korean and a short line like "시발 ㅋㅋ" fell below the majority needed to call it Korean. They
+  now count. On the saved Korean sample this restores 43 lines out of 43 to a language read
+  straight off the writing system.
 - **A line the translation services gave up on can now be retried.** It used to lose its translation
   and, with it, the retry button that lived inside, so it looked exactly like a line that was never
   meant to be translated and there was nothing left to click. Such a line now keeps a small marker

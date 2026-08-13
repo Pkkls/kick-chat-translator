@@ -107,7 +107,10 @@ function detectByScript(text: string): string | undefined {
     total++;
     if (c >= 0x3040 && c <= 0x30ff) kana++;
     else if ((c >= 0x3400 && c <= 0x9fff) || (c >= 0xf900 && c <= 0xfaff)) han++;
-    else if (c >= 0xac00 && c <= 0xd7af) hangul++;
+    // Syllables, plus the compatibility jamo Korean chat writes on their own
+    // (ㅋㅋ, ㅠㅠ, ㅇㅇ). Without them those letters counted toward the total while
+    // feeding no script, which pushed a short line below the majority threshold.
+    else if ((c >= 0xac00 && c <= 0xd7af) || (c >= 0x3130 && c <= 0x318f)) hangul++;
     else if (c >= 0x0600 && c <= 0x06ff) arabic++;
     else if (c >= 0x0400 && c <= 0x04ff) cyrillic++;
     else if (c >= 0x0e00 && c <= 0x0e7f) thai++;
