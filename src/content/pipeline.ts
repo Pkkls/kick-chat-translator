@@ -6,7 +6,7 @@ import { send } from '~/shared/messages';
 import { applyUserGlossary, isSlangOnly } from '~/shared/glossary';
 import { parseKickContent } from './emoteParser';
 import { extractMessageText } from './selectors';
-import { detectLanguage } from './langDetect';
+import { confidentLanguage, detectLanguage } from './langDetect';
 import { resolveBrowserLang } from '~/shared/languages';
 import { isContextCritical } from '~/shared/langTiers';
 import { isNoise, isSameLanguageAsTarget, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
@@ -209,7 +209,12 @@ export class TranslationPipeline {
     const lines = isContextCritical(sourceLang) ? CONTEXT_LINES_HARD : CONTEXT_LINES;
     const context = this.contextFor(msg.channel, real, msg.username, lines);
     showLoading(msg.injectionTarget);
-    const outcome = await this.requestCloud(real, this.effTarget, msg.channel, context, false, sourceLang);
+    // Only tell the engine the source language when we looked it up rather than
+    // guessed it. A guessed `sl` makes the engine translate from the wrong
+    // language, and the result is either dropped for matching the original or
+    // shown while saying something else. `sourceLang` still sizes the context
+    // window above, where being wrong costs nothing.
+    const outcome = await this.requestCloud(real, this.effTarget, msg.channel, context, false, confidentLanguage(real));
     if (!outcome) {
       showError(msg.injectionTarget, 'translate failed', () => void this.forceRetranslate(msg, real));
       return;

@@ -133,10 +133,12 @@ function detectByScript(text: string): string | undefined {
  * Returns ISO-2 code or undefined when not confident enough.
  * Returns 'en' for short trivial chat tokens that franc cannot resolve.
  */
-export function detectLanguage(text: string): string | undefined {
-  const trimmed = text.trim();
-  if (trimmed.length === 0) return undefined;
-
+/**
+ * The paths that read the text rather than guess at it: the trivial-token table,
+ * the chat-word lexicon, and the Unicode script check. Everything here is a lookup,
+ * so a hit is a fact about the text, not a probability.
+ */
+function detectByLookup(trimmed: string): string | undefined {
   // ASCII short message: probably English chat-speak
   const lower = trimmed.toLowerCase();
   if (trimmed.length < 12 && /^[a-z0-9\s!?.,'-]+$/.test(lower)) {
@@ -154,8 +156,31 @@ export function detectLanguage(text: string): string | undefined {
 
   // Unicode script pre-check: more reliable than franc on short texts.
   // CJK, Arabic, Cyrillic etc. are unambiguous from their script alone.
-  const scriptLang = detectByScript(trimmed);
-  if (scriptLang) return scriptLang;
+  return detectByScript(trimmed);
+}
+
+/**
+ * The language only when it was looked up rather than guessed, so it is safe to
+ * hand to a translation engine as the source language.
+ *
+ * Franc's answer and the pure-ASCII fallback are deliberately withheld. Measured
+ * on saved chat, franc got 16 of 85 Spanish lines and 13 of 51 Turkish lines
+ * right; forcing one of its wrong answers on the engine makes it translate from
+ * a language the text is not in, which either returns the text unchanged (the
+ * line is then dropped without a word) or returns something that is not what was
+ * said. Sending nothing lets the engine detect the language itself.
+ */
+export function confidentLanguage(text: string): string | undefined {
+  const trimmed = text.trim();
+  return trimmed.length === 0 ? undefined : detectByLookup(trimmed);
+}
+
+export function detectLanguage(text: string): string | undefined {
+  const trimmed = text.trim();
+  if (trimmed.length === 0) return undefined;
+
+  const lookedUp = detectByLookup(trimmed);
+  if (lookedUp) return lookedUp;
 
   const francCode = franc(trimmed, { minLength: 3 });
   if (francCode === 'und') {

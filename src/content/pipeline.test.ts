@@ -126,3 +126,54 @@ describe('TranslationPipeline — websocket warm vs DOM display', () => {
     expect(sendMock).toHaveBeenCalled();
   });
 });
+
+// Measured on saved chat with kil's settings and an English target: the funnel
+// dropped almost nothing (51 of 52 Turkish lines survived every gate), but 21 of
+// 76 surviving Spanish lines and 11 of 51 Turkish ones reached the engine carrying
+// a source language franc had guessed wrong. Forcing that `sl` made Google hand
+// back the original text for 4 of the 11 Turkish lines probed, which the injector
+// then dropped in silence, and mistranslated most of the rest.
+describe('TranslationPipeline — source language handed to the engine', () => {
+  const domMsg = (text: string) => {
+    const rowElement = document.createElement('div');
+    const injectionTarget = document.createElement('div');
+    rowElement.appendChild(injectionTarget);
+    return { rowElement, injectionTarget, id: 'd1', text, channel: 'chan', username: 'user', isBot: false };
+  };
+  const pipeline = () =>
+    new TranslationPipeline({ ...defaultSettings(), enabled: true, targetLang: 'en', pauseWhenHidden: false });
+  const hintOf = () => sendMock.mock.calls[0]?.[0]?.payload?.sourceLangHint as string | undefined;
+
+  beforeEach(() => {
+    sendMock.mockReset();
+    sendMock.mockResolvedValue({ type: 'translate.result', payload: { ok: false, error: { code: 'x', message: 'x' } } });
+  });
+
+  // franc labels this Spanish line "pt". Sent as `sl=pt` it came back as
+  // "That's what I tell you, that's what I'm", against "The one who told you
+  // that is an atheist" when Google was left to detect it.
+  it('sends no source language when franc only guessed at it', async () => {
+    await pipeline().onDomMessage(domMsg('Ese que te dijo eso es ateo'));
+    expect(sendMock).toHaveBeenCalled();
+    expect(hintOf()).toBeUndefined();
+  });
+
+  // Same for Turkish: franc says "id" here, and `sl=id` returned the line unchanged.
+  it('sends no source language for a Turkish line franc mislabels', async () => {
+    await pipeline().onDomMessage(domMsg('vay vay vay merhabalar'));
+    expect(sendMock).toHaveBeenCalled();
+    expect(hintOf()).toBeUndefined();
+  });
+
+  // The other half of the fix: a language read off the script is a fact, so it
+  // must still be sent. Japanese and Korean were right on every saved line.
+  it('still sends a language the script check read off the text', async () => {
+    await pipeline().onDomMessage(domMsg(JP));
+    expect(hintOf()).toBe('ja');
+  });
+
+  it('still sends Korean', async () => {
+    await pipeline().onDomMessage(domMsg('진짜 최소한 바로바로 이런 드립은 처줘야 방송하는구나'));
+    expect(hintOf()).toBe('ko');
+  });
+});

@@ -41,6 +41,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and changes to it show up as readable diffs.
 
 ### Fixed
+- **Spanish and Turkish messages often came back wrong, or not at all, while Japanese was fine.**
+  The extension told the translation engine which language a message was in, including when that
+  language had only been guessed at by the statistical detector. Measured on saved chat with an
+  English target, the guess was wrong for 21 of the 76 Spanish lines and 11 of the 51 Turkish lines
+  that reached the engine, against 0 of 43 Korean ones, which is why languages written in their own
+  script looked fine. Forcing a wrong source language made Google hand back the original text for 4
+  of the 11 Turkish lines checked, and those lines were then dropped without a word; most of the
+  rest came back saying something other than what was written. The source language is now sent only
+  when it was read off the text, by chat-word lookup or writing system, and left out otherwise so
+  the engine detects it itself. Wrong source languages went from 21 to 0 on the Spanish sample and
+  11 to 0 on the Turkish one. English is still left untranslated when you asked for that.
 - **A line the translation services gave up on can now be retried.** It used to lose its translation
   and, with it, the retry button that lived inside, so it looked exactly like a line that was never
   meant to be translated and there was nothing left to click. Such a line now keeps a small marker
