@@ -123,6 +123,14 @@
   display: none;
 }
 
+/* #36 Both inline styles keep a gap on their left to stand off the message.
+   Once the message is hidden there is nothing to stand off, and the gap reads
+   as a stray indent. */
+.kt-hide-original .kt-translation-inline,
+.kt-hide-original .kt-translation-compact {
+  margin-left: 0;
+}
+
 /* #7 Toast notification */
 .kt-toast {
   position: fixed;

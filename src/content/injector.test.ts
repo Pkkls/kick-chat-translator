@@ -147,6 +147,16 @@ describe('injector artifacts', () => {
       }
       expect(rule).not.toContain('~ .kt-translation');
     });
+
+    // With the text gone there is nothing on the pill's left for the gap to
+    // separate it from, so it reads as a stray indent.
+    it('closes the gap in front of a pill that no longer follows anything', () => {
+      for (const cls of ['kt-translation-inline', 'kt-translation-compact']) {
+        expect(injectCss).toMatch(
+          new RegExp(`\\.kt-hide-original[^{]*\\.${cls}[^{]*\\{[^}]*margin-left:\\s*0`),
+        );
+      }
+    });
   });
 
   it('leaves the original message content alone', () => {
