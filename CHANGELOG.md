@@ -41,6 +41,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and changes to it show up as readable diffs.
 
 ### Fixed
+- **The bar at the top of chat kept disappearing, and the extension never noticed.** Kick can leave
+  a second copy of the chat panel in the page, carrying the same id, hidden inside a placeholder its
+  renderer never removed. That copy comes first, so the bar was mounted into it and was invisible
+  from the start, while the panel you were actually reading had no bar. Measured live on one
+  channel: two panels present, the visible one holding 30 messages and no bar, the hidden one
+  holding no messages and the bar. Worse, the check for "is the bar already there" asked the whole
+  page rather than the panel on screen, found the buried one and concluded all was well, so it was
+  never put back. The bar is now mounted into the panel that actually holds the chat, any copy
+  stranded elsewhere is cleared, and the check asks the visible panel.
 - **Nothing written in the Latin alphabet was translated when your language was English.** The
   service worker refused to send a message to any engine when the target was English and the text
   was more than 85% basic Latin characters, on the assumption that it was already English. An ASCII

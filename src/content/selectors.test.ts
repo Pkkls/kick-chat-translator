@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import {
+  findChatPanel,
   extractMessageText,
   extractUsername,
   findAllRows,
@@ -151,5 +152,33 @@ describe('findChatContainer', () => {
     host.innerHTML = `<div id="channel-chatroom"><div class="no-scrollbar"></div></div>`;
     document.body.appendChild(host);
     expect(findChatContainer(document)).toBeNull();
+  });
+});
+
+// Measured on kick.com/ryu7z: the page held two elements with id
+// channel-chatroom. React streaming had left the server-rendered copy inside a
+// suspense placeholder (div#S:0, display none) holding no messages, and it came
+// first in document order, so querySelector picked the dead one. The floating bar
+// was mounted in there, invisible, while the panel on screen had none.
+describe('findChatPanel', () => {
+  it('skips the hidden copy and takes the panel holding the messages', () => {
+    document.body.innerHTML = `
+      <div id="S:0" style="display:none">
+        <div id="channel-chatroom" data-which="dead"></div>
+      </div>
+      <div id="channel-chatroom" data-which="live">
+        <div data-index="0">hello</div>
+      </div>`;
+    expect(findChatPanel(document)?.getAttribute('data-which')).toBe('live');
+  });
+
+  it('still finds the only panel when the chat has no messages yet', () => {
+    document.body.innerHTML = `<div id="channel-chatroom" data-which="only"></div>`;
+    expect(findChatPanel(document)?.getAttribute('data-which')).toBe('only');
+  });
+
+  it('returns null when there is no chat panel at all', () => {
+    document.body.innerHTML = '<div></div>';
+    expect(findChatPanel(document)).toBeNull();
   });
 });

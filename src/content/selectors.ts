@@ -90,6 +90,27 @@ export function findAllRows(container: ParentNode): Element[] {
   return Array.from(container.querySelectorAll('div[data-index]'));
 }
 
+/**
+ * The chat panel Kick is actually showing.
+ *
+ * Measured live: the page can hold two elements with id `channel-chatroom`. React
+ * streaming leaves the server-rendered copy inside a suspense placeholder that it
+ * hides with `display: none`, and that copy comes first in document order, so a
+ * plain `querySelector('#channel-chatroom')` picks the dead one. The live panel is
+ * the one holding message rows; when the chat is still empty, the one with a box.
+ */
+export function findChatPanel(root: ParentNode = document): Element | null {
+  const panels = Array.from(root.querySelectorAll(CHAT_PANEL_SELECTOR));
+  return (
+    panels.find((p) => p.querySelector(SELECTORS.messageRows[0])) ??
+    panels.find((p) => p.getBoundingClientRect().height > 0) ??
+    panels[0] ??
+    null
+  );
+}
+
+export const CHAT_PANEL_SELECTOR = '#channel-chatroom';
+
 export function matchesMessageRow(el: Element): boolean {
   return el instanceof HTMLElement && el.hasAttribute('data-index');
 }

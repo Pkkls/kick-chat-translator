@@ -15,7 +15,7 @@ import {
 import { ChatObserver } from './observer';
 import { ComposeController } from './compose';
 import { KickPusherClient } from './pusher';
-import { SELECTORS, findComposer, pickFirst } from './selectors';
+import { SELECTORS, findChatPanel, findComposer, pickFirst } from './selectors';
 import { extractChannelSlug, fetchChannelLangIso, fetchChatroomId } from './kickApi';
 import { localEngine } from './localEngine';
 import { logPlatform, refresh7TV } from './platform';
@@ -83,16 +83,21 @@ async function main(): Promise<void> {
   let barPolling = false;
   function mountBar(): void {
     if (!settings.showFloatingBar) return;
-    if (document.getElementById('kt-floating-bar')) return; // already mounted
     if (barPolling) return; // a host-search loop is already running
     barPolling = true;
     const tryMount = (attempt = 0): void => {
-      if (document.getElementById('kt-floating-bar')) {
-        barPolling = false;
-        return;
-      }
-      const host = document.querySelector('#channel-chatroom');
+      const host = findChatPanel();
       if (host) {
+        // A bar left behind in the hidden copy of the panel is not a mounted bar.
+        // Drop it, otherwise the presence check below keeps reporting success while
+        // the user sees nothing.
+        for (const stale of document.querySelectorAll('#kt-floating-bar')) {
+          if (!host.contains(stale)) stale.remove();
+        }
+        if (host.querySelector('#kt-floating-bar')) {
+          barPolling = false;
+          return;
+        }
         mountFloatingBar(host, settings, {
           onToggle: (enabled) => void saveSettings({ enabled }),
           onOpenOptions: () => void chrome.runtime.sendMessage({ type: 'open.options' }),
@@ -124,7 +129,9 @@ async function main(): Promise<void> {
       if (barGuardTimer) return;
       barGuardTimer = setTimeout(() => {
         barGuardTimer = undefined;
-        if (settings.showFloatingBar && !document.getElementById('kt-floating-bar')) mountBar();
+        // Presence has to be asked of the panel on screen, not of the document:
+        // the id survives inside the hidden copy Kick leaves behind.
+        if (settings.showFloatingBar && !findChatPanel()?.querySelector('#kt-floating-bar')) mountBar();
       }, 500);
     }).observe(document.body, { childList: true, subtree: true });
   }
