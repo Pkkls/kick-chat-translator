@@ -55,7 +55,7 @@
   "Inline",
   "In a pill after the original text.",
   "Replace",
-  "Below the message (compat — Kick virtual scroll can't be replaced in-place).",
+  "After the message in smaller italics (Kick's virtual scroll can't be replaced in-place).",
   "Show floating bar at top of chat (toggle live)",
   "Keep original text visible",
   "Show source language badge",

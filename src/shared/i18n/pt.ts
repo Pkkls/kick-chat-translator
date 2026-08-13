@@ -58,7 +58,7 @@ export const pt: Record<string, string> = {
   "Inline": "Em linha",
   "In a pill after the original text.": "Em um badge após o texto original.",
   "Replace": "Substituir",
-  "Below the message (compat — Kick virtual scroll can't be replaced in-place).": "Abaixo da mensagem (compat — o scroll virtual do Kick não permite substituição direta).",
+  "After the message in smaller italics (Kick's virtual scroll can't be replaced in-place).": "Após a mensagem em itálico menor (o scroll virtual do Kick não permite substituição direta).",
   "Show floating bar at top of chat (toggle live)": "Mostrar barra flutuante no topo do chat (ativar ao vivo)",
   "Keep original text visible": "Manter texto original visível",
   "Show source language badge": "Mostrar badge do idioma de origem",

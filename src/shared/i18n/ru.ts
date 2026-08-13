@@ -58,7 +58,7 @@ export const ru: Record<string, string> = {
   "Inline": "Встроенный",
   "In a pill after the original text.": "Плашкой после оригинального текста.",
   "Replace": "Заменить",
-  "Below the message (compat — Kick virtual scroll can't be replaced in-place).": "Под сообщением (совместимость — виртуальный скролл Kick не позволяет заменять текст на месте).",
+  "After the message in smaller italics (Kick's virtual scroll can't be replaced in-place).": "После сообщения в меньшем курсиве (виртуальный скролл Kick не позволяет заменять текст на месте).",
   "Show floating bar at top of chat (toggle live)": "Показывать плавающую панель вверху чата (переключить вживую)",
   "Keep original text visible": "Показывать оригинальный текст",
   "Show source language badge": "Показывать метку языка источника",

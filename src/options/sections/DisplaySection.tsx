@@ -49,7 +49,7 @@ export function DisplaySection({ settings, onPatch }: Props) {
           <StyleCard
             active={settings.displayStyle === 'replace'}
             label={t('Replace')}
-            desc={t('Below the message (compat — Kick virtual scroll can\'t be replaced in-place).')}
+            desc={t('After the message in smaller italics (Kick\'s virtual scroll can\'t be replaced in-place).')}
             onClick={() => onPatch({ displayStyle: 'replace' })}
           />
         </div>

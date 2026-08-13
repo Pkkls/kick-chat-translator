@@ -58,7 +58,7 @@ export const ja: Record<string, string> = {
   "Inline": "インライン",
   "In a pill after the original text.": "原文の後にピル形式で表示。",
   "Replace": "置き換え",
-  "Below the message (compat — Kick virtual scroll can't be replaced in-place).": "メッセージの下に表示（互換モード — Kick の仮想スクロールはインプレース置換不可）。",
+  "After the message in smaller italics (Kick's virtual scroll can't be replaced in-place).": "メッセージの後に小さいイタリック表記で表示（Kick の仮想スクロールはインプレース置換不可）。",
   "Show floating bar at top of chat (toggle live)": "チャット上部にフローティングバーを表示（ライブ切り替え）",
   "Keep original text visible": "原文を表示したまま",
   "Show source language badge": "ソース言語バッジを表示",

@@ -58,7 +58,7 @@ export const zh: Record<string, string> = {
   "Inline": "内联",
   "In a pill after the original text.": "以标签形式显示在原文之后。",
   "Replace": "替换",
-  "Below the message (compat — Kick virtual scroll can't be replaced in-place).": "在消息下方显示（兼容模式——Kick 虚拟滚动无法就地替换）。",
+  "After the message in smaller italics (Kick's virtual scroll can't be replaced in-place).": "在消息后以较小的斜体显示（Kick 虚拟滚动无法就地替换）。",
   "Show floating bar at top of chat (toggle live)": "在聊天顶部显示浮动栏（实时切换）",
   "Keep original text visible": "保留原文可见",
   "Show source language badge": "显示源语言标签",

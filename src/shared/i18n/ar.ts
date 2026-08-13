@@ -58,7 +58,7 @@ export const ar: Record<string, string> = {
   "Inline": "مضمَّن",
   "In a pill after the original text.": "في شارة صغيرة بعد النص الأصلي.",
   "Replace": "استبدال",
-  "Below the message (compat — Kick virtual scroll can't be replaced in-place).": "أسفل الرسالة (للتوافق — لا يمكن استبدال التمرير الافتراضي لـ Kick في مكانه).",
+  "After the message in smaller italics (Kick's virtual scroll can't be replaced in-place).": "بعد الرسالة بخط مائل أصغر (لا يمكن استبدال التمرير الافتراضي لـ Kick في مكانه).",
   "Show floating bar at top of chat (toggle live)": "إظهار الشريط العائم أعلى الدردشة (تبديل مباشر)",
   "Keep original text visible": "إبقاء النص الأصلي ظاهراً",
   "Show source language badge": "إظهار شارة اللغة المصدر",

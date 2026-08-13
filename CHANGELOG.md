@@ -46,6 +46,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   it off left the chat exactly as it was. Turning it off now hides Kick's own text on the lines that
   carry a translation, and only on those lines: a line that was never translated, or one the chat's
   virtual scrolling reused, keeps its text.
+- **The Replace display style described itself wrongly.** Its card in the options page said the
+  translation appears below the message. It appears on the same line, right after it, in smaller
+  italics. Corrected in English and in all six translated interfaces.
 - **The Replace display style was unreadable.** Its translation had no green tint, no copy cursor
   and a re-translate button that could never be revealed, because those three CSS rules named
   `.kt-translation` and `.kt-translation-inline` but not the separate `.kt-translation-compact`
