@@ -17,14 +17,31 @@ function instancesFor(ctx: ProviderContext): string[] {
   return ordered;
 }
 
+// Lingva carries the message in the URL path, where percent-encoding inflates
+// non-ASCII by up to 9x: a full-length CJK line reaches ~7 KB, and proxies in
+// front of the public instances commonly cap the request line at 4 KB.
+const MAX_ENCODED_TEXT = 4000;
+
 async function call(req: TranslationRequest, ctx: ProviderContext): Promise<ProviderResult> {
+  // 'unsupported' is the code the chain cascades on without counting it against
+  // the provider's health, which is what this is: Lingva is fine, this one
+  // message just cannot be expressed as a URL.
+  const encodedText = encodeURIComponent(req.text);
+  if (encodedText.length > MAX_ENCODED_TEXT) {
+    throw new ProviderError(
+      'lingva',
+      'unsupported',
+      `Lingva: encoded text ${encodedText.length} > ${MAX_ENCODED_TEXT} bytes`,
+    );
+  }
+
   const instances = instancesFor(ctx);
   const source = req.sourceLangHint ?? 'auto';
   let lastErr: ProviderError | undefined;
 
   for (const raw of instances) {
     const base = raw.replace(/\/+$/, '');
-    const url = `${base}/api/v1/${encodeURIComponent(source)}/${encodeURIComponent(req.targetLang)}/${encodeURIComponent(req.text)}`;
+    const url = `${base}/api/v1/${encodeURIComponent(source)}/${encodeURIComponent(req.targetLang)}/${encodedText}`;
     try {
       const res = await fetch(url, { signal: ctx.signal, credentials: 'omit' });
       if (res.status === 429) throw new ProviderError('lingva', 'rate_limit', 'Lingva: rate-limited');

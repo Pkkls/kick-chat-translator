@@ -26,6 +26,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   recorded, so it stays empty on a fresh install until history builds up.
 
 ### Changed
+- **Very long non-Latin messages no longer stall on Lingva.** Lingva receives the message inside
+  the URL, where non-Latin text expands to roughly nine times its size, so a long Japanese or
+  Chinese line could produce a request too large for some servers to accept. Those messages now go
+  straight to the next translation service instead. Lingva keeps its place in the chain for
+  everything else.
 - **The cache now warms the languages you actually use.** On startup the worker pulled the first
   200 stored translations into memory, but stored keys are ordered by target language, so it
   loaded whichever language happened to sort first and often skipped yours entirely. It now warms
