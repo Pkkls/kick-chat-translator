@@ -118,9 +118,9 @@
    the text, also reaches a reply, where Kick wraps the message one level deeper
    than a plain line. The quoted parent of a reply carries no font-normal span,
    so it stays readable. */
-.kt-hide-original div:has(> .kt-translation) span.font-normal,
-.kt-hide-original div:has(> .kt-translation-inline) span.font-normal,
-.kt-hide-original div:has(> .kt-translation-compact) span.font-normal {
+.kt-hide-original div:has(> .kt-translation) :is(span.font-normal, .seventv-text-token),
+.kt-hide-original div:has(> .kt-translation-inline) :is(span.font-normal, .seventv-text-token),
+.kt-hide-original div:has(> .kt-translation-compact) :is(span.font-normal, .seventv-text-token) {
   display: none;
 }
 

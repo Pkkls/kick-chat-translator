@@ -47,6 +47,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   naming the reason, with the retry button on it. A retry that fails again keeps the button instead
   of deleting it. Lines skipped on purpose, by the glossary, by the same language check or by the
   identical text check, stay silent as before.
+- **Hiding the original now works when a chat emote extension is running.** With "Keep original
+  text visible" turned off, the original stayed on screen for anyone using 7TV. That extension hides
+  the text Kick writes and renders its own copy next to it, and only Kick's copy was being hidden,
+  so the setting did nothing at all. Both are hidden now, emotes included.
 - **Hiding the original now works on replies too.** With "Keep original text visible" turned off, a
   reply kept showing its original text while every other line hid it. Kick nests the message of a
   reply one level deeper than a plain line, and the rule only reached text sitting directly beside

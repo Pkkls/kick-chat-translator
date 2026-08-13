@@ -172,9 +172,14 @@ describe('injector artifacts', () => {
         // The holder is matched by its child, never by a sibling of the text:
         // in a reply Kick nests the message a level deeper and a sibling rule
         // cannot reach it.
-        expect(rule).toContain(`div:has(> .${cls}) span.font-normal`);
+        expect(rule).toContain(`div:has(> .${cls})`);
       }
       expect(rule).not.toContain('~ .kt-translation');
+      // Two renderings of the same original have to go: the span Kick writes,
+      // and the container a chat emote extension puts beside it and shows
+      // instead, after hiding Kick's own.
+      expect(rule).toContain('span.font-normal');
+      expect(rule).toContain('.seventv-text-token');
     });
 
     // With the text gone there is nothing on the pill's left for the gap to
