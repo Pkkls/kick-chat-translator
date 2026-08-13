@@ -259,8 +259,11 @@ export function insertIntoComposer(el: HTMLElement, text: string, mode: 'insert'
     // Fall back to clipboard only if the box is genuinely unchanged after the
     // editor has had a frame to apply — a lenient check so editor-side transforms
     // (emoji shortcodes, autolink) don't trigger a spurious "copied" toast.
+    // An unchanged box only means the insert failed when the translation would
+    // have changed it. When it matches what was typed there is nothing to rescue,
+    // and copying anyway would overwrite the user's clipboard for nothing.
     window.setTimeout(() => {
-      if (readComposerText(el).trim() === before) copyAndToast(text);
+      if (text.trim() !== before && readComposerText(el).trim() === before) copyAndToast(text);
     }, 180);
   } catch {
     copyAndToast(text);

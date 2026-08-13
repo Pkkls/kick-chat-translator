@@ -41,6 +41,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and changes to it show up as readable diffs.
 
 ### Fixed
+- **The compose preview no longer overwrites your clipboard for nothing.** When a translation came
+  back identical to what you had typed, inserting it left the box looking unchanged, which the
+  extension read as "the editor rejected it" and fell back to copying the text over whatever you
+  had on your clipboard. It now only falls back when the translation would actually have changed
+  the box.
 - **Glossary entries with non-Latin text now work.** Every rule whose source term was not plain
   ASCII was silently ignored, including the documented `草→lol` example, along with Cyrillic and
   accented words like `café`. Rules on ASCII words still match whole words only.

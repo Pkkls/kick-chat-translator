@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { extractChannelSlug, fetchChannelLangIso } from './kickApi';
+import { extractChannelSlug, fetchChannelLangIso, fetchChatroomId } from './kickApi';
 
 const mockFetch = (body: unknown, status = 200): void => {
   globalThis.fetch = vi.fn(async () => new Response(JSON.stringify(body), { status })) as unknown as typeof fetch;
@@ -47,5 +47,73 @@ describe('fetchChannelLangIso', () => {
   it('tolerates a 403 (Cloudflare) without throwing', async () => {
     mockFetch('', 403);
     await expect(fetchChannelLangIso('kt-test-403')).resolves.toBeUndefined();
+  });
+});
+
+describe('channel metadata requests', () => {
+  const originalFetch = globalThis.fetch;
+  afterEach(() => {
+    globalThis.fetch = originalFetch;
+    vi.unstubAllGlobals();
+  });
+
+  it('reads the chatroom id', async () => {
+    mockFetch({ chatroom: { id: 4242 }, livestream: { lang_iso: 'en' } });
+    expect(await fetchChatroomId('kt-test-room')).toBe(4242);
+  });
+
+  // Opening a channel asks for the language and the chatroom id at almost the same
+  // moment; both go through one metadata call, so Kick sees one request per visit.
+  it('coalesces concurrent lookups into a single request', async () => {
+    const spy = vi.fn(
+      async () => new Response(JSON.stringify({ chatroom: { id: 7 }, livestream: { lang_iso: 'ja' } }), { status: 200 }),
+    );
+    globalThis.fetch = spy as unknown as typeof fetch;
+
+    const [lang, id] = await Promise.all([
+      fetchChannelLangIso('kt-test-coalesce'),
+      fetchChatroomId('kt-test-coalesce'),
+    ]);
+
+    expect(lang).toBe('ja');
+    expect(id).toBe(7);
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it('serves a live channel from cache instead of refetching', async () => {
+    const spy = vi.fn(
+      async () => new Response(JSON.stringify({ chatroom: { id: 9 }, livestream: { lang_iso: 'de' } }), { status: 200 }),
+    );
+    globalThis.fetch = spy as unknown as typeof fetch;
+
+    expect(await fetchChannelLangIso('kt-test-cached')).toBe('de');
+    expect(await fetchChannelLangIso('kt-test-cached')).toBe('de');
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it('remembers the language of a channel that has since gone offline', async () => {
+    const stored: Record<string, unknown> = {};
+    vi.stubGlobal('chrome', {
+      storage: {
+        local: {
+          get: (k: string) => Promise.resolve({ [k]: stored[k] }),
+          set: (obj: Record<string, unknown>) => {
+            Object.assign(stored, obj);
+            return Promise.resolve();
+          },
+        },
+      },
+    });
+
+    mockFetch({ chatroom: { id: 1 }, livestream: { lang_iso: 'ja' } });
+    expect(await fetchChannelLangIso('kt-test-persist')).toBe('ja');
+    expect(stored['kt.lastlang.kt-test-persist']).toBe('ja');
+
+    // Same channel, now offline: the live field is gone but compose should still
+    // target Japanese rather than falling back to English.
+    mockFetch({ chatroom: { id: 1 }, livestream: null });
+    expect(await fetchChannelLangIso('kt-test-persist-offline')).toBeUndefined();
+    stored['kt.lastlang.kt-test-persist-offline'] = 'ja';
+    expect(await fetchChannelLangIso('kt-test-persist-offline')).toBe('ja');
   });
 });
