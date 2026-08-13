@@ -28,6 +28,7 @@ const PROCESSED_MARK = 'data-kt-id';
 
 export class ChatObserver {
   private listObserver: MutationObserver | undefined;
+  private containerWatcher: MutationObserver | undefined;
   private container: Element | undefined;
   private pollHandle: ReturnType<typeof setTimeout> | undefined;
   private seenIds = new Set<string>();
@@ -47,18 +48,22 @@ export class ChatObserver {
   stop(): void {
     this.running = false;
     if (this.pollHandle) clearTimeout(this.pollHandle);
-    this.listObserver?.disconnect();
-    this.listObserver = undefined;
-    this.container = undefined;
-    this.seenIds.clear();
+    this.detach();
   }
 
   reset(): void {
+    this.detach();
+    if (this.running) this.tryAttach();
+  }
+
+  /** Single teardown path: both observers are dropped together or neither is. */
+  private detach(): void {
     this.listObserver?.disconnect();
     this.listObserver = undefined;
+    this.containerWatcher?.disconnect();
+    this.containerWatcher = undefined;
     this.container = undefined;
     this.seenIds.clear();
-    if (this.running) this.tryAttach();
   }
 
   private tryAttach(): void {
@@ -96,14 +101,13 @@ export class ChatObserver {
     this.listObserver.observe(container, { childList: true, subtree: true });
 
     // Detect re-mount of the container (channel switch) at the document level.
-    const watcher = new MutationObserver(() => {
+    this.containerWatcher = new MutationObserver(() => {
       if (!document.contains(container)) {
         log.debug('container removed, rescanning');
-        watcher.disconnect();
         this.reset();
       }
     });
-    watcher.observe(document.body, { childList: true, subtree: true });
+    this.containerWatcher.observe(document.body, { childList: true, subtree: true });
   }
 
   private process(row: Element): void {

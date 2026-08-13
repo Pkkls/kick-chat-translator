@@ -41,6 +41,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and changes to it show up as readable diffs.
 
 ### Fixed
+- **Switching channels no longer leaves background watchers behind.** Each channel switch started a
+  page-wide DOM watcher without dropping the previous one, so they piled up and every one of them
+  ran on every change anywhere on the page. Long sessions hopping between channels should feel
+  lighter.
 - **Compact display no longer stacks duplicate translations.** In the compact display style, a
   re-translation (the retry button, or the same message being processed again) added a second
   translation under the message instead of replacing the first, and they piled up. The other
