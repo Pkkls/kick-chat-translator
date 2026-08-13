@@ -21,7 +21,8 @@ Runs on **Brave, Chrome, Edge and Firefox**, and understands 7TV emotes.
 
 **Zero config.** Incoming chat is translated into *your* browser's language. When you type, a live preview
 shows your own message in the *channel's* language (auto-detected from Kick) just above the chat box; click
-it or press **Ctrl/Cmd+Enter** to send that version. Both directions work on their own, so you never have to
+it or press **Ctrl/Cmd+Enter** to put that version in the chat box, then send it yourself. Both directions
+work on their own, so you never have to
 pick a language. (You still can, in settings.)
 
 **42 languages**, right-to-left scripts included (Arabic, Hebrew, Persian) as well as regional variants
