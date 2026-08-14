@@ -3,7 +3,6 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import type { UiLocale } from './i18n';
-import { UI_LOCALES } from './i18n';
 import { SettingsSchema } from './settings';
 import { UI_LOCALES, UI_LOCALE_NAMES, isRtlLocale, detectUiLocale, resolveUiLocale, makeT } from './i18n';
 import { UI_MESSAGES } from './i18n.messages';
