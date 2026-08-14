@@ -80,6 +80,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   also follows the source-language badge, the provider badge and the keep-original toggles.
 
 ### Fixed
+- **The chat bar can no longer end up showing stale state.** Kick leaves a second copy of the chat
+  panel in the page carrying the same id, and it comes first. Mounting the bar was already taught to
+  ignore that copy, but everything that updated the bar afterwards, the label, the counter, the
+  throttle indicator and the on device chip, still searched the whole page and would have found the
+  dead copy first. They all go through the same lookup as the mount now. Removing the bar stays
+  page wide on purpose, so it can never strand a copy behind.
 - **The Debug tab no longer gives two different answers for what looks like one case.** Three
   separate checks can end a message with "already readable", and two of them were phrased
   identically, so the list showed two verdicts and no way to tell them apart. Each now says who

@@ -2,6 +2,7 @@ import injectCss from './inject.css?inline';
 import type { TranslationResult } from '~/shared/types';
 import type { Settings } from '~/shared/settings';
 import { LANGUAGES, getLang, langFlag, resolveBrowserLang } from '~/shared/languages';
+import { findChatPanel } from './selectors';
 
 const STYLE_ID = 'kt-inject-style';
 const TRANS_CLASS = 'kt-translation';
@@ -184,6 +185,20 @@ function makeRetry(onRetry: () => void): HTMLElement {
 
 const FLOAT_ID = 'kt-floating-bar';
 
+/**
+ * The bar, resolved through the panel that is actually on screen.
+ *
+ * Kick leaves a SECOND chat panel carrying the same id, hidden behind a
+ * suspense placeholder its renderer never removed, and it comes first in
+ * document order. A document-wide lookup therefore answers about the wrong copy
+ * the moment that one exists, which is exactly what buried the bar before the
+ * mount was fixed. Same resolver as the mount, deliberately not a second
+ * mechanism.
+ */
+function findBar(): HTMLElement | null {
+  return findChatPanel()?.querySelector<HTMLElement>(`#${FLOAT_ID}`) ?? null;
+}
+
 export interface FloatingBarHandlers {
   onToggle: (enabled: boolean) => void;
   /** Reading language picked on the bar, so the two most used settings need no page. */
@@ -318,14 +333,14 @@ function setBarEnabled(bar: HTMLElement, label: HTMLElement, enabled: boolean, l
 }
 
 export function updateFloatingBar(settings: Settings): void {
-  const bar = document.querySelector<HTMLElement>(`#${FLOAT_ID}`);
+  const bar = findBar();
   const label = bar?.querySelector<HTMLElement>('.kt-float-label');
   if (bar && label) setBarEnabled(bar, label, settings.enabled, settings.targetLang);
 }
 
 /** Show/hide a throttle indicator on the floating bar. */
 export function showThrottleIndicator(throttled: boolean): void {
-  const bar = document.querySelector<HTMLElement>(`#${FLOAT_ID}`);
+  const bar = findBar();
   if (!bar) return;
   let ind = bar.querySelector<HTMLElement>('.kt-float-throttle');
   if (throttled && !ind) {
@@ -344,7 +359,7 @@ export function showThrottleIndicator(throttled: boolean): void {
 
 /** Update the floating bar to show which provider handled the last translation. */
 export function updateActiveProvider(provider: string): void {
-  const bar = document.querySelector<HTMLElement>(`#${FLOAT_ID}`);
+  const bar = findBar();
   if (!bar) return;
   let badge = bar.querySelector<HTMLElement>('.kt-float-provider');
   if (!badge) {
@@ -359,7 +374,7 @@ export function updateActiveProvider(provider: string): void {
 
 /** Bump the session translation counter shown in the floating bar. */
 export function incrementFloatingCount(): void {
-  const count = document.querySelector<HTMLElement>(`#${FLOAT_ID} .kt-float-count`);
+  const count = findBar()?.querySelector<HTMLElement>('.kt-float-count') ?? null;
   if (!count) return;
   const n = Number(count.dataset.n ?? '0') + 1;
   count.dataset.n = String(n);
@@ -368,7 +383,7 @@ export function incrementFloatingCount(): void {
 }
 
 export function updateLocalChip(state: LocalChipState): void {
-  const chip = document.querySelector<HTMLButtonElement>(`#${FLOAT_ID} .kt-float-local`);
+  const chip = findBar()?.querySelector<HTMLButtonElement>('.kt-float-local') ?? null;
   if (!chip) return;
   switch (state.kind) {
     case 'hidden':
@@ -395,5 +410,9 @@ export function updateLocalChip(state: LocalChipState): void {
 }
 
 export function unmountFloatingBar(): void {
-  document.querySelector(`#${FLOAT_ID}`)?.remove();
+  // Teardown stays document wide, and on purpose: it is the one operation that
+  // must not leave a copy behind. If a bar ever ended up in the panel that is
+  // off screen, scoping this would strand it there for good. Removing every
+  // match is what "unmount" means, and it cannot pick the wrong one.
+  for (const stale of document.querySelectorAll(`#${FLOAT_ID}`)) stale.remove();
 }

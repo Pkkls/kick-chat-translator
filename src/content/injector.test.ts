@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { defaultSettings } from '~/shared/settings';
 import type { Settings } from '~/shared/settings';
 import type { TranslationResult } from '~/shared/types';
-import { TRANSLATION_SELECTOR, applyShowOriginal, inject, markSkipped, mountFloatingBar, removeAllArtifacts, showError, showLoading } from './injector';
+import { TRANSLATION_SELECTOR, applyShowOriginal, inject, markSkipped, mountFloatingBar, removeAllArtifacts, showError, showLoading, unmountFloatingBar, updateFloatingBar } from './injector';
 // Read from disk: vitest runs with CSS processing off, so `?inline` imports
 // resolve to an empty string and would make these assertions pass on anything.
 const injectCss = readFileSync('src/content/inject.css', 'utf8');
@@ -144,6 +144,52 @@ describe('injector artifacts', () => {
     // exactly how the Replace style lost its own retry.
     it('can reveal that button on hover', () => {
       expect(injectCss).toContain('.kt-error:hover .kt-retry');
+    });
+  });
+
+  // Kick leaves a SECOND chat panel carrying the same id, hidden behind a
+  // suspense placeholder, and it comes first in document order. That is what
+  // buried the bar once already. Anything that looks the bar up across the whole
+  // document answers about that dead copy.
+  describe('the bar an update reaches is the one on screen', () => {
+    const barHandlers = () => ({
+      onToggle: vi.fn(),
+      onTargetLang: vi.fn(),
+      onOpenOptions: vi.fn(),
+      onEnableLocal: vi.fn(),
+    });
+
+    /** The stale panel first, exactly as Kick orders them, with a decoy bar in it. */
+    function twoPanels(): HTMLElement {
+      document.body.innerHTML =
+        '<div id="channel-chatroom">'
+        + '<div id="kt-floating-bar"><span class="kt-float-label">STALE</span></div>'
+        + '</div>'
+        + '<div id="channel-chatroom"><div data-index="0"></div><div id="live-host"></div></div>';
+      return document.querySelector<HTMLElement>('#live-host')!;
+    }
+
+    it('updates the live bar and never the stale copy', () => {
+      const host = twoPanels();
+      mountFloatingBar(host, { ...defaultSettings(), enabled: true, targetLang: 'fr' }, barHandlers());
+      updateFloatingBar({ ...defaultSettings(), enabled: false, targetLang: 'fr' });
+
+      const bars = document.querySelectorAll('#kt-floating-bar');
+      expect(bars).toHaveLength(2);
+      // Control: the update must land somewhere, or both assertions would pass
+      // on a lookup that simply found nothing.
+      expect(bars[1]?.querySelector('.kt-float-label')?.textContent).toBe('Translation off');
+      expect(bars[0]?.querySelector('.kt-float-label')?.textContent).toBe('STALE');
+    });
+
+    // Teardown is the one place that stays document wide, so it cannot strand a
+    // copy in the panel that is off screen.
+    it('takes every copy away when it unmounts', () => {
+      const host = twoPanels();
+      mountFloatingBar(host, { ...defaultSettings(), enabled: true, targetLang: 'fr' }, barHandlers());
+      expect(document.querySelectorAll('#kt-floating-bar')).toHaveLength(2);
+      unmountFloatingBar();
+      expect(document.querySelectorAll('#kt-floating-bar')).toHaveLength(0);
     });
   });
 
