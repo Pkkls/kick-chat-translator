@@ -42,6 +42,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   no traffic are skipped rather than drawn as 0%. The trend appears once two days have been
   recorded, so it stays empty on a fresh install until history builds up.
 
+### Removed
+- **The WebSocket path to Kick's chat relay is gone, and with it the Connection mode setting.** It
+  opened a socket to a host the extension never declared, using an application key hard-coded years
+  ago that the relay has been rejecting with "App key not in this cluster" for as long as it was
+  measured. It only ever warmed the cache; every translation you saw came from reading the page.
+  Nothing you can see changes, the setting that chose between the two paths is removed because only
+  one path was ever real, and the extension no longer contacts a host it did not declare.
+
 ### Changed
 - **A busy channel that hits its own rate cap now says so once, not once per message.** The cap is
   a fact about the channel, so painting a red marker on every message over it repeated the same

@@ -1,13 +1,6 @@
 export const EXT_NAME = 'Kick Chat Translator';
 export const EXT_PREFIX = '[KickTranslator]';
 
-// Pusher app key used by kick.com's public chat client.
-// Refresh this from the live page (search the HTML for a 20-char hex string)
-// if the WS starts rejecting connections with code 4001.
-export const KICK_PUSHER_KEY = '3437aaddcdf6922d623e';
-export const KICK_PUSHER_CLUSTER = 'us2';
-export const KICK_PUSHER_WS = `wss://ws-${KICK_PUSHER_CLUSTER}.pusher.com/app/${KICK_PUSHER_KEY}?protocol=7&client=js&version=8.4.0&flash=false`;
-
 export const KICK_API_BASE = 'https://kick.com/api/v2';
 export const KICK_CHANNEL_API = (slug: string): string => `${KICK_API_BASE}/channels/${slug}`;
 

@@ -14,9 +14,8 @@ import {
 } from './injector';
 import { ChatObserver } from './observer';
 import { ComposeController } from './compose';
-import { KickPusherClient } from './pusher';
 import { SELECTORS, findChatPanel, findComposer, pickFirst } from './selectors';
-import { extractChannelSlug, fetchChannelLangIso, fetchChatroomId } from './kickApi';
+import { extractChannelSlug, fetchChannelLangIso } from './kickApi';
 import { localEngine } from './localEngine';
 import { logPlatform, refresh7TV } from './platform';
 import { langFlag } from '~/shared/languages';
@@ -47,19 +46,6 @@ async function main(): Promise<void> {
       isBot: false,
     });
   });
-
-  let pusher: KickPusherClient | undefined;
-  if (settings.connectionMode !== 'dom') {
-    pusher = new KickPusherClient((wsMsg) => {
-      void pipeline.onWebSocketMessage({
-        id: wsMsg.id,
-        text: wsMsg.content,
-        channel: currentSlug ?? '',
-        username: wsMsg.username,
-        isBot: wsMsg.isBot,
-      });
-    });
-  }
 
   // ── On-device chip state ───────────────────────────────────────────
   function computeLocalChip(): LocalChipState {
@@ -154,7 +140,7 @@ async function main(): Promise<void> {
     }, 12_000);
   }
 
-  async function attachForRoute(): Promise<void> {
+  function attachForRoute(): void {
     const slug = extractChannelSlug(location.pathname);
     if (slug === currentSlug) return;
     currentSlug = slug;
@@ -180,28 +166,20 @@ async function main(): Promise<void> {
     // Auto-detect the channel's chat language (Kick API) → the compose target in
     // 'auto' mode, so the user writes in the channel's language with no setup.
     void fetchChannelLangIso(slug).then((lang) => compose.setChannelLang(lang));
-
-    if (pusher && settings.connectionMode !== 'dom') {
-      const id = await fetchChatroomId(slug);
-      if (id !== undefined) {
-        log.debug('switching pusher chatroom to', id);
-        pusher.switchChatroom(id);
-      }
-    }
   }
 
   // Compose preview is independent of the incoming-translation master switch, so
   // attach the route machinery when either feature is on.
-  if (settings.enabled || settings.composeEnabled) void attachForRoute();
+  if (settings.enabled || settings.composeEnabled) attachForRoute();
   if (settings.showFloatingBar) mountBar();
   watchBar();
 
   const origPush = history.pushState.bind(history);
   history.pushState = ((...args: Parameters<typeof origPush>): void => {
     origPush(...args);
-    void attachForRoute();
+    attachForRoute();
   }) as typeof history.pushState;
-  window.addEventListener('popstate', () => void attachForRoute());
+  window.addEventListener('popstate', () => attachForRoute());
 
   // Retry on focus: when pauseWhenHidden is ON and the user comes back to this tab,
   // messages that arrived while hidden are marked (data-kt-id) but never translated.
@@ -264,10 +242,9 @@ async function main(): Promise<void> {
     applyShowOriginal(next.showOriginal);
     refreshChip();
 
-    if (next.enabled && !wasEnabled) void attachForRoute();
+    if (next.enabled && !wasEnabled) attachForRoute();
     if (!next.enabled && wasEnabled) {
       observer.stop();
-      pusher?.stop();
     }
     if (next.showFloatingBar) mountBar();
     else unmountFloatingBar();

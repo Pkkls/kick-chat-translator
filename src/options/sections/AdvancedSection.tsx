@@ -41,25 +41,8 @@ export function AdvancedSection({ settings, onPatch }: Props) {
       <section class="kt-card space-y-3">
         <h2 class="text-sm font-semibold">{t('Connection')}</h2>
         <p class="text-[11px] text-kick-muted">
-          {t('How messages are picked up, and whether a Kick tab keeps translating once you look away.')}
+          {t('Whether a Kick tab keeps translating once you look away.')}
         </p>
-        <div class="kt-row">
-          <label class="kt-label">{t('Mode')}</label>
-          <select
-            class="kt-select"
-            value={settings.connectionMode}
-            onChange={(e) =>
-              onPatch({ connectionMode: (e.target as HTMLSelectElement).value as Settings['connectionMode'] })
-            }
-          >
-            <option value="auto">{t('Auto (WebSocket + DOM fallback)')}</option>
-            <option value="websocket">{t('WebSocket only')}</option>
-            <option value="dom">{t('DOM observer only')}</option>
-          </select>
-          <p class="text-[11px] text-kick-muted">
-            {t("WebSocket directly listens to Kick's chat events for lower CPU / faster pre-translation.")}
-          </p>
-        </div>
         <label class="flex items-center justify-between gap-3 rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
           <span class="text-sm">
             {t('Pause when tab is hidden')}

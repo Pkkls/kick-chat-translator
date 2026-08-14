@@ -33,7 +33,7 @@ export function AboutSection() {
       <div>
         <h3 class="text-xs uppercase tracking-wider text-kick-muted mb-1">{t('How translation happens')}</h3>
         <ol class="list-decimal list-inside text-sm text-kick-muted space-y-1">
-          <li>{t("Your browser connects to Kick's public Pusher WebSocket — no auth needed.")}</li>
+          <li>{t('The extension reads each chat message from the page as it appears.')}</li>
           <li>{t('Each chat message is parsed; emotes and links are stripped before translation.')}</li>
           <li>{t('The extension picks the first available provider in your chain.')}</li>
           <li>{t('Translations are cached locally in IndexedDB to avoid duplicate calls.')}</li>
