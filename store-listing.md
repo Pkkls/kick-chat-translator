@@ -1,13 +1,17 @@
 # Chrome Web Store listing
 
 Plain text. The store renders no markdown, so the CAPS headers are the only
-structure available. Fact-checked against manifest 2.5.0, README, CHANGELOG.
+structure available. Fact-checked against manifest 2.6.0, README, CHANGELOG.
 
 ## Short summary (132 char limit)
 
 Kick chat in a language you don't read? It gets translated under each message, live, and your replies go out in the channel's.
 
 ## Description (EN)
+
+NEW IN 2.6.0
+
+Chat written in the Latin alphabet is translated again: Spanish, Turkish, French and Portuguese were being refused as though they were already English, while Japanese and Korean went through. The bar at the top of chat no longer disappears. The interface now comes in 10 languages, with Spanish, Turkish and Korean added. The glossary is editable at last, a Debug tab shows why a line was left alone, and the reading language and a pause button now sit on the bar itself.
 
 Open a Kick stream where the chat is in a language you don't read. Each message gets its translation right underneath, as it comes in. A green bar at the top of chat tells you it's running.
 
@@ -23,7 +27,7 @@ Chrome and Edge 138+ can also translate on-device, hardware permitting. The mode
 
 DISPLAY
 
-Translation below the original, inline with it, in place of it, or only when you hover. Hover mode fetches nothing until you point at a message, which cuts usage by roughly 10x on a fast chat.
+Translation below the original, inline with it, after it in smaller italics, or only when you hover. Hover mode fetches nothing until you point at a message, which cuts usage by roughly 10x on a fast chat.
 
 FILTERS
 
@@ -36,6 +40,10 @@ No account, no analytics, no server of mine. It asks for storage, for a wake-up 
 Open source, MIT: github.com/Pkkls/kick-chat-translator
 
 ## Description (FR)
+
+NOUVEAU EN 2.6.0
+
+Le chat écrit en alphabet latin est de nouveau traduit : l'espagnol, le turc, le français et le portugais étaient refusés comme s'ils étaient déjà en anglais, alors que le japonais et le coréen passaient. La barre en haut du chat ne disparaît plus. L'interface existe maintenant en 10 langues, avec l'espagnol, le turc et le coréen. Le glossaire est enfin modifiable, un onglet Debug montre pourquoi une ligne a été laissée de côté, et la langue de lecture ainsi qu'un bouton pause sont passés sur la barre elle-même.
 
 Tu ouvres un stream Kick où le chat est dans une langue que tu ne lis pas. Chaque message reçoit sa traduction juste en dessous, au fil de l'arrivée. Une barre verte en haut du chat indique que ça tourne.
 
@@ -51,7 +59,7 @@ Chrome et Edge 138+ savent aussi traduire en local, si la machine suit. Le modè
 
 AFFICHAGE
 
-Traduction sous l'original, en ligne avec lui, à sa place, ou seulement au survol. Le mode survol ne demande rien tant que tu ne pointes pas un message, ce qui divise l'usage par dix environ sur un chat rapide.
+Traduction sous l'original, en ligne avec lui, après lui en italique plus petit, ou seulement au survol. Le mode survol ne demande rien tant que tu ne pointes pas un message, ce qui divise l'usage par dix environ sur un chat rapide.
 
 FILTRES
 
