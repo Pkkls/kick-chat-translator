@@ -115,7 +115,9 @@ Inglés · Francés · Español · Portugués · Portugués (Brasil) · Alemán 
 3. La traducción se inyecta de vuelta en el DOM, debajo del mensaje original.
 4. Para los mensajes salientes, el idioma del canal se detecta automáticamente a través de la API de Kick y aparece una vista previa encima de la caja de chat.
 
-La extensión nunca toca las propias peticiones de red de Kick; solo necesita los permisos `storage` y `host` para kick.com.
+La extensión nunca intercepta ni modifica las propias peticiones de red de Kick.
+
+Pide `storage` y `alarms`, y acceso de host a kick.com, a cada proveedor de traducción al que puede llamar (Google, DeepL, MyMemory, las dos instancias de Lingva) y a `api.github.com`. Esto último es la comprobación de actualizaciones: lee la etiqueta de la última release, con límite de frecuencia y caché, y el popup ofrece un enlace cuando hay una versión más reciente. No se envía nada con esa petición y nada se actualiza solo.
 
 ---
 
@@ -137,3 +139,10 @@ como un IIFE clásico para una inyección fiable en Brave.
 ## Licencia
 
 MIT. Sin afiliación con Kick.
+
+## Proyectos relacionados
+
+- [kick-ad-blocker](https://github.com/Pkkls/kick-ad-blocker), bloquea los anuncios de Kick
+- [kick-core](https://github.com/Pkkls/kick-core), el cliente de gateway en tiempo real que comparten estas extensiones
+- [kickbus](https://github.com/Pkkls/kickbus), webhooks oficiales de Kick retransmitidos por SSE a bots locales
+- [kick-drops-miner](https://github.com/Pkkls/kick-drops-miner), app de Windows que avanza el tiempo de visionado de los drops

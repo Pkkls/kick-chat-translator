@@ -12,7 +12,7 @@
 Real-time translation for Kick.com chat, on live streams and VOD replays. Open a stream, and any
 message in another language gets its translation rendered right underneath. Nothing to set up.
 
-<img width="354" height="593" alt="image" src="https://github.com/user-attachments/assets/4f7ae414-6c2a-4ee5-b191-6af9e29d46ec" />
+<img width="354" height="593" alt="Kick chat with a translation under each foreign-language message" src="https://github.com/user-attachments/assets/4f7ae414-6c2a-4ee5-b191-6af9e29d46ec" />
 
 
 Runs on **Brave, Chrome, Edge and Firefox**, and understands 7TV emotes.
@@ -37,7 +37,7 @@ pick a language. (You still can, in settings.)
 **[➥ Firefox · Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
 One click to install. Open any Kick stream, and a green bar at the top of chat tells you it's live.
-<img width="347" height="193" alt="image" src="https://github.com/user-attachments/assets/3973b7a0-4767-42a2-974c-7f94b2534595" />
+<img width="347" height="193" alt="The green status bar at the top of chat" src="https://github.com/user-attachments/assets/3973b7a0-4767-42a2-974c-7f94b2534595" />
 
 <details>
 <summary>Or install manually (unpacked / dev build)</summary>
@@ -71,8 +71,14 @@ Click the gear on the chat bar, or right-click the extension icon → Options.
 
 - **Target language**: what everything is translated into (42 to choose from)
 - **Provider order**: drag to reorder, paste your DeepL key
-- **Filters**: skip bots, blocklist users or channels, restrict the source languages
+- **Engine mode**: on-device first, cloud first, or on-device only
+- **Display**: translation below the message, inline, replacing it, or on hover; original text, source language and provider badges each optional
+- **Compose preview**: on or off, its target language, and whether clicking it replaces your text or sends straight away
+- **Filters**: skip bots, blocklist users or channels, restrict the source languages, or whitelist channels
+- **Glossary**: find and replace pairs applied to the translation, for names and in-jokes that engines mangle
+- **Budget**: DeepL quota share and smart routing, per-channel rate limit, cache size and lifetime, concurrency
 - **Auto-pause**: background tabs stop translating (saves your DeepL quota)
+- **UI language** for the extension's own interface, and buttons to clear the cache or reset stats and settings
 
 ## Privacy
 
@@ -116,7 +122,9 @@ English · French · Spanish · Portuguese · Portuguese (Brazil) · German · I
 3. The translation is injected back into the DOM, beneath the original message.
 4. For outgoing messages, the channel's language is auto-detected through the Kick API and a live preview appears above the chat input.
 
-The extension never touches Kick's own network requests. It needs only the `storage` and `host` permissions for kick.com.
+The extension never intercepts or modifies Kick's own network requests.
+
+It asks for `storage` and `alarms`, and for host access to kick.com, to each translation provider it can call (Google, DeepL, MyMemory, the two Lingva instances), and to `api.github.com`. That last one is the update check: it reads the latest release tag, throttled and cached, and the popup offers a link when a newer version exists. Nothing is sent with that request and nothing auto-updates.
 
 ---
 
@@ -134,6 +142,13 @@ Other commands: `npm run dev` (HMR), `npm run test`, `npm run lint`,
 
 Stack: MV3, Vite, TypeScript, Preact, Tailwind. The content script ships as
 a classic IIFE for reliable injection on Brave.
+
+## Related projects
+
+- [kick-ad-blocker](https://github.com/Pkkls/kick-ad-blocker), blocks Kick's pre-roll and overlay ads
+- [kick-core](https://github.com/Pkkls/kick-core), the realtime gateway client shared across these extensions
+- [kickbus](https://github.com/Pkkls/kickbus), official Kick webhooks relayed to local bots over SSE
+- [kick-drops-miner](https://github.com/Pkkls/kick-drops-miner), Windows app that progresses Kick drop watch-time
 
 ## License
 
