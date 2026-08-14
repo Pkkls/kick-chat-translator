@@ -29,6 +29,20 @@ regionais (português do Brasil, chinês tradicional).
 
 ---
 
+## Novidades da [2.6.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+
+O chat escrito em alfabeto latino volta a ser traduzido. Com o inglês como idioma de leitura, qualquer
+texto com mais de 85% de caracteres latinos básicos era recusado como se já estivesse em inglês, o que
+deixava de fora o espanhol, o turco, o francês e o português, enquanto o japonês e o coreano passavam
+intactos. Medido em chat salvo: 66 de 76 linhas em espanhol e 40 de 51 em turco foram descartadas,
+contra 0 de 43 em coreano.
+
+A barra no topo do chat não desaparece mais, a interface agora vem em 10 idiomas, o glossário
+finalmente pode ser editado, e uma aba de Depuração mostra por que uma linha foi deixada de lado. Lista
+completa em [CHANGELOG.md](CHANGELOG.md).
+
+---
+
 ## Instalação
 
 **[➥ Chrome / Brave / Edge · Chrome Web Store](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)**
@@ -57,10 +71,10 @@ Quatro provedores em cadeia: se um cai, o próximo assume.
 | Google | Não | Padrão, funciona direto |
 | DeepL | Sim (grátis) | Melhor qualidade. [Pegue uma chave grátis](https://www.deepl.com/pro-api) (1M de caracteres/mês, R$ 0) |
 | MyMemory | Não | Reserva |
-| Lingva | Não | Reserva (apenas auto-hospedado: ~2 GB de RAM, não recomendado a menos que você rode sua própria instância) |
+| Lingva | Não | Reserva. Usa uma instância pública já de saída; aponte para a sua nos ajustes se preferir |
 
-No Chrome/Edge também há tradução local: sem rede e sem limite. Brave e Firefox ainda não suportam, então
-recorrem à cadeia na nuvem.
+No Chrome/Edge também há tradução no dispositivo, se o hardware permitir: sem rede e sem limite. Brave e
+Firefox ainda não trazem essa API, então recorrem à cadeia na nuvem.
 
 A ordem é você quem define nas configurações.
 
@@ -70,8 +84,11 @@ Clique na engrenagem da barra do chat, ou clique com o botão direito no ícone 
 
 - **Idioma de destino**: para qual idioma tudo é traduzido (42 disponíveis)
 - **Ordem dos provedores**: arraste para reordenar, cole sua chave do DeepL
+- **Exibição**: a tradução abaixo da mensagem, na mesma linha, depois dela em itálico menor, ou ao passar o mouse; o texto original, o idioma de origem e o provedor são selos opcionais. Uma linha de exemplo nos ajustes mostra cada estilo antes de você escolher
 - **Filtros**: pular bots, bloquear usuários ou canais, restringir os idiomas de origem
 - **Pausa automática**: abas em segundo plano param de traduzir (economiza sua cota do DeepL)
+- **Idioma da interface** da própria extensão, em inglês, espanhol, francês, português, turco, russo, árabe, chinês, japonês ou coreano, além de botões para limpar o cache ou redefinir estatísticas e ajustes
+- **Depuração**: as últimas decisões do tradutor e por que uma linha foi deixada de lado, mantidas apenas em memória
 
 ## Privacidade
 
@@ -81,7 +98,7 @@ escolheu e para mais nenhum lugar; e no modo local, nem isso. [Detalhes](PRIVACY
 ## FAQ
 
 **P: A barra verde desapareceu / a tradução parou de funcionar.**
-**R:** Atualize a página. O Kick atualiza sua interface de vez em quando, o que pode interromper a conexão da extensão com o chat.
+**R:** A 2.6.0 corrigiu a causa disso: a Kick deixa na página uma segunda cópia oculta do painel de chat, e a barra estava sendo montada nessa cópia, invisível desde o início. Atualize primeiro. Se ainda acontecer na 2.6.0 ou posterior, recarregue a página e abra uma issue, porque aí seria um problema novo.
 
 **P: As mensagens não estão sendo traduzidas.**
 **R:** Abra as configurações e verifique se o idioma de destino é diferente do de origem. Confira também se pelo menos um provedor está ativo na cadeia.
