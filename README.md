@@ -30,6 +30,19 @@ pick a language. (You still can, in settings.)
 
 ---
 
+## What's new in [2.6.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+
+Chat written in the Latin alphabet is translated again. With English as your reading language, anything
+more than 85% basic Latin characters was being refused as though it were already English, which turned
+away Spanish, Turkish, French and Portuguese while Japanese and Korean went through untouched. Measured
+on saved chat: 66 of 76 Spanish lines and 40 of 51 Turkish lines were dropped, against 0 of 43 Korean.
+
+The bar at the top of chat no longer disappears, the interface now comes in 10 languages, the glossary
+is finally editable, and a Debug tab shows why any given line was left alone. Full list in
+[CHANGELOG.md](CHANGELOG.md).
+
+---
+
 ## Install
 
 **[➥ Chrome / Brave / Edge · Chrome Web Store](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)**
@@ -58,10 +71,10 @@ Four providers chained together. If one fails, the next takes over:
 | Google | No | Default, works out of the box |
 | DeepL | Yes (free) | Best quality. [Get a free key](https://www.deepl.com/pro-api) (1M chars/month, €0) |
 | MyMemory | No | Fallback |
-| Lingva | No | Fallback (self-hosted only: ~2 GB RAM, not recommended unless you run your own instance) |
+| Lingva | No | Fallback. Uses a public instance out of the box; point it at your own in the settings if you'd rather |
 
-On Chrome/Edge you also get on-device translation: no network, no quota. Brave and Firefox don't support it
-yet, so they fall back to the cloud chain.
+On Chrome/Edge you also get on-device translation, hardware permitting: no network, no quota. Brave and
+Firefox don't ship that API yet, so they fall back to the cloud chain.
 
 The order is yours to set in the settings.
 
@@ -72,13 +85,14 @@ Click the gear on the chat bar, or right-click the extension icon → Options.
 - **Target language**: what everything is translated into (42 to choose from)
 - **Provider order**: drag to reorder, paste your DeepL key
 - **Engine mode**: on-device first, cloud first, or on-device only
-- **Display**: translation below the message, inline, replacing it, or on hover; original text, source language and provider badges each optional
+- **Display**: translation below the message, inline with it, after it in smaller italics, or on hover; original text, source language and provider badges each optional. A sample line in the settings shows each style before you pick it
 - **Compose preview**: on or off, its target language, and whether clicking it fills the chat box or copies the translation instead
 - **Filters**: skip bots, blocklist users or channels, restrict the source languages, or whitelist channels
 - **Glossary**: find and replace pairs applied to the translation, for names and in-jokes that engines mangle
 - **Budget**: DeepL quota share and smart routing, per-channel rate limit, cache size and lifetime, concurrency
 - **Auto-pause**: background tabs stop translating (saves your DeepL quota)
-- **UI language** for the extension's own interface, and buttons to clear the cache or reset stats and settings
+- **UI language** for the extension's own interface, in English, Spanish, French, Portuguese, Turkish, Russian, Arabic, Chinese, Japanese or Korean, plus buttons to clear the cache or reset stats and settings
+- **Debug**: the last decisions the translator made and why a line was left alone, kept in memory only
 
 ## Privacy
 
@@ -88,7 +102,7 @@ else, and in on-device mode, not even there. [Details](PRIVACY.md)
 ## FAQ
 
 **Q: The green bar disappeared / translation stopped working.**
-**A:** Refresh the page. Kick updates its interface from time to time, which can break the extension's link to the chat.
+**A:** 2.6.0 fixed the cause of this: Kick leaves a hidden second copy of the chat panel in the page and the bar was being mounted into that one, invisible from the start. Update first. If it still happens on 2.6.0 or later, refresh the page and open an issue, because that would be a new one.
 
 **Q: Messages aren't being translated.**
 **A:** Open the settings and make sure the target language differs from the source language. Also check that at least one provider is enabled in the chain.
