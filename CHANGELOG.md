@@ -88,6 +88,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   also follows the source-language badge, the provider badge and the keep-original toggles.
 
 ### Added
+- **The interface is available in Korean.** Korean chat is the one this extension reads most
+  reliably, every line of the saved sample identified from its writing system alone, and it was the
+  last language with that kind of presence and no settings to read in it. All 140 strings are
+  covered, none left in English.
 - **The interface is available in Turkish.** Turkey is one of this extension's largest audiences,
   and Turkish was one of the two languages worst hit by the bug that refused every language written
   in the Latin alphabet. Reading the settings in Turkish should not have come last. All 140 strings
