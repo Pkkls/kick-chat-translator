@@ -13,12 +13,17 @@ const ERROR_CLASS = 'kt-error';
 // Every class we add under a chat line. Cleanup walks this list, so a display
 // style whose class is missing here would stack a copy per re-translation.
 const ARTIFACT_CLASSES = [TRANS_CLASS, TRANS_INLINE_CLASS, TRANS_COMPACT_CLASS, LOADING_CLASS, ERROR_CLASS];
-/** Matches a line that already carries a translation, whatever the display style.
- *  Built from the class constants above so a style can never be remembered by one
- *  caller and forgotten by another. */
-export const TRANSLATION_SELECTOR = [TRANS_CLASS, TRANS_INLINE_CLASS, TRANS_COMPACT_CLASS]
-  .map((c) => `.${c}`)
-  .join(', ');
+/**
+ * Matches a line this extension has already dealt with, whatever the outcome:
+ * translated, still in flight, or given up on.
+ *
+ * DERIVED from ARTIFACT_CLASSES on purpose, never hand listed. Three separate
+ * callers have now picked a subset of that list and forgotten a class: the
+ * compact style at item 34, the bar lookups at item 73, and the error marker
+ * here, which handed every failed line back to the engine on each scroll pause.
+ * Deriving takes the choice away from the caller.
+ */
+export const HANDLED_SELECTOR = ARTIFACT_CLASSES.map((c) => `.${c}`).join(', ');
 
 /** #7 — Show a temporary toast at bottom-right (auto-fades after 3s). */
 export function showToast(message: string): void {

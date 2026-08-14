@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { defaultSettings } from '~/shared/settings';
 import type { Settings } from '~/shared/settings';
 import type { TranslationResult } from '~/shared/types';
-import { TRANSLATION_SELECTOR, applyShowOriginal, inject, markSkipped, mountFloatingBar, removeAllArtifacts, showError, showLoading, unmountFloatingBar, updateFloatingBar } from './injector';
+import { HANDLED_SELECTOR, applyShowOriginal, inject, markSkipped, mountFloatingBar, removeAllArtifacts, showError, showLoading, unmountFloatingBar, updateFloatingBar } from './injector';
 // Read from disk: vitest runs with CSS processing off, so `?inline` imports
 // resolve to an empty string and would make these assertions pass on anything.
 const injectCss = readFileSync('src/content/inject.css', 'utf8');
@@ -108,7 +108,37 @@ describe('injector artifacts', () => {
     it.each(['below', 'inline', 'replace', 'hover'] as const)('finds a %s translation', (style) => {
       const target = document.createElement('div');
       inject(target, result('hola'), settingsWith(style));
-      expect(target.querySelector(TRANSLATION_SELECTOR)).not.toBeNull();
+      expect(target.querySelector(HANDLED_SELECTOR)).not.toBeNull();
+    });
+
+    // A line whose engine gave up carries an error marker and a retry button.
+    // The sweeps ask this selector whether a line is already dealt with, so if
+    // it does not answer yes here, every failed line is handed back to the
+    // engine on the next scroll pause, for as long as the provider stays down.
+    it('counts a failed line as already dealt with', () => {
+      const target = document.createElement('div');
+      showError(target, 'quota', () => undefined);
+      expect(target.querySelector(HANDLED_SELECTOR)).not.toBeNull();
+    });
+
+    // Control: an untouched line must still read as free, or the assertion
+    // above would pass on a selector that matches anything.
+    it('still counts an untouched line as free', () => {
+      const target = document.createElement('div');
+      target.innerHTML = '<span class="font-normal">hola</span>';
+      expect(target.querySelector(HANDLED_SELECTOR)).toBeNull();
+    });
+
+    // The guard against a fourth recurrence. The three that happened all took
+    // the same shape: a `*_CLASS` constant declared here and left out of the
+    // list a caller consults. This fails the moment a sixth one is declared
+    // without being added to ARTIFACT_CLASSES, which is what the selector is
+    // built from.
+    it('covers every per line class this module declares', () => {
+      const source = readFileSync('src/content/injector.ts', 'utf8');
+      const declared = [...source.matchAll(/const\s+\w+_CLASS\s*=\s*'(kt-[^']+)'/g)].map((m) => m[1]);
+      expect(declared.length).toBeGreaterThan(3); // the probe must see something
+      for (const cls of declared) expect(HANDLED_SELECTOR).toContain(`.${cls}`);
     });
 
     it('is not re-spelled by hand at any call site', () => {

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- **A message the translation services gave up on is no longer sent back to them over and over.**
+  The extension re-checks the visible chat when you come back to the tab and when you stop
+  scrolling, to catch anything it missed. That check only recognised lines that had been
+  translated, so a line carrying a failure marker looked untouched and was sent again on every
+  scroll pause, for the whole minute or five that a service stays in cooldown. On a full chat panel
+  that is around thirty needless calls each time you stop scrolling, which is exactly the quota you
+  have least of when a service is already struggling. Such a line now keeps its marker and its
+  retry button, and goes back out only when you click it.
+
 ## [2.6.0] - 2026-08-14
 
 ### Added
