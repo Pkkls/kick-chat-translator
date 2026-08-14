@@ -73,7 +73,7 @@ Click the gear on the chat bar, or right-click the extension icon → Options.
 - **Provider order**: drag to reorder, paste your DeepL key
 - **Engine mode**: on-device first, cloud first, or on-device only
 - **Display**: translation below the message, inline, replacing it, or on hover; original text, source language and provider badges each optional
-- **Compose preview**: on or off, its target language, and whether clicking it replaces your text or sends straight away
+- **Compose preview**: on or off, its target language, and whether clicking it fills the chat box or copies the translation instead
 - **Filters**: skip bots, blocklist users or channels, restrict the source languages, or whitelist channels
 - **Glossary**: find and replace pairs applied to the translation, for names and in-jokes that engines mangle
 - **Budget**: DeepL quota share and smart routing, per-channel rate limit, cache size and lifetime, concurrency
