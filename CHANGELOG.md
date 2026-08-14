@@ -88,6 +88,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   also follows the source-language badge, the provider badge and the keep-original toggles.
 
 ### Added
+- **The interface is available in Turkish.** Turkey is one of this extension's largest audiences,
+  and Turkish was one of the two languages worst hit by the bug that refused every language written
+  in the Latin alphabet. Reading the settings in Turkish should not have come last. All 140 strings
+  are covered.
 - **The interface is available in Spanish.** It was already one of the languages the extension
   translates into and one of the languages its README is written in, but not one you could read the
   settings in. All 140 strings are covered, so nothing falls back to English.
