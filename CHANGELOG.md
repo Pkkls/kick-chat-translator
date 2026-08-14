@@ -80,6 +80,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   also follows the source-language badge, the provider badge and the keep-original toggles.
 
 ### Fixed
+- **Dropdown menus are readable again.** Opening the language menu on the chat bar showed a white
+  panel where only the line under the pointer could be read, and the menus in the options page and
+  the popup showed pale grey text on white. The list a menu opens is drawn by the browser, and with
+  no colour scheme declared it drew itself light while our text stayed light. Each menu now declares
+  one. On the chat bar it follows the light or dark theme rather than being fixed, so it stays
+  readable either way.
 - **The bar at the top of chat kept disappearing, and the extension never noticed.** Kick can leave
   a second copy of the chat panel in the page, carrying the same id, hidden inside a placeholder its
   renderer never removed. That copy comes first, so the bar was mounted into it and was invisible

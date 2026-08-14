@@ -147,6 +147,40 @@ describe('injector artifacts', () => {
     });
   });
 
+  // The list a select opens is painted by the browser. Without a declared scheme
+  // it paints light, and our light option text vanishes into it: white on white
+  // in the chat bar, pale grey on white in the options page. Reported on both
+  // surfaces, so both are asserted here.
+  describe('every select we style declares a colour scheme', () => {
+    const onDisk = (p: string) => readFileSync(p, 'utf8');
+    /** The rule body for a selector, read from the file rather than a bundle. */
+    const ruleFor = (css: string, selector: string) =>
+      new RegExp(`\\${selector}\\s*\\{([^}]*)\\}`).exec(css)?.[1] ?? '';
+
+    it('does so on the chat bar picker', () => {
+      expect(ruleFor(injectCss, '.kt-float-lang')).toMatch(/color-scheme:\s*dark/);
+    });
+
+    // The bar is the only one of the three with a light theme, so there the
+    // scheme has to follow it instead of being frozen dark.
+    it('follows the light theme on the chat bar rather than freezing dark', () => {
+      const lightBlock = /@media \(prefers-color-scheme: light\) \{([\s\S]*)\}/.exec(injectCss)?.[1] ?? '';
+      expect(lightBlock).toMatch(/\.kt-float-lang\s*\{[^}]*color-scheme:\s*light/);
+    });
+
+    it.each(['src/options/styles.css', 'src/popup/styles.css'])('does so in %s', (path) => {
+      expect(ruleFor(onDisk(path), '.kt-select')).toMatch(/color-scheme:\s*dark/);
+    });
+
+    // Nothing may force an option colour that would fight the scheme.
+    it.each(['src/content/inject.css', 'src/options/styles.css', 'src/popup/styles.css'])(
+      'has no option colour rule fighting it in %s',
+      (path) => {
+        expect(onDisk(path)).not.toMatch(/(^|[\s,>])option\s*\{/m);
+      },
+    );
+  });
+
   // The bar was read only apart from the gear. These are the two settings people
   // reach for most, and both used to mean opening a whole page.
   describe('the bar can be acted on', () => {

@@ -11,6 +11,9 @@
 @layer components {
   .kt-select {
     @apply w-full appearance-none rounded-md border border-kick-border bg-kick-surface px-2 py-1.5 text-sm text-kick-text outline-none focus:border-kick-primary;
+    /* Same as the options page: the list the browser opens needs the scheme on
+       the control, not only on body. */
+    color-scheme: dark;
   }
   .kt-input {
     @apply w-full rounded-md border border-kick-border bg-kick-surface px-2 py-1.5 text-sm text-kick-text outline-none focus:border-kick-primary placeholder:text-kick-muted;

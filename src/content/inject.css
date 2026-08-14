@@ -212,6 +212,11 @@
 
 /* #58 The two settings people reach for most, on the bar instead of a page. */
 .kt-float-lang {
+  /* The list this opens is painted by the browser, not by us. Without a scheme
+     it paints light while our near white option text stays light, so only the
+     row under the pointer is readable. Declared on the control alone: this
+     stylesheet is injected into someone else's page and must not restyle it. */
+  color-scheme: dark;
   max-width: 130px;
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -400,6 +405,11 @@
   .kt-float-power {
     border-color: rgba(0, 0, 0, 0.15);
     color: rgba(20, 25, 35, 0.7);
+  }
+  /* Our option text turns dark here, so the list has to turn light with it.
+     Freezing the scheme would just break the readability the other way round. */
+  .kt-float-lang {
+    color-scheme: light;
   }
   .kt-float-count {
     color: rgba(40, 150, 20, 0.8);

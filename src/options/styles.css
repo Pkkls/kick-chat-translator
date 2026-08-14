@@ -7,7 +7,11 @@
 }
 
 @layer components {
-  .kt-select { @apply w-full appearance-none rounded-md border border-kick-border bg-kick-surface px-3 py-2 text-sm text-kick-text outline-none focus:border-kick-primary; }
+  /* The scheme is already set on body, but it is not reaching the list the
+     browser opens for a select, which paints light under our light option text.
+     Declared on the control itself, where the list actually reads it. This page
+     has no light theme, so dark is the real theme and not a guess. */
+  .kt-select { @apply w-full appearance-none rounded-md border border-kick-border bg-kick-surface px-3 py-2 text-sm text-kick-text outline-none focus:border-kick-primary; color-scheme: dark; }
   .kt-input { @apply w-full rounded-md border border-kick-border bg-kick-surface px-3 py-2 text-sm text-kick-text outline-none focus:border-kick-primary placeholder:text-kick-muted; }
   .kt-textarea { @apply w-full min-h-[110px] rounded-md border border-kick-border bg-kick-surface px-3 py-2 text-sm text-kick-text outline-none focus:border-kick-primary placeholder:text-kick-muted font-mono leading-relaxed; }
   .kt-label { @apply text-[11px] uppercase tracking-wider text-kick-muted; }
