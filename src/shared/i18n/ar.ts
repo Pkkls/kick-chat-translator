@@ -131,4 +131,6 @@ export const ar: Record<string, string> = {
   "Shorter messages are left alone. Raise it to spend less provider quota on busy chats.": "الرسائل الأقصر من ذلك لا تُترجم. ارفع القيمة لتوفير الحصة في المحادثات السريعة.",
   "Preview": "معاينة",
   "is anyone else seeing this?": "هل أنت ترى هذا أيضاً؟",
+  "How messages are picked up, and whether a Kick tab keeps translating once you look away.": "كيف يتم التقاط الرسائل، وما إذا كانت علامة تبويب Kick تستمر في الترجمة عندما تنظر بعيداً.",
+  "Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels.": "إعادة استخدام الترجمات السابقة، ومدى ضغط المحركات على دردشة مشغولة. الإعدادات الافتراضية تناسب معظم القنوات.",
 };

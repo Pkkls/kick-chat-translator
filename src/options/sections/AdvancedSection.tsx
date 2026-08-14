@@ -40,6 +40,9 @@ export function AdvancedSection({ settings, onPatch }: Props) {
     <>
       <section class="kt-card space-y-3">
         <h2 class="text-sm font-semibold">{t('Connection')}</h2>
+        <p class="text-[11px] text-kick-muted">
+          {t('How messages are picked up, and whether a Kick tab keeps translating once you look away.')}
+        </p>
         <div class="kt-row">
           <label class="kt-label">{t('Mode')}</label>
           <select
@@ -75,6 +78,9 @@ export function AdvancedSection({ settings, onPatch }: Props) {
 
       <section class="kt-card space-y-4">
         <h2 class="text-sm font-semibold">{t('Cache & performance')}</h2>
+        <p class="text-[11px] text-kick-muted">
+          {t('Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels.')}
+        </p>
         <Row
           label={t('Cache max entries')}
           hint={t('Larger = more hits across sessions, more disk space.')}

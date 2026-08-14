@@ -131,4 +131,6 @@ export const ru: Record<string, string> = {
   "Shorter messages are left alone. Raise it to spend less provider quota on busy chats.": "Более короткие сообщения не переводятся. Увеличьте значение, чтобы экономить квоту в активных чатах.",
   "Preview": "Предпросмотр",
   "is anyone else seeing this?": "это видишь только я?",
+  "How messages are picked up, and whether a Kick tab keeps translating once you look away.": "Как сообщения подхватываются и продолжает ли вкладка Kick переводить, когда вы отвернулись.",
+  "Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels.": "Повторное использование прошлых переводов и нагрузка на движки при активном чате. Стандартные параметры подходят для большинства каналов.",
 };

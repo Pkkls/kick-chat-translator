@@ -131,4 +131,6 @@ export const zh: Record<string, string> = {
   "Shorter messages are left alone. Raise it to spend less provider quota on busy chats.": "更短的消息不会被翻译。调高该值可在高速弹幕中减少用量。",
   "Preview": "预览",
   "is anyone else seeing this?": "你们能看到这个吗？",
+  "How messages are picked up, and whether a Kick tab keeps translating once you look away.": "消息如何被拾取，以及当您将目光移开时 Kick 标签页是否继续翻译。",
+  "Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels.": "重用过去的翻译，以及引擎在繁忙聊天中的工作强度。默认设置适合大多数频道。",
 };

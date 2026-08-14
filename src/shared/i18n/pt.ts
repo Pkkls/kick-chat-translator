@@ -131,4 +131,6 @@ export const pt: Record<string, string> = {
   "Shorter messages are left alone. Raise it to spend less provider quota on busy chats.": "Mensagens menores não são traduzidas. Aumente o valor para gastar menos cota em chats movimentados.",
   "Preview": "Pré-visualização",
   "is anyone else seeing this?": "será que mais alguém tá vendo isso?",
+  "How messages are picked up, and whether a Kick tab keeps translating once you look away.": "Como as mensagens são capturadas e se uma aba do Kick continua traduzindo quando você se afasta dela.",
+  "Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels.": "Reutilização de traduções anteriores e o quanto os mecanismos são pressionados em um chat movimentado. As configurações padrão funcionam bem na maioria dos canais.",
 };

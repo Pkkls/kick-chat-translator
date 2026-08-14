@@ -129,5 +129,7 @@
   "Minimum message length",
   "Shorter messages are left alone. Raise it to spend less provider quota on busy chats.",
   "Preview",
-  "is anyone else seeing this?"
+  "is anyone else seeing this?",
+  "How messages are picked up, and whether a Kick tab keeps translating once you look away.",
+  "Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels."
 ]

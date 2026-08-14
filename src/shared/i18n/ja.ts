@@ -131,4 +131,6 @@ export const ja: Record<string, string> = {
   "Shorter messages are left alone. Raise it to spend less provider quota on busy chats.": "これより短いメッセージは翻訳しません。値を上げると、流速の速いチャットでの使用量を節約できます。",
   "Preview": "プレビュー",
   "is anyone else seeing this?": "これ、自分だけに見えてる？",
+  "How messages are picked up, and whether a Kick tab keeps translating once you look away.": "メッセージがどのように拾われ、見ないと Kick タブが翻訳を続けるかどうか。",
+  "Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels.": "過去の翻訳の再利用、および混雑したチャットでエンジンにかかる負荷。デフォルト設定はほとんどのチャンネルに適しています。",
 };

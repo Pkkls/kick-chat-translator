@@ -41,6 +41,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and changes to it show up as readable diffs.
 
 ### Added
+- **The Connection and Cache groups in Advanced now say what they are for.** Two of the four groups
+  on that tab opened straight onto number fields with no explanation of what they affect. Each now
+  carries a one-line description under its heading, like the other two already did. No setting was
+  added, removed or renamed.
 - **The Display tab now shows what each style looks like.** Picking between Below, Inline, Replace
   and Hover used to be a guess from four short descriptions. A sample chat line now sits under the
   four cards and re-renders in whichever style is selected, using the same code and the same

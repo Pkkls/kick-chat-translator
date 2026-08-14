@@ -131,4 +131,6 @@ export const fr: Record<string, string> = {
   "Shorter messages are left alone. Raise it to spend less provider quota on busy chats.": "Les messages plus courts sont ignorés. Augmentez la valeur pour économiser le quota sur les chats actifs.",
   "Preview": "Aperçu",
   "is anyone else seeing this?": "est-ce que quelqu'un d'autre voit ça ?",
+  "How messages are picked up, and whether a Kick tab keeps translating once you look away.": "Comment les messages sont détectés, et si un onglet Kick continue à traduire quand vous ne le regardez pas.",
+  "Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels.": "Réutilisation des traductions précédentes, et la charge des moteurs sur un chat actif. Les paramètres par défaut conviennent à la plupart des salons.",
 };
