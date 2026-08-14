@@ -9,7 +9,7 @@
  */
 import { UI_MESSAGES } from './i18n.messages';
 
-export const UI_LOCALES = ['en', 'ja', 'fr', 'zh', 'ar', 'ru', 'pt'] as const;
+export const UI_LOCALES = ['en', 'ja', 'fr', 'zh', 'ar', 'ru', 'pt', 'es'] as const;
 export type UiLocale = (typeof UI_LOCALES)[number];
 
 /** Native names for the language picker. */
@@ -21,6 +21,7 @@ export const UI_LOCALE_NAMES: Record<UiLocale, string> = {
   ar: 'العربية',
   ru: 'Русский',
   pt: 'Português',
+  es: 'Español',
 };
 
 const RTL_LOCALES = new Set<UiLocale>(['ar']);

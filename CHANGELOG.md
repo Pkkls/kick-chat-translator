@@ -87,6 +87,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   stylesheet that draw a real translation, so it cannot drift from what you will actually see. It
   also follows the source-language badge, the provider badge and the keep-original toggles.
 
+### Added
+- **The interface is available in Spanish.** It was already one of the languages the extension
+  translates into and one of the languages its README is written in, but not one you could read the
+  settings in. All 140 strings are covered, so nothing falls back to English.
+
 ### Fixed
 - **The language menus are readable again, in the chat bar and in the settings page.** Opening one
   gave a white panel where only the row under the pointer could be read. The browser paints that

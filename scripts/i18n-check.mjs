@@ -34,7 +34,10 @@ for (const f of codeFiles) {
 }
 const codeMissing = [...codeKeys].filter((k) => !keySet.has(k));
 
-const locales = ['ja', 'fr', 'zh', 'ar', 'ru', 'pt'];
+// Kept in step with UI_LOCALES in src/shared/i18n.ts, minus 'en' which needs no
+// catalogue because the key is the message. A locale missing from this list is
+// never checked, so it can drift out of date without anything saying so.
+const locales = ['ja', 'fr', 'zh', 'ar', 'ru', 'pt', 'es'];
 const keyLineRe = /^\s*"((?:\\.|[^"\\])*)"\s*:/;
 const report = {};
 for (const loc of locales) {

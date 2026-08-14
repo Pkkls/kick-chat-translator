@@ -5,6 +5,7 @@ import { zh } from './i18n/zh';
 import { ar } from './i18n/ar';
 import { ru } from './i18n/ru';
 import { pt } from './i18n/pt';
+import { es } from './i18n/es';
 
 /**
  * UI translation catalog: English string (key) → translation, per non-English locale.
@@ -13,4 +14,4 @@ import { pt } from './i18n/pt';
  */
 export type UiCatalog = Partial<Record<Exclude<UiLocale, 'en'>, Record<string, string>>>;
 
-export const UI_MESSAGES: UiCatalog = { ja, fr, zh, ar, ru, pt };
+export const UI_MESSAGES: UiCatalog = { ja, fr, zh, ar, ru, pt, es };
