@@ -147,6 +147,41 @@ describe('injector artifacts', () => {
     });
   });
 
+  // Measured in a live Kick page: the chat panel is 340px, the bar wanted 365,
+  // and the child hanging outside was the gear, at left 340 right 365. The
+  // language menu was holding its full 130px because a select will not shrink
+  // below its widest option unless min-width says it may.
+  //
+  // No layout engine here, so these read the stylesheet rather than measuring
+  // boxes. They pin the ordering, not the pixels.
+  describe('the bar survives a narrow chat panel', () => {
+    const ruleFor = (selector: string) =>
+      new RegExp(`\\${selector}\\s*\\{([^}]*)\\}`).exec(injectCss)?.[1] ?? '';
+
+    // The gear is the only route to the options page from Kick. If it goes, the
+    // user is locked out of their own settings.
+    it.each(['.kt-float-opts', '.kt-float-power'])('never lets %s be squeezed out', (sel) => {
+      expect(ruleFor(sel)).toMatch(/flex-shrink:\s*0/);
+    });
+
+    it('lets the language menu shrink instead', () => {
+      expect(ruleFor('.kt-float-lang')).toMatch(/min-width:\s*0/);
+    });
+
+    it('gives up the label first, with an ellipsis rather than a wrap', () => {
+      const label = ruleFor('.kt-float-label');
+      expect(label).toMatch(/min-width:\s*0/);
+      expect(label).toMatch(/text-overflow:\s*ellipsis/);
+      expect(label).toMatch(/white-space:\s*nowrap/);
+    });
+
+    // Control: the probe can tell the two apart, so the assertions above are not
+    // passing on any rule at all.
+    it('does not claim the label is pinned', () => {
+      expect(ruleFor('.kt-float-label')).not.toMatch(/flex-shrink:\s*0/);
+    });
+  });
+
   // The list a select opens is painted by the browser. Without a declared scheme
   // it paints light, and our light option text vanishes into it: white on white
   // in the chat bar, pale grey on white in the options page. Reported on both

@@ -189,13 +189,24 @@
   box-shadow: 0 0 8px rgba(83, 252, 24, 0.6);
 }
 
+/* Kick's chat panel is about 340px wide and the bar has to fit inside it.
+   Order of what gives when it does not: the label first, then the language
+   menu. The gear and the pause button never give, because the gear is the only
+   way to the options page from Kick and losing it locks the user out. */
 .kt-float-label {
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-weight: 600;
   letter-spacing: 0.01em;
 }
 
 .kt-float-opts {
+  /* Never gives, and never shrinks to nothing: this is the only route to the
+     options page from a Kick page. */
+  flex-shrink: 0;
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 4px;
@@ -217,7 +228,11 @@
      row under the pointer is readable. Declared on the control alone: this
      stylesheet is injected into someone else's page and must not restyle it. */
   color-scheme: dark;
-  max-width: 130px;
+  /* A select's intrinsic minimum is its widest option, so without min-width it
+     refuses to shrink however much room is left, and it pushed the gear out of
+     the bar entirely. Measured at 340px: it was taking all 130px. */
+  min-width: 0;
+  max-width: 96px;
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 4px;
@@ -232,6 +247,8 @@
 }
 
 .kt-float-power {
+  /* Never gives. See the ordering note on .kt-float-label. */
+  flex-shrink: 0;
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 4px;

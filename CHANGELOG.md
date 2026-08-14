@@ -80,6 +80,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   also follows the source-language badge, the provider badge and the keep-original toggles.
 
 ### Fixed
+- **The settings button is back inside the chat bar.** Adding the language menu and the pause button
+  pushed it out of the frame on a normal Kick chat panel, and it is the only way to reach the
+  options page from Kick, so it left no way back in. The bar now gives up room in a fixed order:
+  the status text shortens with an ellipsis first, then the language menu narrows. The settings
+  button and the pause button never shrink.
 - **Dropdown menus are readable again.** Opening the language menu on the chat bar showed a white
   panel where only the line under the pointer could be read, and the menus in the options page and
   the popup showed pale grey text on white. The list a menu opens is drawn by the browser, and with
