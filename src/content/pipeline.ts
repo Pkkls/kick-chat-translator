@@ -83,7 +83,9 @@ export class TranslationPipeline {
   private decisions: Decision[] = [];
 
   private note(text: string, outcome: string): void {
-    this.decisions.push({ at: Date.now(), text: text.slice(0, 80), outcome });
+    // Kept whole enough to be readable in full on hover. Still bounded, because
+    // this text comes from a page we do not control.
+    this.decisions.push({ at: Date.now(), text: text.slice(0, 200), outcome });
     if (this.decisions.length > DECISION_LOG_MAX) this.decisions.shift();
   }
 
@@ -162,8 +164,12 @@ export class TranslationPipeline {
     if (isSlangOnly(realText)) return 'it is only chat slang'; // poggers / copium / kekw …
 
     const detected = detectLanguage(realText);
+    // Three exits can end a line for "already readable", and they are not the
+    // same event: two of them decide here without asking anyone, the third is
+    // the service answering after the call was made. Each says which it is, or
+    // the Debug tab shows two verdicts for what looks like one case.
     if (this.settings.ignoreEnglish && this.effTarget === 'en' && detected === 'en') {
-      return 'it is already English';
+      return 'it looks like English and you asked to skip English';
     }
     if (isSameLanguageAsTarget(detected, this.effTarget)) return 'it is already in your language';
     const byLang = shouldDropBySourceLang(detected, this.settings);
@@ -367,7 +373,7 @@ export class TranslationPipeline {
     }
     if (!opts.force) {
       if (isSameLanguageAsTarget(result.detectedLang, this.effTarget) && this.settings.ignoreEnglish) {
-        this.skip(msg, 'it is already in your language');
+        this.skip(msg, 'the translation service found it was already in your language');
         removeAllArtifacts(msg.injectionTarget);
         return;
       }

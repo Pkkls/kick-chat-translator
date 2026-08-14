@@ -218,6 +218,31 @@ describe('TranslationPipeline, the last decisions are kept for the Debug tab', (
   it('says nothing at all before any message has been seen', () => {
     expect(build().recentDecisions()).toEqual([]);
   });
+
+  // Three exits can end a line for "already readable". Two decide here without
+  // asking anyone; the third is the service answering after the call was paid
+  // for. They used to share a wording, so the Debug tab showed two verdicts for
+  // what looked like one case.
+  it('tells what it decided itself apart from what the service decided', async () => {
+    // Our detector reads this as Japanese, so it goes out to the service, which
+    // then reports the source was English, which is the reading language.
+    sendMock.mockResolvedValue({ type: 'translate.result', payload: { ok: true, result: { translatedText: 'x', detectedLang: 'en', provider: 'google' } } });
+    const p = new TranslationPipeline({ ...defaultSettings(), enabled: true, targetLang: 'en', pauseWhenHidden: false, ignoreEnglish: true, minTextLength: 5 });
+    await p.onDomMessage(liveMsg(JP));
+    await flush();
+    const outcome = p.recentDecisions()[0]?.outcome ?? '';
+    expect(outcome).toMatch(/translation service/i);
+    expect(outcome).not.toBe('it is already in your language');
+  });
+
+  // The table shows one line and hangs the rest on the hover, so the ring has to
+  // still be holding the rest.
+  it('keeps enough of a long message to show it whole on hover', async () => {
+    const p = build();
+    await p.onDomMessage(liveMsg('あ'.repeat(150)));
+    await flush();
+    expect(p.recentDecisions()[0]?.text.length).toBeGreaterThan(80);
+  });
 });
 
 describe('TranslationPipeline, a spent channel budget is reported once', () => {

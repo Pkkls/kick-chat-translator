@@ -67,7 +67,14 @@ export function DebugSection() {
                   <td class="py-1 pr-3 whitespace-nowrap text-kick-muted">
                     {new Date(d.at).toLocaleTimeString()}
                   </td>
-                  <td class="py-1 pr-3 break-words">{d.text}</td>
+                  {/* One line, cut with an ellipsis at the column edge rather
+                      than broken through the middle of a word. The whole
+                      message is on the hover, same as the reason on a chat
+                      line. max-w-0 with w-full is what lets a table cell
+                      ellipsis at all. */}
+                  <td class="py-1 pr-3 max-w-0 w-full truncate" title={d.text}>
+                    {d.text}
+                  </td>
                   <td
                     class={`py-1 whitespace-nowrap ${
                       d.outcome === 'translated' ? 'text-kick-primary' : 'text-kick-muted'

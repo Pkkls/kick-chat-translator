@@ -80,6 +80,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   also follows the source-language badge, the provider badge and the keep-original toggles.
 
 ### Fixed
+- **The Debug tab no longer gives two different answers for what looks like one case.** Three
+  separate checks can end a message with "already readable", and two of them were phrased
+  identically, so the list showed two verdicts and no way to tell them apart. Each now says who
+  decided and when: one names the setting that skipped it, one says it was already in your language,
+  and the third says the translation service reported that only after being asked. Messages in the
+  list are also cut at the column edge with an ellipsis instead of through the middle of a word, and
+  the whole message is on the hover.
 - **The settings button is back inside the chat bar.** Adding the language menu and the pause button
   pushed it out of the frame on a normal Kick chat panel, and it is the only way to reach the
   options page from Kick, so it left no way back in. The bar now gives up room in a fixed order:
