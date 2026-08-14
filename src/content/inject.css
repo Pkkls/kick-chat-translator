@@ -210,6 +210,37 @@
   color: #53fc18;
 }
 
+/* #58 The two settings people reach for most, on the bar instead of a page. */
+.kt-float-lang {
+  max-width: 130px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 1px 4px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 11px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+.kt-float-lang:hover {
+  border-color: rgba(83, 252, 24, 0.4);
+}
+
+.kt-float-power {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 2px 6px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+.kt-float-power:hover {
+  border-color: rgba(83, 252, 24, 0.4);
+  color: #53fc18;
+}
+
 .kt-float-local {
   background: rgba(83, 252, 24, 0.12);
   border: 1px solid rgba(83, 252, 24, 0.35);
@@ -364,7 +395,9 @@
   .kt-float:hover {
     background: rgba(235, 238, 242, 0.98);
   }
-  .kt-float-opts {
+  .kt-float-opts,
+  .kt-float-lang,
+  .kt-float-power {
     border-color: rgba(0, 0, 0, 0.15);
     color: rgba(20, 25, 35, 0.7);
   }

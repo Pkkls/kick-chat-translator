@@ -1,7 +1,7 @@
 import injectCss from './inject.css?inline';
 import type { TranslationResult } from '~/shared/types';
 import type { Settings } from '~/shared/settings';
-import { getLang, langFlag, resolveBrowserLang } from '~/shared/languages';
+import { LANGUAGES, getLang, langFlag, resolveBrowserLang } from '~/shared/languages';
 
 const STYLE_ID = 'kt-inject-style';
 const TRANS_CLASS = 'kt-translation';
@@ -186,6 +186,8 @@ const FLOAT_ID = 'kt-floating-bar';
 
 export interface FloatingBarHandlers {
   onToggle: (enabled: boolean) => void;
+  /** Reading language picked on the bar, so the two most used settings need no page. */
+  onTargetLang: (code: string) => void;
   onOpenOptions: () => void;
   /** Invoked from a real click (user gesture) so on-device models can download. */
   onEnableLocal: () => void;
@@ -213,6 +215,27 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
   label.className = 'kt-float-label';
   bar.appendChild(label);
 
+  // The reading language, on the bar. Changing it used to mean opening a page.
+  const langPick = document.createElement('select');
+  langPick.className = 'kt-float-lang';
+  langPick.title = 'Translate into';
+  for (const opt of [{ code: 'auto', label: 'Auto' }, ...LANGUAGES.map((l) => ({ code: l.code, label: l.label }))]) {
+    const o = document.createElement('option');
+    o.value = opt.code;
+    o.textContent = opt.label;
+    langPick.appendChild(o);
+  }
+  langPick.value = settings.targetLang;
+  // The bar itself toggles on click, so neither opening nor using the picker
+  // may bubble up to it.
+  langPick.addEventListener('click', (e) => e.stopPropagation());
+  langPick.addEventListener('change', (e) => {
+    e.stopPropagation();
+    setBarEnabled(bar, label, bar.dataset.enabled === 'true', langPick.value);
+    h.onTargetLang(langPick.value);
+  });
+  bar.appendChild(langPick);
+
   const count = document.createElement('span');
   count.className = 'kt-float-count';
   count.dataset.n = '0';
@@ -230,6 +253,20 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
   });
   bar.appendChild(localChip);
 
+  // Pause and resume were already here, but only as a click anywhere on the bar,
+  // which nothing announced. This is the same action with a face on it.
+  const power = document.createElement('button');
+  power.type = 'button';
+  power.className = 'kt-float-power';
+  power.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const enabled = bar.dataset.enabled !== 'true';
+    setBarEnabled(bar, label, enabled, bar.dataset.lang ?? settings.targetLang);
+    h.onToggle(enabled);
+  });
+  bar.appendChild(power);
+
   const opts = document.createElement('button');
   opts.type = 'button';
   opts.className = 'kt-float-opts';
@@ -246,7 +283,11 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
 
   bar.addEventListener('click', (e) => {
     const t = e.target as Node;
-    if (t === opts || t === localChip || count.contains(t) || opts.contains(t) || localChip.contains(t)) {
+    if (
+      t === opts || t === localChip || t === langPick || t === power ||
+      count.contains(t) || opts.contains(t) || localChip.contains(t) ||
+      langPick.contains(t) || power.contains(t)
+    ) {
       return;
     }
     e.preventDefault();
@@ -265,6 +306,15 @@ function setBarEnabled(bar: HTMLElement, label: HTMLElement, enabled: boolean, l
   // Show the resolved language, not the 'auto' sentinel.
   const shown = lang === 'auto' ? resolveBrowserLang() : lang;
   label.textContent = enabled ? `Translating → ${shown.toUpperCase()}` : 'Translation off';
+  // Scoped to the bar we were handed, never to the document: there are two chat
+  // panels on the page and only one of them is the one on screen.
+  const picker = bar.querySelector<HTMLSelectElement>('.kt-float-lang');
+  if (picker && picker.value !== lang) picker.value = lang;
+  const power = bar.querySelector<HTMLElement>('.kt-float-power');
+  if (power) {
+    power.textContent = enabled ? '⏸' : '▶';
+    power.title = enabled ? 'Pause translation' : 'Resume translation';
+  }
 }
 
 export function updateFloatingBar(settings: Settings): void {

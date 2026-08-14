@@ -100,6 +100,7 @@ async function main(): Promise<void> {
         }
         mountFloatingBar(host, settings, {
           onToggle: (enabled) => void saveSettings({ enabled }),
+          onTargetLang: (targetLang) => void saveSettings({ targetLang }),
           onOpenOptions: () => void chrome.runtime.sendMessage({ type: 'open.options' }),
           onEnableLocal: () => {
             const pairs = localEngine.downloadablePairs().filter((p) => p.tgt === settings.targetLang);

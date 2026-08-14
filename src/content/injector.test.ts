@@ -1,9 +1,9 @@
 import { readFileSync } from 'node:fs';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { defaultSettings } from '~/shared/settings';
 import type { Settings } from '~/shared/settings';
 import type { TranslationResult } from '~/shared/types';
-import { TRANSLATION_SELECTOR, applyShowOriginal, inject, markSkipped, removeAllArtifacts, showError, showLoading } from './injector';
+import { TRANSLATION_SELECTOR, applyShowOriginal, inject, markSkipped, mountFloatingBar, removeAllArtifacts, showError, showLoading } from './injector';
 // Read from disk: vitest runs with CSS processing off, so `?inline` imports
 // resolve to an empty string and would make these assertions pass on anything.
 const injectCss = readFileSync('src/content/inject.css', 'utf8');
@@ -144,6 +144,64 @@ describe('injector artifacts', () => {
     // exactly how the Replace style lost its own retry.
     it('can reveal that button on hover', () => {
       expect(injectCss).toContain('.kt-error:hover .kt-retry');
+    });
+  });
+
+  // The bar was read only apart from the gear. These are the two settings people
+  // reach for most, and both used to mean opening a whole page.
+  describe('the bar can be acted on', () => {
+    const handlers = () => ({
+      onToggle: vi.fn(),
+      onTargetLang: vi.fn(),
+      onOpenOptions: vi.fn(),
+      onEnableLocal: vi.fn(),
+    });
+    const mount = (h: ReturnType<typeof handlers>, over: Partial<Settings> = {}) => {
+      const host = document.createElement('div');
+      document.body.appendChild(host);
+      mountFloatingBar(host, { ...defaultSettings(), enabled: true, targetLang: 'auto', ...over }, h);
+      return host.querySelector<HTMLElement>('#kt-floating-bar')!;
+    };
+
+    it('offers the reading language, starting on the one in use', () => {
+      const bar = mount(handlers(), { targetLang: 'fr' });
+      const pick = bar.querySelector<HTMLSelectElement>('.kt-float-lang');
+      expect(pick).not.toBeNull();
+      expect(pick?.value).toBe('fr');
+    });
+
+    it('reports a new reading language', () => {
+      const h = handlers();
+      const bar = mount(h);
+      const pick = bar.querySelector<HTMLSelectElement>('.kt-float-lang')!;
+      pick.value = 'ja';
+      pick.dispatchEvent(new Event('change', { bubbles: true }));
+      expect(h.onTargetLang).toHaveBeenCalledWith('ja');
+    });
+
+    // The bar toggles when clicked, so touching the picker must not also pause it.
+    it('does not pause when the language picker is used', () => {
+      const h = handlers();
+      const bar = mount(h);
+      const pick = bar.querySelector<HTMLSelectElement>('.kt-float-lang')!;
+      pick.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      expect(h.onToggle).not.toHaveBeenCalled();
+    });
+
+    it('pauses and resumes from its own button', () => {
+      const h = handlers();
+      const bar = mount(h);
+      const power = bar.querySelector<HTMLElement>('.kt-float-power')!;
+      power.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      expect(h.onToggle).toHaveBeenCalledWith(false);
+      power.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      expect(h.onToggle).toHaveBeenLastCalledWith(true);
+    });
+
+    // opacity:0 until revealed was how the Replace style lost its retry button.
+    it('can be seen in a light theme too', () => {
+      expect(injectCss).toContain('.kt-float-lang');
+      expect(injectCss).toContain('.kt-float-power');
     });
   });
 

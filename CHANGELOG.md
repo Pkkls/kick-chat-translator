@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **The chat bar can now be used, not just read.** It carries a reading language picker and a
+  pause button, the two settings people touch most and the only ones that used to force a whole
+  options page open. Pause and resume were already there, as a click anywhere on the bar, which
+  nothing announced; that still works and now has a button that says so.
 - **A Debug tab in the options page, showing the last 50 calls the extension made.** Press "Read
   decisions" and it asks an open Kick tab what it recently translated and what it left alone, with
   the reason for each. The list lives in that tab's memory only, is never written to storage, and
