@@ -133,4 +133,9 @@ export const zh: Record<string, string> = {
   "is anyone else seeing this?": "你们能看到这个吗？",
   "How messages are picked up, and whether a Kick tab keeps translating once you look away.": "消息如何被拾取，以及当您将目光移开时 Kick 标签页是否继续翻译。",
   "Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels.": "重用过去的翻译，以及引擎在繁忙聊天中的工作强度。默认设置适合大多数频道。",
+  "one channel name per line": "每行输入一个频道名称",
+  "one username per line": "每行输入一个用户名",
+  "Glossary": "词汇表",
+  "Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.": "引擎对您频道的误翻单词。每行在翻译后将左侧替换为右侧。",
+  "one rule per line, in the form word→replacement": "每行一条规则，格式为单词→替换",
 };

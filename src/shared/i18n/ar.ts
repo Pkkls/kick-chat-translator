@@ -133,4 +133,9 @@ export const ar: Record<string, string> = {
   "is anyone else seeing this?": "هل أنت ترى هذا أيضاً؟",
   "How messages are picked up, and whether a Kick tab keeps translating once you look away.": "كيف يتم التقاط الرسائل، وما إذا كانت علامة تبويب Kick تستمر في الترجمة عندما تنظر بعيداً.",
   "Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels.": "إعادة استخدام الترجمات السابقة، ومدى ضغط المحركات على دردشة مشغولة. الإعدادات الافتراضية تناسب معظم القنوات.",
+  "one channel name per line": "اسم قناة واحد في كل سطر",
+  "one username per line": "اسم مستخدم واحد في كل سطر",
+  "Glossary": "المسرد",
+  "Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.": "الكلمات التي تُترجمها المحركات بشكل خاطئ لقنواتك. كل سطر يستبدل الجانب الأيسر بالجانب الأيمن، بعد الترجمة.",
+  "one rule per line, in the form word→replacement": "قاعدة واحدة في كل سطر، بالصيغة كلمة→استبدال",
 };

@@ -133,4 +133,9 @@ export const pt: Record<string, string> = {
   "is anyone else seeing this?": "será que mais alguém tá vendo isso?",
   "How messages are picked up, and whether a Kick tab keeps translating once you look away.": "Como as mensagens são capturadas e se uma aba do Kick continua traduzindo quando você se afasta dela.",
   "Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels.": "Reutilização de traduções anteriores e o quanto os mecanismos são pressionados em um chat movimentado. As configurações padrão funcionam bem na maioria dos canais.",
+  "one channel name per line": "um nome de canal por linha",
+  "one username per line": "um nome de usuário por linha",
+  "Glossary": "Glossário",
+  "Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.": "Palavras que os mecanismos traduzem incorretamente para seus canais. Cada linha substitui o lado esquerdo pelo lado direito, após a tradução.",
+  "one rule per line, in the form word→replacement": "uma regra por linha, no formato palavra→substituição",
 };

@@ -133,4 +133,9 @@ export const ru: Record<string, string> = {
   "is anyone else seeing this?": "это видишь только я?",
   "How messages are picked up, and whether a Kick tab keeps translating once you look away.": "Как сообщения подхватываются и продолжает ли вкладка Kick переводить, когда вы отвернулись.",
   "Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels.": "Повторное использование прошлых переводов и нагрузка на движки при активном чате. Стандартные параметры подходят для большинства каналов.",
+  "one channel name per line": "одно название канала на строку",
+  "one username per line": "одно имя пользователя на строку",
+  "Glossary": "Глоссарий",
+  "Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.": "Слова, которые движки неправильно переводят для ваших каналов. Каждая строка заменяет левую сторону на правую сторону после перевода.",
+  "one rule per line, in the form word→replacement": "одно правило на строку, в формате слово→замена",
 };

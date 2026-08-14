@@ -131,5 +131,10 @@
   "Preview",
   "is anyone else seeing this?",
   "How messages are picked up, and whether a Kick tab keeps translating once you look away.",
-  "Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels."
+  "Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels.",
+  "one channel name per line",
+  "one username per line",
+  "Glossary",
+  "Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.",
+  "one rule per line, in the form word→replacement"
 ]

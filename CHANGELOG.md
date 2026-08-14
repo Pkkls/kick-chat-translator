@@ -41,6 +41,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and changes to it show up as readable diffs.
 
 ### Added
+- **The glossary is editable at last.** It has always been in the settings and the translator has
+  always applied it, but the only way to put anything in it was to hand-edit an exported file. It
+  now has its own box on the Filters tab, with the expected format shown in the empty box.
+- **The empty channel and user lists now show what goes in them.** They were blank boxes with no
+  hint of one-entry-per-line, and two of them used real streamer names as examples. The examples
+  are now neutral placeholders.
 - **The Connection and Cache groups in Advanced now say what they are for.** Two of the four groups
   on that tab opened straight onto number fields with no explanation of what they affect. Each now
   carries a one-line description under its heading, like the other two already did. No setting was

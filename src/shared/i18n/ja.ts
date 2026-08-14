@@ -133,4 +133,9 @@ export const ja: Record<string, string> = {
   "is anyone else seeing this?": "これ、自分だけに見えてる？",
   "How messages are picked up, and whether a Kick tab keeps translating once you look away.": "メッセージがどのように拾われ、見ないと Kick タブが翻訳を続けるかどうか。",
   "Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels.": "過去の翻訳の再利用、および混雑したチャットでエンジンにかかる負荷。デフォルト設定はほとんどのチャンネルに適しています。",
+  "one channel name per line": "チャンネル名を1行に1つ入力",
+  "one username per line": "ユーザー名を1行に1つ入力",
+  "Glossary": "用語集",
+  "Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.": "エンジンがあなたのチャンネルで誤訳する単語。各行は翻訳後に左側を右側に置き換えます。",
+  "one rule per line, in the form word→replacement": "1行に1つのルール、単語→置換の形式で入力",
 };

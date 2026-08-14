@@ -89,7 +89,7 @@ export function FilterSection({ settings, onPatch }: Props) {
           <textarea
             class="kt-textarea"
             value={settings.whitelistChannels.join('\n')}
-            placeholder="adinross&#10;trainwreckstv"
+            placeholder={`${t('one channel name per line')}\nsome-channel\nanother-channel`}
             onInput={(e) => onPatch({ whitelistChannels: toList((e.target as HTMLTextAreaElement).value) })}
           />
         </div>
@@ -98,6 +98,7 @@ export function FilterSection({ settings, onPatch }: Props) {
           <textarea
             class="kt-textarea"
             value={settings.blacklistChannels.join('\n')}
+            placeholder={`${t('one channel name per line')}\nsome-channel`}
             onInput={(e) => onPatch({ blacklistChannels: toList((e.target as HTMLTextAreaElement).value) })}
           />
         </div>
@@ -106,10 +107,23 @@ export function FilterSection({ settings, onPatch }: Props) {
           <textarea
             class="kt-textarea"
             value={settings.blacklistUsers.join('\n')}
-            placeholder="annoyingbot&#10;spammer123"
+            placeholder={`${t('one username per line')}\nsome-user`}
             onInput={(e) => onPatch({ blacklistUsers: toList((e.target as HTMLTextAreaElement).value) })}
           />
         </div>
+      </section>
+
+      <section class="kt-card space-y-3">
+        <h2 class="text-sm font-semibold">{t('Glossary')}</h2>
+        <p class="text-[11px] text-kick-muted">
+          {t('Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.')}
+        </p>
+        <textarea
+          class="kt-textarea"
+          value={settings.glossary.join('\n')}
+          placeholder={`${t('one rule per line, in the form word→replacement')}\n草→lol\nkusa→lol`}
+          onInput={(e) => onPatch({ glossary: toList((e.target as HTMLTextAreaElement).value) })}
+        />
       </section>
     </>
   );
