@@ -1,4 +1,5 @@
 import type { Settings } from '~/shared/settings';
+import type { Decision } from '~/shared/messages';
 import type { ProviderId, TranslationOutcome, TranslationResult } from '~/shared/types';
 import { MAX_TEXT_LENGTH } from '~/shared/constants';
 import { rootLogger } from '~/shared/logger';
@@ -61,6 +62,9 @@ const DROP_REASON: Record<string, string> = {
   lang_not_allowed: 'its language is not on your allowed list',
 };
 
+/** How many decisions the Debug tab can look back over. */
+const DECISION_LOG_MAX = 50;
+
 const CONTEXT_LINES = 2;
 // Pro-drop, no-person-marking sources (ja/ko/zh/vi/th/ar) drop the subject; feeding
 // more prior dialogue lets DeepL's `context` infer the right person ("he", not "I").
@@ -72,6 +76,31 @@ export class TranslationPipeline {
   private recent = new Map<string, string[]>();
   /** Per-user dedup: skip identical messages spammed by the same user. */
   private userDedup = new Map<string, string>();
+  /**
+   * The last few calls this made, so the Debug tab can show them. Memory only,
+   * never written to storage, and dropped with the page.
+   */
+  private decisions: Decision[] = [];
+
+  private note(text: string, outcome: string): void {
+    this.decisions.push({ at: Date.now(), text: text.slice(0, 80), outcome });
+    if (this.decisions.length > DECISION_LOG_MAX) this.decisions.shift();
+  }
+
+  /** Newest first, for the Debug tab. */
+  recentDecisions(): Decision[] {
+    return [...this.decisions].reverse();
+  }
+
+  /**
+   * Leave the reason on the line and remember it. An empty reason clears the
+   * line, which every message about to be translated does, so a recycled row
+   * never keeps the explanation of the message that used it before.
+   */
+  private skip(msg: IncomingDomMessage, reason: string): void {
+    markSkipped(msg.injectionTarget, reason);
+    if (reason) this.note(msg.text, reason);
+  }
 
   constructor(settings: Settings) {
     this.settings = settings;
@@ -176,12 +205,12 @@ export class TranslationPipeline {
   async onDomMessage(msg: IncomingDomMessage): Promise<void> {
     const prepared = this.prepare(msg.text, msg);
     if (typeof prepared === 'string') {
-      markSkipped(msg.injectionTarget, prepared);
+      this.skip(msg, prepared);
       return;
     }
     // This line is going to be translated, so drop any reason left on it by the
     // message that used this row before the virtual scroller recycled it.
-    markSkipped(msg.injectionTarget, '');
+    this.skip(msg, '');
     const { real, detected } = prepared;
     const target = this.effTarget;
 
@@ -211,14 +240,14 @@ export class TranslationPipeline {
           log.debug('local translate failed, falling back', err);
         }
       } else if (this.settings.engineMode === 'local-only') {
-        markSkipped(msg.injectionTarget, 'there is no on device model for its language yet');
+        this.skip(msg, 'there is no on device model for its language yet');
         removeAllArtifacts(msg.injectionTarget);
         return;
       }
     }
 
     if (this.settings.engineMode === 'local-only') {
-      markSkipped(msg.injectionTarget, 'there is no on device model for its language yet');
+      this.skip(msg, 'there is no on device model for its language yet');
       removeAllArtifacts(msg.injectionTarget);
       return;
     }
@@ -332,18 +361,18 @@ export class TranslationPipeline {
     }
     const tt = applyUserGlossary(result.translatedText, this.settings.glossary);
     if (!tt) {
-      markSkipped(msg.injectionTarget, 'your glossary emptied the translation');
+      this.skip(msg, 'your glossary emptied the translation');
       removeAllArtifacts(msg.injectionTarget);
       return;
     }
     if (!opts.force) {
       if (isSameLanguageAsTarget(result.detectedLang, this.effTarget) && this.settings.ignoreEnglish) {
-        markSkipped(msg.injectionTarget, 'it is already in your language');
+        this.skip(msg, 'it is already in your language');
         removeAllArtifacts(msg.injectionTarget);
         return;
       }
       if (tt.trim().toLowerCase() === real.trim().toLowerCase()) {
-        markSkipped(msg.injectionTarget, 'the translation came back the same as the original');
+        this.skip(msg, 'the translation came back the same as the original');
         removeAllArtifacts(msg.injectionTarget);
         return;
       }
@@ -363,6 +392,7 @@ export class TranslationPipeline {
       cached: false,
     };
     inject(msg.injectionTarget, full, this.settings, () => void this.forceRetranslate(msg, real));
+    this.note(real, 'translated');
     incrementFloatingCount();
     updateActiveProvider(result.provider);
     // Provider switch notification.

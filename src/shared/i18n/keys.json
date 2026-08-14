@@ -136,5 +136,12 @@
   "one username per line",
   "Glossary",
   "Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.",
-  "one rule per line, in the form word→replacement"
+  "one rule per line, in the form word→replacement",
+  "Debug",
+  "Last decisions",
+  "Why each recent message was translated or left alone. Read from an open Kick tab, kept in memory there, never saved to disk.",
+  "Read decisions",
+  "No Kick tab is open. Open a channel, let the chat run, then read again.",
+  "The open Kick tab has not loaded the extension yet. Reload the tab, then read again.",
+  "Nothing recorded yet. Let a chat run for a moment, then read again."
 ]

@@ -9,15 +9,17 @@ import { ProviderSection } from './sections/ProviderSection';
 import { DisplaySection } from './sections/DisplaySection';
 import { FilterSection } from './sections/FilterSection';
 import { AdvancedSection } from './sections/AdvancedSection';
+import { DebugSection } from './sections/DebugSection';
 import { AboutSection } from './sections/AboutSection';
 
-type Tab = 'providers' | 'display' | 'filters' | 'advanced' | 'about';
+type Tab = 'providers' | 'display' | 'filters' | 'advanced' | 'debug' | 'about';
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'providers', label: 'Providers' },
   { id: 'display', label: 'Display' },
   { id: 'filters', label: 'Filters' },
   { id: 'advanced', label: 'Advanced' },
+  { id: 'debug', label: 'Debug' },
   { id: 'about', label: 'About' },
 ];
 
@@ -105,6 +107,7 @@ export function App() {
         {tab === 'display' && <DisplaySection settings={settings} onPatch={patch} />}
         {tab === 'filters' && <FilterSection settings={settings} onPatch={patch} />}
         {tab === 'advanced' && <AdvancedSection settings={settings} onPatch={patch} />}
+        {tab === 'debug' && <DebugSection />}
         {tab === 'about' && <AboutSection />}
       </main>
     </div>

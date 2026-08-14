@@ -138,4 +138,11 @@ export const ja: Record<string, string> = {
   "Glossary": "用語集",
   "Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.": "エンジンがあなたのチャンネルで誤訳する単語。各行は翻訳後に左側を右側に置き換えます。",
   "one rule per line, in the form word→replacement": "1行に1つのルール、単語→置換の形式で入力",
+  "Debug": "デバッグ",
+  "Last decisions": "最後の決定",
+  "Why each recent message was translated or left alone. Read from an open Kick tab, kept in memory there, never saved to disk.": "各最近のメッセージが翻訳されたかそのままにされたかの理由。開いているKickタブから読み込み、メモリに保存され、ディスクには保存されません。",
+  "Read decisions": "決定を読む",
+  "No Kick tab is open. Open a channel, let the chat run, then read again.": "開いているKickタブがありません。チャンネルを開き、チャットを実行させてから、もう一度読み込んでください。",
+  "The open Kick tab has not loaded the extension yet. Reload the tab, then read again.": "開いているKickタブにはまだ拡張機能が読み込まれていません。タブを再読み込みしてから、もう一度読み込んでください。",
+  "Nothing recorded yet. Let a chat run for a moment, then read again.": "まだ何も記録されていません。チャットを少し実行してから、もう一度読み込んでください。",
 };

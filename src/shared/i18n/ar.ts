@@ -138,4 +138,11 @@ export const ar: Record<string, string> = {
   "Glossary": "المسرد",
   "Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.": "الكلمات التي تُترجمها المحركات بشكل خاطئ لقنواتك. كل سطر يستبدل الجانب الأيسر بالجانب الأيمن، بعد الترجمة.",
   "one rule per line, in the form word→replacement": "قاعدة واحدة في كل سطر، بالصيغة كلمة→استبدال",
+  "Debug": "تصحيح الأخطاء",
+  "Last decisions": "آخر القرارات",
+  "Why each recent message was translated or left alone. Read from an open Kick tab, kept in memory there, never saved to disk.": "لماذا تمت ترجمة كل رسالة حديثة أم تركت كما هي. اقرأ من علامة تبويب Kick مفتوحة، محفوظة في الذاكرة هناك، لم تُحفظ أبداً على القرص.",
+  "Read decisions": "اقرأ القرارات",
+  "No Kick tab is open. Open a channel, let the chat run, then read again.": "لا توجد علامة تبويب Kick مفتوحة. افتح قناة، دع الدردشة تعمل، ثم اقرأ مرة أخرى.",
+  "The open Kick tab has not loaded the extension yet. Reload the tab, then read again.": "لم يتم تحميل الإضافة على علامة تبويب Kick المفتوحة حتى الآن. أعد تحميل علامة التبويب، ثم اقرأ مرة أخرى.",
+  "Nothing recorded yet. Let a chat run for a moment, then read again.": "لم يتم تسجيل أي شيء حتى الآن. دع الدردشة تعمل قليلاً، ثم اقرأ مرة أخرى.",
 };

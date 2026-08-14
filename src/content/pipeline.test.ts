@@ -174,6 +174,52 @@ describe('TranslationPipeline, a dropped line says why', () => {
   });
 });
 
+// The Debug tab reads this. Nineteen rounds of hand written instrumentation
+// answered the same question; the ring makes it available without any.
+describe('TranslationPipeline, the last decisions are kept for the Debug tab', () => {
+  /** Connected, and shaped so extractMessageText finds the text: otherwise the
+   *  recycled-row guard bails out before a translation is ever recorded. */
+  const liveMsg = (text: string) => {
+    const rowElement = document.createElement('div');
+    const injectionTarget = document.createElement('div');
+    const span = document.createElement('span');
+    span.className = 'font-normal';
+    span.textContent = text;
+    injectionTarget.appendChild(span);
+    rowElement.appendChild(injectionTarget);
+    document.body.appendChild(rowElement);
+    return { rowElement, injectionTarget, id: 'd1', text, channel: 'chan', username: 'user', isBot: false };
+  };
+  const build = () =>
+    new TranslationPipeline({ ...defaultSettings(), enabled: true, targetLang: 'en', pauseWhenHidden: false, minTextLength: 5 });
+
+  beforeEach(() => {
+    document.body.innerHTML = '';
+    sendMock.mockReset();
+    sendMock.mockResolvedValue({ type: 'translate.result', payload: { ok: true, result: { translatedText: 'a translation', detectedLang: 'ja', provider: 'google' } } });
+  });
+
+  it('records both what it skipped and what it translated, newest first', async () => {
+    const p = build();
+    await p.onDomMessage(liveMsg('abcd'));
+    await p.onDomMessage(liveMsg(JP));
+    await flush();
+    const seen = p.recentDecisions();
+    expect(seen[0]?.outcome).toBe('translated');
+    expect(seen[1]?.outcome).toMatch(/shorter/i);
+  });
+
+  it('never grows past fifty', async () => {
+    const p = build();
+    for (let i = 0; i < 60; i++) await p.onDomMessage(liveMsg(`ab${i}`));
+    expect(p.recentDecisions()).toHaveLength(50);
+  });
+
+  it('says nothing at all before any message has been seen', () => {
+    expect(build().recentDecisions()).toEqual([]);
+  });
+});
+
 describe('TranslationPipeline, a spent channel budget is reported once', () => {
   const domMsg = (text: string) => {
     const rowElement = document.createElement('div');

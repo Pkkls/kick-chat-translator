@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **A Debug tab in the options page, showing the last 50 calls the extension made.** Press "Read
+  decisions" and it asks an open Kick tab what it recently translated and what it left alone, with
+  the reason for each. The list lives in that tab's memory only, is never written to storage, and
+  disappears when the page does. If no Kick tab is open, or the open one has not loaded the
+  extension yet, it says so instead of failing. Until now the debug setting only wrote to the
+  browser console, where nobody was going to look.
 - **A line that was not translated now says why.** Hover it and its tooltip gives the reason, for
   example "Not translated: it is already in your language", "it is only emoji, symbols or laughter",
   "it is shorter than your 2 character minimum" or "this user is on your blocked list". Every reason

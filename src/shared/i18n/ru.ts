@@ -138,4 +138,11 @@ export const ru: Record<string, string> = {
   "Glossary": "Глоссарий",
   "Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.": "Слова, которые движки неправильно переводят для ваших каналов. Каждая строка заменяет левую сторону на правую сторону после перевода.",
   "one rule per line, in the form word→replacement": "одно правило на строку, в формате слово→замена",
+  "Debug": "Отладка",
+  "Last decisions": "Последние решения",
+  "Why each recent message was translated or left alone. Read from an open Kick tab, kept in memory there, never saved to disk.": "Почему каждое недавнее сообщение было переведено или оставлено как есть. Читается из открытой вкладки Kick, хранится в памяти там, никогда не сохраняется на диск.",
+  "Read decisions": "Читать решения",
+  "No Kick tab is open. Open a channel, let the chat run, then read again.": "Нет открытой вкладки Kick. Откройте канал, позвольте чату работать, затем прочитайте снова.",
+  "The open Kick tab has not loaded the extension yet. Reload the tab, then read again.": "Расширение еще не загружено на открытую вкладку Kick. Перезагрузите вкладку, затем прочитайте снова.",
+  "Nothing recorded yet. Let a chat run for a moment, then read again.": "Пока ничего не записано. Позвольте чату работать немного, затем прочитайте снова.",
 };

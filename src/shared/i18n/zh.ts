@@ -138,4 +138,11 @@ export const zh: Record<string, string> = {
   "Glossary": "词汇表",
   "Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.": "引擎对您频道的误翻单词。每行在翻译后将左侧替换为右侧。",
   "one rule per line, in the form word→replacement": "每行一条规则，格式为单词→替换",
+  "Debug": "调试",
+  "Last decisions": "最后的决定",
+  "Why each recent message was translated or left alone. Read from an open Kick tab, kept in memory there, never saved to disk.": "每条最近的消息为什么被翻译或保留原样。从打开的Kick标签页读取，保存在那里的内存中，永远不会保存到磁盘。",
+  "Read decisions": "读取决定",
+  "No Kick tab is open. Open a channel, let the chat run, then read again.": "没有打开的Kick标签页。打开一个频道，让聊天运行，然后重新读取。",
+  "The open Kick tab has not loaded the extension yet. Reload the tab, then read again.": "打开的Kick标签页尚未加载该扩展。重新加载标签页，然后重新读取。",
+  "Nothing recorded yet. Let a chat run for a moment, then read again.": "还没有记录任何内容。让聊天运行一会儿，然后重新读取。",
 };

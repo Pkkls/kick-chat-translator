@@ -138,4 +138,11 @@ export const fr: Record<string, string> = {
   "Glossary": "Glossaire",
   "Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.": "Mots que les moteurs traduisent mal pour vos salons. Chaque ligne remplace le côté gauche par le côté droit, après la traduction.",
   "one rule per line, in the form word→replacement": "une règle par ligne, au format mot→remplacement",
+  "Debug": "Débogage",
+  "Last decisions": "Dernières décisions",
+  "Why each recent message was translated or left alone. Read from an open Kick tab, kept in memory there, never saved to disk.": "Pourquoi chaque message récent a été traduit ou laissé en l'état. Lisez à partir d'un onglet Kick ouvert, conservé en mémoire là-bas, jamais sauvegardé sur le disque.",
+  "Read decisions": "Lire les décisions",
+  "No Kick tab is open. Open a channel, let the chat run, then read again.": "Aucun onglet Kick n'est ouvert. Ouvrez un salon, laissez le chat s'exécuter, puis relisez.",
+  "The open Kick tab has not loaded the extension yet. Reload the tab, then read again.": "L'extension n'a pas encore été chargée sur l'onglet Kick ouvert. Rechargez l'onglet, puis relisez.",
+  "Nothing recorded yet. Let a chat run for a moment, then read again.": "Rien enregistré pour le moment. Laissez un salon discuter un moment, puis relisez.",
 };

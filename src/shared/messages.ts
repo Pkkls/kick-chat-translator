@@ -2,6 +2,14 @@ import type { ProviderStatus, TranslationOutcome, TranslationRequest, UsageStats
 import type { Settings } from './settings';
 import type { UpdateStatus } from './version';
 
+/** One line the pipeline made up its mind about. Kept in memory only, never stored. */
+export interface Decision {
+  at: number;
+  text: string;
+  /** "translated", or the same reason the line carries in its tooltip. */
+  outcome: string;
+}
+
 export type RuntimeMessage =
   | { type: 'translate'; payload: TranslationRequest }
   | { type: 'settings.get' }
@@ -15,6 +23,7 @@ export type RuntimeMessage =
   | { type: 'stats.local'; payload: { lang: string; chars: number } }
   | { type: 'deepl.usage' }
   | { type: 'update.status'; force?: boolean }
+  | { type: 'debug.decisions' }
   | { type: 'ping' };
 
 export type RuntimeResponse =
@@ -24,6 +33,7 @@ export type RuntimeResponse =
   | { type: 'providers'; payload: ProviderStatus[] }
   | { type: 'deepl.usage'; payload: { configured: boolean; count: number; limit: number } }
   | { type: 'update.info'; payload: UpdateStatus }
+  | { type: 'debug.decisions'; payload: Decision[] }
   | { type: 'ack' }
   | { type: 'error'; payload: { message: string } };
 

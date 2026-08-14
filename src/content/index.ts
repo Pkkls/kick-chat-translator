@@ -272,6 +272,15 @@ async function main(): Promise<void> {
     else unmountFloatingBar();
   });
 
+  // The Debug tab lives in the options page, another context entirely, and the
+  // decisions are made here. It asks, we answer: no subscription, no polling,
+  // and nothing leaves this page unless someone opens that tab.
+  chrome.runtime.onMessage.addListener((msg: { type?: string }, _sender, sendResponse) => {
+    if (msg?.type !== 'debug.decisions') return false;
+    sendResponse({ type: 'debug.decisions', payload: pipeline.recentDecisions() });
+    return false;
+  });
+
   log.info('Content script ready');
 }
 
