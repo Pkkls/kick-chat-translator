@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **A line that was not translated now says why.** Hover it and its tooltip gives the reason, for
+  example "Not translated: it is already in your language", "it is only emoji, symbols or laughter",
+  "it is shorter than your 2 character minimum" or "this user is on your blocked list". Every reason
+  the extension can skip a message for is covered, including the ones that used to give up without a
+  word once a translation had already come back. Nothing about which messages get translated
+  changes, only whether you can find out why. The reason is dropped as soon as a row is reused for
+  another message, so it never explains the wrong line.
 - **Export / import your settings** from the Advanced tab. Export writes a JSON backup, import
   restores it and reloads the page. A backup from an older build still imports: missing fields
   fall back to their defaults and unknown ones are dropped, so the file never breaks storage.

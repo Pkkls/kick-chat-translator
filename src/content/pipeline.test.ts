@@ -8,6 +8,7 @@ vi.mock('./injector', () => ({
   inject: vi.fn(),
   incrementFloatingCount: vi.fn(),
   injectHoverPlaceholder: vi.fn(),
+  markSkipped: vi.fn(),
   removeAllArtifacts: vi.fn(),
   showError: vi.fn(),
   showLoading: vi.fn(),
@@ -21,7 +22,7 @@ vi.mock('./localEngine', () => ({
 vi.mock('./memcache', () => ({ memCache: { get: () => undefined, set: vi.fn() } }));
 
 import { TranslationPipeline } from './pipeline';
-import { showError, showThrottleIndicator } from './injector';
+import { markSkipped, showError, showThrottleIndicator } from './injector';
 import { defaultSettings } from '~/shared/settings';
 
 const JP = 'これはテストメッセージです';
@@ -134,6 +135,45 @@ describe('TranslationPipeline — websocket warm vs DOM display', () => {
 // away, and it goes down the failure path. On a fast chat that painted a red
 // marker on every message over the cap, all of them saying the same thing about
 // the channel rather than about the line.
+// Nineteen rounds went into working out why a given line was left alone. A user
+// has none of that, so every line the pipeline drops now says why in its tooltip.
+describe('TranslationPipeline, a dropped line says why', () => {
+  const domMsg = (text: string) => {
+    const rowElement = document.createElement('div');
+    const injectionTarget = document.createElement('div');
+    rowElement.appendChild(injectionTarget);
+    return { rowElement, injectionTarget, id: 'd1', text, channel: 'chan', username: 'user', isBot: false };
+  };
+  const reasonsGiven = () => vi.mocked(markSkipped).mock.calls.map((c) => c[1]);
+
+  beforeEach(() => {
+    sendMock.mockReset();
+    sendMock.mockResolvedValue({ type: 'translate.result', payload: { ok: true, result: { translatedText: 'x', detectedLang: 'ja', provider: 'google' } } });
+    vi.mocked(markSkipped).mockClear();
+  });
+
+  it('names the minimum length when the message is under it', async () => {
+    const p = new TranslationPipeline({ ...defaultSettings(), enabled: true, targetLang: 'en', pauseWhenHidden: false, minTextLength: 5 });
+    await p.onDomMessage(domMsg('abcd'));
+    expect(reasonsGiven().join(' ')).toMatch(/shorter/i);
+  });
+
+  it('says so when the message is already in the reading language', async () => {
+    const p = new TranslationPipeline({ ...defaultSettings(), enabled: true, targetLang: 'ja', pauseWhenHidden: false });
+    await p.onDomMessage(domMsg(JP));
+    expect(reasonsGiven().join(' ')).toMatch(/already/i);
+  });
+
+  // The chat recycles its rows. A row that carried a reason and is reused for a
+  // message that DOES translate has to lose it, or it explains another message.
+  it('clears the reason on a line it is going to translate', async () => {
+    const p = new TranslationPipeline({ ...defaultSettings(), enabled: true, targetLang: 'en', pauseWhenHidden: false });
+    await p.onDomMessage(domMsg(JP));
+    await flush();
+    expect(reasonsGiven()).toContain('');
+  });
+});
+
 describe('TranslationPipeline, a spent channel budget is reported once', () => {
   const domMsg = (text: string) => {
     const rowElement = document.createElement('div');

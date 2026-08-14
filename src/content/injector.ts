@@ -78,6 +78,24 @@ export function applyShowOriginal(showOriginal: boolean): void {
   document.documentElement.classList.toggle('kt-hide-original', !showOriginal);
 }
 
+/**
+ * Say why a line was left alone, in its tooltip.
+ *
+ * A `title` costs nothing until the pointer stops on it, so this stays on
+ * permanently rather than hiding behind the debug setting.
+ *
+ * An empty reason CLEARS the tooltip, and every message must call this, because
+ * the chat recycles its lines: a row that carried a reason and is reused for a
+ * message that does translate would otherwise explain the wrong message.
+ */
+export function markSkipped(targetEl: Element, reason: string): void {
+  if (!reason) {
+    targetEl.removeAttribute('title');
+    return;
+  }
+  targetEl.setAttribute('title', `Not translated: ${reason}`);
+}
+
 export function removeAllArtifacts(targetEl: Element): void {
   for (const child of [...targetEl.children]) {
     if (ARTIFACT_CLASSES.some((c) => child.classList.contains(c))) child.remove();

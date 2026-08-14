@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { defaultSettings } from '~/shared/settings';
 import type { Settings } from '~/shared/settings';
 import type { TranslationResult } from '~/shared/types';
-import { TRANSLATION_SELECTOR, applyShowOriginal, inject, removeAllArtifacts, showError, showLoading } from './injector';
+import { TRANSLATION_SELECTOR, applyShowOriginal, inject, markSkipped, removeAllArtifacts, showError, showLoading } from './injector';
 // Read from disk: vitest runs with CSS processing off, so `?inline` imports
 // resolve to an empty string and would make these assertions pass on anything.
 const injectCss = readFileSync('src/content/inject.css', 'utf8');
@@ -144,6 +144,25 @@ describe('injector artifacts', () => {
     // exactly how the Replace style lost its own retry.
     it('can reveal that button on hover', () => {
       expect(injectCss).toContain('.kt-error:hover .kt-retry');
+    });
+  });
+
+  // Why a line was left alone used to be knowable only by instrumenting the
+  // pipeline by hand. It now sits in the line's own tooltip.
+  describe('the reason a line was left alone', () => {
+    it('goes in the tooltip', () => {
+      const target = document.createElement('div');
+      markSkipped(target, 'it is only chat slang');
+      expect(target.getAttribute('title')).toBe('Not translated: it is only chat slang');
+    });
+
+    // The chat reuses its rows, so a reason has to be removable, or it ends up
+    // explaining a message it was never about.
+    it('is dropped again when there is no reason to give', () => {
+      const target = document.createElement('div');
+      markSkipped(target, 'it is only chat slang');
+      markSkipped(target, '');
+      expect(target.hasAttribute('title')).toBe(false);
     });
   });
 

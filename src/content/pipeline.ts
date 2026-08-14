@@ -10,7 +10,7 @@ import { confidentLanguage, detectLanguage } from './langDetect';
 import { resolveBrowserLang } from '~/shared/languages';
 import { isContextCritical } from '~/shared/langTiers';
 import { isNoise, isSameLanguageAsTarget, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
-import { TRANSLATION_SELECTOR, inject, incrementFloatingCount, injectHoverPlaceholder, removeAllArtifacts, showError, showLoading, showThrottleIndicator, showToast, updateActiveProvider } from './injector';
+import { TRANSLATION_SELECTOR, inject, incrementFloatingCount, injectHoverPlaceholder, markSkipped, removeAllArtifacts, showError, showLoading, showThrottleIndicator, showToast, updateActiveProvider } from './injector';
 import { localEngine } from './localEngine';
 import { memCache } from './memcache';
 
@@ -44,6 +44,22 @@ interface RawResult {
   detectedLang: string;
   provider: ProviderId;
 }
+
+/**
+ * Filter codes turned into something a reader can act on.
+ *
+ * English only, like every other string this content script shows. It has no
+ * translation runtime of its own, and giving it one would put the whole UI
+ * catalogue (about 67 KB) on every Kick page just to fill a tooltip.
+ */
+const DROP_REASON: Record<string, string> = {
+  bot: 'the sender looks like a bot',
+  user_blacklisted: 'this user is on your blocked list',
+  channel_blacklisted: 'this channel is on your blocked list',
+  channel_not_whitelisted: 'this channel is not on your allowed list',
+  lang_unknown: 'its language could not be identified',
+  lang_not_allowed: 'its language is not on your allowed list',
+};
 
 const CONTEXT_LINES = 2;
 // Pro-drop, no-person-marking sources (ja/ko/zh/vi/th/ar) drop the subject; feeding
@@ -85,14 +101,17 @@ export class TranslationPipeline {
     rawText: string,
     meta: { username: string; channel: string; isBot: boolean },
     opts: { dedup: boolean } = { dedup: true },
-  ): Prepared | undefined {
-    if (!this.settings.enabled) return undefined;
+  ): Prepared | string {
+    // An empty reason means "skipped, but there is nothing worth telling this
+    // line about": the two gates below are about the whole tab, not the message.
+    if (!this.settings.enabled) return '';
     // Live visibility gate — read document.hidden each message so a backgrounded
     // tab never translates (no quota burn), with no stuck-paused state.
     if (this.settings.pauseWhenHidden && typeof document !== 'undefined' && document.hidden) {
-      return undefined;
+      return '';
     }
-    if (shouldDropByUserOrChannel(meta, this.settings)) return undefined;
+    const dropped = shouldDropByUserOrChannel(meta, this.settings);
+    if (dropped) return DROP_REASON[dropped] ?? dropped;
 
     // Per-user dedup: if this user just sent the exact same message, skip it.
     // Common in chat spam — saves a provider call + avoids duplicate translations.
@@ -101,19 +120,25 @@ export class TranslationPipeline {
     // message nobody has seen yet.
     if (opts.dedup) {
       const dedupKey = meta.username.toLowerCase();
-      if (dedupKey && this.userDedup.get(dedupKey) === rawText) return undefined;
+      if (dedupKey && this.userDedup.get(dedupKey) === rawText) return 'the same user just sent this';
       if (dedupKey) this.userDedup.set(dedupKey, rawText);
     }
 
     const { realText } = parseKickContent(rawText);
-    if (realText.length < this.settings.minTextLength || realText.length > MAX_TEXT_LENGTH) return undefined;
-    if (isNoise(realText)) return undefined; // emoji / kkkk / rsrs / xd / digits
-    if (isSlangOnly(realText)) return undefined; // poggers / copium / kekw …
+    if (realText.length < this.settings.minTextLength) {
+      return `it is shorter than your ${this.settings.minTextLength} character minimum`;
+    }
+    if (realText.length > MAX_TEXT_LENGTH) return 'it is longer than the size limit';
+    if (isNoise(realText)) return 'it is only emoji, symbols or laughter'; // kkkk / rsrs / xd / digits
+    if (isSlangOnly(realText)) return 'it is only chat slang'; // poggers / copium / kekw …
 
     const detected = detectLanguage(realText);
-    if (this.settings.ignoreEnglish && this.effTarget === 'en' && detected === 'en') return undefined;
-    if (isSameLanguageAsTarget(detected, this.effTarget)) return undefined;
-    if (shouldDropBySourceLang(detected, this.settings)) return undefined;
+    if (this.settings.ignoreEnglish && this.effTarget === 'en' && detected === 'en') {
+      return 'it is already English';
+    }
+    if (isSameLanguageAsTarget(detected, this.effTarget)) return 'it is already in your language';
+    const byLang = shouldDropBySourceLang(detected, this.settings);
+    if (byLang) return DROP_REASON[byLang] ?? byLang;
 
     return { real: realText, detected };
   }
@@ -137,7 +162,7 @@ export class TranslationPipeline {
   async onWebSocketMessage(msg: IncomingWsMessage): Promise<void> {
     if (this.settings.engineMode === 'local-only') return;
     const prepared = this.prepare(msg.text, msg, { dedup: false });
-    if (!prepared) return;
+    if (typeof prepared === 'string') return;
     try {
       await send({
         type: 'translate',
@@ -150,7 +175,13 @@ export class TranslationPipeline {
 
   async onDomMessage(msg: IncomingDomMessage): Promise<void> {
     const prepared = this.prepare(msg.text, msg);
-    if (!prepared) return;
+    if (typeof prepared === 'string') {
+      markSkipped(msg.injectionTarget, prepared);
+      return;
+    }
+    // This line is going to be translated, so drop any reason left on it by the
+    // message that used this row before the virtual scroller recycled it.
+    markSkipped(msg.injectionTarget, '');
     const { real, detected } = prepared;
     const target = this.effTarget;
 
@@ -180,12 +211,14 @@ export class TranslationPipeline {
           log.debug('local translate failed, falling back', err);
         }
       } else if (this.settings.engineMode === 'local-only') {
+        markSkipped(msg.injectionTarget, 'there is no on device model for its language yet');
         removeAllArtifacts(msg.injectionTarget);
         return;
       }
     }
 
     if (this.settings.engineMode === 'local-only') {
+      markSkipped(msg.injectionTarget, 'there is no on device model for its language yet');
       removeAllArtifacts(msg.injectionTarget);
       return;
     }
@@ -299,15 +332,18 @@ export class TranslationPipeline {
     }
     const tt = applyUserGlossary(result.translatedText, this.settings.glossary);
     if (!tt) {
+      markSkipped(msg.injectionTarget, 'your glossary emptied the translation');
       removeAllArtifacts(msg.injectionTarget);
       return;
     }
     if (!opts.force) {
       if (isSameLanguageAsTarget(result.detectedLang, this.effTarget) && this.settings.ignoreEnglish) {
+        markSkipped(msg.injectionTarget, 'it is already in your language');
         removeAllArtifacts(msg.injectionTarget);
         return;
       }
       if (tt.trim().toLowerCase() === real.trim().toLowerCase()) {
+        markSkipped(msg.injectionTarget, 'the translation came back the same as the original');
         removeAllArtifacts(msg.injectionTarget);
         return;
       }
