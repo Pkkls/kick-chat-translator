@@ -1,6 +1,8 @@
+import { useEffect, useRef } from 'preact/hooks';
 import type { Settings } from '~/shared/settings';
 import { LANGUAGES } from '~/shared/languages';
 import { useT } from '~/shared/i18nContext';
+import { applyShowOriginal, ensureStyles, inject } from '~/content/injector';
 
 interface Props {
   settings: Settings;
@@ -53,6 +55,8 @@ export function DisplaySection({ settings, onPatch }: Props) {
             onClick={() => onPatch({ displayStyle: 'replace' })}
           />
         </div>
+
+        <StylePreview settings={settings} />
 
         <ToggleRow
           checked={settings.showFloatingBar}
@@ -109,6 +113,59 @@ export function DisplaySection({ settings, onPatch }: Props) {
         />
       </section>
     </>
+  );
+}
+
+/** A made-up viewer, so nothing here reads as a real person. */
+const SAMPLE_USER = 'viewer_23';
+const SAMPLE_TEXT = '¿alguien más está viendo esto?';
+
+/**
+ * A fake chat line rendered by the content script's own inject(), under the
+ * content script's own stylesheet. Nothing is reimplemented here on purpose: an
+ * imitation would start lying the next time inject.css is touched, and the whole
+ * point of this preview is to answer "what does this style actually look like".
+ */
+function StylePreview({ settings }: { settings: Settings }) {
+  const t = useT();
+  const host = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = host.current;
+    if (!el) return;
+    ensureStyles();
+    applyShowOriginal(settings.showOriginal);
+
+    el.textContent = '';
+    const row = document.createElement('div');
+    const who = document.createElement('span');
+    who.className = 'font-bold';
+    who.textContent = `${SAMPLE_USER}: `;
+    const said = document.createElement('span');
+    said.className = 'font-normal';
+    said.textContent = SAMPLE_TEXT;
+    row.append(who, said);
+    el.appendChild(row);
+
+    inject(
+      row,
+      {
+        messageId: 'preview',
+        translatedText: t('is anyone else seeing this?'),
+        detectedLang: 'es',
+        provider: 'google',
+        cached: false,
+      },
+      settings,
+      () => undefined, // the retry button is part of the look; it has nothing to retry here
+    );
+  }, [settings, t]);
+
+  return (
+    <div>
+      <div class="text-[11px] text-kick-muted mb-1">{t('Preview')}</div>
+      <div ref={host} class="rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2 text-sm" />
+    </div>
   );
 }
 

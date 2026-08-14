@@ -129,4 +129,6 @@ export const zh: Record<string, string> = {
   "cache hit rate, last 7 days": "缓存命中率（近7天）",
   "Minimum message length": "最短消息长度",
   "Shorter messages are left alone. Raise it to spend less provider quota on busy chats.": "更短的消息不会被翻译。调高该值可在高速弹幕中减少用量。",
+  "Preview": "预览",
+  "is anyone else seeing this?": "你们能看到这个吗？",
 };

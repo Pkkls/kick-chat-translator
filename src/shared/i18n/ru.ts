@@ -129,4 +129,6 @@ export const ru: Record<string, string> = {
   "cache hit rate, last 7 days": "попадания в кэш, 7 дней",
   "Minimum message length": "Минимальная длина сообщения",
   "Shorter messages are left alone. Raise it to spend less provider quota on busy chats.": "Более короткие сообщения не переводятся. Увеличьте значение, чтобы экономить квоту в активных чатах.",
+  "Preview": "Предпросмотр",
+  "is anyone else seeing this?": "это видишь только я?",
 };

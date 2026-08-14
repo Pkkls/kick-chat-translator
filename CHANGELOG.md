@@ -40,6 +40,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   range. Same behaviour, but the source file no longer contains a NUL byte, so Git treats it as text
   and changes to it show up as readable diffs.
 
+### Added
+- **The Display tab now shows what each style looks like.** Picking between Below, Inline, Replace
+  and Hover used to be a guess from four short descriptions. A sample chat line now sits under the
+  four cards and re-renders in whichever style is selected, using the same code and the same
+  stylesheet that draw a real translation, so it cannot drift from what you will actually see. It
+  also follows the source-language badge, the provider badge and the keep-original toggles.
+
 ### Fixed
 - **The bar at the top of chat kept disappearing, and the extension never noticed.** Kick can leave
   a second copy of the chat panel in the page, carrying the same id, hidden inside a placeholder its

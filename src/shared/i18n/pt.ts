@@ -129,4 +129,6 @@ export const pt: Record<string, string> = {
   "cache hit rate, last 7 days": "taxa de cache, últimos 7 dias",
   "Minimum message length": "Tamanho mínimo da mensagem",
   "Shorter messages are left alone. Raise it to spend less provider quota on busy chats.": "Mensagens menores não são traduzidas. Aumente o valor para gastar menos cota em chats movimentados.",
+  "Preview": "Pré-visualização",
+  "is anyone else seeing this?": "será que mais alguém tá vendo isso?",
 };

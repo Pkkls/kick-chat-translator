@@ -127,5 +127,7 @@
   "Invalid settings file",
   "cache hit rate, last 7 days",
   "Minimum message length",
-  "Shorter messages are left alone. Raise it to spend less provider quota on busy chats."
+  "Shorter messages are left alone. Raise it to spend less provider quota on busy chats.",
+  "Preview",
+  "is anyone else seeing this?"
 ]
