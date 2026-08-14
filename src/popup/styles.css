@@ -6,6 +6,14 @@
   body {
     color-scheme: dark;
   }
+
+  /* Same reason as the options page: the browser paints the list a select opens
+     from the control's own colours, so they are named on the options rather than
+     left to the page scheme. */
+  select option {
+    background-color: #13181f;
+    color: #e8eef7;
+  }
 }
 
 @layer components {

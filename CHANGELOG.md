@@ -88,6 +88,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   also follows the source-language badge, the provider badge and the keep-original toggles.
 
 ### Fixed
+- **The language menus are readable again, in the chat bar and in the settings page.** Opening one
+  gave a white panel where only the row under the pointer could be read. The browser paints that
+  list from the control's own colours rather than from the page, so a control left transparent left
+  the list white while the option text stayed near white. The colours are now named on the options
+  themselves, and the picker in the chat bar is opaque. The language picker in the settings header
+  was missed the first time round because it carries its own classes and never had the shared one.
 - **The chat bar can no longer end up showing stale state.** Kick leaves a second copy of the chat
   panel in the page carrying the same id, and it comes first. Mounting the bar was already taught to
   ignore that copy, but everything that updated the bar afterwards, the label, the counter, the

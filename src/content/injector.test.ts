@@ -234,9 +234,13 @@ describe('injector artifacts', () => {
   // surfaces, so both are asserted here.
   describe('every select we style declares a colour scheme', () => {
     const onDisk = (p: string) => readFileSync(p, 'utf8');
-    /** The rule body for a selector, read from the file rather than a bundle. */
+    /** The rule body for a selector, read from the file rather than a bundle.
+     *  Escapes properly rather than prefixing a backslash: that trick works on a
+     *  class selector but turns "select option" into the \s class followed by
+     *  "elect option", which matches nothing and hands back an empty body, so an
+     *  assertion fails on a rule that is right there in the file. */
     const ruleFor = (css: string, selector: string) =>
-      new RegExp(`\\${selector}\\s*\\{([^}]*)\\}`).exec(css)?.[1] ?? '';
+      new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{([^}]*)\\}`).exec(css)?.[1] ?? '';
 
     it('does so on the chat bar picker', () => {
       expect(ruleFor(injectCss, '.kt-float-lang')).toMatch(/color-scheme:\s*dark/);
@@ -253,13 +257,33 @@ describe('injector artifacts', () => {
       expect(ruleFor(onDisk(path), '.kt-select')).toMatch(/color-scheme:\s*dark/);
     });
 
-    // Nothing may force an option colour that would fight the scheme.
-    it.each(['src/content/inject.css', 'src/options/styles.css', 'src/popup/styles.css'])(
-      'has no option colour rule fighting it in %s',
-      (path) => {
-        expect(onDisk(path)).not.toMatch(/(^|[\s,>])option\s*\{/m);
-      },
-    );
+    // The scheme alone was not enough, seen on screen in both surfaces: the list
+    // stayed white with near white text and only the highlighted row could be
+    // read. The browser paints that list from the control's own colours, so the
+    // colours have to be named on the options. The earlier rule here forbade
+    // exactly that; it was reasoned from the stylesheet and the screenshots
+    // disproved it.
+    it.each([
+      ['src/content/inject.css', '.kt-float-lang option'],
+      ['src/options/styles.css', 'select option'],
+      ['src/popup/styles.css', 'select option'],
+    ])('names the option colours in %s', (path, selector) => {
+      const block = ruleFor(onDisk(path), selector);
+      expect(block).toMatch(/background-color:/);
+      expect(block).toMatch(/color:/);
+    });
+
+    // A transparent control is what let the list paint white in the first place.
+    it('leaves the chat bar picker opaque', () => {
+      expect(ruleFor(injectCss, '.kt-float-lang')).not.toMatch(/background:\s*transparent/);
+    });
+
+    // The header language picker carries its own classes and never had
+    // .kt-select, which is why the first attempt never reached it.
+    it.each(['src/options/App.tsx', 'src/popup/App.tsx'])('opens no transparent select in %s', (path) => {
+      const selects = onDisk(path).match(/<select[\s\S]{0,400}?>/g) ?? [];
+      for (const s of selects) expect(s).not.toMatch(/bg-transparent/);
+    });
   });
 
   // The bar was read only apart from the gear. These are the two settings people

@@ -233,7 +233,11 @@
      the bar entirely. Measured at 340px: it was taking all 130px. */
   min-width: 0;
   max-width: 96px;
-  background: transparent;
+  /* Opaque, and not transparent as before: the browser paints that list from the
+     control's own background, so a transparent control left it white under our
+     near white option text and only the highlighted row could be read. Matches
+     the bar it sits on, so the closed control looks the same as it did. */
+  background: #10141a;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 4px;
   padding: 1px 4px;
@@ -241,6 +245,13 @@
   font-size: 11px;
   line-height: 1.4;
   cursor: pointer;
+}
+/* The rows of that list take their colours from the options, and nothing else
+   reaches them. Named here so the list is readable whatever the page around it
+   is doing. */
+.kt-float-lang option {
+  background-color: #10141a;
+  color: rgba(255, 255, 255, 0.9);
 }
 .kt-float-lang:hover {
   border-color: rgba(83, 252, 24, 0.4);
@@ -427,6 +438,12 @@
      Freezing the scheme would just break the readability the other way round. */
   .kt-float-lang {
     color-scheme: light;
+    background: #f5f7fa;
+    color: rgba(20, 25, 35, 0.85);
+  }
+  .kt-float-lang option {
+    background-color: #f5f7fa;
+    color: rgba(20, 25, 35, 0.9);
   }
   .kt-float-count {
     color: rgba(40, 150, 20, 0.8);

@@ -4,6 +4,23 @@
 
 @layer base {
   body { color-scheme: dark; }
+
+  /* The list a select opens is painted by the browser, and it reads the control's
+     own background rather than the page scheme. A control left transparent leaves
+     that list white while our option text stays near white, so only the row under
+     the pointer can be read. color-scheme alone does not win against that, the
+     colours have to be named on the options themselves.
+     Targeted on every select rather than on .kt-select: the language picker in the
+     header carries its own classes and never had that one, which is why it stayed
+     unreadable after the first attempt. */
+  select {
+    color-scheme: dark;
+    background-color: #13181f;
+  }
+  select option {
+    background-color: #13181f;
+    color: #e8eef7;
+  }
 }
 
 @layer components {

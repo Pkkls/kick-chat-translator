@@ -71,7 +71,7 @@ export function App() {
         <div class="ml-auto flex items-center gap-3">
           {savedAt && <span class="text-xs text-kick-primary">{t('saved')}</span>}
           <select
-            class="rounded border border-kick-border bg-transparent px-1.5 py-1 text-xs text-kick-text"
+            class="rounded border border-kick-border bg-kick-surface px-1.5 py-1 text-xs text-kick-text"
             value={settings.uiLang}
             onChange={(e) => void patch({ uiLang: (e.target as HTMLSelectElement).value as Settings['uiLang'] })}
             title="Language"
