@@ -2,7 +2,7 @@
   "name": "kick-chat-translator",
   "version": "2.5.0",
   "private": true,
-  "description": "Real-time multi-provider chat translator for Kick.com — pro Chrome/Firefox extension.",
+  "description": "Translates Kick chat into your language as it scrolls, and your replies into the channel's.",
   "license": "MIT",
   "author": "Pkkls",
   "homepage": "https://github.com/Pkkls/kick-chat-translator",
