@@ -3,6 +3,8 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import type { UiLocale } from './i18n';
+import { UI_LOCALES } from './i18n';
+import { SettingsSchema } from './settings';
 import { UI_LOCALES, UI_LOCALE_NAMES, isRtlLocale, detectUiLocale, resolveUiLocale, makeT } from './i18n';
 import { UI_MESSAGES } from './i18n.messages';
 
@@ -54,6 +56,32 @@ describe('i18n', () => {
       for (const [k, v] of Object.entries(map ?? {})) {
         expect(typeof v === 'string' && v.length > 0, `${loc} -> "${k}"`).toBe(true);
       }
+    }
+  });
+});
+
+// Three locales shipped that the picker offered and the settings schema refused.
+// Picking one sent a value zod would not accept, so nothing was saved and the page
+// kept rendering the last accepted language while the menu showed the new one.
+// Offering a language and being able to keep it are two different lists, and only
+// one of them was updated.
+describe('every offered locale can actually be saved', () => {
+  it.each(UI_LOCALES)('accepts %s', (loc) => {
+    expect(SettingsSchema.parse({ uiLang: loc }).uiLang).toBe(loc);
+  });
+
+  it('accepts auto', () => {
+    expect(SettingsSchema.parse({ uiLang: 'auto' }).uiLang).toBe('auto');
+  });
+
+  // The other direction: a locale the schema takes but the picker never lists
+  // would be unreachable, and a stale value nobody can select again.
+  it('offers every locale the schema accepts', () => {
+    const accepted = (SettingsSchema.shape.uiLang as unknown as { _def: { innerType: { options: string[] } } })._def
+      .innerType.options;
+    for (const loc of accepted) {
+      if (loc === 'auto') continue;
+      expect(UI_LOCALES as readonly string[]).toContain(loc);
     }
   });
 });

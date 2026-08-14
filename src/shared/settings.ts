@@ -80,7 +80,14 @@ export const SettingsSchema = z.object({
   // UI
   popupShowsStats: z.boolean().default(true),
   // Language of the extension's own UI (options + popup). 'auto' follows the browser.
-  uiLang: z.enum(['auto', 'en', 'ja', 'fr', 'zh', 'ar', 'ru', 'pt']).default('auto'),
+  // Must list every entry of UI_LOCALES in src/shared/i18n.ts. This is the gate
+  // that decides whether a pick can be SAVED, so a locale offered by the picker
+  // but missing here is silently refused: the menu shows the new language while
+  // the page keeps rendering the last one that was accepted. The list is repeated
+  // rather than imported because importing i18n.ts here would pull the whole
+  // translation catalogue into the content script bundle, which is deliberately
+  // free of it. A test in i18n.test.ts fails if the two lists drift apart.
+  uiLang: z.enum(['auto', 'en', 'ja', 'fr', 'zh', 'ar', 'ru', 'pt', 'es', 'tr', 'ko']).default('auto'),
 
   // Compose preview: translate what *you* type before you send it.
   // Source language is auto-detected; output goes to composeTargetLang.
