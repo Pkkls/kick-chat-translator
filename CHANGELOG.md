@@ -26,6 +26,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   recorded, so it stays empty on a fresh install until history builds up.
 
 ### Changed
+- **A busy channel that hits its own rate cap now says so once, not once per message.** The cap is
+  a fact about the channel, so painting a red marker on every message over it repeated the same
+  sentence dozens of times a minute and buried the failures that were really about a line. The
+  floating bar shows the throttle instead and those lines stay bare. Every other failure reason
+  keeps its own marker with its retry button.
 - **Very long non-Latin messages no longer stall on Lingva.** Lingva receives the message inside
   the URL, where non-Latin text expands to roughly nine times its size, so a long Japanese or
   Chinese line could produce a request too large for some servers to accept. Those messages now go

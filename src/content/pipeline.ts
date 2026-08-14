@@ -222,9 +222,15 @@ export class TranslationPipeline {
     if (!outcome.ok) {
       // #7 — Toast on notable failures (max 1 per 30s to avoid spam).
       const code = outcome.error.code;
+      // Budget saturation is a fact about the channel, not about this line: on a
+      // fast chat every message over the cap would carry its own red marker and
+      // say the same thing hundreds of times. Report it once, on the bar, and
+      // leave the line bare. Every other reason keeps its per-line marker.
       if (code === 'channel_budget') {
         showThrottleIndicator(true);
         setTimeout(() => showThrottleIndicator(false), 5000);
+        removeAllArtifacts(msg.injectionTarget);
+        return;
       }
       if (code === 'saturated' || code === 'no_provider') {
         this.maybeToast('All translation providers are down — retrying shortly');

@@ -21,10 +21,13 @@ vi.mock('./localEngine', () => ({
 vi.mock('./memcache', () => ({ memCache: { get: () => undefined, set: vi.fn() } }));
 
 import { TranslationPipeline } from './pipeline';
+import { showError, showThrottleIndicator } from './injector';
 import { defaultSettings } from '~/shared/settings';
 
 const JP = 'これはテストメッセージです';
 const wsMsg = (text: string) => ({ id: '1', text, channel: 'chan', username: 'user', isBot: false });
+/** onDomMessage does not await the translate path, so let it settle before asserting. */
+const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 describe('TranslationPipeline — effTarget (regression)', () => {
   beforeEach(() => {
@@ -124,6 +127,46 @@ describe('TranslationPipeline — websocket warm vs DOM display', () => {
 
     await pipeline.onDomMessage(domMsg(JP, 'bob'));
     expect(sendMock).toHaveBeenCalled();
+  });
+});
+
+// The per-channel budget is the only worker gate that still throws a message
+// away, and it goes down the failure path. On a fast chat that painted a red
+// marker on every message over the cap, all of them saying the same thing about
+// the channel rather than about the line.
+describe('TranslationPipeline, a spent channel budget is reported once', () => {
+  const domMsg = (text: string) => {
+    const rowElement = document.createElement('div');
+    const injectionTarget = document.createElement('div');
+    rowElement.appendChild(injectionTarget);
+    return { rowElement, injectionTarget, id: 'd1', text, channel: 'chan', username: 'user', isBot: false };
+  };
+  const pipeline = () =>
+    new TranslationPipeline({ ...defaultSettings(), enabled: true, targetLang: 'en', pauseWhenHidden: false });
+  const failWith = (code: string) => {
+    sendMock.mockResolvedValue({ type: 'translate.result', payload: { ok: false, error: { code, message: code } } });
+  };
+
+  beforeEach(() => {
+    sendMock.mockReset();
+    vi.mocked(showError).mockClear();
+    vi.mocked(showThrottleIndicator).mockClear();
+  });
+
+  it('shows it on the bar and leaves the line bare', async () => {
+    failWith('channel_budget');
+    await pipeline().onDomMessage(domMsg(JP));
+    await flush();
+    expect(vi.mocked(showThrottleIndicator)).toHaveBeenCalledWith(true);
+    expect(vi.mocked(showError)).not.toHaveBeenCalled();
+  });
+
+  it('still marks the line for every other reason', async () => {
+    failWith('quota');
+    await pipeline().onDomMessage(domMsg(JP));
+    await flush();
+    expect(vi.mocked(showError)).toHaveBeenCalled();
+    expect(vi.mocked(showThrottleIndicator)).not.toHaveBeenCalled();
   });
 });
 
