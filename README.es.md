@@ -84,8 +84,12 @@ Haz clic en el engranaje de la barra del chat, o clic derecho en el icono de la 
 
 - **Idioma de destino**: a qué idioma se traduce todo (42 disponibles)
 - **Orden de proveedores**: arrastra para reordenar, pega tu clave de DeepL
+- **Modo de motor**: primero en el dispositivo, primero en la nube, o solo en el dispositivo
 - **Visualización**: la traducción debajo del mensaje, en línea con él, después en cursiva más pequeña, o al pasar el ratón; el texto original, el idioma de origen y el proveedor son insignias opcionales. Una línea de ejemplo en los ajustes muestra cada estilo antes de que elijas
-- **Filtros**: saltar bots, bloquear usuarios o canales, restringir los idiomas de origen
+- **Vista previa al escribir**: activada o desactivada, su idioma de destino, y si al hacer clic se rellena la caja de chat o se copia la traducción al portapapeles
+- **Filtros**: saltar bots, bloquear usuarios o canales, restringir los idiomas de origen, o permitir solo ciertos canales
+- **Glosario**: pares de buscar y reemplazar aplicados a la traducción, para nombres y bromas internas que los motores destrozan
+- **Presupuesto**: cuota de DeepL y enrutado inteligente, límite de frecuencia por canal, tamaño y duración de la caché, concurrencia
 - **Pausa automática**: las pestañas en segundo plano dejan de traducir (ahorra tu cuota de DeepL)
 - **Idioma de la interfaz** de la propia extensión, en inglés, español, francés, portugués, turco, ruso, árabe, chino, japonés o coreano, además de botones para vaciar la caché o restablecer estadísticas y ajustes
 - **Depuración**: las últimas decisiones del traductor y por qué se dejó una línea sin traducir, guardadas solo en memoria
