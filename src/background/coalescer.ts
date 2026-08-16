@@ -2,16 +2,20 @@ import type { Settings } from '~/shared/settings';
 import type { TranslationOutcome, TranslationRequest } from '~/shared/types';
 import { BATCH_MAX_ITEMS, BATCH_WINDOW_MS } from '~/shared/constants';
 import { rootLogger } from '~/shared/logger';
+import { createMetrics } from '~/shared/metrics';
 import { translateGroup } from './translator';
 import type { TranslationCache } from './cache';
 import type { StatsTracker } from './stats';
 
 const log = rootLogger.child('coalescer');
+const metrics = createMetrics('sw');
 
 interface Entry {
   req: TranslationRequest;
   key: string;
   resolvers: ((o: TranslationOutcome) => void)[];
+  /** When this line entered the window, so the wait it paid can be measured. */
+  at: number;
 }
 
 export interface CoalescerDeps {
@@ -52,7 +56,7 @@ export class TranslationCoalescer {
     if (existing) {
       return new Promise((resolve) => existing.resolvers.push(resolve));
     }
-    const entry: Entry = { req, key, resolvers: [] };
+    const entry: Entry = { req, key, resolvers: [], at: Date.now() };
     this.byKey.set(key, entry);
     this.pending.push(entry);
     const p = new Promise<TranslationOutcome>((resolve) => entry.resolvers.push(resolve));
@@ -73,6 +77,11 @@ export class TranslationCoalescer {
     if (this.pending.length === 0) return;
     const batch = this.pending;
     this.pending = [];
+    // What the batching window actually cost each line, before a provider was
+    // even called. The window is adaptive (50 / 180 / 300ms by chat rate), so the
+    // nominal constant does not tell you what a reader waited through.
+    const flushedAt = Date.now();
+    for (const e of batch) metrics.timing('leg.coalesce.wait', flushedAt - e.at);
     for (const e of batch) this.byKey.delete(e.key);
 
     const settings = this.deps.getSettings();

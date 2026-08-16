@@ -1,6 +1,7 @@
 import { defaultSettings, loadSettings, resetSettings, saveSettings, watchSettings, type Settings } from '~/shared/settings';
 import { onMessage, type RuntimeResponse } from '~/shared/messages';
 import { rootLogger } from '~/shared/logger';
+import { createMetrics } from '~/shared/metrics';
 import { TranslationCache, warmTargets } from './cache';
 import { resolveTargetLang } from '~/shared/languages';
 import { TokenBucket } from './queue';
@@ -13,6 +14,7 @@ import { DEEPL_USAGE_FREE, DEEPL_USAGE_PRO, STORAGE_KEY_SETTINGS } from '~/share
 import type { ProviderId, TranslationOutcome, TranslationRequest } from '~/shared/types';
 
 const log = rootLogger.child('sw');
+const metrics = createMetrics('sw');
 
 let settings: Settings = defaultSettings();
 const cache = new TranslationCache(settings.cacheMaxEntries, settings.cacheTtlHours * 3_600_000);
@@ -61,7 +63,10 @@ async function handleTranslate(req: TranslationRequest): Promise<TranslationOutc
   // ever calls in here.
 
   if (!req.noCache) {
-    const cached = await cache.get(req.text, req.targetLang);
+    // IndexedDB, on the path of every single line. A hit is the fastest possible
+    // answer, but a miss still pays this before anything else starts, and the
+    // measured hit rate is 10%.
+    const cached = await metrics.measure('leg.cache.lookup', () => cache.get(req.text, req.targetLang));
     if (cached) {
       const provider = cached.provider as ProviderId;
       stats.recordRequest(provider, cached.detectedLang, req.text.length, true, req.channel);
@@ -151,7 +156,11 @@ watchSettings(applySettings);
 onMessage(async (msg): Promise<RuntimeResponse | void> => {
   switch (msg.type) {
     case 'translate': {
-      const outcome = await handleTranslate(msg.payload);
+      // The worker's own share of the round trip. `leg.roundtrip` on the content
+      // side covers the same request plus transport and, in MV3, whatever it cost
+      // to wake this worker up. The difference between the two is that cost, and
+      // nothing has ever put a number on it.
+      const outcome = await metrics.measure('leg.sw.total', () => handleTranslate(msg.payload));
       return { type: 'translate.result', payload: outcome };
     }
     case 'stats.local':

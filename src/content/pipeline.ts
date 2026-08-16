@@ -360,7 +360,11 @@ export class TranslationPipeline {
     sourceLang?: string,
   ): Promise<TranslationOutcome | undefined> {
     try {
-      const res = await send({
+      // The whole round trip to the worker and back. Measured against
+      // `leg.sw.total`, which the worker records for its own share: the
+      // difference is message transport plus, in MV3, waking a worker that the
+      // browser may have killed since the last line.
+      const res = await metrics.measure('leg.roundtrip', () => send({
         type: 'translate',
         payload: {
           messageId: 'dom',
@@ -371,7 +375,7 @@ export class TranslationPipeline {
           ...(context ? { context } : {}),
           ...(noCache ? { noCache: true } : {}),
         },
-      });
+      }));
       return res.type === 'translate.result' ? res.payload : undefined;
     } catch (err: unknown) {
       log.warn('cloud translate failed', err);
@@ -380,6 +384,24 @@ export class TranslationPipeline {
   }
 
   private applyTranslation(
+    msg: IncomingDomMessage,
+    real: string,
+    result: RawResult,
+    opts: { store: boolean; force?: boolean },
+  ): void {
+    // Everything from having the text to it being on screen: the recycled-row
+    // rescue below walks the panel, and injection touches the DOM of a page we do
+    // not control. Cheap in theory, never measured, and it sits inside the 780ms
+    // that the provider call does not account for.
+    const paintT0 = performance.now();
+    try {
+      this.applyTranslationInner(msg, real, result, opts);
+    } finally {
+      metrics.timing('leg.inject', performance.now() - paintT0);
+    }
+  }
+
+  private applyTranslationInner(
     msg: IncomingDomMessage,
     real: string,
     result: RawResult,
