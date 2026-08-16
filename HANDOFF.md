@@ -1,7 +1,7 @@
 # Handoff — kick-chat-translator, 2026-08-16
 
-State document for continuing this work in a fresh session. Written after items 96
-to 104 on branch `integration/2026-08-13`. Nothing has been pushed.
+State document for continuing this work in a fresh session. Covers items 96 to 110
+on branch `integration/2026-08-13`, released as 2.7.0.
 
 ---
 
@@ -22,11 +22,20 @@ are not released.
 | `c1781ef` | 102 | zod out of the content script, 81.3 → 69.0 KB gzipped |
 | `6d66382` | 103 | Bridge so the page can read collected metrics |
 | `e986e55` | 104 | Metrics survive a service worker restart |
+| `e3ea484` | 105 | This document, plus the chat corpus collector |
+| `311d271` | 106 | Probes splitting the wait into its legs |
+| `6ac1df7` | 107 | Composer stops sending a guessed source language |
+| `05f927e` | 108 | A refused line is retried on its flattened text |
+| `4df8fe2` | 109 | Content script survives a cold service worker |
 
-377 tests across 35 files. `npm run build` and `npm run build:metrics` both green.
+391 tests across 38 files. `npm run release:check` green, `npm run build:metrics` green.
 
 Commit convention: `[item N] Imperative subject`, one item per commit, with a body
-explaining cause, fix and how it was witnessed. Next item is **105**.
+explaining cause, fix and how it was witnessed. Next item is **111**.
+
+**Run `npm run release:check`, not just typecheck and test.** It also runs lint,
+which the first ten items of this branch never ran; three lint errors had
+accumulated in them by item 109.
 
 ---
 
@@ -62,21 +71,47 @@ a check that can only pass is not a check.
 Live Kick chat, instrumented build, browser-observed. Sample sizes are small; treat
 these as directional, not as decisions.
 
-### Latency
+### Latency — settled, do not re-investigate
 
-| Series | n | p50 | p95 |
-|---|---|---|---|
-| `e2e.cloud` (message seen → translation painted) | 31 | **1761 ms** | 2197 ms |
-| `provider.google.item` | 10 | 979 ms | 2176 ms |
-| `e2e.local` | **0** | — | — |
+Item 106 split the wait into its legs. 200 samples on every series, one live
+channel, 29 minutes:
 
-Nearly two seconds to paint a translation on a chat that scrolls. Provider latency
-is most of it, so the remaining budget is small.
+| Leg | p50 |
+|---|---|
+| `e2e.cloud`, message seen to translation painted | 1971 ms |
+| `leg.roundtrip`, content to worker and back | 1971 ms |
+| `leg.sw.total`, the worker's own share | 2010 ms |
+| `leg.coalesce.wait`, the batching window | **182 ms** |
+| `leg.cache.lookup`, IndexedDB | **0 ms** |
+| `leg.inject`, DOM write | **0 ms** |
 
-**The on-device engine has never fired in any observation.** It is the default
-(`engineMode: 'local-first'`), so this needs explaining before anything else is
-optimised. Candidate causes, none verified: no model downloaded for the pair, or
-`detected` being undefined so the local branch is skipped.
+**The extension controls about 9% of the wait.** Transport and waking the MV3
+worker cost 3 ms, not the hundreds of milliseconds that seemed likely. The cache
+lookup and the DOM write are free. Everything else is the provider.
+
+The only extension-controlled cost worth naming is the 182 ms batching window, and
+it is a deliberate trade: a batch of 5 costs 1823 ms against 1058 ms for a single
+item, so grouping is roughly three times cheaper per message in provider time. Those
+182 ms buy call volume, not reader latency. Zero cooldowns were recorded across 821
+requests, so nothing has ever hit a rate limit either way.
+
+A warning about how this was nearly got wrong: an earlier reading compared an
+`e2e.cloud` p50 against a `provider` p50 taken from **different sample windows**,
+because `e2e.cloud` had accumulated since item 97 and the provider series had not.
+The 780 ms of "unexplained" latency that produced did not exist. Compare series that
+share a window, or the subtraction is meaningless.
+
+### The on-device engine
+
+**It has never run, and now the reason is known: the API is absent.** `Translator`,
+`LanguageDetector` and `ai` are all `undefined` on **Google Chrome 151**, where
+`localEngine.ts` claims Chrome 138 and up. Not a missing model, not a detection
+problem: the global does not exist.
+
+`engineMode` defaults to `local-first`, and the store listing sells on-device
+translation, so this is a product-level question rather than a code one. Whether it
+is hardware gating, a flag, a region restriction or a policy has not been
+established. Nothing in the engine path is worth touching until it is.
 
 ### Caches, chain, DOM
 
@@ -245,17 +280,41 @@ the commits.
 
 ## 8. What to do next, in order
 
-1. **Explain why `e2e.local` has no samples.** The on-device engine is the default
-   and has never been observed running. Everything else is secondary to that.
-2. **Decide the `confidentLanguage` question in section 4** and implement it.
-3. **Give `dom.row.textEmpty` an honest denominator** so the 54% figure means
-   something.
-4. Let metrics accumulate over a long session across several non-English channels
-   before touching provider order, the coalescing window, or cache sizes. Nothing
-   there has enough samples to justify a change yet.
-5. `stripInlineEmoteNames` in `emoteParser.ts` strips any mixed-case word, so
-   `iPhone`, `McDonald` and `PlayStation` are removed before translation. Unrelated
-   to the above, silent, still unfixed.
-6. Incoming `@mentions` are deleted from the translated line rather than preserved;
+1. **Submit 2.7.0 to both stores, and smoke-test it in a real browser first.** Ten
+   of the twelve items in it have never been seen running; only item 104 was
+   confirmed live. Item 109 is the one to exercise deliberately: open Kick after the
+   browser has sat idle long enough for the worker to be killed, and check the
+   extension still starts.
+2. **Establish why the on-device Translator API is absent on Chrome 151**, section 3.
+   The default engine mode depends on it and the store listing sells it.
+3. **Decide the `confidentLanguage` question in section 4** for the incoming path.
+   Item 107 already did it for the composer, so the precedent and the shape exist.
+   `compose.skipSameLang.lookedUp` versus `.guessed` is now being counted and will
+   say whether that guard should trust a guess at all.
+4. **Give `dom.row.textEmpty` an honest denominator** so the 54% figure means
+   something. It counts rows the observer matched, which include system lines and
+   emote-only messages that legitimately carry no text.
+5. **Read the cache counters again after several days.** Measured over one 29-minute
+   session: the in-tab cache hit 6.7%, the persistent one 1.0%, 8 hits in 821
+   lookups. A persistent cache earns its keep across sessions, which one session
+   cannot measure, and it costs 0 ms to read. Do not delete it on that number alone.
+6. `stripInlineEmoteNames` in `emoteParser.ts` strips any mixed-case word, so
+   `iPhone`, `McDonald` and `PlayStation` are removed before translation. Silent,
+   unrelated to the above, still unfixed.
+7. Incoming `@mentions` are deleted from the translated line rather than preserved;
    the outgoing path masks and restores them instead. Two opposite strategies for
    the same thing. See `scratchpad/handles-mentions.md`.
+
+## 9. Ideas already tried and rejected, with the measurement
+
+Written down so they are not re-proposed. Each cost a session to kill.
+
+| Idea | Why it died |
+|---|---|
+| Channel broadcast language as the source prior | Breaks multilingual chats, which is where a chat translator earns its keep. Counter-example: a Japanese channel whose chat runs in five languages. |
+| Restrict franc to the 45 supported languages | 32% correct becomes 36%. Changes which wrong answer it gives, nothing more. |
+| Remove repeated words before detecting | Also 36%. |
+| Uppercase degrades franc | 23 of 23 verdicts identical between cases. franc is case-insensitive. |
+| Flatten stretched text before every translation | Google already handles some stretching: "sooo goood" gives "tellement bon", flattened it gives "alors mon Dieu". Item 108 does it only after a refusal, where nothing can be spoiled. |
+| Dynamic provider ordering | `chain.depth.1` twelve times out of twelve. The fallback chain has never been used; the sticky provider already does this. |
+| Optimise the wait outside the provider call | The extension controls 9% of it. The 780 ms that motivated this were an artefact of comparing two sample windows. |

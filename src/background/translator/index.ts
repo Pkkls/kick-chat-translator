@@ -182,7 +182,7 @@ export async function translateGroup(
     depth += 1;
     metrics.count(`chain.attempt.${id}`);
 
-    const batchFn = provider.translateBatch;
+    const batchFn = provider.translateBatch?.bind(provider);
     if (provider.supportsBatch && batchFn && indices.length > 1) {
       const batchReqs = indices.map((i) => reqs[i]!);
       // BATCH_WINDOW_MS and BATCH_MAX_ITEMS are guesses. This is the distribution

@@ -71,7 +71,7 @@ function main(): void {
         process.exit(1);
       }
     }
-    console.log(`[check-strip] instrumented build, marker present in ${hits.length} file(s): ${normalized.join(', ')}`);
+    console.info(`[check-strip] instrumented build, marker present in ${hits.length} file(s): ${normalized.join(', ')}`);
     return;
   }
 
@@ -85,7 +85,7 @@ function main(): void {
     process.exit(1);
   }
 
-  console.log(`[check-strip] release build clean: no "${MARKER}" in ${files.length} bundled file(s).`);
+  console.info(`[check-strip] release build clean: no "${MARKER}" in ${files.length} bundled file(s).`);
 }
 
 main();

@@ -16,7 +16,7 @@ describe('summarize', () => {
   });
 
   it('keeps p95 near the tail so one timeout is visible', () => {
-    const samples = [...Array(19).fill(20), 4000];
+    const samples: number[] = [...(Array(19).fill(20) as number[]), 4000];
     const s = summarize(samples);
     expect(s.p50).toBe(20);
     expect(s.p95).toBe(4000);

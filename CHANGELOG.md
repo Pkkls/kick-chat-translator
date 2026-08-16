@@ -7,7 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.0] - 2026-08-16
+
 ### Fixed
+- **Changing the reading language now changes what is already on screen.** Picking a new language
+  from the bar only affected messages that arrived afterwards; everything already visible kept the
+  previous language until you reloaded the page. The mark that stops a line being handled twice was
+  built from the row, the name and the text, and never from the language, so an already-translated
+  line still matched its own mark and was skipped. The same held for the display style and the two
+  badges. All four now redraw the lines on screen, and only a language change costs a request; a
+  style or badge change is redrawn from memory.
 - **A message the translation services gave up on is no longer sent back to them over and over.**
   The extension re-checks the visible chat when you come back to the tab and when you stop
   scrolling, to catch anything it missed. That check only recognised lines that had been
@@ -16,6 +25,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   that is around thirty needless calls each time you stop scrolling, which is exactly the quota you
   have least of when a service is already struggling. Such a line now keeps its marker and its
   retry button, and goes back out only when you click it.
+- **A stretched message is no longer left untranslated.** Chat writes "muuuuy biennnn" and
+  "BINNNNNNNGOOOOOOO", and the translation services hand those straight back unchanged. When that
+  happens the line is now tried once more on its flattened text, which returns "très bien" and
+  "BINGO". Only after a refusal, never before: the services already handle some stretching well,
+  and flattening everything up front made those cases worse. Japanese words that legitimately carry
+  a long vowel, like コーヒー or ラーメン, are left exactly as written.
+- **The compose preview no longer tells the service what language you wrote in unless it is sure.**
+  It was passing a guess, and on short text that guess is wrong about two thirds of the time, which
+  makes the service translate from a language your message is not in: the preview then shows either
+  your own text back or something you did not say. It now says nothing when it does not know, and
+  the service works it out itself, which it does well.
+- **The extension no longer stays silent on a page when the browser was slow to wake it.** Its
+  background worker is shut down when idle, and the first request after that wakes it. If that
+  request lost the race, the page ended up with no translation at all and nothing said so. It now
+  waits and asks again before giving up.
+
+### Changed
+- **Your DeepL key stays on the machine you typed it on.** It was stored with the rest of the
+  settings, which sync across every Chrome signed into the same account, so a key entered on one
+  computer arrived on all the others, work and shared profiles included. It now lives in local
+  storage. An existing key is moved across automatically the first time this version runs, and
+  nothing is asked of you.
+- **The extension is 15% lighter on every Kick page.** The content script carried a settings
+  validation library, 13.7 KB compressed, to re-check data the extension had written itself. It now
+  asks the background worker, which already held it. 81.3 KB down to 69.0 KB compressed.
+- **The store listing is served in the reader's own language.** The name and the short description
+  are what store search matches on, and they were English only. They are now published in Turkish
+  and Arabic as well, which together account for a fifth of everyone who reaches the listing.
 
 ## [2.6.0] - 2026-08-14
 

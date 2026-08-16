@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type * as MetricsModule from './metrics';
 import { createMetrics, readAllMetrics } from './metrics';
 
 /**
@@ -60,7 +61,7 @@ async function settle(): Promise<void> {
 }
 
 /** A worker restart: the module cache and the memoised sink go, storage stays. */
-async function restart(): Promise<typeof import('./metrics')> {
+async function restart(): Promise<typeof MetricsModule> {
   vi.resetModules();
   return import('./metrics');
 }
