@@ -234,17 +234,38 @@ async function main(): Promise<void> {
   // stuck-paused state from missed visibilitychange events.
 
   /**
+   * Settings baked into a line at injection time.
+   *
+   * A line carries the answer that was true when it was drawn: the language it
+   * was translated into, the shape it was drawn in, and which badges were on.
+   * Nothing re-reads any of them afterwards, so changing one leaves every line
+   * already on screen showing the previous answer until the page is reloaded.
+   *
+   * `showOriginal` is deliberately absent. It is applied through a class on the
+   * document root, so it already follows the setting live and re-running rows for
+   * it would be work with no effect.
+   */
+  const RERENDER_KEYS = [
+    'targetLang',
+    'displayStyle',
+    'showSourceBadge',
+    'showProviderBadge',
+  ] as const satisfies readonly (keyof Settings)[];
+
+  /**
    * Re-run every row we already handled, for when the answer would now differ.
    *
    * The row mark (`data-kt-id`) is built from index + username + text and never
-   * from the reading language, so a line already translated into German still
-   * matches its mark after the target changes, and `ChatObserver.process` drops
-   * it as seen. The screen then keeps the old language until a reload, while
-   * only newly arriving messages follow the new target.
+   * from any of the settings above, so a line already drawn still matches its own
+   * mark and `ChatObserver.process` drops it as seen.
    *
-   * Clearing the mark AND the translation under it is what makes a row eligible
+   * Clearing the mark AND the artifact under it is what makes a row eligible
    * again; `reset()` rescans the container, the same two steps the scroll-stop
    * prefetch above already relies on.
+   *
+   * Only a target change costs a request. The pipeline hits the in-tab cache
+   * first, keyed by text and target, so a style or badge change re-draws every
+   * line from memory and reaches no engine.
    */
   function retranslateHandledRows(): void {
     const rows = document.querySelectorAll('div[data-index][data-kt-id]');
@@ -252,14 +273,14 @@ async function main(): Promise<void> {
       removeAllArtifacts(pickInjectionTarget(row));
       row.removeAttribute('data-kt-id');
     }
-    log.debug(`reading language changed: re-running ${rows.length} rows`);
+    log.debug(`display settings changed: re-running ${rows.length} rows`);
     observer.reset();
     observer.start();
   }
 
   watchSettings((next) => {
     const wasEnabled = settings.enabled;
-    const prevTarget = settings.targetLang;
+    const prev = settings;
     settings = next;
     pipeline.updateSettings(next);
     compose.updateSettings(next);
@@ -269,8 +290,8 @@ async function main(): Promise<void> {
     refreshChip();
 
     // Ordered after updateSettings on purpose: the rows are re-run through the
-    // pipeline, which must already hold the new target when they arrive.
-    if (next.enabled && next.targetLang !== prevTarget) retranslateHandledRows();
+    // pipeline, which must already hold the new settings when they arrive.
+    if (next.enabled && RERENDER_KEYS.some((k) => prev[k] !== next[k])) retranslateHandledRows();
 
     if (next.enabled && !wasEnabled) attachForRoute();
     if (!next.enabled && wasEnabled) {

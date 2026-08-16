@@ -10,9 +10,17 @@ const TRANS_INLINE_CLASS = 'kt-translation-inline';
 const TRANS_COMPACT_CLASS = 'kt-translation-compact';
 const LOADING_CLASS = 'kt-loading';
 const ERROR_CLASS = 'kt-error';
+const HOVER_CLASS = 'kt-hover-placeholder';
 // Every class we add under a chat line. Cleanup walks this list, so a display
 // style whose class is missing here would stack a copy per re-translation.
-const ARTIFACT_CLASSES = [TRANS_CLASS, TRANS_INLINE_CLASS, TRANS_COMPACT_CLASS, LOADING_CLASS, ERROR_CLASS];
+const ARTIFACT_CLASSES = [
+  TRANS_CLASS,
+  TRANS_INLINE_CLASS,
+  TRANS_COMPACT_CLASS,
+  LOADING_CLASS,
+  ERROR_CLASS,
+  HOVER_CLASS,
+];
 /**
  * Matches a line this extension has already dealt with, whatever the outcome:
  * translated, still in flight, or given up on.
@@ -54,9 +62,9 @@ export function injectHoverPlaceholder(
   target: Element,
   onHover: () => void,
 ): void {
-  if (target.querySelector('.kt-hover-placeholder')) return;
+  if (target.querySelector(`.${HOVER_CLASS}`)) return;
   const ph = document.createElement('span');
-  ph.className = 'kt-hover-placeholder';
+  ph.className = HOVER_CLASS;
   ph.textContent = '⟶ hover to translate';
   ph.addEventListener('mouseenter', () => {
     ph.remove();
