@@ -8,7 +8,16 @@ export default defineManifest({
   name: 'Kick Chat Translator',
   short_name: 'Kick Translator',
   version: pkg.version,
-  description: pkg.description,
+  // The blurb both stores show in SEARCH RESULTS, served in the reader's browser
+  // language from public/_locales. Organic search is where 60% of new users come
+  // from, and a Turkish reader looking for "sohbet çevirmen" never matches an
+  // English sentence. The name stays literal: it is the brand, and "Kick" is the
+  // query people actually type.
+  //
+  // The English message must stay in step with `description` in package.json,
+  // which is what npm and the repo show. locales.test.ts asserts they match.
+  default_locale: 'en',
+  description: '__MSG_extDescription__',
   icons: {
     16: 'public/icons/icon16.png',
     32: 'public/icons/icon32.png',
