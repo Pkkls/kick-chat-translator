@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { MIN_TEXT_LENGTH, STORAGE_KEY_SETTINGS } from './constants';
+import { MIN_TEXT_LENGTH, STORAGE_KEY_DEEPL_KEY, STORAGE_KEY_SETTINGS } from './constants';
 import { AUTO, isSupportedLang } from './languages';
 
 // A language setting is either 'auto' or a supported ISO code; anything else
@@ -109,24 +109,55 @@ export function defaultSettings(): Settings {
   return { ...DEFAULTS, providerOrder: [...DEFAULTS.providerOrder] };
 }
 
+/**
+ * The synced blob never carries the DeepL key.
+ *
+ * Every reader takes the key off the Settings object, so it is put back on load
+ * and taken off again on every write. Keeping the field in the schema means no
+ * consumer, and no part of the options UI, has to know where it actually lives.
+ */
+function withoutKey(s: Settings): Settings {
+  return { ...s, deeplApiKey: '' };
+}
+
 export async function loadSettings(): Promise<Settings> {
-  const raw = await chrome.storage.sync.get(STORAGE_KEY_SETTINGS);
-  const candidate = raw[STORAGE_KEY_SETTINGS];
-  if (!candidate) return defaultSettings();
-  const parsed = SettingsSchema.safeParse(candidate);
-  return parsed.success ? parsed.data : defaultSettings();
+  const [synced, local] = await Promise.all([
+    chrome.storage.sync.get(STORAGE_KEY_SETTINGS),
+    chrome.storage.local.get(STORAGE_KEY_DEEPL_KEY),
+  ]);
+  const candidate = synced[STORAGE_KEY_SETTINGS];
+  const parsed = candidate ? SettingsSchema.safeParse(candidate) : undefined;
+  const base = parsed?.success ? parsed.data : defaultSettings();
+  const held = (local[STORAGE_KEY_DEEPL_KEY] as string | undefined) ?? '';
+
+  // Migration from a build that synced the key. Land it locally BEFORE clearing
+  // it from sync: if the local write fails, sync still holds the only copy and
+  // the next load retries; if the clear fails, the key is briefly in both places
+  // and the next load finishes the job. Neither order of failure loses it.
+  const stray = base.deeplApiKey;
+  if (stray) {
+    if (stray !== held) await chrome.storage.local.set({ [STORAGE_KEY_DEEPL_KEY]: stray });
+    await chrome.storage.sync.set({ [STORAGE_KEY_SETTINGS]: withoutKey(base) });
+    return { ...base, deeplApiKey: stray };
+  }
+  return { ...base, deeplApiKey: held };
 }
 
 export async function saveSettings(patch: Partial<Settings>): Promise<Settings> {
   const current = await loadSettings();
   const next = SettingsSchema.parse({ ...current, ...patch });
-  await chrome.storage.sync.set({ [STORAGE_KEY_SETTINGS]: next });
+  if (patch.deeplApiKey !== undefined) {
+    await chrome.storage.local.set({ [STORAGE_KEY_DEEPL_KEY]: next.deeplApiKey });
+  }
+  await chrome.storage.sync.set({ [STORAGE_KEY_SETTINGS]: withoutKey(next) });
   return next;
 }
 
 /** Overwrite all settings with defaults (used by the "Reset" button). */
 export async function resetSettings(): Promise<Settings> {
   const fresh = defaultSettings();
+  // A reset that left the key behind would be a reset the user cannot see.
+  await chrome.storage.local.remove(STORAGE_KEY_DEEPL_KEY);
   await chrome.storage.sync.set({ [STORAGE_KEY_SETTINGS]: fresh });
   return fresh;
 }
@@ -152,20 +183,29 @@ export function parseSettingsJson(json: string): Settings {
 /** Import settings from a JSON string. Returns the imported settings. */
 export async function importSettings(json: string): Promise<Settings> {
   const next = parseSettingsJson(json);
-  await chrome.storage.sync.set({ [STORAGE_KEY_SETTINGS]: next });
+  // A backup written before the split still carries the key in its JSON, so it
+  // is routed to local storage rather than silently dropped on import.
+  await chrome.storage.local.set({ [STORAGE_KEY_DEEPL_KEY]: next.deeplApiKey });
+  await chrome.storage.sync.set({ [STORAGE_KEY_SETTINGS]: withoutKey(next) });
   return next;
 }
 
 export function watchSettings(cb: (next: Settings) => void): () => void {
+  /**
+   * Settings now live in two areas, so the callback re-reads instead of parsing
+   * the change payload. Handing over `change.newValue` would deliver a Settings
+   * whose deeplApiKey is always empty, and DeepL would drop out of the chain on
+   * the next unrelated setting change until the page was reloaded.
+   */
   const handler = (
     changes: { [key: string]: chrome.storage.StorageChange },
     area: chrome.storage.AreaName,
   ): void => {
-    if (area !== 'sync') return;
-    const change = changes[STORAGE_KEY_SETTINGS];
-    if (!change) return;
-    const parsed = SettingsSchema.safeParse(change.newValue);
-    if (parsed.success) cb(parsed.data);
+    const touched =
+      (area === 'sync' && changes[STORAGE_KEY_SETTINGS] !== undefined) ||
+      (area === 'local' && changes[STORAGE_KEY_DEEPL_KEY] !== undefined);
+    if (!touched) return;
+    void loadSettings().then(cb).catch(() => undefined);
   };
   chrome.storage.onChanged.addListener(handler);
   return () => chrome.storage.onChanged.removeListener(handler);

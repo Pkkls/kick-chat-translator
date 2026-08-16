@@ -45,6 +45,15 @@ export const DEFAULT_CONCURRENCY = 4;
 export const KEEPALIVE_INTERVAL_SEC = 25;
 
 export const STORAGE_KEY_SETTINGS = 'kt.settings.v2';
+/**
+ * The DeepL key, kept OUT of the synced settings blob and on this device only.
+ *
+ * chrome.storage.sync replicates to Google and to every Chrome signed into the
+ * same account. That is right for preferences and wrong for a credential: a key
+ * typed on one machine would land on every other one, including shared or work
+ * profiles the user never meant to give it to. storage.local stays put.
+ */
+export const STORAGE_KEY_DEEPL_KEY = 'kt.deeplKey.v1';
 export const STORAGE_KEY_STATS = 'kt.stats.v1';
 export const STORAGE_KEY_UPDATE = 'kt.update.v1';
 
