@@ -11,7 +11,7 @@ import { extractMessageText } from './selectors';
 import { confidentLanguage, detectLanguage } from './langDetect';
 import { resolveBrowserLang } from '~/shared/languages';
 import { isContextCritical } from '~/shared/langTiers';
-import { isNoise, isSameLanguageAsTarget, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
+import { isNoise, isSameLanguageAsTarget, normalizeElongation, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
 import { HANDLED_SELECTOR, inject, incrementFloatingCount, injectHoverPlaceholder, markSkipped, removeAllArtifacts, showError, showLoading, showThrottleIndicator, showToast, updateActiveProvider } from './injector';
 import { localEngine } from './localEngine';
 import { memCache } from './memcache';
@@ -339,6 +339,22 @@ export class TranslationPipeline {
     metrics.count(outcome.result.cached ? 'cache.sw.hit' : 'cache.sw.miss');
   }
 
+  /**
+   * Second and last attempt, on the flattened text, after the engine returned the
+   * line unchanged. `noCache` because the cache would hand back the same refusal,
+   * and `normalized` so a second refusal ends as a skip instead of looping.
+   */
+  private async retryNormalized(msg: IncomingDomMessage, flat: string): Promise<void> {
+    const outcome = await this.requestCloud(flat, this.effTarget, msg.channel, '', true, confidentLanguage(flat));
+    if (!outcome?.ok) {
+      this.skip(msg, 'the translation came back the same as the original');
+      removeAllArtifacts(msg.injectionTarget);
+      return;
+    }
+    metrics.count('retry.normalized.answered');
+    this.applyTranslation(msg, flat, outcome.result, { store: true, normalized: true });
+  }
+
   /** ⟳ button: re-translate ignoring caches (and skip the same-lang guard). */
   private async forceRetranslate(msg: IncomingDomMessage, real: string): Promise<void> {
     showLoading(msg.injectionTarget);
@@ -387,7 +403,7 @@ export class TranslationPipeline {
     msg: IncomingDomMessage,
     real: string,
     result: RawResult,
-    opts: { store: boolean; force?: boolean },
+    opts: { store: boolean; force?: boolean; normalized?: boolean },
   ): void {
     // Everything from having the text to it being on screen: the recycled-row
     // rescue below walks the panel, and injection touches the DOM of a page we do
@@ -405,7 +421,7 @@ export class TranslationPipeline {
     msg: IncomingDomMessage,
     real: string,
     result: RawResult,
-    opts: { store: boolean; force?: boolean },
+    opts: { store: boolean; force?: boolean; normalized?: boolean },
   ): void {
     // If the original row was recycled by virtual scroll, try to find another
     // visible row that still holds the same text and inject there instead of
@@ -428,6 +444,19 @@ export class TranslationPipeline {
         return;
       }
       if (tt.trim().toLowerCase() === real.trim().toLowerCase()) {
+        // The engine handed the line straight back. On stretched chat that is
+        // usually why: "BINNNNNNNGOOOOOOO" and "muuuuy biennnn" both return
+        // unchanged, and flattened they come back as "BINGO" and "très bien".
+        // Retrying here rather than flattening every line up front is deliberate:
+        // Google already copes with some stretching, and normalising first turns
+        // "sooo goood" from "tellement bon" into "alors mon Dieu". After a refusal
+        // there is nothing left to spoil.
+        const flat = normalizeElongation(real);
+        if (!opts.normalized && flat !== real && flat.length > 0) {
+          metrics.count('retry.normalized');
+          void this.retryNormalized(msg, flat);
+          return;
+        }
         this.skip(msg, 'the translation came back the same as the original');
         removeAllArtifacts(msg.injectionTarget);
         return;

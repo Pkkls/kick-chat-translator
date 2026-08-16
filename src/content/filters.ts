@@ -72,3 +72,31 @@ export function isNoise(text: string): boolean {
 
   return false;
 }
+
+/**
+ * Flatten stretched characters, for a second attempt at a line the engine refused.
+ *
+ * NOT used as a preprocessing step, and that is the whole point. Measured against
+ * Google on real chat: it already handles some stretching well, "sooo goood" comes
+ * back as "tellement bon", and flattening first turns that into "alors mon Dieu".
+ * Normalising every line trades one failure for another.
+ *
+ * What it does rescue is the lines the engine hands straight back untranslated:
+ * "BINNNNNNNGOOOOOOO" and "muuuuy biennnn" return unchanged, and flattened they
+ * become "BINGO" and "très bien". So this runs only after that has happened, where
+ * it cannot make anything worse than the nothing already obtained.
+ *
+ * Repeats only. An isolated Japanese prolongation is deliberately left alone: it
+ * carries meaning, and stripping it turns コーヒー into コヒ, ラーメン into ラメン and
+ * スーパー into スパ. Elongation of the おーわーりー kind is therefore not handled,
+ * because no rule tested here separates it from a real word without a dictionary.
+ */
+export function normalizeElongation(text: string): string {
+  return text
+    // Three or more of the same letter is not a word in any language we target.
+    .replace(/(\p{L})\1{2,}/gu, '$1')
+    // Repeated prolongation marks; a single one is left in place.
+    .replace(/ー{2,}/gu, 'ー')
+    .replace(/([!?！？])\1{2,}/gu, '$1$1')
+    .trim();
+}
