@@ -101,17 +101,67 @@ because `e2e.cloud` had accumulated since item 97 and the provider series had no
 The 780 ms of "unexplained" latency that produced did not exist. Compare series that
 share a window, or the subtraction is meaningless.
 
-### The on-device engine
+### The on-device engine — measured, and it is worth defending
 
-**It has never run, and now the reason is known: the API is absent.** `Translator`,
-`LanguageDetector` and `ai` are all `undefined` on **Google Chrome 151**, where
-`localEngine.ts` claims Chrome 138 and up. Not a missing model, not a detection
-problem: the global does not exist.
+**It is roughly seventy times faster than the cloud.** Both series from one live
+session, seen to painted:
 
-`engineMode` defaults to `local-first`, and the store listing sells on-device
-translation, so this is a product-level question rather than a code one. Whether it
-is hardware gating, a flag, a region restriction or a policy has not been
-established. Nothing in the engine path is worth touching until it is.
+| Path | n | min | p50 | p95 |
+|---|---|---|---|---|
+| `e2e.local` | 8 | 6 ms | **22 ms** | 210 ms |
+| `e2e.cloud` | 200 | 353 ms | **1618 ms** | 2134 ms |
+
+`local-first` as the default is not merely defensible, it is the difference between
+a translation that appears with the message and one that arrives after the reader
+has scrolled past. Everything in the latency section above concerns only the users
+who cannot reach this path.
+
+Two separate things stop them reaching it, and both were mistaken for one another
+before being measured.
+
+**The API is absent on some browsers.** `Translator`, `LanguageDetector` and `ai`
+are all `undefined` on one Google Chrome 151, where `localEngine.ts` claims Chrome
+138 and up. Unresolved and worth resolving: a second browser on the same machine,
+also reporting Chrome 151, has them as functions. Same version, different answer.
+Flag, profile, hardware gating or policy, nobody knows.
+
+**Where the API exists, only downloaded pairs are served.** Measured on a Japanese
+channel with a French target:
+
+```
+ja>fr : downloadable      es>fr : downloadable
+en>fr : available         ko>fr : downloadable
+```
+
+Only `en>fr` had its model. `e2e.local` therefore stopped at 8 samples, all from the
+English lines in the chat, and every Japanese line went to the cloud. Downloading a
+pair needs a user gesture, which is what the floating bar's local chip is for.
+
+So the honest state of the default engine mode: excellent when it applies, and it
+applies to far less traffic than the default implies. How that gets surfaced to a
+user who has the API but no model is an open product question, not a bug.
+
+### Why a message never reaches an engine
+
+234 skips in one session, the first sample above the fifty threshold:
+
+| Reason | n |
+|---|---|
+| **the same user just sent this** | **213** |
+| shorter than the 2 character minimum | 9 |
+| only emoji, symbols or laughter | 7 |
+| the translation came back the same | 4 |
+| already in your language | 1 |
+
+**Per-user dedup is 91% of all skips**, and it reframes the cache numbers below. The
+in-tab cache measured a 6.7% hit rate, which reads like a cache that does not earn
+its place. It is not: dedup catches repeated lines *before* the cache is ever
+consulted, so the cache is judged on what dedup left behind. Do not delete either on
+the other's numbers.
+
+`retry.normalized` stayed empty despite four lines coming back unchanged: none of
+those four was stretched, so item 108 correctly did nothing. That path still has not
+been exercised against real traffic.
 
 ### Caches, chain, DOM
 
@@ -280,13 +330,14 @@ the commits.
 
 ## 8. What to do next, in order
 
-1. **Submit 2.7.0 to both stores, and smoke-test it in a real browser first.** Ten
-   of the twelve items in it have never been seen running; only item 104 was
-   confirmed live. Item 109 is the one to exercise deliberately: open Kick after the
-   browser has sat idle long enough for the worker to be killed, and check the
-   extension still starts.
-2. **Establish why the on-device Translator API is absent on Chrome 151**, section 3.
-   The default engine mode depends on it and the store listing sells it.
+1. **Submit 2.7.0 to both stores.** The smoke test has now been done on a live
+   channel: 13 translations on screen, zero errors, observer attached, composer
+   bound, and the settings arriving from the worker, which exercises items 102 and
+   109, the two that carried the most risk. What is still unexercised against real
+   traffic is item 108's retry, which needs a stretched line an engine refuses.
+2. **Establish why the Translator API is present on one Chrome 151 and absent on
+   another**, section 3. The default engine mode is worth 22 ms against 1618 ms, so
+   the question is which users get that and why, not whether the mode is right.
 3. **Decide the `confidentLanguage` question in section 4** for the incoming path.
    Item 107 already did it for the composer, so the precedent and the shape exist.
    `compose.skipSameLang.lookedUp` versus `.guessed` is now being counted and will
