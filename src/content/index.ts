@@ -1,4 +1,8 @@
-import { loadSettings, saveSettings, watchSettings, type Settings } from '~/shared/settings';
+import type { Settings } from '~/shared/settings';
+// Deliberately NOT ~/shared/settings: that module carries zod, and importing a
+// value from it puts the whole schema runtime on every Kick page. See the header
+// of settingsClient.ts for the measurement.
+import { fetchSettings, patchSettings, watchSettings } from '~/shared/settingsClient';
 import { rootLogger } from '~/shared/logger';
 import { TranslationPipeline } from './pipeline';
 import {
@@ -26,7 +30,7 @@ const log = rootLogger.child('content');
 let domWarned = false;
 
 async function main(): Promise<void> {
-  let settings: Settings = await loadSettings();
+  let settings: Settings = await fetchSettings();
   rootLogger.setEnabled(settings.debug);
 
   ensureStyles();
@@ -86,8 +90,8 @@ async function main(): Promise<void> {
           return;
         }
         mountFloatingBar(host, settings, {
-          onToggle: (enabled) => void saveSettings({ enabled }),
-          onTargetLang: (targetLang) => void saveSettings({ targetLang }),
+          onToggle: (enabled) => void patchSettings({ enabled }),
+          onTargetLang: (targetLang) => void patchSettings({ targetLang }),
           onOpenOptions: () => void chrome.runtime.sendMessage({ type: 'open.options' }),
           onEnableLocal: () => {
             const pairs = localEngine.downloadablePairs().filter((p) => p.tgt === settings.targetLang);
