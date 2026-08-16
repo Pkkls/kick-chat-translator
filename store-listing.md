@@ -1,7 +1,7 @@
 # Chrome Web Store listing
 
 Plain text. The store renders no markdown, so the CAPS headers are the only
-structure available. Fact-checked against manifest 2.6.0, README, CHANGELOG.
+structure available. Fact-checked against manifest 2.7.0, README, CHANGELOG.
 
 ## Short summary (132 char limit)
 
@@ -9,9 +9,9 @@ Kick chat in a language you don't read? It gets translated under each message, l
 
 ## Description (EN)
 
-NEW IN 2.6.0
+NEW IN 2.7.0
 
-Chat written in the Latin alphabet is translated again: Spanish, Turkish, French and Portuguese were being refused as though they were already English, while Japanese and Korean went through. The bar at the top of chat no longer disappears. The interface now comes in 10 languages, with Spanish, Turkish and Korean added. The glossary is editable at last, a Debug tab shows why a line was left alone, and the reading language and a pause button now sit on the bar itself.
+Changing the reading language now changes what is already on screen. It used to affect only messages arriving afterwards, so everything already visible kept the previous language until you reloaded the page, and the same held for the display style and the badges. A stretched message like "muuuuy biennnn", which the translation services hand straight back untouched, is now tried once more on its flattened text. Your DeepL key stays on the machine you typed it on instead of syncing to every Chrome signed into your account, and it moves across by itself. And every Kick page carries 15% less script.
 
 Open a Kick stream where the chat is in a language you don't read. Each message gets its translation right underneath, as it comes in. A green bar at the top of chat tells you it's running.
 
@@ -41,9 +41,9 @@ Open source, MIT: github.com/Pkkls/kick-chat-translator
 
 ## Description (FR)
 
-NOUVEAU EN 2.6.0
+NOUVEAU EN 2.7.0
 
-Le chat écrit en alphabet latin est de nouveau traduit : l'espagnol, le turc, le français et le portugais étaient refusés comme s'ils étaient déjà en anglais, alors que le japonais et le coréen passaient. La barre en haut du chat ne disparaît plus. L'interface existe maintenant en 10 langues, avec l'espagnol, le turc et le coréen. Le glossaire est enfin modifiable, un onglet Debug montre pourquoi une ligne a été laissée de côté, et la langue de lecture ainsi qu'un bouton pause sont passés sur la barre elle-même.
+Changer la langue de lecture change maintenant ce qui est déjà à l'écran. Seuls les messages arrivés ensuite étaient concernés, tout ce qui était visible gardait la langue précédente jusqu'au rechargement de la page, et il en allait de même pour le style d'affichage et les badges. Un message étiré comme "muuuuy biennnn", que les services de traduction renvoient tel quel, est désormais retenté une fois sur son texte aplati. Ta clé DeepL reste sur la machine où tu l'as tapée au lieu de se synchroniser vers tous les Chrome de ton compte, et elle s'y déplace toute seule. Et chaque page Kick porte 15% de script en moins.
 
 Tu ouvres un stream Kick où le chat est dans une langue que tu ne lis pas. Chaque message reçoit sa traduction juste en dessous, au fil de l'arrivée. Une barre verte en haut du chat indique que ça tourne.
 
@@ -75,13 +75,13 @@ Code source ouvert, MIT : github.com/Pkkls/kick-chat-translator
 
 Paste into the Turkish listing in the developer dashboard. Turkey is the second
 country by users after the United States, and 21 of 200 listing views came from
-the Turkish store. Wants a native reader before submission.
+the Turkish store. No native reader was available; verified by round-tripping each paragraph back to English.
 
 Short summary: Okuyamadığın bir dilde Kick sohbeti mi? Her mesajın altına canlı çeviri gelir, yanıtların da kanalın dilinde gider.
 
-2.6.0 İLE GELENLER
+2.7.0 İLE GELENLER
 
-Latin alfabesiyle yazılan sohbet yeniden çevriliyor: İspanyolca, Türkçe, Fransızca ve Portekizce sanki zaten İngilizceymiş gibi reddediliyordu, Japonca ve Korece ise geçiyordu. Sohbetin üstündeki çubuk artık kaybolmuyor. Arayüz artık 10 dilde, İspanyolca, Türkçe ve Korece eklendi. Sözlük nihayet düzenlenebiliyor, bir Debug sekmesi bir satırın neden atlandığını gösteriyor, okuma dili ve duraklatma düğmesi de çubuğun üstüne taşındı.
+Okuma dilini değiştirmek artık ekranda hâlihazırda bulunanı da değiştiriyor. Önceden yalnızca sonradan gelen mesajları etkiliyordu, görünen her şey sayfayı yenileyene kadar önceki dilde kalıyordu; aynısı gösterim biçimi ve rozetler için de geçerliydi. Çeviri servislerinin olduğu gibi geri verdiği "muuuuy biennnn" gibi uzatılmış bir mesaj, artık sadeleştirilmiş metniyle bir kez daha deneniyor. DeepL anahtarın, hesabındaki bütün Chrome tarayıcılarına eşitlenmek yerine yazdığın makinede kalıyor ve oraya kendiliğinden taşınıyor. Ayrıca her Kick sayfası %15 daha az betik taşıyor.
 
 Okuyamadığın bir dilde sohbet akan bir Kick yayını aç. Her mesaj, geldiği anda, hemen altında çevirisini alır. Sohbetin üstündeki yeşil çubuk çalıştığını gösterir.
 
@@ -113,13 +113,13 @@ Açık kaynak, MIT: github.com/Pkkls/kick-chat-translator
 
 Paste into the Arabic listing. 17 of 200 listing views came from the Arabic store,
 third after English and Turkish. The extension already ships an Arabic interface
-and handles right-to-left text. Wants a native reader before submission.
+and handles right-to-left text. No native reader was available; verified by round-tripping each paragraph back to English.
 
 Short summary: دردشة Kick بلغة لا تقرأها؟ تظهر الترجمة أسفل كل رسالة مباشرةً، وردودك تخرج بلغة القناة.
 
-الجديد في 2.6.0
+الجديد في 2.7.0
 
-عادت ترجمة الدردشة المكتوبة بالأبجدية اللاتينية: كانت الإسبانية والتركية والفرنسية والبرتغالية تُرفض كأنها إنجليزية بالفعل، بينما تمر اليابانية والكورية. الشريط أعلى الدردشة لم يعد يختفي. الواجهة متوفرة الآن بعشر لغات، مع إضافة الإسبانية والتركية والكورية. صار المسرد قابلاً للتعديل أخيراً، وتُظهر علامة تبويب Debug سبب تجاهل أي سطر، وانتقلت لغة القراءة وزر الإيقاف المؤقت إلى الشريط نفسه.
+تغيير لغة القراءة صار يغيّر ما هو معروض على الشاشة بالفعل. كان يؤثر في الرسائل الواردة بعده فقط، فيبقى كل ما هو ظاهر باللغة السابقة حتى تعيد تحميل الصفحة، والأمر نفسه ينطبق على طريقة العرض والشارات. والرسالة الممطوطة مثل "muuuuy biennnn"، التي تعيدها خدمات الترجمة كما هي دون تغيير، تُجرَّب الآن مرة أخرى بنصها المبسّط. ومفتاح DeepL يبقى على الجهاز الذي كتبته عليه بدل أن يُزامَن إلى كل متصفح Chrome في حسابك، وينتقل إليه تلقائياً. وكل صفحة Kick تحمل نصوصاً برمجية أقل بنسبة 15%.
 
 افتح بثاً على Kick تجري دردشته بلغة لا تقرأها. تحصل كل رسالة على ترجمتها أسفلها مباشرةً، فور وصولها. الشريط الأخضر أعلى الدردشة يخبرك أن الإضافة تعمل.
 
@@ -133,9 +133,9 @@ Short summary: دردشة Kick بلغة لا تقرأها؟ تظهر الترج�
 
 يستطيع Chrome وEdge 138+ الترجمة على الجهاز أيضاً، إن سمح العتاد. يُنزَّل النموذج مرة واحدة لكل زوج لغات، ثم يجري كل شيء محلياً: دون اتصال، وبلا حدود، ولا يغادر أي نص دردشة جهازك. لا يوفر Brave وFirefox هذه الواجهة بعد، فيستخدمان المحركات أعلاه.
 
-العرض
+طريقة العرض
 
-الترجمة أسفل النص الأصلي، أو في السطر نفسه، أو بعده بخط مائل أصغر، أو عند تمرير المؤشر فقط. لا يطلب وضع التمرير شيئاً حتى تشير إلى رسالة، ما يخفض الاستهلاك نحو عشرة أضعاف على دردشة سريعة.
+الترجمة أسفل النص الأصلي، أو في السطر نفسه، أو بعده بخط مائل أصغر، أو عند تمرير المؤشر فقط. لا يطلب وضع تمرير المؤشر شيئاً حتى تشير إلى رسالة، ما يخفض الاستهلاك نحو عشرة أضعاف على دردشة سريعة.
 
 عوامل التصفية
 
