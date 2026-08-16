@@ -30,16 +30,24 @@ pick a language. (You still can, in settings.)
 
 ---
 
-## What's new in [2.6.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+## What's new in [2.7.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
 
-Chat written in the Latin alphabet is translated again. With English as your reading language, anything
-more than 85% basic Latin characters was being refused as though it were already English, which turned
-away Spanish, Turkish, French and Portuguese while Japanese and Korean went through untouched. Measured
-on saved chat: 66 of 76 Spanish lines and 40 of 51 Turkish lines were dropped, against 0 of 43 Korean.
+**Changing the reading language now changes what is already on screen.** It used to affect only the
+messages that arrived afterwards, so everything already visible kept the previous language until you
+reloaded the page. The same held for the display style and the badges.
 
-The bar at the top of chat no longer disappears, the interface now comes in 10 languages, the glossary
-is finally editable, and a Debug tab shows why any given line was left alone. Full list in
-[CHANGELOG.md](CHANGELOG.md).
+**A stretched message gets a second chance.** Chat writes `muuuuy biennnn` and `BINNNNNGOOOOO`, and the
+translation services hand those straight back untranslated. When that happens the line is now retried
+once on its flattened text, which returns `muy bien` and `BINGO`. Only after a refusal, never before:
+the services already cope with some stretching, and flattening everything up front made those cases
+worse.
+
+**Your DeepL key stays on the machine you typed it on.** It used to sync to every Chrome signed into
+your account. An existing key moves across by itself.
+
+Also: the compose preview stopped telling the engine what language you wrote in unless it is certain,
+the extension no longer stays silent on a page when the browser was slow to wake its worker, and every
+Kick page carries 15% less script. Full list in [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
@@ -73,10 +81,22 @@ Four providers chained together. If one fails, the next takes over:
 | MyMemory | No | Fallback |
 | Lingva | No | Fallback. Uses a public instance out of the box; point it at your own in the settings if you'd rather |
 
-On Chrome/Edge you also get on-device translation, hardware permitting: no network, no quota. Brave and
-Firefox don't ship that API yet, so they fall back to the cloud chain.
-
 The order is yours to set in the settings.
+
+### On-device translation
+
+Chromium's built-in translator, where it is available, is the fastest path by a wide margin. Measured on
+a live channel: **22 ms** from a message appearing to its translation being on screen, against **1618 ms**
+through the cloud chain. No network, no quota, and the text never leaves your machine.
+
+Two things gate it, and both are worth knowing before you count on it.
+
+The API has to be there at all. Firefox does not ship it. Chrome and Edge 138+ are supposed to, but it is
+not guaranteed: on the same machine, one Chrome 151 exposed it and another did not. If yours does not,
+everything falls back to the cloud chain above and nothing breaks.
+
+And the model for your language pair has to be downloaded, once, with one click from the bar. Until then
+that pair goes to the cloud too, even though the pairs you already downloaded stay local.
 
 ## Settings
 

@@ -29,17 +29,24 @@ regionales (portugués de Brasil, chino tradicional).
 
 ---
 
-## Novedades de la [2.6.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+## Novedades de la [2.7.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
 
-El chat escrito en alfabeto latino vuelve a traducirse. Con el inglés como idioma de lectura, cualquier
-texto con más del 85% de caracteres latinos básicos se rechazaba como si ya estuviera en inglés, lo que
-dejaba fuera al español, turco, francés y portugués mientras que el japonés y el coreano pasaban sin
-tocar. Medido sobre chat guardado: se perdieron 66 de 76 líneas en español y 40 de 51 en turco, frente a
-0 de 43 en coreano.
+**Cambiar el idioma de lectura ahora cambia lo que ya está en pantalla.** Antes solo afectaba a los
+mensajes que llegaban después, así que todo lo ya visible mantenía el idioma anterior hasta que
+recargabas la página. Lo mismo pasaba con el estilo de visualización y las insignias.
 
-La barra de la parte superior del chat ya no desaparece, la interfaz ahora está disponible en 10 idiomas,
-el glosario por fin se puede editar, y una pestaña de Depuración muestra por qué se dejó una línea sin
-traducir. Lista completa en [CHANGELOG.md](CHANGELOG.md).
+**Un mensaje estirado tiene una segunda oportunidad.** En el chat se escribe `muuuuy biennnn` y
+`BINNNNNGOOOOO`, y los servicios de traducción los devuelven tal cual, sin traducir. Cuando eso pasa, la
+línea se reintenta una vez con su texto compactado, que devuelve `muy bien` y `BINGO`. Solo después de
+un rechazo, nunca antes: los servicios ya se apañan con algunos alargamientos, y compactarlo todo de
+entrada empeoraba esos casos.
+
+**Tu clave de DeepL se queda en la máquina donde la escribiste.** Antes se sincronizaba con todos los
+Chrome conectados a tu cuenta. Una clave existente se traslada sola.
+
+Además: la vista previa de redacción dejó de decirle al motor en qué idioma escribiste salvo que esté
+segura, la extensión ya no se queda muda en una página cuando el navegador tardó en despertar su worker,
+y cada página de Kick carga un 15% menos de script. Lista completa en [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
@@ -73,10 +80,22 @@ Cuatro proveedores en cadena: si uno falla, el siguiente toma el relevo.
 | MyMemory | No | Respaldo |
 | Lingva | No | Respaldo. Usa una instancia pública de forma predeterminada; apunta a la tuya propia en los ajustes si lo prefieres |
 
-En Chrome/Edge también hay traducción en el dispositivo, si el hardware lo permite: sin red y sin límite. Brave y
-Firefox todavía no incluyen esa API, así que recurren a la cadena en la nube.
-
 El orden lo decides tú en los ajustes.
+
+### Traducción en el dispositivo
+
+El traductor integrado de Chromium, donde está disponible, es con diferencia la vía más rápida. Medido en
+un canal en directo: **22 ms** desde que aparece un mensaje hasta que su traducción está en pantalla,
+frente a **1618 ms** por la cadena en la nube. Sin red, sin límite, y el texto nunca sale de tu máquina.
+
+Hay dos condiciones, y conviene conocer ambas antes de contar con ello.
+
+La API tiene que existir. Firefox no la incluye. Chrome y Edge 138+ deberían, pero no está garantizado:
+en la misma máquina, un Chrome 151 la exponía y otro no. Si el tuyo no la tiene, todo recae en la cadena
+en la nube de arriba y nada se rompe.
+
+Y el modelo de tu par de idiomas tiene que estar descargado, una vez, con un clic desde la barra. Hasta
+entonces ese par también va a la nube, aunque los pares que ya descargaste sigan siendo locales.
 
 ## Ajustes
 
