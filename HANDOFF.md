@@ -293,6 +293,23 @@ because the worker bundle carried the marker.
 **MV3.** The service worker is killed whenever it goes idle. Anything holding state
 in worker memory must merge with storage rather than overwrite it. That was item 104.
 
+**AMO validation warnings on 2.7.0, all three deliberate. Do not "fix" them.**
+
+Two say `strict_min_version` 121 predates the Firefox 140 (142 on Android) that
+introduced `data_collection_permissions`, so that field is ignored on 121 to 139.
+Raising the minimum to 140 silences both warnings and drops every Firefox user
+below it. The declaration exists for the reviewer, which is what AMO asks, and the
+`websiteContent` permission is visible to those users regardless. Keep 121.
+
+The third reports an unsafe `innerHTML` assignment in the i18n chunk. It is Preact's
+own diffing code, the branch that handles a `dangerouslySetInnerHTML` prop, present
+in every Preact build. `src/` contains no `innerHTML` and no
+`dangerouslySetInnerHTML`, so that branch is unreachable here. Not fixable without
+forking Preact, and nothing to fix.
+
+Validation result for the record: 0 errors, 3 warnings, all other test categories
+clean.
+
 ---
 
 ## 7. How this work was done
