@@ -1,0 +1,17 @@
+# Every file that ships is byte-identical on every platform.
+#
+# Without this, core.autocrlf decides line endings per machine: the repository
+# stores LF, a Windows checkout receives CRLF, and `git archive` hands out CRLF
+# too. A package built from a working tree that kept LF then differs from one
+# built from a fresh clone, by one byte per line in every text file that ships.
+#
+# AMO rebuilds the source it is given and compares it against the uploaded
+# package. That difference is the whole gap between a reproducible build and a
+# rejected submission. Found on 2.7.0: three _locales/*/messages.json files, six
+# bytes each.
+* text=auto eol=lf
+
+# Binaries, untouched.
+*.png binary
+*.zip binary
+*.ico binary
