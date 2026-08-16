@@ -1,4 +1,4 @@
-import { createMetrics, readAllMetrics } from '~/shared/metrics';
+import { readAllMetrics } from '~/shared/metrics';
 
 /**
  * Publish the collected metrics where a page-context reader can see them.
@@ -35,16 +35,15 @@ export function mountMetricsBridge(): void {
 
   const write = async (): Promise<void> => {
     try {
-      const snapshots = await readAllMetrics();
-      // The content script's own sink has not necessarily flushed yet, so its
-      // live counters are read straight from memory rather than from storage.
-      // Without this the page-side series lag by up to one flush interval, and
-      // a short session can look emptier than it was.
-      const live = createMetrics('content').snapshot();
+      // Storage is the whole record now: the sink folds its memory into it every
+      // couple of seconds and clears what it handed over. Reading anything else on
+      // top would double-count the overlap, and the earlier version of this file
+      // did worse, replacing the stored series with whatever memory happened to
+      // hold and discarding every previous run.
       node.textContent = JSON.stringify({
         at: Date.now(),
         href: location.href,
-        snapshots: live ? [...snapshots.filter((s) => s.scope !== 'content'), live] : snapshots,
+        snapshots: await readAllMetrics(),
       });
     } catch (err: unknown) {
       // A bridge that dies silently would read as "no metrics collected", which

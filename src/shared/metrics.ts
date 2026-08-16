@@ -44,6 +44,20 @@ export interface MetricsSnapshot {
   timings: Record<string, TimingSummary>;
 }
 
+/**
+ * What actually goes to storage: raw samples, not summaries.
+ *
+ * Summaries cannot be merged. Folding a p50 into another p50 is meaningless, so a
+ * stored summary is a dead end the moment the process that wrote it restarts. The
+ * reservoirs are kept whole and the percentiles are computed when read.
+ */
+interface StoredMetrics {
+  scope: MetricsScope;
+  since: number;
+  counts: Record<string, number>;
+  samples: Record<string, number[]>;
+}
+
 export interface Metrics {
   /** Record a duration in milliseconds. */
   timing(key: string, ms: number): void;
@@ -133,11 +147,59 @@ class LiveMetrics implements Metrics {
     await chrome.storage.local.remove(this.key);
   }
 
+  /** Raw state, mergeable, as it is stored. */
+  private persisted(): StoredMetrics {
+    return {
+      scope: this.scope,
+      since: this.since,
+      counts: Object.fromEntries(this.counts),
+      samples: Object.fromEntries(this.samples),
+    };
+  }
+
+  /**
+   * Fold what is already stored into what this process has, then write both back.
+   *
+   * A plain overwrite loses every earlier run, and in MV3 that is not an edge case:
+   * the service worker is killed whenever it goes idle, so its sink is rebuilt
+   * empty and the first flush wipes the record. Measured after the first night of
+   * collection, eight hours of samples had been reduced to the forty seconds since
+   * the last restart, because this method used to call `set` with a fresh snapshot.
+   *
+   * Counters add. Reservoirs concatenate and keep the newest MAX_SAMPLES, so a long
+   * session still reports a recent distribution rather than a stale one. `since`
+   * keeps the earliest, because it describes the record and not this process.
+   */
+  private async flush(): Promise<void> {
+    const mine = this.persisted();
+    let merged = mine;
+    try {
+      const stored = (await chrome.storage.local.get(this.key))[this.key] as StoredMetrics | undefined;
+      if (stored && stored.counts && stored.samples) {
+        const counts = { ...stored.counts };
+        for (const [k, v] of Object.entries(mine.counts)) counts[k] = (counts[k] ?? 0) + v;
+        const samples: Record<string, number[]> = { ...stored.samples };
+        for (const [k, v] of Object.entries(mine.samples)) {
+          samples[k] = [...(samples[k] ?? []), ...v].slice(-MAX_SAMPLES);
+        }
+        merged = { scope: this.scope, since: Math.min(stored.since ?? mine.since, mine.since), counts, samples };
+      }
+    } catch {
+      // Storage unreadable: write this process's own state rather than nothing.
+    }
+    await chrome.storage.local.set({ [this.key]: merged });
+    // What was just handed over must not be handed over again on the next flush,
+    // or every interval would re-add the same counts and inflate them geometrically.
+    this.counts.clear();
+    this.samples.clear();
+    this.since = merged.since;
+  }
+
   private scheduleFlush(): void {
     if (this.flushHandle) return;
     this.flushHandle = setTimeout(() => {
       this.flushHandle = undefined;
-      void chrome.storage.local.set({ [this.key]: this.snapshot() }).catch(() => undefined);
+      void this.flush().catch(() => undefined);
     }, FLUSH_DEBOUNCE_MS);
   }
 }
@@ -172,11 +234,22 @@ export function createMetrics(scope: MetricsScope): Metrics {
   return m;
 }
 
-/** Read both context blobs back, for the Debug tab's export. */
+/**
+ * Read both context blobs back, percentiles computed at read time.
+ *
+ * Storage holds raw reservoirs so that separate runs can be merged; turning them
+ * into percentiles is this function's job and happens once, on demand.
+ */
 export async function readAllMetrics(): Promise<MetricsSnapshot[]> {
   const keys = [`${METRICS_MARKER}.sw`, `${METRICS_MARKER}.content`];
   const stored = await chrome.storage.local.get(keys);
   return keys
-    .map((k) => stored[k] as MetricsSnapshot | undefined)
-    .filter((v): v is MetricsSnapshot => v !== undefined);
+    .map((k) => stored[k] as StoredMetrics | undefined)
+    .filter((v): v is StoredMetrics => v !== undefined && v.samples !== undefined)
+    .map((s) => ({
+      scope: s.scope,
+      since: s.since,
+      counts: s.counts,
+      timings: Object.fromEntries(Object.entries(s.samples).map(([k, v]) => [k, summarize(v)])),
+    }));
 }
