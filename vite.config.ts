@@ -10,6 +10,12 @@ export default defineConfig(({ mode }) => ({
     alias: { '~': resolve(__dirname, 'src') },
   },
   plugins: [preact(), crx({ manifest })],
+  // Integration builds carry the instrumentation, releases must not. A constant
+  // (not a setting) so esbuild folds `__KT_METRICS__ ? live : NOOP` and the live
+  // sink never reaches a shipped bundle. scripts/check-strip.ts enforces it.
+  define: {
+    __KT_METRICS__: JSON.stringify(process.env.KT_METRICS === '1'),
+  },
   build: {
     target: 'es2022',
     minify: mode === 'production' ? 'esbuild' : false,

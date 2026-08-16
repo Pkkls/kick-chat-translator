@@ -5,6 +5,7 @@ import { MAX_TEXT_LENGTH } from '~/shared/constants';
 import { rootLogger } from '~/shared/logger';
 import { send } from '~/shared/messages';
 import { applyUserGlossary, isSlangOnly } from '~/shared/glossary';
+import { createMetrics } from '~/shared/metrics';
 import { parseKickContent } from './emoteParser';
 import { extractMessageText } from './selectors';
 import { confidentLanguage, detectLanguage } from './langDetect';
@@ -16,6 +17,7 @@ import { localEngine } from './localEngine';
 import { memCache } from './memcache';
 
 const log = rootLogger.child('pipeline');
+const metrics = createMetrics('content');
 
 export interface IncomingDomMessage {
   rowElement: Element;
@@ -101,7 +103,13 @@ export class TranslationPipeline {
    */
   private skip(msg: IncomingDomMessage, reason: string): void {
     markSkipped(msg.injectionTarget, reason);
-    if (reason) this.note(msg.text, reason);
+    if (reason) {
+      this.note(msg.text, reason);
+      // The Debug tab shows the last 50 one by one, which answers "why was THIS
+      // line left alone" and never "what share of chat never reaches an engine".
+      // The defaults for ignoreEnglish and minTextLength were picked without it.
+      metrics.count(`skip.${reason}`);
+    }
   }
 
   constructor(settings: Settings) {
@@ -223,9 +231,13 @@ export class TranslationPipeline {
     // ── 0. In-tab memory cache: instant, zero round-trip ──
     const mem = memCache.get(real, target);
     if (mem) {
+      // stats.ts counts one totalCacheHits for both tiers, so nothing says
+      // whether this in-tab map earns its size or the SW cache does all the work.
+      metrics.count('cache.mem.hit');
       this.applyTranslation(msg, real, mem, { store: false });
       return;
     }
+    metrics.count('cache.mem.miss');
 
     // ── 1. On-device (Chrome; absent on Brave → straight to cloud) ──
     if (
@@ -237,9 +249,15 @@ export class TranslationPipeline {
       localEngine.noteSeen(detected, target);
       if (localEngine.isReady(detected, target)) {
         showLoading(msg.injectionTarget);
+        const t0 = performance.now();
         try {
           const translatedText = await localEngine.translate(detected, target, real);
           this.applyTranslation(msg, real, { translatedText, detectedLang: detected, provider: 'local' }, { store: true });
+          // Seen to painted, on device. `e2e.cloud` in translateAndApply is the
+          // same span for the other path, so the two are directly comparable.
+          // local-first has been the default since it shipped and nothing has
+          // ever measured whether it is the faster one.
+          metrics.timing('e2e.local', performance.now() - t0);
           void send({ type: 'stats.local', payload: { lang: detected, chars: real.length } }).catch(() => undefined);
           return;
         } catch (err: unknown) {
@@ -277,6 +295,11 @@ export class TranslationPipeline {
     const lines = isContextCritical(sourceLang) ? CONTEXT_LINES_HARD : CONTEXT_LINES;
     const context = this.contextFor(msg.channel, real, msg.username, lines);
     showLoading(msg.injectionTarget);
+    // Counterpart of `e2e.local`. This span covers the whole round trip the
+    // reader waits through: coalescing window, SW cache lookup, provider call and
+    // every fallback the chain walked. Not the provider latency the SW records,
+    // which is only the last hop of it.
+    const t0 = performance.now();
     // Only tell the engine the source language when we looked it up rather than
     // guessed it. A guessed `sl` makes the engine translate from the wrong
     // language, and the result is either dropped for matching the original or
@@ -309,6 +332,11 @@ export class TranslationPipeline {
       return;
     }
     this.applyTranslation(msg, real, outcome.result, { store: true });
+    // Only the success path is timed. A line that ended on showError never
+    // reached the reader, and folding those into the same series would drag the
+    // median toward a latency nobody actually waited for a translation through.
+    metrics.timing('e2e.cloud', performance.now() - t0);
+    metrics.count(outcome.result.cached ? 'cache.sw.hit' : 'cache.sw.miss');
   }
 
   /** ⟳ button: re-translate ignoring caches (and skip the same-lang guard). */

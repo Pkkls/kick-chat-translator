@@ -34,8 +34,21 @@ async function bundleContent(): Promise<void> {
   await build({
     configFile: false,
     root,
+    // This pass outputs into dist/assets, so the default publicDir copy would
+    // put a second copy of everything in public/ under assets/ and ship it. That
+    // was a few duplicated icons before; with _locales/ in there it is now
+    // duplicated store metadata inside the package.
+    publicDir: false,
     resolve: { alias: { '~': resolve(root, 'src') } },
-    define: { 'process.env.NODE_ENV': '"production"' },
+    define: {
+      'process.env.NODE_ENV': '"production"',
+      // `configFile: false` above means vite.config.ts is never read, so the
+      // constant that strips shared/metrics.ts does not exist in this pass and
+      // has to be repeated. Without it the ternary never folds and the live sink
+      // ships inside content.js, which is what check-strip caught the first time
+      // this ran. Keep the two definitions in step.
+      __KT_METRICS__: JSON.stringify(process.env.KT_METRICS === '1'),
+    },
     logLevel: 'warn',
     build: {
       outDir: ASSETS_DIR,

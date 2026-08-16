@@ -13,8 +13,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b --noEmit && vite build && tsx scripts/bundle-content.ts",
-    "build:firefox": "cross-env BROWSER=firefox vite build && tsx scripts/bundle-content.ts",
+    "build": "tsc -b --noEmit && vite build && tsx scripts/bundle-content.ts && tsx scripts/check-strip.ts",
+    "build:firefox": "cross-env BROWSER=firefox vite build && tsx scripts/bundle-content.ts && tsx scripts/check-strip.ts",
+    "build:metrics": "cross-env KT_METRICS=1 npm run build",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
     "lint": "eslint . --ext .ts,.tsx --max-warnings 0",

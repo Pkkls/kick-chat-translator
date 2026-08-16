@@ -1,6 +1,7 @@
 import type { ProviderStatus, TranslationOutcome, TranslationRequest } from '~/shared/types';
 import type { CloudProviderId, Settings } from '~/shared/settings';
 import { rootLogger } from '~/shared/logger';
+import { createMetrics } from '~/shared/metrics';
 import { decodeHtmlEntities } from '~/shared/decode';
 import { isDeeplPremium, routeForBudget } from '~/shared/langTiers';
 import { ConcurrencyQueue } from '../queue';
@@ -11,6 +12,7 @@ import { lingvaProvider } from './lingva';
 import { ProviderError, type ProviderContext, type TranslationProvider } from './types';
 
 const log = rootLogger.child('translator');
+const metrics = createMetrics('sw');
 
 // On-device ('local') runs in the content script (localEngine.ts) — the SW chain
 // is cloud-only.
@@ -68,6 +70,11 @@ function markFailure(id: CloudProviderId, code: string, message: string): void {
     backoffMs = Math.min(60_000, 2000 * 2 ** (cf - 1));
   }
   h.cooldownUntilMs = Date.now() + backoffMs;
+  // Which provider cools down, on what code, and for how long. Those are the
+  // three numbers the backoff ladder above was guessed from, and none of them
+  // has ever been read back.
+  metrics.count(`cooldown.trip.${id}.${code}`);
+  metrics.timing(`cooldown.ms.${id}`, backoffMs);
 }
 
 function markSuccess(id: CloudProviderId): void {
@@ -162,17 +169,29 @@ export async function translateGroup(
   const unresolved = new Set<number>(reqs.map((_, i) => i));
   let lastError: ProviderError | undefined;
 
+  // How deep the chain had to go before something answered. `byProvider` in
+  // stats.ts only ever counted the winner, so a first choice that fails on every
+  // call and a first choice that always answers look identical there.
+  let depth = 0;
+
   for (const id of eligibleOrder(settings, ctx, reqs[0]?.targetLang)) {
     if (unresolved.size === 0) break;
     const provider = PROVIDERS[id];
     if (!provider) continue;
     const indices = [...unresolved];
+    depth += 1;
+    metrics.count(`chain.attempt.${id}`);
 
-    if (provider.supportsBatch && provider.translateBatch && indices.length > 1) {
+    const batchFn = provider.translateBatch;
+    if (provider.supportsBatch && batchFn && indices.length > 1) {
       const batchReqs = indices.map((i) => reqs[i]!);
+      // BATCH_WINDOW_MS and BATCH_MAX_ITEMS are guesses. This is the distribution
+      // that says whether the window is closing too early or too late.
+      metrics.timing('batch.items', batchReqs.length);
       try {
-        const out = await provider.translateBatch(batchReqs, ctx);
+        const out = await metrics.measure(`provider.${id}.batch`, () => batchFn(batchReqs, ctx));
         markSuccess(id);
+        metrics.count(`chain.depth.${depth}`);
         out.forEach((r, k) => {
           const idx = indices[k]!;
           results[idx] = ok(reqs[idx]!, id, r.translatedText, r.detectedLang);
@@ -196,7 +215,7 @@ export async function translateGroup(
       indices.map((idx) =>
         pool.add(async () => {
           try {
-            const r = await provider.translate(reqs[idx]!, ctx);
+            const r = await metrics.measure(`provider.${id}.item`, () => provider.translate(reqs[idx]!, ctx));
             if (!r.translatedText.trim()) throw new ProviderError(id, 'empty', 'empty');
             results[idx] = ok(reqs[idx]!, id, r.translatedText, r.detectedLang);
             unresolved.delete(idx);
@@ -208,8 +227,12 @@ export async function translateGroup(
         }),
       ),
     );
-    if (anySuccess) markSuccess(id);
-    else if (anyFail) markFailure(id, lastError?.code ?? 'unknown', lastError?.message ?? 'failed');
+    if (anySuccess) {
+      markSuccess(id);
+      metrics.count(`chain.depth.${depth}`);
+    } else if (anyFail) {
+      markFailure(id, lastError?.code ?? 'unknown', lastError?.message ?? 'failed');
+    }
   }
 
   return reqs.map((req, i) => results[i] ?? failOutcome(req, lastError));
