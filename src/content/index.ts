@@ -18,6 +18,7 @@ import {
   type LocalChipState,
 } from './injector';
 import { ChatObserver } from './observer';
+import { mountMetricsBridge } from './metricsBridge';
 import { ComposeController } from './compose';
 import { SELECTORS, findChatPanel, findComposer, pickFirst, pickInjectionTarget } from './selectors';
 import { extractChannelSlug, fetchChannelLangIso } from './kickApi';
@@ -30,6 +31,11 @@ const log = rootLogger.child('content');
 let domWarned = false;
 
 async function main(): Promise<void> {
+  // Integration builds only. `__KT_METRICS__` is the constant false in a release,
+  // so esbuild folds this branch away and tree-shaking takes the module and the
+  // metrics sink with it. check-strip.ts fails the build if it does not.
+  if (__KT_METRICS__) mountMetricsBridge();
+
   let settings: Settings = await fetchSettings();
   rootLogger.setEnabled(settings.debug);
 
