@@ -11,8 +11,9 @@
  */
 import type { Settings } from '~/shared/settings';
 import { rootLogger } from '~/shared/logger';
+import { createMetrics } from '~/shared/metrics';
 import { send } from '~/shared/messages';
-import { detectLanguage } from './langDetect';
+import { confidentLanguage, detectLanguage } from './langDetect';
 import { extractMessageText, findAllRows, findComposer } from './selectors';
 import { memCache } from './memcache';
 import {
@@ -37,6 +38,7 @@ import {
 } from './composeUi';
 
 const log = rootLogger.child('compose');
+const metrics = createMetrics('content');
 
 /**
  * Last few channel chat lines (untranslated) → DeepL `context` so the outgoing
@@ -238,8 +240,20 @@ export class ComposeController {
     const trimmed = raw.trim();
     const target = this.resolveTarget();
     const detected = trimmed ? detectLanguage(trimmed) : undefined;
+    // Looked up rather than guessed. `detected` may carry franc's answer, which is
+    // measured at roughly a third correct on short text; this one is undefined
+    // unless the language was actually established.
+    const confident = trimmed ? confidentLanguage(trimmed) : undefined;
 
     const action = decideComposeAction(trimmed, this.lastSource, detected, target);
+    metrics.count(`compose.action.${action}`);
+    if (action === 'skip-same-lang') {
+      // The number that decides whether this guard should trust `detected` at all.
+      // A skip on a guess is a message silently left untranslated; a skip on a
+      // lookup is the guard doing its job. Counting them apart is the only way to
+      // tell those two apart after the fact.
+      metrics.count(`compose.skipSameLang.${confident ? 'lookedUp' : 'guessed'}`);
+    }
     if (action !== 'translate') {
       // 'skip-unchanged' → the panel already shows the right thing, leave it.
       if (action !== 'skip-unchanged') {
@@ -276,7 +290,13 @@ export class ComposeController {
           messageId: `compose:${id}`,
           text: masked,
           targetLang: target,
-          sourceLangHint: detected,
+          // Only a language that was looked up, never one franc guessed. Handing
+          // the engine a wrong source makes it translate from a language the text
+          // is not in: it either returns the text unchanged, so the preview shows
+          // nothing useful, or returns something that is not what was typed.
+          // Sending nothing lets the engine detect for itself, which it does well.
+          // The incoming path has done this since it was written; this one had not.
+          sourceLangHint: confident,
           // Recent channel lines → DeepL `context` (free, not billed) so the output
           // fits the conversation's topic/register.
           context: readRecentChatContext() || undefined,
