@@ -125,7 +125,9 @@ else, and in on-device mode, not even there. [Details](PRIVACY.md)
 **A:** 2.6.0 fixed the cause of this: Kick leaves a hidden second copy of the chat panel in the page and the bar was being mounted into that one, invisible from the start. Update first. If it still happens on 2.6.0 or later, refresh the page and open an issue, because that would be a new one.
 
 **Q: Messages aren't being translated.**
-**A:** Open the settings and make sure the target language differs from the source language. Also check that at least one provider is enabled in the chain.
+**A:** Open the **Debug** tab in the settings and press "Read decisions": it lists the last 50 lines and says, for each one, why it was translated or left alone. That answers this faster than guessing.
+
+Most lines that get skipped are skipped on purpose. Measured over one live session, out of 234 skipped lines: 213 were the same user repeating themselves, 9 were under the minimum length, 7 were emoji or laughter only, and 1 was already in the reading language. If the Debug tab shows nothing at all, then the extension is not seeing the chat, which is a different problem worth an issue.
 
 **Q: Does it work on VOD replays?**
 **A:** Yes. The extension translates chat on both live streams and VOD replays.
@@ -139,8 +141,8 @@ else, and in on-device mode, not even there. [Details](PRIVACY.md)
 **Q: How do I get better translation quality?**
 **A:** Add a free DeepL API key in the settings. DeepL's free tier covers up to 1 million characters a month and consistently beats the default providers.
 
-**Q: Some messages show odd characters or aren't translated.**
-**A:** Very short messages and emote-only messages are skipped on purpose: they rarely hold translatable text and would burn API calls for nothing.
+**Q: A stretched message like "muuuuy biennnn" stays untranslated.**
+**A:** It should not, since 2.7.0. The translation services hand messages like that straight back unchanged, so the line is retried once on its flattened text. If you still see one, the Debug tab will say which of the two attempts gave up.
 
 **Q: The extension broke after a Kick update.**
 **A:** Kick sometimes changes its chat structure, which can break message detection. Open a [GitHub issue](https://github.com/Pkkls/kick-chat-translator/issues) and it'll be patched as soon as possible.
@@ -168,14 +170,31 @@ It asks for `storage` and `alarms`, and for host access to kick.com, to each tra
 git clone https://github.com/Pkkls/kick-chat-translator.git
 cd kick-chat-translator
 npm ci
-npm run build     # output in dist/
+npm run build            # Chromium, output in dist/
+npm run build:firefox    # Firefox, same output directory
+npm run pack             # zip into release/
+npm run pack:firefox
 ```
 
-Other commands: `npm run dev` (HMR), `npm run test`, `npm run lint`,
-`npm run pack` (zip for distribution).
+`npm run release:check` is the gate the packages go through: typecheck, lint, tests
+and build, in that order. Run it rather than its parts, since running only three of
+the four is how three lint errors once reached a release branch unnoticed.
+
+Other commands: `npm run dev` (HMR), `npm run test`, `npm run test:watch`.
+
+**Builds are reproducible.** `.gitattributes` pins line endings and `scripts/pack.ts`
+fixes entry order and timestamps, so the same commit yields a byte-identical zip on
+any machine. Verified by extracting a `git archive` of the tag into an empty
+directory, building there, and comparing hashes. Worth repeating before any store
+submission that asks for source.
 
 Stack: MV3, Vite, TypeScript, Preact, Tailwind. The content script ships as
 a classic IIFE for reliable injection on Brave.
+
+`scripts/check-strip.ts` runs at the end of every build. The repository carries a
+development-only instrumentation module, and this fails the build if any part of it,
+or even one of its measurement key strings, survives into a release bundle. It
+checks both directions, so an instrumented build that lost the code fails too.
 
 ## Related projects
 
