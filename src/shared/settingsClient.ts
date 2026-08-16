@@ -18,11 +18,32 @@ import type { Settings } from './settings';
 import { send } from './messages';
 import { STORAGE_KEY_DEEPL_KEY, STORAGE_KEY_SETTINGS } from './constants';
 
-/** Current settings, straight from the worker that owns them. */
-export async function fetchSettings(): Promise<Settings> {
-  const res = await send({ type: 'settings.get' });
-  if (res.type !== 'settings') throw new Error(`settings.get answered ${res.type}`);
-  return res.payload;
+/**
+ * Current settings, straight from the worker that owns them.
+ *
+ * Retried, because this is the first thing the content script does on a page and
+ * the worker it asks may not exist yet. MV3 kills an idle worker, and a message is
+ * what wakes it: the first send after a long pause can lose the race and reject.
+ * Reading storage directly could not fail this way, which is what this replaced,
+ * so the robustness has to come back somewhere. A retry is that somewhere, and it
+ * keeps the defaults in one place instead of shipping a second copy to the page.
+ *
+ * A rejection here aborts main() and the extension does nothing on the page, in
+ * silence. Three attempts over roughly a second is far longer than a wake takes.
+ */
+export async function fetchSettings(attempts = 3): Promise<Settings> {
+  let last: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const res = await send({ type: 'settings.get' });
+      if (res.type === 'settings') return res.payload;
+      last = new Error(`settings.get answered ${res.type}`);
+    } catch (err: unknown) {
+      last = err;
+    }
+    if (i < attempts - 1) await new Promise((r) => setTimeout(r, 200 * (i + 1)));
+  }
+  throw last instanceof Error ? last : new Error('settings.get failed');
 }
 
 /** Apply a change. The worker validates, persists and re-applies it. */
