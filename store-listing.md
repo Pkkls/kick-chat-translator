@@ -152,3 +152,66 @@ Short summary: دردشة Kick بلغة لا تقرأها؟ تظهر الترج�
 Current value has an em dash and the meaningless word "pro". Replace with:
 
 Translates Kick chat into your language as it scrolls, and your replies into the channel's.
+
+---
+
+# AMO listing (Firefox)
+
+Separate from the Chrome copy above, and not a translation of it. The Chrome
+listing leads with on-device translation; Firefox has no Translator API, so on AMO
+that lead tells the reader the main feature is not for them. This one leads with
+what a Firefox user actually gets and mentions on-device once, honestly, near the
+end.
+
+The listing this replaces carried the submission notes in the public description
+(gecko.id, strict_min_version, "declare it in the AMO submission form", "web-ext
+lint 0 errors") and claimed "Data collection: none" directly above a metadata block
+reading "Collecte de données nécessaire : Contenu des sites web". Both are gone.
+
+AMO limits: name 50 characters, summary 250, description rich text.
+
+## AMO summary (EN, 250 char limit)
+
+Kick chat in a language you don't read gets translated under each message as it arrives, and your replies go out in the channel's language. No account, no setup. Works on live streams and VOD.
+
+## AMO description (EN)
+
+Open a Kick stream where the chat is in a language you don't read. Each message gets its translation right underneath, as it comes in. A green bar at the top of chat tells you it's running.
+
+Type a reply and a preview shows it in the channel's language above the chat box. Click the preview or press Ctrl+Enter and that version replaces what you typed, ready for you to send.
+
+Nothing to set up. Incoming chat is translated into your browser's language, and what you write goes out in whatever the channel broadcasts in, read from Kick itself. Both are overridable in settings. It handles 7TV emotes.
+
+ENGINES
+
+Google works out of the box, no key and no account. Add your own free DeepL key and quality jumps on European languages: their free tier covers a million characters a month without a card. DeepL also receives the recent channel lines as context so the wording fits the conversation, and it is asked for the polite register where the language has one, keigo in Japanese or vous rather than tu in French. To make a free quota last, DeepL is spent only on the pairs where it actually beats the free engines. MyMemory and Lingva sit behind as fallbacks, and when one engine fails the next takes over. You set the order.
+
+DISPLAY
+
+Translation below the original, inline with it, after it in smaller italics, or only when you hover. Hover mode fetches nothing until you point at a message, which cuts usage by roughly ten times on a fast chat.
+
+FILTERS
+
+Skip bots, block users or channels, or limit which source languages get translated at all. Emotes, mentions, links and emoji spam are stripped before anything is sent, so you are not paying to translate "kkkkkk". Background tabs pause themselves.
+
+42 languages, right to left included (Arabic, Hebrew, Persian), with regional variants kept apart (pt-BR, zh-TW). The extension's own interface comes in 10: English, Spanish, French, Portuguese, Turkish, Russian, Arabic, Chinese, Japanese and Korean.
+
+WHAT LEAVES YOUR BROWSER
+
+The text of a chat message, and only that, to the translation engine you picked. Not your username, not the channel, not who said what. That is what the "website content" line in the permissions above refers to, and it is the whole of it. There is no account, no analytics and no server of mine: the extension talks to Kick, to the engine you chose, and to the GitHub releases page to tell you when a newer version exists, sending nothing with that last request.
+
+Firefox does not yet ship the browser-level translation API that Chrome and Edge 138+ expose, so this build always uses the engines above. If Mozilla ships one, the extension already knows how to use it and will translate on your machine, offline and without limits.
+
+Open source, MIT: github.com/Pkkls/kick-chat-translator
+
+## AMO summary (FR)
+
+Le chat Kick dans une langue que tu ne lis pas est traduit sous chaque message, au fil de l'arrivée, et tes réponses partent dans la langue de la chaîne. Sans compte, sans réglage. Marche sur les lives et les VOD.
+
+## AMO summary (TR)
+
+Okuyamadığın bir dildeki Kick sohbeti, her mesajın altında geldiği anda çevrilir; yanıtların da kanalın dilinde gider. Hesap gerekmez, ayar gerekmez. Canlı yayınlarda ve VOD'larda çalışır.
+
+## AMO summary (AR)
+
+دردشة Kick بلغة لا تقرأها تُترجم أسفل كل رسالة فور وصولها، وردودك تخرج بلغة القناة. بلا حساب وبلا إعدادات. تعمل على البث المباشر وعلى التسجيلات.
