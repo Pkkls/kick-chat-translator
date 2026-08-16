@@ -246,13 +246,13 @@ export class ComposeController {
     const confident = trimmed ? confidentLanguage(trimmed) : undefined;
 
     const action = decideComposeAction(trimmed, this.lastSource, detected, target);
-    metrics.count(`compose.action.${action}`);
+    if (__KT_METRICS__) metrics.count(`compose.action.${action}`);
     if (action === 'skip-same-lang') {
       // The number that decides whether this guard should trust `detected` at all.
       // A skip on a guess is a message silently left untranslated; a skip on a
       // lookup is the guard doing its job. Counting them apart is the only way to
       // tell those two apart after the fact.
-      metrics.count(`compose.skipSameLang.${confident ? 'lookedUp' : 'guessed'}`);
+      if (__KT_METRICS__) metrics.count(`compose.skipSameLang.${confident ? 'lookedUp' : 'guessed'}`);
     }
     if (action !== 'translate') {
       // 'skip-unchanged' → the panel already shows the right thing, leave it.

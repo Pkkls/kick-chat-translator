@@ -23,6 +23,42 @@ import { join, relative } from 'node:path';
 const MARKER = 'kt.metrics.v1';
 const DIST = 'dist';
 
+/**
+ * Measurement keys, which survive the sink being stripped unless the call site is
+ * guarded too.
+ *
+ * The marker above proves the sink is gone: nothing is collected, stored or
+ * readable. It does not prove the keys are gone. A call compiles to an empty
+ * function invocation and takes its string argument along, so a release used to
+ * carry `dom.row.seen` and `compose.skipSameLang.` in plain text. Inert, but it
+ * reads to anyone opening the bundle as telemetry that is merely not wired up yet,
+ * and a store reviewer opening a bundle is not a hypothetical.
+ *
+ * Guarding each call site with `__KT_METRICS__` folds the whole statement away.
+ * This asserts that none was missed, which no amount of care at the call site can.
+ */
+const KEYS = [
+  'leg.roundtrip',
+  'leg.sw.total',
+  'leg.coalesce.wait',
+  'leg.cache.lookup',
+  'leg.inject',
+  'e2e.cloud',
+  'e2e.local',
+  'dom.row.seen',
+  'dom.row.textEmpty',
+  'dom.container.miss',
+  'chain.attempt.',
+  'chain.depth.',
+  'cooldown.trip.',
+  'cache.mem.hit',
+  'cache.sw.hit',
+  'batch.items',
+  'compose.action.',
+  'compose.skipSameLang.',
+  'retry.normalized',
+];
+
 function walk(dir: string, out: string[] = []): string[] {
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry);
@@ -43,7 +79,10 @@ function main(): void {
     process.exit(1);
   }
 
-  const hits = files.filter((f) => readFileSync(f, 'utf8').includes(MARKER)).map((f) => relative(DIST, f));
+  const sources = new Map(files.map((f) => [relative(DIST, f).replace(/\\/g, '/'), readFileSync(f, 'utf8')]));
+  const hits = [...sources].filter(([, src]) => src.includes(MARKER)).map(([name]) => name);
+  /** Every measurement key still readable in the bundles, with where it survived. */
+  const keyHits = KEYS.flatMap((k) => [...sources].filter(([, src]) => src.includes(k)).map(([name]) => `${k} @ ${name}`));
 
   if (instrumented) {
     if (hits.length === 0) {
@@ -59,7 +98,16 @@ function main(): void {
     // content script did not, and every page-side measurement recorded nothing.
     // The two bundles are produced by two separate vite passes, so each one has to
     // be named or the failure of either hides behind the other.
-    const normalized = hits.map((h) => h.replace(/\\/g, '/'));
+    // The keys must be here too, or the release check below is comparing against
+    // a build that never had them and would pass on anything.
+    if (keyHits.length === 0) {
+      console.error(
+        `[check-strip] CONTROL FAILED: an instrumented build carries no measurement key.\n` +
+          `  The guards around the call sites folded in the build meant to keep them.`,
+      );
+      process.exit(1);
+    }
+    const normalized = hits;
     for (const required of ['assets/content.js']) {
       if (!normalized.includes(required)) {
         console.error(
@@ -71,7 +119,10 @@ function main(): void {
         process.exit(1);
       }
     }
-    console.info(`[check-strip] instrumented build, marker present in ${hits.length} file(s): ${normalized.join(', ')}`);
+    console.info(
+      `[check-strip] instrumented build: marker in ${hits.length} file(s) (${normalized.join(', ')}), ` +
+        `${keyHits.length} measurement key(s) present.`,
+    );
     return;
   }
 
@@ -85,7 +136,21 @@ function main(): void {
     process.exit(1);
   }
 
-  console.info(`[check-strip] release build clean: no "${MARKER}" in ${files.length} bundled file(s).`);
+  if (keyHits.length > 0) {
+    console.error(
+      `[check-strip] RELEASE BUILD CARRIES MEASUREMENT KEYS:\n` +
+        keyHits.map((h) => `  - ${h}`).join('\n') +
+        `\n  The sink is gone, so nothing is collected, but these strings are readable\n` +
+        `  in a shipped bundle. A call site was left unguarded: wrap it in\n` +
+        `  \`if (__KT_METRICS__)\`, or for one whose value is used, in a\n` +
+        `  \`__KT_METRICS__ ? metrics.measure(...) : ...\` ternary.`,
+    );
+    process.exit(1);
+  }
+
+  console.info(
+    `[check-strip] release build clean: no "${MARKER}" and no measurement key in ${files.length} bundled file(s).`,
+  );
 }
 
 main();

@@ -108,7 +108,7 @@ export class TranslationPipeline {
       // The Debug tab shows the last 50 one by one, which answers "why was THIS
       // line left alone" and never "what share of chat never reaches an engine".
       // The defaults for ignoreEnglish and minTextLength were picked without it.
-      metrics.count(`skip.${reason}`);
+      if (__KT_METRICS__) metrics.count(`skip.${reason}`);
     }
   }
 
@@ -233,11 +233,11 @@ export class TranslationPipeline {
     if (mem) {
       // stats.ts counts one totalCacheHits for both tiers, so nothing says
       // whether this in-tab map earns its size or the SW cache does all the work.
-      metrics.count('cache.mem.hit');
+      if (__KT_METRICS__) metrics.count('cache.mem.hit');
       this.applyTranslation(msg, real, mem, { store: false });
       return;
     }
-    metrics.count('cache.mem.miss');
+    if (__KT_METRICS__) metrics.count('cache.mem.miss');
 
     // ── 1. On-device (Chrome; absent on Brave → straight to cloud) ──
     if (
@@ -257,7 +257,7 @@ export class TranslationPipeline {
           // same span for the other path, so the two are directly comparable.
           // local-first has been the default since it shipped and nothing has
           // ever measured whether it is the faster one.
-          metrics.timing('e2e.local', performance.now() - t0);
+          if (__KT_METRICS__) metrics.timing('e2e.local', performance.now() - t0);
           void send({ type: 'stats.local', payload: { lang: detected, chars: real.length } }).catch(() => undefined);
           return;
         } catch (err: unknown) {
@@ -335,8 +335,8 @@ export class TranslationPipeline {
     // Only the success path is timed. A line that ended on showError never
     // reached the reader, and folding those into the same series would drag the
     // median toward a latency nobody actually waited for a translation through.
-    metrics.timing('e2e.cloud', performance.now() - t0);
-    metrics.count(outcome.result.cached ? 'cache.sw.hit' : 'cache.sw.miss');
+    if (__KT_METRICS__) metrics.timing('e2e.cloud', performance.now() - t0);
+    if (__KT_METRICS__) metrics.count(outcome.result.cached ? 'cache.sw.hit' : 'cache.sw.miss');
   }
 
   /**
@@ -351,7 +351,7 @@ export class TranslationPipeline {
       removeAllArtifacts(msg.injectionTarget);
       return;
     }
-    metrics.count('retry.normalized.answered');
+    if (__KT_METRICS__) metrics.count('retry.normalized.answered');
     this.applyTranslation(msg, flat, outcome.result, { store: true, normalized: true });
   }
 
@@ -380,7 +380,7 @@ export class TranslationPipeline {
       // `leg.sw.total`, which the worker records for its own share: the
       // difference is message transport plus, in MV3, waking a worker that the
       // browser may have killed since the last line.
-      const res = await metrics.measure('leg.roundtrip', () => send({
+      const call = (): ReturnType<typeof send> => send({
         type: 'translate',
         payload: {
           messageId: 'dom',
@@ -391,7 +391,8 @@ export class TranslationPipeline {
           ...(context ? { context } : {}),
           ...(noCache ? { noCache: true } : {}),
         },
-      }));
+      });
+      const res = __KT_METRICS__ ? await metrics.measure('leg.roundtrip', call) : await call();
       return res.type === 'translate.result' ? res.payload : undefined;
     } catch (err: unknown) {
       log.warn('cloud translate failed', err);
@@ -413,7 +414,7 @@ export class TranslationPipeline {
     try {
       this.applyTranslationInner(msg, real, result, opts);
     } finally {
-      metrics.timing('leg.inject', performance.now() - paintT0);
+      if (__KT_METRICS__) metrics.timing('leg.inject', performance.now() - paintT0);
     }
   }
 
@@ -453,7 +454,7 @@ export class TranslationPipeline {
         // there is nothing left to spoil.
         const flat = normalizeElongation(real);
         if (!opts.normalized && flat !== real && flat.length > 0) {
-          metrics.count('retry.normalized');
+          if (__KT_METRICS__) metrics.count('retry.normalized');
           void this.retryNormalized(msg, flat);
           return;
         }

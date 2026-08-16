@@ -70,14 +70,14 @@ export class ChatObserver {
   private tryAttach(): void {
     const container = findChatContainer(document);
     if (container) {
-      metrics.count('dom.attach');
+      if (__KT_METRICS__) metrics.count('dom.attach');
       this.attach(container);
       return;
     }
     // Selector health, the early warning for a Kick redesign. Today the only
     // signal is a toast the user sees once the extension is already broken; this
     // is the same fact, an hour earlier, in a number that can be read on demand.
-    metrics.count('dom.container.miss');
+    if (__KT_METRICS__) metrics.count('dom.container.miss');
     this.pollHandle = setTimeout(() => this.tryAttach(), 500);
   }
 
@@ -110,7 +110,7 @@ export class ChatObserver {
     this.containerWatcher = new MutationObserver(() => {
       if (!document.contains(container)) {
         log.debug('container removed, rescanning');
-        metrics.count('dom.container.remount');
+        if (__KT_METRICS__) metrics.count('dom.container.remount');
         this.reset();
       }
     });
@@ -118,18 +118,18 @@ export class ChatObserver {
   }
 
   private process(row: Element): void {
-    metrics.count('dom.row.seen');
+    if (__KT_METRICS__) metrics.count('dom.row.seen');
     const text = extractMessageText(row);
     if (!text) {
       // A row the observer matched but whose text selector returned nothing. A
       // handful is normal (system lines, emote-only rows). A ratio climbing
       // toward dom.row.seen means the message selectors stopped matching, which
       // is exactly what a Kick markup change looks like from in here.
-      metrics.count('dom.row.textEmpty');
+      if (__KT_METRICS__) metrics.count('dom.row.textEmpty');
       return;
     }
     const username = extractUsername(row) ?? '';
-    if (!username) metrics.count('dom.row.noUsername');
+    if (__KT_METRICS__ && !username) metrics.count('dom.row.noUsername');
     const id = buildSyntheticId(row, username, text);
 
     // If the row already carries our id mark AND it matches, we already processed it.

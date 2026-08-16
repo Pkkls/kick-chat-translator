@@ -73,8 +73,8 @@ function markFailure(id: CloudProviderId, code: string, message: string): void {
   // Which provider cools down, on what code, and for how long. Those are the
   // three numbers the backoff ladder above was guessed from, and none of them
   // has ever been read back.
-  metrics.count(`cooldown.trip.${id}.${code}`);
-  metrics.timing(`cooldown.ms.${id}`, backoffMs);
+  if (__KT_METRICS__) metrics.count(`cooldown.trip.${id}.${code}`);
+  if (__KT_METRICS__) metrics.timing(`cooldown.ms.${id}`, backoffMs);
 }
 
 function markSuccess(id: CloudProviderId): void {
@@ -180,18 +180,19 @@ export async function translateGroup(
     if (!provider) continue;
     const indices = [...unresolved];
     depth += 1;
-    metrics.count(`chain.attempt.${id}`);
+    if (__KT_METRICS__) metrics.count(`chain.attempt.${id}`);
 
     const batchFn = provider.translateBatch?.bind(provider);
     if (provider.supportsBatch && batchFn && indices.length > 1) {
       const batchReqs = indices.map((i) => reqs[i]!);
       // BATCH_WINDOW_MS and BATCH_MAX_ITEMS are guesses. This is the distribution
       // that says whether the window is closing too early or too late.
-      metrics.timing('batch.items', batchReqs.length);
+      if (__KT_METRICS__) metrics.timing('batch.items', batchReqs.length);
       try {
-        const out = await metrics.measure(`provider.${id}.batch`, () => batchFn(batchReqs, ctx));
+        const runBatch = (): ReturnType<typeof batchFn> => batchFn(batchReqs, ctx);
+        const out = __KT_METRICS__ ? await metrics.measure(`provider.${id}.batch`, runBatch) : await runBatch();
         markSuccess(id);
-        metrics.count(`chain.depth.${depth}`);
+        if (__KT_METRICS__) metrics.count(`chain.depth.${depth}`);
         out.forEach((r, k) => {
           const idx = indices[k]!;
           results[idx] = ok(reqs[idx]!, id, r.translatedText, r.detectedLang);
@@ -215,7 +216,8 @@ export async function translateGroup(
       indices.map((idx) =>
         pool.add(async () => {
           try {
-            const r = await metrics.measure(`provider.${id}.item`, () => provider.translate(reqs[idx]!, ctx));
+            const runItem = (): ReturnType<typeof provider.translate> => provider.translate(reqs[idx]!, ctx);
+            const r = __KT_METRICS__ ? await metrics.measure(`provider.${id}.item`, runItem) : await runItem();
             if (!r.translatedText.trim()) throw new ProviderError(id, 'empty', 'empty');
             results[idx] = ok(reqs[idx]!, id, r.translatedText, r.detectedLang);
             unresolved.delete(idx);
@@ -229,7 +231,7 @@ export async function translateGroup(
     );
     if (anySuccess) {
       markSuccess(id);
-      metrics.count(`chain.depth.${depth}`);
+      if (__KT_METRICS__) metrics.count(`chain.depth.${depth}`);
     } else if (anyFail) {
       markFailure(id, lastError?.code ?? 'unknown', lastError?.message ?? 'failed');
     }

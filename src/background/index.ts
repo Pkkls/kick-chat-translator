@@ -66,7 +66,8 @@ async function handleTranslate(req: TranslationRequest): Promise<TranslationOutc
     // IndexedDB, on the path of every single line. A hit is the fastest possible
     // answer, but a miss still pays this before anything else starts, and the
     // measured hit rate is 10%.
-    const cached = await metrics.measure('leg.cache.lookup', () => cache.get(req.text, req.targetLang));
+    const lookup = (): Promise<Awaited<ReturnType<typeof cache.get>>> => cache.get(req.text, req.targetLang);
+    const cached = __KT_METRICS__ ? await metrics.measure('leg.cache.lookup', lookup) : await lookup();
     if (cached) {
       const provider = cached.provider as ProviderId;
       stats.recordRequest(provider, cached.detectedLang, req.text.length, true, req.channel);
@@ -160,7 +161,8 @@ onMessage(async (msg): Promise<RuntimeResponse | void> => {
       // side covers the same request plus transport and, in MV3, whatever it cost
       // to wake this worker up. The difference between the two is that cost, and
       // nothing has ever put a number on it.
-      const outcome = await metrics.measure('leg.sw.total', () => handleTranslate(msg.payload));
+      const run = (): Promise<TranslationOutcome> => handleTranslate(msg.payload);
+      const outcome = __KT_METRICS__ ? await metrics.measure('leg.sw.total', run) : await run();
       return { type: 'translate.result', payload: outcome };
     }
     case 'stats.local':

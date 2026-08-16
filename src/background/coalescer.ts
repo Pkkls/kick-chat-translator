@@ -81,7 +81,7 @@ export class TranslationCoalescer {
     // even called. The window is adaptive (50 / 180 / 300ms by chat rate), so the
     // nominal constant does not tell you what a reader waited through.
     const flushedAt = Date.now();
-    for (const e of batch) metrics.timing('leg.coalesce.wait', flushedAt - e.at);
+    if (__KT_METRICS__) for (const e of batch) metrics.timing('leg.coalesce.wait', flushedAt - e.at);
     for (const e of batch) this.byKey.delete(e.key);
 
     const settings = this.deps.getSettings();
