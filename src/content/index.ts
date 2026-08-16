@@ -6,6 +6,7 @@ import {
   applyShowOriginal,
   ensureStyles,
   mountFloatingBar,
+  removeAllArtifacts,
   showToast,
   unmountFloatingBar,
   updateFloatingBar,
@@ -14,7 +15,7 @@ import {
 } from './injector';
 import { ChatObserver } from './observer';
 import { ComposeController } from './compose';
-import { SELECTORS, findChatPanel, findComposer, pickFirst } from './selectors';
+import { SELECTORS, findChatPanel, findComposer, pickFirst, pickInjectionTarget } from './selectors';
 import { extractChannelSlug, fetchChannelLangIso } from './kickApi';
 import { localEngine } from './localEngine';
 import { logPlatform, refresh7TV } from './platform';
@@ -232,8 +233,33 @@ async function main(): Promise<void> {
   // tab is hidden since translation bails immediately) — this avoids any
   // stuck-paused state from missed visibilitychange events.
 
+  /**
+   * Re-run every row we already handled, for when the answer would now differ.
+   *
+   * The row mark (`data-kt-id`) is built from index + username + text and never
+   * from the reading language, so a line already translated into German still
+   * matches its mark after the target changes, and `ChatObserver.process` drops
+   * it as seen. The screen then keeps the old language until a reload, while
+   * only newly arriving messages follow the new target.
+   *
+   * Clearing the mark AND the translation under it is what makes a row eligible
+   * again; `reset()` rescans the container, the same two steps the scroll-stop
+   * prefetch above already relies on.
+   */
+  function retranslateHandledRows(): void {
+    const rows = document.querySelectorAll('div[data-index][data-kt-id]');
+    for (const row of rows) {
+      removeAllArtifacts(pickInjectionTarget(row));
+      row.removeAttribute('data-kt-id');
+    }
+    log.debug(`reading language changed: re-running ${rows.length} rows`);
+    observer.reset();
+    observer.start();
+  }
+
   watchSettings((next) => {
     const wasEnabled = settings.enabled;
+    const prevTarget = settings.targetLang;
     settings = next;
     pipeline.updateSettings(next);
     compose.updateSettings(next);
@@ -241,6 +267,10 @@ async function main(): Promise<void> {
     updateFloatingBar(next);
     applyShowOriginal(next.showOriginal);
     refreshChip();
+
+    // Ordered after updateSettings on purpose: the rows are re-run through the
+    // pipeline, which must already hold the new target when they arrive.
+    if (next.enabled && next.targetLang !== prevTarget) retranslateHandledRows();
 
     if (next.enabled && !wasEnabled) attachForRoute();
     if (!next.enabled && wasEnabled) {
