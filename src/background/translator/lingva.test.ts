@@ -7,7 +7,7 @@ const baseCtx = {
   deeplPlan: 'free' as const,
   deeplBudgetPct: 0,
   lingvaInstance: 'https://lingva.example',
-  myMemoryEmail: '',
+  myMemoryEmail: '', concurrency: 4
 };
 
 const reply = (translation: string, detectedSource?: string) =>

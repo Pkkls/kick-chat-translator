@@ -1,4 +1,5 @@
 import { GOOGLE_CLIENTS, PROVIDER_ENDPOINTS } from '~/shared/constants';
+import { ConcurrencyQueue } from '../queue';
 import type { TranslationRequest } from '~/shared/types';
 import { ProviderError, type ProviderContext, type ProviderResult, type TranslationProvider } from './types';
 
@@ -93,9 +94,30 @@ async function batchCall(reqs: TranslationRequest[], ctx: ProviderContext): Prom
   const result = await call(fakeReq, ctx);
   const lines = result.translatedText.split('\n');
   // If Google merged/split lines differently, fall back to per-item.
+  //
+  // This was `for (const r of reqs) results.push(await call(r, ctx))`: forty
+  // messages meant forty round trips end to end, each waiting on the one
+  // before, while the concurrency the user set sat unused. Measured on the
+  // fallback path: 40 requests at a peak concurrency of 1.
+  //
+  // Capped rather than unleashed, and capped on the user's own number. The
+  // endpoint soft-bans per IP by answering 200 with an empty payload, so the
+  // fallback firing is already a bad moment to start shouting: the worst case
+  // here stays at the ceiling the dispatcher uses for its own per-item path,
+  // which is a budget this codebase has been living inside all along.
   if (lines.length !== reqs.length) {
-    const results: ProviderResult[] = [];
-    for (const r of reqs) results.push(await call(r, ctx));
+    const pool = new ConcurrencyQueue(Math.max(1, ctx.concurrency));
+    // Indexed writes, not pushes. Completion order under concurrency is not
+    // request order, and the dispatcher aligns results to requests by position:
+    // a push would hand every translation to the wrong chat line.
+    const results = new Array<ProviderResult>(reqs.length);
+    await Promise.all(
+      reqs.map((r, i) =>
+        pool.add(async () => {
+          results[i] = await call(r, ctx);
+        }),
+      ),
+    );
     return results;
   }
   return lines.map((line) => ({

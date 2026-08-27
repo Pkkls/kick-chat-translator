@@ -46,6 +46,7 @@ function buildContext(settings: Settings, signal?: AbortSignal): ProviderContext
     lingvaInstance: settings.lingvaInstance,
     myMemoryEmail: settings.myMemoryEmail,
     signal,
+    concurrency: settings.concurrency,
   };
 }
 

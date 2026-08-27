@@ -12,6 +12,13 @@ export interface ProviderContext {
   lingvaInstance: string;
   myMemoryEmail: string;
   signal?: AbortSignal;
+  /**
+   * How many calls a provider may have in flight when it has to fan a batch out
+   * into single requests. The user's own setting, not a constant: ignoring it
+   * would make the number in the options page mean nothing on the one path that
+   * costs the most round trips.
+   */
+  concurrency: number;
 }
 
 export interface TranslationProvider {
