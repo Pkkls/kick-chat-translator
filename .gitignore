@@ -16,3 +16,7 @@ graft/
 
 # Working notes and state-harness output — not part of the package.
 scratchpad/
+
+# Local Claude Code tooling. The graft shims bake an absolute npm-cache path
+# from the machine that generated them, and none of it is project source.
+.claude/
