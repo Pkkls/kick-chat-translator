@@ -232,7 +232,7 @@ function StyleCard({
 }) {
   return (
     <button
-      class={`text-left rounded-md border p-3 transition ${
+      class={`text-start rounded-md border p-3 transition ${
         active
           ? 'border-kick-primary bg-kick-primary/10'
           : 'border-kick-border bg-kick-dark/40 hover:border-kick-muted'

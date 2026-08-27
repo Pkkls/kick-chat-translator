@@ -97,7 +97,7 @@ export function App() {
             <h1 class="text-xl font-semibold tracking-tight">Kick Chat Translator</h1>
             <p class="text-xs text-kick-muted">{t('v2 · options & preferences')}</p>
           </div>
-          <div class="ml-auto flex items-center gap-3">
+          <div class="ms-auto flex items-center gap-3">
             {savedAt && <span class="text-xs text-kick-primary">{t('saved')}</span>}
             <select
               class="rounded border border-kick-border bg-kick-surface px-1.5 py-1 text-xs text-kick-text"

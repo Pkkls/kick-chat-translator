@@ -88,7 +88,7 @@ export function FilterSection({ settings, onPatch }: Props) {
           value={langQuery}
           onInput={(e) => setLangQuery((e.target as HTMLInputElement).value)}
         />
-        <div class="grid grid-cols-3 gap-1.5 max-h-[260px] overflow-auto pr-1">
+        <div class="grid grid-cols-3 gap-1.5 max-h-[260px] overflow-auto pe-1">
           {shown.length === 0 && (
             <p role="status" class="col-span-3 py-2 text-xs text-kick-muted">
               {t('No language matches')}

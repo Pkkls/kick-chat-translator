@@ -87,7 +87,7 @@ export function App() {
               v{chrome.runtime.getManifest().version} · {savedAt ? t('saved') : t('ready')}
             </span>
           </div>
-          <div class="ml-auto">
+          <div class="ms-auto">
             <Toggle
               checked={settings.enabled}
               onChange={(v) => void patch('enabled', v)}

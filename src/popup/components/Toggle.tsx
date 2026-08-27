@@ -50,7 +50,7 @@ export function Toggle({ checked, onChange, label, srLabel, disabled = false }: 
       >
         <span
           class={`absolute top-0.5 h-4 w-4 rounded-full transition-all ${
-            checked ? 'left-[18px] bg-kick-dark' : 'left-0.5 bg-white'
+            checked ? 'start-[18px] bg-kick-dark' : 'start-0.5 bg-white'
           }`}
         />
       </span>

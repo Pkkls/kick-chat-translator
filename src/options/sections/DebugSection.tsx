@@ -64,11 +64,11 @@ export function DebugSection() {
 
       {rows !== null && rows.length > 0 && (
         <div class="overflow-x-auto">
-          <table class="w-full text-left text-[12px]">
+          <table class="w-full text-start text-[12px]">
             <tbody>
               {rows.map((d, i) => (
                 <tr key={i} class="border-t border-kick-border align-top">
-                  <td class="py-1 pr-3 whitespace-nowrap text-kick-muted">
+                  <td class="py-1 pe-3 whitespace-nowrap text-kick-muted">
                     {new Date(d.at).toLocaleTimeString()}
                   </td>
                   {/* One line, cut with an ellipsis at the column edge rather
@@ -76,7 +76,7 @@ export function DebugSection() {
                       message is on the hover, same as the reason on a chat
                       line. max-w-0 with w-full is what lets a table cell
                       ellipsis at all. */}
-                  <td class="py-1 pr-3 max-w-0 w-full truncate" title={d.text}>
+                  <td class="py-1 pe-3 max-w-0 w-full truncate" title={d.text}>
                     {d.text}
                   </td>
                   <td
