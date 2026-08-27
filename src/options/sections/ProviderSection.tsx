@@ -164,8 +164,11 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
       <section class="kt-card space-y-3">
         <h2 class="text-sm font-semibold">{t('Lingva instance')}</h2>
         <div class="kt-row">
-          <label class="kt-label">{t('Custom URL (optional)')}</label>
+          <label class="kt-label" for="kt-lingva-url">
+            {t('Custom URL (optional)')}
+          </label>
           <input
+            id="kt-lingva-url"
             class="kt-input font-mono"
             type="url"
             value={settings.lingvaInstance}

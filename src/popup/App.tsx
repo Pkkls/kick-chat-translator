@@ -92,6 +92,7 @@ export function App() {
               checked={settings.enabled}
               onChange={(v) => void patch('enabled', v)}
               label={t('enable')}
+              srLabel={t('Translate the chat')}
             />
           </div>
         </header>
@@ -109,7 +110,7 @@ export function App() {
         )}
 
         <section class="kt-card flex flex-col gap-2">
-          <label class="kt-label">{t('Target language')}</label>
+          <span class="kt-label">{t('Target language')}</span>
           <select
             aria-label={t('Target language')}
             class="kt-select"
@@ -161,11 +162,12 @@ export function App() {
 
         <section class="kt-card flex flex-col gap-2">
           <div class="flex items-center justify-between">
-            <label class="kt-label">{t('Translate what I type')}</label>
+            <span class="kt-label">{t('Translate what I type')}</span>
             <Toggle
               checked={settings.composeEnabled}
               onChange={(v) => void patch('composeEnabled', v)}
               label={t('enable')}
+              srLabel={t('Translate what I type')}
             />
           </div>
           {settings.composeEnabled && (

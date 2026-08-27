@@ -178,4 +178,5 @@ export const ko: Record<string, string> = {
   'Show the quick language button in chat': '채팅에 빠른 언어 버튼 표시',
   Usage: '사용량',
   'most translated languages': '가장 많이 번역된 언어',
+  'Translate the chat': '채팅 번역',
 };

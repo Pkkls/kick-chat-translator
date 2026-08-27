@@ -183,4 +183,5 @@ export const fr: Record<string, string> = {
   'Show the quick language button in chat': 'Afficher le bouton de langue rapide dans le chat',
   Usage: 'Utilisation',
   'most translated languages': 'langues les plus traduites',
+  'Translate the chat': 'Traduire le chat',
 };

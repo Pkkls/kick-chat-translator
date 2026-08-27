@@ -180,4 +180,5 @@ export const ar: Record<string, string> = {
   'Show the quick language button in chat': 'إظهار زر اللغة السريع في الدردشة',
   Usage: 'الاستخدام',
   'most translated languages': 'أكثر اللغات ترجمة',
+  'Translate the chat': 'ترجمة الدردشة',
 };

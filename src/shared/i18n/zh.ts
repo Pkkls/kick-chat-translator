@@ -177,4 +177,5 @@ export const zh: Record<string, string> = {
   'Show the quick language button in chat': '在聊天中显示快捷语言按钮',
   Usage: '使用情况',
   'most translated languages': '翻译最多的语言',
+  'Translate the chat': '翻译聊天',
 };

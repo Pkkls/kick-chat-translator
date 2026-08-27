@@ -2,6 +2,13 @@ interface Props {
   checked: boolean;
   onChange: (v: boolean) => void;
   label?: string;
+  /**
+   * Accessible name, when the visible one is not enough to tell two switches
+   * apart. Two of these read "enable" on the popup, one for the chat and one
+   * for what you type, so a screen reader announced the same control twice
+   * with no way to know which was which. The visible text is unchanged.
+   */
+  srLabel?: string;
   disabled?: boolean;
 }
 
@@ -21,7 +28,7 @@ interface Props {
  * also what gives the switch a focus ring — it had none, and being `sr-only`
  * meant the browser had nothing to outline.
  */
-export function Toggle({ checked, onChange, label, disabled = false }: Props) {
+export function Toggle({ checked, onChange, label, srLabel, disabled = false }: Props) {
   return (
     <label
       class={`inline-flex select-none items-center gap-2 ${
@@ -32,6 +39,7 @@ export function Toggle({ checked, onChange, label, disabled = false }: Props) {
         type="checkbox"
         checked={checked}
         disabled={disabled}
+        aria-label={srLabel}
         class="peer sr-only"
         onChange={(e) => onChange((e.target as HTMLInputElement).checked)}
       />

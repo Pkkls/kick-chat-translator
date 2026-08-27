@@ -131,8 +131,11 @@ export function FilterSection({ settings, onPatch }: Props) {
       <section class="kt-card space-y-3">
         <h2 class="text-sm font-semibold">{t('Channels & users')}</h2>
         <div class="kt-row">
-          <label class="kt-label">{t('Whitelist channels (only translate on these)')}</label>
+          <label class="kt-label" for="kt-whitelist-channels">
+            {t('Whitelist channels (only translate on these)')}
+          </label>
           <textarea
+            id="kt-whitelist-channels"
             class="kt-textarea"
             value={settings.whitelistChannels.join('\n')}
             placeholder={`${t('one channel name per line')}\nsome-channel\nanother-channel`}
@@ -142,8 +145,11 @@ export function FilterSection({ settings, onPatch }: Props) {
           />
         </div>
         <div class="kt-row">
-          <label class="kt-label">{t('Blacklist channels')}</label>
+          <label class="kt-label" for="kt-blacklist-channels">
+            {t('Blacklist channels')}
+          </label>
           <textarea
+            id="kt-blacklist-channels"
             class="kt-textarea"
             value={settings.blacklistChannels.join('\n')}
             placeholder={`${t('one channel name per line')}\nsome-channel`}
@@ -153,8 +159,11 @@ export function FilterSection({ settings, onPatch }: Props) {
           />
         </div>
         <div class="kt-row">
-          <label class="kt-label">{t('Blacklist users')}</label>
+          <label class="kt-label" for="kt-blacklist-users">
+            {t('Blacklist users')}
+          </label>
           <textarea
+            id="kt-blacklist-users"
             class="kt-textarea"
             value={settings.blacklistUsers.join('\n')}
             placeholder={`${t('one username per line')}\nsome-user`}
@@ -174,6 +183,7 @@ export function FilterSection({ settings, onPatch }: Props) {
         </p>
         <textarea
           class="kt-textarea"
+          aria-label={t('Glossary')}
           value={settings.glossary.join('\n')}
           placeholder={`${t('one rule per line, in the form word→replacement')}\n草→lol\nkusa→lol`}
           onInput={(e) => onPatch({ glossary: toList((e.target as HTMLTextAreaElement).value) })}

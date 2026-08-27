@@ -182,4 +182,5 @@ export const ru: Record<string, string> = {
   'Show the quick language button in chat': 'Показывать кнопку быстрого выбора языка в чате',
   Usage: 'Использование',
   'most translated languages': 'чаще всего переводимые языки',
+  'Translate the chat': 'Переводить чат',
 };

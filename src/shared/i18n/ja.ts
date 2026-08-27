@@ -183,4 +183,5 @@ export const ja: Record<string, string> = {
   'Show the quick language button in chat': 'チャットに言語切替ボタンを表示',
   Usage: '使用状況',
   'most translated languages': '翻訳が多い言語',
+  'Translate the chat': 'チャットを翻訳',
 };

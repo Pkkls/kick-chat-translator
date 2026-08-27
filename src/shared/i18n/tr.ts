@@ -184,4 +184,5 @@ export const tr: Record<string, string> = {
   'Show the quick language button in chat': 'Sohbette hızlı dil düğmesini göster',
   Usage: 'Kullanım',
   'most translated languages': 'en çok çevrilen diller',
+  'Translate the chat': 'Sohbeti cevir',
 };
