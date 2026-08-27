@@ -281,16 +281,37 @@ function withBadges(text: string, flag: string, provider: string, detectedLang?:
   return frag;
 }
 
+/**
+ * The retry control on a failed line.
+ *
+ * Measured before this was fixed: `opacity: 0` at rest, no `tabindex`, never
+ * reached in six tab presses, and on a touch device `(hover: hover)` is false
+ * so it stayed at zero opacity forever. It announced itself as a button in the
+ * accessibility tree while obeying nothing but a mouse hover.
+ *
+ * Its 7.9x11 box is left alone deliberately: WCAG 2.5.8 exempts a target that
+ * sits inline in a block of text, which is exactly where this one lives, and
+ * inflating it to 24px would push every failed chat line taller - the defect
+ * this same session just removed twice.
+ */
 function makeRetry(onRetry: () => void): HTMLElement {
   const btn = document.createElement('span');
   btn.className = 'kt-retry';
-  btn.textContent = '⟳';
+  btn.textContent = String.fromCharCode(0x27f3);
   btn.title = msg('retryTip', 'Re-translate, ignoring the cache');
   btn.setAttribute('role', 'button');
-  btn.addEventListener('click', (e) => {
+  btn.tabIndex = 0;
+  const fire = (e: Event): void => {
     e.preventDefault();
     e.stopPropagation();
     onRetry();
+  };
+  btn.addEventListener('click', fire);
+  // A span with role=button gets none of a button's keyboard behaviour, so
+  // both activation keys have to be written out. Space is prevented as well,
+  // or the chat scrolls under the user instead.
+  btn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') fire(e);
   });
   return btn;
 }

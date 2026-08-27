@@ -68,8 +68,8 @@
 }
 
 .kt-error {
-  display: block;
-  margin-top: 2px;
+  display: inline;
+  margin-inline-start: 6px;
   font-size: 0.7em;
   /* An error message you cannot read is worse than none: at .7 opacity this
      measured 3.19:1, and it only ever appears when something has gone wrong.
@@ -91,8 +91,24 @@
 .kt-translation:hover .kt-retry,
 .kt-translation-inline:hover .kt-retry,
 .kt-translation-replace:hover .kt-retry,
-.kt-error:hover .kt-retry {
+.kt-error:hover .kt-retry,
+/* Focus reveals it too, or tabbing to it lands on nothing visible. */
+.kt-retry:focus-visible {
   opacity: 0.7;
+}
+.kt-retry:focus-visible {
+  outline: 2px solid #53fc18;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Where the pointer cannot hover, hiding it behind hover hides it forever:
+   measured on a touch viewport, `(hover: hover)` is false and the control sat
+   at zero opacity with no way to reach it. */
+@media (hover: none) {
+  .kt-retry {
+    opacity: 0.7;
+  }
 }
 .kt-retry:hover {
   opacity: 1 !important;
