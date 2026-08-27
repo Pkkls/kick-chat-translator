@@ -181,8 +181,11 @@ export const ru: Record<string, string> = {
   Usage: 'Использование',
   'most translated languages': 'чаще всего переводимые языки',
   'Translate the chat': 'Переводить чат',
-  "In place of the original text. Emotes stay.": "Вместо исходного текста. Эмоуты остаются.",
-  "The Replace style always hides it.": "Стиль «Заменить» всегда его скрывает.",
-  "On hover": "При наведении",
-  "Only when you point at the line. Spares your quota.": "Только когда наводите на строку. Экономит квоту.",
+  'In place of the original text. Emotes stay.': 'Вместо исходного текста. Эмоуты остаются.',
+  'The Replace style always hides it.': 'Стиль «Заменить» всегда его скрывает.',
+  'On hover': 'При наведении',
+  'Only when you point at the line. Spares your quota.':
+    'Только когда наводите на строку. Экономит квоту.',
+  recommended: 'рекомендуется',
+  'The other three are still being worked on.': 'Остальные три ещё дорабатываются.',
 };

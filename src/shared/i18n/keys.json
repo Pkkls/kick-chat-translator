@@ -151,5 +151,7 @@
   "In place of the original text. Emotes stay.",
   "The Replace style always hides it.",
   "On hover",
-  "Only when you point at the line. Spares your quota."
+  "Only when you point at the line. Spares your quota.",
+  "recommended",
+  "The other three are still being worked on."
 ]

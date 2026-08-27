@@ -52,6 +52,7 @@ export function DisplaySection({ settings, onPatch }: Props) {
             label={t('Below')}
             desc={t('On a new line under the message.')}
             onClick={() => onPatch({ displayStyle: 'below' })}
+            recommended
           />
           <StyleCard
             active={settings.displayStyle === 'inline'}
@@ -76,6 +77,8 @@ export function DisplaySection({ settings, onPatch }: Props) {
             onClick={() => onPatch({ displayStyle: 'hover' })}
           />
         </div>
+
+        <p class="text-[11px] text-kick-muted">{t('The other three are still being worked on.')}</p>
 
         <StylePreview settings={settings} />
 
@@ -221,12 +224,16 @@ function StyleCard({
   label,
   desc,
   onClick,
+  recommended = false,
 }: {
   active: boolean;
   label: string;
   desc: string;
   onClick: () => void;
+  /** Marks the one style that is finished. The other three are still moving. */
+  recommended?: boolean;
 }) {
+  const t = useT();
   return (
     <button
       class={`text-start rounded-md border p-3 transition ${
@@ -236,7 +243,14 @@ function StyleCard({
       }`}
       onClick={onClick}
     >
-      <div class="text-sm font-semibold">{label}</div>
+      <div class="flex items-center gap-2">
+        <span class="text-sm font-semibold">{label}</span>
+        {recommended && (
+          <span class="rounded bg-kick-primary/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-kick-primary">
+            {t('recommended')}
+          </span>
+        )}
+      </div>
       <div class="text-[11px] text-kick-muted mt-0.5">{desc}</div>
     </button>
   );

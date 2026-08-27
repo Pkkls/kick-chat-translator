@@ -181,8 +181,11 @@ export const pt: Record<string, string> = {
   Usage: 'Uso',
   'most translated languages': 'idiomas mais traduzidos',
   'Translate the chat': 'Traduzir o chat',
-  "In place of the original text. Emotes stay.": "No lugar do texto original. Os emotes continuam.",
-  "The Replace style always hides it.": "O estilo Substituir sempre o oculta.",
-  "On hover": "Ao passar o cursor",
-  "Only when you point at the line. Spares your quota.": "So quando voce aponta para a linha. Poupa sua cota.",
+  'In place of the original text. Emotes stay.': 'No lugar do texto original. Os emotes continuam.',
+  'The Replace style always hides it.': 'O estilo Substituir sempre o oculta.',
+  'On hover': 'Ao passar o cursor',
+  'Only when you point at the line. Spares your quota.':
+    'So quando voce aponta para a linha. Poupa sua cota.',
+  recommended: 'recomendado',
+  'The other three are still being worked on.': 'Os outros três ainda estão em desenvolvimento.',
 };

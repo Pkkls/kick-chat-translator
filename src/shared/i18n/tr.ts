@@ -183,8 +183,11 @@ export const tr: Record<string, string> = {
   Usage: 'Kullanım',
   'most translated languages': 'en çok çevrilen diller',
   'Translate the chat': 'Sohbeti cevir',
-  "In place of the original text. Emotes stay.": "Orijinal metnin yerinde. Emoteler kalır.",
-  "The Replace style always hides it.": "Değiştir stili onu her zaman gizler.",
-  "On hover": "Uzerine gelince",
-  "Only when you point at the line. Spares your quota.": "Sadece satiri gosterdiginde. Kotani korur.",
+  'In place of the original text. Emotes stay.': 'Orijinal metnin yerinde. Emoteler kalır.',
+  'The Replace style always hides it.': 'Değiştir stili onu her zaman gizler.',
+  'On hover': 'Uzerine gelince',
+  'Only when you point at the line. Spares your quota.':
+    'Sadece satiri gosterdiginde. Kotani korur.',
+  recommended: 'önerilen',
+  'The other three are still being worked on.': 'Diğer üçü hâlâ üzerinde çalışılıyor.',
 };
