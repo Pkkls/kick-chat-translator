@@ -92,22 +92,19 @@
   cursor: copy;
 }
 
-/* #2 Hover-to-translate: hidden until hovered */
-.kt-hover-placeholder {
-  display: block;
-  margin-top: 2px;
-  padding: 1px 8px;
-  font-size: 0.75em;
-  /* This line is the only thing saying a translation exists at all, and at .3
-     it measured 2.17:1 — the least readable text in the extension, on the one
-     element whose whole job is to be noticed. .6 gives 5.52, .85 on hover
-     gives 10.40. */
-  color: rgba(83, 252, 24, 0.6);
-  cursor: pointer;
-  user-select: none;
-}
-.kt-hover-placeholder:hover {
-  color: rgba(83, 252, 24, 0.85);
+/* #2 Hover-to-translate: a marker, not a label.
+
+   This was a green "Hover to translate" on its own line under every message.
+   Measured against an untouched row in a real browser: 31.4px became 50.6px,
+   +61%, and a 420px window went from 13 messages to 8. The style that exists
+   to spend less was the most expensive one on screen, and it charged that on
+   every line nobody had asked to translate.
+
+   The row is the hover target now. What is left carries no text and no box: it
+   is how the "already dealt with" sweep recognises the line, and a sweep's
+   bookkeeping has no business taking up space in the chat. */
+.kt-hover-armed {
+  display: none;
 }
 
 /* #32 "Keep original text visible" off, widened by the #35 measurement.

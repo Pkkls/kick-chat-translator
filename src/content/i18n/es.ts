@@ -29,7 +29,6 @@ export const es: Record<string, string> = {
   dropUserBlocked: 'este usuario esta en tu lista de bloqueo',
   errTranslateFailed: 'Fallo la traduccion',
   flagFrom: 'desde $LANG$',
-  hoverToTranslate: 'Pasa el cursor para traducir',
   localDownload: 'Local ($SIZE$)',
   localDownloadTip: 'Descargar el modelo en el dispositivo para traduccion local ilimitada',
   localDownloading: 'Descargando $PCT$%',

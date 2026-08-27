@@ -30,7 +30,6 @@ export const fr: Record<string, string> = {
   dropUserBlocked: 'cet utilisateur est sur ta liste de blocage',
   errTranslateFailed: 'Echec de la traduction',
   flagFrom: 'depuis $LANG$',
-  hoverToTranslate: 'Survoler pour traduire',
   localDownload: 'Local ($SIZE$)',
   localDownloadTip: 'Telecharger le modele embarque pour une traduction locale illimitee',
   localDownloading: 'Telechargement $PCT$%',

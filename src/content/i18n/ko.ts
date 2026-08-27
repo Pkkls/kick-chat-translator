@@ -28,7 +28,6 @@ export const ko: Record<string, string> = {
   dropUserBlocked: '이 사용자는 차단 목록에 있습니다',
   errTranslateFailed: '번역 실패',
   flagFrom: '$LANG$ 에서',
-  hoverToTranslate: '가리키면 번역',
   localDownload: '로컬 ($SIZE$)',
   localDownloadTip: '기기 내 모델을 내려받아 무제한 로컬 번역 사용',
   localDownloading: '내려받는 중 $PCT$%',

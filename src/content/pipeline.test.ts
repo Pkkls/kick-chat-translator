@@ -7,7 +7,7 @@ vi.mock('~/shared/messages', () => ({ send: sendMock }));
 vi.mock('./injector', () => ({
   inject: vi.fn(),
   incrementFloatingCount: vi.fn(),
-  injectHoverPlaceholder: vi.fn(),
+  armHoverTranslate: vi.fn(),
   markSkipped: vi.fn(),
   removeAllArtifacts: vi.fn(),
   showError: vi.fn(),

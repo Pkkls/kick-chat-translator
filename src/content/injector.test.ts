@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { defaultSettings } from '~/shared/settings';
 import type { Settings } from '~/shared/settings';
 import type { TranslationResult } from '~/shared/types';
-import { HANDLED_SELECTOR, applyShowOriginal, inject, markSkipped, mountFloatingBar, updateActiveProvider, removeAllArtifacts, showError, showLoading, unmountFloatingBar, updateFloatingBar } from './injector';
+import { HANDLED_SELECTOR, applyShowOriginal, armHoverTranslate, inject, markSkipped, mountFloatingBar, updateActiveProvider, removeAllArtifacts, showError, showLoading, unmountFloatingBar, updateFloatingBar } from './injector';
 // Read from disk: vitest runs with CSS processing off, so `?inline` imports
 // resolve to an empty string and would make these assertions pass on anything.
 const injectCss = readFileSync('src/content/inject.css', 'utf8');
@@ -616,3 +616,126 @@ function mountBarInto(host: HTMLElement): HTMLElement {
   });
   return panel.querySelector<HTMLElement>('#kt-floating-bar')!;
 }
+
+/**
+ * Hover-to-translate, after the label came off.
+ *
+ * It used to append a green "Hover to translate" under every message, and that
+ * is what it cost, measured in a real browser against an untouched row: 31.4px
+ * became 50.6px, +61%, and a 420px window went from 13 messages to 8. The style
+ * whose entire purpose is to spend less was the most expensive one on screen,
+ * and it charged that on lines nobody had asked to translate.
+ *
+ * The row is the target now, which is a far bigger one than a line of small
+ * text, so a pointer crossing the chat on its way to the message box would
+ * translate everything it passed over. Hence the dwell.
+ */
+describe('hover to translate', () => {
+  const armed = (): { row: HTMLElement; fired: number[] } => {
+    const row = document.createElement('div');
+    const said = document.createElement('span');
+    said.className = 'font-normal';
+    said.textContent = 'hola a todos';
+    row.appendChild(said);
+    document.body.appendChild(row);
+    const fired: number[] = [];
+    armHoverTranslate(row, () => fired.push(Date.now()));
+    return { row, fired };
+  };
+
+  afterEach(() => {
+    vi.useRealTimers();
+    document.body.textContent = '';
+  });
+
+  it('leaves no text behind, only a marker the sweep can see', () => {
+    const { row } = armed();
+    const mark = row.querySelector('.kt-hover-armed');
+    expect(mark).not.toBeNull();
+    expect(mark!.textContent).toBe('');
+    // The whole point: the line reads exactly as it did before we touched it.
+    expect(row.textContent).toBe('hola a todos');
+  });
+
+  it('counts as a line already dealt with, so no sweep re-arms it', () => {
+    const { row } = armed();
+    expect(row.querySelector(HANDLED_SELECTOR)).not.toBeNull();
+  });
+
+  it('arms a row once, however many times it is offered', () => {
+    const { row } = armed();
+    armHoverTranslate(row, () => undefined);
+    expect(row.querySelectorAll('.kt-hover-armed')).toHaveLength(1);
+  });
+
+  /**
+   * Why that guard walks children instead of asking for `:scope > .marker`.
+   *
+   * This DOM returns null for a `:scope` selector that a browser matches, so a
+   * guard written that way is right in production and invisible here: the row
+   * above armed itself twice and nothing in the suite could say so. Asserted
+   * rather than left as a comment, because the day it starts working is the day
+   * someone can go back to the shorter form.
+   *
+   * `showLoading` still uses `:scope >` for its own duplicate guard. It is
+   * correct in a browser and untestable here for the same reason.
+   */
+  it('records that this DOM does not answer a scope selector', () => {
+    const row = document.createElement('div');
+    const mark = document.createElement('span');
+    mark.className = 'kt-hover-armed';
+    row.appendChild(mark);
+    expect(row.querySelector('.kt-hover-armed')).not.toBeNull();
+    expect(row.querySelector(':scope > .kt-hover-armed')).toBeNull();
+  });
+
+  it('translates when the pointer rests on the line', () => {
+    vi.useFakeTimers();
+    const { row, fired } = armed();
+    row.dispatchEvent(new MouseEvent('mouseenter'));
+    expect(fired, 'fired before the dwell was up').toHaveLength(0);
+    vi.advanceTimersByTime(200);
+    expect(fired).toHaveLength(1);
+    expect(row.querySelector('.kt-hover-armed')).toBeNull();
+  });
+
+  // The reason the dwell exists. A row is a big target and the pointer crosses
+  // the whole chat to reach the message box.
+  it('does not translate a line the pointer merely passed over', () => {
+    vi.useFakeTimers();
+    const { row, fired } = armed();
+    row.dispatchEvent(new MouseEvent('mouseenter'));
+    vi.advanceTimersByTime(80);
+    row.dispatchEvent(new MouseEvent('mouseleave'));
+    vi.advanceTimersByTime(500);
+    expect(fired).toHaveLength(0);
+    expect(row.querySelector('.kt-hover-armed'), 'the line is still armed').not.toBeNull();
+  });
+
+  /**
+   * Kick recycles its rows, so the listener can outlive the message it was
+   * armed for. The marker cannot: anything that re-processes the line takes it
+   * out. Firing on a stale closure would put one viewer's translation on
+   * another viewer's line.
+   */
+  it('stays quiet once its marker is gone', () => {
+    vi.useFakeTimers();
+    const { row, fired } = armed();
+    removeAllArtifacts(row);
+    row.dispatchEvent(new MouseEvent('mouseenter'));
+    vi.advanceTimersByTime(500);
+    expect(fired).toHaveLength(0);
+  });
+
+  it('re-arms a recycled row without the old listener speaking up', () => {
+    vi.useFakeTimers();
+    const { row, fired } = armed();
+    removeAllArtifacts(row);
+    const second: number[] = [];
+    armHoverTranslate(row, () => second.push(1));
+    row.dispatchEvent(new MouseEvent('mouseenter'));
+    vi.advanceTimersByTime(500);
+    expect(fired, 'the previous message translated itself onto a recycled row').toHaveLength(0);
+    expect(second).toHaveLength(1);
+  });
+});

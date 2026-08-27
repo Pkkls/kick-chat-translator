@@ -12,7 +12,7 @@ import { confidentLanguage, detectLanguage } from './langDetect';
 import { resolveBrowserLang } from '~/shared/languages';
 import { isContextCritical } from '~/shared/langTiers';
 import { isNoise, isSameLanguageAsTarget, normalizeElongation, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
-import { HANDLED_SELECTOR, inject, incrementFloatingCount, injectHoverPlaceholder, markSkipped, removeAllArtifacts, showError, showLoading, showThrottleIndicator, showToast, updateActiveProvider } from './injector';
+import { HANDLED_SELECTOR, inject, incrementFloatingCount, armHoverTranslate, markSkipped, removeAllArtifacts, showError, showLoading, showThrottleIndicator, showToast, updateActiveProvider } from './injector';
 import { localEngine } from './localEngine';
 import { memCache } from './memcache';
 import { msg as localised } from './msg';
@@ -279,7 +279,7 @@ export class TranslationPipeline {
 
     // ── 2. Hover-to-translate: just show a placeholder, translate on hover ──
     if (this.settings.displayStyle === 'hover') {
-      injectHoverPlaceholder(msg.injectionTarget, () => {
+      armHoverTranslate(msg.injectionTarget, () => {
         void this.translateAndApply(msg, real, detected);
       });
       return;

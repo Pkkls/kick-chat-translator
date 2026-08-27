@@ -4,7 +4,7 @@ import { sortedLanguages } from '~/shared/languages';
 import { resolveUiLocale } from '~/shared/i18n';
 import { useT } from '~/shared/i18nContext';
 import { Check } from '../components/Check';
-import { applyShowOriginal, ensureStyles, inject, injectHoverPlaceholder } from '~/content/injector';
+import { applyShowOriginal, ensureStyles, inject, armHoverTranslate } from '~/content/injector';
 
 interface Props {
   settings: Settings;
@@ -187,9 +187,10 @@ function StylePreview({ settings }: { settings: Settings }) {
     // `hover` shows nothing until you point at the line, so rendering it with
     // inject() drew a finished translation and the card described something
     // else entirely. The preview exists to answer "what does this look like",
-    // and for this style the answer is the placeholder.
+    // and for this style the honest answer is the message, unchanged. Armed
+    // rather than left bare, so the preview is the real code path.
     if (settings.displayStyle === 'hover') {
-      injectHoverPlaceholder(row, () => undefined);
+      armHoverTranslate(row, () => undefined);
       return;
     }
 

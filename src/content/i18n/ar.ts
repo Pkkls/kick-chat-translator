@@ -28,7 +28,6 @@ export const ar: Record<string, string> = {
   dropUserBlocked: 'هذا المستخدم في قائمة الحظر لديك',
   errTranslateFailed: 'فشلت الترجمة',
   flagFrom: 'من $LANG$',
-  hoverToTranslate: 'مرر للترجمة',
   localDownload: 'محلي ($SIZE$)',
   localDownloadTip: 'نزّل النموذج على الجهاز لترجمة محلية بلا حدود',
   localDownloading: 'جارٍ التنزيل $PCT$%',

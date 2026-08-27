@@ -28,7 +28,6 @@ export const tr: Record<string, string> = {
   dropUserBlocked: 'bu kullanici engelli listende',
   errTranslateFailed: 'Ceviri basarisiz',
   flagFrom: '$LANG$ dilinden',
-  hoverToTranslate: 'Cevirmek icin uzerine gel',
   localDownload: 'Yerel ($SIZE$)',
   localDownloadTip: 'Sinirsiz yerel ceviri icin cihaz ici modeli indir',
   localDownloading: 'Indiriliyor $PCT$%',

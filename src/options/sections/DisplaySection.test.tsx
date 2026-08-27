@@ -43,13 +43,17 @@ describe('display style preview', () => {
 
   /**
    * `hover` shows nothing until you point at the line, so a preview that drew a
-   * finished translation described one of the other three styles. It was also
-   * selectable from nowhere until this round: the picker offered three of the
-   * schema's four values.
+   * finished translation described one of the other three styles.
+   *
+   * "Nothing" is now literal. It used to append a green "Hover to translate"
+   * under every message, worth +61% of row height measured against an untouched
+   * line, so the preview has to show the absence rather than the label.
    */
-  it('previews hover as the placeholder it actually is', () => {
+  it('previews hover as the nothing it draws', () => {
     const root = mount({ displayStyle: 'hover' });
-    expect(root.querySelector('.kt-hover-placeholder')).not.toBeNull();
+    const mark = root.querySelector('.kt-hover-armed');
+    expect(mark, 'the row was never armed').not.toBeNull();
+    expect(mark!.textContent, 'the marker is bookkeeping, not a label').toBe('');
     expect(
       root.querySelector('.kt-translation'),
       'a finished translation is exactly what hover does not show',

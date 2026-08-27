@@ -11,7 +11,7 @@ const TRANS_INLINE_CLASS = 'kt-translation-inline';
 const TRANS_REPLACE_CLASS = 'kt-translation-replace';
 const LOADING_CLASS = 'kt-loading';
 const ERROR_CLASS = 'kt-error';
-const HOVER_CLASS = 'kt-hover-placeholder';
+const HOVER_CLASS = 'kt-hover-armed';
 // Every class we add under a chat line. Cleanup walks this list, so a display
 // style whose class is missing here would stack a copy per re-translation.
 const ARTIFACT_CLASSES = [
@@ -58,25 +58,64 @@ function attachCopyHandler(el: HTMLElement, text: string): void {
   });
 }
 
-/** #2 — Hover placeholder for lazy translate mode. */
-export function injectHoverPlaceholder(
-  target: Element,
-  onHover: () => void,
-): void {
-  if (target.querySelector(`.${HOVER_CLASS}`)) return;
-  const ph = document.createElement('span');
-  ph.className = HOVER_CLASS;
-  // Was '⟶ hover to translate', typed straight into the DOM: the one line
-  // that says a translation is available at all, rendered in English in all ten
-  // interface languages. The arrow went with the fix rather than into the
-  // catalogue, since a directional glyph has to be mirrored per script and the
-  // green already says the line is ours.
-  ph.textContent = msg('hoverToTranslate', 'Hover to translate');
-  ph.addEventListener('mouseenter', () => {
-    ph.remove();
+/**
+ * Cursor dwell before a line is sent off to be translated.
+ *
+ * The row is the target now, and a row is a big target: a pointer travelling
+ * from the video to the message box crosses every line on the way. Waiting a
+ * moment is the difference between "I stopped on this line" and "I passed over
+ * it", and this style exists to spend less.
+ */
+const HOVER_DWELL_MS = 180;
+
+/**
+ * #2 — Arm a line to translate itself when the pointer rests on it.
+ *
+ * This used to append a green "Hover to translate" under every message, and
+ * that is what it cost, measured in a real browser against an untouched row:
+ * 31.4px became 50.6px, +61%, and a 420px window went from 13 messages to 8.
+ * The style whose entire purpose is to spend less was the most expensive one on
+ * screen, and it charged that on lines nobody had asked to translate.
+ *
+ * Nothing is drawn now. The row itself is the target, and the marker left
+ * behind carries no text and no box: it exists so the "already dealt with"
+ * sweep can see the line, which is a bookkeeping job, not a label.
+ */
+export function armHoverTranslate(target: Element, onHover: () => void): void {
+  // Children walked rather than queried. A ":scope >" selector matches nothing
+  // in the DOM the unit suite runs on, so a guard written that way is correct in
+  // a browser and invisible to every test: this one armed the same row twice and
+  // the suite had no way to say so.
+  if ([...target.children].some((c) => c.classList.contains(HOVER_CLASS))) return;
+  const mark = document.createElement('span');
+  mark.className = HOVER_CLASS;
+  target.appendChild(mark);
+
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const cancel = (): void => {
+    if (timer) clearTimeout(timer);
+    timer = undefined;
+  };
+  const fire = (): void => {
+    // The listener sits on the row, which Kick's virtual scroller recycles, so
+    // it can outlive the message it was armed for. The marker cannot: any path
+    // that re-processes the line takes it out. Its absence is what says this
+    // closure is stale, and firing anyway would put the previous message's
+    // translation on somebody else's line.
+    cancel();
+    target.removeEventListener('mouseenter', enter);
+    target.removeEventListener('mouseleave', cancel);
+    if (!mark.isConnected) return;
+    mark.remove();
     onHover();
-  }, { once: true });
-  target.appendChild(ph);
+  };
+  const enter = (): void => {
+    cancel();
+    timer = setTimeout(fire, HOVER_DWELL_MS);
+  };
+
+  target.addEventListener('mouseenter', enter);
+  target.addEventListener('mouseleave', cancel);
 }
 
 export function ensureStyles(): void {
