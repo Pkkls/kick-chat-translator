@@ -105,6 +105,7 @@ Haz clic en el engranaje de la barra del chat, o clic derecho en el icono de la 
 - **Orden de proveedores**: arrastra para reordenar, pega tu clave de DeepL
 - **Modo de motor**: primero en el dispositivo, primero en la nube, o solo en el dispositivo
 - **Visualización**: la traducción debajo del mensaje, en línea con él, después en cursiva más pequeña, o al pasar el ratón; el texto original, el idioma de origen y el proveedor son insignias opcionales. Una línea de ejemplo en los ajustes muestra cada estilo antes de que elijas
+- **Botón de idioma**: una ficha dentro del cuadro de mensaje de Kick, junto al icono de emotes. Un clic alterna entre el idioma del canal y tu última elección, mantener pulsado abre la lista y escribir dos letras la filtra. Está ahí para que cambiar el idioma en el que escribes nunca te obligue a subir al principio del chat
 - **Vista previa al escribir**: activada o desactivada, su idioma de destino, y si al hacer clic se rellena la caja de chat o se copia la traducción al portapapeles
 - **Filtros**: saltar bots, bloquear usuarios o canales, restringir los idiomas de origen, o permitir solo ciertos canales
 - **Glosario**: pares de buscar y reemplazar aplicados a la traducción, para nombres y bromas internas que los motores destrozan

@@ -106,6 +106,7 @@ Click the gear on the chat bar, or right-click the extension icon → Options.
 - **Provider order**: drag to reorder, paste your DeepL key
 - **Engine mode**: on-device first, cloud first, or on-device only
 - **Display**: translation below the message, inline with it, after it in smaller italics, or on hover; original text, source language and provider badges each optional. A sample line in the settings shows each style before you pick it
+- **Language button**: a chip in Kick's message box, next to the emote icon. One click switches between the channel's language and your last pick, press-and-hold opens the list, and typing two letters filters it. It sits there so changing the language you write in never sends you to the top of the chat
 - **Compose preview**: on or off, its target language, and whether clicking it fills the chat box or copies the translation instead
 - **Filters**: skip bots, blocklist users or channels, restrict the source languages, or whitelist channels
 - **Glossary**: find and replace pairs applied to the translation, for names and in-jokes that engines mangle
