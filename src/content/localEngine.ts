@@ -1,6 +1,8 @@
 import { rootLogger } from '~/shared/logger';
+import { createMetrics } from '~/shared/metrics';
 
 const log = rootLogger.child('local');
+const metrics = createMetrics('content');
 
 // On-device translation via Chromium's built-in Translator API (Chrome >= 138).
 // Runs in the CONTENT SCRIPT (page window) because:
@@ -113,6 +115,10 @@ class LocalEngine {
     try {
       const a = await c.availability({ sourceLanguage: norm(src), targetLanguage: norm(tgt) });
       this.state.set(key, a);
+      // The one number that says whether the on-device path is even reachable
+      // for the pairs this viewer actually meets. Without it, "why is anyone
+      // still on the cloud" has three possible answers and no way to choose.
+      if (__KT_METRICS__) metrics.count(`local.pair.${a}`);
       this.emit();
       return a;
     } catch (err: unknown) {

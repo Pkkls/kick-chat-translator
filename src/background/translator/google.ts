@@ -1,5 +1,6 @@
 import { GOOGLE_CLIENTS, PROVIDER_ENDPOINTS } from '~/shared/constants';
 import { ConcurrencyQueue } from '../queue';
+import { createMetrics } from '~/shared/metrics';
 import type { TranslationRequest } from '~/shared/types';
 import { ProviderError, type ProviderContext, type ProviderResult, type TranslationProvider } from './types';
 
@@ -7,6 +8,8 @@ import { ProviderError, type ProviderContext, type ProviderResult, type Translat
 // Soft-bans per IP after bursts: returns HTTP 200 with EMPTY/`und` data instead
 // of 429. We must treat that empty payload as a rate-limit so the dispatcher
 // backs off, otherwise it would silently produce garbage forever.
+
+const metrics = createMetrics('sw');
 
 let clientIdx = 0;
 function nextClient(): string {
@@ -106,6 +109,13 @@ async function batchCall(reqs: TranslationRequest[], ctx: ProviderContext): Prom
   // here stays at the ceiling the dispatcher uses for its own per-item path,
   // which is a budget this codebase has been living inside all along.
   if (lines.length !== reqs.length) {
+    // How often this path is taken at all. Bounding its cost was worth doing
+    // whatever the frequency; knowing the frequency is what decides whether the
+    // join-and-split scheme should survive.
+    if (__KT_METRICS__) {
+      metrics.count('google.batch.fallback');
+      metrics.timing('google.batch.fallback.items', reqs.length);
+    }
     const pool = new ConcurrencyQueue(Math.max(1, ctx.concurrency));
     // Indexed writes, not pushes. Completion order under concurrency is not
     // request order, and the dispatcher aligns results to requests by position:
