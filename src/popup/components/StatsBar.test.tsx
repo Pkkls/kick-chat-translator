@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { render } from 'preact';
 import type { UsageStats } from '~/shared/types';
 import { StatsBar } from './StatsBar';
@@ -26,92 +26,30 @@ function mount(stats: UsageStats): HTMLDivElement {
   return host;
 }
 
-/** The sparkline bars are the only elements carrying a title. */
-function bars(el: HTMLElement): HTMLElement[] {
-  return [...el.querySelectorAll('[title]')] as HTMLElement[];
-}
-
-describe('StatsBar sparkline', () => {
-  afterEach(() => {
-    if (host) {
-      render(null, host);
-      host.remove();
-      host = undefined;
-    }
+describe('StatsBar', () => {
+  it('shows the three numbers a popup is opened to check', () => {
+    const el = mount(makeStats({ totalRequests: 120, totalCacheHits: 30, totalErrors: 2 }));
+    expect(el.textContent).toContain('120');
+    expect(el.textContent).toContain('25%');
+    expect(el.textContent).toContain('2');
   });
 
-  it('shows no trend until two days have been recorded', () => {
-    const el = mount(makeStats({ totalRequests: 10, totalCacheHits: 5 }));
-    expect(bars(el)).toHaveLength(0);
+  it('reads 0% rather than NaN before anything has been translated', () => {
+    const el = mount(makeStats());
+    expect(el.textContent).toContain('0%');
+    expect(el.textContent).not.toContain('NaN');
   });
 
-  it('draws one bar per recorded day, today included', () => {
-    const el = mount(
-      makeStats({
-        totalRequests: 4,
-        totalCacheHits: 1,
-        history: [
-          { day: '2026-08-11', requests: 10, cacheHits: 5 },
-          { day: '2026-08-12', requests: 20, cacheHits: 19 },
-        ],
-      }),
-    );
-    const titles = bars(el).map((b) => b.getAttribute('title'));
-    expect(titles).toEqual(['2026-08-11: 50% (10)', '2026-08-12: 95% (20)', '2026-08-13: 25% (4)']);
-  });
-
-  it('sizes each bar by that day hit rate', () => {
-    const el = mount(
-      makeStats({
-        totalRequests: 4,
-        totalCacheHits: 3,
-        history: [{ day: '2026-08-12', requests: 10, cacheHits: 1 }],
-      }),
-    );
-    expect(bars(el).map((b) => b.style.height)).toEqual(['10%', '75%']);
-  });
-
-  it('skips days with no traffic rather than drawing them as 0%', () => {
-    const el = mount(
-      makeStats({
-        totalRequests: 6,
-        totalCacheHits: 3,
-        history: [
-          { day: '2026-08-10', requests: 8, cacheHits: 4 },
-          { day: '2026-08-11', requests: 0, cacheHits: 0 },
-        ],
-      }),
-    );
-    const titles = bars(el).map((b) => b.getAttribute('title'));
-    expect(titles).toEqual(['2026-08-10: 50% (8)', '2026-08-13: 50% (6)']);
-  });
-
-  it('keeps a real 0% day visible instead of collapsing it', () => {
-    const el = mount(
-      makeStats({
-        totalRequests: 5,
-        totalCacheHits: 0,
-        history: [{ day: '2026-08-12', requests: 9, cacheHits: 9 }],
-      }),
-    );
-    const today = bars(el).at(-1)!;
-    expect(today.getAttribute('title')).toBe('2026-08-13: 0% (5)');
-    expect(today.className).toContain('min-h-');
-  });
-
-  it('shows at most seven days', () => {
-    const history = Array.from({ length: 12 }, (_, i) => ({
-      day: `2026-07-${String(i + 1).padStart(2, '0')}`,
-      requests: 10,
-      cacheHits: i,
+  // The sparkline and the per-language pills moved to the Options page, where
+  // there is room to read them; the popup overflowed by 69px with them in it.
+  // Their tests moved with them, to options/sections/UsageTrend.test.tsx.
+  it('draws no chart: the popup is for acting, not for contemplating', () => {
+    const el = mount(makeStats({
+      totalRequests: 10,
+      totalCacheHits: 5,
+      byLang: { ko: 4 },
+      history: [{ day: '2026-08-11', requests: 10, cacheHits: 5 }],
     }));
-    const el = mount(makeStats({ totalRequests: 2, totalCacheHits: 1, history }));
-    expect(bars(el)).toHaveLength(7);
-  });
-
-  it('tolerates a stats record saved before history existed', () => {
-    const el = mount(makeStats({ totalRequests: 3, totalCacheHits: 1 }));
-    expect(bars(el)).toHaveLength(0);
-    expect(el.textContent).toContain('33%');
+    expect(el.querySelectorAll('[title]')).toHaveLength(0);
   });
 });

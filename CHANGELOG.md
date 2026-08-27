@@ -39,6 +39,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The popup fits without scrolling again. Measured with realistic settings it
+  stood at 669px against a 600px target; it is now 594px. The 7-day cache graph
+  (36px) and the per-language pills (23px) moved to Options → Debug, and the
+  help line under "translate what I type" went altogether — it explained a
+  behaviour nobody configures, and the Options page already carries it.
+  Nothing was resized to get there: two blocks left and one moved.
+
 - With "keep original text visible" off, the translation now behaves as the
   message rather than as an annotation of it: inline, full size, full contrast,
   no tint and no rule. Measured on a 24-message chat in a fixed window, this

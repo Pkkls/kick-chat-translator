@@ -4,12 +4,13 @@ import { defaultSettings } from '~/shared/settings';
 import { send } from '~/shared/messages';
 import { I18nProvider } from '~/shared/i18nContext';
 import { makeT, resolveUiLocale, isRtlLocale, UI_LOCALES, UI_LOCALE_NAMES } from '~/shared/i18n';
-import type { ProviderStatus } from '~/shared/types';
+import type { ProviderStatus, UsageStats } from '~/shared/types';
 import { ProviderSection } from './sections/ProviderSection';
 import { DisplaySection } from './sections/DisplaySection';
 import { FilterSection } from './sections/FilterSection';
 import { AdvancedSection } from './sections/AdvancedSection';
 import { DebugSection } from './sections/DebugSection';
+import { UsageTrend } from './sections/UsageTrend';
 import { AboutSection } from './sections/AboutSection';
 
 type Tab = 'providers' | 'display' | 'filters' | 'advanced' | 'debug' | 'about';
@@ -26,6 +27,7 @@ const TABS: { id: Tab; label: string }[] = [
 export function App() {
   const [settings, setSettings] = useState<Settings>(defaultSettings());
   const [providers, setProviders] = useState<ProviderStatus[]>([]);
+  const [stats, setStats] = useState<UsageStats | undefined>(undefined);
   const [tab, setTab] = useState<Tab>('providers');
   const [savedAt, setSavedAt] = useState<number | undefined>(undefined);
 
@@ -46,6 +48,8 @@ export function App() {
     if (settingsRes.type === 'settings') setSettings(settingsRes.payload);
     const provRes = await send({ type: 'providers.status' });
     if (provRes.type === 'providers') setProviders(provRes.payload);
+    const statsRes = await send({ type: 'stats.get' });
+    if (statsRes.type === 'stats') setStats(statsRes.payload);
   }
 
   async function patch(patchValue: Partial<Settings>) {
@@ -107,7 +111,12 @@ export function App() {
         {tab === 'display' && <DisplaySection settings={settings} onPatch={patch} />}
         {tab === 'filters' && <FilterSection settings={settings} onPatch={patch} />}
         {tab === 'advanced' && <AdvancedSection settings={settings} onPatch={patch} />}
-        {tab === 'debug' && <DebugSection />}
+        {tab === 'debug' && (
+          <>
+            {stats && <UsageTrend stats={stats} />}
+            <DebugSection />
+          </>
+        )}
         {tab === 'about' && <AboutSection />}
       </main>
     </div>

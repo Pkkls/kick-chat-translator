@@ -175,7 +175,9 @@ export function App() {
                 </option>
               ))}
             </select>
-            <span class="text-[10px] text-kick-muted">{t('Auto-detects the channel\'s language. Preview shows above the chat box — click it to insert.')}</span>
+            {/* The help line that used to sit here explained a behaviour nobody
+                configures, and cost two rows in a popup that has none to spare.
+                The Options page carries the full explanation. */}
           </>
         )}
       </section>
