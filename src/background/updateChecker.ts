@@ -5,6 +5,7 @@
  * links to the release page (the extension is distributed as a release zip).
  */
 import {
+  CHROME_STORE_ID,
   GITHUB_LATEST_RELEASE_API,
   GITHUB_RELEASES_URL,
   STORAGE_KEY_UPDATE,
@@ -18,6 +19,21 @@ const log = rootLogger.child('update');
 interface CachedCheck {
   at: number;
   latest: string | null;
+}
+
+/**
+ * True when this copy came from the Chrome Web Store.
+ *
+ * The store assigns the id and it is stable for the listing, so this costs no
+ * permission. Every other install, a release zip, an unpacked folder, a
+ * sideload, gets a different one.
+ */
+function fromChromeStore(): boolean {
+  try {
+    return chrome.runtime.id === CHROME_STORE_ID;
+  } catch {
+    return false;
+  }
 }
 
 function currentVersion(): string {
@@ -48,6 +64,18 @@ async function fetchLatestTag(): Promise<string | null> {
  */
 export async function getUpdateStatus(force = false): Promise<UpdateStatus> {
   const current = currentVersion();
+
+  // A store install updates itself, so telling its owner that a newer version
+  // exists offers them nothing to do. Worse, it points at a GitHub zip they
+  // should not install over their managed copy, and during a store review it
+  // points at a version the store does not have yet. This notice was written
+  // when a release zip was the only way to get the extension.
+  //
+  // Returning early also means no request to GitHub at all from those copies.
+  if (fromChromeStore()) {
+    return { current, latest: null, updateAvailable: false, releaseUrl: GITHUB_RELEASES_URL };
+  }
+
   const stored = await chrome.storage.local.get(STORAGE_KEY_UPDATE);
   const cached = stored[STORAGE_KEY_UPDATE] as CachedCheck | undefined;
   let latest = cached?.latest ?? null;

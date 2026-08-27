@@ -59,6 +59,16 @@ export const STORAGE_KEY_UPDATE = 'kt.update.v1';
 
 // Self-update check: compare the installed version to the latest GitHub release.
 export const GITHUB_REPO = 'Pkkls/kick-chat-translator';
+/**
+ * The listing's id on the Chrome Web Store.
+ *
+ * The store assigns it and it never changes for a listing, so comparing it to
+ * `chrome.runtime.id` tells a store install from a zip without asking for the
+ * `management` permission, which would send the listing back through a longer
+ * review for a single boolean.
+ */
+export const CHROME_STORE_ID = 'nkkjmbkmacbdkboijmnhjnblcaiclhni';
+
 export const GITHUB_LATEST_RELEASE_API = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 export const GITHUB_RELEASES_URL = `https://github.com/${GITHUB_REPO}/releases/latest`;
 export const UPDATE_CHECK_TTL_MS = 6 * 60 * 60_000; // 6h
