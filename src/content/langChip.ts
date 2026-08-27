@@ -69,28 +69,35 @@ export function findComposerRow(composer: HTMLElement): Element {
 }
 
 /**
- * The right-hand cluster of Kick's chat action bar — the one holding the gear
+ * The inline-end cluster of Kick's chat action bar, the one holding the gear
  * and the send button.
  *
- * Measured on a live channel: the bar is a 380x36 row sitting as a SIBLING of
- * the composer's block, and it holds two groups — a counter pushed left, and a
- * `ml-auto` cluster pushed right. The chip belongs at the head of that right
- * cluster, so it reads as one of the chat's own controls.
+ * Measured on a live channel, which is where the previous version was caught:
+ * the bar is `DIV.flex.shrink-0`, 300x36, sitting below the composer's block as
+ * a sibling of its grandparent, and its two children are a left group and an
+ * `ml-auto` group carrying the gear and Chat.
  *
- * Found by shape rather than by class: walk up from the field, and for each
- * ancestor look at the next sibling. The bar is the first one that lays its
- * children side by side and contains a button.
+ * The catch, and the reason the chip had been landing above the message box:
+ * on a followers-only channel that left group renders at HEIGHT ZERO. The old
+ * test asked for two VISIBLE children laid out across, found one, rejected the
+ * real bar and fell back to the composer's own parent. A harness cannot show
+ * that, because a harness only contains what its author thought Kick contained.
+ *
+ * So the shape asked for is the one that actually identifies the bar: a
+ * following sibling that holds a button and sits at or below the field. Every
+ * following sibling is scanned, not only the immediate one.
  */
 function findActionCluster(composer: HTMLElement): Element | null {
+  const field = composer.getBoundingClientRect();
   let node: HTMLElement | null = composer;
-  for (let depth = 0; node && depth < 5; depth++) {
-    const bar = node.nextElementSibling;
-    if (bar instanceof HTMLElement && isSideBySide(bar) && bar.querySelector('button')) {
-      // The cluster pushed to the right is the last child that holds a button.
-      const groups = [...bar.children].filter((k) => k.querySelector('button') ?? k.tagName === 'BUTTON');
-      const right = groups[groups.length - 1];
-      if (right instanceof HTMLElement && right.getBoundingClientRect().width > 0) return right;
-      return bar;
+  for (let depth = 0; node && depth < 6; depth++) {
+    for (let sib = node.nextElementSibling; sib; sib = sib.nextElementSibling) {
+      if (!(sib instanceof HTMLElement)) continue;
+      if (!sib.querySelector('button')) continue;
+      const bar = sib.getBoundingClientRect();
+      // Below the field, and actually drawn. `- 1` for subpixel layout.
+      if (bar.height <= 0 || bar.bottom < field.bottom - 1) continue;
+      return endCluster(sib) ?? sib;
     }
     node = node.parentElement;
   }
@@ -98,26 +105,19 @@ function findActionCluster(composer: HTMLElement): Element | null {
 }
 
 /**
- * True when this element lays its children out ACROSS rather than DOWN.
+ * The group pushed to the far end of the bar.
  *
- * Two children at the same height with different left edges is what a row
- * actually is, and unlike a height threshold it does not depend on Kick's
- * spacing — an earlier version judged by height and missed the row by 7px.
+ * Taken by DOM order rather than by measuring which is furthest right, so it
+ * mirrors on its own when the interface runs right to left. Zero-height groups
+ * are skipped: that is exactly what the collapsed left group is.
  */
-function isSideBySide(el: HTMLElement): boolean {
-  const kids = [...el.children].filter((k) => {
+function endCluster(bar: HTMLElement): HTMLElement | null {
+  const groups = [...bar.children].filter((k): k is HTMLElement => {
+    if (!(k instanceof HTMLElement)) return false;
     const b = k.getBoundingClientRect();
     return b.width > 0 && b.height > 0;
   });
-  if (kids.length < 2) return false;
-  for (let i = 1; i < kids.length; i++) {
-    const a = kids[i - 1]!.getBoundingClientRect();
-    const b = kids[i]!.getBoundingClientRect();
-    if (Math.abs(a.top - b.top) < Math.max(a.height, b.height) && Math.abs(a.left - b.left) > 8) {
-      return true;
-    }
-  }
-  return false;
+  return groups[groups.length - 1] ?? null;
 }
 
 /** The chip goes at the head of the cluster, before the gear. */
