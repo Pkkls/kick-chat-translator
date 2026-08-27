@@ -61,6 +61,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- The "Replace" display style rendered its text at 0.8em, about 10.4px.
+  Measured against the other styles it bought nothing for that: the same 7
+  messages on screen as Inline, the same opacity, just smaller. It now shares
+  Inline's 0.85em.
 - The language select in the bar at the top of the chat now uses the same
   surface, stroke and text as the chip in the message box — one control in two
   places rather than two unrelated widgets. Its border was

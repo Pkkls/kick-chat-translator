@@ -106,7 +106,11 @@
   background: rgba(83, 252, 24, 0.12);
   border-left: 2px solid rgba(83, 252, 24, 0.55);
   border-radius: 0 3px 3px 0;
-  font-size: 0.8em;
+  /* Was 0.8em, which rendered at 10.4px. Measured against the other styles it
+     bought nothing for it: same 7 messages on screen as inline, same opacity,
+     just smaller. Aligned on inline's 0.85em — the density is identical either
+     way, so the smaller size was a cost with no return. */
+  font-size: 0.85em;
   color: rgba(255, 255, 255, 0.7);
   font-style: italic;
 }
