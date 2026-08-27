@@ -30,7 +30,13 @@
      has no light theme, so dark is the real theme and not a guess. */
   .kt-select { @apply w-full appearance-none rounded-md border border-kick-border bg-kick-surface px-3 py-2 text-sm text-kick-text outline-none focus:border-kick-primary; color-scheme: dark; }
   .kt-input { @apply w-full rounded-md border border-kick-border bg-kick-surface px-3 py-2 text-sm text-kick-text outline-none focus:border-kick-primary placeholder:text-kick-muted; }
-  .kt-textarea { @apply w-full min-h-[110px] rounded-md border border-kick-border bg-kick-surface px-3 py-2 text-sm text-kick-text outline-none focus:border-kick-primary placeholder:text-kick-muted font-mono leading-relaxed; }
+  /* 110px is about six lines, reserved for lists that are usually empty and
+     rarely pass three entries — measured, the three of them held 330px of the
+     Filters tab between them. Four lines to start, and the textarea still
+     grows by drag like any other. */
+  .kt-textarea { @apply w-full min-h-[76px] resize-y rounded-md border border-kick-border bg-kick-surface px-3 py-2 text-sm text-kick-text outline-none focus:border-kick-primary placeholder:text-kick-muted font-mono leading-relaxed; border-color: theme('colors.kick.stroke'); }
+  .kt-textarea:hover:not(:disabled) { border-color: theme('colors.kick.stroke-strong'); }
+  .kt-textarea:focus-visible { outline: 2px solid theme('colors.kick.primary'); outline-offset: 1px; }
   .kt-label { @apply text-[11px] uppercase tracking-wider text-kick-muted; }
   .kt-btn { @apply rounded-md bg-kick-primary px-3 py-2 text-sm font-semibold text-kick-dark hover:brightness-95 transition; }
   .kt-btn-ghost { @apply rounded-md border border-kick-border bg-transparent px-3 py-2 text-sm font-medium text-kick-text hover:bg-kick-surface transition; }
