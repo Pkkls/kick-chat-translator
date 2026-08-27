@@ -26,6 +26,7 @@ import { extractChannelSlug, fetchChannelLangIso } from './kickApi';
 import { localEngine } from './localEngine';
 import { logPlatform, refresh7TV } from './platform';
 import { langFlag } from '~/shared/languages';
+import { msg as localised } from './msg';
 
 const log = rootLogger.child('content');
 // One-shot guard so the "Kick DOM changed" warning toast shows at most once per page.
@@ -157,7 +158,12 @@ async function main(): Promise<void> {
       if (!containerFound && !composerFound && !domWarned) {
         domWarned = true;
         log.warn('chat container & composer not found — Kick DOM likely changed');
-        showToast('Kick Chat Translator: chat not found — Kick may have updated. An extension update may be needed.');
+        showToast(
+      localised(
+        'toastChatNotFound',
+        'Kick Chat Translator: chat not found. An update may be needed.',
+      ),
+    );
       }
     }, 12_000);
   }

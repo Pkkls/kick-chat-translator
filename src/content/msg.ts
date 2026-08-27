@@ -19,7 +19,12 @@ export function msg(key: string, fallback: string, subs?: string[]): string {
   } catch {
     /* not running as an extension */
   }
-  // The fallback carries the same $LANG$ placeholder as the catalogue entry, so
-  // the two cannot drift into saying different things.
-  return subs?.length ? fallback.replace('$LANG$', subs[0]!) : fallback;
+  // The fallback carries the same placeholders as the catalogue entry, so the
+  // two cannot drift into saying different things. Filled in the order they
+  // appear, which is the order chrome.i18n fills $1, $2 with: this used to
+  // replace a literal '$LANG$' and silently did nothing for the first message
+  // that needed two.
+  if (!subs?.length) return fallback;
+  let i = 0;
+  return fallback.replace(/\$[A-Za-z][A-Za-z0-9_]*\$/g, () => subs[i++] ?? '');
 }

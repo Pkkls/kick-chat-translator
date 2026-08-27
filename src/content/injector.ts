@@ -158,7 +158,7 @@ export function markSkipped(targetEl: Element, reason: string): void {
     targetEl.removeAttribute('title');
     return;
   }
-  targetEl.setAttribute('title', `Not translated: ${reason}`);
+  targetEl.setAttribute('title', msg('skipPrefix', 'Not translated: $REASON$', [reason]));
 }
 
 export function removeAllArtifacts(targetEl: Element): void {
@@ -221,7 +221,11 @@ function withBadges(text: string, flag: string, provider: string, detectedLang?:
     const f = document.createElement('span');
     f.className = 'kt-flag';
     f.textContent = flag;
-    if (detectedLang) f.title = `from ${getLang(detectedLang)?.native ?? detectedLang.toUpperCase()}`;
+    if (detectedLang) {
+      f.title = msg('flagFrom', 'from $LANG$', [
+        getLang(detectedLang)?.native ?? detectedLang.toUpperCase(),
+      ]);
+    }
     frag.appendChild(f);
   }
   // dir="auto" so RTL translations (Arabic/Hebrew/Persian) render correctly.
@@ -242,7 +246,7 @@ function makeRetry(onRetry: () => void): HTMLElement {
   const btn = document.createElement('span');
   btn.className = 'kt-retry';
   btn.textContent = '⟳';
-  btn.title = 'Re-translate (try again, ignore cache)';
+  btn.title = msg('retryTip', 'Re-translate, ignoring the cache');
   btn.setAttribute('role', 'button');
   btn.addEventListener('click', (e) => {
     e.preventDefault();
@@ -304,7 +308,7 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
   // The reading language, on the bar. Changing it used to mean opening a page.
   const langPick = document.createElement('select');
   langPick.className = 'kt-float-lang';
-  langPick.title = 'Translate into';
+  langPick.title = msg('barLangTip', 'Translate into');
   // Localised and collated, like every other language menu in the extension:
   // an English-only list is unreadable to anyone running a translated UI.
   for (const opt of [
@@ -361,7 +365,7 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
   const opts = document.createElement('button');
   opts.type = 'button';
   opts.className = 'kt-float-opts';
-  opts.title = 'Options';
+  opts.title = msg('barOptionsTip', 'Options');
   opts.textContent = '⚙';
   opts.addEventListener('click', (e) => {
     e.preventDefault();
@@ -400,10 +404,14 @@ function setBarEnabled(bar: HTMLElement, label: HTMLElement, enabled: boolean, l
   // control. The resolved code still reaches the tooltip, where it costs
   // nothing and answers "what does auto mean here".
   const shown = lang === 'auto' ? resolveBrowserLang() : lang;
-  label.textContent = enabled ? 'Translating' : 'Translation off';
+  label.textContent = enabled
+    ? msg('barOn', 'Translating')
+    : msg('barOff', 'Translation off');
   label.title = enabled
-    ? `Reading chat in ${shown.toUpperCase()}${lang === 'auto' ? ' (auto)' : ''}`
-    : 'Translation paused';
+    ? lang === 'auto'
+      ? msg('barOnTipAuto', 'Reading chat in $LANG$ (auto)', [shown.toUpperCase()])
+      : msg('barOnTip', 'Reading chat in $LANG$', [shown.toUpperCase()])
+    : msg('chipPaused', 'Translation paused');
   // Scoped to the bar we were handed, never to the document: there are two chat
   // panels on the page and only one of them is the one on screen.
   const picker = bar.querySelector<HTMLSelectElement>('.kt-float-lang');
@@ -411,7 +419,9 @@ function setBarEnabled(bar: HTMLElement, label: HTMLElement, enabled: boolean, l
   const power = bar.querySelector<HTMLElement>('.kt-float-power');
   if (power) {
     power.textContent = enabled ? '⏸' : '▶';
-    power.title = enabled ? 'Pause translation' : 'Resume translation';
+    power.title = enabled
+      ? msg('barPause', 'Pause translation')
+      : msg('barResume', 'Resume translation');
   }
 }
 
@@ -430,7 +440,7 @@ export function showThrottleIndicator(throttled: boolean): void {
     ind = document.createElement('span');
     ind.className = 'kt-float-throttle';
     ind.textContent = '⏳'; // ⏳
-    ind.title = 'Rate-limited — some messages skipped';
+    ind.title = msg('barThrottled', 'Rate-limited, some messages skipped');
     ind.style.cssText = 'font-size:11px;opacity:.6;margin-left:2px';
     const count = bar.querySelector('.kt-float-count');
     if (count) count.before(ind);
@@ -457,7 +467,7 @@ export function updateActiveProvider(provider: string): void {
   const label = bar.querySelector<HTMLElement>('.kt-float-label');
   if (!label) return;
   const base = label.title.split(' · ')[0] ?? label.title;
-  label.title = `${base} · via ${provider}`;
+  label.title = msg('barVia', '$BASE$ · via $PROVIDER$', [base, provider]);
 }
 
 /** Bump the session translation counter shown in the floating bar. */
@@ -480,19 +490,24 @@ export function updateLocalChip(state: LocalChipState): void {
     case 'download':
       chip.style.display = '';
       chip.dataset.state = 'download';
-      chip.textContent = `⬇ Local (${state.label})`;
-      chip.title = 'Download on-device model — unlimited local translation';
+      chip.textContent = `⬇ ${msg('localDownload', 'Local ($SIZE$)', [state.label])}`;
+      chip.title = msg(
+        'localDownloadTip',
+        'Download the on-device model for unlimited local translation',
+      );
       return;
     case 'downloading':
       chip.style.display = '';
       chip.dataset.state = 'downloading';
-      chip.textContent = `Downloading ${Math.round(state.pct * 100)}%`;
+      chip.textContent = msg('localDownloading', 'Downloading $PCT$%', [
+        String(Math.round(state.pct * 100)),
+      ]);
       return;
     case 'ready':
       chip.style.display = '';
       chip.dataset.state = 'ready';
-      chip.textContent = 'Local ✓';
-      chip.title = 'Translating on-device (unlimited, offline)';
+      chip.textContent = `${msg('localReady', 'Local')} ✓`;
+      chip.title = msg('localReadyTip', 'Translating on your device, unlimited and offline');
       return;
   }
 }

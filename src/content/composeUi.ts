@@ -10,6 +10,7 @@
 import { getLang, langFlag } from '~/shared/languages';
 import { computePanelGeom } from './composeLogic';
 import { showToast } from './injector';
+import { msg } from './msg';
 
 const COMPOSE_ID = 'kt-compose-bar';
 
@@ -72,7 +73,7 @@ export function mountComposePreview(
   const insert = document.createElement('span');
   insert.className = 'kt-compose-insert';
   insert.textContent = '↵';
-  insert.title = 'Insert · Ctrl/Cmd+Enter · Esc to dismiss';
+  insert.title = msg('composeInsertTip', 'Insert · Ctrl/Cmd+Enter · Esc to dismiss');
   panel.appendChild(insert);
 
   // Clicking the translation inserts it (mousedown, so the composer doesn't lose
@@ -190,7 +191,9 @@ export function setComposeTargetLang(lang: string): void {
 
 function setTargetBadge(el: HTMLElement, lang: string): void {
   el.textContent = langFlag(lang);
-  el.title = `Auto · writing in ${getLang(lang)?.native ?? lang.toUpperCase()}`;
+  el.title = msg('composeAutoTip', 'Auto · writing in $LANG$', [
+    getLang(lang)?.native ?? lang.toUpperCase(),
+  ]);
 }
 
 export function isComposePreviewMounted(): boolean {

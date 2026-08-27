@@ -16,7 +16,11 @@ module.exports = {
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'prettier',
   ],
-  ignorePatterns: ['dist', 'release', 'node_modules', '*.config.js', '*.config.cjs', 'scripts/pack.ts'],
+  // `scratchpad` is working notes and harness output, outside tsconfig and
+  // outside the package. Type-aware linting cannot parse a file the project
+  // does not include, so anything landing there fails the whole run: a copy of
+  // a source file kept beside a script, or an esbuild bundle a harness wrote.
+  ignorePatterns: ['dist', 'release', 'node_modules', 'scratchpad', '*.config.js', '*.config.cjs', 'scripts/pack.ts'],
   rules: {
     '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],

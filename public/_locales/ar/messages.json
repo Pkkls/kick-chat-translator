@@ -1,6 +1,6 @@
 {
   "extDescription": {
-    "message": "يترجم دردشة Kick إلى لغتك أثناء تدفقها، ويترجم ردودك إلى لغة القناة.",
+    "message": "يترجم دردشة Kick إلى لغتك أثناء تمريرها، وردودك إلى لغة القناة.",
     "description": "Store listing blurb and manifest description. 132 character limit."
   },
   "chipAuto": {
@@ -8,7 +8,7 @@
     "description": "Chip menu row: follow the channel's broadcast language."
   },
   "chipPaused": {
-    "message": "الترجمة متوقفة مؤقتًا",
+    "message": "الترجمة متوقفة مؤقتا",
     "description": "Chip tooltip when translation is switched off."
   },
   "chipLoading": {
@@ -28,27 +28,220 @@
     "description": "Shown when the filter matches no language."
   },
   "chipAutoTip": {
-    "message": "الكتابة بلغة القناة ($LANG$). انقر للتبديل، والسهم يفتح القائمة.",
+    "message": "تكتب بلغة القناة ($LANG$). انقر للتبديل، والسهم يفتح القائمة.",
     "description": "Chip tooltip while following the channel's language. $LANG$ is an ISO code.",
     "placeholders": {
       "lang": {
-        "content": "$1",
-        "example": "JA"
+        "content": "$1"
       }
     }
   },
   "chipPinnedTip": {
-    "message": "الكتابة بـ $LANG$. انقر للغة القناة، والسهم يفتح القائمة.",
+    "message": "تكتب بـ $LANG$. انقر للغة القناة، والسهم يفتح القائمة.",
     "description": "Chip tooltip while pinned to a language. $LANG$ is that language name.",
     "placeholders": {
       "lang": {
-        "content": "$1",
-        "example": "JA"
+        "content": "$1"
       }
     }
   },
   "hoverToTranslate": {
     "message": "مرر للترجمة",
     "description": "Placeholder on an untranslated line in lazy mode; hovering it fetches the translation."
+  },
+  "barLangTip": {
+    "message": "الترجمة إلى",
+    "description": "Content script string."
+  },
+  "barOff": {
+    "message": "الترجمة متوقفة",
+    "description": "Content script string."
+  },
+  "barOn": {
+    "message": "جارٍ الترجمة",
+    "description": "Content script string."
+  },
+  "barOnTip": {
+    "message": "قراءة الدردشة بـ $LANG$",
+    "description": "Content script string.",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "barOnTipAuto": {
+    "message": "قراءة الدردشة بـ $LANG$ (تلقائي)",
+    "description": "Content script string.",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "barOptionsTip": {
+    "message": "الخيارات",
+    "description": "Content script string."
+  },
+  "barPause": {
+    "message": "إيقاف الترجمة مؤقتا",
+    "description": "Content script string."
+  },
+  "barResume": {
+    "message": "استئناف الترجمة",
+    "description": "Content script string."
+  },
+  "barThrottled": {
+    "message": "تقييد المعدل، تم تخطي بعض الرسائل",
+    "description": "Content script string."
+  },
+  "barVia": {
+    "message": "$BASE$ · عبر $PROVIDER$",
+    "description": "Content script string.",
+    "placeholders": {
+      "base": {
+        "content": "$1"
+      },
+      "provider": {
+        "content": "$2"
+      }
+    }
+  },
+  "composeAutoTip": {
+    "message": "تلقائي · تكتب بـ $LANG$",
+    "description": "Content script string.",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "composeInsertTip": {
+    "message": "إدراج · Ctrl/Cmd+Enter · Esc للإغلاق",
+    "description": "Content script string."
+  },
+  "dropBot": {
+    "message": "يبدو أن المرسل روبوت",
+    "description": "Content script string."
+  },
+  "dropChannelBlocked": {
+    "message": "هذه القناة في قائمة الحظر لديك",
+    "description": "Content script string."
+  },
+  "dropChannelNotAllowed": {
+    "message": "هذه القناة ليست في قائمة المسموح بها لديك",
+    "description": "Content script string."
+  },
+  "dropLangNotAllowed": {
+    "message": "لغتها ليست في قائمة المسموح بها لديك",
+    "description": "Content script string."
+  },
+  "dropLangUnknown": {
+    "message": "تعذر تحديد لغتها",
+    "description": "Content script string."
+  },
+  "dropUserBlocked": {
+    "message": "هذا المستخدم في قائمة الحظر لديك",
+    "description": "Content script string."
+  },
+  "errTranslateFailed": {
+    "message": "فشلت الترجمة",
+    "description": "Content script string."
+  },
+  "flagFrom": {
+    "message": "من $LANG$",
+    "description": "Content script string.",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "localDownload": {
+    "message": "محلي ($SIZE$)",
+    "description": "Content script string.",
+    "placeholders": {
+      "size": {
+        "content": "$1"
+      }
+    }
+  },
+  "localDownloadTip": {
+    "message": "نزّل النموذج على الجهاز لترجمة محلية بلا حدود",
+    "description": "Content script string."
+  },
+  "localDownloading": {
+    "message": "جارٍ التنزيل $PCT$%",
+    "description": "Content script string.",
+    "placeholders": {
+      "pct": {
+        "content": "$1"
+      }
+    }
+  },
+  "localReady": {
+    "message": "محلي",
+    "description": "Content script string."
+  },
+  "localReadyTip": {
+    "message": "الترجمة على جهازك، بلا حدود وبدون إنترنت",
+    "description": "Content script string."
+  },
+  "retryTip": {
+    "message": "إعادة الترجمة مع تجاهل الذاكرة المؤقتة",
+    "description": "Content script string."
+  },
+  "skipDetected": {
+    "message": "وجدت خدمة الترجمة أنها بلغتك أصلا",
+    "description": "Content script string."
+  },
+  "skipDuplicate": {
+    "message": "أرسل المستخدم نفسه هذا للتو",
+    "description": "Content script string."
+  },
+  "skipEnglish": {
+    "message": "تبدو بالإنجليزية وقد طلبت تخطي الإنجليزية",
+    "description": "Content script string."
+  },
+  "skipGlossary": {
+    "message": "أفرغ مسردك الترجمة",
+    "description": "Content script string."
+  },
+  "skipNoModel": {
+    "message": "لا يوجد بعد نموذج على الجهاز للغتها",
+    "description": "Content script string."
+  },
+  "skipNoise": {
+    "message": "مجرد رموز تعبيرية أو رموز أو ضحك",
+    "description": "Content script string."
+  },
+  "skipPrefix": {
+    "message": "غير مترجم: $REASON$",
+    "description": "Content script string.",
+    "placeholders": {
+      "reason": {
+        "content": "$1"
+      }
+    }
+  },
+  "skipSame": {
+    "message": "عادت الترجمة مطابقة للأصل",
+    "description": "Content script string."
+  },
+  "skipSameLang": {
+    "message": "هي بلغتك أصلا",
+    "description": "Content script string."
+  },
+  "skipSlang": {
+    "message": "مجرد عامية دردشة",
+    "description": "Content script string."
+  },
+  "skipTooLong": {
+    "message": "أطول من الحد المسموح",
+    "description": "Content script string."
+  },
+  "toastChatNotFound": {
+    "message": "Kick Chat Translator: لم يتم العثور على الدردشة. قد تحتاج إلى تحديث.",
+    "description": "Content script string."
   }
 }

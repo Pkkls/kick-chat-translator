@@ -15,6 +15,7 @@ import { isNoise, isSameLanguageAsTarget, normalizeElongation, shouldDropBySourc
 import { HANDLED_SELECTOR, inject, incrementFloatingCount, injectHoverPlaceholder, markSkipped, removeAllArtifacts, showError, showLoading, showThrottleIndicator, showToast, updateActiveProvider } from './injector';
 import { localEngine } from './localEngine';
 import { memCache } from './memcache';
+import { msg as localised } from './msg';
 
 const log = rootLogger.child('pipeline');
 const metrics = createMetrics('content');
@@ -56,12 +57,12 @@ interface RawResult {
  * catalogue (about 67 KB) on every Kick page just to fill a tooltip.
  */
 const DROP_REASON: Record<string, string> = {
-  bot: 'the sender looks like a bot',
-  user_blacklisted: 'this user is on your blocked list',
-  channel_blacklisted: 'this channel is on your blocked list',
-  channel_not_whitelisted: 'this channel is not on your allowed list',
-  lang_unknown: 'its language could not be identified',
-  lang_not_allowed: 'its language is not on your allowed list',
+  bot: localised('dropBot', 'the sender looks like a bot'),
+  user_blacklisted: localised('dropUserBlocked', 'this user is on your blocked list'),
+  channel_blacklisted: localised('dropChannelBlocked', 'this channel is on your blocked list'),
+  channel_not_whitelisted: localised('dropChannelNotAllowed', 'this channel is not on your allowed list'),
+  lang_unknown: localised('dropLangUnknown', 'its language could not be identified'),
+  lang_not_allowed: localised('dropLangNotAllowed', 'its language is not on your allowed list'),
 };
 
 /** How many decisions the Debug tab can look back over. */
@@ -159,7 +160,7 @@ export class TranslationPipeline {
     // message nobody has seen yet.
     if (opts.dedup) {
       const dedupKey = meta.username.toLowerCase();
-      if (dedupKey && this.userDedup.get(dedupKey) === rawText) return 'the same user just sent this';
+      if (dedupKey && this.userDedup.get(dedupKey) === rawText) return localised('skipDuplicate', 'the same user just sent this');
       if (dedupKey) this.userDedup.set(dedupKey, rawText);
     }
 
@@ -167,9 +168,9 @@ export class TranslationPipeline {
     if (realText.length < this.settings.minTextLength) {
       return `it is shorter than your ${this.settings.minTextLength} character minimum`;
     }
-    if (realText.length > MAX_TEXT_LENGTH) return 'it is longer than the size limit';
-    if (isNoise(realText)) return 'it is only emoji, symbols or laughter'; // kkkk / rsrs / xd / digits
-    if (isSlangOnly(realText)) return 'it is only chat slang'; // poggers / copium / kekw …
+    if (realText.length > MAX_TEXT_LENGTH) return localised('skipTooLong', 'it is longer than the size limit');
+    if (isNoise(realText)) return localised('skipNoise', 'it is only emoji, symbols or laughter'); // kkkk / rsrs / xd / digits
+    if (isSlangOnly(realText)) return localised('skipSlang', 'it is only chat slang'); // poggers / copium / kekw …
 
     const detected = detectLanguage(realText);
     // Three exits can end a line for "already readable", and they are not the
@@ -177,9 +178,9 @@ export class TranslationPipeline {
     // the service answering after the call was made. Each says which it is, or
     // the Debug tab shows two verdicts for what looks like one case.
     if (this.settings.ignoreEnglish && this.effTarget === 'en' && detected === 'en') {
-      return 'it looks like English and you asked to skip English';
+      return localised('skipEnglish', 'it looks like English and you asked to skip English');
     }
-    if (isSameLanguageAsTarget(detected, this.effTarget)) return 'it is already in your language';
+    if (isSameLanguageAsTarget(detected, this.effTarget)) return localised('skipSameLang', 'it is already in your language');
     const byLang = shouldDropBySourceLang(detected, this.settings);
     if (byLang) return DROP_REASON[byLang] ?? byLang;
 
@@ -264,14 +265,14 @@ export class TranslationPipeline {
           log.debug('local translate failed, falling back', err);
         }
       } else if (this.settings.engineMode === 'local-only') {
-        this.skip(msg, 'there is no on device model for its language yet');
+        this.skip(msg, localised('skipNoModel', 'there is no on device model for its language yet'));
         removeAllArtifacts(msg.injectionTarget);
         return;
       }
     }
 
     if (this.settings.engineMode === 'local-only') {
-      this.skip(msg, 'there is no on device model for its language yet');
+      this.skip(msg, localised('skipNoModel', 'there is no on device model for its language yet'));
       removeAllArtifacts(msg.injectionTarget);
       return;
     }
@@ -307,7 +308,7 @@ export class TranslationPipeline {
     // window above, where being wrong costs nothing.
     const outcome = await this.requestCloud(real, this.effTarget, msg.channel, context, false, confidentLanguage(real));
     if (!outcome) {
-      showError(msg.injectionTarget, 'translate failed', () => void this.forceRetranslate(msg, real));
+      showError(msg.injectionTarget, localised('errTranslateFailed', 'Translation failed'), () => void this.forceRetranslate(msg, real));
       return;
     }
     if (!outcome.ok) {
@@ -347,7 +348,7 @@ export class TranslationPipeline {
   private async retryNormalized(msg: IncomingDomMessage, flat: string): Promise<void> {
     const outcome = await this.requestCloud(flat, this.effTarget, msg.channel, '', true, confidentLanguage(flat));
     if (!outcome?.ok) {
-      this.skip(msg, 'the translation came back the same as the original');
+      this.skip(msg, localised('skipSame', 'the translation came back the same as the original'));
       removeAllArtifacts(msg.injectionTarget);
       return;
     }
@@ -361,7 +362,7 @@ export class TranslationPipeline {
     const outcome = await this.requestCloud(real, this.effTarget, msg.channel, '', true);
     if (!outcome || !outcome.ok) {
       // A failed retry must not delete the button that started it.
-      showError(msg.injectionTarget, 'translate failed', () => void this.forceRetranslate(msg, real));
+      showError(msg.injectionTarget, localised('errTranslateFailed', 'Translation failed'), () => void this.forceRetranslate(msg, real));
       return;
     }
     this.applyTranslation(msg, real, outcome.result, { store: true, force: true });
@@ -434,13 +435,13 @@ export class TranslationPipeline {
     }
     const tt = applyUserGlossary(result.translatedText, this.settings.glossary);
     if (!tt) {
-      this.skip(msg, 'your glossary emptied the translation');
+      this.skip(msg, localised('skipGlossary', 'your glossary emptied the translation'));
       removeAllArtifacts(msg.injectionTarget);
       return;
     }
     if (!opts.force) {
       if (isSameLanguageAsTarget(result.detectedLang, this.effTarget) && this.settings.ignoreEnglish) {
-        this.skip(msg, 'the translation service found it was already in your language');
+        this.skip(msg, localised('skipDetected', 'the translation service found it was already in your language'));
         removeAllArtifacts(msg.injectionTarget);
         return;
       }
@@ -458,7 +459,7 @@ export class TranslationPipeline {
           void this.retryNormalized(msg, flat);
           return;
         }
-        this.skip(msg, 'the translation came back the same as the original');
+        this.skip(msg, localised('skipSame', 'the translation came back the same as the original'));
         removeAllArtifacts(msg.injectionTarget);
         return;
       }

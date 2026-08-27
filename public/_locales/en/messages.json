@@ -32,8 +32,7 @@
     "description": "Chip tooltip while following the channel's language. $LANG$ is an ISO code.",
     "placeholders": {
       "lang": {
-        "content": "$1",
-        "example": "JA"
+        "content": "$1"
       }
     }
   },
@@ -42,13 +41,207 @@
     "description": "Chip tooltip while pinned to a language. $LANG$ is that language name.",
     "placeholders": {
       "lang": {
-        "content": "$1",
-        "example": "JA"
+        "content": "$1"
       }
     }
   },
   "hoverToTranslate": {
     "message": "Hover to translate",
     "description": "Placeholder on an untranslated line in lazy mode; hovering it fetches the translation."
+  },
+  "barLangTip": {
+    "message": "Translate into",
+    "description": "Content script string."
+  },
+  "barOff": {
+    "message": "Translation off",
+    "description": "Content script string."
+  },
+  "barOn": {
+    "message": "Translating",
+    "description": "Content script string."
+  },
+  "barOnTip": {
+    "message": "Reading chat in $LANG$",
+    "description": "Content script string.",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "barOnTipAuto": {
+    "message": "Reading chat in $LANG$ (auto)",
+    "description": "Content script string.",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "barOptionsTip": {
+    "message": "Options",
+    "description": "Content script string."
+  },
+  "barPause": {
+    "message": "Pause translation",
+    "description": "Content script string."
+  },
+  "barResume": {
+    "message": "Resume translation",
+    "description": "Content script string."
+  },
+  "barThrottled": {
+    "message": "Rate-limited, some messages skipped",
+    "description": "Content script string."
+  },
+  "barVia": {
+    "message": "$BASE$ · via $PROVIDER$",
+    "description": "Content script string.",
+    "placeholders": {
+      "base": {
+        "content": "$1"
+      },
+      "provider": {
+        "content": "$2"
+      }
+    }
+  },
+  "composeAutoTip": {
+    "message": "Auto · writing in $LANG$",
+    "description": "Content script string.",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "composeInsertTip": {
+    "message": "Insert · Ctrl/Cmd+Enter · Esc to dismiss",
+    "description": "Content script string."
+  },
+  "dropBot": {
+    "message": "the sender looks like a bot",
+    "description": "Content script string."
+  },
+  "dropChannelBlocked": {
+    "message": "this channel is on your blocked list",
+    "description": "Content script string."
+  },
+  "dropChannelNotAllowed": {
+    "message": "this channel is not on your allowed list",
+    "description": "Content script string."
+  },
+  "dropLangNotAllowed": {
+    "message": "its language is not on your allowed list",
+    "description": "Content script string."
+  },
+  "dropLangUnknown": {
+    "message": "its language could not be identified",
+    "description": "Content script string."
+  },
+  "dropUserBlocked": {
+    "message": "this user is on your blocked list",
+    "description": "Content script string."
+  },
+  "errTranslateFailed": {
+    "message": "Translation failed",
+    "description": "Content script string."
+  },
+  "flagFrom": {
+    "message": "from $LANG$",
+    "description": "Content script string.",
+    "placeholders": {
+      "lang": {
+        "content": "$1"
+      }
+    }
+  },
+  "localDownload": {
+    "message": "Local ($SIZE$)",
+    "description": "Content script string.",
+    "placeholders": {
+      "size": {
+        "content": "$1"
+      }
+    }
+  },
+  "localDownloadTip": {
+    "message": "Download the on-device model for unlimited local translation",
+    "description": "Content script string."
+  },
+  "localDownloading": {
+    "message": "Downloading $PCT$%",
+    "description": "Content script string.",
+    "placeholders": {
+      "pct": {
+        "content": "$1"
+      }
+    }
+  },
+  "localReady": {
+    "message": "Local",
+    "description": "Content script string."
+  },
+  "localReadyTip": {
+    "message": "Translating on your device, unlimited and offline",
+    "description": "Content script string."
+  },
+  "retryTip": {
+    "message": "Re-translate, ignoring the cache",
+    "description": "Content script string."
+  },
+  "skipDetected": {
+    "message": "the translation service found it was already in your language",
+    "description": "Content script string."
+  },
+  "skipDuplicate": {
+    "message": "the same user just sent this",
+    "description": "Content script string."
+  },
+  "skipEnglish": {
+    "message": "it looks like English and you asked to skip English",
+    "description": "Content script string."
+  },
+  "skipGlossary": {
+    "message": "your glossary emptied the translation",
+    "description": "Content script string."
+  },
+  "skipNoModel": {
+    "message": "there is no on device model for its language yet",
+    "description": "Content script string."
+  },
+  "skipNoise": {
+    "message": "it is only emoji, symbols or laughter",
+    "description": "Content script string."
+  },
+  "skipPrefix": {
+    "message": "Not translated: $REASON$",
+    "description": "Content script string.",
+    "placeholders": {
+      "reason": {
+        "content": "$1"
+      }
+    }
+  },
+  "skipSame": {
+    "message": "the translation came back the same as the original",
+    "description": "Content script string."
+  },
+  "skipSameLang": {
+    "message": "it is already in your language",
+    "description": "Content script string."
+  },
+  "skipSlang": {
+    "message": "it is only chat slang",
+    "description": "Content script string."
+  },
+  "skipTooLong": {
+    "message": "it is longer than the size limit",
+    "description": "Content script string."
+  },
+  "toastChatNotFound": {
+    "message": "Kick Chat Translator: chat not found. An update may be needed.",
+    "description": "Content script string."
   }
 }

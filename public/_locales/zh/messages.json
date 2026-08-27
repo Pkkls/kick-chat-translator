@@ -1,34 +1,34 @@
 {
   "extDescription": {
-    "message": "Kick sohbetini akarken kendi dilinize, yanitlarinizi da kanalin diline cevirir.",
+    "message": "在 Kick 聊天滚动时将其译为你的语言，并把你的回复译为频道的语言。",
     "description": "Store listing blurb and manifest description. 132 character limit."
   },
   "chipAuto": {
-    "message": "Kanalin dili",
+    "message": "频道语言",
     "description": "Chip menu row: follow the channel's broadcast language."
   },
   "chipPaused": {
-    "message": "Ceviri duraklatildi",
+    "message": "翻译已暂停",
     "description": "Chip tooltip when translation is switched off."
   },
   "chipLoading": {
-    "message": "Ceviriliyor…",
+    "message": "翻译中…",
     "description": "Chip tooltip while a translation is in flight."
   },
   "chipError": {
-    "message": "Ceviri kullanilamiyor. Yeniden denemek icin tikla.",
+    "message": "翻译不可用。点击重试。",
     "description": "Chip tooltip when the engines gave up."
   },
   "chipSearch": {
-    "message": "Dilleri filtrele",
+    "message": "筛选语言",
     "description": "Placeholder and label of the language filter box."
   },
   "chipNoMatch": {
-    "message": "Eslesen dil yok",
+    "message": "没有匹配的语言",
     "description": "Shown when the filter matches no language."
   },
   "chipAutoTip": {
-    "message": "Kanalin dilinde yaziyorsun ($LANG$). Degistirmek icin tikla, listeyi ok acar.",
+    "message": "正以频道语言（$LANG$）书写。点击切换，箭头打开列表。",
     "description": "Chip tooltip while following the channel's language. $LANG$ is an ISO code.",
     "placeholders": {
       "lang": {
@@ -37,7 +37,7 @@
     }
   },
   "chipPinnedTip": {
-    "message": "$LANG$ dilinde yaziyorsun. Kanalin dili icin tikla, listeyi ok acar.",
+    "message": "正以 $LANG$ 书写。点击切换到频道语言，箭头打开列表。",
     "description": "Chip tooltip while pinned to a language. $LANG$ is that language name.",
     "placeholders": {
       "lang": {
@@ -46,23 +46,23 @@
     }
   },
   "hoverToTranslate": {
-    "message": "Cevirmek icin uzerine gel",
+    "message": "悬停以翻译",
     "description": "Placeholder on an untranslated line in lazy mode; hovering it fetches the translation."
   },
   "barLangTip": {
-    "message": "Su dile cevir",
+    "message": "翻译为",
     "description": "Content script string."
   },
   "barOff": {
-    "message": "Ceviri kapali",
+    "message": "翻译已关闭",
     "description": "Content script string."
   },
   "barOn": {
-    "message": "Ceviriliyor",
+    "message": "翻译中",
     "description": "Content script string."
   },
   "barOnTip": {
-    "message": "Sohbet $LANG$ dilinde okunuyor",
+    "message": "正以 $LANG$ 阅读聊天",
     "description": "Content script string.",
     "placeholders": {
       "lang": {
@@ -71,7 +71,7 @@
     }
   },
   "barOnTipAuto": {
-    "message": "Sohbet $LANG$ dilinde okunuyor (otomatik)",
+    "message": "正以 $LANG$ 阅读聊天（自动）",
     "description": "Content script string.",
     "placeholders": {
       "lang": {
@@ -80,23 +80,23 @@
     }
   },
   "barOptionsTip": {
-    "message": "Secenekler",
+    "message": "选项",
     "description": "Content script string."
   },
   "barPause": {
-    "message": "Ceviriyi duraklat",
+    "message": "暂停翻译",
     "description": "Content script string."
   },
   "barResume": {
-    "message": "Ceviriyi surdur",
+    "message": "恢复翻译",
     "description": "Content script string."
   },
   "barThrottled": {
-    "message": "Hiz siniri, bazi mesajlar atlandi",
+    "message": "速率受限，部分消息被跳过",
     "description": "Content script string."
   },
   "barVia": {
-    "message": "$BASE$ · $PROVIDER$ uzerinden",
+    "message": "$BASE$ · 经由 $PROVIDER$",
     "description": "Content script string.",
     "placeholders": {
       "base": {
@@ -108,7 +108,7 @@
     }
   },
   "composeAutoTip": {
-    "message": "Otomatik · $LANG$ dilinde yaziyorsun",
+    "message": "自动 · 以 $LANG$ 书写",
     "description": "Content script string.",
     "placeholders": {
       "lang": {
@@ -117,39 +117,39 @@
     }
   },
   "composeInsertTip": {
-    "message": "Ekle · Ctrl/Cmd+Enter · Kapatmak icin Esc",
+    "message": "插入 · Ctrl/Cmd+Enter · Esc 关闭",
     "description": "Content script string."
   },
   "dropBot": {
-    "message": "gonderen bot gibi gorunuyor",
+    "message": "发送者看起来像机器人",
     "description": "Content script string."
   },
   "dropChannelBlocked": {
-    "message": "bu kanal engelli listende",
+    "message": "该频道在你的屏蔽列表中",
     "description": "Content script string."
   },
   "dropChannelNotAllowed": {
-    "message": "bu kanal izin listende degil",
+    "message": "该频道不在你的允许列表中",
     "description": "Content script string."
   },
   "dropLangNotAllowed": {
-    "message": "dili izin listende degil",
+    "message": "它的语言不在你的允许列表中",
     "description": "Content script string."
   },
   "dropLangUnknown": {
-    "message": "dili belirlenemedi",
+    "message": "无法识别它的语言",
     "description": "Content script string."
   },
   "dropUserBlocked": {
-    "message": "bu kullanici engelli listende",
+    "message": "该用户在你的屏蔽列表中",
     "description": "Content script string."
   },
   "errTranslateFailed": {
-    "message": "Ceviri basarisiz",
+    "message": "翻译失败",
     "description": "Content script string."
   },
   "flagFrom": {
-    "message": "$LANG$ dilinden",
+    "message": "来自 $LANG$",
     "description": "Content script string.",
     "placeholders": {
       "lang": {
@@ -158,7 +158,7 @@
     }
   },
   "localDownload": {
-    "message": "Yerel ($SIZE$)",
+    "message": "本地 ($SIZE$)",
     "description": "Content script string.",
     "placeholders": {
       "size": {
@@ -167,11 +167,11 @@
     }
   },
   "localDownloadTip": {
-    "message": "Sinirsiz yerel ceviri icin cihaz ici modeli indir",
+    "message": "下载设备端模型，获得无限本地翻译",
     "description": "Content script string."
   },
   "localDownloading": {
-    "message": "Indiriliyor $PCT$%",
+    "message": "下载中 $PCT$%",
     "description": "Content script string.",
     "placeholders": {
       "pct": {
@@ -180,43 +180,43 @@
     }
   },
   "localReady": {
-    "message": "Yerel",
+    "message": "本地",
     "description": "Content script string."
   },
   "localReadyTip": {
-    "message": "Cihazinda ceviriliyor, sinirsiz ve cevrimdisi",
+    "message": "在你的设备上翻译，无限制且离线",
     "description": "Content script string."
   },
   "retryTip": {
-    "message": "Onbellegi yok sayarak yeniden cevir",
+    "message": "忽略缓存重新翻译",
     "description": "Content script string."
   },
   "skipDetected": {
-    "message": "ceviri servisi zaten senin dilinde oldugunu buldu",
+    "message": "翻译服务判定它已经是你的语言",
     "description": "Content script string."
   },
   "skipDuplicate": {
-    "message": "ayni kullanici bunu az once gonderdi",
+    "message": "同一用户刚刚发过",
     "description": "Content script string."
   },
   "skipEnglish": {
-    "message": "Ingilizce gorunuyor ve Ingilizceyi atlamayi sectin",
+    "message": "看起来是英语，而你选择跳过英语",
     "description": "Content script string."
   },
   "skipGlossary": {
-    "message": "sozlugun ceviriyi bosaltti",
+    "message": "你的术语表清空了译文",
     "description": "Content script string."
   },
   "skipNoModel": {
-    "message": "dili icin henuz cihaz ici model yok",
+    "message": "尚无该语言的设备端模型",
     "description": "Content script string."
   },
   "skipNoise": {
-    "message": "sadece emoji, sembol ya da gulme",
+    "message": "只有表情、符号或笑声",
     "description": "Content script string."
   },
   "skipPrefix": {
-    "message": "Cevrilmedi: $REASON$",
+    "message": "未翻译：$REASON$",
     "description": "Content script string.",
     "placeholders": {
       "reason": {
@@ -225,23 +225,23 @@
     }
   },
   "skipSame": {
-    "message": "ceviri aslinin aynisi olarak dondu",
+    "message": "译文与原文完全相同",
     "description": "Content script string."
   },
   "skipSameLang": {
-    "message": "zaten senin dilinde",
+    "message": "它已经是你的语言",
     "description": "Content script string."
   },
   "skipSlang": {
-    "message": "sadece sohbet argosu",
+    "message": "只是聊天俚语",
     "description": "Content script string."
   },
   "skipTooLong": {
-    "message": "boyut sinirindan uzun",
+    "message": "超出长度上限",
     "description": "Content script string."
   },
   "toastChatNotFound": {
-    "message": "Kick Chat Translator: sohbet bulunamadi. Guncelleme gerekebilir.",
+    "message": "Kick Chat Translator：未找到聊天。可能需要更新。",
     "description": "Content script string."
   }
 }

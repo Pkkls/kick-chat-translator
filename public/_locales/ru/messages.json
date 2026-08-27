@@ -1,34 +1,34 @@
 {
   "extDescription": {
-    "message": "Kick sohbetini akarken kendi dilinize, yanitlarinizi da kanalin diline cevirir.",
+    "message": "Переводит чат Kick на ваш язык прямо на лету, а ваши ответы на язык канала.",
     "description": "Store listing blurb and manifest description. 132 character limit."
   },
   "chipAuto": {
-    "message": "Kanalin dili",
+    "message": "Язык канала",
     "description": "Chip menu row: follow the channel's broadcast language."
   },
   "chipPaused": {
-    "message": "Ceviri duraklatildi",
+    "message": "Перевод приостановлен",
     "description": "Chip tooltip when translation is switched off."
   },
   "chipLoading": {
-    "message": "Ceviriliyor…",
+    "message": "Перевод…",
     "description": "Chip tooltip while a translation is in flight."
   },
   "chipError": {
-    "message": "Ceviri kullanilamiyor. Yeniden denemek icin tikla.",
+    "message": "Перевод недоступен. Нажмите, чтобы повторить.",
     "description": "Chip tooltip when the engines gave up."
   },
   "chipSearch": {
-    "message": "Dilleri filtrele",
+    "message": "Фильтр языков",
     "description": "Placeholder and label of the language filter box."
   },
   "chipNoMatch": {
-    "message": "Eslesen dil yok",
+    "message": "Нет подходящих языков",
     "description": "Shown when the filter matches no language."
   },
   "chipAutoTip": {
-    "message": "Kanalin dilinde yaziyorsun ($LANG$). Degistirmek icin tikla, listeyi ok acar.",
+    "message": "Вы пишете на языке канала ($LANG$). Нажмите, чтобы сменить; стрелка открывает список.",
     "description": "Chip tooltip while following the channel's language. $LANG$ is an ISO code.",
     "placeholders": {
       "lang": {
@@ -37,7 +37,7 @@
     }
   },
   "chipPinnedTip": {
-    "message": "$LANG$ dilinde yaziyorsun. Kanalin dili icin tikla, listeyi ok acar.",
+    "message": "Вы пишете на $LANG$. Нажмите для языка канала; стрелка открывает список.",
     "description": "Chip tooltip while pinned to a language. $LANG$ is that language name.",
     "placeholders": {
       "lang": {
@@ -46,23 +46,23 @@
     }
   },
   "hoverToTranslate": {
-    "message": "Cevirmek icin uzerine gel",
+    "message": "Наведите, чтобы перевести",
     "description": "Placeholder on an untranslated line in lazy mode; hovering it fetches the translation."
   },
   "barLangTip": {
-    "message": "Su dile cevir",
+    "message": "Переводить на",
     "description": "Content script string."
   },
   "barOff": {
-    "message": "Ceviri kapali",
+    "message": "Перевод выключен",
     "description": "Content script string."
   },
   "barOn": {
-    "message": "Ceviriliyor",
+    "message": "Идёт перевод",
     "description": "Content script string."
   },
   "barOnTip": {
-    "message": "Sohbet $LANG$ dilinde okunuyor",
+    "message": "Чат читается на $LANG$",
     "description": "Content script string.",
     "placeholders": {
       "lang": {
@@ -71,7 +71,7 @@
     }
   },
   "barOnTipAuto": {
-    "message": "Sohbet $LANG$ dilinde okunuyor (otomatik)",
+    "message": "Чат читается на $LANG$ (авто)",
     "description": "Content script string.",
     "placeholders": {
       "lang": {
@@ -80,23 +80,23 @@
     }
   },
   "barOptionsTip": {
-    "message": "Secenekler",
+    "message": "Настройки",
     "description": "Content script string."
   },
   "barPause": {
-    "message": "Ceviriyi duraklat",
+    "message": "Приостановить перевод",
     "description": "Content script string."
   },
   "barResume": {
-    "message": "Ceviriyi surdur",
+    "message": "Возобновить перевод",
     "description": "Content script string."
   },
   "barThrottled": {
-    "message": "Hiz siniri, bazi mesajlar atlandi",
+    "message": "Ограничение частоты, часть сообщений пропущена",
     "description": "Content script string."
   },
   "barVia": {
-    "message": "$BASE$ · $PROVIDER$ uzerinden",
+    "message": "$BASE$ · через $PROVIDER$",
     "description": "Content script string.",
     "placeholders": {
       "base": {
@@ -108,7 +108,7 @@
     }
   },
   "composeAutoTip": {
-    "message": "Otomatik · $LANG$ dilinde yaziyorsun",
+    "message": "Авто · вы пишете на $LANG$",
     "description": "Content script string.",
     "placeholders": {
       "lang": {
@@ -117,39 +117,39 @@
     }
   },
   "composeInsertTip": {
-    "message": "Ekle · Ctrl/Cmd+Enter · Kapatmak icin Esc",
+    "message": "Вставить · Ctrl/Cmd+Enter · Esc чтобы закрыть",
     "description": "Content script string."
   },
   "dropBot": {
-    "message": "gonderen bot gibi gorunuyor",
+    "message": "отправитель похож на бота",
     "description": "Content script string."
   },
   "dropChannelBlocked": {
-    "message": "bu kanal engelli listende",
+    "message": "этот канал в вашем списке блокировки",
     "description": "Content script string."
   },
   "dropChannelNotAllowed": {
-    "message": "bu kanal izin listende degil",
+    "message": "этого канала нет в вашем списке разрешённых",
     "description": "Content script string."
   },
   "dropLangNotAllowed": {
-    "message": "dili izin listende degil",
+    "message": "его языка нет в вашем списке разрешённых",
     "description": "Content script string."
   },
   "dropLangUnknown": {
-    "message": "dili belirlenemedi",
+    "message": "не удалось определить его язык",
     "description": "Content script string."
   },
   "dropUserBlocked": {
-    "message": "bu kullanici engelli listende",
+    "message": "этот пользователь в вашем списке блокировки",
     "description": "Content script string."
   },
   "errTranslateFailed": {
-    "message": "Ceviri basarisiz",
+    "message": "Перевод не удался",
     "description": "Content script string."
   },
   "flagFrom": {
-    "message": "$LANG$ dilinden",
+    "message": "с $LANG$",
     "description": "Content script string.",
     "placeholders": {
       "lang": {
@@ -158,7 +158,7 @@
     }
   },
   "localDownload": {
-    "message": "Yerel ($SIZE$)",
+    "message": "Локально ($SIZE$)",
     "description": "Content script string.",
     "placeholders": {
       "size": {
@@ -167,11 +167,11 @@
     }
   },
   "localDownloadTip": {
-    "message": "Sinirsiz yerel ceviri icin cihaz ici modeli indir",
+    "message": "Скачать модель на устройство для безлимитного локального перевода",
     "description": "Content script string."
   },
   "localDownloading": {
-    "message": "Indiriliyor $PCT$%",
+    "message": "Загрузка $PCT$%",
     "description": "Content script string.",
     "placeholders": {
       "pct": {
@@ -180,43 +180,43 @@
     }
   },
   "localReady": {
-    "message": "Yerel",
+    "message": "Локально",
     "description": "Content script string."
   },
   "localReadyTip": {
-    "message": "Cihazinda ceviriliyor, sinirsiz ve cevrimdisi",
+    "message": "Перевод на вашем устройстве, без лимита и офлайн",
     "description": "Content script string."
   },
   "retryTip": {
-    "message": "Onbellegi yok sayarak yeniden cevir",
+    "message": "Перевести заново, минуя кэш",
     "description": "Content script string."
   },
   "skipDetected": {
-    "message": "ceviri servisi zaten senin dilinde oldugunu buldu",
+    "message": "служба перевода определила, что он уже на вашем языке",
     "description": "Content script string."
   },
   "skipDuplicate": {
-    "message": "ayni kullanici bunu az once gonderdi",
+    "message": "тот же пользователь только что это отправил",
     "description": "Content script string."
   },
   "skipEnglish": {
-    "message": "Ingilizce gorunuyor ve Ingilizceyi atlamayi sectin",
+    "message": "похоже на английский, а вы просили его пропускать",
     "description": "Content script string."
   },
   "skipGlossary": {
-    "message": "sozlugun ceviriyi bosaltti",
+    "message": "ваш глоссарий очистил перевод",
     "description": "Content script string."
   },
   "skipNoModel": {
-    "message": "dili icin henuz cihaz ici model yok",
+    "message": "для его языка ещё нет модели на устройстве",
     "description": "Content script string."
   },
   "skipNoise": {
-    "message": "sadece emoji, sembol ya da gulme",
+    "message": "это только эмодзи, символы или смех",
     "description": "Content script string."
   },
   "skipPrefix": {
-    "message": "Cevrilmedi: $REASON$",
+    "message": "Не переведено: $REASON$",
     "description": "Content script string.",
     "placeholders": {
       "reason": {
@@ -225,23 +225,23 @@
     }
   },
   "skipSame": {
-    "message": "ceviri aslinin aynisi olarak dondu",
+    "message": "перевод вернулся таким же, как оригинал",
     "description": "Content script string."
   },
   "skipSameLang": {
-    "message": "zaten senin dilinde",
+    "message": "он уже на вашем языке",
     "description": "Content script string."
   },
   "skipSlang": {
-    "message": "sadece sohbet argosu",
+    "message": "это только чат-сленг",
     "description": "Content script string."
   },
   "skipTooLong": {
-    "message": "boyut sinirindan uzun",
+    "message": "он длиннее допустимого",
     "description": "Content script string."
   },
   "toastChatNotFound": {
-    "message": "Kick Chat Translator: sohbet bulunamadi. Guncelleme gerekebilir.",
+    "message": "Kick Chat Translator: чат не найден. Возможно, нужно обновление.",
     "description": "Content script string."
   }
 }
