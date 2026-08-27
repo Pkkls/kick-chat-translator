@@ -37,6 +37,14 @@
   /* The bar scrolls rather than the page. A visible track under six tabs is
      noise, so it is thinned; the tabs stay reachable by keyboard either way,
      since focus() scrolls its own element into view. */
+  /* The explanatory prose ran 105 to 114 characters a line on every tab, in
+     11px type. Long measures are hard to track back to the next line, and the
+     page is 768px wide because the controls need it, not the sentences. */
+  .kt-card p,
+  .kt-card .kt-hint {
+    max-inline-size: 68ch;
+  }
+
   .kt-tabs {
     scrollbar-width: thin;
     scrollbar-color: theme('colors.kick.stroke') transparent;
