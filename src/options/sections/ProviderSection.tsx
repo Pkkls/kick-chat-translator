@@ -1,6 +1,7 @@
 import type { CloudProviderId, Settings } from '~/shared/settings';
 import type { ProviderStatus } from '~/shared/types';
 import { useT } from '~/shared/i18nContext';
+import { Check } from '../components/Check';
 import { EngineCard } from './EngineCard';
 
 const PROVIDER_LABELS: Record<CloudProviderId, string> = {
@@ -134,15 +135,11 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
             <option value="pro">{t('Pro (api.deepl.com)')}</option>
           </select>
         </div>
-        <label class="kt-row flex items-center gap-2 cursor-pointer">
-          <input
-            type="checkbox"
-            class="accent-kick-primary"
-            checked={settings.deeplSmartRouting}
-            onChange={(e) => onPatch({ deeplSmartRouting: (e.target as HTMLInputElement).checked })}
-          />
-          <span class="text-sm">{t('Smart budget routing')}</span>
-        </label>
+        <Check
+          checked={settings.deeplSmartRouting}
+          onChange={(v) => onPatch({ deeplSmartRouting: v })}
+          label={t('Smart budget routing')}
+        />
         <p class="text-[11px] text-kick-muted -mt-2">
           {t(
             'Spend DeepL only on the European languages it clearly wins at; other targets (Japanese, Arabic, Hindi…) use the free engines first, so your DeepL quota lasts much longer.',

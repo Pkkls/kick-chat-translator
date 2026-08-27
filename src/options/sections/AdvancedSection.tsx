@@ -2,6 +2,7 @@ import { useRef, useState } from 'preact/hooks';
 import { exportSettings, importSettings, type Settings } from '~/shared/settings';
 import { send } from '~/shared/messages';
 import { useT } from '~/shared/i18nContext';
+import { Check } from '../components/Check';
 
 interface Props {
   settings: Settings;
@@ -43,20 +44,17 @@ export function AdvancedSection({ settings, onPatch }: Props) {
         <p class="text-[11px] text-kick-muted">
           {t('Whether a Kick tab keeps translating once you look away.')}
         </p>
-        <label class="flex items-center justify-between gap-3 rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
-          <span class="text-sm">
-            {t('Pause when tab is hidden')}
-            <span class="block text-[11px] text-kick-muted">
-              {t("Background Kick tabs won't translate (saves DeepL quota while you're away).")}
-            </span>
-          </span>
-          <input
-            type="checkbox"
-            class="h-4 w-4 accent-kick-primary"
+        {/* A div, not a label: Check renders its own <label>, and nesting one
+            inside another is invalid and leaves the outer one naming nothing. */}
+        <div class="rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
+          <Check
             checked={settings.pauseWhenHidden}
-            onChange={(e) => onPatch({ pauseWhenHidden: (e.target as HTMLInputElement).checked })}
+            onChange={(v) => onPatch({ pauseWhenHidden: v })}
+            label={t('Pause when tab is hidden')}
+            hint={t("Background Kick tabs won't translate (saves DeepL quota while you're away).")}
+            reverse
           />
-        </label>
+        </div>
       </section>
 
       <section class="kt-card space-y-4">
@@ -168,15 +166,14 @@ export function AdvancedSection({ settings, onPatch }: Props) {
 
       <section class="kt-card space-y-3">
         <h2 class="text-sm font-semibold">{t('Debugging')}</h2>
-        <label class="flex items-center justify-between gap-3 rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
-          <span class="text-sm">{t('Verbose console logs')}</span>
-          <input
-            type="checkbox"
-            class="h-4 w-4 accent-kick-primary"
+        <div class="rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
+          <Check
             checked={settings.debug}
-            onChange={(e) => onPatch({ debug: (e.target as HTMLInputElement).checked })}
+            onChange={(v) => onPatch({ debug: v })}
+            label={t('Verbose console logs')}
+            reverse
           />
-        </label>
+        </div>
         <div class="flex gap-2 pt-1">
           <button
             class="kt-btn-ghost"

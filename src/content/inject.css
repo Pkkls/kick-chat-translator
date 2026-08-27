@@ -600,8 +600,12 @@
   inset-inline-end: 0;
   z-index: 2147483000;
   min-width: 190px;
-  max-height: 320px;
+  /* Never taller than the window it opens in. Seen live: a fixed 320px still
+     ran off the top of a short viewport, because 320px is not a promise the
+     window makes. placeMenu() narrows this further when it goes fixed. */
+  max-height: min(320px, 60vh);
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 4px;
   border-radius: 8px;
   /* No drop shadow: Kick has none on any surface, menus included. The list

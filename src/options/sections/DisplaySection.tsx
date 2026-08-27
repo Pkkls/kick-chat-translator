@@ -3,6 +3,7 @@ import type { Settings } from '~/shared/settings';
 import { sortedLanguages } from '~/shared/languages';
 import { resolveUiLocale } from '~/shared/i18n';
 import { useT } from '~/shared/i18nContext';
+import { Check } from '../components/Check';
 import { applyShowOriginal, ensureStyles, inject } from '~/content/injector';
 
 interface Props {
@@ -227,14 +228,8 @@ function ToggleRow({
   label: string;
 }) {
   return (
-    <label class="flex items-center justify-between gap-3 rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
-      <span class="text-sm">{label}</span>
-      <input
-        type="checkbox"
-        class="h-4 w-4 accent-kick-primary"
-        checked={checked}
-        onChange={(e) => onChange((e.target as HTMLInputElement).checked)}
-      />
-    </label>
+    <div class="rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
+      <Check checked={checked} onChange={onChange} label={label} reverse />
+    </div>
   );
 }

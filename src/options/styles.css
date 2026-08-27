@@ -37,3 +37,179 @@
   .kt-card { @apply rounded-lg border border-kick-border bg-kick-surface p-5; }
   .kt-row { @apply flex flex-col gap-1.5; }
 }
+
+@layer components {
+  /* ─── Checkbox ────────────────────────────────────────────────────────────
+     A real <input> underneath keeps the native keyboard behaviour, the focus
+     ring the browser already knows how to place, and the accessibility tree.
+     Everything visible is drawn on the sibling .kt-check-box, which is
+     pointer-events:none so the click always reaches the input.
+
+     Why not accent-color: it paints a white tick on the brand green, which
+     measures 1.37:1. The tick has to be dark on that green (14.11:1), and
+     accent-color gives no say in it. */
+  .kt-check {
+    @apply relative inline-flex cursor-pointer items-center gap-2.5 select-none;
+    /* The drawn box is 18px, but the target is the whole label — that is what
+       receives the click. WCAG 2.5.8 measures what activates, not what is
+       painted, and 18px of height would miss the 24px floor. The automated
+       target gate does not catch this: the real input is transparent, so it
+       counts zero targets on this page. */
+    min-block-size: 24px;
+  }
+  .kt-check input {
+    /* Stretched to the label's own height so keyboard focus and pointer land on
+       the same rectangle the eye reads as the control. */
+    @apply absolute inset-y-0 w-[18px] cursor-pointer opacity-0;
+    margin: 0;
+  }
+  .kt-check-box {
+    @apply pointer-events-none grid h-[18px] w-[18px] flex-none place-items-center rounded;
+    border: 1.5px solid theme('colors.kick.stroke');
+    background: transparent;
+    transition:
+      border-color 0.15s ease,
+      background 0.15s ease;
+  }
+  .kt-check-box svg {
+    @apply h-[11px] w-[11px];
+    stroke: theme('colors.kick.dark');
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+  }
+  /* Both glyphs live in one <svg> and are toggled by state, so the check and
+     the dash cannot drift apart in weight the way an SVG tick beside a CSS
+     rectangle does. */
+  .kt-check-box .tick,
+  .kt-check-box .dash {
+    opacity: 0;
+  }
+
+  /* 1 · hover */
+  .kt-check:hover input:not(:disabled) + .kt-check-box {
+    border-color: theme('colors.kick.stroke-strong');
+  }
+  /* 2 · pressed */
+  .kt-check input:active:not(:disabled) + .kt-check-box {
+    border-color: theme('colors.kick.stroke-strong');
+    transform: scale(0.94);
+  }
+  /* 3 · focus — the ring sits on the drawn box, since the input is invisible */
+  .kt-check input:focus-visible + .kt-check-box {
+    outline: 2px solid theme('colors.kick.primary');
+    outline-offset: 2px;
+  }
+  /* 4 · checked */
+  .kt-check input:checked + .kt-check-box {
+    background: theme('colors.kick.primary');
+    border-color: theme('colors.kick.primary');
+  }
+  .kt-check input:checked + .kt-check-box .tick {
+    opacity: 1;
+  }
+  /* 5 · indeterminate */
+  .kt-check input:indeterminate + .kt-check-box {
+    background: theme('colors.kick.primary');
+    border-color: theme('colors.kick.primary');
+  }
+  .kt-check input:indeterminate + .kt-check-box .tick {
+    opacity: 0;
+  }
+  .kt-check input:indeterminate + .kt-check-box .dash {
+    opacity: 1;
+  }
+  /* 6 · disabled — exempt from contrast, but still has to read as unavailable */
+  .kt-check:has(input:disabled) {
+    @apply cursor-not-allowed;
+  }
+  .kt-check input:disabled + .kt-check-box {
+    border-color: #393e44;
+    background: transparent;
+  }
+  .kt-check input:disabled:checked + .kt-check-box {
+    background: #2a3a26;
+    border-color: #2a3a26;
+  }
+  .kt-check:has(input:disabled) .kt-check-label {
+    @apply text-kick-muted/75;
+  }
+  /* 7 · busy */
+  .kt-check[data-busy='true'] .kt-check-box {
+    border-color: theme('colors.kick.primary');
+    animation: kt-check-wait 1s ease-in-out infinite;
+  }
+  @keyframes kt-check-wait {
+    50% {
+      border-color: theme('colors.kick.stroke');
+    }
+  }
+  /* 8 · invalid */
+  .kt-check input[aria-invalid='true'] + .kt-check-box {
+    border-color: #e5484d;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .kt-check-box,
+    .kt-check[data-busy='true'] .kt-check-box {
+      transition: none;
+      animation: none;
+    }
+  }
+
+  /* ─── Select ──────────────────────────────────────────────────────────────
+     appearance:none already, so the only thing the browser still draws is the
+     arrow — replaced by an inline chevron so the control matches the rest. */
+  .kt-select {
+    border-color: theme('colors.kick.stroke');
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%239fa6ad' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.6rem center;
+    background-size: 15px;
+    padding-inline-end: 2rem;
+    transition: border-color 0.15s ease;
+  }
+  .kt-select:hover:not(:disabled) {
+    border-color: theme('colors.kick.stroke-strong');
+  }
+  .kt-select:focus-visible {
+    outline: 2px solid theme('colors.kick.primary');
+    outline-offset: 1px;
+  }
+  .kt-select:disabled {
+    @apply cursor-not-allowed opacity-60;
+  }
+
+  .kt-input {
+    border-color: theme('colors.kick.stroke');
+    transition: border-color 0.15s ease;
+  }
+  .kt-input:hover:not(:disabled) {
+    border-color: theme('colors.kick.stroke-strong');
+  }
+  .kt-input:focus-visible {
+    outline: 2px solid theme('colors.kick.primary');
+    outline-offset: 1px;
+  }
+  .kt-input[aria-invalid='true'] {
+    border-color: #e5484d;
+  }
+  .kt-input:disabled {
+    @apply cursor-not-allowed opacity-60;
+  }
+}
+
+@layer components {
+  /* Settings rows keep the control on the right, where it has always been.
+     Only the paint order changes; the input still carries the label, so the
+     accessibility tree and the tab order are untouched. */
+  .kt-check-reverse {
+    @apply w-full justify-between;
+    flex-direction: row-reverse;
+  }
+  .kt-check-reverse input {
+    inset-inline-end: 0;
+    inset-inline-start: auto;
+  }
+}

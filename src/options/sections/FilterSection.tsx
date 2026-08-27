@@ -3,6 +3,7 @@ import type { Settings } from '~/shared/settings';
 import { sortedLanguages } from '~/shared/languages';
 import { resolveUiLocale } from '~/shared/i18n';
 import { useT } from '~/shared/i18nContext';
+import { Check } from '../components/Check';
 
 interface Props {
   settings: Settings;
@@ -72,17 +73,15 @@ export function FilterSection({ settings, onPatch }: Props) {
           {langs.map((l) => {
             const checked = settings.sourceLangAllowlist.includes(l.code);
             return (
-              <label
+              <div
                 key={l.code}
-                class={`flex items-center gap-2 rounded-md border px-2 py-1 text-xs cursor-pointer transition ${
+                class={`rounded-md border px-2 py-1 text-xs transition ${
                   checked
                     ? 'border-kick-primary bg-kick-primary/10'
                     : 'border-kick-border bg-kick-dark/30'
                 }`}
               >
-                <input
-                  type="checkbox"
-                  class="h-3.5 w-3.5 accent-kick-primary"
+                <Check
                   checked={checked}
                   onChange={() => {
                     const next = new Set(settings.sourceLangAllowlist);
@@ -90,12 +89,16 @@ export function FilterSection({ settings, onPatch }: Props) {
                     else next.add(l.code);
                     onPatch({ sourceLangAllowlist: [...next] });
                   }}
+                  label={
+                    <span class="flex min-w-0 items-center gap-2">
+                      <span class="font-mono text-[10px] tracking-wider text-kick-muted">
+                        {l.code.toUpperCase()}
+                      </span>
+                      <span class="truncate text-kick-muted">{l.name}</span>
+                    </span>
+                  }
                 />
-                <span class="font-mono text-[10px] tracking-wider text-kick-muted">
-                  {l.code.toUpperCase()}
-                </span>
-                <span class="text-kick-muted truncate">{l.name}</span>
-              </label>
+              </div>
             );
           })}
         </div>
@@ -166,14 +169,8 @@ function ToggleRow({
   label: string;
 }) {
   return (
-    <label class="flex items-center justify-between gap-3 rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
-      <span class="text-sm">{label}</span>
-      <input
-        type="checkbox"
-        class="h-4 w-4 accent-kick-primary"
-        checked={checked}
-        onChange={(e) => onChange((e.target as HTMLInputElement).checked)}
-      />
-    </label>
+    <div class="rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
+      <Check checked={checked} onChange={onChange} label={label} reverse />
+    </div>
   );
 }

@@ -330,3 +330,66 @@ describe('matchesQuery', () => {
     expect(matchesQuery('français', 'fr', 'zzz')).toBe(false);
   });
 });
+
+describe('anchoring, against the DOM actually measured on kick.com', () => {
+  const box = (w: number, h: number, x: number, y: number) => () =>
+    ({ width: w, height: h, left: x, top: y, right: x + w, bottom: y + h, x, y, toJSON: () => ({}) }) as DOMRect;
+
+  /**
+   * The real shape, read off a live channel:
+   *   row      380x77  @1520,818   shield | composer block | emote button
+   *     shield  35x73  @1530,820
+   *     block  293x73  @1565,820
+   *       field 293x46 @1565,820
+   *     emote   36x36  @1858,838
+   */
+  function liveDom() {
+    document.body.innerHTML = '';
+    const row = document.createElement('div');
+    const shield = document.createElement('div');
+    const block = document.createElement('div');
+    const field = document.createElement('div');
+    const emote = document.createElement('button');
+    field.setAttribute('contenteditable', 'true');
+    block.appendChild(field);
+    row.append(shield, block, emote);
+    document.body.appendChild(row);
+
+    row.getBoundingClientRect = box(380, 77, 1520, 818);
+    shield.getBoundingClientRect = box(35, 73, 1530, 820);
+    block.getBoundingClientRect = box(293, 73, 1565, 820);
+    field.getBoundingClientRect = box(293, 46, 1565, 820);
+    emote.getBoundingClientRect = box(36, 36, 1858, 838);
+    return { row, block, field, emote };
+  }
+
+  it('picks the row holding the shield and the emote, not the field wrapper', () => {
+    const { row, field } = liveDom();
+    expect(findComposerRow(field)).toBe(row);
+  });
+
+  // The regression this exists for: judging by height put the chip 49px below
+  // the message box, because the row is 77px tall and the field only 46px.
+  it('is not fooled by the row being much taller than the field', () => {
+    const { row, field } = liveDom();
+    const found = findComposerRow(field) as HTMLElement;
+    const fb = found.getBoundingClientRect();
+    const cb = field.getBoundingClientRect();
+    expect(fb.height - cb.height, 'the row is legitimately much taller').toBeGreaterThan(24);
+    expect(found).toBe(row);
+  });
+
+  it('mounts the chip beside the emote button, not after it', () => {
+    const { row, field, emote } = liveDom();
+    mountLangChip(field, state(), noop);
+    const host = row.querySelector('.kt-chip-host')!;
+    expect(host.nextElementSibling).toBe(emote);
+  });
+
+  it('leaves the chip on the same line as the field', () => {
+    const { field } = liveDom();
+    mountLangChip(field, state(), noop);
+    const chip = document.querySelector('#kt-lang-chip')!;
+    expect(chip.closest('div')?.parentElement?.contains(field)).toBe(true);
+  });
+});

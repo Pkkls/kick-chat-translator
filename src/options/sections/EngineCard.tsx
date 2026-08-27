@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
 import type { Settings } from '~/shared/settings';
 import { useT } from '~/shared/i18nContext';
+import { Check } from '../components/Check';
 
 interface Props {
   settings: Settings;
@@ -96,15 +97,14 @@ export function EngineCard({ settings, onPatch }: Props) {
         </p>
       </div>
 
-      <label class="flex items-center justify-between gap-3 rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
-        <span class="text-sm">{t('Enable on-device translation')}</span>
-        <input
-          type="checkbox"
-          class="h-4 w-4 accent-kick-primary"
+      <div class="rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
+        <Check
           checked={settings.localEnabled}
-          onChange={(e) => onPatch({ localEnabled: (e.target as HTMLInputElement).checked })}
+          onChange={(v) => onPatch({ localEnabled: v })}
+          label={t('Enable on-device translation')}
+          reverse
         />
-      </label>
+      </div>
 
       {present && (
         <div>

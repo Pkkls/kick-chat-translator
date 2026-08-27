@@ -61,6 +61,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **The chip landed under the message box instead of inside it.** Found by
+  loading the extension on a live channel rather than in a harness. The row
+  holding the shield, the field and the emote button measures 380x77 while the
+  field is 293x46, so judging the row by "not much taller than the field"
+  rejected it by 7px and the chip fell through to the field's own wrapper, 49px
+  too low. A row is now recognised by its children sitting side by side, which
+  does not depend on Kick's spacing. The chip also inserts beside the emote
+  button rather than after it.
+- **The language list ran off the chat column and over the video player**, and
+  off the top of short windows. Its placement clamped only the right edge and
+  assumed 320px of height the window may not have. Every edge is clamped now,
+  and the height is what actually fits on the side it opens towards.
+
 - **The whole Options page and popup failed AA on secondary text.** The `muted`
   token was `#6b7888`, which measures 4.30:1 on the page ground, 3.96 on a card
   and 3.18 on an active green card — that is most of the explanatory text in the

@@ -59,14 +59,52 @@ let ui: Mounted | undefined;
  */
 export function findComposerRow(composer: HTMLElement): Element {
   let node: HTMLElement | null = composer.parentElement;
-  for (let depth = 0; node && depth < 4; depth++) {
-    const box = node.getBoundingClientRect();
-    // A row, not a column: wider than tall, and short enough to be one line.
-    const isRow = box.width > box.height * 3 && box.height > 0 && box.height < 90;
-    if (isRow && node.childElementCount > 1) return node;
+  let fallback: HTMLElement | null = null;
+
+  for (let depth = 0; node && depth < 5; depth++) {
+    if (isSideBySide(node)) return node;
+    fallback ??= node;
     node = node.parentElement;
   }
-  return composer.parentElement ?? composer;
+  return fallback ?? composer.parentElement ?? composer;
+}
+
+/**
+ * True when this element lays its children out ACROSS rather than DOWN.
+ *
+ * Measured on kick.com: the row holding the shield, the field and the emote
+ * button is 380x77 while the field itself is 293x46. Judging by height alone —
+ * "an ancestor not much taller than the field" — rejected it by 7px and the
+ * chip fell through to the field's own wrapper, landing 49px BELOW the message
+ * box. Two children sitting at the same height with different left edges is
+ * what a row actually is, and it does not depend on Kick's spacing.
+ */
+function isSideBySide(el: HTMLElement): boolean {
+  const kids = [...el.children].filter((k) => {
+    const b = k.getBoundingClientRect();
+    return b.width > 0 && b.height > 0;
+  });
+  if (kids.length < 2) return false;
+  for (let i = 1; i < kids.length; i++) {
+    const a = kids[i - 1]!.getBoundingClientRect();
+    const b = kids[i]!.getBoundingClientRect();
+    const sameLine = Math.abs(a.top - b.top) < Math.max(a.height, b.height);
+    const apart = Math.abs(a.left - b.left) > 8;
+    if (sameLine && apart) return true;
+  }
+  return false;
+}
+
+/**
+ * Where the chip goes inside that row.
+ *
+ * Kick puts its emote button last, and the chip belongs beside it rather than
+ * after it — the far end of the row reads as "Kick's own controls".
+ */
+function insertInRow(row: Element, wrap: HTMLElement): void {
+  const last = row.lastElementChild;
+  if (last && last !== wrap && last.tagName === 'BUTTON') row.insertBefore(wrap, last);
+  else row.appendChild(wrap);
 }
 
 function makeChip(): HTMLButtonElement {
@@ -315,14 +353,28 @@ function placeMenu(chip: HTMLElement, menu: HTMLElement): void {
   menu.style.cssText = '';
   if (!isClipped(chip)) return;
 
+  // Seen live on kick.com: this ran off the left of the chat column and over
+  // the video player, and off the top of the window, because the only bound it
+  // respected was the RIGHT edge. Every edge is clamped now, and the height is
+  // whatever actually fits between the chip and the edge it opens towards —
+  // not a fixed 320px the window may not have.
+  const GAP = 6;
+  const MARGIN = 8;
+  const W = menu.offsetWidth || 190;
   const r = chip.getBoundingClientRect();
-  const gap = 6;
-  const h = Math.min(menu.scrollHeight, 320);
-  const above = r.top - gap - h >= 0;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
+  const roomAbove = r.top - GAP - MARGIN;
+  const roomBelow = vh - r.bottom - GAP - MARGIN;
+  const above = roomAbove >= Math.min(menu.scrollHeight, roomBelow) || roomAbove > roomBelow;
+  const room = Math.max(80, above ? roomAbove : roomBelow);
+  const h = Math.min(menu.scrollHeight, room);
+
   menu.classList.add('kt-chip-menu-fixed');
-  menu.style.left = `${Math.max(8, Math.min(r.right - 190, window.innerWidth - 198))}px`;
-  if (above) menu.style.top = `${r.top - gap - h}px`;
-  else menu.style.top = `${r.bottom + gap}px`;
+  menu.style.maxHeight = `${h}px`;
+  menu.style.left = `${Math.max(MARGIN, Math.min(r.right - W, vw - W - MARGIN))}px`;
+  menu.style.top = `${above ? Math.max(MARGIN, r.top - GAP - h) : Math.min(r.bottom + GAP, vh - h - MARGIN)}px`;
 }
 
 export function isLangChipMounted(): boolean {
@@ -434,7 +486,7 @@ export function mountLangChip(composer: HTMLElement, state: ChipState, h: ChipHa
   wrap.className = 'kt-chip-host';
   wrap.appendChild(chip);
   wrap.appendChild(menu);
-  host.appendChild(wrap);
+  insertInRow(host, wrap);
 
   ui = { chip, menu, host, cleanup };
   updateLangChip(state);

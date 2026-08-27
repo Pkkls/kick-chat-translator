@@ -21,6 +21,13 @@ export default {
           // 5.82 on those same four grounds, and it is the value Kick uses.
           muted: '#9fa6ad',
           text: '#e8eef7',
+          // The boundary of an interactive control, which WCAG 1.4.11 holds to
+          // 3:1 — `border` is 1.18 to 1.28 and is fine for a card's edge but
+          // invisible on a checkbox. Measured: 3.34 on the page, 3.07 on a
+          // card, 3.19 on a translucent card.
+          stroke: '#60666d',
+          // The same boundary under the pointer or held down.
+          'stroke-strong': '#8a9099',
         },
       },
       fontFamily: {
