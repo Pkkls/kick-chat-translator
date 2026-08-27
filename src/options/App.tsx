@@ -130,7 +130,7 @@ export function App() {
         <nav
           role="tablist"
           aria-label={t('Settings sections')}
-          class="mb-5 flex gap-1 border-b border-kick-border"
+          class="kt-tabs mb-5 flex gap-1 overflow-x-auto border-b border-kick-border"
           onKeyDown={onTabKey}
         >
           {TABS.map((tb) => (
@@ -142,7 +142,7 @@ export function App() {
               aria-controls={`panel-${tb.id}`}
               tabIndex={tab === tb.id ? 0 : -1}
               ref={(el) => { tabRefs.current[tb.id] = el as HTMLButtonElement | null; }}
-              class={`px-4 py-2 text-sm border-b-2 transition ${
+              class={`shrink-0 whitespace-nowrap px-4 py-2 text-sm border-b-2 transition ${
                 tab === tb.id
                   ? 'border-kick-primary text-kick-text'
                   : 'border-transparent text-kick-muted hover:text-kick-text'

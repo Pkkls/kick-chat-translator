@@ -64,10 +64,12 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
                 class="flex items-center gap-2 rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2"
               >
                 <span class="font-mono text-xs text-kick-muted w-5">{i + 1}.</span>
-                <span class="flex-1 text-sm">{t(PROVIDER_LABELS[id])}</span>
+                <span class="min-w-0 flex-1 truncate text-sm" title={t(PROVIDER_LABELS[id])}>
+                  {t(PROVIDER_LABELS[id])}
+                </span>
                 {status && (
                   <span
-                    class={`text-[10px] font-medium uppercase ${status.available ? 'text-kick-primary' : 'text-red-300'}`}
+                    class={`shrink-0 text-[10px] font-medium uppercase ${status.available ? 'text-kick-primary' : 'text-red-300'}`}
                   >
                     {status.available ? t('ok') : t('down')}
                   </span>

@@ -34,6 +34,21 @@
      padded, so the number does not drift with the glyph. */
   /* A link on its own line is a target, not prose, and 2.5.8's inline
      exception does not cover it: these measured 19px tall. */
+  /* The bar scrolls rather than the page. A visible track under six tabs is
+     noise, so it is thinned; the tabs stay reachable by keyboard either way,
+     since focus() scrolls its own element into view. */
+  .kt-tabs {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.kick.stroke') transparent;
+  }
+  .kt-tabs::-webkit-scrollbar {
+    block-size: 6px;
+  }
+  .kt-tabs::-webkit-scrollbar-thumb {
+    background: theme('colors.kick.stroke');
+    border-radius: 3px;
+  }
+
   .kt-link-target {
     display: inline-flex;
     align-items: center;

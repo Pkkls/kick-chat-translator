@@ -174,7 +174,7 @@ export function AdvancedSection({ settings, onPatch }: Props) {
             reverse
           />
         </div>
-        <div class="flex gap-2 pt-1">
+        <div class="flex flex-wrap gap-2 pt-1">
           <button
             class="kt-btn-ghost"
             onClick={() => {
