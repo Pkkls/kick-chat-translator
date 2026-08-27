@@ -1,7 +1,7 @@
 import injectCss from './inject.css?inline';
 import type { TranslationResult } from '~/shared/types';
 import type { Settings } from '~/shared/settings';
-import { LANGUAGES, getLang, langFlag, resolveBrowserLang } from '~/shared/languages';
+import { sortedLanguages, getLang, langFlag, resolveBrowserLang } from '~/shared/languages';
 import { findChatPanel } from './selectors';
 
 const STYLE_ID = 'kt-inject-style';
@@ -247,7 +247,12 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
   const langPick = document.createElement('select');
   langPick.className = 'kt-float-lang';
   langPick.title = 'Translate into';
-  for (const opt of [{ code: 'auto', label: 'Auto' }, ...LANGUAGES.map((l) => ({ code: l.code, label: l.label }))]) {
+  // Localised and collated, like every other language menu in the extension:
+  // an English-only list is unreadable to anyone running a translated UI.
+  for (const opt of [
+    { code: 'auto', label: 'Auto' },
+    ...sortedLanguages().map((l) => ({ code: l.code, label: l.name })),
+  ]) {
     const o = document.createElement('option');
     o.value = opt.code;
     o.textContent = opt.label;

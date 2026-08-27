@@ -1,5 +1,7 @@
+import { useMemo } from 'preact/hooks';
 import type { Settings } from '~/shared/settings';
-import { LANGUAGES } from '~/shared/languages';
+import { sortedLanguages } from '~/shared/languages';
+import { resolveUiLocale } from '~/shared/i18n';
 import { useT } from '~/shared/i18nContext';
 
 interface Props {
@@ -16,6 +18,9 @@ function toList(v: string): string[] {
 
 export function FilterSection({ settings, onPatch }: Props) {
   const t = useT();
+  // Localised and collated for the interface language the user chose,
+  // not the one their browser happens to run in.
+  const langs = useMemo(() => sortedLanguages(resolveUiLocale(settings.uiLang)), [settings.uiLang]);
   return (
     <>
       <section class="kt-card space-y-3">
@@ -57,7 +62,7 @@ export function FilterSection({ settings, onPatch }: Props) {
           {t('Leave empty to translate every detected language. Pick specific ones to ONLY translate those (e.g. only JA + KO).')}
         </p>
         <div class="grid grid-cols-3 gap-1.5 max-h-[260px] overflow-auto pr-1">
-          {LANGUAGES.map((l) => {
+          {langs.map((l) => {
             const checked = settings.sourceLangAllowlist.includes(l.code);
             return (
               <label key={l.code} class={`flex items-center gap-2 rounded-md border px-2 py-1 text-xs cursor-pointer transition ${
@@ -74,8 +79,8 @@ export function FilterSection({ settings, onPatch }: Props) {
                     onPatch({ sourceLangAllowlist: [...next] });
                   }}
                 />
-                <span>{l.flag}</span>
-                <span class="text-kick-muted truncate">{l.label}</span>
+                <span class="font-mono text-[10px] tracking-wider text-kick-muted">{l.code.toUpperCase()}</span>
+                <span class="text-kick-muted truncate">{l.name}</span>
               </label>
             );
           })}

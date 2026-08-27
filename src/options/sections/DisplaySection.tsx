@@ -1,6 +1,7 @@
-import { useEffect, useRef } from 'preact/hooks';
+import { useEffect, useRef, useMemo} from 'preact/hooks';
 import type { Settings } from '~/shared/settings';
-import { LANGUAGES } from '~/shared/languages';
+import { sortedLanguages } from '~/shared/languages';
+import { resolveUiLocale } from '~/shared/i18n';
 import { useT } from '~/shared/i18nContext';
 import { applyShowOriginal, ensureStyles, inject } from '~/content/injector';
 
@@ -11,6 +12,9 @@ interface Props {
 
 export function DisplaySection({ settings, onPatch }: Props) {
   const t = useT();
+  // Localised and collated for the interface language the user chose,
+  // not the one their browser happens to run in.
+  const langs = useMemo(() => sortedLanguages(resolveUiLocale(settings.uiLang)), [settings.uiLang]);
   return (
     <>
       <section class="kt-card space-y-3">
@@ -23,9 +27,9 @@ export function DisplaySection({ settings, onPatch }: Props) {
             onChange={(e) => onPatch({ targetLang: (e.target as HTMLSelectElement).value })}
           >
             <option value="auto">{t('Auto — your browser language')}</option>
-            {LANGUAGES.map((l) => (
+            {langs.map((l) => (
               <option key={l.code} value={l.code}>
-                {l.label} ({l.native})
+                {l.name}
               </option>
             ))}
           </select>
@@ -103,9 +107,9 @@ export function DisplaySection({ settings, onPatch }: Props) {
             onChange={(e) => onPatch({ composeTargetLang: (e.target as HTMLSelectElement).value })}
           >
             <option value="auto">{t('Auto — the channel\'s language')}</option>
-            {LANGUAGES.map((l) => (
+            {langs.map((l) => (
               <option key={l.code} value={l.code}>
-                {l.label} ({l.native})
+                {l.name}
               </option>
             ))}
           </select>

@@ -192,3 +192,59 @@ export function withFavorite(current: readonly string[], code: string): string[]
   if (!isSupportedLang(code)) return [...current];
   return [code, ...current.filter((c) => c !== code)].slice(0, FAVORITE_LANGS_MAX);
 }
+
+/**
+ * The interface language, whichever context this runs in.
+ *
+ * `chrome` is absent under test and in a plain page, and reading a missing
+ * binding throws rather than yielding undefined — hence the typeof guard.
+ */
+export function uiLocale(): string {
+  try {
+    if (typeof chrome !== 'undefined' && chrome.i18n?.getUILanguage) {
+      return chrome.i18n.getUILanguage() || navigator.language || 'en';
+    }
+    return navigator.language || 'en';
+  } catch {
+    return 'en';
+  }
+}
+
+/**
+ * A language's name in the reader's own language.
+ *
+ * Every language menu used to render in English whatever the interface was set
+ * to, so someone running the extension in Japanese met a list of English names
+ * they could not read — in an interface otherwise fully translated for them.
+ * `Intl.DisplayNames` already knows all of these: 0 strings to maintain against
+ * 42 languages x 11 interface locales. Falls back to the native name when the
+ * engine answers nothing for a code.
+ */
+export function localLangName(code: string, fallback: string, locale = uiLocale()): string {
+  try {
+    return new Intl.DisplayNames([locale], { type: 'language' }).of(code) || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+let collatorCache: { locale: string; c: Intl.Collator } | undefined;
+function localeCollator(locale: string): Intl.Collator {
+  if (collatorCache?.locale !== locale) collatorCache = { locale, c: new Intl.Collator(locale) };
+  return collatorCache.c;
+}
+
+/**
+ * Every language, named for the reader and sorted the way that reader expects.
+ *
+ * Sorting has to go through `Intl.Collator`, not a plain compare: measured, the
+ * two disagree in every locale that has accents — ja, tr and cs all place
+ * different entries first.
+ */
+export function sortedLanguages(locale = uiLocale()): { code: string; name: string; native: string }[] {
+  return LANGUAGES.map((l) => ({
+    code: l.code,
+    name: localLangName(l.code, l.native, locale),
+    native: l.native,
+  })).sort((a, b) => localeCollator(locale).compare(a.name, b.name));
+}

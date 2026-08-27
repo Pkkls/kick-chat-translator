@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import type { Settings } from '~/shared/settings';
 import { defaultSettings } from '~/shared/settings';
-import { LANGUAGES } from '~/shared/languages';
+import { sortedLanguages } from '~/shared/languages';
 import { send } from '~/shared/messages';
 import { I18nProvider } from '~/shared/i18nContext';
 import { makeT, resolveUiLocale, isRtlLocale } from '~/shared/i18n';
@@ -32,6 +32,10 @@ export function App() {
   const [savedAt, setSavedAt] = useState<number | undefined>(undefined);
 
   const locale = resolveUiLocale(settings.uiLang);
+  // Named for the reader and sorted with their locale's collation. Keyed on the
+  // extension's own UI locale, NOT the browser's: someone who set the interface
+  // to Japanese must get Japanese names, whatever their system language says.
+  const langs = useMemo(() => sortedLanguages(locale), [locale]);
   const t = useMemo(() => makeT(locale), [locale]);
 
   useEffect(() => {
@@ -110,9 +114,9 @@ export function App() {
           onChange={(e) => void patch('targetLang', (e.target as HTMLSelectElement).value)}
         >
           <option value="auto">{t('Auto — your language')}</option>
-          {LANGUAGES.map((l) => (
+          {langs.map((l) => (
             <option key={l.code} value={l.code}>
-              {l.label} ({l.native})
+              {l.name}
             </option>
           ))}
         </select>
@@ -165,9 +169,9 @@ export function App() {
               onChange={(e) => void patch('composeTargetLang', (e.target as HTMLSelectElement).value)}
             >
               <option value="auto">{t('Auto — channel language')}</option>
-              {LANGUAGES.map((l) => (
+              {langs.map((l) => (
                 <option key={l.code} value={l.code}>
-                  {l.label} ({l.native})
+                  {l.name}
                 </option>
               ))}
             </select>

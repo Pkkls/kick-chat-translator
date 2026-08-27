@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   first language picked becomes the first favourite, and it stops reordering
   once you have one — a list that shuffles between two clicks makes you miss
   the click.
+- **Every** language menu now renders in the interface language, and sorts for
+  it: the popup, both menus on the Options page, the source-language allowlist,
+  and the bar at the top of the chat. Only the new chip had been fixed at
+  first, which left the very menu the bug was reported against untouched. The
+  list also keys on the extension's own UI setting rather than the browser's
+  language, so choosing Japanese in the extension is enough.
 - The language list now renders in the interface language. It used to be
   English whatever the extension was set to, so a Japanese user configuring a
   fully translated extension still met a list they could not read.
