@@ -26,5 +26,25 @@
   "chipNoMatch": {
     "message": "لا توجد لغة مطابقة",
     "description": "Shown when the filter matches no language."
+  },
+  "chipAutoTip": {
+    "message": "الكتابة بلغة القناة ($LANG$). انقر للتبديل، واضغط مطولا لعرض القائمة.",
+    "description": "Chip tooltip while following the channel's language. $LANG$ is an ISO code.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "JA"
+      }
+    }
+  },
+  "chipPinnedTip": {
+    "message": "الكتابة بـ $LANG$. انقر للغة القناة، واضغط مطولا لعرض القائمة.",
+    "description": "Chip tooltip while pinned to a language. $LANG$ is that language name.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "JA"
+      }
+    }
   }
 }

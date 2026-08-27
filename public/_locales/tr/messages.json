@@ -26,5 +26,25 @@
   "chipNoMatch": {
     "message": "Eşleşen dil yok",
     "description": "Shown when the filter matches no language."
+  },
+  "chipAutoTip": {
+    "message": "Kanalin dilinde yaziliyor ($LANG$). Degistirmek icin tikla, liste icin basili tut.",
+    "description": "Chip tooltip while following the channel's language. $LANG$ is an ISO code.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "JA"
+      }
+    }
+  },
+  "chipPinnedTip": {
+    "message": "$LANG$ dilinde yaziliyor. Kanalin dili icin tikla, liste icin basili tut.",
+    "description": "Chip tooltip while pinned to a language. $LANG$ is that language name.",
+    "placeholders": {
+      "lang": {
+        "content": "$1",
+        "example": "JA"
+      }
+    }
   }
 }

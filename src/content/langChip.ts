@@ -129,6 +129,7 @@ function makeChip(): HTMLButtonElement {
   chip.className = 'kt-chip';
   chip.setAttribute('aria-haspopup', 'listbox');
   chip.setAttribute('aria-expanded', 'false');
+  chip.setAttribute('aria-controls', MENU_ID);
 
   const tag = document.createElement('span');
   tag.className = 'kt-chip-tag';
@@ -306,15 +307,17 @@ function uiLocale(): string {
  * bundle into this script, which is deliberately free of it. Falls back to the
  * English source string outside an extension context, and under test.
  */
-function msg(key: string, fallback: string): string {
+function msg(key: string, fallback: string, subs?: string[]): string {
   try {
     if (typeof chrome !== 'undefined' && chrome.i18n?.getMessage) {
-      return chrome.i18n.getMessage(key) || fallback;
+      return chrome.i18n.getMessage(key, subs) || fallback;
     }
   } catch {
     /* not running as an extension */
   }
-  return fallback;
+  // The fallback carries the same $LANG$ placeholder as the catalogue entry, so
+  // the two cannot drift into saying different things.
+  return subs?.length ? fallback.replace('$LANG$', subs[0]!) : fallback;
 }
 
 function autoLabel(): string {
@@ -366,7 +369,23 @@ export function isClipped(el: Element): boolean {
 function placeMenu(chip: HTMLElement, menu: HTMLElement): void {
   menu.classList.remove('kt-chip-menu-fixed');
   menu.style.cssText = '';
-  if (!isClipped(chip)) return;
+
+  // Two different ways the menu goes wrong, and only one was handled.
+  //
+  // Clipping: an ancestor with overflow hidden cuts it off, which isClipped
+  // detects. Leaving the viewport: the flow position is set by CSS alone, which
+  // knows nothing about the window. Measured at 420x520 with the chip at y=194,
+  // the menu opened upward and its top landed at -132 — a third of the list
+  // above the top of the screen, with no way to reach it.
+  //
+  // So the early return has to answer both questions, not just the first.
+  const flow = menu.getBoundingClientRect();
+  const insideViewport =
+    flow.top >= 0 &&
+    flow.left >= 0 &&
+    flow.right <= window.innerWidth &&
+    flow.bottom <= window.innerHeight;
+  if (!isClipped(chip) && insideViewport) return;
 
   // Seen live on kick.com: this ran off the left of the chat column and over
   // the video player, and off the top of the window, because the only bound it
@@ -541,11 +560,19 @@ export function updateLangChip(state: ChipState): void {
       break;
     case 'auto':
       tag.textContent = state.code ? state.code.toUpperCase() : 'AUTO';
-      chip.title = `Writing in the channel's language (${state.code.toUpperCase()}). Click to switch, hold for the list.`;
+      chip.title = msg(
+        'chipAutoTip',
+        "Writing in the channel's language ($LANG$). Click to switch, hold for the list.",
+        [state.code.toUpperCase()],
+      );
       break;
     default:
       tag.textContent = state.code.toUpperCase();
-      chip.title = `Writing in ${localName(state.code, state.code.toUpperCase())}. Click for the channel's language, hold for the list.`;
+      chip.title = msg(
+        'chipPinnedTip',
+        "Writing in $LANG$. Click for the channel's language, hold for the list.",
+        [localName(state.code, state.code.toUpperCase())],
+      );
   }
   chip.setAttribute('aria-label', chip.title);
 }

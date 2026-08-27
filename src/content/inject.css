@@ -635,7 +635,7 @@ html[data-kt-scheme='light'] .kt-compose {
      a menu pinned to the physical right would hang off the wrong edge. */
   inset-inline-end: 0;
   z-index: 2147483000;
-  min-width: 190px;
+  min-width: 202px;
   /* Never taller than the window it opens in. Seen live: a fixed 320px still
      ran off the top of a short viewport, because 320px is not a promise the
      window makes. placeMenu() narrows this further when it goes fixed. */
@@ -693,7 +693,8 @@ html[data-kt-scheme='light'] .kt-compose {
 }
 .kt-chip-iso {
   flex-shrink: 0;
-  width: 22px;
+  width: 34px;
+  white-space: nowrap;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 10.5px;
   font-weight: 700;
