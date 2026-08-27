@@ -1,10 +1,14 @@
 /**
- * Language chip — the control that lives INSIDE Kick's message box.
+ * Language chip — the control in Kick's chat action bar.
  *
- * It sits next to the emote button, at the right end of the row you type in.
- * That position is the whole point: changing the language you write in must
- * never mean travelling to the top of the chat and back. Everything the chip
- * does is reachable without moving the pointer away from the text field.
+ * Bottom right, beside the gear and the send button. That position is the
+ * whole point: changing the language you write in must never mean travelling
+ * to the top of the chat and back.
+ *
+ * It sat inside the message box first. Loading it on a live channel showed why
+ * that was wrong: the box is Kick's editor, its internals move, and the chip
+ * ended up under it rather than in it. The action bar is a row of controls
+ * that already exists for exactly this kind of button.
  *
  * One click toggles between the channel's language (auto) and the first
  * favourite. Press-and-hold, or the Down arrow, opens the list. The list is
@@ -58,26 +62,44 @@ let ui: Mounted | undefined;
  * composer's own parent, which always exists.
  */
 export function findComposerRow(composer: HTMLElement): Element {
-  let node: HTMLElement | null = composer.parentElement;
-  let fallback: HTMLElement | null = null;
+  return findActionCluster(composer) ?? composer.parentElement ?? composer;
+}
 
+/**
+ * The right-hand cluster of Kick's chat action bar — the one holding the gear
+ * and the send button.
+ *
+ * Measured on a live channel: the bar is a 380x36 row sitting as a SIBLING of
+ * the composer's block, and it holds two groups — a counter pushed left, and a
+ * `ml-auto` cluster pushed right. The chip belongs at the head of that right
+ * cluster, so it reads as one of the chat's own controls.
+ *
+ * Found by shape rather than by class: walk up from the field, and for each
+ * ancestor look at the next sibling. The bar is the first one that lays its
+ * children side by side and contains a button.
+ */
+function findActionCluster(composer: HTMLElement): Element | null {
+  let node: HTMLElement | null = composer;
   for (let depth = 0; node && depth < 5; depth++) {
-    if (isSideBySide(node)) return node;
-    fallback ??= node;
+    const bar = node.nextElementSibling;
+    if (bar instanceof HTMLElement && isSideBySide(bar) && bar.querySelector('button')) {
+      // The cluster pushed to the right is the last child that holds a button.
+      const groups = [...bar.children].filter((k) => k.querySelector('button') ?? k.tagName === 'BUTTON');
+      const right = groups[groups.length - 1];
+      if (right instanceof HTMLElement && right.getBoundingClientRect().width > 0) return right;
+      return bar;
+    }
     node = node.parentElement;
   }
-  return fallback ?? composer.parentElement ?? composer;
+  return null;
 }
 
 /**
  * True when this element lays its children out ACROSS rather than DOWN.
  *
- * Measured on kick.com: the row holding the shield, the field and the emote
- * button is 380x77 while the field itself is 293x46. Judging by height alone —
- * "an ancestor not much taller than the field" — rejected it by 7px and the
- * chip fell through to the field's own wrapper, landing 49px BELOW the message
- * box. Two children sitting at the same height with different left edges is
- * what a row actually is, and it does not depend on Kick's spacing.
+ * Two children at the same height with different left edges is what a row
+ * actually is, and unlike a height threshold it does not depend on Kick's
+ * spacing — an earlier version judged by height and missed the row by 7px.
  */
 function isSideBySide(el: HTMLElement): boolean {
   const kids = [...el.children].filter((k) => {
@@ -88,23 +110,16 @@ function isSideBySide(el: HTMLElement): boolean {
   for (let i = 1; i < kids.length; i++) {
     const a = kids[i - 1]!.getBoundingClientRect();
     const b = kids[i]!.getBoundingClientRect();
-    const sameLine = Math.abs(a.top - b.top) < Math.max(a.height, b.height);
-    const apart = Math.abs(a.left - b.left) > 8;
-    if (sameLine && apart) return true;
+    if (Math.abs(a.top - b.top) < Math.max(a.height, b.height) && Math.abs(a.left - b.left) > 8) {
+      return true;
+    }
   }
   return false;
 }
 
-/**
- * Where the chip goes inside that row.
- *
- * Kick puts its emote button last, and the chip belongs beside it rather than
- * after it — the far end of the row reads as "Kick's own controls".
- */
+/** The chip goes at the head of the cluster, before the gear. */
 function insertInRow(row: Element, wrap: HTMLElement): void {
-  const last = row.lastElementChild;
-  if (last && last !== wrap && last.tagName === 'BUTTON') row.insertBefore(wrap, last);
-  else row.appendChild(wrap);
+  row.insertBefore(wrap, row.firstElementChild);
 }
 
 function makeChip(): HTMLButtonElement {

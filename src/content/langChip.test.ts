@@ -336,60 +336,69 @@ describe('anchoring, against the DOM actually measured on kick.com', () => {
     ({ width: w, height: h, left: x, top: y, right: x + w, bottom: y + h, x, y, toJSON: () => ({}) }) as DOMRect;
 
   /**
-   * The real shape, read off a live channel:
-   *   row      380x77  @1520,818   shield | composer block | emote button
-   *     shield  35x73  @1530,820
-   *     block  293x73  @1565,820
-   *       field 293x46 @1565,820
-   *     emote   36x36  @1858,838
+   * Read off a live channel:
+   *   block   380x77 @1520,818   the composer's block
+   *     field 293x46 @1565,820
+   *   bar     380x36 @1520,847   sibling of the block
+   *     left  280x36 @1520,847   the kicks counter
+   *     right 100x36 @1800,847   gear + send  <- the chip belongs here
    */
   function liveDom() {
     document.body.innerHTML = '';
-    const row = document.createElement('div');
-    const shield = document.createElement('div');
+    const wrap = document.createElement('div');
     const block = document.createElement('div');
     const field = document.createElement('div');
-    const emote = document.createElement('button');
+    const bar = document.createElement('div');
+    const left = document.createElement('div');
+    const right = document.createElement('div');
+    const gear = document.createElement('button');
+    const send = document.createElement('button');
     field.setAttribute('contenteditable', 'true');
     block.appendChild(field);
-    row.append(shield, block, emote);
-    document.body.appendChild(row);
+    left.appendChild(document.createElement('button'));
+    right.append(gear, send);
+    bar.append(left, right);
+    wrap.append(block, bar);
+    document.body.appendChild(wrap);
 
-    row.getBoundingClientRect = box(380, 77, 1520, 818);
-    shield.getBoundingClientRect = box(35, 73, 1530, 820);
-    block.getBoundingClientRect = box(293, 73, 1565, 820);
+    block.getBoundingClientRect = box(380, 77, 1520, 818);
     field.getBoundingClientRect = box(293, 46, 1565, 820);
-    emote.getBoundingClientRect = box(36, 36, 1858, 838);
-    return { row, block, field, emote };
+    bar.getBoundingClientRect = box(380, 36, 1520, 847);
+    left.getBoundingClientRect = box(280, 36, 1520, 847);
+    right.getBoundingClientRect = box(100, 36, 1800, 847);
+    gear.getBoundingClientRect = box(36, 36, 1800, 847);
+    send.getBoundingClientRect = box(60, 36, 1840, 847);
+    return { wrap, block, field, bar, left, right, gear };
   }
 
-  it('picks the row holding the shield and the emote, not the field wrapper', () => {
-    const { row, field } = liveDom();
-    expect(findComposerRow(field)).toBe(row);
+  it('anchors in the action bar right cluster, not in the message box', () => {
+    const { right, field } = liveDom();
+    expect(findComposerRow(field)).toBe(right);
   });
 
-  // The regression this exists for: judging by height put the chip 49px below
-  // the message box, because the row is 77px tall and the field only 46px.
-  it('is not fooled by the row being much taller than the field', () => {
-    const { row, field } = liveDom();
-    const found = findComposerRow(field) as HTMLElement;
-    const fb = found.getBoundingClientRect();
-    const cb = field.getBoundingClientRect();
-    expect(fb.height - cb.height, 'the row is legitimately much taller').toBeGreaterThan(24);
-    expect(found).toBe(row);
-  });
-
-  it('mounts the chip beside the emote button, not after it', () => {
-    const { row, field, emote } = liveDom();
+  it('puts the chip before the gear', () => {
+    const { right, field, gear } = liveDom();
     mountLangChip(field, state(), noop);
-    const host = row.querySelector('.kt-chip-host')!;
-    expect(host.nextElementSibling).toBe(emote);
+    const host = right.querySelector('.kt-chip-host')!;
+    expect(host.nextElementSibling).toBe(gear);
+    expect(right.firstElementChild).toBe(host);
   });
 
-  it('leaves the chip on the same line as the field', () => {
-    const { field } = liveDom();
+  // The regression this exists for: the chip used to land inside the composer's
+  // own block, which put it 49px below the message box on a live page.
+  it('never mounts inside the composer block', () => {
+    const { block, field } = liveDom();
     mountLangChip(field, state(), noop);
-    const chip = document.querySelector('#kt-lang-chip')!;
-    expect(chip.closest('div')?.parentElement?.contains(field)).toBe(true);
+    expect(block.querySelector('.kt-chip-host')).toBeNull();
+  });
+
+  it('falls back to the composer parent when there is no action bar', () => {
+    document.body.innerHTML = '';
+    const parent = document.createElement('div');
+    const field = document.createElement('div');
+    field.setAttribute('contenteditable', 'true');
+    parent.appendChild(field);
+    document.body.appendChild(parent);
+    expect(findComposerRow(field)).toBe(parent);
   });
 });

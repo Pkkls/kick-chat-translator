@@ -521,7 +521,11 @@
   position: relative;
   display: inline-flex;
   flex-shrink: 0;
-  margin-inline-start: 6px;
+  align-items: center;
+  /* The chip heads the action bar's right cluster, so the gap belongs after it,
+     between the chip and the gear — not before, where it would push the whole
+     cluster off its own edge. */
+  margin-inline-end: 6px;
 }
 
 .kt-chip {
