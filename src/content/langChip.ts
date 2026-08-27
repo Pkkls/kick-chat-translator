@@ -22,6 +22,7 @@
  * and it must never be the reason a layout moves.
  */
 import { LANGUAGES, getLang } from '~/shared/languages';
+import { msg } from './msg';
 
 const CHIP_ID = 'kt-lang-chip';
 const MENU_ID = 'kt-lang-menu';
@@ -334,26 +335,6 @@ function uiLocale(): string {
   } catch {
     return 'en';
   }
-}
-
-/**
- * A string from the extension's catalogue.
- *
- * `chrome.i18n` reads `_locales/` without pulling the options-page translation
- * bundle into this script, which is deliberately free of it. Falls back to the
- * English source string outside an extension context, and under test.
- */
-function msg(key: string, fallback: string, subs?: string[]): string {
-  try {
-    if (typeof chrome !== 'undefined' && chrome.i18n?.getMessage) {
-      return chrome.i18n.getMessage(key, subs) || fallback;
-    }
-  } catch {
-    /* not running as an extension */
-  }
-  // The fallback carries the same $LANG$ placeholder as the catalogue entry, so
-  // the two cannot drift into saying different things.
-  return subs?.length ? fallback.replace('$LANG$', subs[0]!) : fallback;
 }
 
 function autoLabel(): string {

@@ -46,5 +46,9 @@
         "example": "JA"
       }
     }
+  },
+  "hoverToTranslate": {
+    "message": "Hover to translate",
+    "description": "Placeholder on an untranslated line in lazy mode; hovering it fetches the translation."
   }
 }

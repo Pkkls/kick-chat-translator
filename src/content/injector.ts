@@ -3,6 +3,7 @@ import type { TranslationResult } from '~/shared/types';
 import type { Settings } from '~/shared/settings';
 import { sortedLanguages, getLang, langFlag, resolveBrowserLang } from '~/shared/languages';
 import { findChatPanel } from './selectors';
+import { msg } from './msg';
 
 const STYLE_ID = 'kt-inject-style';
 const TRANS_CLASS = 'kt-translation';
@@ -65,7 +66,12 @@ export function injectHoverPlaceholder(
   if (target.querySelector(`.${HOVER_CLASS}`)) return;
   const ph = document.createElement('span');
   ph.className = HOVER_CLASS;
-  ph.textContent = '⟶ hover to translate';
+  // Was '⟶ hover to translate', typed straight into the DOM: the one line
+  // that says a translation is available at all, rendered in English in all ten
+  // interface languages. The arrow went with the fix rather than into the
+  // catalogue, since a directional glyph has to be mirrored per script and the
+  // green already says the line is ours.
+  ph.textContent = msg('hoverToTranslate', 'Hover to translate');
   ph.addEventListener('mouseenter', () => {
     ph.remove();
     onHover();
@@ -169,11 +175,11 @@ export function showLoading(targetEl: Element): void {
   targetEl.appendChild(span);
 }
 
-export function showError(targetEl: Element, msg: string, onRetry?: () => void): void {
+export function showError(targetEl: Element, text: string, onRetry?: () => void): void {
   removeAllArtifacts(targetEl);
   const span = document.createElement('span');
   span.className = ERROR_CLASS;
-  span.textContent = msg;
+  span.textContent = text;
   // Without this the line is indistinguishable from one that was never
   // translated, and there is nothing left to click to ask again.
   if (onRetry) span.appendChild(makeRetry(onRetry));
