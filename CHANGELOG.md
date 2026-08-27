@@ -39,6 +39,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The bar at the top of the chat says **Translating** instead of
+  "Translating → EN". Measured on a live channel: that label took 133px of a
+  420px bar — a third of it — and the "→ EN" half repeated the language menu
+  sitting immediately beside it. The resolved language moved to the tooltip.
+- The provider name is no longer printed in the bar. It held 39px permanently
+  to name a service the reader has no decision to make about while it works;
+  which engine answered matters when one stops answering, and the Options page
+  reports that. It is in the state pill's tooltip now.
+
 - The popup fits without scrolling again. Measured with realistic settings it
   stood at 669px against a 600px target; it is now 594px. The 7-day cache graph
   (36px) and the per-language pills (23px) moved to Options → Debug, and the

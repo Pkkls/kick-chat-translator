@@ -336,9 +336,16 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
 function setBarEnabled(bar: HTMLElement, label: HTMLElement, enabled: boolean, lang: string): void {
   bar.dataset.enabled = String(enabled);
   bar.dataset.lang = lang;
-  // Show the resolved language, not the 'auto' sentinel.
+  // Measured on a live channel: "Translating → EN" took 133px of a 420px bar,
+  // a third of it, and the "→ EN" half repeated the language menu sitting right
+  // beside it. The state is what the label is for; the language has its own
+  // control. The resolved code still reaches the tooltip, where it costs
+  // nothing and answers "what does auto mean here".
   const shown = lang === 'auto' ? resolveBrowserLang() : lang;
-  label.textContent = enabled ? `Translating → ${shown.toUpperCase()}` : 'Translation off';
+  label.textContent = enabled ? 'Translating' : 'Translation off';
+  label.title = enabled
+    ? `Reading chat in ${shown.toUpperCase()}${lang === 'auto' ? ' (auto)' : ''}`
+    : 'Translation paused';
   // Scoped to the bar we were handed, never to the document: there are two chat
   // panels on the page and only one of them is the one on screen.
   const picker = bar.querySelector<HTMLSelectElement>('.kt-float-lang');
@@ -375,19 +382,24 @@ export function showThrottleIndicator(throttled: boolean): void {
   }
 }
 
-/** Update the floating bar to show which provider handled the last translation. */
+/**
+ * Record which provider handled the last translation.
+ *
+ * It used to be printed in the bar: 39px of a 420px row, permanently, naming a
+ * service the reader has no decision to make about while it is working. Which
+ * engine answered matters when one stops answering, and the Options page
+ * already reports that. It lives in the state pill's tooltip now, alongside
+ * the language, so it is one hover away instead of always in the way.
+ */
 export function updateActiveProvider(provider: string): void {
   const bar = findBar();
   if (!bar) return;
-  let badge = bar.querySelector<HTMLElement>('.kt-float-provider');
-  if (!badge) {
-    badge = document.createElement('span');
-    badge.className = 'kt-float-provider';
-    badge.style.cssText = 'font-size:10px;opacity:.5;margin-left:4px;text-transform:uppercase';
-    const label = bar.querySelector('.kt-float-label');
-    if (label) label.after(badge);
-  }
-  badge.textContent = provider;
+  bar.querySelector('.kt-float-provider')?.remove();
+  bar.dataset.provider = provider;
+  const label = bar.querySelector<HTMLElement>('.kt-float-label');
+  if (!label) return;
+  const base = label.title.split(' · ')[0] ?? label.title;
+  label.title = `${base} · via ${provider}`;
 }
 
 /** Bump the session translation counter shown in the floating bar. */

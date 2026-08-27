@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { defaultSettings } from '~/shared/settings';
 import type { Settings } from '~/shared/settings';
 import type { TranslationResult } from '~/shared/types';
-import { HANDLED_SELECTOR, applyShowOriginal, inject, markSkipped, mountFloatingBar, removeAllArtifacts, showError, showLoading, unmountFloatingBar, updateFloatingBar } from './injector';
+import { HANDLED_SELECTOR, applyShowOriginal, inject, markSkipped, mountFloatingBar, updateActiveProvider, removeAllArtifacts, showError, showLoading, unmountFloatingBar, updateFloatingBar } from './injector';
 // Read from disk: vitest runs with CSS processing off, so `?inline` imports
 // resolve to an empty string and would make these assertions pass on anything.
 const injectCss = readFileSync('src/content/inject.css', 'utf8');
@@ -478,3 +478,57 @@ describe('7TV', () => {
     expect(bad.includes('seventv-text-token')).toBe(false);
   });
 });
+
+/**
+ * The bar is on screen the whole time someone reads chat, on a panel measured
+ * at 420px. Anything permanent in it has to earn its width.
+ */
+describe('floating bar, width discipline', () => {
+  it('states what it is doing without repeating the language menu', () => {
+    const bar = mountBarInto(document.body);
+    const label = bar.querySelector<HTMLElement>('.kt-float-label')!;
+    // "Translating → EN" was 133px of 420 and the "→ EN" duplicated the picker.
+    expect(label.textContent).toBe('Translating');
+    expect(label.textContent).not.toMatch(/→|EN/);
+  });
+
+  it('keeps the resolved language reachable, in the tooltip', () => {
+    const bar = mountBarInto(document.body);
+    const label = bar.querySelector<HTMLElement>('.kt-float-label')!;
+    expect(label.title).toMatch(/Reading chat in [A-Z]{2}/);
+  });
+
+  it('does not print the provider name in the bar', () => {
+    const bar = mountBarInto(document.body);
+    updateActiveProvider('google');
+    expect(bar.querySelector('.kt-float-provider')).toBeNull();
+    expect(bar.dataset.provider).toBe('google');
+  });
+
+  it('still says which provider answered, one hover away', () => {
+    const bar = mountBarInto(document.body);
+    updateActiveProvider('deepl');
+    expect(bar.querySelector<HTMLElement>('.kt-float-label')!.title).toContain('via deepl');
+  });
+
+  // Control: a second provider must replace the first in the tooltip, not
+  // append to it — otherwise the title grows without bound over a session.
+  it('replaces the provider rather than appending to it', () => {
+    const bar = mountBarInto(document.body);
+    updateActiveProvider('google');
+    updateActiveProvider('lingva');
+    const title = bar.querySelector<HTMLElement>('.kt-float-label')!.title;
+    expect(title).toContain('via lingva');
+    expect(title).not.toContain('google');
+    expect(title.match(/via/g)).toHaveLength(1);
+  });
+});
+
+function mountBarInto(host: HTMLElement): HTMLElement {
+  host.innerHTML = '<div id="channel-chatroom"><div data-index="0"></div></div>';
+  const panel = host.querySelector('#channel-chatroom')!;
+  mountFloatingBar(panel, defaultSettings(), {
+    onToggle: () => {}, onTargetLang: () => {}, onOpenOptions: () => {}, onEnableLocal: () => {},
+  });
+  return panel.querySelector<HTMLElement>('#kt-floating-bar')!;
+}
