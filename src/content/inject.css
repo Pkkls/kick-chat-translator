@@ -132,6 +132,43 @@
   margin-left: 0;
 }
 
+/* ─── When the original is hidden, the translation IS the message ──────────
+   Two things were wrong once "keep original" was off.
+
+   Contrast and size: the only text of the message rendered at .78 opacity
+   (11.16:1) and 0.9em — quieter and smaller than the username above it, with
+   nothing left for it to be quieter THAN. Full white is 19.67:1 at 1em.
+
+   Height, which is the one that mattered: `.kt-translation` is display:block,
+   so hiding the original left the username alone on its own line and the
+   translation on a second one. Measured, the row got TALLER — 41.7px against
+   39.98px — while claiming to save space. Going inline puts the translation
+   where the message was, and the row is one line again.
+
+   The tinted background and the rule go with it: this is body text now, and a
+   highlight only makes sense next to something it stands off. The language
+   badge already says the line came from us. */
+.kt-hide-original .kt-translation,
+.kt-hide-original .kt-translation-inline,
+.kt-hide-original .kt-translation-compact {
+  display: inline;
+  margin-top: 0;
+  padding: 0;
+  background: transparent;
+  border-left: 0;
+  border-radius: 0;
+  font-size: 1em;
+  font-style: normal;
+  color: #ffffff;
+}
+@media (prefers-color-scheme: light) {
+  .kt-hide-original .kt-translation,
+  .kt-hide-original .kt-translation-inline,
+  .kt-hide-original .kt-translation-compact {
+    color: #0b0b0c;
+  }
+}
+
 /* #7 Toast notification */
 .kt-toast {
   position: fixed;

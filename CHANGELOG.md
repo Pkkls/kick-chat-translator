@@ -37,6 +37,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   reading a Japanese interface sees フランス語 but types "fr".
 - `Show the language button in the message box` in Options → Display.
 
+### Changed
+
+- With "keep original text visible" off, the translation now behaves as the
+  message rather than as an annotation of it: inline, full size, full contrast,
+  no tint and no rule. Measured on a 24-message chat in a fixed window, this
+  went from 8 messages on screen to 14 — a row dropped from 40.0px to 18.2px.
+  The previous styling kept the translation on its own line even with nothing
+  above it, so hiding the original made rows *taller* (41.7px against 39.98px)
+  while claiming to save room.
+
 ### Fixed
 
 - The waiting state used to fade its label in and out, which dropped the text
