@@ -1,10 +1,20 @@
+/* Logical edges throughout, not physical ones. Arabic is one of the ten
+   interface languages and one people chat in, and mirrored the green rule
+   marking a translation used to land at the far END of the line while the
+   provider tag lost its gap entirely and printed as "deeplbonjour a tous". The
+   chip section of this file already argues the point; the chat lines predate
+   it. */
 .kt-translation {
   display: block;
   margin-top: 2px;
-  padding: 2px 6px 2px 8px;
+  padding-block: 2px;
+  padding-inline: 8px 6px;
   background: rgba(83, 252, 24, 0.06);
-  border-left: 2px solid rgba(83, 252, 24, 0.55);
-  border-radius: 0 4px 4px 0;
+  border-inline-start: 2px solid rgba(83, 252, 24, 0.55);
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+  border-start-end-radius: 4px;
+  border-end-end-radius: 4px;
   font-size: 0.9em;
   color: rgba(255, 255, 255, 0.78);
   line-height: 1.35;
@@ -15,11 +25,14 @@
   display: inline-block;
   max-width: 100%;
   vertical-align: baseline;
-  margin-left: 6px;
+  margin-inline-start: 6px;
   padding: 1px 5px;
   background: rgba(83, 252, 24, 0.12);
-  border-left: 2px solid rgba(83, 252, 24, 0.55);
-  border-radius: 0 4px 4px 0;
+  border-inline-start: 2px solid rgba(83, 252, 24, 0.55);
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+  border-start-end-radius: 4px;
+  border-end-end-radius: 4px;
   font-size: 0.85em;
   color: rgba(255, 255, 255, 0.7);
 }
@@ -30,7 +43,7 @@
   font-weight: 700;
   opacity: 0.65;
   letter-spacing: 0.04em;
-  margin-right: 5px;
+  margin-inline-end: 5px;
   padding: 0 4px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.06);
@@ -42,7 +55,7 @@
   font-size: 0.62em;
   /* .4 flattened to 3.78:1. .55 gives 6.26 and still reads as secondary. */
   opacity: 0.55;
-  margin-left: 6px;
+  margin-inline-start: 6px;
   font-family: ui-monospace, monospace;
 }
 
@@ -50,7 +63,7 @@
   /* Same as the provider badge: .4 was 3.78:1. */
   opacity: 0.55;
   font-size: 0.75em;
-  margin-left: 4px;
+  margin-inline-start: 4px;
   font-style: italic;
 }
 
@@ -67,7 +80,7 @@
 
 /* Re-translate button — hidden until the translation block is hovered. */
 .kt-retry {
-  margin-left: 6px;
+  margin-inline-start: 6px;
   font-size: 0.85em;
   cursor: pointer;
   opacity: 0;
@@ -154,7 +167,7 @@ div:has(> .kt-translation-replace) :is(span.font-normal, .seventv-text-token) :i
    stray indent. `replace` never carries that gap: it is not standing beside
    anything. */
 .kt-hide-original .kt-translation-inline {
-  margin-left: 0;
+  margin-inline-start: 0;
 }
 
 /* ─── When the original is hidden, the translation IS the message ──────────
@@ -185,7 +198,7 @@ div:has(> .kt-translation-replace) :is(span.font-normal, .seventv-text-token) :i
   margin-top: 0;
   padding: 0;
   background: transparent;
-  border-left: 0;
+  border-inline-start: 0;
   border-radius: 0;
   font-size: 1em;
   font-style: normal;
@@ -201,7 +214,7 @@ html[data-kt-scheme='light'] .kt-translation-replace {
 .kt-toast {
   position: fixed;
   bottom: 20px;
-  right: 20px;
+  inset-inline-end: 20px;
   padding: 8px 16px;
   background: rgba(10, 14, 18, 0.92);
   border: 1px solid rgba(83, 252, 24, 0.3);
@@ -508,12 +521,12 @@ html[data-kt-scheme='light'] .kt-translation-replace {
 html[data-kt-scheme='light'] .kt-translation {
   color: rgba(20, 25, 35, 0.88);
   background: rgba(0, 0, 0, 0.05);
-  border-left-color: rgba(40, 170, 20, 0.6);
+  border-inline-start-color: rgba(40, 170, 20, 0.6);
 }
 html[data-kt-scheme='light'] .kt-translation-inline {
   color: rgba(20, 25, 35, 0.88);
   background: rgba(40, 170, 20, 0.12);
-  border-left-color: rgba(40, 170, 20, 0.6);
+  border-inline-start-color: rgba(40, 170, 20, 0.6);
 }
 html[data-kt-scheme='light'] .kt-flag {
   background: rgba(0, 0, 0, 0.06);

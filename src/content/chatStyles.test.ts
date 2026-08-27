@@ -47,7 +47,12 @@ describe('inline translation pill', () => {
   it.each(INLINE_STYLES)('%s still paints the box the rule exists for', (selector) => {
     const body = rule(selector);
     expect(body).toMatch(/background:/);
-    expect(body).toMatch(/border-radius:/);
+    // The logical corners, not `border-radius`. The pill is rounded on the side
+    // away from its green rule and flat against it, and mirrored that has to
+    // swap: written physically it left the flat edge on the left of a line that
+    // reads right to left.
+    expect(body).toMatch(/border-start-end-radius:/);
+    expect(body).toMatch(/border-start-start-radius:/);
   });
 
   // `below` is a block already, so it never had the problem and must not be

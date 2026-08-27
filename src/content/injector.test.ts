@@ -501,8 +501,11 @@ describe('injector artifacts', () => {
     // With the text gone there is nothing on the pill's left for the gap to
     // separate it from, so it reads as a stray indent.
     it('closes the gap in front of a pill that no longer follows anything', () => {
+      // `margin-inline-start`, because "in front of" is a reading direction and
+      // not a side of the screen. Written as margin-left it put the gap on the
+      // wrong end of an Arabic line.
       expect(injectCss).toMatch(
-        /\.kt-hide-original[^{]*\.kt-translation-inline[^{]*\{[^}]*margin-left:\s*0/,
+        /\.kt-hide-original[^{]*\.kt-translation-inline[^{]*\{[^}]*margin-inline-start:\s*0/,
       );
     });
 
