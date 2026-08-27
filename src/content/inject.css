@@ -468,22 +468,26 @@
   .kt-float:hover {
     background: rgba(235, 238, 242, 0.98);
   }
+  /* rgba(0,0,0,.15) flattens to 1.42:1 against the light bar, where WCAG
+     1.4.11 asks 3:1 of a control's boundary. #8D8D8E measures 3.11 on the bar,
+     3.02 on the chip surface and 3.32 on white, so one value covers every
+     light ground these controls sit on. */
   .kt-float-opts,
   .kt-float-lang,
   .kt-float-power {
-    border-color: rgba(0, 0, 0, 0.15);
-    color: rgba(20, 25, 35, 0.7);
+    border-color: #8d8d8e;
+    color: #0b0b0c;
   }
   /* Our option text turns dark here, so the list has to turn light with it.
      Freezing the scheme would just break the readability the other way round. */
   .kt-float-lang {
     color-scheme: light;
-    background: #f5f7fa;
-    color: rgba(20, 25, 35, 0.85);
+    background: #f4f4f5;
+    color: #0b0b0c;
   }
   .kt-float-lang option {
-    background-color: #f5f7fa;
-    color: rgba(20, 25, 35, 0.9);
+    background-color: #ffffff;
+    color: #0b0b0c;
   }
   .kt-float-count {
     color: rgba(40, 150, 20, 0.8);

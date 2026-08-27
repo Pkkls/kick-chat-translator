@@ -67,6 +67,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `rgba(255,255,255,.15)`, which flattens to 1.62:1 against the bar when WCAG
   1.4.11 asks 3:1 of a control's boundary. `#5F5F60` measures 3.04 there and
   3.08 on the chat ground, so a single value now covers both surfaces.
+- Same fault in the light theme, where the bar's controls were outlined in
+  `rgba(0,0,0,.15)` — 1.42:1. `#8D8D8E` gives 3.11 on the bar, 3.02 on the chip
+  surface and 3.32 on white.
 
 - The waiting state used to fade its label in and out, which dropped the text
   to 2.22:1 against its own background. The pulse moved to the border, which
