@@ -59,9 +59,7 @@ export function DisplaySection({ settings, onPatch }: Props) {
           <StyleCard
             active={settings.displayStyle === 'replace'}
             label={t('Replace')}
-            desc={t(
-              "After the message in smaller italics (Kick's virtual scroll can't be replaced in-place).",
-            )}
+            desc={t('In place of the original text. Emotes stay.')}
             onClick={() => onPatch({ displayStyle: 'replace' })}
           />
         </div>
@@ -82,6 +80,12 @@ export function DisplaySection({ settings, onPatch }: Props) {
           checked={settings.showOriginal}
           onChange={(v) => onPatch({ showOriginal: v })}
           label={t('Keep original text visible')}
+          disabled={settings.displayStyle === 'replace'}
+          hint={
+            settings.displayStyle === 'replace'
+              ? t('The Replace style always hides it.')
+              : undefined
+          }
         />
         <ToggleRow
           checked={settings.showSourceBadge}
@@ -222,14 +226,25 @@ function ToggleRow({
   checked,
   onChange,
   label,
+  disabled,
+  hint,
 }: {
   checked: boolean;
   onChange: (v: boolean) => void;
   label: string;
+  disabled?: boolean;
+  hint?: string;
 }) {
   return (
     <div class="rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
-      <Check checked={checked} onChange={onChange} label={label} reverse />
+      <Check
+        checked={checked}
+        onChange={onChange}
+        label={label}
+        disabled={disabled}
+        hint={hint}
+        reverse
+      />
     </div>
   );
 }

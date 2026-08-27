@@ -50,7 +50,6 @@
   "Inline",
   "In a pill after the original text.",
   "Replace",
-  "After the message in smaller italics (Kick's virtual scroll can't be replaced in-place).",
   "Show floating bar at top of chat (toggle live)",
   "Keep original text visible",
   "Show source language badge",
@@ -148,5 +147,7 @@
   "Show the quick language button in chat",
   "Usage",
   "most translated languages",
-  "Translate the chat"
+  "Translate the chat",
+  "In place of the original text. Emotes stay.",
+  "The Replace style always hides it."
 ]

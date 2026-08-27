@@ -62,8 +62,6 @@ export const tr: Record<string, string> = {
   Inline: 'Satır içi',
   'In a pill after the original text.': 'Orijinal metnin ardından bir etiket içinde.',
   Replace: 'Değiştir',
-  "After the message in smaller italics (Kick's virtual scroll can't be replaced in-place).":
-    "Mesajın ardından daha küçük italik yazıyla (Kick'in sanal kaydırması yerinde değiştirmeye izin vermez).",
   'Show floating bar at top of chat (toggle live)':
     'Sohbetin üstünde yüzen bir çubuk göster (anlık aç/kapat)',
   'Keep original text visible': 'Orijinal metni görünür tut',
@@ -185,4 +183,6 @@ export const tr: Record<string, string> = {
   Usage: 'Kullanım',
   'most translated languages': 'en çok çevrilen diller',
   'Translate the chat': 'Sohbeti cevir',
+  "In place of the original text. Emotes stay.": "Orijinal metnin yerinde. Emoteler kalır.",
+  "The Replace style always hides it.": "Değiştir stili onu her zaman gizler.",
 };

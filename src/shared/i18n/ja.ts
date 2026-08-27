@@ -62,8 +62,6 @@ export const ja: Record<string, string> = {
   Inline: 'インライン',
   'In a pill after the original text.': '原文の後にピル形式で表示。',
   Replace: '置き換え',
-  "After the message in smaller italics (Kick's virtual scroll can't be replaced in-place).":
-    'メッセージの後に小さいイタリック表記で表示（Kick の仮想スクロールはインプレース置換不可）。',
   'Show floating bar at top of chat (toggle live)':
     'チャット上部にフローティングバーを表示（ライブ切り替え）',
   'Keep original text visible': '原文を表示したまま',
@@ -184,4 +182,6 @@ export const ja: Record<string, string> = {
   Usage: '使用状況',
   'most translated languages': '翻訳が多い言語',
   'Translate the chat': 'チャットを翻訳',
+  "In place of the original text. Emotes stay.": "元のテキストの代わりに表示。エモートは残ります。",
+  "The Replace style always hides it.": "「置き換え」スタイルでは常に非表示になります。",
 };

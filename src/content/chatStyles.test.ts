@@ -23,7 +23,9 @@ function rule(selector: string): string {
   return '';
 }
 
-const INLINE_STYLES = ['.kt-translation-inline', '.kt-translation-compact'];
+// `replace` is deliberately absent: it paints no box at all, so it has no
+// fragments to clone and nothing for a line break to cut. It is body text.
+const INLINE_STYLES = ['.kt-translation-inline'];
 
 describe('inline translation pill', () => {
   it.each(INLINE_STYLES)('%s is one box, not a run of line fragments', (selector) => {

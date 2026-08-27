@@ -151,6 +151,10 @@ export function App() {
               checked={settings.showOriginal}
               onChange={(v) => void patch('showOriginal', v)}
               label={t('keep original')}
+              // Replace puts the translation where the message was, so there is
+              // no original left for this to keep. The picker it contradicts is
+              // the row directly above.
+              disabled={settings.displayStyle === 'replace'}
             />
             <Toggle
               checked={settings.showSourceBadge}

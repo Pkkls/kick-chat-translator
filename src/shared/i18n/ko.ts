@@ -62,8 +62,6 @@ export const ko: Record<string, string> = {
   Inline: '인라인',
   'In a pill after the original text.': '원문 뒤에 알약 모양 라벨로 표시합니다.',
   Replace: '교체',
-  "After the message in smaller italics (Kick's virtual scroll can't be replaced in-place).":
-    '메시지 뒤에 작은 기울임체로 표시합니다(Kick의 가상 스크롤은 제자리에서 교체할 수 없습니다).',
   'Show floating bar at top of chat (toggle live)': '채팅 상단에 플로팅 바 표시(실시간 전환)',
   'Keep original text visible': '원문을 계속 표시',
   'Show source language badge': '원본 언어 배지 표시',
@@ -179,4 +177,6 @@ export const ko: Record<string, string> = {
   Usage: '사용량',
   'most translated languages': '가장 많이 번역된 언어',
   'Translate the chat': '채팅 번역',
+  "In place of the original text. Emotes stay.": "원문 자리에 표시됩니다. 이모트는 유지됩니다.",
+  "The Replace style always hides it.": "바꾸기 스타일에서는 항상 숨겨집니다.",
 };

@@ -62,8 +62,6 @@ export const ru: Record<string, string> = {
   Inline: 'Встроенный',
   'In a pill after the original text.': 'Плашкой после оригинального текста.',
   Replace: 'Заменить',
-  "After the message in smaller italics (Kick's virtual scroll can't be replaced in-place).":
-    'После сообщения в меньшем курсиве (виртуальный скролл Kick не позволяет заменять текст на месте).',
   'Show floating bar at top of chat (toggle live)':
     'Показывать плавающую панель вверху чата (переключить вживую)',
   'Keep original text visible': 'Показывать оригинальный текст',
@@ -183,4 +181,6 @@ export const ru: Record<string, string> = {
   Usage: 'Использование',
   'most translated languages': 'чаще всего переводимые языки',
   'Translate the chat': 'Переводить чат',
+  "In place of the original text. Emotes stay.": "Вместо исходного текста. Эмоуты остаются.",
+  "The Replace style always hides it.": "Стиль «Заменить» всегда его скрывает.",
 };

@@ -79,10 +79,13 @@ describe('injector artifacts', () => {
   });
 
   // A suffixed class is a *different* class: `.kt-translation` never matches
-  // `.kt-translation-compact`. That is how compact mode ended up with no green
-  // cue, no copy cursor and a retry button that could never be revealed.
+  // `.kt-translation-replace`. That is how the fourth style ended up with no
+  // green cue, no copy cursor and a retry button that could never be revealed.
   describe('every display style carries the same cue', () => {
-    const styleClasses = ['kt-translation', 'kt-translation-inline', 'kt-translation-compact'] as const;
+    const styleClasses = ['kt-translation', 'kt-translation-inline', 'kt-translation-replace'] as const;
+    // `replace` stands in the message's place, so it is the line's body text.
+    // The two that sit beside the original are the ones that owe a green cue.
+    const pillClasses = ['kt-translation', 'kt-translation-inline'] as const;
 
     /**
      * Body of the rule whose selector list is exactly `selector`.
@@ -110,10 +113,18 @@ describe('injector artifacts', () => {
       return '';
     };
 
-    it.each(styleClasses)('%s has the green background', (cls) => {
+    it.each(pillClasses)('%s has the green background', (cls) => {
       // The class must own the rule, not merely appear in a shared selector
       // list such as the copy-cursor one.
       expect(soleRule(injectCss, `.${cls}`)).toMatch(/background:\s*rgba\(83, 252, 24/);
+    });
+
+    // Control on the rule above. `replace` must own no pill rule at all: it
+    // takes the message's place, so a green tile there would be a highlight
+    // painted over the only text the line has left. It shares the
+    // "the translation IS the message" declarations instead.
+    it('gives replace no pill rule of its own', () => {
+      expect(soleRule(injectCss, '.kt-translation-replace')).toBe('');
     });
 
     it('lists every style in the copy-cursor rule', () => {
@@ -451,7 +462,7 @@ describe('injector artifacts', () => {
     it('hides Kick text only on lines that carry a translation', () => {
       const rule = /\.kt-hide-original[^{]*\{[^}]*\}/.exec(injectCss)?.[0] ?? '';
       expect(rule).toMatch(/display:\s*none/);
-      for (const cls of ['kt-translation', 'kt-translation-inline', 'kt-translation-compact']) {
+      for (const cls of ['kt-translation', 'kt-translation-inline', 'kt-translation-replace']) {
         // The holder is matched by its child, never by a sibling of the text:
         // in a reply Kick nests the message a level deeper and a sibling rule
         // cannot reach it.
@@ -468,11 +479,21 @@ describe('injector artifacts', () => {
     // With the text gone there is nothing on the pill's left for the gap to
     // separate it from, so it reads as a stray indent.
     it('closes the gap in front of a pill that no longer follows anything', () => {
-      for (const cls of ['kt-translation-inline', 'kt-translation-compact']) {
-        expect(injectCss).toMatch(
-          new RegExp(`\\.kt-hide-original[^{]*\\.${cls}[^{]*\\{[^}]*margin-left:\\s*0`),
-        );
-      }
+      expect(injectCss).toMatch(
+        /\.kt-hide-original[^{]*\.kt-translation-inline[^{]*\{[^}]*margin-left:\s*0/,
+      );
+    });
+
+    // `replace` hides the original whether or not "keep original" is on, so its
+    // rule must NOT be gated on that class — that gate is exactly what made the
+    // style a duplicate of `inline` for everyone who never went looking for the
+    // toggle.
+    it('hides the original for replace without waiting for the toggle', () => {
+      const line = injectCss
+        .split('\n')
+        .find((l) => l.includes('div:has(> .kt-translation-replace)'));
+      expect(line, 'no hide rule reaches the replace style').toBeDefined();
+      expect(line).not.toContain('.kt-hide-original');
     });
   });
 
@@ -499,10 +520,14 @@ describe('injector artifacts', () => {
  */
 describe('7TV', () => {
   it('hides the original for 7TV as well as for native Kick', () => {
+    // Filtered on what the rule REACHES, not on the class that gates it. The
+    // filter used to require `.kt-hide-original`, and the replace style's own
+    // hide rule carries no such ancestor, so widening it is what keeps that
+    // rule inside this check instead of silently outside it.
     const rules = injectCss
       .split('\n')
-      .filter((l) => l.includes('.kt-hide-original') && l.includes('font-normal'));
-    expect(rules.length, 'no hide-original rule reaches the message text').toBeGreaterThan(0);
+      .filter((l) => l.includes('font-normal') && l.includes('div:has('));
+    expect(rules.length, 'no rule reaches the message text').toBeGreaterThan(0);
     for (const rule of rules) {
       expect(rule, `this rule ignores 7TV: ${rule.trim()}`).toContain('seventv-text-token');
     }

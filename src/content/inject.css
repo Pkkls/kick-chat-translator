@@ -77,7 +77,7 @@
 }
 .kt-translation:hover .kt-retry,
 .kt-translation-inline:hover .kt-retry,
-.kt-translation-compact:hover .kt-retry,
+.kt-translation-replace:hover .kt-retry,
 .kt-error:hover .kt-retry {
   opacity: 0.7;
 }
@@ -88,7 +88,7 @@
 /* #8 Click-to-copy: cursor hint */
 .kt-translation,
 .kt-translation-inline,
-.kt-translation-compact {
+.kt-translation-replace {
   cursor: copy;
 }
 
@@ -110,27 +110,6 @@
   color: rgba(83, 252, 24, 0.85);
 }
 
-/* #9 Compact mode: inline after message. Same green cue as the other styles —
-   it reads as ours, not as part of what the user wrote. Italic and a smaller
-   size stay its own identity. */
-.kt-translation-compact {
-  display: inline-block;
-  max-width: 100%;
-  vertical-align: baseline;
-  margin-left: 6px;
-  padding: 1px 5px;
-  background: rgba(83, 252, 24, 0.12);
-  border-left: 2px solid rgba(83, 252, 24, 0.55);
-  border-radius: 0 3px 3px 0;
-  /* Was 0.8em, which rendered at 10.4px. Measured against the other styles it
-     bought nothing for it: same 7 messages on screen as inline, same opacity,
-     just smaller. Aligned on inline's 0.85em — the density is identical either
-     way, so the smaller size was a cost with no return. */
-  font-size: 0.85em;
-  color: rgba(255, 255, 255, 0.7);
-  font-style: italic;
-}
-
 /* #32 "Keep original text visible" off, widened by the #35 measurement.
    Hiding stays tied to the translation being present, so a line the virtual
    scroller recycled without one shows its own text again with nothing to undo.
@@ -140,15 +119,15 @@
    so it stays readable. */
 .kt-hide-original div:has(> .kt-translation) :is(span.font-normal, .seventv-text-token),
 .kt-hide-original div:has(> .kt-translation-inline) :is(span.font-normal, .seventv-text-token),
-.kt-hide-original div:has(> .kt-translation-compact) :is(span.font-normal, .seventv-text-token) {
+div:has(> .kt-translation-replace) :is(span.font-normal, .seventv-text-token) {
   display: none;
 }
 
-/* #36 Both inline styles keep a gap on their left to stand off the message.
-   Once the message is hidden there is nothing to stand off, and the gap reads
-   as a stray indent. */
-.kt-hide-original .kt-translation-inline,
-.kt-hide-original .kt-translation-compact {
+/* #36 The inline style keeps a gap on its left to stand off the message. Once
+   the message is hidden there is nothing to stand off, and the gap reads as a
+   stray indent. `replace` never carries that gap: it is not standing beside
+   anything. */
+.kt-hide-original .kt-translation-inline {
   margin-left: 0;
 }
 
@@ -167,10 +146,15 @@
 
    The tinted background and the rule go with it: this is body text now, and a
    highlight only makes sense next to something it stands off. The language
-   badge already says the line came from us. */
+   badge already says the line came from us.
+
+   `replace` joins this list without the `.kt-hide-original` ancestor on
+   purpose: it is the same situation reached by a different door, and its whole
+   contract is that the line's only text is ours. Sharing the declarations
+   rather than copying them is what stops the two from drifting apart. */
 .kt-hide-original .kt-translation,
 .kt-hide-original .kt-translation-inline,
-.kt-hide-original .kt-translation-compact {
+.kt-translation-replace {
   display: inline;
   margin-top: 0;
   padding: 0;
@@ -183,7 +167,7 @@
 }
 html[data-kt-scheme='light'].kt-hide-original .kt-translation,
 html[data-kt-scheme='light'].kt-hide-original .kt-translation-inline,
-html[data-kt-scheme='light'].kt-hide-original .kt-translation-compact {
+html[data-kt-scheme='light'] .kt-translation-replace {
   color: #0b0b0c;
 }
 
@@ -482,8 +466,7 @@ html[data-kt-scheme='light'] .kt-translation {
   background: rgba(0, 0, 0, 0.05);
   border-left-color: rgba(40, 170, 20, 0.6);
 }
-html[data-kt-scheme='light'] .kt-translation-inline,
-html[data-kt-scheme='light'] .kt-translation-compact {
+html[data-kt-scheme='light'] .kt-translation-inline {
   color: rgba(20, 25, 35, 0.88);
   background: rgba(40, 170, 20, 0.12);
   border-left-color: rgba(40, 170, 20, 0.6);

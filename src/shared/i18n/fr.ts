@@ -62,8 +62,6 @@ export const fr: Record<string, string> = {
   Inline: 'Intégré',
   'In a pill after the original text.': 'Dans une pastille après le texte original.',
   Replace: 'Remplacer',
-  "After the message in smaller italics (Kick's virtual scroll can't be replaced in-place).":
-    'Après le message en italique plus petit (le défilement virtuel de Kick ne peut pas être remplacé en place).',
   'Show floating bar at top of chat (toggle live)':
     'Afficher la barre flottante en haut du chat (basculer en direct)',
   'Keep original text visible': 'Conserver le texte original visible',
@@ -184,4 +182,6 @@ export const fr: Record<string, string> = {
   Usage: 'Utilisation',
   'most translated languages': 'langues les plus traduites',
   'Translate the chat': 'Traduire le chat',
+  "In place of the original text. Emotes stay.": "A la place du texte original. Les emotes restent.",
+  "The Replace style always hides it.": "Le style Remplacer le masque toujours.",
 };

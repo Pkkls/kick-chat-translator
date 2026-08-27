@@ -7,7 +7,7 @@ import { findChatPanel } from './selectors';
 const STYLE_ID = 'kt-inject-style';
 const TRANS_CLASS = 'kt-translation';
 const TRANS_INLINE_CLASS = 'kt-translation-inline';
-const TRANS_COMPACT_CLASS = 'kt-translation-compact';
+const TRANS_REPLACE_CLASS = 'kt-translation-replace';
 const LOADING_CLASS = 'kt-loading';
 const ERROR_CLASS = 'kt-error';
 const HOVER_CLASS = 'kt-hover-placeholder';
@@ -16,7 +16,7 @@ const HOVER_CLASS = 'kt-hover-placeholder';
 const ARTIFACT_CLASSES = [
   TRANS_CLASS,
   TRANS_INLINE_CLASS,
-  TRANS_COMPACT_CLASS,
+  TRANS_REPLACE_CLASS,
   LOADING_CLASS,
   ERROR_CLASS,
   HOVER_CLASS,
@@ -191,10 +191,17 @@ export function inject(
   const provider = settings.showProviderBadge ? result.provider : '';
 
   const style = settings.displayStyle;
-  const compact = style === 'replace'; // reuse 'replace' as compact inline
+  // `replace` used to be compact inline under another name: same span, same
+  // place, italic instead of upright, and the original left standing right
+  // beside it. Measured, it rendered the same 9 messages at the same 44.1px as
+  // `inline` — a fourth entry in the picker that changed nothing. It now takes
+  // the message's place: the stylesheet hides the line's own text tokens
+  // whenever this class is present, so the setting no longer needs a second
+  // opinion from `showOriginal`.
+  const replace = style === 'replace';
   const inline = style === 'inline';
-  const el = document.createElement(inline || compact ? 'span' : 'div');
-  el.className = compact ? TRANS_COMPACT_CLASS : inline ? TRANS_INLINE_CLASS : TRANS_CLASS;
+  const el = document.createElement(inline || replace ? 'span' : 'div');
+  el.className = replace ? TRANS_REPLACE_CLASS : inline ? TRANS_INLINE_CLASS : TRANS_CLASS;
   el.appendChild(withBadges(result.translatedText, flag, provider, result.detectedLang));
   if (onRetry) el.appendChild(makeRetry(onRetry));
   // #8 — Click-to-copy translation.

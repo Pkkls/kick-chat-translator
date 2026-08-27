@@ -62,8 +62,6 @@ export const ar: Record<string, string> = {
   Inline: 'مضمَّن',
   'In a pill after the original text.': 'في شارة صغيرة بعد النص الأصلي.',
   Replace: 'استبدال',
-  "After the message in smaller italics (Kick's virtual scroll can't be replaced in-place).":
-    'بعد الرسالة بخط مائل أصغر (لا يمكن استبدال التمرير الافتراضي لـ Kick في مكانه).',
   'Show floating bar at top of chat (toggle live)':
     'إظهار الشريط العائم أعلى الدردشة (تبديل مباشر)',
   'Keep original text visible': 'إبقاء النص الأصلي ظاهراً',
@@ -181,4 +179,6 @@ export const ar: Record<string, string> = {
   Usage: 'الاستخدام',
   'most translated languages': 'أكثر اللغات ترجمة',
   'Translate the chat': 'ترجمة الدردشة',
+  "In place of the original text. Emotes stay.": "مكان النص الأصلي. تبقى الرموز التعبيرية.",
+  "The Replace style always hides it.": "نمط الاستبدال يخفيه دائما.",
 };
