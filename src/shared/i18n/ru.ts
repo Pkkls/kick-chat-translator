@@ -2,7 +2,7 @@
 export const ru: Record<string, string> = {
   available: 'доступен',
   unavailable: 'недоступен',
-  'v2 · options & preferences': 'v2 · настройки и параметры',
+  'options & preferences': 'настройки и параметры',
   saved: 'сохранено',
   ready: 'готово',
   Providers: 'Провайдеры',

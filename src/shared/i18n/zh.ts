@@ -2,7 +2,7 @@
 export const zh: Record<string, string> = {
   available: '可用',
   unavailable: '不可用',
-  'v2 · options & preferences': 'v2 · 选项与偏好设置',
+  'options & preferences': '选项与偏好设置',
   saved: '已保存',
   ready: '就绪',
   Providers: '翻译提供商',

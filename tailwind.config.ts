@@ -7,6 +7,23 @@ export default {
   ],
   darkMode: 'class',
   theme: {
+    // Kick's art direction has two radii, 4 and 8, measured on about.kick.com.
+    // Tailwind's own scale has nine, and the one the codebase reaches for most,
+    // `rounded-md`, is 0.375rem: 460 elements across the popup and the six
+    // option tabs were drawing a 6px corner that the direction does not have.
+    // Redefined here rather than corrected at 460 call sites.
+    borderRadius: {
+      none: '0',
+      sm: '4px',
+      DEFAULT: '4px',
+      md: '4px',
+      lg: '8px',
+      xl: '8px',
+      '2xl': '8px',
+      '3xl': '8px',
+      // A pill or a knob: a shape, not a step on the scale.
+      full: '9999px',
+    },
     extend: {
       colors: {
         kick: {

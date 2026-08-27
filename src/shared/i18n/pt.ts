@@ -2,7 +2,7 @@
 export const pt: Record<string, string> = {
   available: 'disponível',
   unavailable: 'indisponível',
-  'v2 · options & preferences': 'v2 · opções e preferências',
+  'options & preferences': 'opções e preferências',
   saved: 'salvo',
   ready: 'pronto',
   Providers: 'Provedores',

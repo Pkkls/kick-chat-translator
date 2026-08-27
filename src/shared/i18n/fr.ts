@@ -2,7 +2,7 @@
 export const fr: Record<string, string> = {
   available: 'disponible',
   unavailable: 'indisponible',
-  'v2 · options & preferences': 'v2 · options & préférences',
+  'options & preferences': 'options & préférences',
   saved: 'enregistré',
   ready: 'prêt',
   Providers: 'Fournisseurs',

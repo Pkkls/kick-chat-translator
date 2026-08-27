@@ -2,7 +2,7 @@
 export const ja: Record<string, string> = {
   available: '利用可能',
   unavailable: '利用不可',
-  'v2 · options & preferences': 'v2 · オプションと設定',
+  'options & preferences': 'オプションと設定',
   saved: '保存済み',
   ready: '準備完了',
   Providers: 'プロバイダー',

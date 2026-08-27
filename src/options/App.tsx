@@ -95,7 +95,9 @@ export function App() {
           </div>
           <div>
             <h1 class="text-xl font-semibold tracking-tight">Kick Chat Translator</h1>
-            <p class="text-xs text-kick-muted">{t('v2 · options & preferences')}</p>
+            <p class="text-xs text-kick-muted">
+              v{chrome.runtime.getManifest().version} · {t('options & preferences')}
+            </p>
           </div>
           <div class="ms-auto flex items-center gap-3">
             {savedAt && <span class="text-xs text-kick-primary">{t('saved')}</span>}

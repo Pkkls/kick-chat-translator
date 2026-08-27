@@ -1,6 +1,6 @@
 // Korean UI translations. Keys = verbatim English source strings.
 export const ko: Record<string, string> = {
-  'v2 · options & preferences': 'v2 · 옵션 및 환경설정',
+  'options & preferences': '옵션 및 환경설정',
   saved: '저장됨',
   ready: '준비됨',
   Providers: '제공자',

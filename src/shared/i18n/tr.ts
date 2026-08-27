@@ -1,6 +1,6 @@
 // Turkish UI translations. Keys = verbatim English source strings.
 export const tr: Record<string, string> = {
-  'v2 · options & preferences': 'v2 · seçenekler ve tercihler',
+  'options & preferences': 'seçenekler ve tercihler',
   saved: 'kaydedildi',
   ready: 'hazır',
   Providers: 'Sağlayıcılar',

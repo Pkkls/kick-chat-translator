@@ -2,7 +2,7 @@
 export const ar: Record<string, string> = {
   available: 'متاح',
   unavailable: 'غير متاح',
-  'v2 · options & preferences': 'v2 · الخيارات والتفضيلات',
+  'options & preferences': 'الخيارات والتفضيلات',
   saved: 'محفوظ',
   ready: 'جاهز',
   Providers: 'مزودو الترجمة',

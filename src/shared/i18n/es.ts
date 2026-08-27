@@ -1,6 +1,6 @@
 // Spanish UI translations. Keys = verbatim English source strings.
 export const es: Record<string, string> = {
-  'v2 · options & preferences': 'v2 · opciones y preferencias',
+  'options & preferences': 'opciones y preferencias',
   saved: 'guardado',
   ready: 'listo',
   Providers: 'Proveedores',
