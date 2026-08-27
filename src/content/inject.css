@@ -765,7 +765,7 @@ html[data-kt-scheme='light'] .kt-compose:hover .kt-compose-insert {
   border-radius: 8px;
   /* No drop shadow: Kick has none on any surface, menus included. The list
      separates from the page by its own aplat plus a hairline. */
-  outline: 1px solid #42474d;
+  outline: 1px solid #6c6c6d;
   background: #171a1c;
 }
 .kt-chip-menu[hidden] {
@@ -833,15 +833,27 @@ html[data-kt-scheme='light'] .kt-compose:hover .kt-compose-insert {
   background: #262a2d;
 }
 
+/* Motion, off.
+   The named-selector version of this covered the chip and nothing else: the
+   toast fade, the compose panel's loading pulse, the retry reveal, the bar and
+   its dot, and the insert button all kept moving. Seven of the eleven animating
+   rules, including both `animation`s, which are the ones the query exists for.
+
+   The popup and the options page use a blanket `*` for this. That is not
+   available here: this stylesheet is injected into Kick's page, and stopping
+   every transition on it would be reaching into someone else's document. So the
+   blanket is scoped to what we inject, which is every class we own. */
 @media (prefers-reduced-motion: reduce) {
-  .kt-chip,
-  .kt-chip-caret,
-  .kt-chip[data-mode='loading'] {
-    transition: none;
-    animation: none;
+  [class^='kt-'],
+  [class*=' kt-'],
+  [class^='kt-']::before,
+  [class*=' kt-']::before,
+  [class^='kt-']::after,
+  [class*=' kt-']::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
-  /* The rotation is a state, not a flourish: it stays, it just arrives without
-     the sweep. */
 }
 
 /* Light theme. Kick publishes no light palette, so this mirrors the dark one
@@ -894,7 +906,7 @@ html[data-kt-scheme='light'] .kt-chip[data-mode='error'] {
   color: #8e1a20;
 }
 html[data-kt-scheme='light'] .kt-chip-menu {
-  outline-color: #8d8d8e;
+  outline-color: #8b8b8c;
   background: #ffffff;
 }
 html[data-kt-scheme='light'] .kt-chip-row {
