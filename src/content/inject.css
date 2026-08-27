@@ -37,13 +37,15 @@
 
 .kt-provider {
   font-size: 0.62em;
-  opacity: 0.4;
+  /* .4 flattened to 3.78:1. .55 gives 6.26 and still reads as secondary. */
+  opacity: 0.55;
   margin-left: 6px;
   font-family: ui-monospace, monospace;
 }
 
 .kt-loading {
-  opacity: 0.4;
+  /* Same as the provider badge: .4 was 3.78:1. */
+  opacity: 0.55;
   font-size: 0.75em;
   margin-left: 4px;
   font-style: italic;
@@ -53,7 +55,10 @@
   display: block;
   margin-top: 2px;
   font-size: 0.7em;
-  color: rgba(240, 78, 78, 0.7);
+  /* An error message you cannot read is worse than none: at .7 opacity this
+     measured 3.19:1, and it only ever appears when something has gone wrong.
+     Full colour gives 5.53 on the chat ground. */
+  color: #f04e4e;
   font-style: italic;
 }
 
@@ -88,12 +93,16 @@
   margin-top: 2px;
   padding: 1px 8px;
   font-size: 0.75em;
-  color: rgba(83, 252, 24, 0.3);
+  /* This line is the only thing saying a translation exists at all, and at .3
+     it measured 2.17:1 — the least readable text in the extension, on the one
+     element whose whole job is to be noticed. .6 gives 5.52, .85 on hover
+     gives 10.40. */
+  color: rgba(83, 252, 24, 0.6);
   cursor: pointer;
   user-select: none;
 }
 .kt-hover-placeholder:hover {
-  color: rgba(83, 252, 24, 0.7);
+  color: rgba(83, 252, 24, 0.85);
 }
 
 /* #9 Compact mode: inline after message. Same green cue as the other styles —
@@ -463,6 +472,10 @@
   }
   .kt-retry {
     color: rgba(40, 150, 20, 0.9);
+  }
+  /* #F04E4E is tuned for the dark ground; on white it drops to 3.50. */
+  .kt-error {
+    color: #d14444;
   }
   .kt-float {
     background: rgba(245, 247, 250, 0.92);

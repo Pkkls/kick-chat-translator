@@ -70,6 +70,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Four pieces of chat text were below AA and had never been measured. Worst
+  first: the **error message** sat at 3.19:1 — unreadable at the one moment it
+  exists for — and the **hover-mode placeholder**, the only thing on screen
+  saying a translation is available, sat at 2.17:1, the least readable text in
+  the extension. The provider badge and the loading marker were both 3.78:1.
+  Now 5.53, 5.52, 6.26 and 6.26.
+
 - **The chip landed under the message box instead of inside it.** Found by
   loading the extension on a live channel rather than in a harness. The row
   holding the shield, the field and the emote button measures 380x77 while the
