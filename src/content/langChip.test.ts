@@ -4,6 +4,7 @@ import {
   isClipped,
   isLangChipMounted,
   localName,
+  matchesQuery,
   mountLangChip,
   unmountLangChip,
   updateLangChip,
@@ -250,5 +251,82 @@ describe('clipping', () => {
     mountLangChip(composer, state(), noop);
     const chip = document.querySelector<HTMLElement>('#kt-lang-chip')!;
     expect(isClipped(chip)).toBe(true);
+  });
+});
+
+describe('filtering — 42 languages must never need a scrollbar', () => {
+  const openList = (favorites: string[] = []) => {
+    const { composer } = makeComposerRow();
+    mountLangChip(composer, state({ favorites }), noop);
+    document.querySelector<HTMLElement>('#kt-lang-chip')!.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }),
+    );
+    return document.querySelector<HTMLInputElement>('.kt-chip-search')!;
+  };
+  const visible = () =>
+    Array.from(document.querySelectorAll<HTMLElement>('.kt-chip-row')).filter((r) => !r.hidden);
+
+  it('opens with the filter focused, so typing just works', () => {
+    const search = openList();
+    expect(document.activeElement).toBe(search);
+  });
+
+  it('narrows the list as you type', () => {
+    const search = openList();
+    const before = visible().length;
+    search.value = 'fr';
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+    const after = visible().length;
+    expect(after).toBeGreaterThan(0);
+    expect(after).toBeLessThan(before);
+  });
+
+  it('matches the ISO code, which is what a non-English reader types', () => {
+    const search = openList();
+    search.value = 'ja';
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+    expect(visible().some((r) => r.dataset.code === 'ja')).toBe(true);
+  });
+
+  it('says so when nothing matches, instead of showing an empty box', () => {
+    const search = openList();
+    search.value = 'zzzzzz';
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+    expect(visible()).toHaveLength(0);
+    expect(document.querySelector<HTMLElement>('.kt-chip-empty')!.hidden).toBe(false);
+  });
+
+  it('Enter takes the first remaining match', () => {
+    const { composer } = makeComposerRow();
+    const onPick = vi.fn();
+    mountLangChip(composer, state(), { onPick, onAuto: () => {} });
+    document.querySelector<HTMLElement>('#kt-lang-chip')!.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }),
+    );
+    const search = document.querySelector<HTMLInputElement>('.kt-chip-search')!;
+    search.value = 'japan';
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+    search.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(onPick).toHaveBeenCalled();
+  });
+});
+
+describe('matchesQuery', () => {
+  it('ignores accents in either direction', () => {
+    expect(matchesQuery('français', 'fr', 'francais')).toBe(true);
+    expect(matchesQuery('francais', 'fr', 'français')).toBe(true);
+  });
+
+  it('matches on the ISO code as well as the name', () => {
+    expect(matchesQuery('フランス語', 'fr', 'fr')).toBe(true);
+  });
+
+  it('an empty query keeps everything', () => {
+    expect(matchesQuery('anything', 'xx', '   ')).toBe(true);
+  });
+
+  // Control: it must actually reject, or the filter is decorative.
+  it('rejects what does not match', () => {
+    expect(matchesQuery('français', 'fr', 'zzz')).toBe(false);
   });
 });

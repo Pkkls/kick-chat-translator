@@ -18,5 +18,13 @@
   "chipError": {
     "message": "الترجمة غير متاحة. انقر لإعادة المحاولة.",
     "description": "Chip tooltip when the engines gave up."
+  },
+  "chipSearch": {
+    "message": "تصفية اللغات",
+    "description": "Placeholder and label of the language filter box."
+  },
+  "chipNoMatch": {
+    "message": "لا توجد لغة مطابقة",
+    "description": "Shown when the filter matches no language."
   }
 }

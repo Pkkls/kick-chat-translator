@@ -18,5 +18,13 @@
   "chipError": {
     "message": "Çeviri kullanılamıyor. Yeniden denemek için tıklayın.",
     "description": "Chip tooltip when the engines gave up."
+  },
+  "chipSearch": {
+    "message": "Dilleri filtrele",
+    "description": "Placeholder and label of the language filter box."
+  },
+  "chipNoMatch": {
+    "message": "Eşleşen dil yok",
+    "description": "Shown when the filter matches no language."
   }
 }

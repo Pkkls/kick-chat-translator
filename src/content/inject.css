@@ -695,3 +695,58 @@
     background: #e2e2e3;
   }
 }
+
+/* Filter box. 42 languages do not fit a list at screen height, so the list is
+   not meant to be walked: two keystrokes reach any of them and the scrollbar
+   stops being the way through. */
+.kt-chip-search {
+  inline-size: 100%;
+  margin-block-end: 4px;
+  padding: 6px 9px;
+  border: 1px solid #5e5e5f;
+  border-radius: 4px;
+  background: #0b0b0c;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 12.5px;
+}
+.kt-chip-search::placeholder {
+  color: #9fa6ad;
+}
+.kt-chip-search:focus-visible {
+  outline: 2px solid #53fc18;
+  outline-offset: -1px;
+}
+.kt-chip-row[hidden],
+.kt-chip-sep[hidden],
+.kt-chip-empty[hidden] {
+  display: none;
+}
+.kt-chip-empty {
+  padding: 10px 9px;
+  color: #9fa6ad;
+  font-size: 12.5px;
+}
+
+@media (prefers-color-scheme: light) {
+  .kt-chip-search {
+    border-color: #8d8d8e;
+    background: #ffffff;
+    color: #0b0b0c;
+  }
+  .kt-chip-search::placeholder {
+    color: #5e5e5f;
+  }
+  .kt-chip-search:focus-visible {
+    outline-color: #35a10f;
+  }
+  .kt-chip-empty {
+    color: #5e5e5f;
+  }
+}
+
+/* The options live in their own listbox: a listbox may only hold options, so
+   the filter field and the empty-state notice sit outside it. */
+.kt-chip-list {
+  display: block;
+}

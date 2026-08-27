@@ -19,6 +19,7 @@ import { LANGUAGES, getLang } from '~/shared/languages';
 
 const CHIP_ID = 'kt-lang-chip';
 const MENU_ID = 'kt-lang-menu';
+const LIST_ID = 'kt-lang-list';
 const HOLD_MS = 400;
 
 export type ChipMode = 'auto' | 'pinned' | 'off' | 'loading' | 'error';
@@ -82,18 +83,59 @@ function makeChip(): HTMLButtonElement {
   return chip;
 }
 
+/**
+ * The popup. Deliberately role-less.
+ *
+ * A `listbox` may only contain `option` children, so putting the filter field
+ * inside one is invalid — axe rejects it as a critical violation. The correct
+ * shape is a combobox that owns a separate listbox, which is what this builds.
+ */
 function makeMenu(): HTMLElement {
   const menu = document.createElement('div');
   menu.id = MENU_ID;
   menu.className = 'kt-chip-menu';
-  menu.setAttribute('role', 'listbox');
   menu.hidden = true;
   return menu;
 }
 
-/** Rows of the list: the favourites first, then every supported language. */
+/**
+ * Match a language against what was typed.
+ *
+ * Both the displayed name and the ISO code, because the two audiences differ:
+ * someone reading a Japanese interface sees フランス語 but may well type "fr".
+ * Accents are folded so "francais" finds "français".
+ */
+export function matchesQuery(name: string, code: string, query: string): boolean {
+  const fold = (s: string): string =>
+    s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const q = fold(query.trim());
+  if (!q) return true;
+  return fold(name).includes(q) || fold(code).includes(q);
+}
+
+/** Rows of the list: a filter box, the favourites, then every supported language. */
 function fillMenu(menu: HTMLElement, state: ChipState, h: ChipHandlers, close: () => void): void {
   menu.textContent = '';
+
+  // 42 languages do not fit any list at screen height, so the list is never
+  // meant to be walked: two keystrokes should reach any of them. Sorting alone
+  // makes the list predictable, not short.
+  const search = document.createElement('input');
+  search.type = 'text';
+  search.className = 'kt-chip-search';
+  search.setAttribute('role', 'combobox');
+  search.setAttribute('aria-expanded', 'true');
+  search.setAttribute('aria-controls', LIST_ID);
+  search.setAttribute('aria-autocomplete', 'list');
+  search.setAttribute('aria-label', msg('chipSearch', 'Filter languages'));
+  search.placeholder = msg('chipSearch', 'Filter languages');
+  menu.appendChild(search);
+
+  const list = document.createElement('div');
+  list.id = LIST_ID;
+  list.className = 'kt-chip-list';
+  list.setAttribute('role', 'listbox');
+  menu.appendChild(list);
 
   const add = (code: string, name: string, group: string): void => {
     const row = document.createElement('button');
@@ -114,6 +156,7 @@ function fillMenu(menu: HTMLElement, state: ChipState, h: ChipHandlers, close: (
     label.textContent = name;
     row.appendChild(label);
 
+    row.dataset.name = name;
     row.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -121,7 +164,7 @@ function fillMenu(menu: HTMLElement, state: ChipState, h: ChipHandlers, close: (
       if (code === 'auto') h.onAuto();
       else h.onPick(code);
     });
-    menu.appendChild(row);
+    list.appendChild(row);
   };
 
   add('auto', autoLabel(), 'auto');
@@ -136,7 +179,8 @@ function fillMenu(menu: HTMLElement, state: ChipState, h: ChipHandlers, close: (
 
   const sep = document.createElement('div');
   sep.className = 'kt-chip-sep';
-  menu.appendChild(sep);
+  sep.setAttribute('role', 'presentation');
+  list.appendChild(sep);
 
   // Sorted with the UI locale's collation, on the names actually displayed —
   // a plain sort puts Čeština after Zulu in any locale that has accents.
@@ -144,6 +188,38 @@ function fillMenu(menu: HTMLElement, state: ChipState, h: ChipHandlers, close: (
     .map((l) => ({ code: l.code, name: localName(l.code, l.native) }))
     .sort((a, b) => collator().compare(a.name, b.name));
   for (const l of rest) add(l.code, l.name, 'all');
+
+  const empty = document.createElement('div');
+  empty.className = 'kt-chip-empty';
+  empty.setAttribute('role', 'status');
+  empty.hidden = true;
+  empty.textContent = msg('chipNoMatch', 'No language matches');
+  menu.appendChild(empty);
+
+  const applyFilter = (): void => {
+    const q = search.value;
+    let shown = 0;
+    for (const row of menu.querySelectorAll<HTMLElement>('.kt-chip-row')) {
+      const hit = matchesQuery(row.dataset.name ?? '', row.dataset.code ?? '', q);
+      row.hidden = !hit;
+      if (hit) shown++;
+    }
+    // The separator only means something while both groups are on screen.
+    sep.hidden = q.trim().length > 0;
+    empty.hidden = shown > 0;
+  };
+  search.addEventListener('input', applyFilter);
+  search.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      menu.querySelector<HTMLElement>('.kt-chip-row:not([hidden])')?.focus();
+    } else if (e.key === 'Enter') {
+      // Enter on a single remaining match picks it: two keystrokes, no pointer.
+      e.preventDefault();
+      const rows = menu.querySelectorAll<HTMLElement>('.kt-chip-row:not([hidden])');
+      if (rows.length >= 1) rows[0]!.click();
+    }
+  });
 }
 
 let cachedCollator: Intl.Collator | undefined;
@@ -271,7 +347,7 @@ export function mountLangChip(composer: HTMLElement, state: ChipState, h: ChipHa
     menu.hidden = false;
     chip.setAttribute('aria-expanded', 'true');
     placeMenu(chip, menu);
-    menu.querySelector<HTMLElement>('.kt-chip-row')?.focus();
+    menu.querySelector<HTMLElement>('.kt-chip-search')?.focus();
   };
 
   let current = state;
@@ -330,7 +406,7 @@ export function mountLangChip(composer: HTMLElement, state: ChipState, h: ChipHa
   });
 
   const onMenuKey = (e: KeyboardEvent): void => {
-    const rows = Array.from(menu.querySelectorAll<HTMLElement>('.kt-chip-row'));
+    const rows = Array.from(menu.querySelectorAll<HTMLElement>('.kt-chip-row:not([hidden])'));
     const i = rows.indexOf(document.activeElement as HTMLElement);
     if (e.key === 'ArrowDown') {
       e.preventDefault();

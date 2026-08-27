@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   instead of 42 languages x 11 locales.
 - Sorting now uses the interface locale's collation. A plain sort puts
   Čeština after Zulu; measured, ja/tr/cs all disagree with it.
+- A filter box at the top of the list. 42 languages fit in no list at screen
+  height, so the list was never meant to be walked: type two letters and press
+  Enter. Matching folds accents and also covers the ISO code, because someone
+  reading a Japanese interface sees フランス語 but types "fr".
 - `Show the language button in the message box` in Options → Display.
 
 ### Fixed
@@ -35,6 +39,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Selected-row text in the light theme measured 4.20:1 against the green
   highlight, below AA. Found by rendering the component rather than by
   reading the stylesheet.
+- The popup wrapped its filter field in a `listbox`, which may only contain
+  options — a critical ARIA violation. It is now a combobox owning a separate
+  listbox.
 
 
 ## [2.7.0] - 2026-08-16
