@@ -18,7 +18,6 @@
   font-size: 0.9em;
   color: rgba(255, 255, 255, 0.78);
   line-height: 1.35;
-  word-break: break-word;
 }
 
 .kt-translation-inline {
@@ -118,6 +117,16 @@
 .kt-translation,
 .kt-translation-inline,
 .kt-translation-replace {
+  /* One place decides wrapping for all three styles.
+     A single unbreakable token - a spam run, a long URL, a wall of CJK - took
+     our translation to 530px inside a 356px column and scrolled the chat
+     sideways by 121px in `inline` and 186 in `replace`; `below` was the only
+     one carrying a break rule of its own.
+
+     `anywhere` rather than `break-word`: on the inline-block pill, break-word
+     leaves the min-content width alone and 6px of overflow survived, measured.
+     Rather than `break-all`, which would also chop words that fit. */
+  overflow-wrap: anywhere;
   cursor: copy;
 }
 

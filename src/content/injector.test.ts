@@ -127,9 +127,34 @@ describe('injector artifacts', () => {
       expect(soleRule(injectCss, '.kt-translation-replace')).toBe('');
     });
 
-    it('lists every style in the copy-cursor rule', () => {
-      const selector = /([^{}]*)\{\s*cursor:\s*copy;\s*\}/.exec(injectCss)?.[1] ?? '';
-      for (const cls of styleClasses) expect(selector).toContain(`.${cls}`);
+    /**
+     * The rule the three styles share.
+     *
+     * This used to be found by matching a body of exactly `cursor: copy;`,
+     * which made the assertion depend on the rule declaring nothing else. The
+     * day wrapping moved into it - one place deciding for all three instead of
+     * `below` carrying its own - the probe stopped finding the rule and
+     * reported an empty selector list rather than a changed one. Found by its
+     * selector list now, which is what the test is actually about.
+     */
+    const shared = (() => {
+      for (const m of injectCss.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
+        const head = m[1]!.replace(/\/\*[\s\S]*?\*\//g, '').trim();
+        const list = head.split(',').map((x) => x.trim());
+        if (list.length === 3 && styleClasses.every((c) => list.includes(`.${c}`))) return m[2]!;
+      }
+      return '';
+    })();
+
+    it('lists every style in the shared rule', () => {
+      expect(shared).not.toBe('');
+      expect(shared).toMatch(/cursor:\s*copy/);
+    });
+
+    // Wrapping lives there too: a single unbreakable token used to take the
+    // translation to 530px inside a 356px column and scroll the chat sideways.
+    it('gives all three styles the same break behaviour', () => {
+      expect(shared).toMatch(/overflow-wrap:\s*anywhere/);
     });
 
     it('reveals the retry button on every style', () => {
@@ -680,9 +705,32 @@ describe('hover to translate', () => {
    * rather than left as a comment, because the day it starts working is the day
    * someone can go back to the shorter form.
    *
-   * `showLoading` still uses `:scope >` for its own duplicate guard. It is
-   * correct in a browser and untestable here for the same reason.
+   * `showLoading` carried the same shape and now walks children too, so its
+   * guard is asserted below rather than trusted.
    */
+  it('does not stack a second loading marker on a line that already has one', () => {
+    const row = document.createElement('div');
+    showLoading(row);
+    showLoading(row);
+    showLoading(row);
+    expect(row.querySelectorAll('.kt-loading')).toHaveLength(1);
+  });
+
+  // Control: the guard must be looking at THIS line's own children, not at any
+  // marker anywhere beneath it, or a nested quote carrying one would silence
+  // the real line.
+  it('still marks a line whose marker belongs to something nested', () => {
+    const row = document.createElement('div');
+    const quoted = document.createElement('div');
+    const stale = document.createElement('span');
+    stale.className = 'kt-loading';
+    quoted.appendChild(stale);
+    row.appendChild(quoted);
+    showLoading(row);
+    expect(row.querySelectorAll('.kt-loading')).toHaveLength(2);
+    expect([...row.children].filter((c) => c.classList.contains('kt-loading'))).toHaveLength(1);
+  });
+
   it('records that this DOM does not answer a scope selector', () => {
     const row = document.createElement('div');
     const mark = document.createElement('span');

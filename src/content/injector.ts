@@ -207,7 +207,12 @@ export function removeAllArtifacts(targetEl: Element): void {
 }
 
 export function showLoading(targetEl: Element): void {
-  if (targetEl.querySelector(`:scope > .${LOADING_CLASS}`)) return;
+  // Children walked rather than queried, for the same reason armHoverTranslate
+  // does: a ":scope >" selector matches nothing in the DOM the unit suite runs
+  // on, so the guard was right in a browser and untestable everywhere else.
+  for (const child of targetEl.children) {
+    if (child.classList.contains(LOADING_CLASS)) return;
+  }
   const span = document.createElement('span');
   span.className = LOADING_CLASS;
   span.textContent = ' …';
