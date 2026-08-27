@@ -44,7 +44,7 @@ export function DebugSection() {
 
   return (
     <section class="kt-card space-y-3">
-      <h2 class="text-sm font-semibold">{t('Last decisions')}</h2>
+      <h2 class="kt-section">{t('Last decisions')}</h2>
       <p class="text-[12px] text-kick-muted">
         {t(
           'Why each recent message was translated or left alone. Read from an open Kick tab, kept in memory there, never saved to disk.',

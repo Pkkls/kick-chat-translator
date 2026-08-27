@@ -5,7 +5,7 @@ export function AboutSection() {
   return (
     <section class="kt-card space-y-4">
       <div>
-        <h2 class="text-sm font-semibold mb-1">{t('About')}</h2>
+        <h2 class="kt-section mb-1">{t('About')}</h2>
         <p class="text-sm text-kick-muted leading-relaxed">
           {t(
             'Kick Chat Translator listens to chat in real time and translates non-English (or non-target-language) messages right under the original. No tracking, no account, fully open-source.',

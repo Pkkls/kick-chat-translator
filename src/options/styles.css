@@ -82,8 +82,29 @@
   .kt-textarea:focus-visible { outline: 2px solid theme('colors.kick.primary'); outline-offset: 1px; }
   .kt-label { @apply text-[11px] uppercase tracking-wider text-kick-muted; }
   .kt-btn { @apply rounded-md bg-kick-primary px-3 py-2 text-sm font-semibold text-kick-dark hover:brightness-95 transition; }
-  .kt-btn-ghost { @apply rounded-md border border-kick-border bg-transparent px-3 py-2 text-sm font-medium text-kick-text hover:bg-kick-surface transition; }
-  .kt-card { @apply rounded-lg border border-kick-border bg-kick-surface p-5; }
+  .kt-btn-ghost { @apply rounded-md border border-kick-stroke bg-transparent px-3 py-2 text-sm font-medium text-kick-text hover:bg-kick-surface transition; }
+  /* Structure carried by rhythm, not by outlines.
+     Measured on the rendered pages: the card fill separates from the page at
+     1.09:1 and its border at 1.18:1, so neither edge was visible. That is not
+     a bug to fix by raising them, it is how Kick draws: its own surface sits
+     at 1.13:1 on its ink, and about.kick.com has no decorative borders at all.
+     What made 113 boxes across six tabs read as noise is that they added
+     corners and edges without delimiting anything legible. So the card keeps
+     its fill and loses its border, the settings inside it lose their box
+     entirely, and space does the separating. */
+
+  /* A section heading was `text-sm font-semibold`: 14px, the same size as the
+     body text under it, told apart by weight alone. */
+  .kt-section {
+    @apply text-base font-semibold tracking-tight text-kick-text;
+  }
+
+  /* One setting. No frame, no fill: it is a row in a card, not a card in a card. */
+  .kt-setting {
+    @apply py-2;
+  }
+
+  .kt-card { @apply rounded-lg bg-kick-surface p-5; }
   .kt-row { @apply flex flex-col gap-1.5; }
 }
 

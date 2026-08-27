@@ -19,7 +19,7 @@ export function DisplaySection({ settings, onPatch }: Props) {
   return (
     <>
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">{t('Translation target')}</h2>
+        <h2 class="kt-section">{t('Translation target')}</h2>
         <div class="kt-row">
           <label class="kt-label">{t('Translate everything to')}</label>
           <select
@@ -42,7 +42,7 @@ export function DisplaySection({ settings, onPatch }: Props) {
       </section>
 
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">{t('Display style')}</h2>
+        <h2 class="kt-section">{t('Display style')}</h2>
         {/* Two by two rather than a single row. A fourth column would put each
             card at 60px on the 280px window the page is checked against, and
             the descriptions are what make the cards worth having. */}
@@ -113,7 +113,7 @@ export function DisplaySection({ settings, onPatch }: Props) {
       </section>
 
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">{t('Compose preview')}</h2>
+        <h2 class="kt-section">{t('Compose preview')}</h2>
         <p class="text-[12px] text-kick-muted">
           {t(
             'Translate what you type before sending. A live preview appears above the chat box; click it to drop the translation in. Uses the same DeepL-first chain as incoming chat.',
@@ -211,10 +211,7 @@ function StylePreview({ settings }: { settings: Settings }) {
   return (
     <div>
       <div class="text-[11px] text-kick-muted mb-1">{t('Preview')}</div>
-      <div
-        ref={host}
-        class="rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2 text-sm"
-      />
+      <div ref={host} class="kt-setting text-sm" />
     </div>
   );
 }
@@ -235,7 +232,7 @@ function StyleCard({
       class={`text-start rounded-md border p-3 transition ${
         active
           ? 'border-kick-primary bg-kick-primary/10'
-          : 'border-kick-border bg-kick-dark/40 hover:border-kick-muted'
+          : 'border-kick-stroke bg-kick-dark/40 hover:border-kick-stroke-strong'
       }`}
       onClick={onClick}
     >
@@ -259,7 +256,7 @@ function ToggleRow({
   hint?: string;
 }) {
   return (
-    <div class="rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
+    <div class="kt-setting">
       <Check
         checked={checked}
         onChange={onChange}

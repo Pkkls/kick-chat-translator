@@ -28,7 +28,7 @@ export function UsageTrend({ stats }: { stats: UsageStats }) {
 
   return (
     <section class="kt-card space-y-3">
-      <h2 class="text-sm font-semibold">{t('Usage')}</h2>
+      <h2 class="kt-section">{t('Usage')}</h2>
 
       {trend.length > 1 && (
         <div>

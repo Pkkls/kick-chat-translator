@@ -49,7 +49,7 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
       <EngineCard settings={settings} onPatch={onPatch} />
 
       <section class="kt-card">
-        <h2 class="text-sm font-semibold mb-3">{t('Cloud fallback chain')}</h2>
+        <h2 class="kt-section mb-3">{t('Cloud fallback chain')}</h2>
         <p class="text-xs text-kick-muted mb-3">
           {t(
             "Used when on-device is off or a language pair isn't downloaded. Providers are tried in order; failing ones are temporarily skipped (exponential cooldown).",
@@ -59,10 +59,7 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
           {settings.providerOrder.map((id, i) => {
             const status = providers.find((p) => p.id === id);
             return (
-              <li
-                key={id}
-                class="flex items-center gap-2 rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2"
-              >
+              <li key={id} class="flex items-center gap-2 kt-setting">
                 <span class="font-mono text-xs text-kick-muted w-5">{i + 1}.</span>
                 <span class="min-w-0 flex-1 truncate text-sm" title={t(PROVIDER_LABELS[id])}>
                   {t(PROVIDER_LABELS[id])}
@@ -111,7 +108,7 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
       </section>
 
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">DeepL</h2>
+        <h2 class="kt-section">DeepL</h2>
         <div class="kt-row">
           <label class="kt-label">{t('API key')}</label>
           <input
@@ -162,7 +159,7 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
       </section>
 
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">{t('Lingva instance')}</h2>
+        <h2 class="kt-section">{t('Lingva instance')}</h2>
         <div class="kt-row">
           <label class="kt-label" for="kt-lingva-url">
             {t('Custom URL (optional)')}

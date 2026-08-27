@@ -68,7 +68,7 @@ export function EngineCard({ settings, onPatch }: Props) {
   return (
     <section class="kt-card space-y-3">
       <div class="flex items-center justify-between">
-        <h2 class="text-sm font-semibold">{t('Engine')}</h2>
+        <h2 class="kt-section">{t('Engine')}</h2>
         <span
           class={`text-[11px] font-medium ${present ? 'text-kick-primary' : 'text-kick-muted'}`}
         >
@@ -97,7 +97,7 @@ export function EngineCard({ settings, onPatch }: Props) {
         </p>
       </div>
 
-      <div class="rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
+      <div class="kt-setting">
         <Check
           checked={settings.localEnabled}
           onChange={(v) => onPatch({ localEnabled: v })}
@@ -128,8 +128,8 @@ export function EngineCard({ settings, onPatch }: Props) {
                           // which language pair has no model. 75% keeps AA on both
                           // grounds (4.62 on a card, 4.85 on the page) and still reads
                           // as unavailable next to the enabled ones.
-                          'border-kick-border text-kick-muted/75 cursor-not-allowed'
-                        : 'border-kick-border text-kick-text hover:border-kick-primary'
+                          'border-kick-stroke text-kick-muted/75 cursor-not-allowed'
+                        : 'border-kick-stroke text-kick-text hover:border-kick-primary'
                   }`}
                   onClick={() => void download(s)}
                 >

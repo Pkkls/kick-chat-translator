@@ -32,7 +32,7 @@ export function FilterSection({ settings, onPatch }: Props) {
   return (
     <>
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">{t('General')}</h2>
+        <h2 class="kt-section">{t('General')}</h2>
         <ToggleRow
           checked={settings.ignoreEnglish}
           onChange={(v) => onPatch({ ignoreEnglish: v })}
@@ -70,7 +70,7 @@ export function FilterSection({ settings, onPatch }: Props) {
       </section>
 
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">{t('Source languages allowlist')}</h2>
+        <h2 class="kt-section">{t('Source languages allowlist')}</h2>
         <p class="text-xs text-kick-muted">
           {t(
             'Leave empty to translate every detected language. Pick specific ones to ONLY translate those (e.g. only JA + KO).',
@@ -102,7 +102,7 @@ export function FilterSection({ settings, onPatch }: Props) {
                 class={`rounded-md border px-2 py-1 text-xs transition ${
                   checked
                     ? 'border-kick-primary bg-kick-primary/10'
-                    : 'border-kick-border bg-kick-dark/30'
+                    : 'border-kick-stroke bg-kick-dark/30'
                 }`}
               >
                 <Check
@@ -129,7 +129,7 @@ export function FilterSection({ settings, onPatch }: Props) {
       </section>
 
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">{t('Channels & users')}</h2>
+        <h2 class="kt-section">{t('Channels & users')}</h2>
         <div class="kt-row">
           <label class="kt-label" for="kt-whitelist-channels">
             {t('Whitelist channels (only translate on these)')}
@@ -175,7 +175,7 @@ export function FilterSection({ settings, onPatch }: Props) {
       </section>
 
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">{t('Glossary')}</h2>
+        <h2 class="kt-section">{t('Glossary')}</h2>
         <p class="text-[11px] text-kick-muted">
           {t(
             'Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.',
@@ -203,7 +203,7 @@ function ToggleRow({
   label: string;
 }) {
   return (
-    <div class="rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
+    <div class="kt-setting">
       <Check checked={checked} onChange={onChange} label={label} reverse />
     </div>
   );

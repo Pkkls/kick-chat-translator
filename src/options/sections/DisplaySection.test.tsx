@@ -64,7 +64,10 @@ describe('display style preview', () => {
     const root = mount({});
     const labels = [...root.querySelectorAll('button')].map((b) => b.textContent ?? '');
     for (const label of ['Below', 'Inline', 'Replace', 'On hover']) {
-      expect(labels.some((l) => l.includes(label)), `no card for ${label}`).toBe(true);
+      expect(
+        labels.some((l) => l.includes(label)),
+        `no card for ${label}`,
+      ).toBe(true);
     }
   });
 

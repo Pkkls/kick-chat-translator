@@ -40,13 +40,13 @@ export function AdvancedSection({ settings, onPatch }: Props) {
   return (
     <>
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">{t('Connection')}</h2>
+        <h2 class="kt-section">{t('Connection')}</h2>
         <p class="text-[11px] text-kick-muted">
           {t('Whether a Kick tab keeps translating once you look away.')}
         </p>
         {/* A div, not a label: Check renders its own <label>, and nesting one
             inside another is invalid and leaves the outer one naming nothing. */}
-        <div class="rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
+        <div class="kt-setting">
           <Check
             checked={settings.pauseWhenHidden}
             onChange={(v) => onPatch({ pauseWhenHidden: v })}
@@ -58,7 +58,7 @@ export function AdvancedSection({ settings, onPatch }: Props) {
       </section>
 
       <section class="kt-card space-y-4">
-        <h2 class="text-sm font-semibold">{t('Cache & performance')}</h2>
+        <h2 class="kt-section">{t('Cache & performance')}</h2>
         <p class="text-[11px] text-kick-muted">
           {t(
             'Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels.',
@@ -136,7 +136,7 @@ export function AdvancedSection({ settings, onPatch }: Props) {
       </section>
 
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">{t('Backup')}</h2>
+        <h2 class="kt-section">{t('Backup')}</h2>
         <p class="text-[11px] text-kick-muted">
           {t('Save your configuration to a JSON file, or restore it on another browser.')}
         </p>
@@ -165,8 +165,8 @@ export function AdvancedSection({ settings, onPatch }: Props) {
       </section>
 
       <section class="kt-card space-y-3">
-        <h2 class="text-sm font-semibold">{t('Debugging')}</h2>
-        <div class="rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
+        <h2 class="kt-section">{t('Debugging')}</h2>
+        <div class="kt-setting">
           <Check
             checked={settings.debug}
             onChange={(v) => onPatch({ debug: v })}

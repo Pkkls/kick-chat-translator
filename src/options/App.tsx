@@ -94,7 +94,7 @@ export function App() {
             K
           </div>
           <div>
-            <h1 class="text-xl font-semibold tracking-tight">Kick Chat Translator</h1>
+            <h1 class="text-2xl font-bold tracking-tight">Kick Chat Translator</h1>
             <p class="text-xs text-kick-muted">
               v{chrome.runtime.getManifest().version} · {t('options & preferences')}
             </p>
@@ -102,7 +102,7 @@ export function App() {
           <div class="ms-auto flex items-center gap-3">
             {savedAt && <span class="text-xs text-kick-primary">{t('saved')}</span>}
             <select
-              class="rounded border border-kick-border bg-kick-surface px-1.5 py-1 text-xs text-kick-text"
+              class="rounded border border-kick-stroke bg-kick-surface px-1.5 py-1 text-xs text-kick-text"
               value={settings.uiLang}
               onChange={(e) =>
                 void patch({ uiLang: (e.target as HTMLSelectElement).value as Settings['uiLang'] })
@@ -143,7 +143,9 @@ export function App() {
               aria-selected={tab === tb.id}
               aria-controls={`panel-${tb.id}`}
               tabIndex={tab === tb.id ? 0 : -1}
-              ref={(el) => { tabRefs.current[tb.id] = el as HTMLButtonElement | null; }}
+              ref={(el) => {
+                tabRefs.current[tb.id] = el as HTMLButtonElement | null;
+              }}
               class={`shrink-0 whitespace-nowrap px-4 py-2 text-sm border-b-2 transition ${
                 tab === tb.id
                   ? 'border-kick-primary text-kick-text'
@@ -161,7 +163,8 @@ export function App() {
           role="tabpanel"
           aria-labelledby={`tab-${tab}`}
           tabIndex={0}
-          class="space-y-6 pb-12">
+          class="space-y-6 pb-12"
+        >
           {tab === 'providers' && (
             <ProviderSection settings={settings} providers={providers} onPatch={patch} />
           )}
