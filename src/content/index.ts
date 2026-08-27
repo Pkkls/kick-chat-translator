@@ -43,7 +43,7 @@ async function main(): Promise<void> {
   applyShowOriginal(settings.showOriginal);
 
   const pipeline = new TranslationPipeline(settings);
-  const compose = new ComposeController(settings);
+  const compose = new ComposeController(settings, (patch) => void patchSettings(patch));
   let currentSlug: string | undefined;
 
   const observer = new ChatObserver((msg) => {

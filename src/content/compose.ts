@@ -10,11 +10,14 @@
  * input listener is passive and the heavy work is fully off the keystroke path.
  */
 import type { Settings } from '~/shared/settings';
+import { withFavorite } from '~/shared/languages';
 import { rootLogger } from '~/shared/logger';
 import { createMetrics } from '~/shared/metrics';
 import { send } from '~/shared/messages';
 import { confidentLanguage, detectLanguage } from './langDetect';
 import { extractMessageText, findAllRows, findComposer } from './selectors';
+import type { ChipHandlers, ChipState } from './langChip';
+import { mountLangChip, unmountLangChip, updateLangChip } from './langChip';
 import { memCache } from './memcache';
 import {
   COMPOSE_DEBOUNCE_MS,
@@ -79,8 +82,40 @@ export class ComposeController {
   private channelLang: string | undefined;
   private running = false;
 
-  constructor(settings: Settings) {
+  /** Persists a settings change made from the chip (favourites, target language). */
+  private readonly persist: (patch: Partial<Settings>) => void;
+
+  constructor(settings: Settings, persist: (patch: Partial<Settings>) => void = () => {}) {
     this.settings = settings;
+    this.persist = persist;
+  }
+
+  /** What the chip in the message box should currently show. */
+  private chipState(): ChipState {
+    const favorites = this.settings.favoriteLangs;
+    if (!this.settings.enabled) return { mode: 'off', code: '', favorites };
+    const auto = this.settings.composeTargetLang === 'auto';
+    return {
+      mode: auto ? 'auto' : 'pinned',
+      code: this.resolveTarget(),
+      favorites,
+    };
+  }
+
+  private syncChip(): void {
+    if (this.settings.showComposerChip) updateLangChip(this.chipState());
+  }
+
+  private chipHandlers(): ChipHandlers {
+    return {
+      onPick: (code) => {
+        this.persist({
+          composeTargetLang: code,
+          favoriteLangs: withFavorite(this.settings.favoriteLangs, code),
+        });
+      },
+      onAuto: () => this.persist({ composeTargetLang: 'auto' }),
+    };
   }
 
   start(): void {
@@ -101,6 +136,7 @@ export class ComposeController {
     this.polling = false;
     this.detachComposer();
     unmountComposePreview();
+    unmountLangChip();
   }
 
   updateSettings(next: Settings): void {
@@ -122,6 +158,7 @@ export class ComposeController {
       this.lastSource = undefined;
       void this.evaluate();
     }
+    this.syncChip();
   }
 
   /**
@@ -137,6 +174,7 @@ export class ComposeController {
       this.lastSource = undefined;
       void this.evaluate();
     }
+    this.syncChip();
   }
 
   /** Effective output language: the detected channel language in 'auto' mode. */
@@ -194,12 +232,18 @@ export class ComposeController {
     mountComposePreview(composer, this.resolveTarget(), {
       onInsert: () => this.handleInsert(),
     });
+    // The chip lives in Kick's message box, not above it: switching the language
+    // you write in must never send the pointer to the top of the chat.
+    if (this.settings.showComposerChip) {
+      mountLangChip(composer, this.chipState(), this.chipHandlers());
+    }
     this.lastSource = undefined;
     log.debug('bound to composer', composer.tagName);
     void this.evaluate();
   }
 
   private detachComposer(): void {
+    unmountLangChip();
     this.composer?.removeEventListener('input', this.onInput);
     this.composer?.removeEventListener('keyup', this.onInput);
     this.composer?.removeEventListener('keydown', this.onKeydown);

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { MIN_TEXT_LENGTH, STORAGE_KEY_DEEPL_KEY, STORAGE_KEY_SETTINGS } from './constants';
+import { FAVORITE_LANGS_MAX, MIN_TEXT_LENGTH, STORAGE_KEY_DEEPL_KEY, STORAGE_KEY_SETTINGS } from './constants';
 import { AUTO, isSupportedLang } from './languages';
 
 // A language setting is either 'auto' or a supported ISO code; anything else
@@ -99,7 +99,20 @@ export const SettingsSchema = z.object({
   // 'insert' drops the translation into the chat box (you press Enter); 'copy'
   // puts it on the clipboard instead (safe fallback if Kick's editor rejects writes).
   composeInsertMode: z.enum(['insert', 'copy']).default('insert'),
+
+  // Languages pinned on the chip that sits in Kick's message box, most recent
+  // first. Empty by default: the chip then opens straight onto the full list,
+  // and the first language picked becomes the first favourite. No configuration
+  // step, and no list that reorders itself under the pointer between two clicks.
+  favoriteLangs: z
+    .array(z.string())
+    .default([])
+    .transform((v) => v.filter((c) => isSupportedLang(c)).slice(0, FAVORITE_LANGS_MAX)),
+  // The chip is anchored in the message box on purpose: changing the language
+  // you write in must never mean travelling to the top of the chat.
+  showComposerChip: z.boolean().default(true),
 });
+
 
 export type Settings = z.infer<typeof SettingsSchema>;
 

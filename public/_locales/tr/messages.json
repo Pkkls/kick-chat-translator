@@ -2,5 +2,21 @@
   "extDescription": {
     "message": "Kick sohbetini akıp giderken kendi dilinize, yanıtlarınızı da kanalın diline çevirir.",
     "description": "Store listing blurb and manifest description. 132 character limit."
+  },
+  "chipAuto": {
+    "message": "Kanalın dili",
+    "description": "Chip menu row: follow the channel's broadcast language."
+  },
+  "chipPaused": {
+    "message": "Çeviri duraklatıldı",
+    "description": "Chip tooltip when translation is switched off."
+  },
+  "chipLoading": {
+    "message": "Çevriliyor…",
+    "description": "Chip tooltip while a translation is in flight."
+  },
+  "chipError": {
+    "message": "Çeviri kullanılamıyor. Yeniden denemek için tıklayın.",
+    "description": "Chip tooltip when the engines gave up."
   }
 }

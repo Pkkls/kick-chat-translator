@@ -1,3 +1,4 @@
+import { FAVORITE_LANGS_MAX } from './constants';
 export interface LangInfo {
   code: string;
   label: string;
@@ -178,4 +179,16 @@ export function resolveBrowserLang(): string {
 export function resolveTargetLang(setting: string, autoValue?: string): string {
   if (setting !== 'auto') return setting;
   return autoValue && BY_CODE.has(autoValue.toLowerCase()) ? autoValue.toLowerCase() : resolveBrowserLang();
+}
+
+/**
+ * Push `code` to the front of the favourites, keeping the list capped and unique.
+ *
+ * Lives here rather than next to the settings schema on purpose: the content
+ * script imports this, and `settings.ts` pulls zod in as a value — which
+ * `nozod.test.ts` forbids in that bundle.
+ */
+export function withFavorite(current: readonly string[], code: string): string[] {
+  if (!isSupportedLang(code)) return [...current];
+  return [code, ...current.filter((c) => c !== code)].slice(0, FAVORITE_LANGS_MAX);
 }

@@ -64,6 +64,11 @@ export function DisplaySection({ settings, onPatch }: Props) {
           label={t('Show floating bar at top of chat (toggle live)')}
         />
         <ToggleRow
+          checked={settings.showComposerChip}
+          onChange={(v) => onPatch({ showComposerChip: v })}
+          label={t('Show the language button in the message box')}
+        />
+        <ToggleRow
           checked={settings.showOriginal}
           onChange={(v) => onPatch({ showOriginal: v })}
           label={t('Keep original text visible')}

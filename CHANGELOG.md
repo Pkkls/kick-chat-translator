@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **A language button inside Kick's message box.** Switching the language you
+  write in used to mean travelling to the bar at the top of the chat and back;
+  the chip sits next to the emote button instead, so the pointer never leaves
+  the text field. One click toggles between the channel's language and your
+  last pick, press-and-hold (or the Down arrow) opens the list.
+- Favourites, seeded by use rather than configured. The list starts empty, the
+  first language picked becomes the first favourite, and it stops reordering
+  once you have one — a list that shuffles between two clicks makes you miss
+  the click.
+- The language list now renders in the interface language. It used to be
+  English whatever the extension was set to, so a Japanese user configuring a
+  fully translated extension still met a list they could not read.
+  `Intl.DisplayNames` supplies the names, which is 0 strings to maintain
+  instead of 42 languages x 11 locales.
+- Sorting now uses the interface locale's collation. A plain sort puts
+  Čeština after Zulu; measured, ja/tr/cs all disagree with it.
+- `Show the language button in the message box` in Options → Display.
+
+### Fixed
+
+- The waiting state used to fade its label in and out, which dropped the text
+  to 2.22:1 against its own background. The pulse moved to the border, which
+  is held to 3:1 rather than 4.5:1, so the label keeps its full contrast.
+- Selected-row text in the light theme measured 4.20:1 against the green
+  highlight, below AA. Found by rendering the component rather than by
+  reading the stylesheet.
+
+
 ## [2.7.0] - 2026-08-16
 
 ### Fixed

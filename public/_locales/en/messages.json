@@ -2,5 +2,21 @@
   "extDescription": {
     "message": "Translates Kick chat into your language as it scrolls, and your replies into the channel's.",
     "description": "Store listing blurb and manifest description. 132 character limit."
+  },
+  "chipAuto": {
+    "message": "Channel's language",
+    "description": "Chip menu row: follow the channel's broadcast language."
+  },
+  "chipPaused": {
+    "message": "Translation paused",
+    "description": "Chip tooltip when translation is switched off."
+  },
+  "chipLoading": {
+    "message": "Translating…",
+    "description": "Chip tooltip while a translation is in flight."
+  },
+  "chipError": {
+    "message": "Translation unavailable. Click to retry.",
+    "description": "Chip tooltip when the engines gave up."
   }
 }

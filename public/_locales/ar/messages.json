@@ -2,5 +2,21 @@
   "extDescription": {
     "message": "يترجم دردشة Kick إلى لغتك أثناء تدفقها، ويترجم ردودك إلى لغة القناة.",
     "description": "Store listing blurb and manifest description. 132 character limit."
+  },
+  "chipAuto": {
+    "message": "لغة القناة",
+    "description": "Chip menu row: follow the channel's broadcast language."
+  },
+  "chipPaused": {
+    "message": "الترجمة متوقفة مؤقتًا",
+    "description": "Chip tooltip when translation is switched off."
+  },
+  "chipLoading": {
+    "message": "جارٍ الترجمة…",
+    "description": "Chip tooltip while a translation is in flight."
+  },
+  "chipError": {
+    "message": "الترجمة غير متاحة. انقر لإعادة المحاولة.",
+    "description": "Chip tooltip when the engines gave up."
   }
 }

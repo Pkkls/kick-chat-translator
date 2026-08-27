@@ -10,3 +10,9 @@ coverage/
 *.tsbuildinfo
 .env
 .env.local
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+graft/
+
+# Working notes and state-harness output — not part of the package.
+scratchpad/

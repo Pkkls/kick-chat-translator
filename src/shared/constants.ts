@@ -72,3 +72,6 @@ export const COMMON_BOTS = new Set([
   'kick',
   'kickbot',
 ]);
+
+/** How many languages the composer chip keeps pinned. Four fits 340px; five does not. */
+export const FAVORITE_LANGS_MAX = 4;
