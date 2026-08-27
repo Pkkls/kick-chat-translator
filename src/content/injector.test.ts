@@ -452,3 +452,29 @@ describe('injector artifacts', () => {
     expect(target.textContent).toBe('mensaje');
   });
 });
+
+/**
+ * Every rule that reaches Kick's own message text has to name 7TV's token span
+ * as well as Kick's. 7TV replaces `span.font-normal` with
+ * `span.seventv-text-token`, so a selector that only knows the former silently
+ * stops working for everyone running it — measured in a browser: the original
+ * stayed visible next to its translation while the native path hid it.
+ */
+describe('7TV', () => {
+  it('hides the original for 7TV as well as for native Kick', () => {
+    const rules = injectCss
+      .split('\n')
+      .filter((l) => l.includes('.kt-hide-original') && l.includes('font-normal'));
+    expect(rules.length, 'no hide-original rule reaches the message text').toBeGreaterThan(0);
+    for (const rule of rules) {
+      expect(rule, `this rule ignores 7TV: ${rule.trim()}`).toContain('seventv-text-token');
+    }
+  });
+
+  // Control: the check must fail on a selector that forgot 7TV, or it proves
+  // nothing about the ones that remember it.
+  it('rejects a rule that names only Kick own class', () => {
+    const bad = '.kt-hide-original div:has(> .kt-translation) span.font-normal {';
+    expect(bad.includes('seventv-text-token')).toBe(false);
+  });
+});
