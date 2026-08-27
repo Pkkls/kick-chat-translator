@@ -425,8 +425,17 @@ export function mountLangChip(composer: HTMLElement, state: ChipState, h: ChipHa
   const cleanup: (() => void)[] = [];
 
   const close = (): void => {
+    // Focus has to come back to what opened the list, or a keyboard user who
+    // picks a language is dropped on <body> and has to tab in from the top of
+    // the page again. Escape did this; picking with Enter did not.
+    //
+    // Guarded on where focus actually is: the outside-click listener runs on
+    // `click`, by which point focus has already moved to whatever was clicked,
+    // so this never drags it back off a Kick control.
+    const wasInside = menu.contains(document.activeElement);
     menu.hidden = true;
     chip.setAttribute('aria-expanded', 'false');
+    if (wasInside) chip.focus();
   };
   const open = (): void => {
     fillMenu(menu, current, h, close);
@@ -502,8 +511,7 @@ export function mountLangChip(composer: HTMLElement, state: ChipState, h: ChipHa
       rows[(i - 1 + rows.length) % rows.length]?.focus();
     } else if (e.key === 'Escape') {
       e.preventDefault();
-      close();
-      chip.focus(); // focus returns to what opened the list
+      close(); // close() brings the focus back
     }
   };
   menu.addEventListener('keydown', onMenuKey);
