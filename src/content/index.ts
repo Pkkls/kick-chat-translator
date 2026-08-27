@@ -21,12 +21,18 @@ import {
 import { ChatObserver } from './observer';
 import { mountMetricsBridge } from './metricsBridge';
 import { ComposeController } from './compose';
-import { SELECTORS, findChatPanel, findComposer, pickFirst, pickInjectionTarget } from './selectors';
+import {
+  SELECTORS,
+  findChatPanel,
+  findComposer,
+  pickFirst,
+  pickInjectionTarget,
+} from './selectors';
 import { extractChannelSlug, fetchChannelLangIso } from './kickApi';
 import { localEngine } from './localEngine';
 import { logPlatform, refresh7TV } from './platform';
 import { langFlag } from '~/shared/languages';
-import { msg as localised } from './msg';
+import { msg as localised, setContentLocale } from './msg';
 
 const log = rootLogger.child('content');
 // One-shot guard so the "Kick DOM changed" warning toast shows at most once per page.
@@ -40,6 +46,9 @@ async function main(): Promise<void> {
 
   let settings: Settings = await fetchSettings();
   rootLogger.setEnabled(settings.debug);
+  // Before anything is drawn. Every label the chat and the bar put on screen
+  // reads this, and so do the language names in the chip menu.
+  setContentLocale(settings.uiLang);
 
   ensureStyles();
   applyChatScheme();
@@ -51,7 +60,10 @@ async function main(): Promise<void> {
   // handful of getComputedStyle calls.
   const themeWatch = new MutationObserver(() => applyChatScheme());
   for (const node of [document.documentElement, document.body]) {
-    themeWatch.observe(node, { attributes: true, attributeFilter: ['class', 'style', 'data-theme'] });
+    themeWatch.observe(node, {
+      attributes: true,
+      attributeFilter: ['class', 'style', 'data-theme'],
+    });
   }
 
   const pipeline = new TranslationPipeline(settings);
@@ -76,7 +88,9 @@ async function main(): Promise<void> {
     const tgt = settings.targetLang;
     if (localEngine.hasReadyForTarget(tgt)) return { kind: 'ready' };
     const downloadable = localEngine.downloadablePairs().filter((p) => p.tgt === tgt);
-    const downloading = downloadable.find((p) => localEngine.stateOf(p.src, p.tgt) === 'downloading');
+    const downloading = downloadable.find(
+      (p) => localEngine.stateOf(p.src, p.tgt) === 'downloading',
+    );
     if (downloading) {
       return { kind: 'downloading', pct: localEngine.progressOf(downloading.src, downloading.tgt) };
     }
@@ -112,7 +126,9 @@ async function main(): Promise<void> {
           onTargetLang: (targetLang) => void patchSettings({ targetLang }),
           onOpenOptions: () => void chrome.runtime.sendMessage({ type: 'open.options' }),
           onEnableLocal: () => {
-            const pairs = localEngine.downloadablePairs().filter((p) => p.tgt === settings.targetLang);
+            const pairs = localEngine
+              .downloadablePairs()
+              .filter((p) => p.tgt === settings.targetLang);
             void localEngine.download(pairs.length ? pairs : localEngine.downloadablePairs());
           },
         });
@@ -141,7 +157,8 @@ async function main(): Promise<void> {
         barGuardTimer = undefined;
         // Presence has to be asked of the panel on screen, not of the document:
         // the id survives inside the hidden copy Kick leaves behind.
-        if (settings.showFloatingBar && !findChatPanel()?.querySelector('#kt-floating-bar')) mountBar();
+        if (settings.showFloatingBar && !findChatPanel()?.querySelector('#kt-floating-bar'))
+          mountBar();
       }, 500);
     }).observe(document.body, { childList: true, subtree: true });
   }
@@ -159,11 +176,11 @@ async function main(): Promise<void> {
         domWarned = true;
         log.warn('chat container & composer not found — Kick DOM likely changed');
         showToast(
-      localised(
-        'toastChatNotFound',
-        'Kick Chat Translator: chat not found. An update may be needed.',
-      ),
-    );
+          localised(
+            'toastChatNotFound',
+            'Kick Chat Translator: chat not found. An update may be needed.',
+          ),
+        );
       }
     }, 12_000);
   }
@@ -235,24 +252,28 @@ async function main(): Promise<void> {
   let scrollTimer: ReturnType<typeof setTimeout> | undefined;
   const chatContainer = document.querySelector('#channel-chatroom .no-scrollbar');
   if (chatContainer) {
-    chatContainer.addEventListener('scroll', () => {
-      if (scrollTimer) clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(() => {
-        if (!settings.enabled) return;
-        const rows = chatContainer.querySelectorAll('div[data-index][data-kt-id]');
-        let retried = 0;
-        for (const row of rows) {
-          if (row.querySelector(HANDLED_SELECTOR)) continue;
-          row.removeAttribute('data-kt-id');
-          retried++;
-        }
-        if (retried > 0) {
-          log.debug(`Scroll-stop prefetch: retrying ${retried} untranslated rows`);
-          observer.reset();
-          observer.start();
-        }
-      }, 800);
-    }, { passive: true });
+    chatContainer.addEventListener(
+      'scroll',
+      () => {
+        if (scrollTimer) clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(() => {
+          if (!settings.enabled) return;
+          const rows = chatContainer.querySelectorAll('div[data-index][data-kt-id]');
+          let retried = 0;
+          for (const row of rows) {
+            if (row.querySelector(HANDLED_SELECTOR)) continue;
+            row.removeAttribute('data-kt-id');
+            retried++;
+          }
+          if (retried > 0) {
+            log.debug(`Scroll-stop prefetch: retrying ${retried} untranslated rows`);
+            observer.reset();
+            observer.start();
+          }
+        }, 800);
+      },
+      { passive: true },
+    );
   }
 
   // Note: the "pause when hidden" quota guard lives in the pipeline, which reads
@@ -271,12 +292,19 @@ async function main(): Promise<void> {
    * `showOriginal` is deliberately absent. It is applied through a class on the
    * document root, so it already follows the setting live and re-running rows for
    * it would be work with no effect.
+   *
+   * `uiLang` is here for exactly the reason the others are: a line's flag
+   * tooltip names the source language in the reader's own language, and a line
+   * left alone says why in a sentence. Both are written once, at injection.
+   * Re-running is cheap, since the translations themselves come back from the
+   * cache.
    */
   const RERENDER_KEYS = [
     'targetLang',
     'displayStyle',
     'showSourceBadge',
     'showProviderBadge',
+    'uiLang',
   ] as const satisfies readonly (keyof Settings)[];
 
   /**
@@ -312,6 +340,9 @@ async function main(): Promise<void> {
     pipeline.updateSettings(next);
     compose.updateSettings(next);
     rootLogger.setEnabled(next.debug);
+    // Ahead of everything that redraws below, so the bar and the chip come back
+    // in the language that was just chosen rather than one change late.
+    setContentLocale(next.uiLang);
     updateFloatingBar(next);
     applyShowOriginal(next.showOriginal);
     refreshChip();

@@ -194,12 +194,27 @@ export function withFavorite(current: readonly string[], code: string): string[]
 }
 
 /**
+ * Set by the content script from the `uiLang` setting.
+ *
+ * The popup and the options page pass their locale explicitly and never touch
+ * this. The content script cannot: chrome.i18n answers in the browser's
+ * language and MV3 gives no way to ask it for another, so a chat menu was
+ * named and sorted by the browser while the setting said otherwise.
+ */
+let forced: string | undefined;
+
+export function setUiLocale(locale: string | undefined): void {
+  forced = locale;
+}
+
+/**
  * The interface language, whichever context this runs in.
  *
  * `chrome` is absent under test and in a plain page, and reading a missing
  * binding throws rather than yielding undefined — hence the typeof guard.
  */
 export function uiLocale(): string {
+  if (forced) return forced;
   try {
     if (typeof chrome !== 'undefined' && chrome.i18n?.getUILanguage) {
       return chrome.i18n.getUILanguage() || navigator.language || 'en';

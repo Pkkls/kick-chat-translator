@@ -1,23 +1,20 @@
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { mountLangChip, unmountLangChip, updateLangChip } from './langChip';
+import { localName, mountLangChip, unmountLangChip, updateLangChip } from './langChip';
+import { setContentLocale } from './msg';
+import { CHAT_MESSAGES } from './i18n';
 
 /**
  * The chip's tooltip is also its accessible name, and it was English-only in
  * exactly the two states a user sees all the time.
  *
- * `off`, `loading` and `error` went through chrome.i18n; `auto` and `pinned`
+ * `off`, `loading` and `error` went through the catalogue; `auto` and `pinned`
  * were template literals, so the two common states were the untranslated ones.
- * That is backwards, and nothing caught it: these live in public/_locales,
- * reached through msg(), not through the t() catalogues the coverage test
- * scans.
+ *
+ * Key parity across catalogues is checked in msg.coverage.test.ts, which reads
+ * the compiled tables rather than parsing files, and the store-listing strings
+ * in locales.test.ts. Two checks lived here and duplicated both.
  */
-const LOCALES = 'public/_locales';
-
-function catalogue(loc: string): Record<string, { message: string; placeholders?: object }> {
-  return JSON.parse(readFileSync(`${LOCALES}/${loc}/messages.json`, 'utf8'));
-}
-
 function mount(): HTMLElement {
   const composer = document.createElement('div');
   composer.setAttribute('contenteditable', 'true');
@@ -56,24 +53,29 @@ describe('chip labelling', () => {
     }
   });
 
-  it('asks the catalogue for the two common states, with the language filled in', () => {
-    const asked: [string, string[] | undefined][] = [];
-    vi.stubGlobal('chrome', {
-      i18n: {
-        getMessage: (key: string, subs?: string[]) => {
-          asked.push([key, subs]);
-          return key === 'chipPinnedTip' ? `PINNED ${subs?.[0]}` : '';
-        },
-      },
-    });
+  it('takes the two common states from the catalogue of the language that is set', () => {
+    // This used to stub chrome.i18n. The chat reads a compiled catalogue keyed
+    // on `uiLang` now, because chrome.i18n answers in the browser's language and
+    // MV3 offers no way to ask it for another, so the setting moved the options
+    // page and left the chat where it was.
+    setContentLocale('ja');
     const chip = mount();
     updateLangChip({ mode: 'pinned', code: 'ja', favorites: ['ja'] });
-    expect(asked.some(([k]) => k === 'chipPinnedTip')).toBe(true);
-    expect(chip.title).toBe('PINNED Japanese');
+    expect(chip.title).toBe(
+      CHAT_MESSAGES.ja!.chipPinnedTip!.replace('$LANG$', localName('ja', 'JA')),
+    );
 
     updateLangChip({ mode: 'auto', code: 'es', favorites: ['ja'] });
-    const auto = asked.find(([k]) => k === 'chipAutoTip');
-    expect(auto?.[1]).toEqual(['ES']);
+    expect(chip.title).toBe(CHAT_MESSAGES.ja!.chipAutoTip!.replace('$LANG$', 'ES'));
+  });
+
+  // Control: the same two states in English come back as the fallback the code
+  // carries, so the test above is reading a table rather than any string at all.
+  it('falls back to the English written at the call site', () => {
+    setContentLocale('en');
+    const chip = mount();
+    updateLangChip({ mode: 'auto', code: 'es', favorites: ['ja'] });
+    expect(chip.title).toContain("Writing in the channel's language (ES)");
   });
 
   it('substitutes the placeholder in the fallback too, so the two cannot drift', () => {
@@ -83,24 +85,6 @@ describe('chip labelling', () => {
     updateLangChip({ mode: 'pinned', code: 'ja', favorites: ['ja'] });
     expect(chip.title).not.toContain('$LANG$');
     expect(chip.title).toContain('Japanese');
-  });
-
-  it('keeps every catalogue on the same keys', () => {
-    const locales = readdirSync(LOCALES);
-    expect(locales.length).toBeGreaterThan(1);
-    const base = Object.keys(catalogue('en')).sort();
-    for (const loc of locales) {
-      expect({ loc, keys: Object.keys(catalogue(loc)).sort() }).toEqual({ loc, keys: base });
-    }
-  });
-
-  it('declares the placeholder wherever a message uses one', () => {
-    for (const loc of readdirSync(LOCALES)) {
-      for (const [key, entry] of Object.entries(catalogue(loc))) {
-        if (!entry.message.includes('$LANG$')) continue;
-        expect({ loc, key, has: Boolean(entry.placeholders) }).toEqual({ loc, key, has: true });
-      }
-    }
   });
 });
 

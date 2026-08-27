@@ -87,4 +87,39 @@ describe('content script dependency budget', () => {
     // If this fails, zod moved and the guard above is watching the wrong thing.
     expect(readFileSync('src/shared/settings.ts', 'utf8')).toContain(`from '${BANNED}'`);
   });
+
+  /**
+   * The interface catalogue must not come in either.
+   *
+   * `~/shared/i18n` exports resolveUiLocale, which is exactly the function the
+   * content script wants when it turns `uiLang` into a locale, and importing it
+   * drags UI_MESSAGES along: nine catalogues for the popup and the options page,
+   * 128.2KB of them, onto every Kick page. src/content/msg.ts carries its own
+   * four-line resolver for that reason, and this is what keeps the shortcut from
+   * looking harmless to the next person.
+   */
+  it('reaches no value import of the interface catalogue', () => {
+    const { files } = valueGraph(ENTRY);
+    const offenders: string[] = [];
+    for (const file of files) {
+      for (const m of readFileSync(file, 'utf8').matchAll(
+        /^\s*import\s+([\s\S]*?)\s*from\s*'([^']+)'/gm,
+      )) {
+        if (/^type\b/.test(m[1] ?? '')) continue;
+        const spec = m[2] ?? '';
+        if (/(^|\/)shared\/i18n(\.messages)?$/.test(spec) || spec.includes('shared/i18n/')) {
+          offenders.push(`${file.replace(/\\/g, '/')} imports ${spec}`);
+        }
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it('confirms shared/i18n.messages.ts is what would come with it', () => {
+    // Control on the rule above: the module named there is still the one that
+    // pulls all nine interface catalogues in.
+    const src = readFileSync('src/shared/i18n.messages.ts', 'utf8');
+    expect(src).toContain('UI_MESSAGES');
+    expect((src.match(/^import\s+\{\s*\w+\s*\}\s*from\s*'\.\/i18n\//gm) ?? []).length).toBe(9);
+  });
 });

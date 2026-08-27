@@ -21,7 +21,7 @@
  * is re-rendered by Kick's SPA, so the chip has to be re-mountable at any time,
  * and it must never be the reason a layout moves.
  */
-import { LANGUAGES, getLang } from '~/shared/languages';
+import { LANGUAGES, getLang, uiLocale } from '~/shared/languages';
 import { msg } from './msg';
 
 const CHIP_ID = 'kt-lang-chip';
@@ -313,28 +313,19 @@ function fillMenu(menu: HTMLElement, state: ChipState, h: ChipHandlers, close: (
   });
 }
 
-let cachedCollator: Intl.Collator | undefined;
-function collator(): Intl.Collator {
-  cachedCollator ??= new Intl.Collator(uiLocale());
-  return cachedCollator;
-}
-
 /**
- * The interface language.
+ * Collation for the language list, cached against the locale it was built for.
  *
- * `chrome` is absent under test and in any non-extension context, and reading a
- * missing binding throws rather than yielding undefined — hence the typeof
- * guard rather than optional chaining.
+ * It used to be cached outright. That was safe while the locale came from the
+ * browser and could not change inside a page; it is not now that it comes from
+ * a setting the user can change with the chat open, and a stale collator sorts
+ * the list by the language they just left.
  */
-function uiLocale(): string {
-  try {
-    if (typeof chrome !== 'undefined' && chrome.i18n?.getUILanguage) {
-      return chrome.i18n.getUILanguage() || navigator.language || 'en';
-    }
-    return navigator.language || 'en';
-  } catch {
-    return 'en';
-  }
+let cachedCollator: { locale: string; c: Intl.Collator } | undefined;
+function collator(): Intl.Collator {
+  const locale = uiLocale();
+  if (cachedCollator?.locale !== locale) cachedCollator = { locale, c: new Intl.Collator(locale) };
+  return cachedCollator.c;
 }
 
 function autoLabel(): string {
