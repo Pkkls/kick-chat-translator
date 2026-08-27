@@ -270,15 +270,18 @@
      the bar entirely. Measured at 340px: it was taking all 130px. */
   min-width: 0;
   max-width: 96px;
-  /* Opaque, and not transparent as before: the browser paints that list from the
-     control's own background, so a transparent control left it white under our
-     near white option text and only the highlighted row could be read. Matches
-     the bar it sits on, so the closed control looks the same as it did. */
-  background: #10141a;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  /* Same surface, stroke and text as the chip in the message box, so the two
+     language controls read as one control in two places rather than as two
+     unrelated widgets. The stroke matters beyond looks: the old
+     rgba(255,255,255,.15) flattened to #34373C, which is 1.62:1 against the
+     bar — well under the 3:1 WCAG 1.4.11 asks of a control's boundary.
+     #5F5F60 measures 3.04 there and 3.08 on the chat ground, so one value
+     covers both surfaces. */
+  background: #171a1c;
+  border: 1px solid #5f5f60;
   border-radius: 4px;
   padding: 1px 4px;
-  color: rgba(255, 255, 255, 0.78);
+  color: #ffffff;
   font-size: 11px;
   line-height: 1.4;
   cursor: pointer;
@@ -287,8 +290,8 @@
    reaches them. Named here so the list is readable whatever the page around it
    is doing. */
 .kt-float-lang option {
-  background-color: #10141a;
-  color: rgba(255, 255, 255, 0.9);
+  background-color: #171a1c;
+  color: #ffffff;
 }
 .kt-float-lang:hover {
   border-color: rgba(83, 252, 24, 0.4);
@@ -522,7 +525,7 @@
   min-width: 24px;
   padding: 0 8px;
   border-radius: 4px;
-  border: 1px solid #5e5e5f;
+  border: 1px solid #5f5f60;
   background: #171a1c;
   color: #ffffff;
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -745,7 +748,7 @@
   inline-size: 100%;
   margin-block-end: 4px;
   padding: 6px 9px;
-  border: 1px solid #5e5e5f;
+  border: 1px solid #5f5f60;
   border-radius: 4px;
   background: #0b0b0c;
   color: #ffffff;

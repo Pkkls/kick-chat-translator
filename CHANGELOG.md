@@ -61,6 +61,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- The language select in the bar at the top of the chat now uses the same
+  surface, stroke and text as the chip in the message box — one control in two
+  places rather than two unrelated widgets. Its border was
+  `rgba(255,255,255,.15)`, which flattens to 1.62:1 against the bar when WCAG
+  1.4.11 asks 3:1 of a control's boundary. `#5F5F60` measures 3.04 there and
+  3.08 on the chat ground, so a single value now covers both surfaces.
+
 - The waiting state used to fade its label in and out, which dropped the text
   to 2.22:1 against its own background. The pulse moved to the border, which
   is held to 3:1 rather than 4.5:1, so the label keeps its full contrast.
