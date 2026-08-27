@@ -12,6 +12,9 @@
 }
 
 .kt-translation-inline {
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: baseline;
   margin-left: 6px;
   padding: 1px 5px;
   background: rgba(83, 252, 24, 0.12);
@@ -111,7 +114,9 @@
    it reads as ours, not as part of what the user wrote. Italic and a smaller
    size stay its own identity. */
 .kt-translation-compact {
-  display: inline;
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: baseline;
   margin-left: 6px;
   padding: 1px 5px;
   background: rgba(83, 252, 24, 0.12);
