@@ -29,6 +29,26 @@
      Declared on the control itself, where the list actually reads it. This page
      has no light theme, so dark is the real theme and not a guess. */
   .kt-select { @apply w-full appearance-none rounded-md border border-kick-border bg-kick-surface px-3 py-2 text-sm text-kick-text outline-none focus:border-kick-primary; color-scheme: dark; }
+  /* An icon-only button sized by its glyph came out 23.7px wide, three tenths
+     of a pixel under the 24px WCAG 2.5.8 asks of a target. Floored rather than
+     padded, so the number does not drift with the glyph. */
+  /* A link on its own line is a target, not prose, and 2.5.8's inline
+     exception does not cover it: these measured 19px tall. */
+  .kt-link-target {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 24px;
+  }
+
+  .kt-btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 24px;
+    min-block-size: 24px;
+    padding-inline: 0.25rem;
+  }
+
   .kt-input { @apply w-full rounded-md border border-kick-border bg-kick-surface px-3 py-2 text-sm text-kick-text outline-none focus:border-kick-primary placeholder:text-kick-muted; }
   /* 110px is about six lines, reserved for lists that are usually empty and
      rarely pass three entries — measured, the three of them held 330px of the

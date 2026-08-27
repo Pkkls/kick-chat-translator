@@ -17,7 +17,7 @@ export function AboutSection() {
         <ul class="text-sm space-y-1">
           <li>
             <a
-              class="text-kick-primary underline"
+              class="kt-link-target text-kick-primary underline"
               href="https://github.com/Pkkls/kick-chat-translator"
               target="_blank"
               rel="noreferrer"
@@ -27,7 +27,7 @@ export function AboutSection() {
           </li>
           <li>
             <a
-              class="text-kick-primary underline"
+              class="kt-link-target text-kick-primary underline"
               href="https://github.com/Pkkls/kick-chat-translator/blob/master/PRIVACY.md"
               target="_blank"
               rel="noreferrer"
@@ -37,7 +37,7 @@ export function AboutSection() {
           </li>
           <li>
             <a
-              class="text-kick-primary underline"
+              class="kt-link-target text-kick-primary underline"
               href="https://github.com/Pkkls/kick-chat-translator/issues"
               target="_blank"
               rel="noreferrer"

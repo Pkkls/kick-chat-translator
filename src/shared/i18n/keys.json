@@ -138,5 +138,14 @@
   "Read decisions",
   "No Kick tab is open. Open a channel, let the chat run, then read again.",
   "The open Kick tab has not loaded the extension yet. Reload the tab, then read again.",
-  "Nothing recorded yet. Let a chat run for a moment, then read again."
+  "Nothing recorded yet. Let a chat run for a moment, then read again.",
+  "Filter languages",
+  "No language matches",
+  "Move up",
+  "Move down",
+  "Remove",
+  "Settings sections",
+  "Show the quick language button in chat",
+  "Usage",
+  "most translated languages"
 ]

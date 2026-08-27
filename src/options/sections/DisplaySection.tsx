@@ -76,7 +76,7 @@ export function DisplaySection({ settings, onPatch }: Props) {
         <ToggleRow
           checked={settings.showComposerChip}
           onChange={(v) => onPatch({ showComposerChip: v })}
-          label={t('Show the language button in the message box')}
+          label={t('Show the quick language button in chat')}
         />
         <ToggleRow
           checked={settings.showOriginal}

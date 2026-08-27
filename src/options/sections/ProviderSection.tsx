@@ -72,14 +72,26 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
                     {status.available ? t('ok') : t('down')}
                   </span>
                 )}
-                <button class="kt-btn-ghost py-1 px-2 text-xs" onClick={() => move(id, -1)}>
-                  ↑
+                <button
+                  class="kt-btn-ghost kt-btn-icon text-xs"
+                  aria-label={`${t('Move up')}: ${t(PROVIDER_LABELS[id])}`}
+                  onClick={() => move(id, -1)}
+                >
+                  <span aria-hidden="true">↑</span>
                 </button>
-                <button class="kt-btn-ghost py-1 px-2 text-xs" onClick={() => move(id, +1)}>
-                  ↓
+                <button
+                  class="kt-btn-ghost kt-btn-icon text-xs"
+                  aria-label={`${t('Move down')}: ${t(PROVIDER_LABELS[id])}`}
+                  onClick={() => move(id, +1)}
+                >
+                  <span aria-hidden="true">↓</span>
                 </button>
-                <button class="kt-btn-ghost py-1 px-2 text-xs" onClick={() => toggle(id)}>
-                  ✕
+                <button
+                  class="kt-btn-ghost kt-btn-icon text-xs"
+                  aria-label={`${t('Remove')}: ${t(PROVIDER_LABELS[id])}`}
+                  onClick={() => toggle(id)}
+                >
+                  <span aria-hidden="true">✕</span>
                 </button>
               </li>
             );
