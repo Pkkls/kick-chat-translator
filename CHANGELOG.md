@@ -6,8 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [2.8.0] - 2026-08-27
 
 ### Added
+
+- A fourth display style. "Replace" had been a fourth value in the settings
+  schema that no control could select, and the style it named rendered the same
+  9 messages at the same row height as "Inline" while leaving the original
+  standing beside it. It replaces the message now: 12 messages where inline
+  shows 9, and it no longer follows the "keep original" switch, because
+  replacing and keeping are the same request twice.
+
+- A caret on the language button. The list opened on press-and-hold or the Down
+  arrow, which nothing on screen suggested. A click on the code still toggles
+  the language; a click on the caret opens the list.
 
 - A filter above the source-language allowlist in Options → Filters. It listed
   all 42 languages inside a 260px scroll box, which is the same "walk the list"
@@ -22,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   last pick, press-and-hold (or the Down arrow) opens the list.
 - Favourites, seeded by use rather than configured. The list starts empty, the
   first language picked becomes the first favourite, and it stops reordering
-  once you have one — a list that shuffles between two clicks makes you miss
+  once you have one, and a list that shuffles between two clicks makes you miss
   the click.
 - **Every** language menu now renders in the interface language, and sorts for
   it: the popup, both menus on the Options page, the source-language allowlist,
@@ -45,9 +57,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The chat, the bar and the language menus follow the interface language you
+  chose, not the browser's. 39 strings that were English whatever the extension
+  was set to now come from the catalogue, and the shipped locale files went
+  from 3 languages to 10.
+
+- Controls in the popup carry a visible boundary and a focus ring. The select,
+  the text field and the outline buttons drew their edge at 1.18:1, which WCAG
+  holds to 3:1, and `outline: none` had removed the only focus indicator the
+  browser gave them.
+
+- Explanatory text on the Options page wraps at a readable width. It ran 105 to
+  114 characters a line, in 11px type, because the page is wide for the sake of
+  the controls rather than the sentences.
+
 - The bar at the top of the chat says **Translating** instead of
   "Translating → EN". Measured on a live channel: that label took 133px of a
-  420px bar — a third of it — and the "→ EN" half repeated the language menu
+  420px bar (a third of it), and the "→ EN" half repeated the language menu
   sitting immediately beside it. The resolved language moved to the tooltip.
 - The provider name is no longer printed in the bar. It held 39px permanently
   to name a service the reader has no decision to make about while it works;
@@ -57,28 +83,100 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The popup fits without scrolling again. Measured with realistic settings it
   stood at 669px against a 600px target; it is now 594px. The 7-day cache graph
   (36px) and the per-language pills (23px) moved to Options → Debug, and the
-  help line under "translate what I type" went altogether — it explained a
+  help line under "translate what I type" went altogether, since it explained a
   behaviour nobody configures, and the Options page already carries it.
   Nothing was resized to get there: two blocks left and one moved.
   Verified by rendering the built popup in all ten interface languages. Spanish
   was the one that still overflowed, at 606px, because "mantener original" and
   "insignia de idioma" each wrapped to a second line; both are shortened, and
-  the nine others were already fine — measuring only English would have shipped
+  the nine others were already fine, and measuring only English would have shipped
   the bug.
 
 - With "keep original text visible" off, the translation now behaves as the
   message rather than as an annotation of it: inline, full size, full contrast,
   no tint and no rule. Measured on a 24-message chat in a fixed window, this
-  went from 8 messages on screen to 14 — a row dropped from 40.0px to 18.2px.
+  went from 8 messages on screen to 14, with a row dropping from 40.0px to 18.2px.
   The previous styling kept the translation on its own line even with nothing
   above it, so hiding the original made rows *taller* (41.7px against 39.98px)
   while claiming to save room.
 
 ### Fixed
 
+- **The injected interface followed the desktop's light/dark setting instead of
+  Kick's.** A light desktop reading Kick's dark chat was handed the light
+  palette on a dark ground: the translation measured 1.01:1 against what it sat
+  on, which is invisible. It reads the chat's own background now, and follows
+  Kick's theme switch without a reload. Measured after the fix: 10.98:1.
+
+- **The language list could open off the top of the screen.** It only clamped
+  itself when an ancestor clipped it, and otherwise let CSS place it, which
+  knows nothing about the window: at 420x520 its top landed 132px above the
+  edge, with a third of the list unreachable. Rows also came out uneven, because
+  the two codes carrying a region, `pt-br` and `zh-tw`, wrapped onto a second
+  line. All 43 rows are one height now.
+
+- **Picking a language dropped keyboard focus on the page body.** Escape had
+  always returned it to the button; choosing with Enter did not, so a keyboard
+  user who had just set their language had to tab in from the top of the page.
+
+- **A failed translation took a row of its own**, and it never fails alone:
+  when a provider is down every line in the chat grew one, and the chat went
+  from 13 messages on screen to 8. The message sits on its line now.
+
+- **The retry control answered only to a mouse.** It was not in the tab order,
+  never reached in six tab presses, and on a touch device it stayed invisible
+  forever because it was revealed by hover. It takes Enter and Space now, shows
+  itself on focus, and is visible at rest wherever hovering is impossible.
+
+- **One unbreakable token pushed the whole chat sideways.** A spam run, a long
+  URL or a wall of CJK took the translation to 530px inside a 356px column and
+  scrolled the page by up to 186px. Only the "Below" style had ever carried a
+  break rule.
+
+- **The chat did not mirror for right-to-left reading.** The green rule sat at
+  the end of the line instead of the start, and the language badge ran into the
+  message. So did the popup and the Options page, where the switch, its knob,
+  the debug table and the language grid were all positioned physically. Arabic
+  is a shipped interface language.
+
+- **The "On hover" style put a label under every message**, whether or not you
+  ever hovered it: rows went from 31.4px to 50.6px and the chat lost a third of
+  what it could show. The marker costs nothing now, measured against an
+  untouched row.
+
+- **Hiding the original ate the emotes.** Nine of twelve cases lost their emote
+  boxes along with the text they sat in.
+
+- The Options page scrolled sideways in a narrow window. The tab bar wanted
+  491px against 366px available, so two tabs were only reachable by scrolling
+  the page itself.
+
+- The tab bar had no ARIA at all: six buttons, none announced as a tab, none
+  saying which section was showing, five tab presses to cross it and arrow keys
+  that did nothing. It is one tab stop now, with the arrows, Home and End.
+
+- Five controls had no accessible name and two switches shared one. Four
+  textareas on the Filters tab had a visible label sitting right above them
+  with nothing connecting the two, and both popup switches were called
+  "enable".
+
+- Nine strings rendered in English in all nine translated interfaces, including
+  the tab bar's own accessible name.
+
+- Animation kept running for people who asked their system to stop it. The
+  policy named the language button and nothing else, leaving the toast, the
+  compose panel's loading pulse, the retry reveal and the floating bar moving.
+
+- The language menu's edge measured 1.87:1 against its own fill, and its fill
+  measures 1.13:1 against Kick's chat, so nothing separated the two.
+
+- The compose panel drew a shadow Kick never uses, and its border measured
+  1.46:1. Icon-only buttons and the About links fell under the 24px minimum
+  target size.
+
 - Four pieces of chat text were below AA and had never been measured. Worst
-  first: the **error message** sat at 3.19:1 — unreadable at the one moment it
-  exists for — and the **hover-mode placeholder**, the only thing on screen
+  first: the **error message** sat at 3.19:1, unreadable at the one moment it
+  exists for, and the **hover-mode placeholder**, the only thing on screen
   saying a translation is available, sat at 2.17:1, the least readable text in
   the extension. The provider badge and the loading marker were both 3.78:1.
   Now 5.53, 5.52, 6.26 and 6.26.
@@ -98,7 +196,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **The whole Options page and popup failed AA on secondary text.** The `muted`
   token was `#6b7888`, which measures 4.30:1 on the page ground, 3.96 on a card
-  and 3.18 on an active green card — that is most of the explanatory text in the
+  and 3.18 on an active green card, which is most of the explanatory text in the
   extension. It is now Kick's own `#9FA6AD`: 7.87 / 7.24 / 7.52 / 5.82 on those
   same grounds. One token, 180 failures across the six tabs.
 - Every select and numeric field on the Options page and in the popup now has an
@@ -107,20 +205,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   setting it belonged to. axe rated this critical on four of the six tabs.
 - The language codes of unavailable on-device models were drawn at 50% opacity
   (2.76:1). WCAG allows that for a disabled control, but the label *is* the
-  information — it names which pair has no model. Now 75%, which keeps AA.
+  information: it names which pair has no model. Now 75%, which keeps AA.
 
 - The "Replace" display style rendered its text at 0.8em, about 10.4px.
   Measured against the other styles it bought nothing for that: the same 7
   messages on screen as Inline, the same opacity, just smaller. It now shares
   Inline's 0.85em.
 - The language select in the bar at the top of the chat now uses the same
-  surface, stroke and text as the chip in the message box — one control in two
+  surface, stroke and text as the chip in the message box, one control in two
   places rather than two unrelated widgets. Its border was
   `rgba(255,255,255,.15)`, which flattens to 1.62:1 against the bar when WCAG
   1.4.11 asks 3:1 of a control's boundary. `#5F5F60` measures 3.04 there and
   3.08 on the chat ground, so a single value now covers both surfaces.
 - Same fault in the light theme, where the bar's controls were outlined in
-  `rgba(0,0,0,.15)` — 1.42:1. `#8D8D8E` gives 3.11 on the bar, 3.02 on the chip
+  `rgba(0,0,0,.15)`, 1.42:1. `#8D8D8E` gives 3.11 on the bar, 3.02 on the chip
   surface and 3.32 on white.
 
 - The waiting state used to fade its label in and out, which dropped the text
@@ -130,9 +228,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   highlight, below AA. Found by rendering the component rather than by
   reading the stylesheet.
 - The popup wrapped its filter field in a `listbox`, which may only contain
-  options — a critical ARIA violation. It is now a combobox owning a separate
+  options, a critical ARIA violation. It is now a combobox owning a separate
   listbox.
-
 
 ## [2.7.0] - 2026-08-16
 

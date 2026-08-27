@@ -30,25 +30,17 @@ pick a language. (You still can, in settings.)
 
 ---
 
-## What's new in [2.7.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+## What's new in [2.8.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
 
-**Changing the reading language now changes what is already on screen.** It used to affect only the
-messages that arrived afterwards, so everything already visible kept the previous language until you
-reloaded the page. The same held for the display style and the badges.
+**A language button inside Kick's message box.** Switching the language you write in used to mean travelling to the bar at the top of the chat and back. The button sits with the chat controls instead, so the pointer never leaves the text field. A click swaps between the channel's language and your last pick, a click on the caret opens the full list, and the first language you choose becomes your favourite without any setting to fill in.
 
-**A stretched message gets a second chance.** Chat writes `muuuuy biennnn` and `BINNNNNGOOOOO`, and the
-translation services hand those straight back untranslated. When that happens the line is now retried
-once on its flattened text, which returns `muy bien` and `BINGO`. Only after a refusal, never before:
-the services already cope with some stretching, and flattening everything up front made those cases
-worse.
+**Translations were invisible for anyone whose desktop is set to light while Kick is dark.** The injected text followed the operating system rather than the chat it sits in, so it painted dark text on Kick's dark ground: measured at 1.01:1, which is no contrast at all. It reads the chat's own background now, and follows Kick's theme switch without a reload.
 
-**Your DeepL key stays on the machine you typed it on.** It used to sync to every Chrome signed into
-your account. An existing key moves across by itself.
+**"Replace" replaces.** It had been a fourth setting that no control could reach, naming a style that rendered exactly like "Inline" with the original still beside it. It shows 12 messages where inline shows 9. "On hover" also stopped writing a label under every message whether or not you ever hovered one, which had been costing the chat a third of what it could show.
 
-Also: the compose preview stopped telling the engine what language you wrote in unless it is certain,
-the extension no longer stays silent on a page when the browser was slow to wake its worker, and every
-Kick page carries 15% less script. Full list in [CHANGELOG.md](CHANGELOG.md).
+**The chat, the bar and every language menu now speak the language you chose**, not your browser's, in all ten interfaces.
 
+Also: the chat mirrors properly for Arabic, a long URL or a wall of spam no longer pushes the chat sideways, a failed line no longer grows a row of its own, the retry button works from the keyboard and on touch, everything animated stops for anyone who asks their system to stop it, and the whole interface is keyboard-navigable with every control named. Full list in [CHANGELOG.md](CHANGELOG.md).
 ---
 
 ## Install

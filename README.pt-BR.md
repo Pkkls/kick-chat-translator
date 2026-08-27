@@ -29,25 +29,17 @@ regionais (português do Brasil, chinês tradicional).
 
 ---
 
-## Novidades da [2.7.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+## Novidades da [2.8.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
 
-**Mudar o idioma de leitura agora muda o que já está na tela.** Antes só afetava as mensagens que
-chegavam depois, então tudo o que já estava visível mantinha o idioma anterior até você recarregar a
-página. O mesmo valia para o estilo de exibição e os selos.
+**Um botão de idioma dentro da caixa de mensagens do Kick.** Trocar o idioma em que você escreve exigia subir até a barra no topo do chat e voltar. Agora o botão fica junto aos controles do chat, então o ponteiro não sai do campo de texto. Um clique alterna entre o idioma do canal e a sua última escolha, um clique na seta abre a lista inteira, e o primeiro idioma escolhido vira favorito sem nenhuma configuração para preencher.
 
-**Uma mensagem esticada ganha uma segunda chance.** No chat se escreve `muuuuy biennnn` e
-`BINNNNNGOOOOO`, e os serviços de tradução devolvem isso do jeito que veio, sem traduzir. Quando isso
-acontece, a linha é tentada mais uma vez com o texto compactado, que devolve `muy bien` e `BINGO`. Só
-depois de uma recusa, nunca antes: os serviços já dão conta de alguns alongamentos, e compactar tudo de
-saída piorava esses casos.
+**As traduções ficavam invisíveis para quem usa o sistema no claro e o Kick no escuro.** O texto inserido seguia o sistema operacional em vez do chat onde ele vive, então pintava texto escuro sobre o fundo escuro do Kick: medido em 1,01:1, ou seja, contraste nenhum. Agora ele lê o fundo real do chat e acompanha a troca de tema do Kick sem recarregar.
 
-**Sua chave da DeepL fica na máquina onde você a digitou.** Antes ela sincronizava para todos os Chrome
-conectados à sua conta. Uma chave existente se muda sozinha.
+**"Substituir" substitui.** Era um quarto valor de configuração que nenhum controle alcançava, nomeando um estilo idêntico ao "Em linha" com o original ainda ao lado. Mostra 12 mensagens onde o em linha mostra 9. O "Ao passar o mouse" também parou de escrever um rótulo embaixo de cada mensagem, passasse você por cima ou não, o que custava ao chat um terço do que ele podia mostrar.
 
-Além disso: a prévia de redação parou de dizer ao motor em que idioma você escreveu a menos que tenha
-certeza, a extensão não fica mais muda numa página quando o navegador demorou a acordar seu worker, e
-cada página da Kick carrega 15% menos script. Lista completa em [CHANGELOG.md](CHANGELOG.md).
+**O chat, a barra e todos os menus de idioma falam agora o idioma que você escolheu**, não o do navegador, nas dez interfaces.
 
+Além disso: o chat espelha corretamente em árabe, uma URL longa ou uma parede de spam não empurra mais o chat para o lado, uma linha que falhou não ocupa mais uma fileira inteira, o botão de tentar de novo funciona pelo teclado e no toque, tudo que anima para para quem pede isso ao sistema, e a interface inteira é percorrível pelo teclado com cada controle nomeado. Lista completa em [CHANGELOG.md](CHANGELOG.md).
 ---
 
 ## Instalação
