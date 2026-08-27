@@ -45,6 +45,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   help line under "translate what I type" went altogether — it explained a
   behaviour nobody configures, and the Options page already carries it.
   Nothing was resized to get there: two blocks left and one moved.
+  Verified by rendering the built popup in all ten interface languages. Spanish
+  was the one that still overflowed, at 606px, because "mantener original" and
+  "insignia de idioma" each wrapped to a second line; both are shortened, and
+  the nine others were already fine — measuring only English would have shipped
+  the bug.
 
 - With "keep original text visible" off, the translation now behaves as the
   message rather than as an annotation of it: inline, full size, full contrast,
