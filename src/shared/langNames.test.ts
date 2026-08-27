@@ -26,7 +26,8 @@ describe('sortedLanguages', () => {
   it('is sorted for the reader in every interface language we ship', () => {
     for (const loc of ['en', 'ja', 'fr', 'zh', 'ar', 'ru', 'pt', 'es', 'tr', 'ko']) {
       const names = sortedLanguages(loc).map((l) => l.name);
-      const expected = [...names].sort(new Intl.Collator(loc).compare);
+      const collator = new Intl.Collator(loc);
+      const expected = [...names].sort((a, b) => collator.compare(a, b));
       expect(names, `order is wrong for ${loc}`).toEqual(expected);
     }
   });
