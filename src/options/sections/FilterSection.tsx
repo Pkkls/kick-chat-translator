@@ -1,4 +1,4 @@
-import { useMemo } from 'preact/hooks';
+import { useMemo, useState } from 'preact/hooks';
 import type { Settings } from '~/shared/settings';
 import { sortedLanguages } from '~/shared/languages';
 import { resolveUiLocale } from '~/shared/i18n';
@@ -19,9 +19,16 @@ function toList(v: string): string[] {
 
 export function FilterSection({ settings, onPatch }: Props) {
   const t = useT();
+  const [langQuery, setLangQuery] = useState('');
   // Localised and collated for the interface language the user chose,
   // not the one their browser happens to run in.
   const langs = useMemo(() => sortedLanguages(resolveUiLocale(settings.uiLang)), [settings.uiLang]);
+  const shown = useMemo(() => {
+    const fold = (v: string) => v.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    const q = fold(langQuery.trim());
+    if (!q) return langs;
+    return langs.filter((l) => fold(l.name).includes(q) || fold(l.code).includes(q));
+  }, [langs, langQuery]);
   return (
     <>
       <section class="kt-card space-y-3">
@@ -69,8 +76,25 @@ export function FilterSection({ settings, onPatch }: Props) {
             'Leave empty to translate every detected language. Pick specific ones to ONLY translate those (e.g. only JA + KO).',
           )}
         </p>
+        {/* 42 languages behind a scrollbar is the same problem the chip's list
+            had, and it takes the same answer: type two letters instead of
+            walking the list. Matching covers the ISO code as well as the name,
+            since the names render in the interface language. */}
+        <input
+          type="text"
+          class="kt-input"
+          aria-label={t('Filter languages')}
+          placeholder={t('Filter languages')}
+          value={langQuery}
+          onInput={(e) => setLangQuery((e.target as HTMLInputElement).value)}
+        />
         <div class="grid grid-cols-3 gap-1.5 max-h-[260px] overflow-auto pr-1">
-          {langs.map((l) => {
+          {shown.length === 0 && (
+            <p role="status" class="col-span-3 py-2 text-xs text-kick-muted">
+              {t('No language matches')}
+            </p>
+          )}
+          {shown.map((l) => {
             const checked = settings.sourceLangAllowlist.includes(l.code);
             return (
               <div

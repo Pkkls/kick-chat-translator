@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- A filter above the source-language allowlist in Options → Filters. It listed
+  all 42 languages inside a 260px scroll box, which is the same "walk the list"
+  problem the chip's menu had and takes the same answer: type two letters.
+  Matching covers the ISO code as well as the name, since the names render in
+  the interface language.
+
 - **A language button inside Kick's message box.** Switching the language you
   write in used to mean travelling to the bar at the top of the chat and back;
   the chip sits next to the emote button instead, so the pointer never leaves
