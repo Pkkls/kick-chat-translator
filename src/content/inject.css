@@ -116,11 +116,40 @@
    Keying on the element that HOLDS the translation, rather than on a sibling of
    the text, also reaches a reply, where Kick wraps the message one level deeper
    than a plain line. The quoted parent of a reply carries no font-normal span,
-   so it stays readable. */
+   so it stays readable.
+
+   The words go, the emotes stay. This was `display: none` on the whole span,
+   and selectors.ts says in its own words what that costs: Kick renders custom
+   emotes as `<img alt="emoteName">` INSIDE those spans, so hiding the span took
+   the emotes with it. Measured across the three shapes Kick and 7TV produce, an
+   emote-only span, a mixed one, and a 7TV token: the image was gone in all
+   three. That is the wrong half to remove. A viewer reading a chat in a
+   language they do not speak has the emotes and the username left, and words
+   are the part the translation already replaced.
+
+   Zeroing the type collapses the text runs to nothing while leaving replaced
+   elements their own boxes, and it costs no density: 12 messages in the window
+   either way, at the same 33.9px, measured before and after.
+
+   The image gets a font-size back because Kick sizes some emotes in em, and an
+   em against a zero font-size is zero. 1rem rather than the row's own size,
+   which CSS cannot reach once it has been overridden: an em-sized emote
+   therefore renders 27px here against 24px with the original showing. Named
+   rather than hidden, because 3px of drift on emotes that are sized in em is
+   the price of them existing at all, and the px-sized ones do not move. */
 .kt-hide-original div:has(> .kt-translation) :is(span.font-normal, .seventv-text-token),
 .kt-hide-original div:has(> .kt-translation-inline) :is(span.font-normal, .seventv-text-token),
 div:has(> .kt-translation-replace) :is(span.font-normal, .seventv-text-token) {
-  display: none;
+  font-size: 0;
+  line-height: 0;
+  letter-spacing: 0;
+  word-spacing: 0;
+}
+.kt-hide-original div:has(> .kt-translation) :is(span.font-normal, .seventv-text-token) :is(img, svg, video),
+.kt-hide-original div:has(> .kt-translation-inline) :is(span.font-normal, .seventv-text-token) :is(img, svg, video),
+div:has(> .kt-translation-replace) :is(span.font-normal, .seventv-text-token) :is(img, svg, video) {
+  font-size: 1rem;
+  line-height: normal;
 }
 
 /* #36 The inline style keeps a gap on its left to stand off the message. Once

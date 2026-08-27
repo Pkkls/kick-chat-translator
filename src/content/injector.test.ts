@@ -461,7 +461,12 @@ describe('injector artifacts', () => {
     // measured in a browser instead, see the round 16 journal entry.
     it('hides Kick text only on lines that carry a translation', () => {
       const rule = /\.kt-hide-original[^{]*\{[^}]*\}/.exec(injectCss)?.[0] ?? '';
-      expect(rule).toMatch(/display:\s*none/);
+      // Zeroed rather than `display: none`, which took the emotes with it: Kick
+      // renders them as images INSIDE these same spans. Measured in a browser
+      // across an emote-only span, a mixed one and a 7TV token, the image was
+      // gone in all three.
+      expect(rule).toMatch(/font-size:\s*0/);
+      expect(rule, 'display:none would take the emotes too').not.toMatch(/display:\s*none/);
       for (const cls of ['kt-translation', 'kt-translation-inline', 'kt-translation-replace']) {
         // The holder is matched by its child, never by a sibling of the text:
         // in a reply Kick nests the message a level deeper and a sibling rule
@@ -474,6 +479,23 @@ describe('injector artifacts', () => {
       // instead, after hiding Kick's own.
       expect(rule).toContain('span.font-normal');
       expect(rule).toContain('.seventv-text-token');
+    });
+
+    /**
+     * Zeroing the type is only half of it. Kick sizes some emotes in em, and an
+     * em against a zero font-size is zero, so the image needs a size handed
+     * back or it collapses just as thoroughly as the words did.
+     */
+    it('hands the emote its own size back', () => {
+      const exempt = injectCss
+        .split('\n')
+        .filter((l) => l.includes('img') && l.includes('div:has('));
+      expect(exempt.length, 'nothing exempts the emote from the zeroed type').toBeGreaterThan(0);
+      for (const cls of ['kt-translation', 'kt-translation-inline', 'kt-translation-replace']) {
+        expect(exempt.some((l) => l.includes(`div:has(> .${cls})`))).toBe(true);
+      }
+      const body = /:is\(img, svg, video\)\s*\{([^}]*)\}/.exec(injectCss)?.[1] ?? '';
+      expect(body).toMatch(/font-size:\s*1rem/);
     });
 
     // With the text gone there is nothing on the pill's left for the gap to
