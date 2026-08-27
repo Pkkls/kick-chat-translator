@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { Settings } from '~/shared/settings';
 import { defaultSettings } from '~/shared/settings';
 import { send } from '~/shared/messages';
@@ -30,6 +30,7 @@ export function App() {
   const [stats, setStats] = useState<UsageStats | undefined>(undefined);
   const [tab, setTab] = useState<Tab>('providers');
   const [savedAt, setSavedAt] = useState<number | undefined>(undefined);
+  const tabRefs = useRef<Partial<Record<Tab, HTMLButtonElement | null>>>({});
 
   const locale = resolveUiLocale(settings.uiLang);
   const t = useMemo(() => makeT(locale), [locale]);
@@ -50,6 +51,30 @@ export function App() {
     if (provRes.type === 'providers') setProviders(provRes.payload);
     const statsRes = await send({ type: 'stats.get' });
     if (statsRes.type === 'stats') setStats(statsRes.payload);
+  }
+
+  /**
+   * Arrow keys move between tabs, Home and End jump to the ends.
+   *
+   * Focus has to follow the selection, not just the state: the tab that was
+   * focused is about to get tabIndex -1, and a browser drops focus to the body
+   * when that happens. Moved on the next frame, once the new tab has rendered
+   * with tabIndex 0.
+   */
+  function onTabKey(e: KeyboardEvent) {
+    const keys = ['ArrowRight', 'ArrowLeft', 'Home', 'End'];
+    if (!keys.includes(e.key)) return;
+    e.preventDefault();
+    const i = TABS.findIndex((x) => x.id === tab);
+    const next =
+      e.key === 'Home'
+        ? 0
+        : e.key === 'End'
+          ? TABS.length - 1
+          : (i + (e.key === 'ArrowRight' ? 1 : -1) + TABS.length) % TABS.length;
+    const id = TABS[next]!.id;
+    setTab(id);
+    requestAnimationFrame(() => tabRefs.current[id]?.focus());
   }
 
   async function patch(patchValue: Partial<Settings>) {
@@ -96,10 +121,27 @@ export function App() {
           </div>
         </header>
 
-        <nav class="mb-5 flex gap-1 border-b border-kick-border">
+        {/* The APG tabs pattern, which this was missing entirely: without
+            role=tab and aria-selected a screen reader announces six unrelated
+            buttons and cannot say which one is showing. Roving tabindex keeps
+            the whole bar to a single tab stop — it took five before — and the
+            arrows move between tabs, which is where a keyboard user reaches
+            for them. */}
+        <nav
+          role="tablist"
+          aria-label={t('Settings sections')}
+          class="mb-5 flex gap-1 border-b border-kick-border"
+          onKeyDown={onTabKey}
+        >
           {TABS.map((tb) => (
             <button
               key={tb.id}
+              id={`tab-${tb.id}`}
+              role="tab"
+              aria-selected={tab === tb.id}
+              aria-controls={`panel-${tb.id}`}
+              tabIndex={tab === tb.id ? 0 : -1}
+              ref={(el) => { tabRefs.current[tb.id] = el as HTMLButtonElement | null; }}
               class={`px-4 py-2 text-sm border-b-2 transition ${
                 tab === tb.id
                   ? 'border-kick-primary text-kick-text'
@@ -112,7 +154,12 @@ export function App() {
           ))}
         </nav>
 
-        <main class="space-y-6 pb-12">
+        <main
+          id={`panel-${tab}`}
+          role="tabpanel"
+          aria-labelledby={`tab-${tab}`}
+          tabIndex={0}
+          class="space-y-6 pb-12">
           {tab === 'providers' && (
             <ProviderSection settings={settings} providers={providers} onPatch={patch} />
           )}
