@@ -178,4 +178,6 @@ export const zh: Record<string, string> = {
   'Translate the chat': '翻译聊天',
   "In place of the original text. Emotes stay.": "取代原文显示。表情保留。",
   "The Replace style always hides it.": "“替换”样式始终隐藏原文。",
+  "On hover": "悬停时",
+  "Only when you point at the line. Spares your quota.": "仅在指向该行时。节省配额。",
 };

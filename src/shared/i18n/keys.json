@@ -149,5 +149,7 @@
   "most translated languages",
   "Translate the chat",
   "In place of the original text. Emotes stay.",
-  "The Replace style always hides it."
+  "The Replace style always hides it.",
+  "On hover",
+  "Only when you point at the line. Spares your quota."
 ]

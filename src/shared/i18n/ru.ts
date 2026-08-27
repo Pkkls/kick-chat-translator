@@ -183,4 +183,6 @@ export const ru: Record<string, string> = {
   'Translate the chat': 'Переводить чат',
   "In place of the original text. Emotes stay.": "Вместо исходного текста. Эмоуты остаются.",
   "The Replace style always hides it.": "Стиль «Заменить» всегда его скрывает.",
+  "On hover": "При наведении",
+  "Only when you point at the line. Spares your quota.": "Только когда наводите на строку. Экономит квоту.",
 };

@@ -184,4 +184,6 @@ export const ja: Record<string, string> = {
   'Translate the chat': 'チャットを翻訳',
   "In place of the original text. Emotes stay.": "元のテキストの代わりに表示。エモートは残ります。",
   "The Replace style always hides it.": "「置き換え」スタイルでは常に非表示になります。",
+  "On hover": "ホバー時",
+  "Only when you point at the line. Spares your quota.": "行を指したときだけ。使用量を節約します。",
 };

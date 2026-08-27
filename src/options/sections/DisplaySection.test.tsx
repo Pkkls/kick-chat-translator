@@ -34,12 +34,34 @@ describe('display style preview', () => {
     ['below', 'kt-translation'],
     ['inline', 'kt-translation-inline'],
     ['replace', 'kt-translation-replace'],
-    ['hover', 'kt-translation'],
   ] as const)('renders %s with the real %s class', (style, cls) => {
     const root = mount({ displayStyle: style });
     const shown = root.querySelector(`.${cls}`);
     expect(shown).not.toBeNull();
     expect(shown?.textContent).toContain('is anyone else seeing this?');
+  });
+
+  /**
+   * `hover` shows nothing until you point at the line, so a preview that drew a
+   * finished translation described one of the other three styles. It was also
+   * selectable from nowhere until this round: the picker offered three of the
+   * schema's four values.
+   */
+  it('previews hover as the placeholder it actually is', () => {
+    const root = mount({ displayStyle: 'hover' });
+    expect(root.querySelector('.kt-hover-placeholder')).not.toBeNull();
+    expect(
+      root.querySelector('.kt-translation'),
+      'a finished translation is exactly what hover does not show',
+    ).toBeNull();
+  });
+
+  it('offers every value the schema accepts', () => {
+    const root = mount({});
+    const labels = [...root.querySelectorAll('button')].map((b) => b.textContent ?? '');
+    for (const label of ['Below', 'Inline', 'Replace', 'On hover']) {
+      expect(labels.some((l) => l.includes(label)), `no card for ${label}`).toBe(true);
+    }
   });
 
   it('keeps the sample original next to the translation', () => {

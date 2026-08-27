@@ -4,7 +4,7 @@ import { sortedLanguages } from '~/shared/languages';
 import { resolveUiLocale } from '~/shared/i18n';
 import { useT } from '~/shared/i18nContext';
 import { Check } from '../components/Check';
-import { applyShowOriginal, ensureStyles, inject } from '~/content/injector';
+import { applyShowOriginal, ensureStyles, inject, injectHoverPlaceholder } from '~/content/injector';
 
 interface Props {
   settings: Settings;
@@ -43,7 +43,10 @@ export function DisplaySection({ settings, onPatch }: Props) {
 
       <section class="kt-card space-y-3">
         <h2 class="text-sm font-semibold">{t('Display style')}</h2>
-        <div class="grid grid-cols-3 gap-2">
+        {/* Two by two rather than a single row. A fourth column would put each
+            card at 60px on the 280px window the page is checked against, and
+            the descriptions are what make the cards worth having. */}
+        <div class="grid grid-cols-2 gap-2">
           <StyleCard
             active={settings.displayStyle === 'below'}
             label={t('Below')}
@@ -61,6 +64,16 @@ export function DisplaySection({ settings, onPatch }: Props) {
             label={t('Replace')}
             desc={t('In place of the original text. Emotes stay.')}
             onClick={() => onPatch({ displayStyle: 'replace' })}
+          />
+          {/* Shipped and wired through the pipeline since before this refit,
+              and selectable from nowhere: the picker offered three of the
+              schema's four values, so the one that spares the quota was
+              reachable only by writing storage by hand. */}
+          <StyleCard
+            active={settings.displayStyle === 'hover'}
+            label={t('On hover')}
+            desc={t('Only when you point at the line. Spares your quota.')}
+            onClick={() => onPatch({ displayStyle: 'hover' })}
           />
         </div>
 
@@ -170,6 +183,15 @@ function StylePreview({ settings }: { settings: Settings }) {
     said.textContent = SAMPLE_TEXT;
     row.append(who, said);
     el.appendChild(row);
+
+    // `hover` shows nothing until you point at the line, so rendering it with
+    // inject() drew a finished translation and the card described something
+    // else entirely. The preview exists to answer "what does this look like",
+    // and for this style the answer is the placeholder.
+    if (settings.displayStyle === 'hover') {
+      injectHoverPlaceholder(row, () => undefined);
+      return;
+    }
 
     inject(
       row,

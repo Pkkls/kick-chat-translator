@@ -186,4 +186,6 @@ export const es: Record<string, string> = {
   'Translate the chat': 'Traducir el chat',
   "In place of the original text. Emotes stay.": "En lugar del texto original. Los emotes se mantienen.",
   "The Replace style always hides it.": "El estilo Reemplazar siempre lo oculta.",
+  "On hover": "Al pasar el cursor",
+  "Only when you point at the line. Spares your quota.": "Solo cuando apuntas a la linea. Ahorra tu cuota.",
 };

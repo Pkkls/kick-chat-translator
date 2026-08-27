@@ -181,4 +181,6 @@ export const ar: Record<string, string> = {
   'Translate the chat': 'ترجمة الدردشة',
   "In place of the original text. Emotes stay.": "مكان النص الأصلي. تبقى الرموز التعبيرية.",
   "The Replace style always hides it.": "نمط الاستبدال يخفيه دائما.",
+  "On hover": "عند التمرير",
+  "Only when you point at the line. Spares your quota.": "فقط عند الإشارة إلى السطر. يوفر حصتك.",
 };

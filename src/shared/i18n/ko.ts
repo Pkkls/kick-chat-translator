@@ -179,4 +179,6 @@ export const ko: Record<string, string> = {
   'Translate the chat': '채팅 번역',
   "In place of the original text. Emotes stay.": "원문 자리에 표시됩니다. 이모트는 유지됩니다.",
   "The Replace style always hides it.": "바꾸기 스타일에서는 항상 숨겨집니다.",
+  "On hover": "가리킬 때",
+  "Only when you point at the line. Spares your quota.": "줄을 가리킬 때만. 사용량을 아낍니다.",
 };
