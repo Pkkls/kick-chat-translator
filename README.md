@@ -32,15 +32,48 @@ pick a language. (You still can, in settings.)
 
 ## What's new in [2.8.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
 
-**A language button inside Kick's message box.** Switching the language you write in used to mean travelling to the bar at the top of the chat and back. The button sits with the chat controls instead, so the pointer never leaves the text field. A click swaps between the channel's language and your last pick, a click on the caret opens the full list, and the first language you choose becomes your favourite without any setting to fill in.
+A pass over every surface the extension puts on screen: the chat, the bar above it, the popup and the six
+settings tabs. Some of it is new, most of it is things that were quietly wrong.
 
-**Translations were invisible for anyone whose desktop is set to light while Kick is dark.** The injected text followed the operating system rather than the chat it sits in, so it painted dark text on Kick's dark ground: measured at 1.01:1, which is no contrast at all. It reads the chat's own background now, and follows Kick's theme switch without a reload.
+**A language button, where your hand already is.** Changing the language you write in meant travelling to
+the bar at the top of the chat and back. The button now sits in the chat's own action bar, just before the
+gear, so the pointer never leaves the text field. A click swaps between the channel's language and your
+last pick, the caret opens the full list, and typing two letters filters it. The first language you choose
+becomes your favourite; there is nothing to configure.
 
-**"Replace" replaces.** It had been a fourth setting that no control could reach, naming a style that rendered exactly like "Inline" with the original still beside it. It shows 12 messages where inline shows 9. "On hover" also stopped writing a label under every message whether or not you ever hovered one, which had been costing the chat a third of what it could show.
+**Translations were invisible for some of you, and had been for a long time.** The injected text followed
+the *operating system's* light or dark setting rather than the chat it sits in. On a light desktop reading
+a dark Kick, that painted dark text on Kick's dark background: measured at 1.01:1 against what it sat on,
+which is no contrast at all. It reads the chat's own background now and follows Kick's theme switch without
+a reload. Measured after: 10.98:1.
 
-**The chat, the bar and every language menu now speak the language you chose**, not your browser's, in all ten interfaces.
+**"Replace" replaces.** It had been a fourth display setting that no control could reach, naming a style
+that rendered exactly like "Inline" with the original still standing beside it. It now fits 12 messages on
+screen where inline fits 9. "On hover" also stopped writing a label under every message whether or not you
+ever hovered one, which had been costing the chat a third of what it could show. **Below is still the style
+to use; the other three are being worked on, and the settings say so.**
 
-Also: the chat mirrors properly for Arabic, a long URL or a wall of spam no longer pushes the chat sideways, a failed line no longer grows a row of its own, the retry button works from the keyboard and on touch, everything animated stops for anyone who asks their system to stop it, and the whole interface is keyboard-navigable with every control named. Full list in [CHANGELOG.md](CHANGELOG.md).
+**Everything speaks your language.** The chat, the bar and every language menu follow the interface language
+you chose in the extension rather than your browser's, across all ten interfaces. Thirty-nine strings that
+were English whatever you had selected now come from the catalogue, and the shipped locale files went from
+three languages to ten.
+
+**It works without a mouse, and mirrors for Arabic.** The settings tab bar was six unrelated buttons to a
+screen reader and took five presses to cross; it is one stop now, with the arrows, Home and End. Every
+control has a name, none share one, and no interactive edge is invisible any more. The chat, the popup and
+the settings all mirror properly for right-to-left reading. Everything animated stops for anyone who has
+asked their system to stop it, without touching Kick's own motion.
+
+**And the small ruinous things.** A long URL or a wall of spam no longer pushes the chat sideways. A failed
+line no longer takes a row of its own, which mattered because failures never arrive alone: with a provider
+down, the chat went from 13 messages on screen to 8. The retry control works from the keyboard and on touch,
+where it had answered to a mouse hover and nothing else. The settings page no longer scrolls sideways in a
+narrow window.
+
+All of it verified with the extension loaded in a real browser on a real channel, which is how the language
+button turned out to be anchored in the wrong place to begin with.
+
+Full list in [CHANGELOG.md](CHANGELOG.md).
 ---
 
 ## Install
@@ -121,6 +154,9 @@ else, and in on-device mode, not even there. [Details](PRIVACY.md)
 **A:** Open the **Debug** tab in the settings and press "Read decisions": it lists the last 50 lines and says, for each one, why it was translated or left alone. That answers this faster than guessing.
 
 Most lines that get skipped are skipped on purpose. Measured over one live session, out of 234 skipped lines: 213 were the same user repeating themselves, 9 were under the minimum length, 7 were emoji or laughter only, and 1 was already in the reading language. If the Debug tab shows nothing at all, then the extension is not seeing the chat, which is a different problem worth an issue.
+
+**Q: Which display style should I use?**
+**A:** Below. The other three work, but they are still being adjusted and the settings mark Below as the recommended one. If you switch and something reads oddly, that is why.
 
 **Q: Does it work on VOD replays?**
 **A:** Yes. The extension translates chat on both live streams and VOD replays.

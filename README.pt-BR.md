@@ -31,15 +31,47 @@ regionais (português do Brasil, chinês tradicional).
 
 ## Novidades da [2.8.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
 
-**Um botão de idioma dentro da caixa de mensagens do Kick.** Trocar o idioma em que você escreve exigia subir até a barra no topo do chat e voltar. Agora o botão fica junto aos controles do chat, então o ponteiro não sai do campo de texto. Um clique alterna entre o idioma do canal e a sua última escolha, um clique na seta abre a lista inteira, e o primeiro idioma escolhido vira favorito sem nenhuma configuração para preencher.
+Uma passada por cada superfície que a extensão coloca na tela: o chat, a barra acima dele, o popup e as seis
+abas de configurações. Parte é nova; a maioria são coisas que estavam erradas em silêncio.
 
-**As traduções ficavam invisíveis para quem usa o sistema no claro e o Kick no escuro.** O texto inserido seguia o sistema operacional em vez do chat onde ele vive, então pintava texto escuro sobre o fundo escuro do Kick: medido em 1,01:1, ou seja, contraste nenhum. Agora ele lê o fundo real do chat e acompanha a troca de tema do Kick sem recarregar.
+**Um botão de idioma, onde sua mão já está.** Trocar o idioma em que você escreve exigia subir até a barra
+no topo do chat e voltar. Agora o botão fica na própria barra de ações do chat, logo antes da engrenagem,
+então o ponteiro não sai do campo de texto. Um clique alterna entre o idioma do canal e sua última escolha,
+a seta abre a lista inteira e digitar duas letras filtra. O primeiro idioma escolhido vira favorito; não há
+nada para configurar.
 
-**"Substituir" substitui.** Era um quarto valor de configuração que nenhum controle alcançava, nomeando um estilo idêntico ao "Em linha" com o original ainda ao lado. Mostra 12 mensagens onde o em linha mostra 9. O "Ao passar o mouse" também parou de escrever um rótulo embaixo de cada mensagem, passasse você por cima ou não, o que custava ao chat um terço do que ele podia mostrar.
+**As traduções ficavam invisíveis para parte de vocês, e há bastante tempo.** O texto inserido seguia a
+configuração clara ou escura *do sistema operacional* em vez do chat onde ele vive. Num sistema claro lendo
+um Kick escuro, isso pintava texto escuro sobre o fundo escuro do Kick: medido em 1,01:1 contra o que estava
+embaixo, ou seja, contraste nenhum. Agora ele lê o fundo real do chat e acompanha a troca de tema do Kick sem
+recarregar. Medido depois: 10,98:1.
 
-**O chat, a barra e todos os menus de idioma falam agora o idioma que você escolheu**, não o do navegador, nas dez interfaces.
+**"Substituir" substitui.** Era um quarto valor de exibição que nenhum controle alcançava, nomeando um
+estilo idêntico ao "Em linha" com o original ainda ao lado. Agora mostra 12 mensagens na tela onde o em
+linha mostra 9. O "Ao passar o mouse" também parou de escrever um rótulo embaixo de cada mensagem,
+passasse você por cima ou não, o que custava ao chat um terço do que ele podia mostrar. **Abaixo continua
+sendo o estilo a usar; os outros três estão em desenvolvimento, e as configurações dizem isso.**
 
-Além disso: o chat espelha corretamente em árabe, uma URL longa ou uma parede de spam não empurra mais o chat para o lado, uma linha que falhou não ocupa mais uma fileira inteira, o botão de tentar de novo funciona pelo teclado e no toque, tudo que anima para para quem pede isso ao sistema, e a interface inteira é percorrível pelo teclado com cada controle nomeado. Lista completa em [CHANGELOG.md](CHANGELOG.md).
+**Tudo fala o seu idioma.** O chat, a barra e todos os menus de idioma seguem o idioma de interface que você
+escolheu na extensão, não o do navegador, nas dez interfaces. Trinta e nove textos que ficavam em inglês
+independentemente da sua escolha agora vêm do catálogo, e os arquivos de idioma passaram de três para dez.
+
+**Funciona sem mouse, e espelha para o árabe.** A barra de abas das configurações era seis botões sem
+relação para um leitor de tela e exigia cinco toques para atravessar; agora é uma parada só, com as setas,
+Home e End. Cada controle tem nome, nenhum compartilha o mesmo, e nenhuma borda interativa é mais invisível.
+O chat, o popup e as configurações espelham corretamente para leitura da direita para a esquerda. Tudo que
+anima para para quem pede isso ao sistema, sem tocar nas animações do próprio Kick.
+
+**E as pequenas coisas ruinosas.** Uma URL longa ou uma parede de spam não empurra mais o chat para o lado.
+Uma linha que falhou não ocupa mais uma fileira inteira, o que importava porque falhas nunca chegam
+sozinhas: com um provedor fora do ar, o chat caía de 13 mensagens na tela para 8. O botão de tentar de novo
+funciona pelo teclado e no toque, quando antes só respondia ao mouse. A página de configurações não rola
+mais para o lado numa janela estreita.
+
+Tudo verificado com a extensão carregada num navegador real, num canal real, que foi como se descobriu que o
+botão de idioma estava ancorado no lugar errado.
+
+Lista completa em [CHANGELOG.md](CHANGELOG.md).
 ---
 
 ## Instalação
