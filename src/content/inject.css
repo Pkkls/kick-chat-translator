@@ -547,7 +547,9 @@
 .kt-chip-menu {
   position: absolute;
   bottom: calc(100% + 6px);
-  right: 0;
+  /* Logical, not physical: in an Arabic interface the message box mirrors, and
+     a menu pinned to the physical right would hang off the wrong edge. */
+  inset-inline-end: 0;
   z-index: 2147483000;
   min-width: 190px;
   max-height: 320px;
@@ -568,6 +570,9 @@
 .kt-chip-menu-fixed {
   position: fixed;
   bottom: auto;
+  inset-inline-end: auto;
+  /* placeMenu() writes viewport coordinates here, which are physical by
+     definition — the logical property above must not fight them. */
   right: auto;
 }
 .kt-chip-row {
