@@ -28,7 +28,7 @@
     "description": "Shown when the filter matches no language."
   },
   "chipAutoTip": {
-    "message": "Kanalin dilinde yaziliyor ($LANG$). Degistirmek icin tikla, liste icin basili tut.",
+    "message": "Kanalin dilinde yaziliyor ($LANG$). Degistirmek icin tikla, listeyi ok acar.",
     "description": "Chip tooltip while following the channel's language. $LANG$ is an ISO code.",
     "placeholders": {
       "lang": {
@@ -38,7 +38,7 @@
     }
   },
   "chipPinnedTip": {
-    "message": "$LANG$ dilinde yaziliyor. Kanalin dili icin tikla, liste icin basili tut.",
+    "message": "$LANG$ dilinde yaziliyor. Kanalin dili icin tikla, listeyi ok acar.",
     "description": "Chip tooltip while pinned to a language. $LANG$ is that language name.",
     "placeholders": {
       "lang": {

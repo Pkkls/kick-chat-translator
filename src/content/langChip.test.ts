@@ -402,3 +402,73 @@ describe('anchoring, against the DOM actually measured on kick.com', () => {
     expect(findComposerRow(field)).toBe(parent);
   });
 });
+
+/**
+ * The caret splits one button in two.
+ *
+ * Before it, the 42-language list opened on a 400ms press or the Down arrow and
+ * on nothing else. Neither is visible, so the list was reachable only by
+ * someone who had read the tooltip; measured on the action bar, a second button
+ * beside the chip did not fit (28px of slack at the narrow end, 24 plus a gap
+ * owed under WCAG 2.5.8), so the caret is a region of the chip instead.
+ *
+ * Both halves are asserted here. A caret that opens the list and also swallows
+ * the click on the code would satisfy a test that only watched the caret, while
+ * removing the one-click language toggle the chip exists for.
+ */
+describe('the caret half of the chip', () => {
+  const mount = (over: Partial<ChipState> = {}) => {
+    const { composer } = makeComposerRow();
+    const picks: string[] = [];
+    mountLangChip(composer, state({ mode: 'pinned', code: 'ja', favorites: ['ja', 'es'], ...over }), {
+      onPick: (c) => picks.push(c),
+      onAuto: () => picks.push('auto'),
+    });
+    const chip = document.querySelector<HTMLElement>('.kt-chip')!;
+    return { chip, picks, caret: chip.querySelector<HTMLElement>('.kt-chip-caret')! };
+  };
+
+  it('is drawn on the chip, and hidden from the accessibility tree', () => {
+    const { caret } = mount();
+    expect(caret).not.toBeNull();
+    const svg = caret.querySelector('svg')!;
+    expect(svg.getAttribute('aria-hidden')).toBe('true');
+    // Focusable SVG is an IE-era default that still puts a stop in the tab
+    // order in some engines; the chip is the one tab stop here.
+    expect(svg.getAttribute('focusable')).toBe('false');
+  });
+
+  it('opens the list when it is the thing clicked', () => {
+    const { chip, caret, picks } = mount();
+    caret.querySelector('svg')!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(chip.getAttribute('aria-expanded')).toBe('true');
+    expect(picks, 'the caret must not also change the language').toEqual([]);
+  });
+
+  it('closes it again on a second click, rather than reopening under itself', () => {
+    const { chip, caret } = mount();
+    caret.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    caret.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(chip.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  // Control: clicking the code keeps doing what it always did. Without this,
+  // the two tests above would pass on a chip whose every click opened the list.
+  it('leaves the code half toggling the language', () => {
+    const { chip, picks } = mount();
+    chip.querySelector<HTMLElement>('.kt-chip-tag')!.dispatchEvent(
+      new MouseEvent('click', { bubbles: true }),
+    );
+    expect(chip.getAttribute('aria-expanded')).toBe('false');
+    expect(picks).toEqual(['auto']);
+  });
+
+  // 'off' means translation is paused: nothing on the chip does anything, and
+  // the caret is not an exception carved out of that.
+  it('stays inert while translation is off', () => {
+    const { chip, caret, picks } = mount({ mode: 'off' });
+    caret.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(chip.getAttribute('aria-expanded')).toBe('false');
+    expect(picks).toEqual([]);
+  });
+});

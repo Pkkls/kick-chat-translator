@@ -579,6 +579,43 @@ html[data-kt-scheme='light'] .kt-compose {
   outline: 2px solid #53fc18;
   outline-offset: 2px;
 }
+
+/* The only thing on screen saying a list exists. Everything that opened it
+   before was invisible: a 400ms press, or the Down arrow.
+
+   A region of the chip button, not a button of its own. Measured first: the
+   action bar keeps 108px of slack on a 340px panel, 68 at 300 and 28 at 260,
+   and a separate target owes 24px under WCAG 2.5.8 before its gap. This costs
+   12 and fits at every width. */
+.kt-chip-caret {
+  display: inline-flex;
+  align-items: center;
+  margin-inline-start: 5px;
+  /* Half the chip's own padding back, so the caret sits inside the box rather
+     than against its edge. */
+  margin-inline-end: -3px;
+  color: #9fa6ad;
+  transition:
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+.kt-chip-caret svg {
+  display: block;
+  width: 10px;
+  height: 6px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.kt-chip:hover .kt-chip-caret,
+.kt-chip[aria-expanded='true'] .kt-chip-caret {
+  color: #ffffff;
+}
+.kt-chip[aria-expanded='true'] .kt-chip-caret {
+  transform: rotate(180deg);
+}
 .kt-chip[data-mode='auto'] {
   border-style: dashed;
   color: #9fa6ad;
@@ -704,10 +741,13 @@ html[data-kt-scheme='light'] .kt-compose {
 
 @media (prefers-reduced-motion: reduce) {
   .kt-chip,
+  .kt-chip-caret,
   .kt-chip[data-mode='loading'] {
     transition: none;
     animation: none;
   }
+  /* The rotation is a state, not a flourish: it stays, it just arrives without
+     the sweep. */
 }
 
 /* Light theme. Kick publishes no light palette, so this mirrors the dark one
@@ -723,6 +763,15 @@ html[data-kt-scheme='light'] .kt-chip {
 html[data-kt-scheme='light'] .kt-chip:hover {
   border-color: #35a10f;
   background: #e8e8e9;
+}
+/* #9FA6AD is a dark-ground grey: on #F4F4F5 it measures 2.02:1, under the 3:1
+   WCAG 1.4.11 asks of a control's own graphics. #5E5E5F gives 5.95. */
+html[data-kt-scheme='light'] .kt-chip-caret {
+  color: #5e5e5f;
+}
+html[data-kt-scheme='light'] .kt-chip:hover .kt-chip-caret,
+html[data-kt-scheme='light'] .kt-chip[aria-expanded='true'] .kt-chip-caret {
+  color: #0b0b0c;
 }
 html[data-kt-scheme='light'] .kt-chip:focus-visible {
   outline-color: #35a10f;

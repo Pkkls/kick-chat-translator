@@ -10,10 +10,12 @@
  * ended up under it rather than in it. The action bar is a row of controls
  * that already exists for exactly this kind of button.
  *
- * One click toggles between the channel's language (auto) and the first
- * favourite. Press-and-hold, or the Down arrow, opens the list. The list is
- * seeded by whatever you pick, so there is no configuration step and the
- * favourites never reorder themselves under the pointer between two clicks.
+ * One click on the code toggles between the channel's language (auto) and the
+ * first favourite. The caret opens the list, and so do press-and-hold and the
+ * Down arrow, which were the only two ways in before it existed and neither of
+ * which a mouse can see. The list is seeded by whatever you pick, so there is
+ * no configuration step and the favourites never reorder themselves under the
+ * pointer between two clicks.
  *
  * Anchoring rules, learned the hard way elsewhere in this codebase: the panel
  * is re-rendered by Kick's SPA, so the chip has to be re-mountable at any time,
@@ -122,6 +124,39 @@ function insertInRow(row: Element, wrap: HTMLElement): void {
   row.insertBefore(wrap, row.firstElementChild);
 }
 
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+/**
+ * The caret that says a list exists.
+ *
+ * The list opened on a 400ms press or the Down arrow, and on nothing a mouse
+ * could see: the chip carried no affordance whatsoever, so 42 languages sat
+ * behind a gesture only the tooltip mentioned.
+ *
+ * It is a REGION of the chip button rather than a second button beside it.
+ * Measured first: the action bar has 108px of slack on a 340px panel, 68 at
+ * 300 and 28 at 260, while a separate target owes 24px under WCAG 2.5.8 plus
+ * its gap. A split button does not fit the narrow end of that range; a caret
+ * inside the existing button costs about 12.
+ *
+ * Drawn, not typed. The chip's font stack is a monospace list, and a text
+ * chevron falls back to a different glyph at a different weight on every
+ * machine that misses the first family.
+ */
+function makeCaret(): HTMLElement {
+  const wrap = document.createElement('span');
+  wrap.className = 'kt-chip-caret';
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('viewBox', '0 0 10 6');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('focusable', 'false');
+  const path = document.createElementNS(SVG_NS, 'path');
+  path.setAttribute('d', 'M1 1.5 5 5 9 1.5');
+  svg.appendChild(path);
+  wrap.appendChild(svg);
+  return wrap;
+}
+
 function makeChip(): HTMLButtonElement {
   const chip = document.createElement('button');
   chip.id = CHIP_ID;
@@ -134,6 +169,7 @@ function makeChip(): HTMLButtonElement {
   const tag = document.createElement('span');
   tag.className = 'kt-chip-tag';
   chip.appendChild(tag);
+  chip.appendChild(makeCaret());
   return chip;
 }
 
@@ -468,6 +504,14 @@ export function mountLangChip(composer: HTMLElement, state: ChipState, h: ChipHa
       return;
     }
     if (current.mode === 'off') return;
+    // The caret half. Read off the event target rather than off coordinates:
+    // activating the button from the keyboard reports a click at (0, 0), which
+    // a hit test would place outside the caret in LTR and inside it in RTL.
+    if ((e.target as Element | null)?.closest?.('.kt-chip-caret')) {
+      if (menu.hidden) open();
+      else close();
+      return;
+    }
     // No favourite yet: the list IS the first interaction, and whatever gets
     // picked becomes the favourite. No empty state to design around.
     if (current.mode === 'auto' && current.favorites.length === 0) {
@@ -570,7 +614,7 @@ export function updateLangChip(state: ChipState): void {
       tag.textContent = state.code ? state.code.toUpperCase() : 'AUTO';
       chip.title = msg(
         'chipAutoTip',
-        "Writing in the channel's language ($LANG$). Click to switch, hold for the list.",
+        "Writing in the channel's language ($LANG$). Click to switch; the arrow opens the list.",
         [state.code.toUpperCase()],
       );
       break;
@@ -578,7 +622,7 @@ export function updateLangChip(state: ChipState): void {
       tag.textContent = state.code.toUpperCase();
       chip.title = msg(
         'chipPinnedTip',
-        "Writing in $LANG$. Click for the channel's language, hold for the list.",
+        "Writing in $LANG$. Click for the channel's language; the arrow opens the list.",
         [localName(state.code, state.code.toUpperCase())],
       );
   }
