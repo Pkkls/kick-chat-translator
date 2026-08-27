@@ -50,7 +50,9 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
       <section class="kt-card">
         <h2 class="text-sm font-semibold mb-3">{t('Cloud fallback chain')}</h2>
         <p class="text-xs text-kick-muted mb-3">
-          {t('Used when on-device is off or a language pair isn\'t downloaded. Providers are tried in order; failing ones are temporarily skipped (exponential cooldown).')}
+          {t(
+            "Used when on-device is off or a language pair isn't downloaded. Providers are tried in order; failing ones are temporarily skipped (exponential cooldown).",
+          )}
         </p>
         <ul class="flex flex-col gap-1.5">
           {settings.providerOrder.map((id, i) => {
@@ -63,13 +65,21 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
                 <span class="font-mono text-xs text-kick-muted w-5">{i + 1}.</span>
                 <span class="flex-1 text-sm">{t(PROVIDER_LABELS[id])}</span>
                 {status && (
-                  <span class={`text-[10px] font-medium uppercase ${status.available ? 'text-kick-primary' : 'text-red-300'}`}>
+                  <span
+                    class={`text-[10px] font-medium uppercase ${status.available ? 'text-kick-primary' : 'text-red-300'}`}
+                  >
                     {status.available ? t('ok') : t('down')}
                   </span>
                 )}
-                <button class="kt-btn-ghost py-1 px-2 text-xs" onClick={() => move(id, -1)}>↑</button>
-                <button class="kt-btn-ghost py-1 px-2 text-xs" onClick={() => move(id, +1)}>↓</button>
-                <button class="kt-btn-ghost py-1 px-2 text-xs" onClick={() => toggle(id)}>✕</button>
+                <button class="kt-btn-ghost py-1 px-2 text-xs" onClick={() => move(id, -1)}>
+                  ↑
+                </button>
+                <button class="kt-btn-ghost py-1 px-2 text-xs" onClick={() => move(id, +1)}>
+                  ↓
+                </button>
+                <button class="kt-btn-ghost py-1 px-2 text-xs" onClick={() => toggle(id)}>
+                  ✕
+                </button>
               </li>
             );
           })}
@@ -90,6 +100,7 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
         <div class="kt-row">
           <label class="kt-label">{t('API key')}</label>
           <input
+            aria-label={t('API key')}
             class="kt-input font-mono"
             type="password"
             value={settings.deeplApiKey}
@@ -98,7 +109,12 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
           />
           <p class="text-[11px] text-kick-muted">
             Free plan: 1,000,000 chars/month. Key ends with <code>:fx</code>. Get one at{' '}
-            <a class="text-kick-primary underline" href="https://www.deepl.com/pro#developer" target="_blank" rel="noreferrer">
+            <a
+              class="text-kick-primary underline"
+              href="https://www.deepl.com/pro#developer"
+              target="_blank"
+              rel="noreferrer"
+            >
               deepl.com/pro#developer
             </a>
             .
@@ -107,9 +123,12 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
         <div class="kt-row">
           <label class="kt-label">{t('Plan')}</label>
           <select
+            aria-label={t('Plan')}
             class="kt-select"
             value={settings.deeplPlan}
-            onChange={(e) => onPatch({ deeplPlan: (e.target as HTMLSelectElement).value as 'free' | 'pro' })}
+            onChange={(e) =>
+              onPatch({ deeplPlan: (e.target as HTMLSelectElement).value as 'free' | 'pro' })
+            }
           >
             <option value="free">{t('Free (api-free.deepl.com)')}</option>
             <option value="pro">{t('Pro (api.deepl.com)')}</option>
@@ -125,7 +144,9 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
           <span class="text-sm">{t('Smart budget routing')}</span>
         </label>
         <p class="text-[11px] text-kick-muted -mt-2">
-          {t('Spend DeepL only on the European languages it clearly wins at; other targets (Japanese, Arabic, Hindi…) use the free engines first, so your DeepL quota lasts much longer.')}
+          {t(
+            'Spend DeepL only on the European languages it clearly wins at; other targets (Japanese, Arabic, Hindi…) use the free engines first, so your DeepL quota lasts much longer.',
+          )}
         </p>
       </section>
 
@@ -138,9 +159,13 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
             type="url"
             value={settings.lingvaInstance}
             placeholder="https://lingva.lunar.icu"
-            onInput={(e) => onPatch({ lingvaInstance: (e.target as HTMLInputElement).value.trim() })}
+            onInput={(e) =>
+              onPatch({ lingvaInstance: (e.target as HTMLInputElement).value.trim() })
+            }
           />
-          <p class="text-[11px] text-kick-muted">{t('Leave blank to use the default public instance.')}</p>
+          <p class="text-[11px] text-kick-muted">
+            {t('Leave blank to use the default public instance.')}
+          </p>
         </div>
       </section>
     </>

@@ -62,20 +62,25 @@ export function AdvancedSection({ settings, onPatch }: Props) {
       <section class="kt-card space-y-4">
         <h2 class="text-sm font-semibold">{t('Cache & performance')}</h2>
         <p class="text-[11px] text-kick-muted">
-          {t('Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels.')}
+          {t(
+            'Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels.',
+          )}
         </p>
         <Row
           label={t('Cache max entries')}
           hint={t('Larger = more hits across sessions, more disk space.')}
           input={
             <input
+              aria-label={t('Cache max entries')}
               type="number"
               class="kt-input"
               min={100}
               max={20000}
               step={100}
               value={settings.cacheMaxEntries}
-              onInput={(e) => onPatch({ cacheMaxEntries: Number((e.target as HTMLInputElement).value) })}
+              onInput={(e) =>
+                onPatch({ cacheMaxEntries: Number((e.target as HTMLInputElement).value) })
+              }
             />
           }
         />
@@ -84,12 +89,15 @@ export function AdvancedSection({ settings, onPatch }: Props) {
           hint={t('After this, entries expire.')}
           input={
             <input
+              aria-label={t('Cache TTL (hours)')}
               type="number"
               class="kt-input"
               min={1}
               max={720}
               value={settings.cacheTtlHours}
-              onInput={(e) => onPatch({ cacheTtlHours: Number((e.target as HTMLInputElement).value) })}
+              onInput={(e) =>
+                onPatch({ cacheTtlHours: Number((e.target as HTMLInputElement).value) })
+              }
             />
           }
         />
@@ -98,12 +106,15 @@ export function AdvancedSection({ settings, onPatch }: Props) {
           hint={t('In-flight provider requests.')}
           input={
             <input
+              aria-label={t('Concurrent translations')}
               type="number"
               class="kt-input"
               min={1}
               max={16}
               value={settings.concurrency}
-              onInput={(e) => onPatch({ concurrency: Number((e.target as HTMLInputElement).value) })}
+              onInput={(e) =>
+                onPatch({ concurrency: Number((e.target as HTMLInputElement).value) })
+              }
             />
           }
         />
@@ -112,12 +123,15 @@ export function AdvancedSection({ settings, onPatch }: Props) {
           hint={t('Hard cap to avoid hammering providers on fast chats.')}
           input={
             <input
+              aria-label={t('Per-channel budget (req/min)')}
               type="number"
               class="kt-input"
               min={10}
               max={2000}
               value={settings.perChannelBudgetPerMin}
-              onInput={(e) => onPatch({ perChannelBudgetPerMin: Number((e.target as HTMLInputElement).value) })}
+              onInput={(e) =>
+                onPatch({ perChannelBudgetPerMin: Number((e.target as HTMLInputElement).value) })
+              }
             />
           }
         />
@@ -208,14 +222,24 @@ export function AdvancedSection({ settings, onPatch }: Props) {
           </button>
         </div>
         <p class="text-[11px] text-kick-muted">
-          {t('"Reset all settings" restores defaults — use it if translations stop appearing because a filter (whitelist / source-language allowlist) was left active.')}
+          {t(
+            '"Reset all settings" restores defaults — use it if translations stop appearing because a filter (whitelist / source-language allowlist) was left active.',
+          )}
         </p>
       </section>
     </>
   );
 }
 
-function Row({ label, hint, input }: { label: string; hint: string; input: preact.ComponentChildren }) {
+function Row({
+  label,
+  hint,
+  input,
+}: {
+  label: string;
+  hint: string;
+  input: preact.ComponentChildren;
+}) {
   return (
     <div class="grid grid-cols-[1fr,140px] gap-3 items-start">
       <div>

@@ -68,7 +68,9 @@ export function EngineCard({ settings, onPatch }: Props) {
     <section class="kt-card space-y-3">
       <div class="flex items-center justify-between">
         <h2 class="text-sm font-semibold">{t('Engine')}</h2>
-        <span class={`text-[11px] font-medium ${present ? 'text-kick-primary' : 'text-kick-muted'}`}>
+        <span
+          class={`text-[11px] font-medium ${present ? 'text-kick-primary' : 'text-kick-muted'}`}
+        >
           {`${t('on-device:')} ${present ? t('available ✓') : t('not supported in this browser')}`}
         </span>
       </div>
@@ -76,16 +78,21 @@ export function EngineCard({ settings, onPatch }: Props) {
       <div class="kt-row">
         <label class="kt-label">{t('Strategy')}</label>
         <select
+          aria-label={t('Strategy')}
           class="kt-select"
           value={settings.engineMode}
-          onChange={(e) => onPatch({ engineMode: (e.target as HTMLSelectElement).value as Settings['engineMode'] })}
+          onChange={(e) =>
+            onPatch({ engineMode: (e.target as HTMLSelectElement).value as Settings['engineMode'] })
+          }
         >
           <option value="local-first">{t('On-device first, cloud fallback (recommended)')}</option>
           <option value="cloud-first">{t('Cloud first, on-device fallback')}</option>
           <option value="local-only">{t('On-device only (no network, no cloud)')}</option>
         </select>
         <p class="text-[11px] text-kick-muted">
-          {t('On-device = local Chromium models: unlimited, instant, private, no rate-limit. Each language needs a one-time model download (click a flag below, or the "Local" chip in chat).')}
+          {t(
+            'On-device = local Chromium models: unlimited, instant, private, no rate-limit. Each language needs a one-time model download (click a flag below, or the "Local" chip in chat).',
+          )}
         </p>
       </div>
 
@@ -116,12 +123,18 @@ export function EngineCard({ settings, onPatch }: Props) {
                     ready
                       ? 'border-kick-primary/50 bg-kick-primary/10 text-kick-primary cursor-default'
                       : st === 'unavailable'
-                        ? 'border-kick-border text-kick-muted/50 cursor-not-allowed'
+                        ? // 50% opacity measured 2.76:1, which WCAG lets pass for a disabled
+                          // control — except the label IS the information here: it names
+                          // which language pair has no model. 75% keeps AA on both
+                          // grounds (4.62 on a card, 4.85 on the page) and still reads
+                          // as unavailable next to the enabled ones.
+                          'border-kick-border text-kick-muted/75 cursor-not-allowed'
                         : 'border-kick-border text-kick-text hover:border-kick-primary'
                   }`}
                   onClick={() => void download(s)}
                 >
-                  {s.toUpperCase()} {ready ? '✓' : busy === s ? '…' : st === 'unavailable' ? '✕' : '⬇'}
+                  {s.toUpperCase()}{' '}
+                  {ready ? '✓' : busy === s ? '…' : st === 'unavailable' ? '✕' : '⬇'}
                 </button>
               );
             })}

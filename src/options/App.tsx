@@ -63,63 +63,71 @@ export function App() {
 
   return (
     <I18nProvider value={t}>
-    <div class="mx-auto max-w-3xl px-6 py-10">
-      <header class="mb-6 flex items-center gap-3">
-        <div class="flex h-9 w-9 items-center justify-center rounded-md bg-kick-primary text-kick-dark font-black text-xl">
-          K
-        </div>
-        <div>
-          <h1 class="text-xl font-semibold tracking-tight">Kick Chat Translator</h1>
-          <p class="text-xs text-kick-muted">{t('v2 · options & preferences')}</p>
-        </div>
-        <div class="ml-auto flex items-center gap-3">
-          {savedAt && <span class="text-xs text-kick-primary">{t('saved')}</span>}
-          <select
-            class="rounded border border-kick-border bg-kick-surface px-1.5 py-1 text-xs text-kick-text"
-            value={settings.uiLang}
-            onChange={(e) => void patch({ uiLang: (e.target as HTMLSelectElement).value as Settings['uiLang'] })}
-            title="Language"
-          >
-            <option value="auto">Auto</option>
-            {UI_LOCALES.map((l) => (
-              <option key={l} value={l}>
-                {UI_LOCALE_NAMES[l]}
-              </option>
-            ))}
-          </select>
-        </div>
-      </header>
+      <div class="mx-auto max-w-3xl px-6 py-10">
+        <header class="mb-6 flex items-center gap-3">
+          <div class="flex h-9 w-9 items-center justify-center rounded-md bg-kick-primary text-kick-dark font-black text-xl">
+            K
+          </div>
+          <div>
+            <h1 class="text-xl font-semibold tracking-tight">Kick Chat Translator</h1>
+            <p class="text-xs text-kick-muted">{t('v2 · options & preferences')}</p>
+          </div>
+          <div class="ml-auto flex items-center gap-3">
+            {savedAt && <span class="text-xs text-kick-primary">{t('saved')}</span>}
+            <select
+              class="rounded border border-kick-border bg-kick-surface px-1.5 py-1 text-xs text-kick-text"
+              value={settings.uiLang}
+              onChange={(e) =>
+                void patch({ uiLang: (e.target as HTMLSelectElement).value as Settings['uiLang'] })
+              }
+              /* A title alone is not an accessible name a screen reader relies
+               on; aria-label is. Kept in English on purpose: it names the
+               control you use to leave a language you cannot read. */
+              aria-label="Interface language"
+              title="Interface language"
+            >
+              <option value="auto">Auto</option>
+              {UI_LOCALES.map((l) => (
+                <option key={l} value={l}>
+                  {UI_LOCALE_NAMES[l]}
+                </option>
+              ))}
+            </select>
+          </div>
+        </header>
 
-      <nav class="mb-5 flex gap-1 border-b border-kick-border">
-        {TABS.map((tb) => (
-          <button
-            key={tb.id}
-            class={`px-4 py-2 text-sm border-b-2 transition ${
-              tab === tb.id
-                ? 'border-kick-primary text-kick-text'
-                : 'border-transparent text-kick-muted hover:text-kick-text'
-            }`}
-            onClick={() => setTab(tb.id)}
-          >
-            {t(tb.label)}
-          </button>
-        ))}
-      </nav>
+        <nav class="mb-5 flex gap-1 border-b border-kick-border">
+          {TABS.map((tb) => (
+            <button
+              key={tb.id}
+              class={`px-4 py-2 text-sm border-b-2 transition ${
+                tab === tb.id
+                  ? 'border-kick-primary text-kick-text'
+                  : 'border-transparent text-kick-muted hover:text-kick-text'
+              }`}
+              onClick={() => setTab(tb.id)}
+            >
+              {t(tb.label)}
+            </button>
+          ))}
+        </nav>
 
-      <main class="space-y-6 pb-12">
-        {tab === 'providers' && <ProviderSection settings={settings} providers={providers} onPatch={patch} />}
-        {tab === 'display' && <DisplaySection settings={settings} onPatch={patch} />}
-        {tab === 'filters' && <FilterSection settings={settings} onPatch={patch} />}
-        {tab === 'advanced' && <AdvancedSection settings={settings} onPatch={patch} />}
-        {tab === 'debug' && (
-          <>
-            {stats && <UsageTrend stats={stats} />}
-            <DebugSection />
-          </>
-        )}
-        {tab === 'about' && <AboutSection />}
-      </main>
-    </div>
+        <main class="space-y-6 pb-12">
+          {tab === 'providers' && (
+            <ProviderSection settings={settings} providers={providers} onPatch={patch} />
+          )}
+          {tab === 'display' && <DisplaySection settings={settings} onPatch={patch} />}
+          {tab === 'filters' && <FilterSection settings={settings} onPatch={patch} />}
+          {tab === 'advanced' && <AdvancedSection settings={settings} onPatch={patch} />}
+          {tab === 'debug' && (
+            <>
+              {stats && <UsageTrend stats={stats} />}
+              <DebugSection />
+            </>
+          )}
+          {tab === 'about' && <AboutSection />}
+        </main>
+      </div>
     </I18nProvider>
   );
 }

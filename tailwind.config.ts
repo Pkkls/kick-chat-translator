@@ -14,7 +14,12 @@ export default {
           dark: '#0a0e12',
           surface: '#13181f',
           border: '#1f2731',
-          muted: '#6b7888',
+          // Kick's own secondary grey. The previous #6b7888 failed AA on every
+          // ground it was rendered on — 4.30 on the page, 3.96 on a card, 3.18
+          // on an active green card — which is most of the secondary text in
+          // the options page and the popup. This measures 7.87 / 7.24 / 7.52 /
+          // 5.82 on those same four grounds, and it is the value Kick uses.
+          muted: '#9fa6ad',
           text: '#e8eef7',
         },
       },

@@ -12,7 +12,10 @@ function mount(patch: Partial<Settings>): HTMLElement {
   // act flushes the effect synchronously for a sync callback; the thenable it
   // hands back is only useful for async ones, so it is deliberately dropped.
   void act(() => {
-    render(<DisplaySection settings={{ ...defaultSettings(), ...patch }} onPatch={() => undefined} />, root);
+    render(
+      <DisplaySection settings={{ ...defaultSettings(), ...patch }} onPatch={() => undefined} />,
+      root,
+    );
   });
   return root;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo} from 'preact/hooks';
+import { useEffect, useRef, useMemo } from 'preact/hooks';
 import type { Settings } from '~/shared/settings';
 import { sortedLanguages } from '~/shared/languages';
 import { resolveUiLocale } from '~/shared/i18n';
@@ -22,6 +22,7 @@ export function DisplaySection({ settings, onPatch }: Props) {
         <div class="kt-row">
           <label class="kt-label">{t('Translate everything to')}</label>
           <select
+            aria-label={t('Translate everything to')}
             class="kt-select"
             value={settings.targetLang}
             onChange={(e) => onPatch({ targetLang: (e.target as HTMLSelectElement).value })}
@@ -34,7 +35,9 @@ export function DisplaySection({ settings, onPatch }: Props) {
             ))}
           </select>
         </div>
-        <p class="text-[11px] text-kick-muted">{t('Auto reads incoming chat in your own language, detected from the browser.')}</p>
+        <p class="text-[11px] text-kick-muted">
+          {t('Auto reads incoming chat in your own language, detected from the browser.')}
+        </p>
       </section>
 
       <section class="kt-card space-y-3">
@@ -55,7 +58,9 @@ export function DisplaySection({ settings, onPatch }: Props) {
           <StyleCard
             active={settings.displayStyle === 'replace'}
             label={t('Replace')}
-            desc={t('After the message in smaller italics (Kick\'s virtual scroll can\'t be replaced in-place).')}
+            desc={t(
+              "After the message in smaller italics (Kick's virtual scroll can't be replaced in-place).",
+            )}
             onClick={() => onPatch({ displayStyle: 'replace' })}
           />
         </div>
@@ -92,7 +97,9 @@ export function DisplaySection({ settings, onPatch }: Props) {
       <section class="kt-card space-y-3">
         <h2 class="text-sm font-semibold">{t('Compose preview')}</h2>
         <p class="text-[12px] text-kick-muted">
-          {t('Translate what you type before sending. A live preview appears above the chat box; click it to drop the translation in. Uses the same DeepL-first chain as incoming chat.')}
+          {t(
+            'Translate what you type before sending. A live preview appears above the chat box; click it to drop the translation in. Uses the same DeepL-first chain as incoming chat.',
+          )}
         </p>
         <ToggleRow
           checked={settings.composeEnabled}
@@ -102,11 +109,12 @@ export function DisplaySection({ settings, onPatch }: Props) {
         <div class="kt-row">
           <label class="kt-label">{t('Write my messages in')}</label>
           <select
+            aria-label={t('Write my messages in')}
             class="kt-select"
             value={settings.composeTargetLang}
             onChange={(e) => onPatch({ composeTargetLang: (e.target as HTMLSelectElement).value })}
           >
-            <option value="auto">{t('Auto — the channel\'s language')}</option>
+            <option value="auto">{t("Auto — the channel's language")}</option>
             {langs.map((l) => (
               <option key={l.code} value={l.code}>
                 {l.name}
@@ -114,7 +122,9 @@ export function DisplaySection({ settings, onPatch }: Props) {
             ))}
           </select>
         </div>
-        <p class="text-[11px] text-kick-muted">{t('Auto detects the channel\'s broadcast language from Kick — no manual picking.')}</p>
+        <p class="text-[11px] text-kick-muted">
+          {t("Auto detects the channel's broadcast language from Kick — no manual picking.")}
+        </p>
         <ToggleRow
           checked={settings.composeInsertMode === 'insert'}
           onChange={(v) => onPatch({ composeInsertMode: v ? 'insert' : 'copy' })}
@@ -173,16 +183,31 @@ function StylePreview({ settings }: { settings: Settings }) {
   return (
     <div>
       <div class="text-[11px] text-kick-muted mb-1">{t('Preview')}</div>
-      <div ref={host} class="rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2 text-sm" />
+      <div
+        ref={host}
+        class="rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2 text-sm"
+      />
     </div>
   );
 }
 
-function StyleCard({ active, label, desc, onClick }: { active: boolean; label: string; desc: string; onClick: () => void }) {
+function StyleCard({
+  active,
+  label,
+  desc,
+  onClick,
+}: {
+  active: boolean;
+  label: string;
+  desc: string;
+  onClick: () => void;
+}) {
   return (
     <button
       class={`text-left rounded-md border p-3 transition ${
-        active ? 'border-kick-primary bg-kick-primary/10' : 'border-kick-border bg-kick-dark/40 hover:border-kick-muted'
+        active
+          ? 'border-kick-primary bg-kick-primary/10'
+          : 'border-kick-border bg-kick-dark/40 hover:border-kick-muted'
       }`}
       onClick={onClick}
     >
@@ -192,7 +217,15 @@ function StyleCard({ active, label, desc, onClick }: { active: boolean; label: s
   );
 }
 
-function ToggleRow({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
+function ToggleRow({
+  checked,
+  onChange,
+  label,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  label: string;
+}) {
   return (
     <label class="flex items-center justify-between gap-3 rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
       <span class="text-sm">{label}</span>

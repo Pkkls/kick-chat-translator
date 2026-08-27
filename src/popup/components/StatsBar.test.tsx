@@ -44,12 +44,14 @@ describe('StatsBar', () => {
   // there is room to read them; the popup overflowed by 69px with them in it.
   // Their tests moved with them, to options/sections/UsageTrend.test.tsx.
   it('draws no chart: the popup is for acting, not for contemplating', () => {
-    const el = mount(makeStats({
-      totalRequests: 10,
-      totalCacheHits: 5,
-      byLang: { ko: 4 },
-      history: [{ day: '2026-08-11', requests: 10, cacheHits: 5 }],
-    }));
+    const el = mount(
+      makeStats({
+        totalRequests: 10,
+        totalCacheHits: 5,
+        byLang: { ko: 4 },
+        history: [{ day: '2026-08-11', requests: 10, cacheHits: 5 }],
+      }),
+    );
     expect(el.querySelectorAll('[title]')).toHaveLength(0);
   });
 });

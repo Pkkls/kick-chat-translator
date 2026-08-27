@@ -76,161 +76,176 @@ export function App() {
 
   return (
     <I18nProvider value={t}>
-    <div class="flex flex-col gap-3 p-4">
-      <header class="flex items-center gap-2">
-        <div class="flex h-6 w-6 items-center justify-center rounded bg-kick-primary text-kick-dark font-black text-sm">
-          K
-        </div>
-        <div class="flex flex-col">
-          <span class="text-sm font-semibold text-kick-text">Kick Translator</span>
-          <span class="text-[10px] text-kick-muted">v{chrome.runtime.getManifest().version} · {savedAt ? t('saved') : t('ready')}</span>
-        </div>
-        <div class="ml-auto">
-          <Toggle
-            checked={settings.enabled}
-            onChange={(v) => void patch('enabled', v)}
-            label={t('enable')}
-          />
-        </div>
-      </header>
-
-      {update?.updateAvailable && (
-        <a
-          class="kt-btn flex items-center justify-center gap-1.5 text-xs font-semibold no-underline"
-          href={update.releaseUrl}
-          target="_blank"
-          rel="noreferrer"
-          title={`Installed v${update.current} · ${update.latest ?? '?'} available`}
-        >
-          {t('⬆ Update available')} — {update.latest}
-        </a>
-      )}
-
-      <section class="kt-card flex flex-col gap-2">
-        <label class="kt-label">{t('Target language')}</label>
-        <select
-          class="kt-select"
-          value={settings.targetLang}
-          onChange={(e) => void patch('targetLang', (e.target as HTMLSelectElement).value)}
-        >
-          <option value="auto">{t('Auto — your language')}</option>
-          {langs.map((l) => (
-            <option key={l.code} value={l.code}>
-              {l.name}
-            </option>
-          ))}
-        </select>
-
-        <div class="flex gap-2">
-          <div class="flex-1">
-            <label class="kt-label mb-1 block">{t('Display')}</label>
-            <select
-              class="kt-select"
-              value={settings.displayStyle}
-              onChange={(e) =>
-                void patch('displayStyle', (e.target as HTMLSelectElement).value as Settings['displayStyle'])
-              }
-            >
-              <option value="below">{t('Below original')}</option>
-              <option value="inline">{t('Inline')}</option>
-              <option value="replace">{t('Replace')}</option>
-            </select>
+      <div class="flex flex-col gap-3 p-4">
+        <header class="flex items-center gap-2">
+          <div class="flex h-6 w-6 items-center justify-center rounded bg-kick-primary text-kick-dark font-black text-sm">
+            K
           </div>
-        </div>
+          <div class="flex flex-col">
+            <span class="text-sm font-semibold text-kick-text">Kick Translator</span>
+            <span class="text-[10px] text-kick-muted">
+              v{chrome.runtime.getManifest().version} · {savedAt ? t('saved') : t('ready')}
+            </span>
+          </div>
+          <div class="ml-auto">
+            <Toggle
+              checked={settings.enabled}
+              onChange={(v) => void patch('enabled', v)}
+              label={t('enable')}
+            />
+          </div>
+        </header>
 
-        <div class="flex items-center gap-2 pt-1">
-          <Toggle
-            checked={settings.showOriginal}
-            onChange={(v) => void patch('showOriginal', v)}
-            label={t('keep original')}
-          />
-          <Toggle
-            checked={settings.showSourceBadge}
-            onChange={(v) => void patch('showSourceBadge', v)}
-            label={t('lang badge')}
-          />
-        </div>
-      </section>
+        {update?.updateAvailable && (
+          <a
+            class="kt-btn flex items-center justify-center gap-1.5 text-xs font-semibold no-underline"
+            href={update.releaseUrl}
+            target="_blank"
+            rel="noreferrer"
+            title={`Installed v${update.current} · ${update.latest ?? '?'} available`}
+          >
+            {t('⬆ Update available')} — {update.latest}
+          </a>
+        )}
 
-      <section class="kt-card flex flex-col gap-2">
-        <div class="flex items-center justify-between">
-          <label class="kt-label">{t('Translate what I type')}</label>
-          <Toggle
-            checked={settings.composeEnabled}
-            onChange={(v) => void patch('composeEnabled', v)}
-            label={t('enable')}
-          />
-        </div>
-        {settings.composeEnabled && (
-          <>
-            <select
-              class="kt-select"
-              value={settings.composeTargetLang}
-              onChange={(e) => void patch('composeTargetLang', (e.target as HTMLSelectElement).value)}
-            >
-              <option value="auto">{t('Auto — channel language')}</option>
-              {langs.map((l) => (
-                <option key={l.code} value={l.code}>
-                  {l.name}
-                </option>
-              ))}
-            </select>
-            {/* The help line that used to sit here explained a behaviour nobody
+        <section class="kt-card flex flex-col gap-2">
+          <label class="kt-label">{t('Target language')}</label>
+          <select
+            aria-label={t('Target language')}
+            class="kt-select"
+            value={settings.targetLang}
+            onChange={(e) => void patch('targetLang', (e.target as HTMLSelectElement).value)}
+          >
+            <option value="auto">{t('Auto — your language')}</option>
+            {langs.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.name}
+              </option>
+            ))}
+          </select>
+
+          <div class="flex gap-2">
+            <div class="flex-1">
+              <label class="kt-label mb-1 block">{t('Display')}</label>
+              <select
+                aria-label={t('Display')}
+                class="kt-select"
+                value={settings.displayStyle}
+                onChange={(e) =>
+                  void patch(
+                    'displayStyle',
+                    (e.target as HTMLSelectElement).value as Settings['displayStyle'],
+                  )
+                }
+              >
+                <option value="below">{t('Below original')}</option>
+                <option value="inline">{t('Inline')}</option>
+                <option value="replace">{t('Replace')}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 pt-1">
+            <Toggle
+              checked={settings.showOriginal}
+              onChange={(v) => void patch('showOriginal', v)}
+              label={t('keep original')}
+            />
+            <Toggle
+              checked={settings.showSourceBadge}
+              onChange={(v) => void patch('showSourceBadge', v)}
+              label={t('lang badge')}
+            />
+          </div>
+        </section>
+
+        <section class="kt-card flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <label class="kt-label">{t('Translate what I type')}</label>
+            <Toggle
+              checked={settings.composeEnabled}
+              onChange={(v) => void patch('composeEnabled', v)}
+              label={t('enable')}
+            />
+          </div>
+          {settings.composeEnabled && (
+            <>
+              {/* No visible label of its own — it belongs to the "translate what
+                I type" heading above, which a screen reader does not connect
+                to it. Named explicitly so it is not announced as a bare
+                combo box. */}
+              <select
+                aria-label={t('Write my messages in')}
+                class="kt-select"
+                value={settings.composeTargetLang}
+                onChange={(e) =>
+                  void patch('composeTargetLang', (e.target as HTMLSelectElement).value)
+                }
+              >
+                <option value="auto">{t('Auto — channel language')}</option>
+                {langs.map((l) => (
+                  <option key={l.code} value={l.code}>
+                    {l.name}
+                  </option>
+                ))}
+              </select>
+              {/* The help line that used to sit here explained a behaviour nobody
                 configures, and cost two rows in a popup that has none to spare.
                 The Options page carries the full explanation. */}
-          </>
-        )}
-      </section>
-
-      <section class="kt-card flex flex-col gap-2">
-        <div class="flex items-center justify-between">
-          <span class="kt-label">{t('Providers')}</span>
-          <span class="text-[10px] text-kick-muted">{t('order in options')}</span>
-        </div>
-        <div class="flex flex-wrap gap-1.5">
-          {providers.map((p) => (
-            <ProviderPill key={p.id} status={p} />
-          ))}
-        </div>
-        {deepl?.configured && deepl.limit > 0 && (
-          <div class="pt-1">
-            <div class="flex items-center justify-between text-[10px] text-kick-muted">
-              <span>{t('DeepL quota')}</span>
-              <span>
-                {fmtK(deepl.count)} / {fmtK(deepl.limit)} ({Math.round((deepl.count / deepl.limit) * 100)}%)
-              </span>
-            </div>
-            <div class="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-kick-border">
-              <div
-                class="h-full rounded-full bg-kick-primary"
-                style={{ width: `${Math.min(100, (deepl.count / deepl.limit) * 100)}%` }}
-              />
-            </div>
-          </div>
-        )}
-      </section>
-
-      {settings.popupShowsStats && stats && (
-        <section class="kt-card">
-          <span class="kt-label">{t('Today')}</span>
-          <StatsBar stats={stats} />
+            </>
+          )}
         </section>
-      )}
 
-      <footer class="flex items-center justify-between gap-2">
-        <button
-          class="kt-btn-ghost"
-          onClick={() => {
-            send({ type: 'cache.clear' }).catch(() => undefined);
-          }}
-        >
-          {t('Clear cache')}
-        </button>
-        <button class="kt-btn" onClick={openOptions}>
-          {t('Options')}
-        </button>
-      </footer>
-    </div>
+        <section class="kt-card flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <span class="kt-label">{t('Providers')}</span>
+            <span class="text-[10px] text-kick-muted">{t('order in options')}</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            {providers.map((p) => (
+              <ProviderPill key={p.id} status={p} />
+            ))}
+          </div>
+          {deepl?.configured && deepl.limit > 0 && (
+            <div class="pt-1">
+              <div class="flex items-center justify-between text-[10px] text-kick-muted">
+                <span>{t('DeepL quota')}</span>
+                <span>
+                  {fmtK(deepl.count)} / {fmtK(deepl.limit)} (
+                  {Math.round((deepl.count / deepl.limit) * 100)}%)
+                </span>
+              </div>
+              <div class="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-kick-border">
+                <div
+                  class="h-full rounded-full bg-kick-primary"
+                  style={{ width: `${Math.min(100, (deepl.count / deepl.limit) * 100)}%` }}
+                />
+              </div>
+            </div>
+          )}
+        </section>
+
+        {settings.popupShowsStats && stats && (
+          <section class="kt-card">
+            <span class="kt-label">{t('Today')}</span>
+            <StatsBar stats={stats} />
+          </section>
+        )}
+
+        <footer class="flex items-center justify-between gap-2">
+          <button
+            class="kt-btn-ghost"
+            onClick={() => {
+              send({ type: 'cache.clear' }).catch(() => undefined);
+            }}
+          >
+            {t('Clear cache')}
+          </button>
+          <button class="kt-btn" onClick={openOptions}>
+            {t('Options')}
+          </button>
+        </footer>
+      </div>
     </I18nProvider>
   );
 }

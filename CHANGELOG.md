@@ -61,6 +61,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **The whole Options page and popup failed AA on secondary text.** The `muted`
+  token was `#6b7888`, which measures 4.30:1 on the page ground, 3.96 on a card
+  and 3.18 on an active green card — that is most of the explanatory text in the
+  extension. It is now Kick's own `#9FA6AD`: 7.87 / 7.24 / 7.52 / 5.82 on those
+  same grounds. One token, 180 failures across the six tabs.
+- Every select and numeric field on the Options page and in the popup now has an
+  accessible name. They had a visible `<label>` beside them but nothing tying
+  the two together, so a screen reader announced "combo box" with no clue which
+  setting it belonged to. axe rated this critical on four of the six tabs.
+- The language codes of unavailable on-device models were drawn at 50% opacity
+  (2.76:1). WCAG allows that for a disabled control, but the label *is* the
+  information — it names which pair has no model. Now 75%, which keeps AA.
+
 - The "Replace" display style rendered its text at 0.8em, about 10.4px.
   Measured against the other styles it bought nothing for that: the same 7
   messages on screen as Inline, the same opacity, just smaller. It now shares

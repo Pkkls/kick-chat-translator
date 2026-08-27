@@ -39,10 +39,15 @@ export function FilterSection({ settings, onPatch }: Props) {
           <div>
             <div class="text-sm">{t('Minimum message length')}</div>
             <div class="text-[11px] text-kick-muted">
-              {t('Shorter messages are left alone. Raise it to spend less provider quota on busy chats.')}
+              {t(
+                'Shorter messages are left alone. Raise it to spend less provider quota on busy chats.',
+              )}
             </div>
           </div>
+          {/* The heading beside it is a plain div, so nothing connects the two
+              for a screen reader: axe reports the field as unlabelled. */}
           <input
+            aria-label={t('Minimum message length')}
             type="number"
             class="kt-input"
             min={1}
@@ -59,15 +64,22 @@ export function FilterSection({ settings, onPatch }: Props) {
       <section class="kt-card space-y-3">
         <h2 class="text-sm font-semibold">{t('Source languages allowlist')}</h2>
         <p class="text-xs text-kick-muted">
-          {t('Leave empty to translate every detected language. Pick specific ones to ONLY translate those (e.g. only JA + KO).')}
+          {t(
+            'Leave empty to translate every detected language. Pick specific ones to ONLY translate those (e.g. only JA + KO).',
+          )}
         </p>
         <div class="grid grid-cols-3 gap-1.5 max-h-[260px] overflow-auto pr-1">
           {langs.map((l) => {
             const checked = settings.sourceLangAllowlist.includes(l.code);
             return (
-              <label key={l.code} class={`flex items-center gap-2 rounded-md border px-2 py-1 text-xs cursor-pointer transition ${
-                checked ? 'border-kick-primary bg-kick-primary/10' : 'border-kick-border bg-kick-dark/30'
-              }`}>
+              <label
+                key={l.code}
+                class={`flex items-center gap-2 rounded-md border px-2 py-1 text-xs cursor-pointer transition ${
+                  checked
+                    ? 'border-kick-primary bg-kick-primary/10'
+                    : 'border-kick-border bg-kick-dark/30'
+                }`}
+              >
                 <input
                   type="checkbox"
                   class="h-3.5 w-3.5 accent-kick-primary"
@@ -79,7 +91,9 @@ export function FilterSection({ settings, onPatch }: Props) {
                     onPatch({ sourceLangAllowlist: [...next] });
                   }}
                 />
-                <span class="font-mono text-[10px] tracking-wider text-kick-muted">{l.code.toUpperCase()}</span>
+                <span class="font-mono text-[10px] tracking-wider text-kick-muted">
+                  {l.code.toUpperCase()}
+                </span>
                 <span class="text-kick-muted truncate">{l.name}</span>
               </label>
             );
@@ -95,7 +109,9 @@ export function FilterSection({ settings, onPatch }: Props) {
             class="kt-textarea"
             value={settings.whitelistChannels.join('\n')}
             placeholder={`${t('one channel name per line')}\nsome-channel\nanother-channel`}
-            onInput={(e) => onPatch({ whitelistChannels: toList((e.target as HTMLTextAreaElement).value) })}
+            onInput={(e) =>
+              onPatch({ whitelistChannels: toList((e.target as HTMLTextAreaElement).value) })
+            }
           />
         </div>
         <div class="kt-row">
@@ -104,7 +120,9 @@ export function FilterSection({ settings, onPatch }: Props) {
             class="kt-textarea"
             value={settings.blacklistChannels.join('\n')}
             placeholder={`${t('one channel name per line')}\nsome-channel`}
-            onInput={(e) => onPatch({ blacklistChannels: toList((e.target as HTMLTextAreaElement).value) })}
+            onInput={(e) =>
+              onPatch({ blacklistChannels: toList((e.target as HTMLTextAreaElement).value) })
+            }
           />
         </div>
         <div class="kt-row">
@@ -113,7 +131,9 @@ export function FilterSection({ settings, onPatch }: Props) {
             class="kt-textarea"
             value={settings.blacklistUsers.join('\n')}
             placeholder={`${t('one username per line')}\nsome-user`}
-            onInput={(e) => onPatch({ blacklistUsers: toList((e.target as HTMLTextAreaElement).value) })}
+            onInput={(e) =>
+              onPatch({ blacklistUsers: toList((e.target as HTMLTextAreaElement).value) })
+            }
           />
         </div>
       </section>
@@ -121,7 +141,9 @@ export function FilterSection({ settings, onPatch }: Props) {
       <section class="kt-card space-y-3">
         <h2 class="text-sm font-semibold">{t('Glossary')}</h2>
         <p class="text-[11px] text-kick-muted">
-          {t('Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.')}
+          {t(
+            'Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.',
+          )}
         </p>
         <textarea
           class="kt-textarea"
@@ -134,7 +156,15 @@ export function FilterSection({ settings, onPatch }: Props) {
   );
 }
 
-function ToggleRow({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
+function ToggleRow({
+  checked,
+  onChange,
+  label,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  label: string;
+}) {
   return (
     <label class="flex items-center justify-between gap-3 rounded-md border border-kick-border bg-kick-dark/40 px-3 py-2">
       <span class="text-sm">{label}</span>

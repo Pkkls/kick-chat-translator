@@ -37,14 +37,18 @@ export function DebugSection() {
       }
     }
     setRows([]);
-    setNote(t('The open Kick tab has not loaded the extension yet. Reload the tab, then read again.'));
+    setNote(
+      t('The open Kick tab has not loaded the extension yet. Reload the tab, then read again.'),
+    );
   }
 
   return (
     <section class="kt-card space-y-3">
       <h2 class="text-sm font-semibold">{t('Last decisions')}</h2>
       <p class="text-[12px] text-kick-muted">
-        {t('Why each recent message was translated or left alone. Read from an open Kick tab, kept in memory there, never saved to disk.')}
+        {t(
+          'Why each recent message was translated or left alone. Read from an open Kick tab, kept in memory there, never saved to disk.',
+        )}
       </p>
       <button class="kt-btn-ghost" onClick={() => void load()}>
         {t('Read decisions')}
