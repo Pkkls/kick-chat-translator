@@ -17,14 +17,34 @@
 }
 
 @layer components {
+  /* `border` is the card token: 1.18 on a card, 1.28 on the page. Fine for a
+     panel edge, but on a select or a text field it is the control's only
+     boundary, which WCAG 1.4.11 holds to 3:1 — the same correction the options
+     page already carries. `stroke` measures 3.07 on a card. */
   .kt-select {
-    @apply w-full appearance-none rounded-md border border-kick-border bg-kick-surface px-2 py-1.5 text-sm text-kick-text outline-none focus:border-kick-primary;
+    @apply w-full appearance-none rounded-md border border-kick-stroke bg-kick-surface px-2 py-1.5 text-sm text-kick-text outline-none;
     /* Same as the options page: the list the browser opens needs the scheme on
        the control, not only on body. */
     color-scheme: dark;
+    transition: border-color 0.15s ease;
+  }
+  .kt-select:hover:not(:disabled) {
+    @apply border-kick-stroke-strong;
   }
   .kt-input {
-    @apply w-full rounded-md border border-kick-border bg-kick-surface px-2 py-1.5 text-sm text-kick-text outline-none focus:border-kick-primary placeholder:text-kick-muted;
+    @apply w-full rounded-md border border-kick-stroke bg-kick-surface px-2 py-1.5 text-sm text-kick-text outline-none placeholder:text-kick-muted;
+    transition: border-color 0.15s ease;
+  }
+  .kt-input:hover:not(:disabled) {
+    @apply border-kick-stroke-strong;
+  }
+  /* `outline-none` removed the only focus indicator the browser gave these,
+     and a 1px border recolour is a thin replacement. Two solid pixels outside
+     the control, as on the options page. */
+  .kt-select:focus-visible,
+  .kt-input:focus-visible {
+    outline: 2px solid theme('colors.kick.primary');
+    outline-offset: 1px;
   }
   .kt-label {
     @apply text-[11px] uppercase tracking-wider text-kick-muted;
@@ -32,10 +52,26 @@
   .kt-btn {
     @apply rounded-md bg-kick-primary px-3 py-1.5 text-sm font-semibold text-kick-dark hover:brightness-95 transition;
   }
+  /* Transparent background, so the border is the whole button. */
   .kt-btn-ghost {
-    @apply rounded-md border border-kick-border bg-transparent px-3 py-1.5 text-sm font-medium text-kick-text hover:bg-kick-surface transition;
+    @apply rounded-md border border-kick-stroke bg-transparent px-3 py-1.5 text-sm font-medium text-kick-text hover:bg-kick-surface hover:border-kick-stroke-strong transition;
   }
   .kt-card {
     @apply rounded-lg border border-kick-border bg-kick-surface p-3;
+  }
+}
+
+/* The popup carried no reduced-motion policy at all: the switch knob slides,
+   the rails and borders cross-fade, the buttons brighten. None of it is
+   essential, so all of it stops. Kept to transitions and animations so the
+   layout is untouched. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
   }
 }

@@ -82,6 +82,51 @@ export function ensureStyles(): void {
 }
 
 /**
+ * Stamp the document with the scheme the chat is actually painted in.
+ *
+ * The injected UI used to switch on `prefers-color-scheme`, which is the OS
+ * setting and has nothing to do with Kick: a user on a light desktop reading a
+ * dark chat got the light palette — `rgba(20,25,35,.88)` text — on Kick's dark
+ * ground, which is unreadable. Kick owns its own theme, so the ground is what
+ * gets asked.
+ *
+ * Measured rather than read off a class name, because Kick's class names churn
+ * and a stale one would silently pin the wrong palette.
+ *
+ * Returns the scheme so a caller can log or test it.
+ */
+export function applyChatScheme(root: Element | null = document.body): 'light' | 'dark' {
+  const scheme = detectScheme(root) ?? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  document.documentElement.setAttribute('data-kt-scheme', scheme);
+  return scheme;
+}
+
+/** First opaque background walking up from `el`, as a light/dark verdict. */
+function detectScheme(el: Element | null): 'light' | 'dark' | null {
+  for (let n: Element | null = el; n; n = n.parentElement) {
+    const rgba = parseRgb(getComputedStyle(n).backgroundColor);
+    // Anything translucent lets the ground below show through, so it does not
+    // decide on its own — keep climbing until something actually paints.
+    if (rgba && rgba[3] >= 0.9) return luminance(rgba) > 0.4 ? 'light' : 'dark';
+  }
+  return null;
+}
+
+function parseRgb(v: string): [number, number, number, number] | null {
+  const m = v.match(/[\d.]+/g);
+  if (!m || m.length < 3) return null;
+  return [Number(m[0]), Number(m[1]), Number(m[2]), m[3] === undefined ? 1 : Number(m[3])];
+}
+
+function luminance([r, g, b]: [number, number, number, number]): number {
+  const f = (c: number) => {
+    const x = c / 255;
+    return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+}
+
+/**
  * `showOriginal` off — hide Kick's own message text and leave only ours.
  *
  * One class on the document root, then a CSS rule that only bites on lines

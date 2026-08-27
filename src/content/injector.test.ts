@@ -84,11 +84,36 @@ describe('injector artifacts', () => {
   describe('every display style carries the same cue', () => {
     const styleClasses = ['kt-translation', 'kt-translation-inline', 'kt-translation-compact'] as const;
 
+    /**
+     * Body of the rule whose selector list is exactly `selector`.
+     *
+     * Anchoring on `^.cls {` looked equivalent and was not: reformatting puts
+     * each selector of a multi-selector rule on its own line, so the
+     * copy-cursor list began a line with `.kt-translation-compact {` and the
+     * anchor cheerfully returned the cursor rule instead. Splitting the
+     * selector list is what the assertion actually means.
+     */
+    const soleRule = (css: string, selector: string) => {
+      for (const m of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
+        // Comments sit in front of the selector and carry commas of their own,
+        // so they have to go before the list is split.
+        const head = m[1]!.replace(/\/\*[\s\S]*?\*\//g, '').trim();
+        if (head.startsWith('@')) continue;
+        if (
+          head
+            .split(',')
+            .map((x) => x.trim())
+            .join(',') === selector
+        )
+          return m[2]!;
+      }
+      return '';
+    };
+
     it.each(styleClasses)('%s has the green background', (cls) => {
-      // Anchored: the class must own the rule, not merely appear in a shared
-      // selector list such as the copy-cursor one.
-      const block = new RegExp(`^\\.${cls}\\s*\\{([^}]*)\\}`, 'm').exec(injectCss)?.[1] ?? '';
-      expect(block).toMatch(/background:\s*rgba\(83, 252, 24/);
+      // The class must own the rule, not merely appear in a shared selector
+      // list such as the copy-cursor one.
+      expect(soleRule(injectCss, `.${cls}`)).toMatch(/background:\s*rgba\(83, 252, 24/);
     });
 
     it('lists every style in the copy-cursor rule', () => {
@@ -278,9 +303,21 @@ describe('injector artifacts', () => {
 
     // The bar is the only one of the three with a light theme, so there the
     // scheme has to follow it instead of being frozen dark.
+    // The bar is the only one of the three with a light theme, so there the
+    // scheme has to follow it instead of being frozen dark.
+    //
+    // Keyed on the stamp the content script writes, not on the OS media query
+    // it used to sit behind: Kick owns its theme, and a light desktop reading a
+    // dark chat was handed the light palette on a dark ground.
     it('follows the light theme on the chat bar rather than freezing dark', () => {
-      const lightBlock = /@media \(prefers-color-scheme: light\) \{([\s\S]*)\}/.exec(injectCss)?.[1] ?? '';
-      expect(lightBlock).toMatch(/\.kt-float-lang\s*\{[^}]*color-scheme:\s*light/);
+      expect(ruleFor(injectCss, "html[data-kt-scheme='light'] .kt-float-lang")).toMatch(
+        /color-scheme:\s*light/,
+      );
+    });
+
+    // Control for the one above: the desktop must no longer decide anything.
+    it('no longer keys any injected style on the OS scheme', () => {
+      expect(injectCss).not.toContain('@media (prefers-color-scheme');
     });
 
     it.each(['src/options/styles.css', 'src/popup/styles.css'])('does so in %s', (path) => {

@@ -83,7 +83,9 @@
 }
 
 /* #8 Click-to-copy: cursor hint */
-.kt-translation, .kt-translation-inline, .kt-translation-compact {
+.kt-translation,
+.kt-translation-inline,
+.kt-translation-compact {
   cursor: copy;
 }
 
@@ -174,12 +176,10 @@
   font-style: normal;
   color: #ffffff;
 }
-@media (prefers-color-scheme: light) {
-  .kt-hide-original .kt-translation,
-  .kt-hide-original .kt-translation-inline,
-  .kt-hide-original .kt-translation-compact {
-    color: #0b0b0c;
-  }
+html[data-kt-scheme='light'].kt-hide-original .kt-translation,
+html[data-kt-scheme='light'].kt-hide-original .kt-translation-inline,
+html[data-kt-scheme='light'].kt-hide-original .kt-translation-compact {
+  color: #0b0b0c;
 }
 
 /* #7 Toast notification */
@@ -198,8 +198,13 @@
   animation: kt-fade 3s ease-out forwards;
 }
 @keyframes kt-fade {
-  0%, 70% { opacity: 1; }
-  100% { opacity: 0; }
+  0%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 /* ─── Floating bar at top of #channel-chatroom ───────────────────────── */
@@ -232,9 +237,11 @@
   border-radius: 50%;
   background: rgba(160, 160, 160, 0.5);
   flex-shrink: 0;
-  transition: background 0.15s, box-shadow 0.15s;
+  transition:
+    background 0.15s,
+    box-shadow 0.15s;
 }
-.kt-float[data-enabled="true"] .kt-float-dot {
+.kt-float[data-enabled='true'] .kt-float-dot {
   background: #53fc18;
   box-shadow: 0 0 8px rgba(83, 252, 24, 0.6);
 }
@@ -386,7 +393,10 @@
   transform: translateY(5px);
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.16s ease, transform 0.16s ease, border-color 0.16s ease;
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s ease,
+    border-color 0.16s ease;
   will-change: opacity, transform;
 }
 .kt-compose[data-state='ready'],
@@ -449,72 +459,81 @@
 }
 
 @keyframes kt-compose-pulse {
-  0%, 100% { opacity: 0.85; }
-  50% { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
-/* Auto light/dark: follow the OS scheme for all injected UI. */
-@media (prefers-color-scheme: light) {
-  .kt-translation {
-    color: rgba(20, 25, 35, 0.88);
-    background: rgba(0, 0, 0, 0.05);
-    border-left-color: rgba(40, 170, 20, 0.6);
-  }
-  .kt-translation-inline,
-  .kt-translation-compact {
-    color: rgba(20, 25, 35, 0.88);
-    background: rgba(40, 170, 20, 0.12);
-    border-left-color: rgba(40, 170, 20, 0.6);
-  }
-  .kt-flag {
-    background: rgba(0, 0, 0, 0.06);
-    color: rgba(20, 25, 35, 0.7);
-  }
-  .kt-retry {
-    color: rgba(40, 150, 20, 0.9);
-  }
-  /* #F04E4E is tuned for the dark ground; on white it drops to 3.50. */
-  .kt-error {
-    color: #d14444;
-  }
-  .kt-float {
-    background: rgba(245, 247, 250, 0.92);
-    color: rgba(20, 25, 35, 0.85);
-    border-bottom-color: rgba(40, 170, 20, 0.3);
-  }
-  .kt-float:hover {
-    background: rgba(235, 238, 242, 0.98);
-  }
-  /* rgba(0,0,0,.15) flattens to 1.42:1 against the light bar, where WCAG
+/* Light theme.
+   Keyed on the stamp applyChatScheme() writes after measuring the chat's real
+   background, not on prefers-color-scheme: Kick owns its theme, and the OS
+   setting was handing a light desktop the light palette on Kick's dark chat. */
+html[data-kt-scheme='light'] .kt-translation {
+  color: rgba(20, 25, 35, 0.88);
+  background: rgba(0, 0, 0, 0.05);
+  border-left-color: rgba(40, 170, 20, 0.6);
+}
+html[data-kt-scheme='light'] .kt-translation-inline,
+html[data-kt-scheme='light'] .kt-translation-compact {
+  color: rgba(20, 25, 35, 0.88);
+  background: rgba(40, 170, 20, 0.12);
+  border-left-color: rgba(40, 170, 20, 0.6);
+}
+html[data-kt-scheme='light'] .kt-flag {
+  background: rgba(0, 0, 0, 0.06);
+  color: rgba(20, 25, 35, 0.7);
+}
+html[data-kt-scheme='light'] .kt-retry {
+  color: rgba(40, 150, 20, 0.9);
+}
+
+/* #F04E4E is tuned for the dark ground; on white it drops to 3.50. */
+html[data-kt-scheme='light'] .kt-error {
+  color: #d14444;
+}
+html[data-kt-scheme='light'] .kt-float {
+  background: rgba(245, 247, 250, 0.92);
+  color: rgba(20, 25, 35, 0.85);
+  border-bottom-color: rgba(40, 170, 20, 0.3);
+}
+html[data-kt-scheme='light'] .kt-float:hover {
+  background: rgba(235, 238, 242, 0.98);
+}
+
+/* rgba(0,0,0,.15) flattens to 1.42:1 against the light bar, where WCAG
      1.4.11 asks 3:1 of a control's boundary. #8D8D8E measures 3.11 on the bar,
      3.02 on the chip surface and 3.32 on white, so one value covers every
      light ground these controls sit on. */
-  .kt-float-opts,
-  .kt-float-lang,
-  .kt-float-power {
-    border-color: #8d8d8e;
-    color: #0b0b0c;
-  }
-  /* Our option text turns dark here, so the list has to turn light with it.
+html[data-kt-scheme='light'] .kt-float-opts,
+html[data-kt-scheme='light'] .kt-float-lang,
+html[data-kt-scheme='light'] .kt-float-power {
+  border-color: #8d8d8e;
+  color: #0b0b0c;
+}
+
+/* Our option text turns dark here, so the list has to turn light with it.
      Freezing the scheme would just break the readability the other way round. */
-  .kt-float-lang {
-    color-scheme: light;
-    background: #f4f4f5;
-    color: #0b0b0c;
-  }
-  .kt-float-lang option {
-    background-color: #ffffff;
-    color: #0b0b0c;
-  }
-  .kt-float-count {
-    color: rgba(40, 150, 20, 0.8);
-  }
-  .kt-compose {
-    background: rgba(248, 250, 252, 0.97);
-    color: rgba(20, 25, 35, 0.95);
-    border-color: rgba(40, 170, 20, 0.3);
-    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.16);
-  }
+html[data-kt-scheme='light'] .kt-float-lang {
+  color-scheme: light;
+  background: #f4f4f5;
+  color: #0b0b0c;
+}
+html[data-kt-scheme='light'] .kt-float-lang option {
+  background-color: #ffffff;
+  color: #0b0b0c;
+}
+html[data-kt-scheme='light'] .kt-float-count {
+  color: rgba(40, 150, 20, 0.8);
+}
+html[data-kt-scheme='light'] .kt-compose {
+  background: rgba(248, 250, 252, 0.97);
+  color: rgba(20, 25, 35, 0.95);
+  border-color: rgba(40, 170, 20, 0.3);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.16);
 }
 
 /* ─── Language chip, inside Kick's message box ────────────────────────────
@@ -707,67 +726,65 @@
    #53FC18 as text scores 1.25 and as a hairline 1.37 on this surface, both
    unusable, so it stays an aplat and two darkened variants take text and
    stroke. Measured: #35A10F 3.05:1, #2A810C 4.50:1. */
-@media (prefers-color-scheme: light) {
-  .kt-chip {
-    border-color: #8d8d8e;
-    background: #f4f4f5;
-    color: #0b0b0c;
-  }
-  .kt-chip:hover {
+html[data-kt-scheme='light'] .kt-chip {
+  border-color: #8d8d8e;
+  background: #f4f4f5;
+  color: #0b0b0c;
+}
+html[data-kt-scheme='light'] .kt-chip:hover {
+  border-color: #35a10f;
+  background: #e8e8e9;
+}
+html[data-kt-scheme='light'] .kt-chip:focus-visible {
+  outline-color: #35a10f;
+}
+html[data-kt-scheme='light'] .kt-chip[data-mode='auto'],
+html[data-kt-scheme='light'] .kt-chip[data-mode='off'],
+html[data-kt-scheme='light'] .kt-chip[data-mode='loading'] {
+  color: #5e5e5f;
+}
+html[data-kt-scheme='light'] .kt-chip[data-mode='loading'] {
+  animation-name: kt-chip-wait-light;
+}
+@keyframes kt-chip-wait-light {
+  50% {
     border-color: #35a10f;
-    background: #e8e8e9;
   }
-  .kt-chip:focus-visible {
-    outline-color: #35a10f;
-  }
-  .kt-chip[data-mode='auto'],
-  .kt-chip[data-mode='off'],
-  .kt-chip[data-mode='loading'] {
-    color: #5e5e5f;
-  }
-  .kt-chip[data-mode='loading'] {
-    animation-name: kt-chip-wait-light;
-  }
-  @keyframes kt-chip-wait-light {
-    50% {
-      border-color: #35a10f;
-    }
-  }
-  .kt-chip[data-mode='pinned'] {
-    border-color: #35a10f;
-    background: #d7f5cd;
-    color: #0b0b0c;
-  }
-  .kt-chip[data-mode='error'] {
-    border-color: #b4232a;
-    background: #fbeaeb;
-    color: #8e1a20;
-  }
-  .kt-chip-menu {
-    outline-color: #8d8d8e;
-    background: #ffffff;
-  }
-  .kt-chip-row {
-    color: #0b0b0c;
-  }
-  .kt-chip-row:hover {
-    background: #e8e8e9;
-  }
-  .kt-chip-row:focus-visible {
-    outline-color: #35a10f;
-  }
-  .kt-chip-row[aria-selected='true'] {
-    background: #d7f5cd;
-  }
-  .kt-chip-row[aria-selected='true'] .kt-chip-iso {
-    color: #297b0c;
-  }
-  .kt-chip-iso {
-    color: #5e5e5f;
-  }
-  .kt-chip-sep {
-    background: #e2e2e3;
-  }
+}
+html[data-kt-scheme='light'] .kt-chip[data-mode='pinned'] {
+  border-color: #35a10f;
+  background: #d7f5cd;
+  color: #0b0b0c;
+}
+html[data-kt-scheme='light'] .kt-chip[data-mode='error'] {
+  border-color: #b4232a;
+  background: #fbeaeb;
+  color: #8e1a20;
+}
+html[data-kt-scheme='light'] .kt-chip-menu {
+  outline-color: #8d8d8e;
+  background: #ffffff;
+}
+html[data-kt-scheme='light'] .kt-chip-row {
+  color: #0b0b0c;
+}
+html[data-kt-scheme='light'] .kt-chip-row:hover {
+  background: #e8e8e9;
+}
+html[data-kt-scheme='light'] .kt-chip-row:focus-visible {
+  outline-color: #35a10f;
+}
+html[data-kt-scheme='light'] .kt-chip-row[aria-selected='true'] {
+  background: #d7f5cd;
+}
+html[data-kt-scheme='light'] .kt-chip-row[aria-selected='true'] .kt-chip-iso {
+  color: #297b0c;
+}
+html[data-kt-scheme='light'] .kt-chip-iso {
+  color: #5e5e5f;
+}
+html[data-kt-scheme='light'] .kt-chip-sep {
+  background: #e2e2e3;
 }
 
 /* Filter box. 42 languages do not fit a list at screen height, so the list is
@@ -802,21 +819,19 @@
   font-size: 12.5px;
 }
 
-@media (prefers-color-scheme: light) {
-  .kt-chip-search {
-    border-color: #8d8d8e;
-    background: #ffffff;
-    color: #0b0b0c;
-  }
-  .kt-chip-search::placeholder {
-    color: #5e5e5f;
-  }
-  .kt-chip-search:focus-visible {
-    outline-color: #35a10f;
-  }
-  .kt-chip-empty {
-    color: #5e5e5f;
-  }
+html[data-kt-scheme='light'] .kt-chip-search {
+  border-color: #8d8d8e;
+  background: #ffffff;
+  color: #0b0b0c;
+}
+html[data-kt-scheme='light'] .kt-chip-search::placeholder {
+  color: #5e5e5f;
+}
+html[data-kt-scheme='light'] .kt-chip-search:focus-visible {
+  outline-color: #35a10f;
+}
+html[data-kt-scheme='light'] .kt-chip-empty {
+  color: #5e5e5f;
 }
 
 /* The options live in their own listbox: a listbox may only hold options, so

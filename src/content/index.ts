@@ -7,6 +7,7 @@ import { rootLogger } from '~/shared/logger';
 import { TranslationPipeline } from './pipeline';
 import {
   HANDLED_SELECTOR,
+  applyChatScheme,
   applyShowOriginal,
   ensureStyles,
   mountFloatingBar,
@@ -40,7 +41,17 @@ async function main(): Promise<void> {
   rootLogger.setEnabled(settings.debug);
 
   ensureStyles();
+  applyChatScheme();
   applyShowOriginal(settings.showOriginal);
+
+  // Kick's theme switch repaints the page without reloading it, so the stamp
+  // has to follow. Watching the root's class and style attributes is enough:
+  // every theme system on the site flips one of the two, and the probe is a
+  // handful of getComputedStyle calls.
+  const themeWatch = new MutationObserver(() => applyChatScheme());
+  for (const node of [document.documentElement, document.body]) {
+    themeWatch.observe(node, { attributes: true, attributeFilter: ['class', 'style', 'data-theme'] });
+  }
 
   const pipeline = new TranslationPipeline(settings);
   const compose = new ComposeController(settings, (patch) => void patchSettings(patch));

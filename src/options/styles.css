@@ -156,13 +156,7 @@
     border-color: #e5484d;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .kt-check-box,
-    .kt-check[data-busy='true'] .kt-check-box {
-      transition: none;
-      animation: none;
-    }
-  }
+
 
   /* ─── Select ──────────────────────────────────────────────────────────────
      appearance:none already, so the only thing the browser still draws is the
@@ -217,5 +211,19 @@
   .kt-check-reverse input {
     inset-inline-end: 0;
     inset-inline-start: auto;
+  }
+}
+
+/* This used to name `.kt-check-box` alone, which passed a harness holding
+   nothing but checkboxes while the selects, the inputs, the textareas and the
+   tab underline all still animated on the real page. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
   }
 }
