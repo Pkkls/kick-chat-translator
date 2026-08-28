@@ -6,7 +6,35 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-## [2.8.0] - 2026-08-27
+## [2.8.1] - 2026-08-28
+
+### Changed
+
+- **Translations arrive about twice as fast on an ordinary chat.** Lines were
+  held for a batching window before being sent, and the window only earns its
+  latency if another line turns up during it. Expected arrivals are rate times
+  window, so 180ms needs roughly five and a half lines a second; the threshold
+  opened at three lines per ten seconds. Measured on a live channel over ninety
+  seconds: 217ms from message to translation at the median, of which 186ms was
+  that wait, while the translation call itself answered in 43ms. Twenty-four of
+  twenty-seven dispatches carried a single message. It is 111ms now, and no
+  extra request is sent, because the dispatches that changed were carrying one
+  message anyway. Nothing changes on a fast chat, which was the only case the
+  old threshold ever served.
+
+- The rate the window reads was also counting the wrong thing. It incremented
+  only when a window opened, so it counted windows rather than messages and
+  could never read much above five a second, which put the fast-chat threshold
+  out of reach entirely.
+
+### Fixed
+
+- **A failed batch no longer translates forty messages one at a time.** When the
+  provider hands back a different number of lines than it was given, each
+  message is retried on its own. That retry ran strictly in sequence, forty
+  round trips end to end, while the concurrency setting sat unused. It runs
+  under that setting now, and results stay aligned to their own chat lines.
+
 
 ### Added
 

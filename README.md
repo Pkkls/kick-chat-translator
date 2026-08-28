@@ -30,7 +30,15 @@ pick a language. (You still can, in settings.)
 
 ---
 
-## What's new in [2.8.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+## What's new in [2.8.1](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+
+**Translations arrive about twice as fast.** Lines were held for a batching window before being sent, and
+that window only pays for itself if another line turns up while it is open. It almost never did: measured
+on a live channel, twenty-four of twenty-seven dispatches went out carrying a single message, and the wait
+was 186ms of a 217ms median while the translation call itself answered in 43ms. The median is 111ms now,
+with no extra requests sent, and nothing changes on a fast chat where batching does pay.
+
+## What's new in [2.8.0](https://github.com/Pkkls/kick-chat-translator/releases/tag/v2.8.0)
 
 A pass over every surface the extension puts on screen: the chat, the bar above it, the popup and the six
 settings tabs. Some of it is new, most of it is things that were quietly wrong.

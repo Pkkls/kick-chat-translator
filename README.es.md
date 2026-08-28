@@ -29,7 +29,16 @@ regionales (portugués de Brasil, chino tradicional).
 
 ---
 
-## Novedades de la [2.8.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+## Novedades de la [2.8.1](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+
+**Las traducciones llegan cerca del doble de rapido.** Cada linea se retenia en una ventana de agrupacion
+antes de enviarse, y esa ventana solo compensa si llega otra linea mientras esta abierta. Casi nunca
+llegaba: medido en un canal en directo, veinticuatro de veintisiete envios salieron con un solo mensaje, y
+la espera era de 186ms sobre una mediana de 217ms mientras la llamada de traduccion respondia en 43ms. La
+mediana es de 111ms ahora, sin enviar peticiones adicionales, y nada cambia en un chat rapido, donde
+agrupar si compensa.
+
+## Novedades de la [2.8.0](https://github.com/Pkkls/kick-chat-translator/releases/tag/v2.8.0)
 
 Una pasada por cada superficie que la extensión pone en pantalla: el chat, la barra encima, el popup y las
 seis pestañas de ajustes. Algo es nuevo; la mayoría son cosas que estaban mal en silencio.
