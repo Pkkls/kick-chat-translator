@@ -430,7 +430,13 @@ export class TranslationPipeline {
     // silently dropping the translation we just paid for.
     if (this.rowRecycled(msg)) {
       const rescued = this.findRowWithText(msg.text);
-      if (!rescued) return;
+      if (!rescued) {
+        // Paid for, nowhere to put it, and not kept either: the cache write
+        // sits below this return. How often that happens is the difference
+        // between a detail and a leak.
+        if (__KT_METRICS__) metrics.count('drop.recycled.unrescued');
+        return;
+      }
       msg = { ...msg, rowElement: rescued.row, injectionTarget: rescued.target };
     }
     const tt = applyUserGlossary(result.translatedText, this.settings.glossary);
@@ -465,6 +471,12 @@ export class TranslationPipeline {
       }
     }
     if (opts.store) {
+      // A hit rate of zero says nothing on its own: never written and never
+      // asked again look identical from the read side.
+      if (__KT_METRICS__) {
+        metrics.count('cache.mem.store');
+        metrics.timing('cache.mem.size', memCache.size());
+      }
       memCache.set(real, this.effTarget, {
         translatedText: tt,
         detectedLang: result.detectedLang,

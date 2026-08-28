@@ -37,6 +37,11 @@ class MemCache {
     }
   }
 
+  /** Entries held, so a hit rate of zero can be told apart from an empty map. */
+  size(): number {
+    return this.map.size;
+  }
+
   clear(): void {
     this.map.clear();
   }
