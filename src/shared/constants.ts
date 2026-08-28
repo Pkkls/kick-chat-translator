@@ -23,6 +23,19 @@ export const DEEPL_BATCH_MAX = 40; // DeepL accepts up to 50 text params; stay u
 // Coalescing window: short enough to keep latency low on quiet chats; busy chats
 // hit BATCH_MAX_ITEMS well before this elapses, so batching is preserved.
 export const BATCH_WINDOW_MS = 180;
+/**
+ * The floor the coalescer drops to when holding a line collects nothing.
+ *
+ * A window earns its latency only if another line arrives during it, and
+ * expected arrivals are rate x window: 180ms needs about 5.5 lines a second.
+ * Measured on an ordinary channel, 40 translations in 90 seconds, the window
+ * was 186ms of a 217ms median while 24 of 27 dispatches carried one message.
+ * Small enough to still absorb a genuine burst arriving together, short enough
+ * that nobody waits on an empty room.
+ */
+export const MIN_BATCH_WINDOW_MS = 40;
+/** Fast chat: batching pays for itself, so hold longer and send fewer calls. */
+export const MAX_BATCH_WINDOW_MS = 300;
 export const BATCH_MAX_ITEMS = 40; // flush size — aligned with DeepL's batch cap (fewer requests)
 
 // DeepL usage endpoints (quota display in the popup).
