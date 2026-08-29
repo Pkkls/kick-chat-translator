@@ -1,7 +1,7 @@
 # Chrome Web Store listing
 
 Plain text. The store renders no markdown, so the CAPS headers are the only
-structure available. Fact-checked against manifest 2.7.0, README, CHANGELOG.
+structure available. Fact-checked against manifest 2.9.0, README, CHANGELOG.
 
 ## Short summary (132 char limit)
 
@@ -9,9 +9,9 @@ Kick chat in a language you don't read? It gets translated under each message, l
 
 ## Description (EN)
 
-NEW IN 2.7.0
+NEW IN 2.9.0
 
-Changing the reading language now changes what is already on screen. It used to affect only messages arriving afterwards, so everything already visible kept the previous language until you reloaded the page, and the same held for the display style and the badges. A stretched message like "muuuuy biennnn", which the translation services hand straight back untouched, is now tried once more on its flattened text. Your DeepL key stays on the machine you typed it on instead of syncing to every Chrome signed into your account, and it moves across by itself. And every Kick page carries 15% less script.
+The language list is a grid of flags instead of a column of two-letter codes. It used to run the full height of the screen, 43 entries one per line, each of them read letter by letter; three columns of drawn flags fit the same list into 42 percent less height. The flags are drawn in CSS rather than shipped as emoji, because flag emoji do not render on Windows, where the system falls back to the very letters being replaced. And Kick's own interface no longer paints over that menu, which it did at five of nine sampled points once the page was scrolled.
 
 Open a Kick stream where the chat is in a language you don't read. Each message gets its translation right underneath, as it comes in. A green bar at the top of chat tells you it's running.
 
@@ -41,9 +41,9 @@ Open source, MIT: github.com/Pkkls/kick-chat-translator
 
 ## Description (FR)
 
-NOUVEAU EN 2.7.0
+NOUVEAU EN 2.9.0
 
-Changer la langue de lecture change maintenant ce qui est déjà à l'écran. Seuls les messages arrivés ensuite étaient concernés, tout ce qui était visible gardait la langue précédente jusqu'au rechargement de la page, et il en allait de même pour le style d'affichage et les badges. Un message étiré comme "muuuuy biennnn", que les services de traduction renvoient tel quel, est désormais retenté une fois sur son texte aplati. Ta clé DeepL reste sur la machine où tu l'as tapée au lieu de se synchroniser vers tous les Chrome de ton compte, et elle s'y déplace toute seule. Et chaque page Kick porte 15% de script en moins.
+La liste des langues est une grille de drapeaux, au lieu d'une colonne de codes a deux lettres. Elle occupait toute la hauteur de l'ecran, 43 entrees une par ligne, chacune a dechiffrer lettre par lettre ; trois colonnes de drapeaux dessines y logent la meme liste avec 42 pour cent de hauteur en moins. Les drapeaux sont dessines en CSS et non livres en emoji, parce que les emoji de drapeaux ne s'affichent pas sous Windows : le systeme y retombe sur les deux lettres qu'il s'agissait justement de remplacer. Et l'interface de Kick ne passe plus par-dessus ce menu, ce qu'elle faisait sur cinq points sur neuf une fois la page defilee.
 
 Tu ouvres un stream Kick où le chat est dans une langue que tu ne lis pas. Chaque message reçoit sa traduction juste en dessous, au fil de l'arrivée. Une barre verte en haut du chat indique que ça tourne.
 
@@ -79,9 +79,9 @@ the Turkish store. No native reader was available; verified by round-tripping ea
 
 Short summary: Okuyamadığın bir dilde Kick sohbeti mi? Her mesajın altına canlı çeviri gelir, yanıtların da kanalın dilinde gider.
 
-2.7.0 İLE GELENLER
+2.9.0 İLE GELENLER
 
-Okuma dilini değiştirmek artık ekranda hâlihazırda bulunanı da değiştiriyor. Önceden yalnızca sonradan gelen mesajları etkiliyordu, görünen her şey sayfayı yenileyene kadar önceki dilde kalıyordu; aynısı gösterim biçimi ve rozetler için de geçerliydi. Çeviri servislerinin olduğu gibi geri verdiği "muuuuy biennnn" gibi uzatılmış bir mesaj, artık sadeleştirilmiş metniyle bir kez daha deneniyor. DeepL anahtarın, hesabındaki bütün Chrome tarayıcılarına eşitlenmek yerine yazdığın makinede kalıyor ve oraya kendiliğinden taşınıyor. Ayrıca her Kick sayfası %15 daha az betik taşıyor.
+Dil listesi artık iki harfli kodlardan oluşan bir sütun değil, bayraklardan oluşan bir ızgara. Eskiden ekranın tüm yüksekliğini kaplıyordu: her satırda bir tane olmak üzere 43 giriş, her biri harf harf okunuyordu. Üç sütun hâlinde çizilmiş bayraklar aynı listeyi yüzde 42 daha az yükseklikte gösteriyor. Bayraklar emoji olarak değil CSS ile çiziliyor, çünkü bayrak emojileri Windows'ta görünmüyor: sistem tam da değiştirmek istediğimiz iki harfe geri dönüyor. Ayrıca Kick'in kendi arayüzü artık bu menünün üzerine çizmiyor.
 
 Okuyamadığın bir dilde sohbet akan bir Kick yayını aç. Her mesaj, geldiği anda, hemen altında çevirisini alır. Sohbetin üstündeki yeşil çubuk çalıştığını gösterir.
 
@@ -117,9 +117,9 @@ and handles right-to-left text. No native reader was available; verified by roun
 
 Short summary: دردشة Kick بلغة لا تقرأها؟ تظهر الترجمة أسفل كل رسالة مباشرةً، وردودك تخرج بلغة القناة.
 
-الجديد في 2.7.0
+الجديد في 2.9.0
 
-تغيير لغة القراءة صار يغيّر ما هو معروض على الشاشة بالفعل. كان يؤثر في الرسائل الواردة بعده فقط، فيبقى كل ما هو ظاهر باللغة السابقة حتى تعيد تحميل الصفحة، والأمر نفسه ينطبق على طريقة العرض والشارات. والرسالة الممطوطة مثل "muuuuy biennnn"، التي تعيدها خدمات الترجمة كما هي دون تغيير، تُجرَّب الآن مرة أخرى بنصها المبسّط. ومفتاح DeepL يبقى على الجهاز الذي كتبته عليه بدل أن يُزامَن إلى كل متصفح Chrome في حسابك، وينتقل إليه تلقائياً. وكل صفحة Kick تحمل نصوصاً برمجية أقل بنسبة 15%.
+صارت قائمة اللغات شبكة من الأعلام بدل عمود من رموز من حرفين. كانت تشغل ارتفاع الشاشة كله، بـ 43 مدخلاً في سطر لكل منها، ويُقرأ كل واحد حرفاً حرفاً. ثلاثة أعمدة من الأعلام المرسومة تضع القائمة نفسها في ارتفاع أقل بنسبة 42 بالمئة. والأعلام مرسومة بـ CSS لا مُرسلة كرموز تعبيرية، لأن رموز الأعلام لا تظهر على ويندوز، فيعود النظام إلى الحرفين اللذين أردنا استبدالهما. كما أن واجهة Kick نفسها لم تعد ترسم فوق هذه القائمة.
 
 افتح بثاً على Kick تجري دردشته بلغة لا تقرأها. تحصل كل رسالة على ترجمتها أسفلها مباشرةً، فور وصولها. الشريط الأخضر أعلى الدردشة يخبرك أن الإضافة تعمل.
 

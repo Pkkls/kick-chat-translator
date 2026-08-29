@@ -30,7 +30,20 @@ pick a language. (You still can, in settings.)
 
 ---
 
-## What's new in [2.8.1](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+## What's new in [2.9.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+
+**The language list is a grid of flags.** It listed 43 languages one per line as two-letter codes, 894px
+tall on a 950px window, so it ran the full height of the screen and each entry had to be read letter by
+letter. Three columns of drawn flags fit the same 43 entries and their names into 518px, and the flags are
+drawn in CSS because flag emoji do not render on Windows: the system falls back to the very letters being
+replaced.
+
+**Kick no longer paints over that menu.** It declared a z-index of 2147483000 and was still covered at five
+of nine sampled points once the page was scrolled, because a z-index only ranks an element inside its own
+stacking context. It hangs off the document body now, like the compose preview, and measures zero of nine
+covered at three window sizes.
+
+## What's new in [2.8.1](https://github.com/Pkkls/kick-chat-translator/releases/tag/v2.8.1)
 
 **Translations arrive about twice as fast.** Lines were held for a batching window before being sent, and
 that window only pays for itself if another line turns up while it is open. It almost never did: measured

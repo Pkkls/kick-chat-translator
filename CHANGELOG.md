@@ -6,6 +6,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [2.9.0] - 2026-08-29
+
+### Changed
+
+- **The language list shows flags instead of two-letter codes, in a grid.** It
+  listed 43 languages one per line as codes: 202x894px on a 950px window,
+  measured on a live channel, so it ran the full height of the screen and every
+  entry had to be read letter by letter. Three columns of drawn flags bring the
+  same 43 entries and their names into 408x518, 42 percent less height, with
+  every row at exactly 30px. The flags are drawn in CSS rather than shipped as
+  images or emoji: flag emoji do not render on Windows, where the system falls
+  back to the very letters being replaced. Arrow keys follow the grid, Down and
+  Up moving a whole row.
+
+### Fixed
+
+- **Kick's own interface no longer paints over the language menu.** The menu
+  declared a z-index of 2147483000 and was still covered at 5 of 9 sampled
+  points once the page was scrolled, by a element at z-index 101 and by two at
+  auto. A z-index only ranks an element inside its own stacking context, and
+  inside Kick's chat action bar no value wins against a sibling context ranked
+  elsewhere on the page. The menu is mounted on the document body now, the way
+  the compose preview already was, and measures 0 of 9 covered at 1500x950,
+  1280x720 and 1100x800.
+
+- **Every drawn flag was dimmed, padded and, in the light theme, painted over.**
+  Two different rules were called `.kt-flag`: the source-language badge on a
+  chat line, which is text, and the drawn 16x12 flag. The badge lent every flag
+  its 0.65 opacity and its 4px side padding, and its light-theme rule outranked
+  each flag's own gradient on specificity, 0,2,1 against 0,1,0, repainting all
+  of them a flat grey. The badge is `.kt-src-flag` now.
+
 ## [2.8.1] - 2026-08-28
 
 ### Changed
