@@ -122,20 +122,27 @@ describe('states', () => {
 });
 
 describe('interaction', () => {
-  it('a click on auto with a favourite pins that favourite', () => {
+  // A favourite used to change what a click did: with one, the click toggled
+  // the language and only the caret opened the list. That split is gone, so the
+  // presence of a favourite must not change the outcome any more.
+  it('a click opens the list even when a favourite exists', () => {
     const { composer } = makeComposerRow();
     const onPick = vi.fn();
     mountLangChip(composer, state({ mode: 'auto', favorites: ['fr'] }), { onPick, onAuto: () => {} });
-    document.querySelector<HTMLElement>('#kt-lang-chip')!.click();
-    expect(onPick).toHaveBeenCalledWith('fr');
+    const chip = document.querySelector<HTMLElement>('#kt-lang-chip')!;
+    chip.click();
+    expect(chip.getAttribute('aria-expanded')).toBe('true');
+    expect(onPick).not.toHaveBeenCalled();
   });
 
-  it('a click on a pinned chip goes back to the channel language', () => {
+  it('a click on a pinned chip opens the list as well', () => {
     const { composer } = makeComposerRow();
     const onAuto = vi.fn();
     mountLangChip(composer, state({ mode: 'pinned', code: 'fr', favorites: ['fr'] }), { onPick: () => {}, onAuto });
-    document.querySelector<HTMLElement>('#kt-lang-chip')!.click();
-    expect(onAuto).toHaveBeenCalled();
+    const chip = document.querySelector<HTMLElement>('#kt-lang-chip')!;
+    chip.click();
+    expect(chip.getAttribute('aria-expanded')).toBe('true');
+    expect(onAuto).not.toHaveBeenCalled();
   });
 
   // With nothing pinned there is no sensible toggle target, so the click has to
@@ -452,15 +459,18 @@ describe('the caret half of the chip', () => {
     expect(chip.getAttribute('aria-expanded')).toBe('false');
   });
 
-  // Control: clicking the code keeps doing what it always did. Without this,
-  // the two tests above would pass on a chip whose every click opened the list.
-  it('leaves the code half toggling the language', () => {
+  // Control, and the defect it replaces. This asserted the opposite: that a
+  // click landing on the code toggled the language and left the list shut. That
+  // is what made the list reachable only through a caret about 12px wide, or a
+  // 400ms hold no pointer advertises. A click has to reach the list from the
+  // code half too, or the caret tests above pass on a chip nobody can open.
+  it('opens the list from the code half, not only from the caret', () => {
     const { chip, picks } = mount();
     chip.querySelector<HTMLElement>('.kt-chip-tag')!.dispatchEvent(
       new MouseEvent('click', { bubbles: true }),
     );
-    expect(chip.getAttribute('aria-expanded')).toBe('false');
-    expect(picks).toEqual(['auto']);
+    expect(chip.getAttribute('aria-expanded')).toBe('true');
+    expect(picks).toEqual([]);
   });
 
   // 'off' means translation is paused: nothing on the chip does anything, and

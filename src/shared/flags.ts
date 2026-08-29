@@ -9,9 +9,13 @@
  * slower than colour, and flag emoji do not render at all on Windows, where the
  * system falls back to the very letters we were replacing.
  *
- * Two entries are not conventions and must not be "fixed":
- *  - zh-tw carries Taiwan's flag, zh carries China's.
- *  - ru carries Ukraine's flag. Deliberate, decided by the maintainer.
+ * One entry is not a convention and must not be "fixed": zh-tw carries Taiwan's
+ * flag, zh carries China's. Those are two different languages in the list, so
+ * they get the two flags their readers use.
+ *
+ * Russian carried Ukraine's flag for a while. It carries Russia's now: a flag
+ * here says which language a row is, and nothing else. Every other row is read
+ * that way, so one row that meant something else was the odd one out.
  */
 
 /** Language code to the ISO 3166-1 alpha-2 code whose flag is drawn. */
@@ -29,7 +33,7 @@ export const FLAG_BY_LANG: Readonly<Record<string, string>> = {
   cs: 'cz',
   sk: 'sk',
   ro: 'ro',
-  ru: 'ua',
+  ru: 'ru',
   uk: 'ua',
   tr: 'tr',
   ar: 'sa',

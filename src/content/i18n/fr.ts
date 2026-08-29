@@ -11,14 +11,12 @@ export const fr: Record<string, string> = {
   barThrottled: 'Debit limite, des messages sont passes',
   barVia: '$BASE$ · via $PROVIDER$',
   chipAuto: 'Langue de la chaine',
-  chipAutoTip:
-    'Tu ecris dans la langue de la chaine ($LANG$). Clique pour changer ; la fleche ouvre la liste.',
-  chipError: 'Traduction indisponible. Clique pour reessayer.',
+  chipAutoTip: 'Tu ecris dans la langue de la chaine ($LANG$). Clique pour en choisir une autre.',
+  chipError: 'Traduction indisponible. Clique pour choisir une langue.',
   chipLoading: 'Traduction…',
   chipNoMatch: 'Aucune langue ne correspond',
   chipPaused: 'Traduction suspendue',
-  chipPinnedTip:
-    'Tu ecris en $LANG$. Clique pour la langue de la chaine ; la fleche ouvre la liste.',
+  chipPinnedTip: 'Tu ecris en $LANG$. Clique pour en choisir une autre.',
   chipSearch: 'Filtrer les langues',
   composeAutoTip: 'Auto · tu ecris en $LANG$',
   composeInsertTip: 'Inserer · Ctrl/Cmd+Entree · Echap pour fermer',

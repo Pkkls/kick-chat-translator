@@ -18,16 +18,19 @@ describe('flags', () => {
     }
   });
 
-  // Two entries that are decisions, not conventions. If either ever flips it
-  // will be because someone "fixed" it without reading the comment, and this is
-  // what stops that landing.
+  // A decision, not a convention: zh and zh-tw are two rows in the list, so
+  // they get the two flags their readers use.
   it('keeps Taiwan separate from China', () => {
     expect(FLAG_BY_LANG['zh-tw']).toBe('tw');
     expect(FLAG_BY_LANG['zh']).toBe('cn');
   });
 
-  it('shows Ukraine for Russian', () => {
-    expect(FLAG_BY_LANG['ru']).toBe('ua');
+  // The flag says which language the row is and nothing else. Russian showed
+  // Ukraine's flag for a while; every other row was already read as the
+  // language, so that one was the odd one out.
+  it('shows each language its own flag, Russian included', () => {
+    expect(FLAG_BY_LANG['ru']).toBe('ru');
+    expect(FLAG_BY_LANG['uk']).toBe('ua');
   });
 
   it('has no flag for auto, rather than a wrong one', () => {

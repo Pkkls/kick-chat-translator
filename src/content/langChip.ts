@@ -10,12 +10,10 @@
  * ended up under it rather than in it. The action bar is a row of controls
  * that already exists for exactly this kind of button.
  *
- * One click on the code toggles between the channel's language (auto) and the
- * first favourite. The caret opens the list, and so do press-and-hold and the
- * Down arrow, which were the only two ways in before it existed and neither of
- * which a mouse can see. The list is seeded by whatever you pick, so there is
- * no configuration step and the favourites never reorder themselves under the
- * pointer between two clicks.
+ * One click opens the list, wherever on the chip it lands. The caret says the
+ * list is there; it is not a target of its own. The list is seeded by whatever
+ * you pick, so there is no configuration step and the favourites never reorder
+ * themselves under the pointer between two clicks.
  *
  * Anchoring rules, learned the hard way elsewhere in this codebase: the panel
  * is re-rendered by Kick's SPA, so the chip has to be re-mountable at any time,
@@ -28,7 +26,6 @@ import { msg } from './msg';
 const CHIP_ID = 'kt-lang-chip';
 const MENU_ID = 'kt-lang-menu';
 const LIST_ID = 'kt-lang-list';
-const HOLD_MS = 400;
 
 export type ChipMode = 'auto' | 'pinned' | 'off' | 'loading' | 'error';
 
@@ -486,44 +483,28 @@ export function mountLangChip(composer: HTMLElement, state: ChipState, h: ChipHa
   };
 
   let current = state;
-  let held = false;
-  let timer: ReturnType<typeof setTimeout> | undefined;
 
-  const onDown = (): void => {
-    held = false;
-    timer = setTimeout(() => {
-      held = true;
-      open();
-    }, HOLD_MS);
-  };
-  const stopHold = (): void => {
-    if (timer) clearTimeout(timer);
-    timer = undefined;
-  };
+  /**
+   * One click, one outcome: the list opens.
+   *
+   * It used to be three interactions on one 44x24 control. A click on the code
+   * toggled between the channel's language and the first favourite, a click on
+   * the caret opened the list, and a 400ms press-and-hold opened it too. Which
+   * one you got depended on which half of the chip the pointer landed in, and
+   * on whether a favourite existed yet: with none, a click anywhere opened the
+   * list, which is why every harness pass in a fresh profile saw the easy case
+   * and never the real one.
+   *
+   * The hold is gone with it. A gesture a mouse cannot see, on a control this
+   * small, was the workaround for the caret being hard to hit rather than a
+   * feature. Switching language is now what the list is for.
+   */
   const onClick = (e: Event): void => {
     e.preventDefault();
     e.stopPropagation();
-    if (held) {
-      held = false;
-      return;
-    }
     if (current.mode === 'off') return;
-    // The caret half. Read off the event target rather than off coordinates:
-    // activating the button from the keyboard reports a click at (0, 0), which
-    // a hit test would place outside the caret in LTR and inside it in RTL.
-    if ((e.target as Element | null)?.closest?.('.kt-chip-caret')) {
-      if (menu.hidden) open();
-      else close();
-      return;
-    }
-    // No favourite yet: the list IS the first interaction, and whatever gets
-    // picked becomes the favourite. No empty state to design around.
-    if (current.mode === 'auto' && current.favorites.length === 0) {
-      open();
-      return;
-    }
-    if (current.mode === 'auto') h.onPick(current.favorites[0]!);
-    else h.onAuto();
+    if (menu.hidden) open();
+    else close();
   };
   const onKey = (e: KeyboardEvent): void => {
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
@@ -532,18 +513,9 @@ export function mountLangChip(composer: HTMLElement, state: ChipState, h: ChipHa
     }
   };
 
-  chip.addEventListener('pointerdown', onDown);
-  chip.addEventListener('pointerup', stopHold);
-  chip.addEventListener('pointerleave', stopHold);
-  chip.addEventListener('pointercancel', stopHold);
   chip.addEventListener('click', onClick);
   chip.addEventListener('keydown', onKey);
   cleanup.push(() => {
-    stopHold();
-    chip.removeEventListener('pointerdown', onDown);
-    chip.removeEventListener('pointerup', stopHold);
-    chip.removeEventListener('pointerleave', stopHold);
-    chip.removeEventListener('pointercancel', stopHold);
     chip.removeEventListener('click', onClick);
     chip.removeEventListener('keydown', onKey);
   });
@@ -638,13 +610,13 @@ export function updateLangChip(state: ChipState): void {
       break;
     case 'error':
       tag.textContent = '!';
-      chip.title = msg('chipError', 'Translation unavailable. Click to retry.');
+      chip.title = msg('chipError', 'Translation unavailable. Click to pick a language.');
       break;
     case 'auto':
       tag.textContent = state.code ? state.code.toUpperCase() : 'AUTO';
       chip.title = msg(
         'chipAutoTip',
-        "Writing in the channel's language ($LANG$). Click to switch; the arrow opens the list.",
+        "Writing in the channel's language ($LANG$). Click to pick another.",
         [state.code.toUpperCase()],
       );
       break;
@@ -652,7 +624,7 @@ export function updateLangChip(state: ChipState): void {
       tag.textContent = state.code.toUpperCase();
       chip.title = msg(
         'chipPinnedTip',
-        "Writing in $LANG$. Click for the channel's language; the arrow opens the list.",
+        "Writing in $LANG$. Click to pick another.",
         [localName(state.code, state.code.toUpperCase())],
       );
   }
