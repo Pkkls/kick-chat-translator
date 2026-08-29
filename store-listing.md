@@ -1,7 +1,7 @@
 # Chrome Web Store listing
 
 Plain text. The store renders no markdown, so the CAPS headers are the only
-structure available. Fact-checked against manifest 2.9.1, README, CHANGELOG.
+structure available. Fact-checked against manifest 2.9.2, README, CHANGELOG.
 
 ## Short summary (132 char limit)
 
@@ -9,9 +9,9 @@ Kick chat in a language you don't read? It gets translated under each message, l
 
 ## Description (EN)
 
-NEW IN 2.9.1
+NEW IN 2.9.2
 
-The language list is a grid of flags instead of a column of two-letter codes, and one click opens it. It used to run the full height of the screen, 43 entries one per line, each of them read letter by letter, and it sat behind a caret of 10 by 6 pixels on a chip of 45 by 24: miss that and the click did something else entirely. Three columns of drawn flags fit the same list into 42 percent less height, a click anywhere on the chip opens it, and Kick's own interface no longer paints over it. The flags are drawn in CSS rather than shipped as emoji, because flag emoji do not render on Windows, where the system falls back to the very letters being replaced.
+The language list is a grid of flags instead of a column of two-letter codes, and one click opens it. It used to run the full height of the screen, 43 entries one per line, each of them read letter by letter, and it sat behind a caret of 10 by 6 pixels on a chip of 45 by 24: miss that and the click did something else entirely. Three columns of drawn flags fit the same list into 42 percent less height, a click anywhere on the chip opens it, and Kick's own interface no longer paints over it. The flags are drawn in CSS rather than shipped as emoji, because flag emoji do not render on Windows, where the system falls back to the very letters being replaced. The panel behind the bar's AUTO button got the same treatment: it was showing six entries out of forty.
 
 Open a Kick stream where the chat is in a language you don't read. Each message gets its translation right underneath, as it comes in. A green bar at the top of chat tells you it's running.
 
@@ -43,9 +43,9 @@ Open source, MIT: github.com/Pkkls/kick-chat-translator
 
 Short summary: Chat Kick dans une langue que tu ne lis pas ? Traduit sous chaque message, en direct. Tes reponses partent dans celle de la chaine.
 
-NOUVEAU EN 2.9.1
+NOUVEAU EN 2.9.2
 
-La liste des langues est une grille de drapeaux au lieu d'une colonne de codes a deux lettres, et un clic l'ouvre. Elle occupait toute la hauteur de l'ecran, 43 entrees une par ligne, chacune a dechiffrer lettre par lettre, et elle se cachait derriere un chevron de 10 sur 6 pixels dans une puce de 45 sur 24 : a cote, le clic faisait tout autre chose. Trois colonnes de drapeaux dessines y logent la meme liste avec 42 pour cent de hauteur en moins, un clic n'importe ou sur la puce l'ouvre, et l'interface de Kick ne passe plus par-dessus. Les drapeaux sont dessines en CSS et non livres en emoji, parce que les emoji de drapeaux ne s'affichent pas sous Windows : le systeme y retombe sur les deux lettres qu'il s'agissait justement de remplacer.
+La liste des langues est une grille de drapeaux au lieu d'une colonne de codes a deux lettres, et un clic l'ouvre. Elle occupait toute la hauteur de l'ecran, 43 entrees une par ligne, chacune a dechiffrer lettre par lettre, et elle se cachait derriere un chevron de 10 sur 6 pixels dans une puce de 45 sur 24 : a cote, le clic faisait tout autre chose. Trois colonnes de drapeaux dessines y logent la meme liste avec 42 pour cent de hauteur en moins, un clic n'importe ou sur la puce l'ouvre, et l'interface de Kick ne passe plus par-dessus. Les drapeaux sont dessines en CSS et non livres en emoji, parce que les emoji de drapeaux ne s'affichent pas sous Windows : le systeme y retombe sur les deux lettres qu'il s'agissait justement de remplacer. Le panneau du bouton AUTO de la barre a eu le meme traitement : il montrait six entrees sur quarante.
 
 Tu ouvres un stream Kick où le chat est dans une langue que tu ne lis pas. Chaque message reçoit sa traduction juste en dessous, au fil de l'arrivée. Une barre verte en haut du chat indique que ça tourne.
 
@@ -81,9 +81,9 @@ the Turkish store. No native reader was available; verified by round-tripping ea
 
 Short summary: Okuyamadığın bir dilde Kick sohbeti mi? Her mesajın altına canlı çeviri gelir, yanıtların da kanalın dilinde gider.
 
-2.9.1 İLE GELENLER
+2.9.2 İLE GELENLER
 
-Dil listesi artık iki harfli kodlardan oluşan bir sütun değil, bayraklardan oluşan bir ızgara, ve tek tıklamayla açılıyor. Eskiden ekranın tüm yüksekliğini kaplıyordu: her satırda bir tane olmak üzere 43 giriş, her biri harf harf okunuyordu, ve liste 45 x 24 boyutundaki bir düğmenin içindeki 10 x 6 piksellik bir okun arkasındaydı; ıskalarsanız tıklama bambaşka bir şey yapıyordu. Üç sütun hâlinde çizilmiş bayraklar aynı listeyi yüzde 42 daha az yükseklikte gösteriyor, düğmenin herhangi bir yerine tıklamak listeyi açıyor ve Kick'in kendi arayüzü artık listenin üzerine çizmiyor. Bayraklar emoji olarak değil CSS ile çiziliyor, çünkü bayrak emojileri Windows'ta görünmüyor: sistem tam da değiştirmek istediğimiz iki harfe geri dönüyor.
+Dil listesi artık iki harfli kodlardan oluşan bir sütun değil, bayraklardan oluşan bir ızgara, ve tek tıklamayla açılıyor. Eskiden ekranın tüm yüksekliğini kaplıyordu: her satırda bir tane olmak üzere 43 giriş, her biri harf harf okunuyordu, ve liste 45 x 24 boyutundaki bir düğmenin içindeki 10 x 6 piksellik bir okun arkasındaydı; ıskalarsanız tıklama bambaşka bir şey yapıyordu. Üç sütun hâlinde çizilmiş bayraklar aynı listeyi yüzde 42 daha az yükseklikte gösteriyor, düğmenin herhangi bir yerine tıklamak listeyi açıyor ve Kick'in kendi arayüzü artık listenin üzerine çizmiyor. Bayraklar emoji olarak değil CSS ile çiziliyor, çünkü bayrak emojileri Windows'ta görünmüyor: sistem tam da değiştirmek istediğimiz iki harfe geri dönüyor. Çubuktaki AUTO düğmesinin arkasındaki panel de aynı işlemi gördü: kırk girdiden altısını gösteriyordu.
 
 Okuyamadığın bir dilde sohbet akan bir Kick yayını aç. Her mesaj, geldiği anda, hemen altında çevirisini alır. Sohbetin üstündeki yeşil çubuk çalıştığını gösterir.
 
@@ -119,9 +119,9 @@ and handles right-to-left text. No native reader was available; verified by roun
 
 Short summary: دردشة Kick بلغة لا تقرأها؟ تظهر الترجمة أسفل كل رسالة مباشرةً، وردودك تخرج بلغة القناة.
 
-الجديد في 2.9.1
+الجديد في 2.9.2
 
-صارت قائمة اللغات شبكة من الأعلام بدل عمود من رموز من حرفين، وتُفتح بنقرة واحدة. كانت تشغل ارتفاع الشاشة كله، بـ 43 مدخلاً في سطر لكل منها، ويُقرأ كل واحد حرفاً حرفاً، وكانت خلف سهم بمقاس 10 في 6 بكسل داخل زر بمقاس 45 في 24: وإن أخطأته فعلت النقرة شيئاً آخر تماماً. ثلاثة أعمدة من الأعلام المرسومة تضع القائمة نفسها في ارتفاع أقل بنسبة 42 بالمئة، والنقر في أي مكان من الزر يفتحها، وواجهة Kick نفسها لم تعد ترسم فوقها. والأعلام مرسومة بـ CSS لا مُرسلة كرموز تعبيرية، لأن رموز الأعلام لا تظهر على ويندوز، فيعود النظام إلى الحرفين اللذين أردنا استبدالهما.
+صارت قائمة اللغات شبكة من الأعلام بدل عمود من رموز من حرفين، وتُفتح بنقرة واحدة. كانت تشغل ارتفاع الشاشة كله، بـ 43 مدخلاً في سطر لكل منها، ويُقرأ كل واحد حرفاً حرفاً، وكانت خلف سهم بمقاس 10 في 6 بكسل داخل زر بمقاس 45 في 24: وإن أخطأته فعلت النقرة شيئاً آخر تماماً. ثلاثة أعمدة من الأعلام المرسومة تضع القائمة نفسها في ارتفاع أقل بنسبة 42 بالمئة، والنقر في أي مكان من الزر يفتحها، وواجهة Kick نفسها لم تعد ترسم فوقها. والأعلام مرسومة بـ CSS لا مُرسلة كرموز تعبيرية، لأن رموز الأعلام لا تظهر على ويندوز، فيعود النظام إلى الحرفين اللذين أردنا استبدالهما. ولوحة زر AUTO في الشريط نالت المعاملة نفسها: كانت تعرض ستة مدخلات من أربعين.
 
 افتح بثاً على Kick تجري دردشته بلغة لا تقرأها. تحصل كل رسالة على ترجمتها أسفلها مباشرةً، فور وصولها. الشريط الأخضر أعلى الدردشة يخبرك أن الإضافة تعمل.
 
@@ -158,9 +158,9 @@ reader was available; same standard as the Turkish and Arabic blocks above.
 
 Short summary: 読めない言語の Kick チャットが、届いたそばから各メッセージの下に翻訳されます。あなたの返信はチャンネルの言語で送れます。
 
-2.9.1 の新機能
+2.9.2 の新機能
 
-言語リストが2文字コードの縦一列ではなく、旗のグリッドになりました。クリック一回で開きます。以前は画面の高さいっぱいに43項目が一行ずつ並び、どれも一文字ずつ読む必要があり、しかもリスト自体は45×24のボタンの中にある10×6ピクセルの矢印の奥にありました。そこを外すと、クリックはまったく別のことをしていました。3列に描かれた旗が同じリストを42パーセント低い高さに収め、ボタンのどこをクリックしても開き、Kick 自身の画面がその上に重なることもなくなりました。旗は絵文字ではなく CSS で描いています。旗の絵文字は Windows では表示されず、置き換えたかったはずの2文字に戻ってしまうからです。
+言語リストが2文字コードの縦一列ではなく、旗のグリッドになりました。クリック一回で開きます。以前は画面の高さいっぱいに43項目が一行ずつ並び、どれも一文字ずつ読む必要があり、しかもリスト自体は45×24のボタンの中にある10×6ピクセルの矢印の奥にありました。そこを外すと、クリックはまったく別のことをしていました。3列に描かれた旗が同じリストを42パーセント低い高さに収め、ボタンのどこをクリックしても開き、Kick 自身の画面がその上に重なることもなくなりました。旗は絵文字ではなく CSS で描いています。旗の絵文字は Windows では表示されず、置き換えたかったはずの2文字に戻ってしまうからです。バーの AUTO ボタンの奥にあるパネルも同じ扱いです。40 項目のうち 6 つしか出ていませんでした。
 
 読めない言語でチャットが流れている Kick の配信を開いてください。届いたメッセージの真下に、その場で翻訳が付きます。チャット上部の緑のバーが、動いていることを示します。
 
@@ -195,9 +195,9 @@ no native reader.
 
 Short summary: ¿Chat de Kick en un idioma que no lees? Se traduce bajo cada mensaje, en directo, y tus respuestas salen en el del canal.
 
-NUEVO EN 2.9.1
+NUEVO EN 2.9.2
 
-La lista de idiomas es una cuadrícula de banderas en vez de una columna de códigos de dos letras, y se abre con un clic. Antes ocupaba toda la altura de la pantalla, 43 entradas una por línea, cada una leída letra a letra, y estaba detrás de una flecha de 10 por 6 píxeles dentro de un botón de 45 por 24: si fallabas, el clic hacía otra cosa completamente distinta. Tres columnas de banderas dibujadas meten la misma lista en un 42 por ciento menos de altura, un clic en cualquier parte del botón la abre, y la interfaz de Kick ya no se pinta por encima. Las banderas se dibujan en CSS y no se envían como emoji, porque los emoji de bandera no se muestran en Windows: el sistema vuelve justo a las dos letras que queríamos sustituir.
+La lista de idiomas es una cuadrícula de banderas en vez de una columna de códigos de dos letras, y se abre con un clic. Antes ocupaba toda la altura de la pantalla, 43 entradas una por línea, cada una leída letra a letra, y estaba detrás de una flecha de 10 por 6 píxeles dentro de un botón de 45 por 24: si fallabas, el clic hacía otra cosa completamente distinta. Tres columnas de banderas dibujadas meten la misma lista en un 42 por ciento menos de altura, un clic en cualquier parte del botón la abre, y la interfaz de Kick ya no se pinta por encima. Las banderas se dibujan en CSS y no se envían como emoji, porque los emoji de bandera no se muestran en Windows: el sistema vuelve justo a las dos letras que queríamos sustituir. El panel del botón AUTO de la barra recibió el mismo tratamiento: mostraba seis entradas de cuarenta.
 
 Abre un directo de Kick donde el chat esté en un idioma que no lees. Cada mensaje recibe su traducción justo debajo, según va llegando. Una barra verde en la parte superior del chat te dice que está funcionando.
 
@@ -232,9 +232,9 @@ no native reader.
 
 Short summary: Chat da Kick num idioma que você não lê? Ele é traduzido embaixo de cada mensagem, ao vivo, e suas respostas saem no do canal.
 
-NOVIDADES NA 2.9.1
+NOVIDADES NA 2.9.2
 
-A lista de idiomas é uma grade de bandeiras em vez de uma coluna de códigos de duas letras, e abre com um clique. Antes ela ocupava a altura inteira da tela, 43 entradas uma por linha, cada uma lida letra por letra, e ficava atrás de uma seta de 10 por 6 pixels dentro de um botão de 45 por 24: se você errasse, o clique fazia outra coisa completamente diferente. Três colunas de bandeiras desenhadas colocam a mesma lista em 42 por cento menos altura, um clique em qualquer ponto do botão a abre, e a interface da própria Kick não passa mais por cima. As bandeiras são desenhadas em CSS e não enviadas como emoji, porque emoji de bandeira não aparece no Windows: o sistema volta justamente para as duas letras que se queria substituir.
+A lista de idiomas é uma grade de bandeiras em vez de uma coluna de códigos de duas letras, e abre com um clique. Antes ela ocupava a altura inteira da tela, 43 entradas uma por linha, cada uma lida letra por letra, e ficava atrás de uma seta de 10 por 6 pixels dentro de um botão de 45 por 24: se você errasse, o clique fazia outra coisa completamente diferente. Três colunas de bandeiras desenhadas colocam a mesma lista em 42 por cento menos altura, um clique em qualquer ponto do botão a abre, e a interface da própria Kick não passa mais por cima. As bandeiras são desenhadas em CSS e não enviadas como emoji, porque emoji de bandeira não aparece no Windows: o sistema volta justamente para as duas letras que se queria substituir. O painel do botão AUTO da barra recebeu o mesmo tratamento: mostrava seis entradas de quarenta.
 
 Abra uma transmissão na Kick onde o chat está num idioma que você não lê. Cada mensagem recebe sua tradução logo abaixo, conforme chega. Uma barra verde no topo do chat mostra que está funcionando.
 
@@ -269,9 +269,9 @@ no native reader.
 
 Short summary: Чат Kick на языке, который вы не читаете? Перевод появляется под каждым сообщением, а ваши ответы уходят на языке канала.
 
-НОВОЕ В 2.9.1
+НОВОЕ В 2.9.2
 
-Список языков теперь сетка флагов, а не столбец двухбуквенных кодов, и открывается одним щелчком. Раньше он занимал всю высоту экрана: 43 строки по одной записи, каждую нужно было читать по буквам, а сам список прятался за стрелкой размером 10 на 6 пикселей внутри кнопки 45 на 24. Промахнулись, и щелчок делал совсем другое. Три колонки нарисованных флагов вмещают тот же список в высоту на 42 процента меньше, щелчок в любом месте кнопки открывает его, и интерфейс самого Kick больше не перекрывает его сверху. Флаги нарисованы средствами CSS, а не отправлены эмодзи: флаговые эмодзи не отображаются в Windows, и система возвращает те самые две буквы, которые мы и хотели заменить.
+Список языков теперь сетка флагов, а не столбец двухбуквенных кодов, и открывается одним щелчком. Раньше он занимал всю высоту экрана: 43 строки по одной записи, каждую нужно было читать по буквам, а сам список прятался за стрелкой размером 10 на 6 пикселей внутри кнопки 45 на 24. Промахнулись, и щелчок делал совсем другое. Три колонки нарисованных флагов вмещают тот же список в высоту на 42 процента меньше, щелчок в любом месте кнопки открывает его, и интерфейс самого Kick больше не перекрывает его сверху. Флаги нарисованы средствами CSS, а не отправлены эмодзи: флаговые эмодзи не отображаются в Windows, и система возвращает те самые две буквы, которые мы и хотели заменить. Панель за кнопкой AUTO на полосе получила ту же обработку: она показывала шесть записей из сорока.
 
 Откройте трансляцию на Kick, где чат идёт на языке, который вы не читаете. Каждое сообщение получает перевод прямо под собой, по мере поступления. Зелёная полоса вверху чата показывает, что всё работает.
 
@@ -306,9 +306,9 @@ blocks: no native reader.
 
 Short summary: Kick 的聊天是你读不懂的语言？每条消息下方都会实时出现译文，你的回复也会用频道的语言发出。
 
-2.9.1 的新功能
+2.9.2 的新功能
 
-语言列表现在是旗帜网格，而不是两个字母代码的竖排列表，点一下就打开。它以前占满整个屏幕高度，43 个条目每行一个，每一个都要逐字母去读，而且列表藏在 45×24 按钮里一个 10×6 像素的箭头后面：点偏了，这一下就做了完全不同的事。三列绘制的旗帜把同一份列表放进少 42% 的高度里，点按钮任意位置都能打开，Kick 自己的界面也不再盖在它上面。旗帜用 CSS 绘制而不是用 emoji，因为旗帜 emoji 在 Windows 上根本不显示，系统会退回到我们本想替换掉的那两个字母。
+语言列表现在是旗帜网格，而不是两个字母代码的竖排列表，点一下就打开。它以前占满整个屏幕高度，43 个条目每行一个，每一个都要逐字母去读，而且列表藏在 45×24 按钮里一个 10×6 像素的箭头后面：点偏了，这一下就做了完全不同的事。三列绘制的旗帜把同一份列表放进少 42% 的高度里，点按钮任意位置都能打开，Kick 自己的界面也不再盖在它上面。旗帜用 CSS 绘制而不是用 emoji，因为旗帜 emoji 在 Windows 上根本不显示，系统会退回到我们本想替换掉的那两个字母。工具条上 AUTO 按钮背后的面板也做了同样的处理：原本 40 项只显示 6 项。
 
 打开一个聊天语言你读不懂的 Kick 直播。每条消息一到，正下方就会出现它的译文。聊天区顶部的绿色条表示正在运行。
 
@@ -343,9 +343,9 @@ native reader.
 
 Short summary: 읽지 못하는 언어로 흐르는 Kick 채팅? 각 메시지 아래에 실시간으로 번역이 붙고, 답장은 채널의 언어로 나갑니다.
 
-2.9.1의 새로운 기능
+2.9.2의 새로운 기능
 
-언어 목록이 두 글자 코드의 세로 목록이 아니라 국기 그리드가 되었고, 한 번 클릭하면 열립니다. 예전에는 화면 높이를 가득 채워 43개 항목이 한 줄에 하나씩 놓였고, 하나하나 글자로 읽어야 했으며, 목록 자체는 45×24 버튼 안의 10×6 픽셀짜리 화살표 뒤에 있었습니다. 빗나가면 클릭은 전혀 다른 일을 했습니다. 세 열로 그려진 국기가 같은 목록을 42퍼센트 낮은 높이에 담고, 버튼 어디를 클릭해도 열리며, Kick 자체 화면이 그 위를 덮는 일도 없어졌습니다. 국기는 이모지가 아니라 CSS로 그립니다. 국기 이모지는 Windows에서 표시되지 않고, 시스템이 바로 그 두 글자로 되돌아가기 때문입니다.
+언어 목록이 두 글자 코드의 세로 목록이 아니라 국기 그리드가 되었고, 한 번 클릭하면 열립니다. 예전에는 화면 높이를 가득 채워 43개 항목이 한 줄에 하나씩 놓였고, 하나하나 글자로 읽어야 했으며, 목록 자체는 45×24 버튼 안의 10×6 픽셀짜리 화살표 뒤에 있었습니다. 빗나가면 클릭은 전혀 다른 일을 했습니다. 세 열로 그려진 국기가 같은 목록을 42퍼센트 낮은 높이에 담고, 버튼 어디를 클릭해도 열리며, Kick 자체 화면이 그 위를 덮는 일도 없어졌습니다. 국기는 이모지가 아니라 CSS로 그립니다. 국기 이모지는 Windows에서 표시되지 않고, 시스템이 바로 그 두 글자로 되돌아가기 때문입니다. 바의 AUTO 버튼 뒤에 있는 패널도 같은 손질을 받았습니다. 40개 중 6개만 보이던 목록입니다.
 
 읽지 못하는 언어로 채팅이 흐르는 Kick 방송을 열어 보세요. 도착하는 메시지 바로 아래에 번역이 붙습니다. 채팅 상단의 초록색 막대가 작동 중임을 알려 줍니다.
 
@@ -533,6 +533,326 @@ Okuyamadığın bir dildeki Kick sohbeti, her mesajın altında geldiği anda ç
 ## AMO summary (JA)
 
 読めない言語の Kick チャットが、届いたそばから各メッセージの下に翻訳されます。あなたの返信はチャンネルの言語で送れます。アカウント不要、設定不要。ライブ配信でも VOD でも動きます。
+
+## AMO reviewer notes (source code and build)
+
+AMO asks for source when the submitted code is bundled or minified, which this
+is. Paste this into the "Notes for reviewers" field.
+
+Source: https://github.com/Pkkls/kick-chat-translator, public, MIT, tag v2.9.2.
+The submitted zip is built from that tag with no patching in between.
+
+Build:
+
+  git clone https://github.com/Pkkls/kick-chat-translator
+  cd kick-chat-translator
+  git checkout v2.9.2
+  npm ci
+  npm run build:firefox
+  npm run pack:firefox
+
+The archive lands in release/kick-chat-translator-2.9.2-firefox.zip.
+
+Toolchain actually used for the submitted build: Node v22.22.0, npm 10.9.4, on
+Windows. The repository's .nvmrc pins 20 and package.json asks for node >= 20;
+22 satisfies that, and the mismatch is stated here rather than rounded off.
+
+The build is byte-reproducible. Two consecutive runs of build plus pack produced
+the same archive, verified by SHA-256 rather than assumed:
+
+  chromium  5915cd39d3df82c48adabea1c04ce17df80c5ae2f9dfd97cdd62dbdcbb91ac3f  294586 bytes
+  firefox   4bf1a2e958b5320fcd35084c583e6bb24b7edd87264814762a63894556af99fd  294511 bytes
+
+The zip is written by scripts/pack.ts rather than by a platform tool, because
+PowerShell's Compress-Archive on .NET Framework writes backslash separators into
+entry names and produces an archive that is not a tree. Entry names are checked
+to contain no backslash before release.
+
+No remote code. Every line of JavaScript is inside the package: no eval, no new
+Function on fetched text, no remote script tag, no hosted module. The only
+network calls are the translation engines the user selects, kick.com, and one
+GET to the project's own GitHub releases endpoint for the update notice.
+
+Minification is esbuild and Vite defaults through @crxjs/vite-plugin. There is
+no obfuscation step.
+
+## AMO data collection
+
+The manifest declares this already, under browser_specific_settings, as
+data_collection_permissions required: websiteContent. In the submission form:
+
+Website content: yes. The text of a chat message, and only that, is sent to the
+translation engine the user selected, to be translated. Not the username, not
+the channel, not who said what. It is not stored, not logged and not sent
+anywhere else.
+
+Authentication information: yes, conditionally. If the user enters a DeepL API
+key, it is kept in local storage, never synced, and sent only to DeepL to
+authenticate that user's own request.
+
+Everything else: no. No personally identifying information, no location, no
+browsing history, no financial or health data, no user activity tracking, no
+analytics, no accounts, and no server operated by the developer.
+
+## AMO summary (ES)
+
+¿Chat de Kick en un idioma que no lees? Se traduce bajo cada mensaje según va llegando, y tus respuestas salen en el idioma del canal. Sin cuenta y sin configurar nada. Funciona en directos y en repeticiones.
+
+## AMO summary (PT-BR)
+
+Chat da Kick num idioma que você não lê? Ele é traduzido embaixo de cada mensagem conforme chega, e suas respostas saem no idioma do canal. Sem conta e sem configurar nada. Funciona ao vivo e em replays.
+
+## AMO summary (RU)
+
+Чат Kick на языке, который вы не читаете? Перевод появляется под каждым сообщением по мере поступления, а ваши ответы уходят на языке канала. Без аккаунта и без настройки. Работает и на эфирах, и на записях.
+
+## AMO summary (ZH)
+
+Kick 的聊天是你读不懂的语言？每条消息一到，下方就出现译文，你的回复也会用频道的语言发出。无需账号，无需设置。直播和回放都能用。
+
+## AMO summary (KO)
+
+읽지 못하는 언어로 흐르는 Kick 채팅? 메시지가 도착하는 대로 그 아래에 번역이 붙고, 답장은 채널의 언어로 나갑니다. 계정도 설정도 필요 없습니다. 라이브와 다시보기 모두에서 동작합니다.
+
+## AMO description (FR)
+
+Tu ouvres un stream Kick où le chat est dans une langue que tu ne lis pas. Chaque message reçoit sa traduction juste en dessous, au fil de l'arrivée. Une barre verte en haut du chat indique que ça tourne.
+
+Tu écris une réponse, un aperçu la montre dans la langue de la chaîne au-dessus de la barre de chat. Clic sur l'aperçu ou Ctrl+Entrée, et cette version remplace ce que tu as tapé dans la boîte de chat, prête à partir.
+
+Rien à régler. Le chat entrant est traduit vers la langue de ton navigateur, ce que tu écris part dans la langue de diffusion de la chaîne, lue depuis Kick. Les deux se changent dans les réglages. Marche sur les lives comme sur les replays VOD, et gère les emotes 7TV.
+
+MOTEURS
+
+Google fonctionne d'emblée, sans clé, sans compte. Ajoute ta propre clé DeepL gratuite (leur offre gratuite couvre 1 million de caractères par mois, sans carte) et la qualité monte nettement sur les langues européennes. DeepL reçoit aussi les lignes récentes de la chaîne comme contexte, donc la formulation colle à la conversation, et on lui demande le registre poli quand la langue en a un : keigo en japonais, vouvoiement en français. Pour faire durer un quota gratuit, DeepL n'est dépensé que sur les paires où il bat vraiment les moteurs gratuits. MyMemory et Lingva restent derrière en secours, et quand un moteur tombe le suivant prend le relais. L'ordre est le tien.
+
+AFFICHAGE
+
+Traduction sous l'original, en ligne avec lui, après lui en italique plus petit, ou seulement au survol. Le mode survol ne demande rien tant que tu ne pointes pas un message, ce qui divise l'usage par dix environ sur un chat rapide.
+
+FILTRES
+
+Ignorer les bots, blacklister des utilisateurs ou des chaînes, ou limiter les langues source à traduire. Emotes, mentions, liens et murs d'emoji sont retirés avant tout envoi, tu ne paies pas pour traduire "kkkkkk". Les onglets en arrière-plan se mettent en pause seuls.
+
+42 langues, écriture droite-gauche comprise (arabe, hébreu, persan), variantes régionales gardées distinctes (pt-BR, zh-TW). L'interface de l'extension existe en 10 langues : anglais, espagnol, français, portugais, turc, russe, arabe, chinois, japonais et coréen.
+
+CE QUI SORT DE TON NAVIGATEUR
+
+Le texte d'un message de chat, et rien d'autre, vers le moteur de traduction que tu as choisi. Pas ton pseudo, pas la chaine, pas qui a dit quoi. C'est ce que designe la ligne « contenu du site » dans les permissions ci-dessus, et c'est tout ce qu'elle designe. Pas de compte, pas d'analytics, pas de serveur a moi : l'extension parle a Kick, au moteur que tu as choisi, et a la page des versions GitHub pour te signaler qu'une plus recente existe, sans rien envoyer avec cette derniere requete.
+
+Firefox n'expose pas encore l'API de traduction integree au navigateur que Chrome et Edge 138+ proposent, donc cette version passe toujours par les moteurs ci-dessus. Si Mozilla la livre, l'extension sait deja s'en servir et traduira sur ta machine, hors ligne et sans limite.
+
+Code source ouvert, MIT : github.com/Pkkls/kick-chat-translator
+
+## AMO description (TR)
+
+Okuyamadığın bir dilde sohbet akan bir Kick yayını aç. Her mesaj, geldiği anda, hemen altında çevirisini alır. Sohbetin üstündeki yeşil çubuk çalıştığını gösterir.
+
+Bir yanıt yaz, sohbet kutusunun üstünde kanalın dilinde bir önizleme belirir. Önizlemeye tıkla ya da Ctrl+Enter'a bas, o sürüm yazdığının yerine geçer ve göndermeye hazır olur.
+
+Ayarlanacak bir şey yok. Gelen sohbet tarayıcının diline çevrilir, yazdıkların da kanalın yayın diline gider, bu bilgi doğrudan Kick'ten okunur. İkisi de ayarlardan değiştirilebilir. Canlı yayınlarda da VOD tekrarlarında da çalışır, 7TV emotelerini anlar.
+
+MOTORLAR
+
+Google kutudan çıktığı gibi çalışır, anahtar yok, hesap yok. Kendi ücretsiz DeepL anahtarını ekle (ücretsiz paketleri kart istemeden ayda 1 milyon karakter veriyor), Avrupa dillerinde kalite belirgin şekilde yükselir. DeepL ayrıca kanalın son satırlarını bağlam olarak alır, böylece ifade konuşmaya oturur, ve dilin nezaket kipi varsa o istenir: Japoncada keigo, Fransızcada tu yerine vous. Ücretsiz kotayı uzatmak için DeepL yalnızca ücretsiz motorları gerçekten geçtiği dil çiftlerinde harcanır. MyMemory ve Lingva arkada yedek bekler, bir motor düştüğünde sıradaki devralır. Sıralama senin.
+
+GÖRÜNÜM
+
+Çeviri orijinalin altında, onunla aynı satırda, ardında daha küçük italikle, ya da yalnızca üzerine gelince. Üzerine gelme modu sen bir mesajı işaret edene kadar hiçbir şey istemez, bu da hızlı bir sohbette kullanımı yaklaşık 10 kat azaltır.
+
+FİLTRELER
+
+Botları atla, kullanıcıları veya kanalları engelle, ya da hangi kaynak dillerin çevrileceğini sınırla. Emoteler, bahsetmeler, bağlantılar ve emoji yığınları dışarı gönderilmeden önce ayıklanır, yani "kkkkkk" çevirmek için ödeme yapmazsın. Arka plandaki sekmeler kendiliğinden duraklar.
+
+42 dil, sağdan sola yazılanlar dahil (Arapça, İbranice, Farsça), bölgesel varyantlar ayrı tutulur (pt-BR, zh-TW). Eklentinin kendi arayüzü 10 dilde: İngilizce, İspanyolca, Fransızca, Portekizce, Türkçe, Rusça, Arapça, Çince, Japonca ve Korece.
+
+TARAYICINDAN NE ÇIKIYOR
+
+Bir sohbet mesajının metni, sadece o, seçtiğin çeviri motoruna gider. Kullanıcı adın değil, kanal değil, kimin ne dediği değil. Yukarıdaki izinlerdeki “site içeriği” satırı bunu kasteder ve kastettiği bundan ibarettir. Hesap yok, analitik yok, bana ait sunucu yok: eklenti Kick ile, seçtiğin motorla ve yeni bir sürüm olduğunu haber vermek için GitHub sürüm sayfasıyla konuşur, o son isteğe hiçbir şey koymadan.
+
+Firefox, Chrome ve Edge 138+ tarafından sunulan tarayıcı düzeyindeki çeviri API'sini henüz sunmuyor, bu yüzden bu yapı her zaman yukarıdaki motorları kullanır. Mozilla eklerse eklenti onu nasıl kullanacağını zaten biliyor ve çeviriyi çevrimdışı, sınırsız olarak makinende yapacak.
+
+Açık kaynak, MIT: github.com/Pkkls/kick-chat-translator
+
+## AMO description (AR)
+
+افتح بثاً على Kick تجري دردشته بلغة لا تقرأها. تحصل كل رسالة على ترجمتها أسفلها مباشرةً، فور وصولها. الشريط الأخضر أعلى الدردشة يخبرك أن الإضافة تعمل.
+
+اكتب رداً، فتظهر معاينة له بلغة القناة فوق صندوق الدردشة. انقر المعاينة أو اضغط Ctrl+Enter، فتحل تلك النسخة محل ما كتبته، جاهزة للإرسال.
+
+لا شيء لتضبطه. تُترجم الدردشة الواردة إلى لغة متصفحك، ويخرج ما تكتبه بلغة بث القناة، وهي تُقرأ من Kick نفسه. كلاهما قابل للتغيير من الإعدادات. تعمل على البث المباشر وعلى إعادات VOD، وتتعامل مع رموز 7TV.
+
+المحركات
+
+يعمل Google مباشرةً، بلا مفتاح وبلا حساب. أضف مفتاح DeepL المجاني الخاص بك (باقتهم المجانية تغطي مليون حرف شهرياً دون بطاقة) فترتفع الجودة بوضوح في اللغات الأوروبية. يتلقى DeepL أيضاً أسطر القناة الأخيرة كسياق، فتستقر الصياغة على مجرى الحديث، ويُطلب منه صيغة التأدب حين تملكها اللغة: الكيغو في اليابانية، وvous بدل tu في الفرنسية. ولإطالة عمر الحصة المجانية، لا يُنفَق DeepL إلا على أزواج اللغات التي يتفوق فيها فعلاً على المحركات المجانية. يبقى MyMemory وLingva في الخلف كبديلين، وحين يسقط محرك يتولى الذي يليه. الترتيب ترتيبك أنت.
+
+طريقة العرض
+
+الترجمة أسفل النص الأصلي، أو في السطر نفسه، أو بعده بخط مائل أصغر، أو عند تمرير المؤشر فقط. لا يطلب وضع تمرير المؤشر شيئاً حتى تشير إلى رسالة، ما يخفض الاستهلاك نحو عشرة أضعاف على دردشة سريعة.
+
+عوامل التصفية
+
+تجاهل الروبوتات، احجب مستخدمين أو قنوات، أو حدد لغات المصدر التي تُترجم أصلاً. تُزال الرموز والإشارات والروابط وأكوام الإيموجي قبل إرسال أي شيء، فلا تدفع مقابل ترجمة "kkkkkk". وتتوقف علامات التبويب في الخلفية من تلقاء نفسها.
+
+42 لغة، بما فيها الكتابة من اليمين إلى اليسار (العربية والعبرية والفارسية)، مع فصل المتغيرات الإقليمية (pt-BR وzh-TW). وواجهة الإضافة نفسها متوفرة بعشر لغات: الإنجليزية والإسبانية والفرنسية والبرتغالية والتركية والروسية والعربية والصينية واليابانية والكورية.
+
+ما الذي يغادر متصفحك
+
+نص رسالة الدردشة، وهو وحده، يذهب إلى محرك الترجمة الذي اخترته. لا اسم المستخدم، ولا القناة، ولا من قال ماذا. هذا ما يعنيه سطر « محتوى الموقع » في الأذونات أعلاه، وهذا كل ما يعنيه. لا حساب، ولا تحليلات، ولا خادم يخصني: الإضافة تتحدث إلى Kick، وإلى المحرك الذي اخترته، وإلى صفحة الإصدارات على GitHub لتخبرك بوجود نسخة أحدث، دون أن ترسل شيئاً مع ذلك الطلب الأخير.
+
+لا يوفر Firefox بعد واجهة الترجمة المدمجة في المتصفح التي يوفرها Chrome وEdge 138 وما بعده، لذا تستخدم هذه النسخة المحركات أعلاه دائماً. وإن وفّرتها Mozilla فالإضافة تعرف كيف تستعملها بالفعل، وستترجم على جهازك دون اتصال ودون حدود.
+
+مفتوح المصدر، رخصة MIT: github.com/Pkkls/kick-chat-translator
+
+## AMO description (ES)
+
+Abre un directo de Kick donde el chat esté en un idioma que no lees. Cada mensaje recibe su traducción justo debajo, según va llegando. Una barra verde en la parte superior del chat te dice que está funcionando.
+
+Escribe una respuesta y una vista previa la muestra en el idioma del canal, encima de la caja de chat. Haz clic en la vista previa o pulsa Ctrl+Intro y esa versión sustituye lo que escribiste, lista para enviar.
+
+Nada que configurar. El chat entrante se traduce al idioma de tu navegador, y lo que escribes sale en el idioma en el que emite el canal, leído del propio Kick. Ambos se pueden cambiar en los ajustes. Funciona en directos y en repeticiones VOD, y admite los emotes de 7TV.
+
+MOTORES
+
+Google funciona sin más, sin clave y sin cuenta. Añade tu propia clave gratuita de DeepL (su plan gratuito cubre un millón de caracteres al mes sin tarjeta) y la calidad sube claramente en los idiomas europeos. DeepL recibe además las líneas recientes del canal como contexto, así la redacción encaja con la conversación, y se le pide el registro formal donde el idioma lo tiene: keigo en japonés, vous en vez de tu en francés. Para que la cuota gratuita dure, DeepL solo se gasta en los pares donde de verdad supera a los motores gratuitos. MyMemory y Lingva quedan detrás como respaldo, y cuando un motor falla toma el relevo el siguiente. El orden lo pones tú.
+
+PRESENTACIÓN
+
+Traducción debajo del original, en la misma línea, después en cursiva más pequeña, o solo al pasar el ratón. El modo al pasar el ratón no pide nada hasta que apuntas a un mensaje, lo que reduce el uso unas 10 veces en un chat rápido.
+
+FILTROS
+
+Saltarse los bots, bloquear usuarios o canales, o limitar qué idiomas de origen se traducen. Emotes, menciones, enlaces y avalanchas de emoji se quitan antes de enviar nada, así no pagas por traducir "kkkkkk". Las pestañas en segundo plano se pausan solas.
+
+42 idiomas, incluida la escritura de derecha a izquierda (árabe, hebreo, persa), con las variantes regionales separadas (pt-BR, zh-TW). La interfaz de la extensión existe en 10: inglés, español, francés, portugués, turco, ruso, árabe, chino, japonés y coreano.
+
+QUÉ SALE DE TU NAVEGADOR
+
+El texto de un mensaje de chat, y solo eso, al motor de traducción que elegiste. No tu nombre de usuario, no el canal, no quién dijo qué. Eso es lo que designa la línea «contenido del sitio» en los permisos de arriba, y es todo lo que designa. Sin cuenta, sin analíticas, sin servidor mío: la extensión habla con Kick, con el motor que elegiste, y con la página de versiones de GitHub para avisarte de que existe una más nueva, sin enviar nada con esa última petición.
+
+Firefox todavía no expone la API de traducción a nivel de navegador que ofrecen Chrome y Edge 138+, así que esta versión siempre usa los motores de arriba. Si Mozilla la incorpora, la extensión ya sabe usarla y traducirá en tu máquina, sin conexión y sin límites.
+
+Código abierto, MIT: github.com/Pkkls/kick-chat-translator
+
+## AMO description (PT-BR)
+
+Abra uma transmissão na Kick onde o chat está num idioma que você não lê. Cada mensagem recebe sua tradução logo abaixo, conforme chega. Uma barra verde no topo do chat mostra que está funcionando.
+
+Digite uma resposta e uma prévia a mostra no idioma do canal, acima da caixa de chat. Clique na prévia ou pressione Ctrl+Enter e essa versão substitui o que você digitou, pronta para enviar.
+
+Nada para configurar. O chat que chega é traduzido para o idioma do seu navegador, e o que você escreve sai no idioma em que o canal transmite, lido da própria Kick. Os dois podem ser trocados nas configurações. Funciona em transmissões ao vivo e em replays VOD, e lida com os emotes do 7TV.
+
+MOTORES
+
+O Google funciona de cara, sem chave e sem conta. Adicione sua própria chave gratuita da DeepL (o plano gratuito cobre um milhão de caracteres por mês sem cartão) e a qualidade sobe bastante nos idiomas europeus. A DeepL também recebe as linhas recentes do canal como contexto, então o texto acompanha a conversa, e é pedido o registro formal onde o idioma tem um: keigo em japonês, vous em vez de tu em francês. Para a cota gratuita durar, a DeepL só é gasta nos pares em que ela realmente supera os motores gratuitos. MyMemory e Lingva ficam atrás como reserva, e quando um motor falha o seguinte assume. A ordem é sua.
+
+EXIBIÇÃO
+
+Tradução abaixo do original, na mesma linha, depois dele em itálico menor, ou só ao passar o mouse. O modo ao passar o mouse não busca nada até você apontar para uma mensagem, o que corta o uso em cerca de 10 vezes num chat rápido.
+
+FILTROS
+
+Pular bots, bloquear usuários ou canais, ou limitar quais idiomas de origem são traduzidos. Emotes, menções, links e enxurradas de emoji são removidos antes de qualquer envio, então você não paga para traduzir "kkkkkk". Abas em segundo plano se pausam sozinhas.
+
+42 idiomas, incluindo escrita da direita para a esquerda (árabe, hebraico, persa), com as variantes regionais mantidas separadas (pt-BR, zh-TW). A interface da extensão existe em 10: inglês, espanhol, francês, português, turco, russo, árabe, chinês, japonês e coreano.
+
+O QUE SAI DO SEU NAVEGADOR
+
+O texto de uma mensagem do chat, e só isso, para o motor de tradução que você escolheu. Não o seu nome de usuário, não o canal, não quem disse o quê. É isso que a linha “conteúdo do site” nas permissões acima designa, e é tudo o que ela designa. Sem conta, sem analytics, sem servidor meu: a extensão fala com a Kick, com o motor que você escolheu, e com a página de versões do GitHub para avisar que existe uma mais nova, sem enviar nada nessa última requisição.
+
+O Firefox ainda não expõe a API de tradução no nível do navegador que Chrome e Edge 138+ oferecem, então esta build sempre usa os motores acima. Se a Mozilla lançar uma, a extensão já sabe usá-la e vai traduzir na sua máquina, offline e sem limites.
+
+Código aberto, MIT: github.com/Pkkls/kick-chat-translator
+
+## AMO description (RU)
+
+Откройте трансляцию на Kick, где чат идёт на языке, который вы не читаете. Каждое сообщение получает перевод прямо под собой, по мере поступления. Зелёная полоса вверху чата показывает, что всё работает.
+
+Наберите ответ, и над полем ввода появится его вариант на языке канала. Щёлкните по нему или нажмите Ctrl+Enter, и этот вариант заменит набранный текст, останется только отправить.
+
+Настраивать нечего. Входящий чат переводится на язык вашего браузера, а то, что вы пишете, уходит на языке вещания канала, считанном у самого Kick. Оба меняются в настройках. Работает на прямых эфирах и на записях VOD, поддерживает эмоуты 7TV.
+
+ДВИЖКИ
+
+Google работает сразу, без ключа и без аккаунта. Добавьте свой бесплатный ключ DeepL (бесплатный тариф покрывает миллион символов в месяц без карты), и качество заметно вырастет на европейских языках. DeepL получает и недавние строки канала как контекст, поэтому формулировки ложатся в разговор, и у него запрашивается вежливый регистр там, где язык его имеет: кэйго в японском, vous вместо tu во французском. Чтобы бесплатной квоты хватало надолго, DeepL тратится только на те пары, где он действительно лучше бесплатных движков. MyMemory и Lingva стоят позади как запасные, и когда один движок отказывает, подхватывает следующий. Порядок задаёте вы.
+
+ОТОБРАЖЕНИЕ
+
+Перевод под оригиналом, в одну строку с ним, после него мелким курсивом или только при наведении. Режим наведения ничего не запрашивает, пока вы не укажете на сообщение, что снижает расход примерно в 10 раз на быстром чате.
+
+ФИЛЬТРЫ
+
+Пропускать ботов, блокировать пользователей или каналы, ограничивать, какие исходные языки вообще переводятся. Эмоуты, упоминания, ссылки и лавины эмодзи вырезаются до отправки, так что вы не платите за перевод «kkkkkk». Фоновые вкладки останавливаются сами.
+
+42 языка, включая письмо справа налево (арабский, иврит, персидский), с раздельными региональными вариантами (pt-BR, zh-TW). Интерфейс самого расширения есть на 10 языках: английский, испанский, французский, португальский, турецкий, русский, арабский, китайский, японский и корейский.
+
+ЧТО ПОКИДАЕТ ВАШ БРАУЗЕР
+
+Текст сообщения из чата, и только он, уходит выбранному вами движку перевода. Не имя пользователя, не канал, не кто что сказал. Именно это означает строка «содержимое сайта» в разрешениях выше, и ничего кроме. Ни аккаунта, ни аналитики, ни моего сервера: расширение общается с Kick, с выбранным движком и со страницей релизов на GitHub, чтобы сообщить о новой версии, ничего не отправляя с этим последним запросом.
+
+Firefox пока не предоставляет встроенный в браузер API перевода, который есть у Chrome и Edge 138 и новее, поэтому эта сборка всегда использует движки выше. Если Mozilla его добавит, расширение уже умеет им пользоваться и будет переводить на вашей машине, офлайн и без ограничений.
+
+Открытый исходный код, MIT: github.com/Pkkls/kick-chat-translator
+
+## AMO description (ZH)
+
+打开一个聊天语言你读不懂的 Kick 直播。每条消息一到，正下方就会出现它的译文。聊天区顶部的绿色条表示正在运行。
+
+输入回复时，聊天框上方会用频道的语言显示一份预览。点击预览或按 Ctrl+Enter，这个版本就会替换你输入的内容，直接发送即可。
+
+无需设置。收到的聊天会翻译成你浏览器的语言，你写的内容会用频道的直播语言发出，该语言从 Kick 自身读取。两者都可以在设置里覆盖。直播和 VOD 回放都能用，并支持 7TV 表情。
+
+引擎
+
+Google 开箱即用，不需要密钥，也不需要账号。加上你自己的免费 DeepL 密钥（免费额度每月一百万字符，无需信用卡），欧洲语言的质量会明显提升。DeepL 还会收到频道最近的发言作为上下文，因此措辞贴合对话；在有敬语体系的语言中会要求礼貌语体：日语的敬语，法语的 vous 而非 tu。为了让免费额度用得久，只有在 DeepL 确实优于免费引擎的语言对上才会消耗它。MyMemory 和 Lingva 在后面待命，一个引擎失败时由下一个接手。顺序由你决定。
+
+显示
+
+译文在原文下方、与原文同一行、在原文之后以更小的斜体显示，或者仅在鼠标悬停时显示。悬停模式在你指向某条消息之前不会发起任何请求，在快速滚动的聊天中大约能把用量降到十分之一。
+
+过滤
+
+跳过机器人，屏蔽用户或频道，或限制哪些源语言会被翻译。表情、提及、链接和刷屏 emoji 在发送前就会被剥离，所以你不会为翻译「kkkkkk」付费。后台标签页会自行暂停。
+
+42 种语言，包含从右向左书写的语言（阿拉伯语、希伯来语、波斯语），并且区分地区变体（pt-BR、zh-TW）。扩展自身的界面有 10 种语言：英语、西班牙语、法语、葡萄牙语、土耳其语、俄语、阿拉伯语、中文、日语和韩语。
+
+什么会离开你的浏览器
+
+一条聊天消息的文本，仅此而已，发送给你选择的翻译引擎。不包括你的用户名，不包括频道，也不包括谁说了什么。这就是上面权限中“网站内容”一项的含义，也是它的全部含义。没有账号，没有分析统计，也没有我的服务器：扩展只与 Kick、你选择的引擎，以及用于告知有新版本的 GitHub 发布页面通信，而最后这个请求不携带任何内容。
+
+Firefox 尚未提供 Chrome 和 Edge 138 及以上所暴露的浏览器级翻译 API，因此这个版本始终使用上面的引擎。如果 Mozilla 提供了，扩展已经知道如何使用它，并将在你的机器上离线且无限制地翻译。
+
+开源，MIT: github.com/Pkkls/kick-chat-translator
+
+## AMO description (KO)
+
+읽지 못하는 언어로 채팅이 흐르는 Kick 방송을 열어 보세요. 도착하는 메시지 바로 아래에 번역이 붙습니다. 채팅 상단의 초록색 막대가 작동 중임을 알려 줍니다.
+
+답장을 입력하면 채팅 입력창 위에 채널의 언어로 된 미리보기가 나타납니다. 미리보기를 클릭하거나 Ctrl+Enter를 누르면 입력한 내용이 그 번역으로 바뀌고, 보내기만 하면 됩니다.
+
+설정할 것이 없습니다. 들어오는 채팅은 브라우저 언어로 번역되고, 작성한 내용은 채널의 방송 언어로 나갑니다. 방송 언어는 Kick에서 읽어 옵니다. 둘 다 설정에서 바꿀 수 있습니다. 라이브와 VOD 다시보기 모두에서 동작하며 7TV 이모트도 지원합니다.
+
+엔진
+
+Google은 키도 계정도 없이 바로 동작합니다. 무료 DeepL 키를 직접 추가하면(무료 요금제는 카드 없이 월 100만 자) 유럽 언어의 품질이 뚜렷하게 올라갑니다. DeepL에는 채널의 최근 발언도 문맥으로 전달되어 표현이 대화에 맞고, 존대 표현이 있는 언어에서는 그 말투를 요청합니다. 일본어의 경어, 프랑스어의 tu가 아닌 vous입니다. 무료 할당량을 오래 쓰기 위해 DeepL은 무료 엔진보다 실제로 나은 언어 쌍에서만 사용됩니다. MyMemory와 Lingva가 뒤에서 대기하고, 한 엔진이 실패하면 다음 엔진이 이어받습니다. 순서는 직접 정합니다.
+
+표시
+
+원문 아래, 원문과 같은 줄, 원문 뒤에 더 작은 기울임꼴, 또는 마우스를 올렸을 때만. 마우스를 올릴 때까지 아무것도 요청하지 않는 방식은 빠른 채팅에서 사용량을 약 10분의 1로 줄입니다.
+
+필터
+
+봇 건너뛰기, 사용자나 채널 차단, 번역할 원본 언어 제한. 이모트, 멘션, 링크, 이모지 도배는 전송 전에 걸러지므로 "kkkkkk"를 번역하느라 비용을 쓰지 않습니다. 백그라운드 탭은 스스로 멈춥니다.
+
+42개 언어. 오른쪽에서 왼쪽으로 쓰는 언어(아랍어, 히브리어, 페르시아어)를 포함하고 지역 변형(pt-BR, zh-TW)도 구분합니다. 확장 프로그램 자체의 인터페이스는 10개 언어입니다. 영어, 스페인어, 프랑스어, 포르투갈어, 터키어, 러시아어, 아랍어, 중국어, 일본어, 한국어.
+
+브라우저에서 무엇이 나가는가
+
+채팅 메시지의 문장, 오직 그것만이 당신이 선택한 번역 엔진으로 갑니다. 사용자 이름도, 채널도, 누가 무엇을 말했는지도 아닙니다. 위 권한의 “웹사이트 콘텐츠” 항목이 가리키는 것이 이것이고, 그것이 전부입니다. 계정도, 분석 도구도, 제 서버도 없습니다. 확장 프로그램은 Kick, 당신이 고른 엔진, 그리고 새 버전이 있는지 알리기 위한 GitHub 릴리스 페이지하고만 통신하며, 마지막 요청에는 아무것도 실어 보내지 않습니다.
+
+Firefox는 Chrome과 Edge 138 이상이 제공하는 브라우저 수준의 번역 API를 아직 제공하지 않으므로, 이 빌드는 항상 위의 엔진을 사용합니다. Mozilla가 제공하면 확장 프로그램은 이미 사용법을 알고 있으며, 기기에서 오프라인으로 제한 없이 번역하게 됩니다.
+
+오픈 소스, MIT: github.com/Pkkls/kick-chat-translator
 
 ## AMO description (JA)
 
