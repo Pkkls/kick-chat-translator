@@ -155,6 +155,91 @@ Translates Kick chat into your language as it scrolls, and your replies into the
 
 ---
 
+## Chrome dashboard: single purpose
+
+Kick Chat Translator does one thing: it translates chat on kick.com. Incoming
+messages get their translation rendered under, inside or after the original, and
+the message the user is typing gets a preview in the language the channel
+broadcasts in. Every permission below exists to serve that, and the extension is
+inert on every other site.
+
+## Chrome dashboard: permission justifications
+
+Paste each one into the matching field. Every claim here is checkable in the
+source at github.com/Pkkls/kick-chat-translator.
+
+storage
+Keeps the user's own settings and nothing else: reading language, display style,
+provider order, filters, and the per-day counters the popup shows
+(kt.settings.v2, kt.stats.v1, kt.update.v1). A DeepL API key, if the user
+chooses to add one, is held in local storage (kt.deeplKey.v1) rather than synced
+storage, so it stays on the machine it was typed on instead of travelling to
+every Chrome signed into the same account. None of it is transmitted anywhere.
+
+alarms
+One periodic alarm, kt.keepalive, which touches chrome.storage.session so the
+MV3 service worker is not evicted between bursts of chat. Without it the first
+messages after an idle gap wait for the worker to cold-start. The alarm makes no
+network request and carries no data.
+
+Host permission: https://kick.com/*
+The only site the extension acts on. The content script reads chat messages
+there, renders their translations in place, and adds the language control to the
+chat's own action bar.
+
+Host permission: https://api.github.com/*
+A single GET to the project's own releases/latest, so the user can be told a
+newer version exists. No query parameters, no body, no header identifying the
+user, and nothing about their browsing is sent with it.
+
+Host permissions: translate.googleapis.com, api.deepl.com, api-free.deepl.com,
+api.mymemory.translated.net, lingva.ml, lingva.lunar.icu
+The five translation engines the user picks between. Only the chat text being
+translated is sent, and only to the engine selected at that moment. On Chrome
+138 and later the built-in on-device translator can be used instead, in which
+case no text leaves the machine at all.
+
+Remote code
+None. All JavaScript ships inside the package. Nothing is fetched and executed
+at runtime, and there is no eval, no remote script tag and no hosted module.
+
+## Chrome dashboard: data usage
+
+Answer the privacy form as follows.
+
+Personally identifiable information: No.
+Health information: No.
+Financial and payment information: No.
+Location: No.
+Web history: No.
+User activity (clicks, mouse position, scroll): No.
+
+Authentication information: Yes. If, and only if, the user enters a DeepL API
+key, that key is stored locally and sent to DeepL to authenticate their own
+requests. It is never sent anywhere else and never leaves the machine it was
+entered on.
+
+Personal communications: Yes. The text of chat messages is sent to the
+translation engine the user selected, for the sole purpose of translating it. It
+is not stored, not logged and not sent anywhere else. In on-device mode nothing
+is sent at all.
+
+Website content: Yes, the same chat text described above.
+
+The three certifications all apply: the data is not sold to third parties, it is
+not used or transferred for any purpose unrelated to translating chat, and it is
+not used or transferred to determine creditworthiness or for lending.
+
+## Chrome dashboard: metadata
+
+Name: Kick Chat Translator (20 of 45 characters)
+Category: Social & Communication
+Language: English, with the localised listings above pasted into their own
+  language tabs
+Privacy policy URL: https://github.com/Pkkls/kick-chat-translator/blob/master/PRIVACY.md
+Support / homepage URL: https://github.com/Pkkls/kick-chat-translator
+Screenshots: five 1280x800 PNGs, see scratchpad/harness/store/
+
 # AMO listing (Firefox)
 
 Separate from the Chrome copy above, and not a translation of it. The Chrome
