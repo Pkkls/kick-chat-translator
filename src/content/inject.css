@@ -36,7 +36,12 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
-.kt-flag {
+/* Source-language badge on a translated chat line. Text, not a drawn flag:
+   langFlag() returns a flag emoji and Windows falls back to the two letters.
+   It was called .kt-flag until that name was taken by the drawn 16x12 flags
+   further down, which then sized and dimmed it -- and, the other way round,
+   lent every drawn flag this rule's opacity and padding. */
+.kt-src-flag {
   display: inline-block;
   font-size: 0.7em;
   font-weight: 700;
@@ -331,40 +336,58 @@ html[data-kt-scheme='light'] .kt-translation-replace {
 }
 
 /* #58 The two settings people reach for most, on the bar instead of a page. */
+.kt-float-lang-host {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
 .kt-float-lang {
-  /* The list this opens is painted by the browser, not by us. Without a scheme
-     it paints light while our near white option text stays light, so only the
-     row under the pointer is readable. Declared on the control alone: this
-     stylesheet is injected into someone else's page and must not restyle it. */
-  color-scheme: dark;
-  /* A select's intrinsic minimum is its widest option, so without min-width it
-     refuses to shrink however much room is left, and it pushed the gear out of
-     the bar entirely. Measured at 340px: it was taking all 130px. */
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  /* 24px is WCAG 2.5.8's minimum target, and the height the rest of the bar
+     already uses. */
+  height: 24px;
   min-width: 0;
   max-width: 96px;
   /* Same surface, stroke and text as the chip in the message box, so the two
      language controls read as one control in two places rather than as two
      unrelated widgets. The stroke matters beyond looks: the old
      rgba(255,255,255,.15) flattened to #34373C, which is 1.62:1 against the
-     bar — well under the 3:1 WCAG 1.4.11 asks of a control's boundary.
+     bar, well under the 3:1 WCAG 1.4.11 asks of a control's boundary.
      #5F5F60 measures 3.04 there and 3.08 on the chat ground, so one value
      covers both surfaces. */
   background: #171a1c;
   border: 1px solid #5f5f60;
   border-radius: 4px;
-  padding: 1px 4px;
+  padding: 0 6px;
   color: #ffffff;
   font-size: 11px;
-  line-height: 1.4;
+  line-height: 1;
   cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.kt-float-lang-tag {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+
+.kt-float-lang:focus-visible {
+  outline: 2px solid #53fc18;
+  outline-offset: 2px;
+}
+
+.kt-float-lang[aria-expanded='true'] {
+  border-color: #358b1a;
+  background: #42474d;
 }
 /* The rows of that list take their colours from the options, and nothing else
    reaches them. Named here so the list is readable whatever the page around it
    is doing. */
-.kt-float-lang option {
-  background-color: #171a1c;
-  color: #ffffff;
-}
 .kt-float-lang:hover {
   border-color: rgba(83, 252, 24, 0.4);
 }
@@ -553,7 +576,10 @@ html[data-kt-scheme='light'] .kt-translation-inline {
   background: rgba(40, 170, 20, 0.12);
   border-inline-start-color: rgba(40, 170, 20, 0.6);
 }
-html[data-kt-scheme='light'] .kt-flag {
+/* Renamed with its dark counterpart. Under the old name this rule outranked
+   every .kt-flag-xx gradient on specificity (0,2,1 against 0,1,0), so in the
+   light scheme it repainted each drawn flag with a flat grey. */
+html[data-kt-scheme='light'] .kt-src-flag {
   background: rgba(0, 0, 0, 0.06);
   color: rgba(20, 25, 35, 0.7);
 }
@@ -588,13 +614,17 @@ html[data-kt-scheme='light'] .kt-float-power {
 /* Our option text turns dark here, so the list has to turn light with it.
      Freezing the scheme would just break the readability the other way round. */
 html[data-kt-scheme='light'] .kt-float-lang {
-  color-scheme: light;
   background: #f4f4f5;
   color: #0b0b0c;
 }
-html[data-kt-scheme='light'] .kt-float-lang option {
-  background-color: #ffffff;
-  color: #0b0b0c;
+
+html[data-kt-scheme='light'] .kt-float-lang:focus-visible {
+  outline-color: #35a10f;
+}
+
+html[data-kt-scheme='light'] .kt-float-lang[aria-expanded='true'] {
+  border-color: #35a10f;
+  background: #e8e8e9;
 }
 html[data-kt-scheme='light'] .kt-float-count {
   color: rgba(40, 150, 20, 0.8);
@@ -763,6 +793,11 @@ html[data-kt-scheme='light'] .kt-compose:hover .kt-compose-insert {
      a menu pinned to the physical right would hang off the wrong edge. */
   inset-inline-end: 0;
   z-index: 2147483000;
+  /* Three columns of flag plus name. Wider than the 340px chat column on
+     purpose: this is a popup over the page, and the width buys back three times
+     the height. Clamped to the window so it can never be the thing that pushes
+     the layout sideways. */
+  width: min(408px, calc(100vw - 16px));
   min-width: 202px;
   /* Never taller than the window it opens in. Seen live: a fixed 320px still
      ran off the top of a short viewport, because 320px is not a promise the
@@ -794,9 +829,9 @@ html[data-kt-scheme='light'] .kt-compose:hover .kt-compose-insert {
 .kt-chip-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   width: 100%;
-  padding: 7px 9px;
+  padding: 6px 7px;
   border: 0;
   border-radius: 4px;
   background: transparent;
@@ -821,7 +856,12 @@ html[data-kt-scheme='light'] .kt-compose:hover .kt-compose-insert {
 }
 .kt-chip-iso {
   flex-shrink: 0;
-  width: 34px;
+  /* 34px was a slot for two letters. It holds a 16x12 flag now, and in a tile a
+     third of the old width every pixel spent here is a pixel off the name. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
   white-space: nowrap;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 10px;
@@ -988,7 +1028,496 @@ html[data-kt-scheme='light'] .kt-chip-empty {
 }
 
 /* The options live in their own listbox: a listbox may only hold options, so
-   the filter field and the empty-state notice sit outside it. */
+   the filter field and the empty-state notice sit outside it.
+
+   A grid, not a column. One language per line put 43 rows and 894px on a 950px
+   window, measured on a live channel: the list ran the whole height of the
+   screen. The column count comes from JS (--kt-chip-cols, set in langChip.ts)
+   so the arrow keys and the grid cannot disagree about it. */
 .kt-chip-list {
+  display: grid;
+  grid-template-columns: repeat(var(--kt-chip-cols, 3), minmax(0, 1fr));
+  gap: 1px;
+}
+
+/* Two entries are not tiles: the auto row is a mode rather than a language and
+   keeps its full label, and the rule between the favourites and the rest only
+   means anything across the whole width. */
+.kt-chip-row[data-group='auto'],
+.kt-chip-sep {
+  grid-column: 1 / -1;
+}
+
+/* ── Language selector, shared by the chip and the float bar ────────
+ * Source of truth for both. Kept verbatim from the harness under
+ * scratchpad/harness/, where the gates and the screenshots live.
+ */
+
+/* Drapeaux dessines en CSS, 16x12, pour la colonne de gauche du selecteur.
+ *
+ * Pourquoi dessines et pas en emoji : mesure faite, les emoji de drapeaux ne se
+ * rendent pas sur cette machine, ils retombent sur les deux lettres du code
+ * (voir flag-render.png). Un drapeau emoji donnerait donc exactement ce qu'on
+ * veut remplacer.
+ *
+ * Pourquoi en CSS et pas en images : zero octet de bundle JS, zero fichier a
+ * servir, zero requete. Un degrade lineaire fait une bande, un degrade radial
+ * fait un disque, et c'est 90% des drapeaux.
+ *
+ * Ce que ca ne fait pas : les emblemes. A 16x12 un blason, un taegeuk ou un
+ * Union Jack complet ne sont pas lisibles de toute facon ; ce qui identifie un
+ * drapeau a cette taille, c'est sa composition de couleurs. Les cas complexes
+ * sont donc reduits a leurs blocs de couleur, et c'est assume.
+ *
+ * Le pays choisi par langue est une convention d'affichage, pas une affirmation
+ * politique : une langue n'appartient pas a un pays. Taiwan porte SON drapeau,
+ * jamais celui de la Chine.
+ */
+
+.kt-flag {
+  display: inline-block;
+  width: 16px;
+  height: 12px;
+  border-radius: 2px;
+  /* Les drapeaux clairs (JP, FI) disparaissent sinon sur la surface sombre. */
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  background-size: cover;
+  flex-shrink: 0;
+}
+
+/* ── Bandes verticales ─────────────────────────────────────────────── */
+.kt-flag-fr { background: linear-gradient(90deg, #002654 0 33.3%, #fff 33.3% 66.6%, #ed2939 66.6%); }
+.kt-flag-it { background: linear-gradient(90deg, #009246 0 33.3%, #fff 33.3% 66.6%, #ce2b37 66.6%); }
+.kt-flag-ro { background: linear-gradient(90deg, #002b7f 0 33.3%, #fcd116 33.3% 66.6%, #ce1126 66.6%); }
+.kt-flag-be { background: linear-gradient(90deg, #000 0 33.3%, #fdda24 33.3% 66.6%, #ef3340 66.6%); }
+.kt-flag-ie { background: linear-gradient(90deg, #169b62 0 33.3%, #fff 33.3% 66.6%, #ff883e 66.6%); }
+
+/* ── Bandes horizontales ───────────────────────────────────────────── */
+.kt-flag-de { background: linear-gradient(#000 0 33.3%, #dd0000 33.3% 66.6%, #ffce00 66.6%); }
+.kt-flag-nl { background: linear-gradient(#ae1c28 0 33.3%, #fff 33.3% 66.6%, #21468b 66.6%); }
+.kt-flag-ru { background: linear-gradient(#fff 0 33.3%, #0039a6 33.3% 66.6%, #d52b1e 66.6%); }
+.kt-flag-hu { background: linear-gradient(#ce2939 0 33.3%, #fff 33.3% 66.6%, #477050 66.6%); }
+.kt-flag-bg { background: linear-gradient(#fff 0 33.3%, #00966e 33.3% 66.6%, #d62612 66.6%); }
+.kt-flag-ee { background: linear-gradient(#0072ce 0 33.3%, #000 33.3% 66.6%, #fff 66.6%); }
+.kt-flag-lt { background: linear-gradient(#fdb913 0 33.3%, #006a44 33.3% 66.6%, #c1272d 66.6%); }
+.kt-flag-lv { background: linear-gradient(#9e3039 0 40%, #fff 40% 60%, #9e3039 60%); }
+.kt-flag-at { background: linear-gradient(#ed2939 0 33.3%, #fff 33.3% 66.6%, #ed2939 66.6%); }
+.kt-flag-ir { background: linear-gradient(#239f40 0 33.3%, #fff 33.3% 66.6%, #da0000 66.6%); }
+.kt-flag-id { background: linear-gradient(#ce1126 0 50%, #fff 50%); }
+.kt-flag-pl { background: linear-gradient(#fff 0 50%, #dc143c 50%); }
+.kt-flag-ua { background: linear-gradient(#0057b7 0 50%, #ffd700 50%); }
+.kt-flag-th { background: linear-gradient(#a51931 0 16.6%, #f4f5f8 16.6% 33.3%, #2d2a4a 33.3% 66.6%, #f4f5f8 66.6% 83.3%, #a51931 83.3%); }
+.kt-flag-es { background: linear-gradient(#aa151b 0 25%, #f1bf00 25% 75%, #aa151b 75%); }
+.kt-flag-ca { background: repeating-linear-gradient(#fcdd09 0 2px, #da121a 2px 4px); }
+
+/* ── Croix nordiques ───────────────────────────────────────────────── */
+
+/* ── Disque sur aplat ──────────────────────────────────────────────── */
+.kt-flag-jp { background: #fff radial-gradient(circle at 50% 50%, #bc002d 0 3.2px, transparent 3.2px); }
+.kt-flag-bd { background: #006a4e radial-gradient(circle at 45% 50%, #f42a41 0 3.2px, transparent 3.2px); }
+
+/* ── Aplat plus emblemes, reduits a leurs blocs de couleur ─────────── */
+/* Taiwan porte le sien : canton bleu marine, disque blanc, champ rouge. */
+.kt-flag-pt { background: linear-gradient(90deg, #006600 0 40%, #ff0000 40%); }
+
+/* ── Blasons reduits, tribandes a charge ───────────────────────────── */
+.kt-flag-sk { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12'%3E %3Crect width='16' height='4' fill='%23fff'/%3E %3Crect y='4' width='16' height='4' fill='%230b4ea2'/%3E %3Crect y='8' width='16' height='4' fill='%23ee1c25'/%3E %3Cpath d='M3 2.9h4.2v3.9a2.1 2.1 0 0 1-2.1 2.3 2.1 2.1 0 0 1-2.1-2.3z' fill='%23ee1c25' stroke='%23fff' stroke-width='.7'/%3E %3Cpath d='M5.1 4v3.3M4.1 5.1h2' stroke='%23fff' stroke-width='.65'/%3E %3C/svg%3E") center/cover no-repeat; }
+.kt-flag-sl { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12'%3E %3Crect width='16' height='4' fill='%23fff'/%3E %3Crect y='4' width='16' height='4' fill='%23005ce6'/%3E %3Crect y='8' width='16' height='4' fill='%23ed1c24'/%3E %3Cpath d='M2.6 2.4h4v3.4l-2 2.1-2-2.1z' fill='%23005ce6' stroke='%23fff' stroke-width='.7'/%3E %3Cpath d='M3.3 5.9l1.3-1.9 1.3 1.9z' fill='%23fff'/%3E %3C/svg%3E") center/cover no-repeat; }
+
+/* ── Formes que les degrades ne savent pas faire. SVG inline dans la
+   feuille : aucun fichier a servir, aucune requete.
+
+   Le `#` des couleurs est encode en %23. Non encode il ouvre un fragment
+   d'URL et coupe la data-URI a la premiere couleur : dix-huit regles ont
+   ete jetees d'un coup, en silence, et la capture est revenue identique a
+   celle d'avant. Les attributs du SVG sont en guillemets simples, sinon ils
+   ferment le url() qui les contient. ── */
+.kt-flag-gb { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' preserveAspectRatio='none'%3E%3Crect width='16' height='12' fill='%23012169'/%3E%3Cpath d='M0 0 16 12M16 0 0 12' stroke='%23fff' stroke-width='2.6'/%3E%3Cpath d='M0 0 16 12M16 0 0 12' stroke='%23c8102e' stroke-width='1.4'/%3E%3Cpath d='M8 0v12M0 6h16' stroke='%23fff' stroke-width='4'/%3E%3Cpath d='M8 0v12M0 6h16' stroke='%23c8102e' stroke-width='2.2'/%3E%3C/svg%3E") center/cover no-repeat; }
+.kt-flag-kr { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12'%3E %3Crect width='16' height='12' fill='%23fff'/%3E %3Ccircle cx='8' cy='6' r='3' fill='%230047a0'/%3E %3Cpath d='M5 6a1.5 1.5 0 0 1 3 0 1.5 1.5 0 0 0 3 0 3 3 0 0 0-6 0' fill='%23cd2e3a'/%3E %3Cg stroke='%23000' stroke-width='.55' stroke-linecap='butt'%3E %3Cpath d='M2.1 2.6l1.3 1.3M2.1 9.4l1.3-1.3M12.6 2.6l1.3 1.3M12.6 9.4l1.3-1.3'/%3E %3C/g%3E %3C/svg%3E") center/cover no-repeat; }
+.kt-flag-cz { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' preserveAspectRatio='none'%3E%3Crect width='16' height='6' fill='%23fff'/%3E%3Crect y='6' width='16' height='6' fill='%23d7141a'/%3E%3Cpath d='M0 0 8 6 0 12z' fill='%2311457e'/%3E%3C/svg%3E") center/cover no-repeat; }
+.kt-flag-ph { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' preserveAspectRatio='none'%3E%3Crect width='16' height='6' fill='%230038a8'/%3E%3Crect y='6' width='16' height='6' fill='%23ce1126'/%3E%3Cpath d='M0 0 7 6 0 12z' fill='%23fff'/%3E%3Ccircle cx='2.2' cy='6' r='1.1' fill='%23fcd116'/%3E%3C/svg%3E") center/cover no-repeat; }
+.kt-flag-my { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' preserveAspectRatio='none'%3E%3Crect width='16' height='12' fill='%23fff'/%3E%3Cg fill='%23cc0001'%3E%3Crect width='16' height='.86'/%3E%3Crect y='1.71' width='16' height='.86'/%3E%3Crect y='3.43' width='16' height='.86'/%3E%3Crect y='5.14' width='16' height='.86'/%3E%3Crect y='6.86' width='16' height='.86'/%3E%3Crect y='8.57' width='16' height='.86'/%3E%3Crect y='10.29' width='16' height='.86'/%3E%3C/g%3E%3Crect width='8' height='6.86' fill='%23010066'/%3E%3Ccircle cx='3.4' cy='3.4' r='1.8' fill='%23fc0'/%3E%3Ccircle cx='4.1' cy='3.4' r='1.5' fill='%23010066'/%3E%3C/svg%3E") center/cover no-repeat; }
+.kt-flag-tr { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' preserveAspectRatio='none'%3E%3Crect width='16' height='12' fill='%23e30a17'/%3E%3Ccircle cx='6.4' cy='6' r='2.7' fill='%23fff'/%3E%3Ccircle cx='7.5' cy='6' r='2.2' fill='%23e30a17'/%3E%3Cpath d='M9.7 6l2.3-.75-1.42 1.95V4.8l1.42 1.95z' fill='%23fff'/%3E%3C/svg%3E") center/cover no-repeat; }
+.kt-flag-br { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' preserveAspectRatio='none'%3E%3Crect width='16' height='12' fill='%23009b3a'/%3E%3Cpath d='M8 1.2 14.8 6 8 10.8 1.2 6z' fill='%23fedf00'/%3E%3Ccircle cx='8' cy='6' r='2.4' fill='%23002776'/%3E%3C/svg%3E") center/cover no-repeat; }
+.kt-flag-vn { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' preserveAspectRatio='none'%3E%3Crect width='16' height='12' fill='%23da251d'/%3E%3Cpath d='M8 3.2l.9 2.8h2.9l-2.4 1.7.9 2.8L8 8.8 5.7 10.5l.9-2.8L4.2 6h2.9z' fill='%23ff0'/%3E%3C/svg%3E") center/cover no-repeat; }
+.kt-flag-cn { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' preserveAspectRatio='none'%3E%3Crect width='16' height='12' fill='%23de2910'/%3E%3Cpath d='M3.2 1.5l.7 2.15h2.26L4.33 5l.7 2.15L3.2 5.82 1.37 7.15 2.07 5 .24 3.65H2.5z' fill='%23ffde00'/%3E%3Cg fill='%23ffde00'%3E%3Ccircle cx='7.2' cy='1.5' r='.55'/%3E%3Ccircle cx='8.6' cy='2.9' r='.55'/%3E%3Ccircle cx='8.6' cy='4.9' r='.55'/%3E%3Ccircle cx='7.2' cy='6.3' r='.55'/%3E%3C/g%3E%3C/svg%3E") center/cover no-repeat; }
+.kt-flag-gr { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' preserveAspectRatio='none'%3E%3Crect width='16' height='12' fill='%230d5eaf'/%3E%3Cg fill='%23fff'%3E%3Crect y='1.33' width='16' height='1.33'/%3E%3Crect y='4' width='16' height='1.33'/%3E%3Crect y='6.67' width='16' height='1.33'/%3E%3Crect y='9.33' width='16' height='1.33'/%3E%3C/g%3E%3Crect width='6.67' height='6.67' fill='%230d5eaf'/%3E%3Cpath d='M2.67 0v6.67M0 2.67h6.67' stroke='%23fff' stroke-width='1.33'/%3E%3C/svg%3E") center/cover no-repeat; }
+.kt-flag-lk { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' preserveAspectRatio='none'%3E%3Crect width='16' height='12' fill='%238d2029'/%3E%3Crect width='2.2' height='12' fill='%23ff9b00'/%3E%3Crect x='2.2' width='1.8' height='12' fill='%2300534e'/%3E%3Crect x='4.6' y='1.2' width='10.6' height='9.6' fill='%238d2029' stroke='%23ffbe29' stroke-width='.8'/%3E%3C/svg%3E") center/cover no-repeat; }
+.kt-flag-sa { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' preserveAspectRatio='none'%3E%3Crect width='16' height='12' fill='%23006c35'/%3E%3Cpath d='M3 4.6h10' stroke='%23fff' stroke-width='1'/%3E%3Crect x='4' y='7' width='8' height='1.2' fill='%23fff'/%3E%3C/svg%3E") center/cover no-repeat; }
+.kt-flag-il { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' preserveAspectRatio='none'%3E%3Crect width='16' height='12' fill='%23fff'/%3E%3Cg fill='%230038b8'%3E%3Crect y='1.4' width='16' height='1.5'/%3E%3Crect y='9.1' width='16' height='1.5'/%3E%3C/g%3E%3Cpath d='M8 3.7l2.05 3.55h-4.1zM8 8.3l-2.05-3.55h4.1z' fill='none' stroke='%230038b8' stroke-width='.65'/%3E%3C/svg%3E") center/cover no-repeat; }
+.kt-flag-in { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' preserveAspectRatio='none'%3E%3Crect width='16' height='4' fill='%23ff9933'/%3E%3Crect y='4' width='16' height='4' fill='%23fff'/%3E%3Crect y='8' width='16' height='4' fill='%23138808'/%3E%3Ccircle cx='8' cy='6' r='1.5' fill='none' stroke='%23000088' stroke-width='.55'/%3E%3C/svg%3E") center/cover no-repeat; }
+.kt-flag-se { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' preserveAspectRatio='none'%3E%3Crect width='16' height='12' fill='%23005293'/%3E%3Cpath d='M5.5 0v12M0 6h16' stroke='%23fecb00' stroke-width='2.4'/%3E%3C/svg%3E") center/cover no-repeat; }
+.kt-flag-dk { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' preserveAspectRatio='none'%3E%3Crect width='16' height='12' fill='%23c8102e'/%3E%3Cpath d='M5.5 0v12M0 6h16' stroke='%23fff' stroke-width='2.4'/%3E%3C/svg%3E") center/cover no-repeat; }
+.kt-flag-no { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' preserveAspectRatio='none'%3E%3Crect width='16' height='12' fill='%23ba0c2f'/%3E%3Cpath d='M5.5 0v12M0 6h16' stroke='%23fff' stroke-width='3.4'/%3E%3Cpath d='M5.5 0v12M0 6h16' stroke='%2300205b' stroke-width='1.7'/%3E%3C/svg%3E") center/cover no-repeat; }
+.kt-flag-fi { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' preserveAspectRatio='none'%3E%3Crect width='16' height='12' fill='%23fff'/%3E%3Cpath d='M5.5 0v12M0 6h16' stroke='%23003580' stroke-width='2.6'/%3E%3C/svg%3E") center/cover no-repeat; }
+.kt-flag-tw { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12' preserveAspectRatio='none'%3E%3Crect width='16' height='12' fill='%23fe0000'/%3E%3Crect width='8' height='6' fill='%23000095'/%3E%3Ccircle cx='4' cy='3' r='1.9' fill='%23fff'/%3E%3Ccircle cx='4' cy='3' r='1.15' fill='%23000095'/%3E%3C/svg%3E") center/cover no-repeat; }
+
+/* Selecteur de langue de la barre du chat.
+ *
+ * Remplace un <select> natif de 43 options qui couvrait 845 des 890px du
+ * panneau de chat, soit 95%, et qu'aucun CSS ne peut borner ni styler.
+ *
+ * La DA n'est pas inventee : fond #171a1c, filet #6c6c6d, rayons 8 et 4,
+ * vert #53fc18, survol #42474d, actif #1c2e1c, ISO en JetBrains Mono 10px,
+ * transitions 0.15s, zero ombre. Tout releve dans inject.css.
+ *
+ * Les valeurs vivent en variables scopees au composant : le theme clair n'est
+ * alors qu'un jeu de valeurs, pas une deuxieme feuille de regles a garder
+ * d'accord avec la premiere.
+ */
+
+.kt-lang-panel {
+  --kt-lp-surface: #171a1c;
+  --kt-lp-sunken: #101012;
+  --kt-lp-hairline: #6c6c6d;
+  --kt-lp-edge: #3c3f43;
+  --kt-lp-sep: #262a2d;
+  --kt-lp-text: #ffffff;
+  --kt-lp-muted: #9fa6ad;
+  --kt-lp-faint: #6c6c6d;
+  --kt-lp-hover: #42474d;
+  --kt-lp-accent: #53fc18;
+  --kt-lp-accent-edge: #358b1a;
+  --kt-lp-accent-bed: #1c2e1c;
+  --kt-lp-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  display: flex;
+  flex-direction: column;
+  /* Un panneau qui ne peut pas retrecir est un defaut : plafonner, pas figer. */
+  inline-size: 100%;
+  max-inline-size: 236px;
+  padding: 4px;
+  border-radius: 8px;
+  /* Pas d'ombre portee : Kick n'en met sur aucune surface. Le panneau se
+   * detache par son aplat plus un filet. */
+  outline: 1px solid var(--kt-lp-hairline);
+  background: var(--kt-lp-surface);
+}
+
+html[data-kt-scheme='light'] .kt-lang-panel {
+  --kt-lp-surface: #ffffff;
+  --kt-lp-sunken: #f4f4f5;
+  --kt-lp-hairline: #8b8b8c;
+  --kt-lp-edge: #cfcfd1;
+  --kt-lp-sep: #e4e4e6;
+  --kt-lp-text: #0b0b0c;
+  --kt-lp-muted: #5e5e5f;
+  --kt-lp-faint: #6f6f70;
+  --kt-lp-hover: #e8e8e9;
+  --kt-lp-accent: #24700a;
+  --kt-lp-accent-edge: #35a10f;
+  --kt-lp-accent-bed: #d7f5cd;
+}
+
+/* ── Le filtre ─────────────────────────────────────────────────────── */
+/* 42 langues ne tiennent dans aucune fenetre a hauteur d'ecran, donc la liste
+ * n'est pas faite pour etre parcourue : deux frappes doivent atteindre
+ * n'importe laquelle. Le champ est en tete parce que c'est le geste par defaut,
+ * pas un recours. */
+.kt-lang-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.kt-lang-search .kt-lang-ico {
+  position: absolute;
+  inset-inline-start: 9px;
+  inline-size: 13px;
+  block-size: 13px;
+  color: var(--kt-lp-faint);
+  pointer-events: none;
+  transition: color 0.15s ease;
+}
+
+.kt-lang-search input {
+  inline-size: 100%;
+  block-size: 30px;
+  padding-block: 0;
+  padding-inline: 28px 8px;
+  border: 1px solid var(--kt-lp-edge);
+  border-radius: 4px;
+  background: var(--kt-lp-sunken);
+  color: var(--kt-lp-text);
+  font: inherit;
+  font-size: 12px;
+  transition: border-color 0.15s ease;
+}
+
+.kt-lang-search input::placeholder {
+  color: var(--kt-lp-muted);
+}
+
+.kt-lang-search input:focus {
+  outline: none;
+  border-color: var(--kt-lp-accent-edge);
+}
+
+.kt-lang-search input:focus-visible {
+  outline: 2px solid var(--kt-lp-accent);
+  outline-offset: -1px;
+}
+
+.kt-lang-search:focus-within .kt-lang-ico {
+  color: var(--kt-lp-muted);
+}
+
+/* ── Les epinglees ─────────────────────────────────────────────────── */
+/* Le cas reel : quelqu'un qui diffuse en anglais sans etre natif et bascule
+ * entre trois ou quatre langues en direct, pendant que le chat defile. Ces
+ * quatre-la se prennent a la couleur du drapeau, sans lire et sans defiler.
+ * Pas de titre de section au-dessus : quatre pastilles au-dessus d'un filet
+ * se lisent sans qu'on les nomme, et le nom du groupe est porte par
+ * aria-label pour qui ne voit pas la composition. */
+.kt-lang-favs {
+  display: flex;
+  gap: 4px;
+  padding: 6px 1px;
+}
+
+.kt-lang-fav {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  /* Bien au-dela des 24px de WCAG 2.5.8 : la cible est visee en direct. */
+  block-size: 44px;
+  padding: 0;
+  border: 1px solid var(--kt-lp-edge);
+  border-radius: 4px;
+  background: var(--kt-lp-sunken);
+  color: var(--kt-lp-muted);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.kt-lang-fav .kt-flag {
+  inline-size: 20px;
+  block-size: 15px;
+}
+
+.kt-lang-fav .kt-lang-tag {
+  font-family: var(--kt-lp-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+
+.kt-lang-fav:hover {
+  border-color: var(--kt-lp-accent-edge);
+  background: var(--kt-lp-hover);
+  color: var(--kt-lp-text);
+}
+
+.kt-lang-fav:focus-visible {
+  outline: 2px solid var(--kt-lp-accent);
+  outline-offset: 1px;
+}
+
+.kt-lang-fav[aria-selected='true'] {
+  border-color: var(--kt-lp-accent-edge);
+  background: var(--kt-lp-accent-bed);
+  color: var(--kt-lp-accent);
+}
+
+/* Anchoring. The chip sits at the bottom of the chat and opens upward, the
+ * float bar sits at the top and opens downward; placeLangMenu switches to
+ * viewport coordinates when a clipping ancestor would cut the panel off. */
+.kt-lang-panel {
+  position: absolute;
+  z-index: 2147483000;
+  bottom: calc(100% + 6px);
+  /* Logical, not physical: in an Arabic interface the bar mirrors, and a panel
+   * pinned to the physical right would hang off the wrong edge. */
+  inset-inline-end: 0;
+}
+
+.kt-lang-panel-below {
+  bottom: auto;
+  top: calc(100% + 6px);
+}
+
+.kt-lang-panel-fixed {
+  position: fixed;
+  bottom: auto;
+  top: auto;
+  inset-inline-end: auto;
+  /* placeLangMenu writes viewport coordinates, physical by definition: the
+   * logical property above must not fight them. */
+  right: auto;
+}
+
+.kt-lang-sep {
+  block-size: 1px;
+  margin: 2px 2px 4px;
+  background: var(--kt-lp-sep);
+}
+
+/* ── La liste ──────────────────────────────────────────────────────── */
+/* Bornee en rangees entieres, pas en pixels devines : six rangees de 30px.
+ * Une hauteur qui coupe une rangee en deux annonce mal qu'il y a une suite. */
+.kt-lang-list {
+  max-block-size: 180px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--kt-lp-edge) transparent;
+}
+
+.kt-lang-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  inline-size: 100%;
+  /* PT-BR et ZH-TW avaient casse l'uniformite des rangees du menu de la puce :
+   * hauteur fixe, et le nom passe en ellipse plutot que de pousser. */
+  block-size: 30px;
+  padding-inline: 9px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--kt-lp-text);
+  font: inherit;
+  font-size: 12px;
+  text-align: start;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.kt-lang-row:hover {
+  background: var(--kt-lp-hover);
+}
+
+.kt-lang-row:focus-visible {
+  outline: 2px solid var(--kt-lp-accent);
+  outline-offset: -2px;
+}
+
+.kt-lang-row[aria-selected='true'] {
+  background: var(--kt-lp-accent-bed);
+}
+
+.kt-lang-row[aria-selected='true'] .kt-lang-iso {
+  color: var(--kt-lp-accent);
+}
+
+.kt-lang-iso {
+  flex-shrink: 0;
+  /* 38px tient ZH-TW et PT-BR sans que la colonne des noms se decale. */
+  inline-size: 38px;
+  font-family: var(--kt-lp-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  color: var(--kt-lp-muted);
+}
+
+.kt-lang-name {
+  flex: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kt-lang-flag {
+  flex-shrink: 0;
+}
+
+/* Le liseré des drapeaux vient de flags.css, calibre pour une surface sombre :
+ * en clair, un drapeau a fond blanc (JP, FI) flotte sans bord. */
+html[data-kt-scheme='light'] .kt-lang-panel .kt-flag {
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
+}
+
+/* Le globe de la detection automatique, au gabarit d'un drapeau pour que la
+ * colonne reste alignee. */
+.kt-lang-globe {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  inline-size: 16px;
+  block-size: 12px;
+  color: var(--kt-lp-muted);
+}
+
+.kt-lang-globe .kt-lang-ico {
+  inline-size: 13px;
+  block-size: 13px;
+}
+
+/* L'epingle. Pas un <button> : un bouton imbrique dans une option de listbox
+ * est invalide, et 42 epingles focalisables ajouteraient 42 arrets de
+ * tabulation a une barre qui en compte quatre. Souris sur l'icone, clavier par
+ * la touche P sur l'option courante. */
+.kt-lang-star {
+  flex-shrink: 0;
+  inline-size: 15px;
+  block-size: 15px;
+  color: var(--kt-lp-faint);
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.kt-lang-row:hover .kt-lang-star,
+.kt-lang-row:focus-visible .kt-lang-star {
+  opacity: 1;
+}
+
+.kt-lang-star:hover {
+  color: var(--kt-lp-text);
+}
+
+.kt-lang-star[data-on='true'] {
+  opacity: 1;
+  color: var(--kt-lp-accent);
+  fill: currentColor;
+}
+
+.kt-lang-list:focus-visible {
+  outline: 2px solid var(--kt-lp-accent);
+  outline-offset: -2px;
+  border-radius: 4px;
+}
+
+/* Une rangee posee en display:flex ignore l'attribut hidden : la regle UA
+ * [hidden]{display:none} perd contre une regle de classe. Sans ceci, filtrer
+ * ne cache rien. */
+.kt-lang-row[hidden],
+.kt-lang-fav[hidden],
+.kt-lang-sep[hidden],
+.kt-lang-empty[hidden],
+.kt-lang-panel[hidden] {
+  display: none;
+}
+
+.kt-lang-empty {
+  padding: 16px 9px 18px;
+  color: var(--kt-lp-muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+/* ── Icones ────────────────────────────────────────────────────────── */
+.kt-lang-ico {
   display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+
+@media (prefers-reduced-motion: reduce) {
+  .kt-lang-panel *,
+  .kt-lang-panel {
+    transition: none !important;
+  }
 }

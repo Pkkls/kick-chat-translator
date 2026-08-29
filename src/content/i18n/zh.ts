@@ -28,6 +28,8 @@ export const zh: Record<string, string> = {
   dropUserBlocked: '该用户在你的屏蔽列表中',
   errTranslateFailed: '翻译失败',
   flagFrom: '来自 $LANG$',
+  langAll: '所有语言',
+  langFavorites: '收藏',
   localDownload: '本地 ($SIZE$)',
   localDownloadTip: '下载设备端模型，获得无限本地翻译',
   localDownloading: '下载中 $PCT$%',

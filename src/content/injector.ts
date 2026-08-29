@@ -1,7 +1,14 @@
 import injectCss from './inject.css?inline';
 import type { TranslationResult } from '~/shared/types';
 import type { Settings } from '~/shared/settings';
-import { sortedLanguages, getLang, langFlag, resolveBrowserLang } from '~/shared/languages';
+import { getLang, langFlag, resolveBrowserLang } from '~/shared/languages';
+import { flagClass } from '~/shared/flags';
+import {
+  makeLangMenu,
+  fillLangMenu,
+  focusLangMenu,
+  placeLangMenu,
+} from './langMenu';
 import { findChatPanel } from './selectors';
 import { msg } from './msg';
 
@@ -263,7 +270,12 @@ function withBadges(text: string, flag: string, provider: string, detectedLang?:
   const frag = document.createDocumentFragment();
   if (flag) {
     const f = document.createElement('span');
-    f.className = 'kt-flag';
+    // Not `kt-flag`: that class now draws a 16x12 flag with a background
+    // gradient, and this badge carries TEXT (langFlag returns an emoji, which
+    // Windows renders as the two letters). Sharing the name made the drawn-flag
+    // rule size and dim this span -- opacity .65 and a 4px side padding leaked
+    // the other way too, onto every real flag.
+    f.className = 'kt-src-flag';
     f.textContent = flag;
     if (detectedLang) {
       f.title = msg('flagFrom', 'from $LANG$', [
@@ -324,6 +336,7 @@ function makeRetry(onRetry: () => void): HTMLElement {
 // ─── Floating bar pinned at top of the chat panel ────────────────────────────
 
 const FLOAT_ID = 'kt-floating-bar';
+const FLOAT_LANG_MENU_ID = 'kt-float-lang-menu';
 
 /**
  * The bar, resolved through the panel that is actually on screen.
@@ -371,30 +384,96 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
   bar.appendChild(label);
 
   // The reading language, on the bar. Changing it used to mean opening a page.
-  const langPick = document.createElement('select');
+  //
+  // This was a native <select> with 43 options. Measured on a live channel, its
+  // dropdown covered 845 of the chat panel's 890 pixels: a native list is drawn
+  // by the system, outside the document, where no max-height and no stylesheet
+  // reach it. The panel it opens now is the extension's own, bounded to six
+  // rows, filterable, and it shows the favourites as flag tiles so the three or
+  // four languages someone actually switches between are one click away.
+  const langHost = document.createElement('div');
+  langHost.className = 'kt-float-lang-host';
+
+  const langPick = document.createElement('button');
+  langPick.type = 'button';
   langPick.className = 'kt-float-lang';
   langPick.title = msg('barLangTip', 'Translate into');
-  // Localised and collated, like every other language menu in the extension:
-  // an English-only list is unreadable to anyone running a translated UI.
-  for (const opt of [
-    { code: 'auto', label: 'Auto' },
-    ...sortedLanguages().map((l) => ({ code: l.code, label: l.name })),
-  ]) {
-    const o = document.createElement('option');
-    o.value = opt.code;
-    o.textContent = opt.label;
-    langPick.appendChild(o);
-  }
-  langPick.value = settings.targetLang;
+  langPick.setAttribute('aria-haspopup', 'listbox');
+  langPick.setAttribute('aria-expanded', 'false');
+
+  const langMenu = makeLangMenu(FLOAT_LANG_MENU_ID);
+  // The bar sits at the top of the chat, so the panel opens downward.
+  langMenu.classList.add('kt-lang-panel-below');
+
+  const paintLang = (code: string): void => {
+    langPick.textContent = '';
+    const fc = code === 'auto' ? undefined : flagClass(code);
+    if (fc) {
+      const flag = document.createElement('span');
+      flag.className = fc;
+      langPick.appendChild(flag);
+    }
+    const tag = document.createElement('span');
+    tag.className = 'kt-float-lang-tag';
+    tag.textContent = code === 'auto' ? 'AUTO' : code.toUpperCase();
+    langPick.appendChild(tag);
+  };
+  paintLang(settings.targetLang);
+
+  const closeLang = (): void => {
+    const wasInside = langMenu.contains(document.activeElement);
+    langMenu.hidden = true;
+    langPick.setAttribute('aria-expanded', 'false');
+    // Focus has to come back to what opened the list, or a keyboard user who
+    // picks a language is dropped on <body> and tabs in from the top again.
+    if (wasInside) langPick.focus();
+  };
+  const openLang = (): void => {
+    fillLangMenu(
+      langMenu,
+      { code: bar.dataset.lang ?? settings.targetLang, favorites: settings.favoriteLangs },
+      {
+        onPick: (code) => {
+          paintLang(code);
+          setBarEnabled(bar, label, bar.dataset.enabled === 'true', code);
+          h.onTargetLang(code);
+        },
+        onAuto: () => {
+          paintLang('auto');
+          setBarEnabled(bar, label, bar.dataset.enabled === 'true', 'auto');
+          h.onTargetLang('auto');
+        },
+      },
+      closeLang,
+    );
+    langMenu.hidden = false;
+    langPick.setAttribute('aria-expanded', 'true');
+    placeLangMenu(langPick, langMenu, 'below');
+    focusLangMenu(langMenu);
+  };
+
   // The bar itself toggles on click, so neither opening nor using the picker
   // may bubble up to it.
-  langPick.addEventListener('click', (e) => e.stopPropagation());
-  langPick.addEventListener('change', (e) => {
+  langPick.addEventListener('click', (e) => {
+    e.preventDefault();
     e.stopPropagation();
-    setBarEnabled(bar, label, bar.dataset.enabled === 'true', langPick.value);
-    h.onTargetLang(langPick.value);
+    if (langMenu.hidden) openLang();
+    else closeLang();
   });
-  bar.appendChild(langPick);
+  // Clicking anywhere else shuts it. The listener drops itself once the bar is
+  // gone, so unmounting does not have to know it exists.
+  const onOutside = (e: MouseEvent): void => {
+    if (!bar.isConnected) {
+      document.removeEventListener('click', onOutside, true);
+      return;
+    }
+    if (!langMenu.hidden && !langHost.contains(e.target as Node)) closeLang();
+  };
+  document.addEventListener('click', onOutside, true);
+
+  langHost.appendChild(langPick);
+  langHost.appendChild(langMenu);
+  bar.appendChild(langHost);
 
   const count = document.createElement('span');
   count.className = 'kt-float-count';
@@ -444,9 +523,9 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
   bar.addEventListener('click', (e) => {
     const t = e.target as Node;
     if (
-      t === opts || t === localChip || t === langPick || t === power ||
+      t === opts || t === localChip || t === langHost || t === power ||
       count.contains(t) || opts.contains(t) || localChip.contains(t) ||
-      langPick.contains(t) || power.contains(t)
+      langHost.contains(t) || power.contains(t)
     ) {
       return;
     }
@@ -494,6 +573,16 @@ export function updateFloatingBar(settings: Settings): void {
   const bar = findBar();
   const label = bar?.querySelector<HTMLElement>('.kt-float-label');
   if (bar && label) setBarEnabled(bar, label, settings.enabled, settings.targetLang);
+  // The language button carries the code and its flag, so a change made
+  // anywhere else (the options page, the chip) has to reach it too.
+  const tag = bar?.querySelector<HTMLElement>('.kt-float-lang-tag');
+  if (tag) {
+    tag.textContent =
+      settings.targetLang === 'auto' ? 'AUTO' : settings.targetLang.toUpperCase();
+    const flag = bar?.querySelector<HTMLElement>('.kt-float-lang > span:first-child');
+    const fc = settings.targetLang === 'auto' ? undefined : flagClass(settings.targetLang);
+    if (flag && flag !== tag) flag.className = fc ?? '';
+  }
 }
 
 /** Show/hide a throttle indicator on the floating bar. */

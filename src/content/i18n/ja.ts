@@ -28,6 +28,8 @@ export const ja: Record<string, string> = {
   dropUserBlocked: 'このユーザーはブロック一覧にあります',
   errTranslateFailed: '翻訳に失敗しました',
   flagFrom: '$LANG$ から',
+  langAll: 'すべての言語',
+  langFavorites: 'お気に入り',
   localDownload: 'ローカル ($SIZE$)',
   localDownloadTip: '端末内モデルをダウンロードして、無制限のローカル翻訳を使う',
   localDownloading: 'ダウンロード中 $PCT$%',

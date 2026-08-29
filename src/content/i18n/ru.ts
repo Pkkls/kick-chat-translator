@@ -29,6 +29,8 @@ export const ru: Record<string, string> = {
   dropUserBlocked: 'этот пользователь в вашем списке блокировки',
   errTranslateFailed: 'Перевод не удался',
   flagFrom: 'с $LANG$',
+  langAll: 'Все языки',
+  langFavorites: 'Избранное',
   localDownload: 'Локально ($SIZE$)',
   localDownloadTip: 'Скачать модель на устройство для безлимитного локального перевода',
   localDownloading: 'Загрузка $PCT$%',

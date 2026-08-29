@@ -22,6 +22,7 @@
  * and it must never be the reason a layout moves.
  */
 import { LANGUAGES, getLang, uiLocale } from '~/shared/languages';
+import { flagClass } from '~/shared/flags';
 import { msg } from './msg';
 
 const CHIP_ID = 'kt-lang-chip';
@@ -196,6 +197,15 @@ function makeMenu(): HTMLElement {
  * someone reading a Japanese interface sees フランス語 but may well type "fr".
  * Accents are folded so "francais" finds "français".
  */
+/**
+ * Columns in the language grid.
+ *
+ * The list was one language per line: 43 rows, 894px tall on a 950px window,
+ * measured on a live channel. Three columns bring the same 43 entries and their
+ * names into roughly a third of that height.
+ */
+export const MENU_COLS = 3;
+
 export function matchesQuery(name: string, code: string, query: string): boolean {
   const fold = (s: string): string =>
     s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -226,6 +236,12 @@ function fillMenu(menu: HTMLElement, state: ChipState, h: ChipHandlers, close: (
   list.id = LIST_ID;
   list.className = 'kt-chip-list';
   list.setAttribute('role', 'listbox');
+  // The column count lives here and only here. The grid reads it, and so does
+  // the arrow-key handler, which has to move a whole row of tiles rather than
+  // one tile. Reading it back off the rendered grid instead would be nicer
+  // until jsdom, which does not resolve `repeat()`, hands the keyboard a
+  // different number from the one on screen.
+  list.style.setProperty('--kt-chip-cols', String(MENU_COLS));
   menu.appendChild(list);
 
   const add = (code: string, name: string, group: string): void => {
@@ -237,15 +253,33 @@ function fillMenu(menu: HTMLElement, state: ChipState, h: ChipHandlers, close: (
     row.setAttribute('role', 'option');
     row.setAttribute('aria-selected', String(code === state.code));
 
+    // The drawn flag, in the slot the ISO code used to fill. Forty-three rows
+    // of two-letter codes are read letter by letter; a colour block is spotted
+    // without reading, which is the whole reason flags.ts exists. The code
+    // stays as the fallback for any language with no flag: `flagClass` returns
+    // undefined rather than pointing at a wrong country, and an empty 34px slot
+    // would break the column alignment.
     const iso = document.createElement('span');
     iso.className = 'kt-chip-iso';
-    iso.textContent = code === 'auto' ? '' : code.toUpperCase();
+    const fc = code === 'auto' ? undefined : flagClass(code);
+    if (fc) {
+      const flag = document.createElement('span');
+      flag.className = fc;
+      iso.appendChild(flag);
+    } else {
+      iso.textContent = code === 'auto' ? '' : code.toUpperCase();
+    }
     row.appendChild(iso);
 
     const label = document.createElement('span');
     label.className = 'kt-chip-name';
     label.textContent = name;
     row.appendChild(label);
+    // A third of the old width per tile, so the longer names ellipsis. The
+    // title gives the full one back on hover, and aria-label keeps it whole for
+    // a screen reader, which reads the accessible name, not the clipped text.
+    row.title = name;
+    row.setAttribute('aria-label', name);
 
     row.dataset.name = name;
     row.addEventListener('click', (e) => {
@@ -387,13 +421,11 @@ function placeMenu(chip: HTMLElement, menu: HTMLElement): void {
   // above the top of the screen, with no way to reach it.
   //
   // So the early return has to answer both questions, not just the first.
-  const flow = menu.getBoundingClientRect();
-  const insideViewport =
-    flow.top >= 0 &&
-    flow.left >= 0 &&
-    flow.right <= window.innerWidth &&
-    flow.bottom <= window.innerHeight;
-  if (!isClipped(chip) && insideViewport) return;
+  // No early return any more. The menu hangs off document.body now, so there is
+  // no flow position next to the chip to fall back on: leaving it unplaced puts
+  // it at the top-left of the page. isClipped stays exported and tested -- the
+  // clipping it detects is still real, it is simply no longer the only reason
+  // to place the menu by hand.
 
   // Seen live on kick.com: this ran off the left of the chat column and over
   // the video player, and off the top of the window, because the only bound it
@@ -519,12 +551,28 @@ export function mountLangChip(composer: HTMLElement, state: ChipState, h: ChipHa
   const onMenuKey = (e: KeyboardEvent): void => {
     const rows = Array.from(menu.querySelectorAll<HTMLElement>('.kt-chip-row:not([hidden])'));
     const i = rows.indexOf(document.activeElement as HTMLElement);
+    // Wrapping move through the visible tiles. Down/Up jump a whole grid row,
+    // Left/Right step one tile, which is what a grid of options is expected to
+    // do. The auto entry spans the full width, so a vertical jump that lands
+    // near it is off by a tile or two; clamping keeps every tile reachable and
+    // that is what matters here.
+    // ponytail: index arithmetic, not true 2D tracking. A real roving
+    // tabindex with a remembered column is the upgrade if the off-by-a-tile
+    // near the auto row ever bites.
+    const go = (delta: number): void => {
+      if (rows.length === 0) return;
+      e.preventDefault();
+      const from = i < 0 ? 0 : i;
+      rows[((from + delta) % rows.length + rows.length) % rows.length]?.focus();
+    };
     if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      rows[(i + 1) % rows.length]?.focus();
+      go(MENU_COLS);
     } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      rows[(i - 1 + rows.length) % rows.length]?.focus();
+      go(-MENU_COLS);
+    } else if (e.key === 'ArrowRight') {
+      go(1);
+    } else if (e.key === 'ArrowLeft') {
+      go(-1);
     } else if (e.key === 'Escape') {
       e.preventDefault();
       close(); // close() brings the focus back
@@ -543,8 +591,18 @@ export function mountLangChip(composer: HTMLElement, state: ChipState, h: ChipHa
   const wrap = document.createElement('div');
   wrap.className = 'kt-chip-host';
   wrap.appendChild(chip);
-  wrap.appendChild(menu);
   insertInRow(host, wrap);
+
+  // The menu goes on the body, not next to the chip.
+  //
+  // Measured on a live channel with the page scrolled: the menu was painted
+  // over at 5 of 9 sampled points -- by a div at z-index 101, and by two
+  // elements at `auto`. It declares 2147483000. A z-index only ranks an element
+  // inside its own stacking context, and inside Kick's action bar no number
+  // wins against a sibling context ranked elsewhere on the page. The compose
+  // panel already sits on the body for the same reason and measures clean.
+  document.body.appendChild(menu);
+  cleanup.push(() => menu.remove());
 
   ui = { chip, menu, host, cleanup };
   updateLangChip(state);

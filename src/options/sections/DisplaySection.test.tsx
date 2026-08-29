@@ -77,9 +77,11 @@ describe('display style preview', () => {
   });
 
   it('shows the source badge only when that setting is on', () => {
-    expect(mount({ showSourceBadge: true }).querySelector('.kt-flag')).not.toBeNull();
+    // .kt-src-flag since the drawn 16x12 flags took the .kt-flag name; this
+    // preview renders through injector.ts, so it follows the badge's real class.
+    expect(mount({ showSourceBadge: true }).querySelector('.kt-src-flag')).not.toBeNull();
     document.body.innerHTML = '';
-    expect(mount({ showSourceBadge: false }).querySelector('.kt-flag')).toBeNull();
+    expect(mount({ showSourceBadge: false }).querySelector('.kt-src-flag')).toBeNull();
   });
 
   // The hide-original rule lives on the document root, so the preview shows what

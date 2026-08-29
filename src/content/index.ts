@@ -31,7 +31,7 @@ import {
 import { extractChannelSlug, fetchChannelLangIso } from './kickApi';
 import { localEngine } from './localEngine';
 import { logPlatform, refresh7TV } from './platform';
-import { langFlag } from '~/shared/languages';
+import { langFlag, withFavorite } from '~/shared/languages';
 import { msg as localised, setContentLocale } from './msg';
 
 const log = rootLogger.child('content');
@@ -123,7 +123,19 @@ async function main(): Promise<void> {
         }
         mountFloatingBar(host, settings, {
           onToggle: (enabled) => void patchSettings({ enabled }),
-          onTargetLang: (targetLang) => void patchSettings({ targetLang }),
+          // Picking on the bar seeds the favourites, the same way picking in
+          // the composer already did. That is the whole configuration step for
+          // the flag tiles: the three or four languages someone actually
+          // switches between rise to the top by being used, and nobody has to
+          // go and declare them on a settings page.
+          onTargetLang: (targetLang) =>
+            void patchSettings({
+              targetLang,
+              favoriteLangs:
+                targetLang === 'auto'
+                  ? settings.favoriteLangs
+                  : withFavorite(settings.favoriteLangs, targetLang),
+            }),
           onOpenOptions: () => void chrome.runtime.sendMessage({ type: 'open.options' }),
           onEnableLocal: () => {
             const pairs = localEngine

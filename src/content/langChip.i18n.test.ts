@@ -109,13 +109,23 @@ describe('menu rows', () => {
   /**
    * Two of the 42 codes carry a region: pt-br and zh-tw. At 22px the column
    * could not hold five characters, so those two wrapped onto a second line and
-   * their rows came out half again as tall as their neighbours. Measured after:
-   * all 43 rows are 30px.
+   * their rows came out half again as tall as their neighbours.
+   *
+   * The column holds a drawn 16x12 flag now, not text: pt-br draws .kt-flag-br
+   * and zh-tw draws .kt-flag-tw, so neither renders a character. The width this
+   * asks for is therefore the flag's, and `nowrap` stays because the ISO code
+   * is still the fallback for a language with no flag.
+   *
+   * What used to be guarded here -- a five-character code meeting a slot too
+   * narrow for it -- is guarded upstream now: flags.test.ts asserts the table
+   * covers every offered language, so a language reaching this fallback fails
+   * there first. Uniform row height is asserted where it can actually be seen,
+   * on the rendered menu, by scratchpad/harness/lang-menu-live.mjs.
    */
-  it('gives the code column room for the longest code, and forbids wrapping', () => {
+  it('gives the flag column room for the flag, and forbids wrapping', () => {
     const iso = rule('.kt-chip-iso');
     const width = Number(/width:\s*(\d+)px/.exec(iso)?.[1] ?? 0);
-    expect(width).toBeGreaterThanOrEqual(34);
+    expect(width).toBeGreaterThanOrEqual(16);
     expect(iso).toMatch(/white-space:\s*nowrap/);
   });
 

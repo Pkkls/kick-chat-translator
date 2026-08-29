@@ -333,8 +333,14 @@ describe('injector artifacts', () => {
     const ruleFor = (css: string, selector: string) =>
       new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{([^}]*)\\}`).exec(css)?.[1] ?? '';
 
-    it('does so on the chat bar picker', () => {
-      expect(ruleFor(injectCss, '.kt-float-lang')).toMatch(/color-scheme:\s*dark/);
+    // The bar picker is no longer a <select>, so there is no browser painted
+    // list left to declare a scheme for. Measured on a live channel, that list
+    // covered 845 of the chat panel's 890 pixels and nothing in CSS could reach
+    // it. What replaced it is painted here, so this asserts the replacement
+    // rather than the workaround it made unnecessary.
+    it('opens a panel this stylesheet paints, not a browser list', () => {
+      expect(ruleFor(injectCss, '.kt-float-lang')).not.toMatch(/color-scheme/);
+      expect(ruleFor(injectCss, '.kt-lang-panel')).toMatch(/background:/);
     });
 
     // The bar is the only one of the three with a light theme, so there the
@@ -347,7 +353,10 @@ describe('injector artifacts', () => {
     // dark chat was handed the light palette on a dark ground.
     it('follows the light theme on the chat bar rather than freezing dark', () => {
       expect(ruleFor(injectCss, "html[data-kt-scheme='light'] .kt-float-lang")).toMatch(
-        /color-scheme:\s*light/,
+        /background:/,
+      );
+      expect(ruleFor(injectCss, "html[data-kt-scheme='light'] .kt-lang-panel")).toMatch(
+        /--kt-lp-surface/,
       );
     });
 
@@ -367,7 +376,6 @@ describe('injector artifacts', () => {
     // exactly that; it was reasoned from the stylesheet and the screenshots
     // disproved it.
     it.each([
-      ['src/content/inject.css', '.kt-float-lang option'],
       ['src/options/styles.css', 'select option'],
       ['src/popup/styles.css', 'select option'],
     ])('names the option colours in %s', (path, selector) => {
@@ -407,17 +415,46 @@ describe('injector artifacts', () => {
 
     it('offers the reading language, starting on the one in use', () => {
       const bar = mount(handlers(), { targetLang: 'fr' });
-      const pick = bar.querySelector<HTMLSelectElement>('.kt-float-lang');
+      const pick = bar.querySelector<HTMLElement>('.kt-float-lang');
       expect(pick).not.toBeNull();
-      expect(pick?.value).toBe('fr');
+      expect(pick?.querySelector('.kt-float-lang-tag')?.textContent).toBe('FR');
     });
 
     it('reports a new reading language', () => {
       const h = handlers();
       const bar = mount(h);
-      const pick = bar.querySelector<HTMLSelectElement>('.kt-float-lang')!;
-      pick.value = 'ja';
-      pick.dispatchEvent(new Event('change', { bubbles: true }));
+      const pick = bar.querySelector<HTMLElement>('.kt-float-lang')!;
+      pick.click();
+      const row = bar.querySelector<HTMLElement>('.kt-lang-row[data-code="ja"]');
+      expect(row).not.toBeNull();
+      row!.click();
+      expect(h.onTargetLang).toHaveBeenCalledWith('ja');
+      // The button has to say what was picked, or the bar disagrees with itself.
+      expect(pick.querySelector('.kt-float-lang-tag')?.textContent).toBe('JA');
+    });
+
+    // The panel is the whole point of the change: bounded, filterable, and it
+    // shuts after a pick instead of staying over the chat.
+    it('shuts the panel once a language is picked', () => {
+      const h = handlers();
+      const bar = mount(h);
+      const pick = bar.querySelector<HTMLElement>('.kt-float-lang')!;
+      pick.click();
+      const panel = bar.querySelector<HTMLElement>('.kt-lang-panel')!;
+      expect(panel.hidden).toBe(false);
+      bar.querySelector<HTMLElement>('.kt-lang-row[data-code="ja"]')!.click();
+      expect(panel.hidden).toBe(true);
+    });
+
+    // The favourites are what the streamer switching between three or four
+    // languages actually clicks, so they have to be on top and reachable.
+    it('puts the favourites above the list', () => {
+      const h = handlers();
+      const bar = mount(h, { favoriteLangs: ['ja', 'tr'] });
+      bar.querySelector<HTMLElement>('.kt-float-lang')!.click();
+      const tiles = [...bar.querySelectorAll<HTMLElement>('.kt-lang-fav')];
+      expect(tiles.map((t) => t.textContent)).toEqual(['JA', 'TR']);
+      tiles[0]!.click();
       expect(h.onTargetLang).toHaveBeenCalledWith('ja');
     });
 
