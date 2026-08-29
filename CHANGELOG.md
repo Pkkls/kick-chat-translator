@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.1] - 2026-08-30
+
+### Fixed
+
+- **The language list opens on a plain click.** It was reachable through a caret
+  measuring 10x6 CSS pixels on a chip of 45x24, where WCAG 2.5.8 asks 24x24 of a
+  target: 60 square pixels offered against 576 due. Miss it and the click did
+  something else entirely, toggling between the channel's language and the first
+  favourite. The other two ways in were a 400ms press-and-hold, which no pointer
+  advertises, and the Down arrow. One click opens the list now, wherever on the
+  chip it lands, and the hold is gone with it. The caret stays as the sign that
+  a list exists rather than as a target of its own.
+
+  No harness had caught this. With no favourite stored the old code opened the
+  list on any click, and a throwaway profile has no favourite, so every
+  automated pass measured the easy path and never the one a user reaches after
+  their first language pick.
+
+### Changed
+
+- **Russian shows Russia's flag.** It showed Ukraine's. A flag in this list says
+  which language a row is and nothing else, which is how the other 41 rows are
+  already read.
+
 ## [2.9.0] - 2026-08-29
 
 ### Changed

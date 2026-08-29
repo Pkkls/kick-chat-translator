@@ -30,7 +30,16 @@ pick a language. (You still can, in settings.)
 
 ---
 
-## What's new in [2.9.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+## What's new in [2.9.1](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+
+**The language list opens on a plain click.** It sat behind a caret of 10x6 CSS pixels on a 45x24 chip,
+where WCAG asks 24x24 of a target, and missing it did something else: the click toggled between the
+channel's language and your first favourite. The two other ways in were a 400ms press-and-hold and the Down
+arrow. One click opens the list now, wherever on the chip it lands.
+
+**Russian shows Russia's flag.** A flag in that list says which language a row is and nothing else.
+
+## What's new in [2.9.0](https://github.com/Pkkls/kick-chat-translator/releases/tag/v2.9.0)
 
 **The language list is a grid of flags.** It listed 43 languages one per line as two-letter codes, 894px
 tall on a 950px window, so it ran the full height of the screen and each entry had to be read letter by
