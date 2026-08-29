@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.2] - 2026-08-30
+
+### Fixed
+
+- **The bar's language panel showed six entries out of forty.** Measured on a
+  live channel: 1200px of list inside a panel of 236x281, so five sixths of it
+  was a scroll. Each row also spent 38px of its 218 on an ISO code column, 17
+  percent of the width, repeating what the flag beside it and the name after it
+  already said, and the favourite tiles printed that code again under the flag
+  at 9px. The code is gone from both, which is what frees the width for three
+  columns; the tiles give the room to the flag instead, 20x15 to 28x21, and keep
+  the full language name as their accessible name and tooltip. Twenty-five rows
+  are on screen now instead of six, and the list is 433px instead of 1200.
+
+  It is the same shape and width as the chip's menu on purpose. Two lists of the
+  same 42 languages had two different looks, which is a thing to fix and not a
+  thing to keep.
+
+- **Arrow keys in that panel follow the grid.** Down and Up crossed one entry
+  where the layout now has three across. They move a whole grid row, Left and
+  Right move one tile, and the column count is set in one place that both the
+  grid and the keys read.
+
 ## [2.9.1] - 2026-08-30
 
 ### Fixed

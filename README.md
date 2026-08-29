@@ -30,7 +30,15 @@ pick a language. (You still can, in settings.)
 
 ---
 
-## What's new in [2.9.1](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+## What's new in [2.9.2](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+
+**The bar's language panel showed six entries out of forty.** 1200px of list inside a panel 281px tall, so
+most of it was a scroll, and every row spent 17% of its width on an ISO code repeating what the flag and
+the name already said. The code is gone, the list runs in three columns, and twenty-five entries are on
+screen instead of six. Same shape as the chip's menu, because two lists of the same 42 languages should not
+look like two different products.
+
+## What's new in [2.9.1](https://github.com/Pkkls/kick-chat-translator/releases/tag/v2.9.1)
 
 **The language list opens on a plain click.** It sat behind a caret of 10x6 CSS pixels on a 45x24 chip,
 where WCAG asks 24x24 of a target, and missing it did something else: the click toggled between the
