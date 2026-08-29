@@ -17,6 +17,15 @@
  */
 import { LANGUAGES, getLang, uiLocale } from '~/shared/languages';
 import { flagClass } from '~/shared/flags';
+
+/**
+ * Columns in the panel's language grid.
+ *
+ * One column showed 6 rows of 40, measured on a live channel: 1200px of list
+ * inside a 281px panel. Three columns, the same as the chip's menu, so the two
+ * lists of the same 42 languages stop looking like two different products.
+ */
+export const PANEL_COLS = 3;
 import { msg } from './msg';
 
 export interface LangMenuState {
@@ -198,6 +207,10 @@ export function fillLangMenu(
       tile.tabIndex = -1;
       tile.setAttribute('aria-selected', String(code === state.code));
       tile.setAttribute('aria-label', name);
+      // The rows carry their code; the tiles did not, which left them
+      // identifiable only by a visible label. Now that the flag is the whole
+      // tile, that label is gone and the code is how anything addresses one.
+      tile.dataset.code = code;
 
       const fc = flagClass(code);
       if (fc) {
@@ -205,10 +218,13 @@ export function fillLangMenu(
         flag.className = fc;
         tile.appendChild(flag);
       }
-      const tag = document.createElement('span');
-      tag.className = 'kt-lang-tag';
-      tag.textContent = code.toUpperCase();
-      tile.appendChild(tag);
+      // No code under the flag either. It was rendering at 9px in a 73x44
+      // tile, which is a label nobody reads, and the tile already carries the
+      // language's full name as its accessible name and its tooltip. The flag
+      // gets the room instead, which is what the tile is aimed at in the first
+      // place. zh and zh-tw draw two different flags, so the pair that most
+      // needed telling apart still is.
+      tile.title = name;
 
       tile.addEventListener('click', (e) => {
         e.preventDefault();
@@ -236,6 +252,9 @@ export function fillLangMenu(
   list.tabIndex = 0;
   list.setAttribute('role', 'group');
   list.setAttribute('aria-label', msg('langAll', 'All languages'));
+  // The column count lives here and the grid reads it, so the arrow keys and
+  // the layout cannot drift apart.
+  list.style.setProperty('--kt-lp-cols', String(PANEL_COLS));
   box.appendChild(list);
 
   const addRow = (code: string, name: string, isAuto: boolean): void => {
@@ -246,6 +265,11 @@ export function fillLangMenu(
     row.setAttribute('aria-selected', String(code === state.code));
     row.dataset.code = code;
     row.dataset.name = name;
+    // In a third of the old width the longest label runs out of room: measured
+    // across all 40 rows, exactly one does, "Brazilian Portuguese". It keeps
+    // its full text in the DOM and ellipsises on screen, so a screen reader
+    // still reads it whole; the title gives it back to a pointer.
+    row.title = name;
 
     if (isAuto) {
       const globe = document.createElement('span');
@@ -266,11 +290,10 @@ export function fillLangMenu(
       }
     }
 
-    const iso = document.createElement('span');
-    iso.className = 'kt-lang-iso';
-    iso.textContent = isAuto ? 'AUTO' : code.toUpperCase();
-    row.appendChild(iso);
-
+    // No ISO code column. Measured on a live channel: it took 38px of a 218px
+    // row, 17 percent of the width, to repeat what the flag beside it and the
+    // name after it already say. Three encodings of one fact is what made the
+    // row cramped, and the width it frees is what lets the list run in columns.
     const label = document.createElement('span');
     label.className = 'kt-lang-name';
     label.textContent = name;
@@ -362,14 +385,27 @@ export function fillLangMenu(
     const here = document.activeElement as HTMLElement | null;
     const onRow = here?.classList.contains('kt-lang-row') || here?.classList.contains('kt-lang-fav');
     if (!onRow) return;
+    // The list runs in columns now, so Down and Up have to cross a whole grid
+    // row rather than land on the next tile along. The favourites strip is a
+    // single flex row, so a step of one is right there, and Left/Right step one
+    // everywhere. PANEL_COLS is the same number the grid reads, on purpose:
+    // reading it back off the rendered grid would disagree with it under jsdom,
+    // which does not resolve repeat().
+    const pas = here!.classList.contains('kt-lang-row') ? PANEL_COLS : 1;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      move(here!, 1);
+      move(here!, pas);
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       const v = visible();
-      if (v.indexOf(here!) === 0) search.focus();
-      else move(here!, -1);
+      if (v.indexOf(here!) < pas) search.focus();
+      else move(here!, -pas);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      move(here!, 1);
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      move(here!, -1);
     } else if (e.key === 'Home') {
       e.preventDefault();
       visible()[0]?.focus();

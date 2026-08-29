@@ -1183,9 +1183,13 @@ html[data-kt-scheme='light'] .kt-chip-empty {
 
   display: flex;
   flex-direction: column;
-  /* Un panneau qui ne peut pas retrecir est un defaut : plafonner, pas figer. */
+  /* Un panneau qui ne peut pas retrecir est un defaut : plafonner, pas figer.
+   * 236px pour une colonne unique montraient 6 rangees sur 40, mesure en direct
+   * sur une chaine : 1200px de liste dans un panneau de 281. Trois colonnes et
+   * la meme largeur que le menu de la puce, pour que les deux listes des memes
+   * 42 langues cessent d'avoir deux allures. */
   inline-size: 100%;
-  max-inline-size: 236px;
+  max-inline-size: min(408px, calc(100vw - 16px));
   padding: 4px;
   border-radius: 8px;
   /* Pas d'ombre portee : Kick n'en met sur aucune surface. Le panneau se
@@ -1294,17 +1298,11 @@ html[data-kt-scheme='light'] .kt-lang-panel {
   transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
 }
 
+/* Le drapeau seul, agrandi : le code a 9px qui l'accompagnait ne se lisait pas
+   et repetait ce que le nom accessible de la tuile dit deja. */
 .kt-lang-fav .kt-flag {
-  inline-size: 20px;
-  block-size: 15px;
-}
-
-.kt-lang-fav .kt-lang-tag {
-  font-family: var(--kt-lp-mono);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  line-height: 1;
+  inline-size: 28px;
+  block-size: 21px;
 }
 
 .kt-lang-fav:hover {
@@ -1351,6 +1349,13 @@ html[data-kt-scheme='light'] .kt-lang-panel {
   right: auto;
 }
 
+/* La rangee auto est un mode, pas une langue, et le filet ne veut dire quelque
+   chose que sur toute la largeur : ni l'un ni l'autre n'est une tuile. */
+.kt-lang-row[data-code='auto'],
+.kt-lang-sep {
+  grid-column: 1 / -1;
+}
+
 .kt-lang-sep {
   block-size: 1px;
   margin: 2px 2px 4px;
@@ -1358,10 +1363,14 @@ html[data-kt-scheme='light'] .kt-lang-panel {
 }
 
 /* ── La liste ──────────────────────────────────────────────────────── */
-/* Bornee en rangees entieres, pas en pixels devines : six rangees de 30px.
- * Une hauteur qui coupe une rangee en deux annonce mal qu'il y a une suite. */
+/* Bornee en rangees entieres, pas en pixels devines. Une hauteur qui coupe une
+ * rangee en deux annonce mal qu'il y a une suite. */
 .kt-lang-list {
-  max-block-size: 180px;
+  display: grid;
+  grid-template-columns: repeat(var(--kt-lp-cols, 3), minmax(0, 1fr));
+  gap: 1px;
+  /* Bornee en rangees entieres : dix de 30px. */
+  max-block-size: 300px;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -1400,21 +1409,6 @@ html[data-kt-scheme='light'] .kt-lang-panel {
 
 .kt-lang-row[aria-selected='true'] {
   background: var(--kt-lp-accent-bed);
-}
-
-.kt-lang-row[aria-selected='true'] .kt-lang-iso {
-  color: var(--kt-lp-accent);
-}
-
-.kt-lang-iso {
-  flex-shrink: 0;
-  /* 38px tient ZH-TW et PT-BR sans que la colonne des noms se decale. */
-  inline-size: 38px;
-  font-family: var(--kt-lp-mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  color: var(--kt-lp-muted);
 }
 
 .kt-lang-name {

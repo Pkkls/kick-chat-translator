@@ -453,7 +453,12 @@ describe('injector artifacts', () => {
       const bar = mount(h, { favoriteLangs: ['ja', 'tr'] });
       bar.querySelector<HTMLElement>('.kt-float-lang')!.click();
       const tiles = [...bar.querySelectorAll<HTMLElement>('.kt-lang-fav')];
-      expect(tiles.map((t) => t.textContent)).toEqual(['JA', 'TR']);
+      // By code, not by visible text: the tile used to print the ISO code under
+      // the flag at 9px, which nobody read and which repeated the accessible
+      // name. The flag has that room now, so the assertion follows the identity
+      // rather than the label that carried it.
+      expect(tiles.map((t) => t.dataset.code)).toEqual(['ja', 'tr']);
+      expect(tiles.map((t) => t.getAttribute('aria-label'))).not.toContain(null);
       tiles[0]!.click();
       expect(h.onTargetLang).toHaveBeenCalledWith('ja');
     });
