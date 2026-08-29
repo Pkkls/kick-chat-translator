@@ -1,7 +1,7 @@
 # Chrome Web Store listing
 
 Plain text. The store renders no markdown, so the CAPS headers are the only
-structure available. Fact-checked against manifest 2.9.0, README, CHANGELOG.
+structure available. Fact-checked against manifest 2.9.1, README, CHANGELOG.
 
 ## Short summary (132 char limit)
 
@@ -9,9 +9,9 @@ Kick chat in a language you don't read? It gets translated under each message, l
 
 ## Description (EN)
 
-NEW IN 2.9.0
+NEW IN 2.9.1
 
-The language list is a grid of flags instead of a column of two-letter codes. It used to run the full height of the screen, 43 entries one per line, each of them read letter by letter; three columns of drawn flags fit the same list into 42 percent less height. The flags are drawn in CSS rather than shipped as emoji, because flag emoji do not render on Windows, where the system falls back to the very letters being replaced. And Kick's own interface no longer paints over that menu, which it did at five of nine sampled points once the page was scrolled.
+The language list is a grid of flags instead of a column of two-letter codes, and one click opens it. It used to run the full height of the screen, 43 entries one per line, each of them read letter by letter, and it sat behind a caret of 10 by 6 pixels on a chip of 45 by 24: miss that and the click did something else entirely. Three columns of drawn flags fit the same list into 42 percent less height, a click anywhere on the chip opens it, and Kick's own interface no longer paints over it. The flags are drawn in CSS rather than shipped as emoji, because flag emoji do not render on Windows, where the system falls back to the very letters being replaced.
 
 Open a Kick stream where the chat is in a language you don't read. Each message gets its translation right underneath, as it comes in. A green bar at the top of chat tells you it's running.
 
@@ -41,9 +41,9 @@ Open source, MIT: github.com/Pkkls/kick-chat-translator
 
 ## Description (FR)
 
-NOUVEAU EN 2.9.0
+NOUVEAU EN 2.9.1
 
-La liste des langues est une grille de drapeaux, au lieu d'une colonne de codes a deux lettres. Elle occupait toute la hauteur de l'ecran, 43 entrees une par ligne, chacune a dechiffrer lettre par lettre ; trois colonnes de drapeaux dessines y logent la meme liste avec 42 pour cent de hauteur en moins. Les drapeaux sont dessines en CSS et non livres en emoji, parce que les emoji de drapeaux ne s'affichent pas sous Windows : le systeme y retombe sur les deux lettres qu'il s'agissait justement de remplacer. Et l'interface de Kick ne passe plus par-dessus ce menu, ce qu'elle faisait sur cinq points sur neuf une fois la page defilee.
+La liste des langues est une grille de drapeaux au lieu d'une colonne de codes a deux lettres, et un clic l'ouvre. Elle occupait toute la hauteur de l'ecran, 43 entrees une par ligne, chacune a dechiffrer lettre par lettre, et elle se cachait derriere un chevron de 10 sur 6 pixels dans une puce de 45 sur 24 : a cote, le clic faisait tout autre chose. Trois colonnes de drapeaux dessines y logent la meme liste avec 42 pour cent de hauteur en moins, un clic n'importe ou sur la puce l'ouvre, et l'interface de Kick ne passe plus par-dessus. Les drapeaux sont dessines en CSS et non livres en emoji, parce que les emoji de drapeaux ne s'affichent pas sous Windows : le systeme y retombe sur les deux lettres qu'il s'agissait justement de remplacer.
 
 Tu ouvres un stream Kick où le chat est dans une langue que tu ne lis pas. Chaque message reçoit sa traduction juste en dessous, au fil de l'arrivée. Une barre verte en haut du chat indique que ça tourne.
 
@@ -79,9 +79,9 @@ the Turkish store. No native reader was available; verified by round-tripping ea
 
 Short summary: Okuyamadığın bir dilde Kick sohbeti mi? Her mesajın altına canlı çeviri gelir, yanıtların da kanalın dilinde gider.
 
-2.9.0 İLE GELENLER
+2.9.1 İLE GELENLER
 
-Dil listesi artık iki harfli kodlardan oluşan bir sütun değil, bayraklardan oluşan bir ızgara. Eskiden ekranın tüm yüksekliğini kaplıyordu: her satırda bir tane olmak üzere 43 giriş, her biri harf harf okunuyordu. Üç sütun hâlinde çizilmiş bayraklar aynı listeyi yüzde 42 daha az yükseklikte gösteriyor. Bayraklar emoji olarak değil CSS ile çiziliyor, çünkü bayrak emojileri Windows'ta görünmüyor: sistem tam da değiştirmek istediğimiz iki harfe geri dönüyor. Ayrıca Kick'in kendi arayüzü artık bu menünün üzerine çizmiyor.
+Dil listesi artık iki harfli kodlardan oluşan bir sütun değil, bayraklardan oluşan bir ızgara, ve tek tıklamayla açılıyor. Eskiden ekranın tüm yüksekliğini kaplıyordu: her satırda bir tane olmak üzere 43 giriş, her biri harf harf okunuyordu, ve liste 45 x 24 boyutundaki bir düğmenin içindeki 10 x 6 piksellik bir okun arkasındaydı; ıskalarsanız tıklama bambaşka bir şey yapıyordu. Üç sütun hâlinde çizilmiş bayraklar aynı listeyi yüzde 42 daha az yükseklikte gösteriyor, düğmenin herhangi bir yerine tıklamak listeyi açıyor ve Kick'in kendi arayüzü artık listenin üzerine çizmiyor. Bayraklar emoji olarak değil CSS ile çiziliyor, çünkü bayrak emojileri Windows'ta görünmüyor: sistem tam da değiştirmek istediğimiz iki harfe geri dönüyor.
 
 Okuyamadığın bir dilde sohbet akan bir Kick yayını aç. Her mesaj, geldiği anda, hemen altında çevirisini alır. Sohbetin üstündeki yeşil çubuk çalıştığını gösterir.
 
@@ -117,9 +117,9 @@ and handles right-to-left text. No native reader was available; verified by roun
 
 Short summary: دردشة Kick بلغة لا تقرأها؟ تظهر الترجمة أسفل كل رسالة مباشرةً، وردودك تخرج بلغة القناة.
 
-الجديد في 2.9.0
+الجديد في 2.9.1
 
-صارت قائمة اللغات شبكة من الأعلام بدل عمود من رموز من حرفين. كانت تشغل ارتفاع الشاشة كله، بـ 43 مدخلاً في سطر لكل منها، ويُقرأ كل واحد حرفاً حرفاً. ثلاثة أعمدة من الأعلام المرسومة تضع القائمة نفسها في ارتفاع أقل بنسبة 42 بالمئة. والأعلام مرسومة بـ CSS لا مُرسلة كرموز تعبيرية، لأن رموز الأعلام لا تظهر على ويندوز، فيعود النظام إلى الحرفين اللذين أردنا استبدالهما. كما أن واجهة Kick نفسها لم تعد ترسم فوق هذه القائمة.
+صارت قائمة اللغات شبكة من الأعلام بدل عمود من رموز من حرفين، وتُفتح بنقرة واحدة. كانت تشغل ارتفاع الشاشة كله، بـ 43 مدخلاً في سطر لكل منها، ويُقرأ كل واحد حرفاً حرفاً، وكانت خلف سهم بمقاس 10 في 6 بكسل داخل زر بمقاس 45 في 24: وإن أخطأته فعلت النقرة شيئاً آخر تماماً. ثلاثة أعمدة من الأعلام المرسومة تضع القائمة نفسها في ارتفاع أقل بنسبة 42 بالمئة، والنقر في أي مكان من الزر يفتحها، وواجهة Kick نفسها لم تعد ترسم فوقها. والأعلام مرسومة بـ CSS لا مُرسلة كرموز تعبيرية، لأن رموز الأعلام لا تظهر على ويندوز، فيعود النظام إلى الحرفين اللذين أردنا استبدالهما.
 
 افتح بثاً على Kick تجري دردشته بلغة لا تقرأها. تحصل كل رسالة على ترجمتها أسفلها مباشرةً، فور وصولها. الشريط الأخضر أعلى الدردشة يخبرك أن الإضافة تعمل.
 
@@ -149,7 +149,10 @@ Short summary: دردشة Kick بلغة لا تقرأها؟ تظهر الترج�
 
 ## manifest.json description field (132 char limit)
 
-Current value has an em dash and the meaningless word "pro". Replace with:
+Shipped value, already in public/_locales/en. It used to carry an em dash and
+the word "pro", which said nothing; this replaced it and the note asking for the
+replacement outlived the change. The ten localised values run 35 to 98
+characters, all inside the 132 the field allows.
 
 Translates Kick chat into your language as it scrolls, and your replies into the channel's.
 
