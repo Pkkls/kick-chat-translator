@@ -79,6 +79,11 @@ const GATES = [
   // Couverture propre, mesuree : couper `pipeline.updateSettings` laisse les 621
   // tests verts et fait rougir cette porte.
   ['translate-reglages', 'node', ['scratchpad/harness/translate-offline.mjs', '--reglages']],
+  // Le second contrat DOM, celui d'une page ou 7TV rend le chat. Un test
+  // unitaire couvre deja la preference elle-meme ; ce que cette porte ajoute est
+  // la chaine complete sur une rangee dont le texte n'existe que dans les
+  // jetons 7TV.
+  ['translate-seventv', 'node', ['scratchpad/harness/translate-offline.mjs', '--seventv']],
   ['audit-strings', 'python', ['scratchpad/audit_content_strings.py']],
   ['audit-da', 'python', ['scratchpad/audit_da.py']],
   ['audit-rtl', 'python', ['scratchpad/audit_rtl.py']],

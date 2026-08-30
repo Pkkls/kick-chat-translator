@@ -124,6 +124,24 @@ const SURVOL = process.argv.includes('--survol');
  * `google.ts` pose : on lit la langue reellement demandee, pas un affichage.
  */
 const REGLAGES = process.argv.includes('--reglages');
+
+/**
+ * Septieme mode, `--seventv`. 7TV rend le chat a sa facon et le message n'est
+ * plus dans les `span.font-normal` de Kick mais dans des
+ * `span.seventv-text-token` ; `extractMessageText` les lit en premier. C'est un
+ * second contrat DOM complet, celui d'une extension tierce tres repandue, et
+ * rien hors ligne ne l'exercait.
+ *
+ * Ce mode n'essaie PAS de reproduire le doublon natif+7TV que cite le
+ * commentaire de `extractMessageText`. Deux formes de rangee ont ete tentees et
+ * aucune ne le produit : `joinTexts` ne prend que les noeuds texte d'un
+ * element, donc un span qui ne contient que des jetons ne rend que des espaces.
+ * La forme reelle du doublon demande la page de quelqu'un qui a 7TV installe, et
+ * inventer une troisieme forme ne prouverait que mon imagination. Ce qui est
+ * asserte ici est ce qui se verifie : une rangee dont le texte n'est atteignable
+ * que par les jetons est bien envoyee au moteur, une fois, et traduite.
+ */
+const SEVENTV = process.argv.includes('--seventv');
 const RANGEES = 8;
 
 // Le chat de Kick reduit a son contrat, repris de `observer.test.ts` qui est
@@ -173,7 +191,9 @@ const KICK = /^https?:\/\/(www\.)?kick\.com\//;
 
 await ctx.route('**://translate.googleapis.com/**', async (route) => {
   vuParLeMoteur.push('google');
-  ciblesDemandees.push(new URL(route.request().url()).searchParams.get('tl') ?? '?');
+  ciblesDemandees.push(
+    `${new URL(route.request().url()).searchParams.get('tl') ?? '?'}|${new URL(route.request().url()).searchParams.get('q') ?? ''}`,
+  );
   if (BASCULE) {
     // 429 est ce que `google.ts` lit comme `rate_limit`, la raison pour laquelle
     // un lecteur reel bascule : le quota gratuit qui tombe en pleine diffusion.
@@ -316,7 +336,9 @@ async function lireRangees() {
     const cible = document.querySelector('#channel-chatroom [data-which="messages"]');
     return [...cible.querySelectorAll('div[data-index]')].map((r) => ({
       index: r.getAttribute('data-index'),
-      source: r.querySelector('.font-normal')?.textContent ?? '',
+      source:
+        r.querySelector('.font-normal')?.textContent ??
+        [...r.querySelectorAll('.seventv-text-token')].map((t) => t.textContent).join(' '),
       traductions: [...r.querySelectorAll(sel)].map((t) => t.textContent ?? ''),
     }));
   }, SEL_TR);
@@ -344,6 +366,39 @@ if (RECYCLAGE) {
   await page.waitForTimeout(6000);
   rangees = await lireRangees();
   traductionVue = rangees.find((r) => r.traductions.length)?.traductions[0] ?? null;
+} else if (SEVENTV) {
+  // Une rangee rendue par 7TV : le texte ne vit que dans ses jetons, il n'y a
+  // aucun `span.font-normal` a lire.
+  const TEXTE = 'hola amigo que tal todo bien';
+  await page.evaluate((texte) => {
+    const cible = document.querySelector('#channel-chatroom [data-which="messages"]');
+    const ligne = document.createElement('div');
+    ligne.setAttribute('data-index', '7');
+    ligne.innerHTML =
+      '<div class="w-full min-w-0 shrink-0">' +
+      '<button class="font-bold" style="color: rgb(1,2,3)">alguien</button>' +
+      texte
+        .split(' ')
+        .map((mot) => `<span class="seventv-text-token">${mot}</span>`)
+        .join(' ') +
+      '</div>';
+    cible.appendChild(ligne);
+  }, TEXTE);
+  await page.waitForTimeout(10000);
+  rangees = await lireRangees();
+
+  const demandes = ciblesDemandees.filter((c) => c.includes(TEXTE));
+  const double = ciblesDemandees.some((c) => {
+    const premier = c.indexOf(TEXTE);
+    return premier !== -1 && c.indexOf(TEXTE, premier + 1) !== -1;
+  });
+  console.log(`7tv              ${demandes.length} requete(s) portant ce message, texte double : ${double}`);
+  if (demandes.length === 0)
+    fails0.push('le message 7TV n a jamais ete envoye au moteur : le contrat 7TV n est pas lu');
+  if (double) fails0.push('le texte part en double dans une meme requete');
+  const ligne7tv = rangees.find((r) => r.index === '7');
+  if (!ligne7tv?.traductions.length) fails0.push('aucune traduction sous le message 7TV');
+  traductionVue = ligne7tv?.traductions[0] ?? null;
 } else if (REGLAGES) {
   await poserRangees([SOURCE]);
   // Attendre LA traduction de ce message, pas une traduction quelconque :
@@ -380,10 +435,12 @@ if (RECYCLAGE) {
   await page.waitForTimeout(10000);
   rangees = await lireRangees();
   const apres = ciblesDemandees.slice(avant.length);
-  console.log(`reglages         cibles avant [${avant.join(',')}], apres [${apres.join(',')}]`);
+  console.log(
+    `reglages         cibles avant [${avant.map((c) => c.split('|')[0]).join(',')}], apres [${apres.map((c) => c.split('|')[0]).join(',')}]`,
+  );
   if (apres.length === 0)
     fails0.push('apres le changement de langue, plus rien n a ete demande au moteur');
-  else if (!apres.every((c) => c === 'fr'))
+  else if (!apres.every((c) => c.split('|')[0] === 'fr'))
     fails0.push(
       `la nouvelle langue cible n a pas atteint la page : le moteur a recu [${apres.join(',')}] au lieu de fr`,
     );
@@ -525,4 +582,4 @@ if (fails.length) {
   console.error('FAIL: ' + fails.join(' ; '));
   process.exit(1);
 }
-console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}${NAVIGATION ? ' --navigation' : ''}${SURVOL ? ' --survol' : ''}${REGLAGES ? ' --reglages' : ''}: OK`);
+console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}${NAVIGATION ? ' --navigation' : ''}${SURVOL ? ' --survol' : ''}${REGLAGES ? ' --reglages' : ''}${SEVENTV ? ' --seventv' : ''}: OK`);

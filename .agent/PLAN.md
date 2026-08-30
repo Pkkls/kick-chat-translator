@@ -203,6 +203,16 @@ reads dist/, so it serialises behind any build. D touches no code.
   gitignored `scratchpad/uxkit.path`, then the repository's own
   `node_modules`, and exits 2 with the three ways to fix it when none is there.
   Exit 2 rather than 1 on purpose: a missing prerequisite is not a failed gate.
+- [x] **The 7TV DOM contract is exercised.** On a page where 7TV renders the
+  chat, the message is not in Kick's `span.font-normal` but in
+  `span.seventv-text-token`, which `extractMessageText` reads first. A row whose
+  text exists only in those tokens is sent to the engine once and translated.
+  Witness: removing the preference means the message is never sent at all. A
+  unit test catches that same break, so the coverage is not unique; what the
+  gate adds is the whole chain on a 7TV-rendered row. It deliberately does not
+  claim to reproduce the native+7TV duplicate the source comment names: two row
+  shapes were tried and neither produces it, because `joinTexts` reads only an
+  element's own text nodes, and inventing a third shape would prove nothing.
 - [x] **Choosing a language in the bar reaches the page without a reload.** The
   gate drives the product's own control rather than writing settings by hand,
   and reads back the `tl` parameter the engine actually received, so the

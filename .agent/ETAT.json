@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-30T19:05:37.223Z",
+  "genere": "2026-08-30T19:13:02.718Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/gates-tracked",
-    "head": "e8f16da430d8c6966cfe03c51e3552f855af4477",
-    "sujet": "Measure the hover mode's economy claim",
+    "head": "6f209ad4cc4e8338468a136a39c5c3c636c1e3d0",
+    "sujet": "Cover the language change reaching the page",
     "arbrePropre": false,
     "fichiersModifies": 4,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-19-ge8f16da",
+    "decrit": "v2.9.2-20-g6f209ad",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -132,7 +132,7 @@
   ],
   "portes": {
     "runner": "scratchpad/harness/run-gates.mjs",
-    "enumerees": 30,
+    "enumerees": 31,
     "noms": [
       "snapshot",
       "names",
@@ -158,6 +158,7 @@
       "translate-navigation",
       "translate-survol",
       "translate-reglages",
+      "translate-seventv",
       "audit-strings",
       "audit-da",
       "audit-rtl",
@@ -226,6 +227,6 @@
     ],
     "nbBloques": 4,
     "nbOuverts": 3,
-    "nbFaits": 36
+    "nbFaits": 37
   }
 }
