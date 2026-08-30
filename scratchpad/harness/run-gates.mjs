@@ -70,6 +70,11 @@ const GATES = [
   // Couverture propre, mesuree : desactiver le rattachement au remontage laisse
   // les 621 tests verts et fait rougir cette porte.
   ['translate-navigation', 'node', ['scratchpad/harness/translate-offline.mjs', '--navigation']],
+  // Le mode survol, dont la fiche des stores fait un argument chiffre : environ
+  // dix fois moins de consommation. L'argument ne tient que si rien ne part
+  // avant que la souris passe. Couverture propre, mesuree : court-circuiter
+  // l'armement laisse les 621 tests verts et fait rougir cette porte.
+  ['translate-survol', 'node', ['scratchpad/harness/translate-offline.mjs', '--survol']],
   ['audit-strings', 'python', ['scratchpad/audit_content_strings.py']],
   ['audit-da', 'python', ['scratchpad/audit_da.py']],
   ['audit-rtl', 'python', ['scratchpad/audit_rtl.py']],

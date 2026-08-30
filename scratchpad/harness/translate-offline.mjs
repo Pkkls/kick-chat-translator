@@ -100,6 +100,17 @@ const RECYCLAGE = process.argv.includes('--recyclage');
  * principal, comme le site, et voit donc ce qu'un lecteur voit.
  */
 const NAVIGATION = process.argv.includes('--navigation');
+
+/**
+ * Cinquieme mode, `--survol`. Le mode survol ne traduit que ce que le lecteur
+ * pointe, et la fiche des stores en fait un argument chiffre : environ dix fois
+ * moins de consommation sur un chat rapide. Cet argument ne tient que si rien
+ * ne part avant le survol, ce que seul un vrai navigateur peut dire.
+ *
+ * `armHoverTranslate` porte d'ailleurs un commentaire sur une garde correcte
+ * dans un navigateur et invisible a tout test unitaire, faute de disposition.
+ */
+const SURVOL = process.argv.includes('--survol');
 const RANGEES = 8;
 
 // Le chat de Kick reduit a son contrat, repris de `observer.test.ts` qui est
@@ -107,12 +118,19 @@ const RANGEES = 8;
 // leurre vide en premier comme sur le vrai site, puis des `div[data-index]`
 // avec le pseudo dans un `button.font-bold` et le texte dans un
 // `span.font-normal`.
+//
+// Le `div.w-full.min-w-0.shrink-0` autour des deux n'est pas decoratif :
+// `pickInjectionTarget` le cherche en premier, et sans lui il retombe sur le
+// premier enfant de la rangee, c'est-a-dire le bouton du pseudo. La traduction
+// atterrissait alors DANS le nom de l'utilisateur, ce que les modes precedents
+// affichaient sans le dire ("pseudo1ESZZTRADUCTIONZZ:..."), et le mode survol
+// armait ce bouton au lieu du message.
 const FIXTURE = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>chat</title></head>
 <body>
   <div id="channel-chatroom">
     <div class="no-scrollbar" data-which="decoy"></div>
     <div class="no-scrollbar" data-which="messages" style="height:600px;overflow:auto">
-      <div data-index="0"><button class="font-bold" style="color: rgb(1,2,3)">autre</button><span class="font-normal">buenos dias a todos</span></div>
+      <div data-index="0"><div class="w-full min-w-0 shrink-0"><button class="font-bold" style="color: rgb(1,2,3)">autre</button><span class="font-normal">buenos dias a todos</span></div></div>
     </div>
   </div>
 </body></html>`;
@@ -216,6 +234,19 @@ await page.waitForTimeout(3000);
 
 const barreMontee = await page.evaluate(() => !!document.getElementById('kt-inject-style'));
 
+if (SURVOL) {
+  // Le reglage se pose la ou l'extension le lit, depuis son propre service
+  // worker : c'est le seul contexte de la page qui ait `chrome.storage`. Le
+  // worker MV3 est paresseux, d'ou l'ouverture d'une page kick.com avant.
+  const sw = ctx.serviceWorkers()[0] ?? (await ctx.waitForEvent('serviceworker', { timeout: 20000 }));
+  await sw.evaluate(async (cle) => {
+    await chrome.storage.sync.set({ [cle]: { displayStyle: 'hover' } });
+  }, 'kt.settings.v2');
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(3000);
+  vuParLeMoteur.length = 0;
+}
+
 // Ajoute des rangees comme Kick le fait : un `div[data-index]` avec le pseudo
 // dans un `button.font-bold` et le texte dans un `span.font-normal`.
 //
@@ -233,8 +264,10 @@ async function poserRangees(textes, depart = 1) {
       const ligne = document.createElement('div');
       ligne.setAttribute('data-index', String(i));
       ligne.innerHTML =
+        `<div class="w-full min-w-0 shrink-0">` +
         `<button class="font-bold" style="color: rgb(1,2,3)">pseudo${i}</button>` +
-        `<span class="font-normal">${texte}</span>`;
+        `<span class="font-normal">${texte}</span>` +
+        `</div>`;
       cible.appendChild(ligne);
     }
   }, { liste: textes, depart });
@@ -251,8 +284,10 @@ async function recyclerRangees(textes, depart = 1) {
       const ligne = cible.querySelector(`div[data-index="${i}"]`);
       if (!ligne) continue;
       ligne.innerHTML =
+        `<div class="w-full min-w-0 shrink-0">` +
         `<button class="font-bold" style="color: rgb(1,2,3)">pseudo${i}</button>` +
-        `<span class="font-normal">${texte}</span>`;
+        `<span class="font-normal">${texte}</span>` +
+        `</div>`;
     }
   }, { liste: textes, depart });
 }
@@ -273,6 +308,8 @@ async function lireRangees() {
 
 let traductionVue = null;
 let rangees = [];
+// Constats faits pendant le scenario, verses dans `fails` plus bas.
+const fails0 = [];
 
 if (RECYCLAGE) {
   const premiers = Array.from({ length: RANGEES }, (_, i) => `hola numero ${i} uno`);
@@ -291,6 +328,29 @@ if (RECYCLAGE) {
   await page.waitForTimeout(6000);
   rangees = await lireRangees();
   traductionVue = rangees.find((r) => r.traductions.length)?.traductions[0] ?? null;
+} else if (SURVOL) {
+  await poserRangees([SOURCE]);
+  // Rien ne doit partir tant que la souris n'est pas passee. C'est l'argument
+  // de la fiche, mesure ici plutot que suppose.
+  await page.waitForTimeout(6000);
+  const appelsAvant = vuParLeMoteur.length;
+  const arme = await page.evaluate(() => document.querySelectorAll('.kt-hover-armed').length);
+
+  const ligne = page.locator('#channel-chatroom [data-which="messages"] div[data-index="1"]');
+  await ligne.hover();
+  // La garde attend HOVER_DWELL_MS avant de demander quoi que ce soit.
+  await page.waitForTimeout(8000);
+  rangees = await lireRangees();
+  const appelsApres = vuParLeMoteur.length;
+  console.log(
+    `survol           ${arme} rangee(s) armee(s), ${appelsAvant} appel(s) avant, ${appelsApres} apres`,
+  );
+  if (arme === 0) fails0.push('aucune rangee armee : le mode survol n a pas pris');
+  if (appelsAvant !== 0)
+    fails0.push(`${appelsAvant} appel(s) au moteur avant tout survol : le mode ne fait pas d economie`);
+  if (appelsApres <= appelsAvant)
+    fails0.push('le survol n a declenche aucune traduction');
+  traductionVue = rangees.find((r) => r.source === SOURCE)?.traductions[0] ?? null;
 } else if (NAVIGATION) {
   await poserRangees([SOURCE]);
   await page.waitForSelector(SEL_TR, { timeout: 20000 }).catch(() => {});
@@ -305,8 +365,9 @@ if (RECYCLAGE) {
     neuf.innerHTML =
       '<div class="no-scrollbar" data-which="decoy"></div>' +
       '<div class="no-scrollbar" data-which="messages" style="height:600px;overflow:auto">' +
-      '<div data-index="0"><button class="font-bold" style="color: rgb(1,2,3)">autre</button>' +
-      '<span class="font-normal">buenos dias a todos</span></div></div>';
+      '<div data-index="0"><div class="w-full min-w-0 shrink-0">' +
+      '<button class="font-bold" style="color: rgb(1,2,3)">autre</button>' +
+      '<span class="font-normal">buenos dias a todos</span></div></div></div>';
     ancien.replaceWith(neuf);
   });
   await page.waitForTimeout(4000);
@@ -345,7 +406,7 @@ if (!traductionVue && console_.length) {
   for (const l of console_.slice(-8)) console.log('  ' + l);
 }
 
-const fails = [];
+const fails = [...fails0];
 if (!barreMontee) fails.push('le script de contenu ne s est pas execute');
 if (vuParLeMoteur.length === 0)
   fails.push('aucun moteur n a ete appele : rien n a traduit');
@@ -403,4 +464,4 @@ if (fails.length) {
   console.error('FAIL: ' + fails.join(' ; '));
   process.exit(1);
 }
-console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}${NAVIGATION ? ' --navigation' : ''}: OK`);
+console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}${NAVIGATION ? ' --navigation' : ''}${SURVOL ? ' --survol' : ''}: OK`);

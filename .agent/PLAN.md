@@ -203,6 +203,22 @@ reads dist/, so it serialises behind any build. D touches no code.
   gitignored `scratchpad/uxkit.path`, then the repository's own
   `node_modules`, and exits 2 with the three ways to fix it when none is there.
   Exit 2 rather than 1 on purpose: a missing prerequisite is not a failed gate.
+- [x] **The hover mode's economy claim is measured.** Both store listings sell
+  hover mode on a number: roughly ten times less consumption on a fast chat.
+  That only holds if nothing is requested before the pointer arrives, which only
+  a real browser can say. The gate sets `displayStyle` from the extension's own
+  service worker, waits, and asserts zero engine calls, then hovers and asserts
+  one. Clean coverage, measured: short-circuiting `armHoverTranslate` so the
+  line translates immediately leaves all 621 unit tests green and turns this
+  gate red on three counts.
+- [x] **The chat fixture was missing the element the product injects into.**
+  `pickInjectionTarget` looks for `div.w-full.min-w-0.shrink-0` first and falls
+  back to the row's first child, which in the fixture was the username button.
+  Translations were landing inside the username, visible in earlier output as
+  `pseudo1ESZZTRADUCTIONZZ:...` and never questioned, and hover mode armed the
+  username instead of the message. The fixture carries the wrapper now. This
+  does not touch the recycling finding, where the observer never delivered the
+  row at all.
 - [x] **Changing channel is covered offline.** Kick switches channel by
   navigating the app: the URL moves and the chat is remounted, with no reload.
   If the extension does not rebind, translation stops for good and nothing says

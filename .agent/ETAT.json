@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-30T15:29:21.449Z",
+  "genere": "2026-08-30T18:59:06.769Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/gates-tracked",
-    "head": "88f0ee1e6591023e7c8dc0613807bd98d1a4e2f1",
-    "sujet": "Re-translate a chat row when the scroller recycles it",
+    "head": "78cbd01767493ee286e6ce6daa605409548fa65b",
+    "sujet": "Cover the channel change offline",
     "arbrePropre": false,
     "fichiersModifies": 4,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-17-g88f0ee1",
+    "decrit": "v2.9.2-18-g78cbd01",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -132,7 +132,7 @@
   ],
   "portes": {
     "runner": "scratchpad/harness/run-gates.mjs",
-    "enumerees": 28,
+    "enumerees": 29,
     "noms": [
       "snapshot",
       "names",
@@ -156,6 +156,7 @@
       "translate-repli",
       "translate-recyclage",
       "translate-navigation",
+      "translate-survol",
       "audit-strings",
       "audit-da",
       "audit-rtl",
@@ -224,6 +225,6 @@
     ],
     "nbBloques": 4,
     "nbOuverts": 3,
-    "nbFaits": 33
+    "nbFaits": 35
   }
 }
