@@ -206,6 +206,20 @@ reads dist/, so it serialises behind any build. D touches no code.
   gitignored `scratchpad/uxkit.path`, then the repository's own
   `node_modules`, and exits 2 with the three ways to fix it when none is there.
   Exit 2 rather than 1 on purpose: a missing prerequisite is not a failed gate.
+- [x] **The extension's own box model no longer comes from the host page.** One
+  `box-sizing` declaration existed in the whole stylesheet, on a fixed-position
+  element; everything else inherited Kick's Tailwind reset. Measured on a page
+  without that reset, the language list ran 416px of content in a 398px frame,
+  18px over, which is exactly twice the `padding-inline: 9px` of a row set to
+  `inline-size: 100%`. The third column left the frame and a horizontal
+  scrollbar appeared, and the ellipsis the row CSS already had could not apply.
+  With the rule the same page measures 390 for 390 and the panel is 408 wide as
+  designed rather than 416. A project that asserts pixels cannot leave its box
+  model to somebody else's stylesheet. `bar-panel-live` asserts the overflow now,
+  on a stage that deliberately sets no reset. Note on the witness: removing the
+  rule does make that harness exit 1, but at a click that moves out of reach
+  before the assertion is read, so the honest evidence is the direct
+  measurement, 416/398 before and 390/390 after.
 - [x] **The compose side is covered offline.** Writing a reply and seeing it in
   the channel's language is half the product, and it was only ever verified
   live. The property that matters is not that a preview appears, it is which

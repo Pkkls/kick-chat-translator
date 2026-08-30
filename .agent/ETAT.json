@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-30T19:30:35.100Z",
+  "genere": "2026-08-30T19:42:45.684Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/gates-tracked",
-    "head": "03c9d762fcb7a446359f9dc8756bdc1b2b3adabf",
-    "sujet": "Cover the compose side offline",
+    "head": "bfc581ba694d89014c3387c729da7d0694226e29",
+    "sujet": "Verify the overlay dodge, and narrow what it still needs",
     "arbrePropre": false,
-    "fichiersModifies": 4,
+    "fichiersModifies": 5,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-24-g03c9d76",
+    "decrit": "v2.9.2-25-gbfc581b",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -170,7 +170,7 @@
       "audit-selecteurs",
       "audit-poids"
     ],
-    "harnaisSurDisque": 37,
+    "harnaisSurDisque": 38,
     "orphelins": [
       "a11y",
       "bar-panel-mesure",
@@ -189,9 +189,10 @@
       "live-recycle",
       "probe-row-space",
       "session-check",
-      "store-shots"
+      "store-shots",
+      "store-shots-fixture"
     ],
-    "nbOrphelins": 18,
+    "nbOrphelins": 19,
     "note": "Les portes live ouvrent un navigateur sur kick.com et ne sont dans aucun runner. Un orphelin n est pas forcement un defaut ; un orphelin qui couvre du code livre en est un."
   },
   "releaseGithub": {
@@ -231,6 +232,6 @@
     ],
     "nbBloques": 4,
     "nbOuverts": 3,
-    "nbFaits": 40
+    "nbFaits": 41
   }
 }

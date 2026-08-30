@@ -1166,6 +1166,22 @@ html[data-kt-scheme='light'] .kt-chip-empty {
  * d'accord avec la premiere.
  */
 
+/* Le modele de boite de nos propres elements, pose par nous.
+ *
+ * Une seule declaration `box-sizing` existait dans cette feuille, sur un
+ * element positionne. Tout le reste heritait de la page : Kick embarque le
+ * reset de Tailwind, donc `border-box` s'appliquait et la geometrie tombait
+ * juste, par chance et pas par construction. Mesure sur une page sans ce reset,
+ * la liste de langues debordait de 18px, exactement deux fois le
+ * `padding-inline: 9px` d'une rangee posee en `inline-size: 100%`, ce qui
+ * poussait la troisieme colonne hors du cadre et ajoutait un ascenseur
+ * horizontal. Un projet qui asserte des pixels ne peut pas laisser son modele de
+ * boite a la feuille de quelqu'un d'autre. */
+[class^='kt-'],
+[class*=' kt-'] {
+  box-sizing: border-box;
+}
+
 .kt-lang-panel {
   --kt-lp-surface: #171a1c;
   --kt-lp-sunken: #101012;

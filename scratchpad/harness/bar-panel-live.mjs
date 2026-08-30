@@ -118,9 +118,18 @@ const m = await page.evaluate(() => {
   const box = (s) => document.querySelector(s).getBoundingClientRect();
   const chat = box('#panel');
   const p = box('.kt-lang-panel');
+  // La liste ne doit pas deborder de sa propre largeur. Cette scene ne pose
+  // aucun reset de modele de boite, exprès : l'extension ne doit pas dependre de
+  // celui de la page hote. Mesure avant correction, sur une page sans reset : la
+  // liste faisait 416 de contenu pour 398 de cadre, soit 18px, exactement deux
+  // fois le `padding-inline: 9px` d'une rangee en `inline-size: 100%`. La
+  // troisieme colonne sortait du cadre et un ascenseur horizontal apparaissait.
+  const liste = document.querySelector('.kt-lang-list') ?? document.querySelector('.kt-lang-panel');
+  const debordement = liste.scrollWidth - liste.clientWidth;
   const rows = [...document.querySelectorAll('.kt-lang-row')];
   const heights = [...new Set(rows.map((r) => Math.round(r.getBoundingClientRect().height)))];
   return {
+    debordement,
     chatH: Math.round(chat.height),
     panelH: Math.round(p.height),
     part: Math.round((p.height / chat.height) * 100),
@@ -198,6 +207,11 @@ if (m.escapesWindow) fails.push(`the panel leaves the window: ${JSON.stringify(m
 // cette assertion protege est l'ecart avec la liste native de Kick, qui couvre
 // 95% ; a 60 elle le protege toujours et laisse vivre le choix fait depuis.
 if (m.part > 60) fails.push(`covers ${m.part}% of the chat, the native list covered 95%`);
+if (m.debordement > 1)
+  fails.push(
+    `la liste deborde de ${m.debordement}px de sa propre largeur : la troisieme colonne sort du cadre. ` +
+      'Cette scene ne pose aucun reset de modele de boite, donc c est notre feuille qui doit le faire.',
+  );
 if (m.rowHeights.length !== 1) fails.push(`uneven rows: ${m.rowHeights.join(', ')}px`);
 if (m.tiles.join(',') !== 'ja,tr,fr,ru') fails.push(`favourite tiles are ${m.tiles.join(',') || '(vides)'}`);
 if (!m.tilesNommees) fails.push('une tuile de favori sans nom accessible : le drapeau seul ne se lit pas au lecteur d ecran');
@@ -208,7 +222,7 @@ if (afterFilter >= m.rows) fails.push(`filtering hid nothing: ${afterFilter}/${m
 if (!shutAgain) fails.push('picking left the panel open');
 if (picked[0] !== 'ja') fails.push(`picking reported ${picked[0] ?? 'nothing'}`);
 
-console.log(`panel      ${m.panelH}px of ${m.chatH}px, ${m.part}% (native list: 95%)`);
+console.log(`panel      ${m.panelH}px of ${m.chatH}px, ${m.part}% (native list: 95%), debordement ${m.debordement}px`);
 console.log(`rows       ${m.rowHeights.join(', ')}px, ${m.rows} of them, ${m.flagsDrawn} flags + ${m.globes} globe`);
 console.log(`favourites ${m.tiles.join(' ')}`);
 console.log(`filter     "por" leaves ${afterFilter} rows`);
