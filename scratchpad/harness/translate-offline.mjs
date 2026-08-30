@@ -87,6 +87,19 @@ const BASCULE = process.argv.includes('--bascule');
  * a l'oeil : elle porte le texte d'un autre message.
  */
 const RECYCLAGE = process.argv.includes('--recyclage');
+
+/**
+ * Quatrieme mode, `--navigation`. Changer de chaine sur Kick est une navigation
+ * d'application : l'URL change et le chat est remonte, sans rechargement. Si
+ * l'extension ne se raccroche pas, la traduction s'arrete pour de bon et rien ne
+ * le dit.
+ *
+ * Le script de contenu patche `history.pushState` pour s'en apercevoir, mais il
+ * vit dans un monde isole : le routeur de Kick appelle le sien dans le monde
+ * principal, ou ce patch n'existe pas. Ce mode navigue depuis le monde
+ * principal, comme le site, et voit donc ce qu'un lecteur voit.
+ */
+const NAVIGATION = process.argv.includes('--navigation');
 const RANGEES = 8;
 
 // Le chat de Kick reduit a son contrat, repris de `observer.test.ts` qui est
@@ -278,6 +291,33 @@ if (RECYCLAGE) {
   await page.waitForTimeout(6000);
   rangees = await lireRangees();
   traductionVue = rangees.find((r) => r.traductions.length)?.traductions[0] ?? null;
+} else if (NAVIGATION) {
+  await poserRangees([SOURCE]);
+  await page.waitForSelector(SEL_TR, { timeout: 20000 }).catch(() => {});
+  const avant = (await lireRangees()).reduce((n, r) => n + r.traductions.length, 0);
+
+  // La navigation telle que le site la fait : l'URL bouge et le chat est remonte.
+  await page.evaluate(() => {
+    history.pushState({}, '', '/kt-autre-chaine');
+    const ancien = document.querySelector('#channel-chatroom');
+    const neuf = document.createElement('div');
+    neuf.id = 'channel-chatroom';
+    neuf.innerHTML =
+      '<div class="no-scrollbar" data-which="decoy"></div>' +
+      '<div class="no-scrollbar" data-which="messages" style="height:600px;overflow:auto">' +
+      '<div data-index="0"><button class="font-bold" style="color: rgb(1,2,3)">autre</button>' +
+      '<span class="font-normal">buenos dias a todos</span></div></div>';
+    ancien.replaceWith(neuf);
+  });
+  await page.waitForTimeout(4000);
+
+  await poserRangees(['adios amigos hasta la proxima vez']);
+  await page.waitForTimeout(12000);
+  rangees = await lireRangees();
+  const apres = rangees.reduce((n, r) => n + r.traductions.length, 0);
+  console.log(`navigation       ${avant} traductions avant, ${apres} apres sur ${rangees.length} rangees`);
+  traductionVue =
+    rangees.find((r) => r.source === 'adios amigos hasta la proxima vez')?.traductions[0] ?? null;
 } else {
   await poserRangees([SOURCE]);
   try {
@@ -343,7 +383,11 @@ if (RECYCLAGE) {
     );
 }
 if (!RECYCLAGE && traductionVue === null)
-  fails.push('aucune traduction affichee sous le message');
+  fails.push(
+    NAVIGATION
+      ? 'apres un changement de chaine, le message suivant n est plus traduit'
+      : 'aucune traduction affichee sous le message',
+  );
 else if (!RECYCLAGE && !traductionVue.includes(attendu))
   fails.push(
     `la traduction affichee ne vient pas du moteur attendu (${attendu}) : ${JSON.stringify(traductionVue)}`,
@@ -359,4 +403,4 @@ if (fails.length) {
   console.error('FAIL: ' + fails.join(' ; '));
   process.exit(1);
 }
-console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}: OK`);
+console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}${NAVIGATION ? ' --navigation' : ''}: OK`);

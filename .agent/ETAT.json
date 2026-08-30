@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-30T15:24:56.610Z",
+  "genere": "2026-08-30T15:29:21.449Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/gates-tracked",
-    "head": "29fd64afcba99125bf9ae15cd81d2443b49b28f7",
-    "sujet": "Test the fallback chain offline",
+    "head": "88f0ee1e6591023e7c8dc0613807bd98d1a4e2f1",
+    "sujet": "Re-translate a chat row when the scroller recycles it",
     "arbrePropre": false,
-    "fichiersModifies": 7,
+    "fichiersModifies": 4,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-16-g29fd64a",
+    "decrit": "v2.9.2-17-g88f0ee1",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -132,7 +132,7 @@
   ],
   "portes": {
     "runner": "scratchpad/harness/run-gates.mjs",
-    "enumerees": 27,
+    "enumerees": 28,
     "noms": [
       "snapshot",
       "names",
@@ -155,6 +155,7 @@
       "translate-offline",
       "translate-repli",
       "translate-recyclage",
+      "translate-navigation",
       "audit-strings",
       "audit-da",
       "audit-rtl",
@@ -223,6 +224,6 @@
     ],
     "nbBloques": 4,
     "nbOuverts": 3,
-    "nbFaits": 32
+    "nbFaits": 33
   }
 }

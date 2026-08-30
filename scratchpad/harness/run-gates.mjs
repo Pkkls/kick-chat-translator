@@ -65,6 +65,11 @@ const GATES = [
   // A trouve un vrai defaut : les rangees reutilisees n'etaient jamais
   // retraduites, sans raison sur la ligne et sans appel au moteur.
   ['translate-recyclage', 'node', ['scratchpad/harness/translate-offline.mjs', '--recyclage']],
+  // Le changement de chaine, qui remonte le chat sans recharger la page. Si
+  // l'extension ne se raccroche pas, la traduction s'arrete et rien ne le dit.
+  // Couverture propre, mesuree : desactiver le rattachement au remontage laisse
+  // les 621 tests verts et fait rougir cette porte.
+  ['translate-navigation', 'node', ['scratchpad/harness/translate-offline.mjs', '--navigation']],
   ['audit-strings', 'python', ['scratchpad/audit_content_strings.py']],
   ['audit-da', 'python', ['scratchpad/audit_da.py']],
   ['audit-rtl', 'python', ['scratchpad/audit_rtl.py']],

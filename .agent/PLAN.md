@@ -203,6 +203,15 @@ reads dist/, so it serialises behind any build. D touches no code.
   gitignored `scratchpad/uxkit.path`, then the repository's own
   `node_modules`, and exits 2 with the three ways to fix it when none is there.
   Exit 2 rather than 1 on purpose: a missing prerequisite is not a failed gate.
+- [x] **Changing channel is covered offline.** Kick switches channel by
+  navigating the app: the URL moves and the chat is remounted, with no reload.
+  If the extension does not rebind, translation stops for good and nothing says
+  so. The content script patches `history.pushState` to notice, but it lives in
+  an isolated world and Kick's router calls its own in the main world, where
+  that patch does not exist, so the harness navigates from the main world like
+  the site does. The product survives it: the container watcher rescans. Clean
+  coverage, measured: disabling that rescan leaves all 621 unit tests green and
+  turns this gate red.
 - [x] **A recycled chat row was never re-translated.** Kick's virtual scroller
   reuses rows by replacing their CONTENTS, which makes the row the mutation
   TARGET and never an added node. The observer collected candidates from added
