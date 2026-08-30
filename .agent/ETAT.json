@@ -1,5 +1,5 @@
 {
-  "genere": "2026-08-30T06:51:03.401Z",
+  "genere": "2026-08-30T06:58:51.646Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
@@ -13,12 +13,12 @@
       }
     ],
     "branche": "feat/gates-tracked",
-    "head": "a99d422384546a5c8377fbdafba73b65bbaf2caf",
-    "sujet": "Give the live gates a runner, and fix what one of them had been reporting",
+    "head": "68e3f84230cfb87c31bef652ecde8fa3a992821c",
+    "sujet": "Record the first whole run of the live suite",
     "arbrePropre": false,
-    "fichiersModifies": 1,
+    "fichiersModifies": 6,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-4-ga99d422",
+    "decrit": "v2.9.2-5-g68e3f84",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git",
@@ -133,7 +133,7 @@
     },
     {
       "fichier": "kick-chat-translator-2.9.2-chromium.zip",
-      "octets": 294586,
+      "octets": 294379,
       "versionDuNom": "2.9.2",
       "versionDuManifest": "2.9.2",
       "accordent": true,
@@ -212,6 +212,18 @@
       }
     ]
   },
+  "paquetsContreRelease": {
+    "compares": 2,
+    "ecarts": [
+      {
+        "fichier": "kick-chat-translator-2.9.2-chromium.zip",
+        "local": 294379,
+        "publie": 294586,
+        "delta": -207
+      }
+    ],
+    "note": "un zip local porte un numero publie sans etre ce build : ne pas le soumettre, republier ou le supprimer"
+  },
   "file": {
     "bloques": [
       "**Emote picker dodge, compose panel.** `findOverlayTopAbove` uses guessed",
@@ -220,7 +232,7 @@
       "**The screenshots show a real streamer**, their branding and real viewers'"
     ],
     "nbBloques": 4,
-    "nbOuverts": 6,
-    "nbFaits": 14
+    "nbOuverts": 5,
+    "nbFaits": 16
   }
 }

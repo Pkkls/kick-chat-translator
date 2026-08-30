@@ -269,16 +269,47 @@ function bloqueSurKil() {
 
 // ─── sortie ──────────────────────────────────────────────────────────────────
 
+/**
+ * Local archives that carry a published version number but are not that build.
+ *
+ * Rebuilding after a release overwrites release/<version>.zip with something
+ * the world has never seen, under a number the world already has. That is how a
+ * stale package nearly went to a store once: the file name agreed with the
+ * manifest inside and both disagreed with what was published. Sizes are
+ * compared because the release API gives a size for every asset and no digest.
+ */
+function paquetsContreRelease(locaux, release) {
+  if (!release?.assets?.length) return { note: release?.note ?? 'aucune release a comparer' };
+  const parNom = new Map(release.assets.map((a) => [a.nom, a.octets]));
+  const ecarts = [];
+  for (const p of locaux) {
+    const publie = parNom.get(p.fichier);
+    if (publie !== undefined && publie !== p.octets) {
+      ecarts.push({ fichier: p.fichier, local: p.octets, publie, delta: p.octets - publie });
+    }
+  }
+  return {
+    compares: locaux.filter((p) => parNom.has(p.fichier)).length,
+    ecarts,
+    note: ecarts.length
+      ? 'un zip local porte un numero publie sans etre ce build : ne pas le soumettre, republier ou le supprimer'
+      : null,
+  };
+}
+
 const g = git();
+const lesPaquets = paquets();
+const laRelease = await releaseGithub(g.remotes);
 const etat = {
   genere: new Date().toISOString(),
   parQui: '.agent/state.mjs',
   avertissement: 'Genere. Ne pas editer a la main : la prochaine passe ecrase.',
   git: g,
   versions: versions(),
-  paquets: paquets(),
+  paquets: lesPaquets,
   portes: portes(),
-  releaseGithub: await releaseGithub(g.remotes),
+  releaseGithub: laRelease,
+  paquetsContreRelease: paquetsContreRelease(lesPaquets, laRelease),
   file: bloqueSurKil(),
 };
 
@@ -302,6 +333,13 @@ if (texte) {
   if (etat.portes.nbOrphelins) console.log(`  ${etat.portes.orphelins.join(' ')}`);
   const rg = etat.releaseGithub;
   console.log(`release      ${rg.tag ? rg.tag + ' (' + (rg.assets?.length ?? 0) + ' assets, vue sans auth)' : rg.note}`);
+  const pc = etat.paquetsContreRelease;
+  if (pc.ecarts?.length) {
+    console.log(`ATTENTION    ${pc.ecarts.length} zip local porte un numero publie sans etre ce build :`);
+    for (const e of pc.ecarts) console.log(`  ${e.fichier}  local ${e.local} o, publie ${e.publie} o (${e.delta > 0 ? '+' : ''}${e.delta})`);
+  } else if (pc.compares) {
+    console.log(`paquets/release ${pc.compares} compare(s), aucun ecart`);
+  }
   console.log(`file         ${etat.file.nbOuverts} ouvert(s), ${etat.file.nbBloques} bloque(s) sur kil, ${etat.file.nbFaits} fait(s)`);
   for (const b of etat.file.bloques ?? []) console.log(`  bloque: ${b.slice(0, 90)}`);
 }

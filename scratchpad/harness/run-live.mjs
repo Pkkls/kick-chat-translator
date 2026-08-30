@@ -44,10 +44,24 @@ const GATES = [
   ['live-nav', false],
   ['live-recycle', false],
   ['live-fallback', false],
-  ['latency', false],
   ['compose-kick-live', true],
   ['session-check', true],
 ];
+
+/**
+ * latency is not in that list, and it is not excluded either: it runs alone, at
+ * the end, in its own phase.
+ *
+ * It reads counters that only a metrics build emits, and check-strip.ts makes a
+ * release build fail if it keeps them, so an ordinary dist/ carries none and
+ * latency exits 2 rather than report an empty chat as a calm one. That refusal
+ * is right, and it also meant nothing ever ran it: every pass builds normally.
+ *
+ * So the phase builds metrics, measures, and restores the ordinary build,
+ * including when the measurement fails. It cannot share the pool because it
+ * rewrites dist/ underneath every other gate.
+ */
+const PHASE_METRIQUES = 'latency';
 
 const argv = process.argv.slice(2);
 const flag = (name, fallback) => {
@@ -64,7 +78,13 @@ if (only) {
   liste = liste.filter(([nom]) => voulus.has(nom));
 }
 
-if (liste.length === 0) {
+// latency vit hors de cette liste, dans sa propre phase : `--only latency` doit
+// donc pouvoir vider la liste sans que ce garde-fou coupe avant la phase.
+const veutLatency =
+  !argv.includes('--sans-latency') &&
+  (!only || only.split(',').map((s) => s.trim()).includes(PHASE_METRIQUES));
+
+if (liste.length === 0 && !veutLatency) {
   console.error('run-live: aucune porte selectionnee.');
   process.exit(1);
 }
@@ -115,6 +135,38 @@ async function worker() {
 }
 
 await Promise.all(Array.from({ length: Math.min(jobs, file.length) }, worker));
+
+// La phase metriques, seule et en dernier.
+if (veutLatency) {
+  const npm = (script) =>
+    new Promise((resolve) => {
+      const p = spawn('npm', ['run', script], { cwd: ROOT, shell: true, stdio: 'ignore' });
+      p.on('close', (code) => resolve(code ?? 1));
+    });
+
+  console.log(`\n${PHASE_METRIQUES} : build metriques, mesure, puis restauration du build normal.`);
+  const codeBuild = await npm('build:metrics');
+  if (codeBuild !== 0) {
+    console.error(`  build:metrics a echoue (code ${codeBuild}), ${PHASE_METRIQUES} non lancee.`);
+    resultats.push({ nom: PHASE_METRIQUES, code: 2, secondes: 0, sortie: 'build:metrics a echoue' });
+  } else {
+    try {
+      const r = await lancer(PHASE_METRIQUES);
+      resultats.push(r);
+      const etat = r.code === 0 ? 'ok    ' : r.code === 2 ? 'PREREQ' : 'ECHEC ';
+      console.log(`${etat} ${r.nom.padEnd(20)} ${r.secondes.toFixed(1)}s`);
+    } finally {
+      // Restaurer meme si la mesure a echoue : laisser dist/ en mode metriques
+      // ferait passer check-strip a la prochaine release, ou pire, publierait
+      // des compteurs.
+      const codeRetour = await npm('build');
+      if (codeRetour !== 0) {
+        console.error(`  ATTENTION : la restauration du build normal a echoue (code ${codeRetour}).`);
+        console.error('  dist/ porte encore les metriques. Lancer `npm run build` avant de packer.');
+      }
+    }
+  }
+}
 
 const echecs = resultats.filter((r) => r.code !== 0 && r.code !== 2);
 const absents = resultats.filter((r) => r.code === 2);

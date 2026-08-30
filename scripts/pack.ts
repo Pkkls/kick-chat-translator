@@ -33,6 +33,32 @@ async function main(): Promise<void> {
 
   const sha = sha256(zipPath);
   console.info(`Packed: ${relative(ROOT, zipPath)} (${sha.slice(0, 12)}…)`);
+  console.info(`  node ${process.version}, full sha256 ${sha}`);
+  warnNodeMismatch();
+}
+
+/**
+ * Say out loud which Node built this, and whether it is the pinned one.
+ *
+ * The 2.9.x packages went out built on 22 while .nvmrc pins 20 and CI runs 20.
+ * Both satisfy `engines: >=20`, so nothing anywhere objected, and the mismatch
+ * was only noticed while writing reviewer notes that had to state a version.
+ * Printing it at pack time turns a fact somebody has to remember into one the
+ * release log already contains.
+ *
+ * A warning and not a failure: `engines` allows 22, so refusing would have this
+ * script contradict package.json. What it must not do is stay silent.
+ */
+function warnNodeMismatch(): void {
+  const nvmrcPath = resolve(ROOT, '.nvmrc');
+  if (!existsSync(nvmrcPath)) return;
+  const pinned = readFileSync(nvmrcPath, 'utf8').trim().replace(/^v/, '').split('.')[0];
+  const running = process.version.replace(/^v/, '').split('.')[0];
+  if (pinned && running && pinned !== running) {
+    console.warn(
+      `  note: .nvmrc pins node ${pinned} and CI builds on it; this archive was built on ${running}.`,
+    );
+  }
 }
 
 function sha256(path: string): string {

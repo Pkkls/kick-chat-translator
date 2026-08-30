@@ -45,6 +45,14 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Open
 
+- [ ] **The local 2.9.2 archives are not the published ones.** Rebuilding after
+  the placement fix overwrote them: chromium is 294379 bytes locally against
+  294586 published, a delta of 207. Same version number, different build, which
+  is exactly how a stale package reaches a store. `state.mjs` compares sizes
+  against the release and says so at every start now, but the condition stands
+  until this branch merges and a 2.9.3 ships. Do not submit anything from
+  `release/` while that warning is up.
+
 - [ ] **The live gates are not deterministic.** Two runs of the same suite,
   minutes apart, disagreed: `kick-dom-recon` and `bar-panel-mesure` failed in
   one and passed individually in the other. They follow whichever channel
@@ -54,18 +62,9 @@ reads dist/, so it serialises behind any build. D touches no code.
   retry on a differing channel, a distinction between "the product is wrong" and
   "the page gave me nothing to measure", or accepting the noise and saying so.
 
-- [ ] **`latency` cannot run in a normal pass.** It needs
-  `npm run build:metrics`, and every other gate needs the ordinary build, so a
-  suite that builds normally always reports it as a prerequisite. It exits 2 and
-  says why, which is honest, but nothing ever runs it.
-
 - [ ] **`node_modules` is in the git history**: 4308 files added, repository at
   10.9 MB. Public since 2026-08-29, so it is a clone cost for everyone. Removing
   it rewrites history, which is a decision with consequences, not a chore.
-
-- [ ] **`.nvmrc` pins 20, the published packages were built on node 22.22.0.**
-  Both satisfy `engines: >=20`. Either the pin is wrong or the build is; the AMO
-  reviewer notes currently state the mismatch rather than resolve it.
 
 - [ ] **A duplicate remote.** `public` and `origin` are the same URL, and
   `public`'s tracking ref is stale, so a naive read reports one remote up to
@@ -101,6 +100,17 @@ reads dist/, so it serialises behind any build. D touches no code.
 ---
 
 ## Done, kept for the record
+
+- [x] **`latency` runs.** It reads counters only a metrics build emits, and
+  every pass builds normally, so it had never run once: it exited 2 and said
+  why, honestly and uselessly. `run-live.mjs` gives it its own phase, last and
+  alone since it rewrites dist/, which builds metrics, measures, and restores
+  the ordinary build even when the measurement fails. First run: green, 108.3s.
+- [x] **The node version is printed where it matters.** The 2.9.x packages went
+  out on node 22 while `.nvmrc` pins 20 and CI builds on 20, and nothing
+  objected because `engines` allows both. `pack.ts` prints the running version
+  and the full sha256 with every archive, and says when it differs from the pin.
+  A warning, not a failure: refusing would contradict `engines`.
 
 - [x] **Runner coverage: 31 harnesses of 33.** 21 offline gates plus 10 in
   `run-live.mjs`. The six left have a stated reason rather than a silence:
