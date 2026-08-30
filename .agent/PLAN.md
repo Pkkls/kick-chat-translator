@@ -53,15 +53,6 @@ reads dist/, so it serialises behind any build. D touches no code.
   until this branch merges and a 2.9.3 ships. Do not submit anything from
   `release/` while that warning is up.
 
-- [ ] **The live gates are not deterministic.** Two runs of the same suite,
-  minutes apart, disagreed: `kick-dom-recon` and `bar-panel-mesure` failed in
-  one and passed individually in the other. They follow whichever channel
-  `/browse` serves and depend on its chat, its load and the network. A suite
-  that goes red on a quiet channel trains people to skip it, which is the
-  failure mode `audit_da.py` already documents for itself. Worth pricing: a
-  retry on a differing channel, a distinction between "the product is wrong" and
-  "the page gave me nothing to measure", or accepting the noise and saying so.
-
 - [ ] **`node_modules` is in the git history**: 4308 files added, repository at
   10.9 MB. Public since 2026-08-29, so it is a clone cost for everyone. Removing
   it rewrites history, which is a decision with consequences, not a chore.
@@ -100,6 +91,20 @@ reads dist/, so it serialises behind any build. D touches no code.
 ---
 
 ## Done, kept for the record
+
+- [x] **The live suite was not non-deterministic; three probes were broken.**
+  Filed as a systemic property of live gates, which was the wrong shape. The
+  flapping was `live-kick` setting `.value` and dispatching `change` on the
+  bar's language control, which stopped being a `<select>` when the shared panel
+  replaced it: on a button that does nothing at all, so the target was never
+  changed and the count that followed measured the default target. It passed or
+  failed with the language of whatever channel `/browse` served. It clicks the
+  button, picks French from the panel, and refuses to count until the control
+  itself reads FR. Three runs after: 6, 5 and 2 translations, zero errors, the
+  verdict steady while the count follows the traffic, which is what it should
+  do. The other two flaps were a null crash in my own keyboard probe and one
+  unexplained `kick-dom-recon`, so the systemic claim rested on one real
+  unknown, not three.
 
 - [x] **`latency` runs.** It reads counters only a metrics build emits, and
   every pass builds normally, so it had never run once: it exited 2 and said

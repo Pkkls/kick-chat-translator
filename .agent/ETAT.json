@@ -1,5 +1,5 @@
 {
-  "genere": "2026-08-30T06:58:51.646Z",
+  "genere": "2026-08-30T13:10:00.042Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
@@ -13,12 +13,12 @@
       }
     ],
     "branche": "feat/gates-tracked",
-    "head": "68e3f84230cfb87c31bef652ecde8fa3a992821c",
-    "sujet": "Record the first whole run of the live suite",
+    "head": "388fca72ee4c058cf1c486e7c598d168afb22fd5",
+    "sujet": "Make two gates able to fire, and catch a package that lied about its version",
     "arbrePropre": false,
-    "fichiersModifies": 6,
+    "fichiersModifies": 4,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-5-g68e3f84",
+    "decrit": "v2.9.2-6-g388fca7",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git",
@@ -232,7 +232,7 @@
       "**The screenshots show a real streamer**, their branding and real viewers'"
     ],
     "nbBloques": 4,
-    "nbOuverts": 5,
-    "nbFaits": 16
+    "nbOuverts": 4,
+    "nbFaits": 17
   }
 }

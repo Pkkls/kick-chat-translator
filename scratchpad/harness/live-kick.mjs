@@ -120,23 +120,55 @@ if (chat.overflows) failures.push('la page kick deborde horizontalement');
  * correctly skipped.
  */
 const translated = await page.evaluate(async () => {
-  const select = document.querySelector('#kt-floating-bar .kt-float-lang');
-  if (!select) return { error: 'pas de selecteur dans la barre' };
-  select.value = 'fr';
-  select.dispatchEvent(new Event('change', { bubbles: true }));
-  await new Promise((r) => setTimeout(r, 20000));
+  const attendre = (ms) => new Promise((r) => setTimeout(r, ms));
+  const bouton = document.querySelector('#kt-floating-bar .kt-float-lang');
+  if (!bouton) return { error: 'pas de bouton de langue dans la barre' };
+
+  // Le controle est un BOUTON qui ouvre un panneau. Ce bloc posait
+  // `select.value = 'fr'` et dispatchait un `change`, ce qui sur un bouton ne
+  // fait rien du tout : la cible n'etait jamais changee, et le compte de
+  // traductions qui suivait mesurait la cible par defaut. Il passait ou
+  // echouait selon la langue de la chaine tiree de /browse, ce qui a ete lu
+  // comme de la non-determination alors que c'etait une sonde muette.
+  const avant = document.querySelectorAll('#channel-chatroom [data-index]').length;
+  bouton.click();
+  await attendre(600);
+  const panneau = [...document.querySelectorAll('.kt-lang-panel')].find((p) => !p.hidden);
+  if (!panneau) return { error: 'le bouton de langue n ouvre pas le panneau' };
+  const rangee = panneau.querySelector('.kt-lang-row[data-code="fr"]');
+  if (!rangee) return { error: 'pas de rangee francais dans le panneau' };
+  rangee.click();
+  await attendre(600);
+
+  // Ce que le controle affiche apres le choix. Sans cette lecture, un panneau
+  // qui s ouvre et ne pose rien rendrait exactement le meme zero qu un
+  // pipeline casse.
+  const etiquette = (bouton.textContent ?? '').trim().toUpperCase();
+  if (!etiquette.includes('FR')) {
+    return { error: `cible non posee : le bouton affiche "${etiquette}" apres un clic sur francais` };
+  }
+
+  await attendre(20000);
   const nodes = [...document.querySelectorAll('.kt-translation, .kt-translation-inline, .kt-translation-replace')];
   return {
-    target: select.value,
+    cible: etiquette,
     count: nodes.length,
     errors: document.querySelectorAll('.kt-error').length,
+    lignesAvant: avant,
+    lignesApres: document.querySelectorAll('#channel-chatroom [data-index]').length,
     sample: nodes.slice(0, 3).map((n) => n.textContent.trim().slice(0, 48)),
   };
 });
 console.log('traduction :', JSON.stringify(translated));
 if (translated.error) failures.push(translated.error);
 else if (translated.count === 0) {
-  failures.push('aucune traduction rendue apres passage de la cible en francais');
+  // Depuis 2.7.0 un changement de cible retraduit aussi ce qui est deja a
+  // l ecran, donc un chat silencieux n excuse pas un zero : la ligne dit les
+  // deux nombres pour que le prochain lecteur n ait pas a le supposer.
+  failures.push(
+    `aucune traduction avec la cible sur ${translated.cible}, ` +
+      `${translated.lignesAvant} lignes avant et ${translated.lignesApres} apres`,
+  );
 }
 
 await page.locator('#channel-chatroom').screenshot({ path: path.join(HERE, 'live-chat.png') }).catch(() => {});
