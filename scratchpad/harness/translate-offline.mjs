@@ -142,6 +142,19 @@ const REGLAGES = process.argv.includes('--reglages');
  * que par les jetons est bien envoyee au moteur, une fois, et traduite.
  */
 const SEVENTV = process.argv.includes('--seventv');
+
+/**
+ * Huitieme mode, `--cache`. Le meme texte revient sans arret dans un chat, et
+ * c'est ce qui fait tenir un quota gratuit : deux caches sont censes l'attraper,
+ * celui de l'onglet dans `pipeline.ts` et celui du service worker. Aucun des
+ * deux n'etait verifie de bout en bout, alors que c'est un cout direct pour le
+ * lecteur, en argent chez DeepL et en blocage chez Google.
+ *
+ * Le pseudo change entre les deux messages exprès : le saut par pseudo de
+ * `prepare()` ecarterait le second sans jamais consulter un cache, et la porte
+ * verrait un zero qui ne prouverait rien.
+ */
+const CACHE = process.argv.includes('--cache');
 const RANGEES = 8;
 
 // Le chat de Kick reduit a son contrat, repris de `observer.test.ts` qui est
@@ -366,6 +379,52 @@ if (RECYCLAGE) {
   await page.waitForTimeout(6000);
   rangees = await lireRangees();
   traductionVue = rangees.find((r) => r.traductions.length)?.traductions[0] ?? null;
+} else if (CACHE) {
+  const REPETE = 'hola a todos como va la partida';
+  await poserRangees([REPETE], 1);
+  await page
+    .waitForFunction(
+      (src) =>
+        [...document.querySelectorAll('#channel-chatroom [data-which="messages"] div[data-index]')]
+          .some(
+            (r) =>
+              r.querySelector('.font-normal')?.textContent === src &&
+              r.querySelector('.kt-translation, .kt-translation-inline, .kt-translation-replace'),
+          ),
+      REPETE,
+      { timeout: 25000 },
+    )
+    .catch(() => {});
+  const apresPremier = vuParLeMoteur.length;
+
+  // Le meme texte, un autre lecteur.
+  await page.evaluate((texte) => {
+    const cible = document.querySelector('#channel-chatroom [data-which="messages"]');
+    const ligne = document.createElement('div');
+    ligne.setAttribute('data-index', '5');
+    ligne.innerHTML =
+      '<div class="w-full min-w-0 shrink-0">' +
+      '<button class="font-bold" style="color: rgb(1,2,3)">otroquien</button>' +
+      `<span class="font-normal">${texte}</span>` +
+      '</div>';
+    cible.appendChild(ligne);
+  }, REPETE);
+  await page.waitForTimeout(9000);
+  rangees = await lireRangees();
+  const apresSecond = vuParLeMoteur.length;
+
+  const repetee = rangees.find((r) => r.index === '5');
+  console.log(
+    `cache            ${apresPremier} appel(s) pour le premier, ${apresSecond - apresPremier} pour le meme texte repete`,
+  );
+  if (apresPremier === 0) fails0.push('le premier message n a jamais atteint le moteur');
+  if (apresSecond > apresPremier)
+    fails0.push(
+      `le meme texte a coute ${apresSecond - apresPremier} appel(s) de plus : aucun cache ne l a retenu`,
+    );
+  if (!repetee?.traductions.length)
+    fails0.push('le message repete n a recu aucune traduction : le cache a mange l affichage');
+  traductionVue = repetee?.traductions[0] ?? null;
 } else if (SEVENTV) {
   // Une rangee rendue par 7TV : le texte ne vit que dans ses jetons, il n'y a
   // aucun `span.font-normal` a lire.
@@ -582,4 +641,4 @@ if (fails.length) {
   console.error('FAIL: ' + fails.join(' ; '));
   process.exit(1);
 }
-console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}${NAVIGATION ? ' --navigation' : ''}${SURVOL ? ' --survol' : ''}${REGLAGES ? ' --reglages' : ''}${SEVENTV ? ' --seventv' : ''}: OK`);
+console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}${NAVIGATION ? ' --navigation' : ''}${SURVOL ? ' --survol' : ''}${REGLAGES ? ' --reglages' : ''}${SEVENTV ? ' --seventv' : ''}${CACHE ? ' --cache' : ''}: OK`);

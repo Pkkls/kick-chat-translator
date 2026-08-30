@@ -203,6 +203,17 @@ reads dist/, so it serialises behind any build. D touches no code.
   gitignored `scratchpad/uxkit.path`, then the repository's own
   `node_modules`, and exits 2 with the three ways to fix it when none is there.
   Exit 2 rather than 1 on purpose: a missing prerequisite is not a failed gate.
+- [x] **Both caches are measured, on cost and on display.** The same line comes
+  round constantly in chat, and two caches are meant to catch it: the in-tab one
+  in `pipeline.ts` and the service worker's. Neither was checked end to end,
+  though it is a direct cost to the reader, in money at DeepL and in soft bans
+  at Google. The gate posts a line, waits for its translation, then posts the
+  same text under a different username, since the per-user skip in `prepare()`
+  would otherwise drop it without consulting any cache and the zero would prove
+  nothing. Two witnesses. Blinding both caches makes the repeat cost one call.
+  And a cache hit that returns without applying leaves all 621 unit tests green
+  while turning the gate red, which is the worse failure of the two: every
+  repeated message would silently show nothing.
 - [x] **The 7TV DOM contract is exercised.** On a page where 7TV renders the
   chat, the message is not in Kick's `span.font-normal` but in
   `span.seventv-text-token`, which `extractMessageText` reads first. A row whose

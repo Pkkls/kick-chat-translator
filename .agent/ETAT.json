@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-30T19:13:02.718Z",
+  "genere": "2026-08-30T19:17:55.053Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/gates-tracked",
-    "head": "6f209ad4cc4e8338468a136a39c5c3c636c1e3d0",
-    "sujet": "Cover the language change reaching the page",
+    "head": "42c366e9358cea5539ccb1f57376c569589d5b53",
+    "sujet": "Exercise the 7TV chat contract",
     "arbrePropre": false,
     "fichiersModifies": 4,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-20-g6f209ad",
+    "decrit": "v2.9.2-21-g42c366e",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -132,7 +132,7 @@
   ],
   "portes": {
     "runner": "scratchpad/harness/run-gates.mjs",
-    "enumerees": 31,
+    "enumerees": 32,
     "noms": [
       "snapshot",
       "names",
@@ -159,6 +159,7 @@
       "translate-survol",
       "translate-reglages",
       "translate-seventv",
+      "translate-cache",
       "audit-strings",
       "audit-da",
       "audit-rtl",
@@ -227,6 +228,6 @@
     ],
     "nbBloques": 4,
     "nbOuverts": 3,
-    "nbFaits": 37
+    "nbFaits": 38
   }
 }

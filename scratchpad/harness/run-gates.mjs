@@ -84,6 +84,11 @@ const GATES = [
   // la chaine complete sur une rangee dont le texte n'existe que dans les
   // jetons 7TV.
   ['translate-seventv', 'node', ['scratchpad/harness/translate-offline.mjs', '--seventv']],
+  // Les deux caches, qui sont ce qui fait tenir un quota gratuit. Couverture
+  // propre, mesuree : un cache qui repond sans afficher laisse les 621 tests
+  // verts et fait rougir cette porte, alors que toute repetition d'un message
+  // n'afficherait plus rien.
+  ['translate-cache', 'node', ['scratchpad/harness/translate-offline.mjs', '--cache']],
   ['audit-strings', 'python', ['scratchpad/audit_content_strings.py']],
   ['audit-da', 'python', ['scratchpad/audit_da.py']],
   ['audit-rtl', 'python', ['scratchpad/audit_rtl.py']],
