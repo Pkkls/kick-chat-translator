@@ -30,7 +30,10 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from './playwright.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const EXT = path.resolve(HERE, '../../dist');
+// Par defaut le repertoire de build. `KT_EXT` permet de pointer sur un paquet
+// decompresse : ce qui part au store n'est pas `dist/` mais l'archive, et
+// personne n'avait jamais lance ces portes sur l'archive elle-meme.
+const EXT = process.env.KT_EXT ?? path.resolve(HERE, '../../dist');
 const OUT = path.join(HERE, 'store-fixture');
 
 if (!fs.existsSync(path.join(EXT, 'manifest.json'))) {
@@ -146,7 +149,10 @@ const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'kct-shots-'));
 const ctx = await chromium.launchPersistentContext(profile, {
   headless: false,
   viewport: { width: 1280, height: 800 },
-  deviceScaleFactor: 2,
+  // Le Chrome Web Store veut exactement 1280x800 ou 640x400 et refuse le reste.
+  // Avec `deviceScaleFactor: 2` les images sortaient en 2560x1600, ce qui aurait
+  // fait rejeter la soumission sans que rien ici ne le dise.
+  deviceScaleFactor: 1,
   args: [
     `--disable-extensions-except=${EXT}`,
     `--load-extension=${EXT}`,
@@ -281,13 +287,25 @@ await ctx.close();
 fs.rmSync(profile, { recursive: true, force: true });
 
 const fails = [];
+/** Largeur et hauteur lues dans l'en-tete PNG, sans dependance. */
+function dimensions(fichier) {
+  const b = fs.readFileSync(fichier);
+  return [b.readUInt32BE(16), b.readUInt32BE(20)];
+}
+
 for (const n of notes) {
   const f = path.join(OUT, `${n.nom}.png`);
   const octets = fs.existsSync(f) ? fs.statSync(f).size : 0;
+  const [l, h] = octets ? dimensions(f) : [0, 0];
   console.log(
-    `${n.nom.padEnd(18)} ${String(Math.round(octets / 1024)).padStart(4)}Ko  sujet visible: ${n.montre}`,
+    `${n.nom.padEnd(18)} ${String(l).padStart(4)}x${String(h).padEnd(4)} ` +
+      `${String(Math.round(octets / 1024)).padStart(4)}Ko  sujet visible: ${n.montre}`,
   );
   if (octets < 8000) fails.push(`${n.nom} pese ${octets} octets : l image est vide ou n a pas ete ecrite`);
+  if (!(l === 1280 && h === 800))
+    fails.push(
+      `${n.nom} fait ${l}x${h} : le Chrome Web Store veut exactement 1280x800 ou 640x400 et rejette le reste`,
+    );
   if (!n.montre) fails.push(`${n.nom} ne montre pas son sujet`);
 }
 if (notes.length !== 5) fails.push(`${notes.length} images sur 5`);

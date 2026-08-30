@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-30T19:53:43.799Z",
+  "genere": "2026-08-30T20:38:00.584Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/gates-tracked",
-    "head": "0ad3b409ddedd8c0c3721659473d7820757aa665",
-    "sujet": "Set our own box model instead of borrowing the page's",
+    "head": "7c64018cb6d6e96130e48e95a514766cc6e8c9a9",
+    "sujet": "Stop deleting ordinary words before translating them",
     "arbrePropre": false,
-    "fichiersModifies": 5,
+    "fichiersModifies": 9,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-26-g0ad3b40",
+    "decrit": "v2.9.2-27-g7c64018",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -27,8 +27,8 @@
     }
   },
   "versions": {
-    "packageJson": "2.9.2",
-    "distManifest": "2.9.2",
+    "packageJson": "2.9.3",
+    "distManifest": "2.9.3",
     "accordent": true,
     "note": null
   },
@@ -128,11 +128,27 @@
       "versionDuManifest": "2.9.2",
       "accordent": true,
       "erreur": null
+    },
+    {
+      "fichier": "kick-chat-translator-2.9.3-chromium.zip",
+      "octets": 277958,
+      "versionDuNom": "2.9.3",
+      "versionDuManifest": "2.9.3",
+      "accordent": true,
+      "erreur": null
+    },
+    {
+      "fichier": "kick-chat-translator-2.9.3-firefox.zip",
+      "octets": 277890,
+      "versionDuNom": "2.9.3",
+      "versionDuManifest": "2.9.3",
+      "accordent": true,
+      "erreur": null
     }
   ],
   "portes": {
     "runner": "scratchpad/harness/run-gates.mjs",
-    "enumerees": 35,
+    "enumerees": 36,
     "noms": [
       "snapshot",
       "names",
@@ -168,7 +184,8 @@
       "audit-rtl",
       "audit-surfaces-rtl",
       "audit-selecteurs",
-      "audit-poids"
+      "audit-poids",
+      "audit-fiche"
     ],
     "harnaisSurDisque": 38,
     "orphelins": [
@@ -231,7 +248,7 @@
       "**The screenshots show a real streamer**, their branding and real viewers'"
     ],
     "nbBloques": 4,
-    "nbOuverts": 3,
-    "nbFaits": 42
+    "nbOuverts": 2,
+    "nbFaits": 46
   }
 }

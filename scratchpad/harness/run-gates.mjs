@@ -115,6 +115,10 @@ const GATES = [
   // The one cost every reader pays on every page. It rose 12.5% in one version
   // and nobody saw it for three days, because nothing was looking.
   ['audit-poids', 'python', ['scratchpad/audit_poids.py']],
+  // Les limites de champ des deux stores, plus les descriptions telles qu'elles
+  // sont livrees dans `public/_locales`. Une soumission rejetee pour un champ
+  // trop long se decouvre autrement une semaine plus tard.
+  ['audit-fiche', 'python', ['scratchpad/audit_fiche.py']],
 ];
 
 const argv = process.argv.slice(2);

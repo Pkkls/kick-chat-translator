@@ -45,7 +45,10 @@ import { chromium } from './playwright.mjs';
 import { poserLangueCible } from './kick-actions.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const EXT = path.resolve(HERE, '../../dist');
+// Par defaut le repertoire de build. `KT_EXT` permet de pointer sur un paquet
+// decompresse : ce qui part au store n'est pas `dist/` mais l'archive, et
+// personne n'avait jamais lance ces portes sur l'archive elle-meme.
+const EXT = process.env.KT_EXT ?? path.resolve(HERE, '../../dist');
 
 if (!fs.existsSync(path.join(EXT, 'manifest.json'))) {
   console.error('dist/manifest.json absent. Lancer `npm run build` avant.');

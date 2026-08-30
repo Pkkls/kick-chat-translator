@@ -53,13 +53,13 @@ reads dist/, so it serialises behind any build. D touches no code.
   for a page nobody has touched, not a verdict on the current text. Resubmitting
   is the experiment, and it is blocked on kil.
 
-- [ ] **The local 2.9.2 archives are not the published ones.** Rebuilding after
-  the placement fix overwrote them: chromium is 294379 bytes locally against
-  294586 published, a delta of 207. Same version number, different build, which
-  is exactly how a stale package reaches a store. `state.mjs` compares sizes
-  against the release and says so at every start now, but the condition stands
-  until this branch merges and a 2.9.3 ships. Do not submit anything from
-  `release/` while that warning is up.
+- [x] **The 2.9.2 archive divergence is closed by 2.9.3.** The branch carried
+  four user-visible fixes past 2.9.2, so it is packaged as 2.9.3: chromium
+  `a9bb7488b0a6e7b5`, firefox `43e2c81d4cc6d8e9`, both byte-reproducible across
+  two consecutive runs. The Chrome archive is 271.4 KB against 2.9.2's 287.5 KB,
+  and the difference is accounted for: `src/content/inject.css`, 59747 bytes
+  uncompressed, is no longer emitted now that nothing exposes it, and the
+  stylesheet has always been inlined into the content bundle.
 
 - [ ] **`node_modules` is in the git history**: 4308 files added, repository at
   10.9 MB. Public since 2026-08-29, so it is a clone cost for everyone. Removing
@@ -206,6 +206,23 @@ reads dist/, so it serialises behind any build. D touches no code.
   gitignored `scratchpad/uxkit.path`, then the repository's own
   `node_modules`, and exits 2 with the three ways to fix it when none is there.
   Exit 2 rather than 1 on purpose: a missing prerequisite is not a failed gate.
+- [x] **The archive itself is exercised, not just `dist/`.** `KT_EXT` points the
+  harnesses at an unpacked package, and all eleven translate modes plus
+  `extension-load` pass against the 2.9.3 Chrome zip. Nobody had ever run a gate
+  against the thing that would actually be submitted.
+- [x] **Store screenshots at the size the store accepts.** The five fixture
+  images were coming out 2560x1600, because this harness had drifted to
+  `deviceScaleFactor: 2` while the live one carried a comment saying to keep it
+  at 1. The Chrome Web Store takes exactly 1280x800 or 640x400 and rejects the
+  rest, so the submission would have bounced with nothing here to say why. The
+  harness asserts the dimensions now, read out of the PNG header.
+- [x] **The listing is at 2.9.3 in all eleven languages**, each with a paragraph
+  on what changed: whole messages again, a recycled row translated, no file
+  published to the page. `audit_fiche.py` is a gate and counts 44 fields against
+  their limits in UTF-16 code units, which is what the web forms count, plus the
+  ten shipped `description` values read from `public/_locales` rather than from
+  the prose. Its first version accused a healthy field, counting the explanatory
+  text around the manifest value and reporting 376 characters for a value of 90.
 - [x] **Words were being deleted from messages before translation.** The
   inline emote-name stripper carried two rules that hit ordinary language.
   `ez` in the suffix list deleted every Turkish negative aorist, a productive

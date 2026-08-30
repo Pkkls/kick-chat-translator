@@ -1,6 +1,6 @@
 {
   "name": "kick-chat-translator",
-  "version": "2.9.2",
+  "version": "2.9.3",
   "private": true,
   "description": "Translates Kick chat into your language as it scrolls, and your replies into the channel's.",
   "license": "MIT",

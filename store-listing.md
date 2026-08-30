@@ -1,13 +1,17 @@
 # Chrome Web Store listing
 
 Plain text. The store renders no markdown, so the CAPS headers are the only
-structure available. Fact-checked against manifest 2.9.2, README, CHANGELOG.
+structure available. Fact-checked against manifest 2.9.3, README, CHANGELOG.
 
 ## Short summary (132 char limit)
 
 Kick chat in a language you don't read? It gets translated under each message, live, and your replies go out in the channel's.
 
 ## Description (EN)
+
+NEW IN 2.9.3
+
+Messages are translated whole again. A cleanup rule meant to strip emote names out of chat was deleting ordinary words with them: every Turkish verb ending in -mez, Spanish vez, Czech bez, and any all-lowercase word of thirteen letters or more, which is an everyday length in Spanish, Portuguese, Turkish, German and Finnish. What you read was a translation of a sentence nobody had written, with nothing on screen to say a word had gone. Measured over 11,583 words of these listings: 30 ordinary words destroyed before, 13 after, all of them brand names, and emote names are still stripped just as well. On a fast chat, a message that lands in a row the list is recycling now gets translated too; it used to be skipped in silence. And the extension no longer publishes any of its files to the page, so a script running on Kick can no longer test whether you have it installed.
 
 NEW IN 2.9.2
 
@@ -42,6 +46,10 @@ Open source, MIT: github.com/Pkkls/kick-chat-translator
 ## Description (FR)
 
 Short summary: Chat Kick dans une langue que tu ne lis pas ? Traduit sous chaque message, en direct. Tes reponses partent dans celle de la chaine.
+
+NOUVEAU EN 2.9.3
+
+Les messages repartent entiers. Une regle de nettoyage censee retirer les noms d'emotes supprimait aussi des mots ordinaires : tous les verbes turcs en -mez, l'espagnol vez, le tcheque bez, et n'importe quel mot en minuscules de treize lettres ou plus, une longueur banale en espagnol, portugais, turc, allemand et finnois. Vous lisiez la traduction d'une phrase que personne n'avait ecrite, sans rien a l'ecran pour signaler qu'un mot manquait. Mesure sur les 11 583 mots de ces fiches : 30 mots ordinaires detruits avant, 13 apres, tous des noms de marques, et les noms d'emotes sont toujours aussi bien retires. Sur un chat rapide, un message qui arrive dans une rangee que la liste recycle est desormais traduit lui aussi ; il passait a la trappe sans un mot. Et l'extension ne publie plus aucun de ses fichiers a la page, donc un script tournant sur Kick ne peut plus tester si vous l'avez installee.
 
 NOUVEAU EN 2.9.2
 
@@ -81,6 +89,10 @@ the Turkish store. No native reader was available; verified by round-tripping ea
 
 Short summary: Okuyamadığın bir dilde Kick sohbeti mi? Her mesajın altına canlı çeviri gelir, yanıtların da kanalın dilinde gider.
 
+2.9.3 İLE GELENLER
+
+Mesajlar yeniden eksiksiz cevriliyor. Sohbetteki emote adlarini ayiklamak icin yazilan bir temizleme kurali siradan kelimeleri de siliyordu: -mez ile biten her Turkce fiil, Ispanyolca vez, Cekce bez ve on uc harf ve uzeri her kucuk harfli kelime. On uc harf; Ispanyolca, Portekizce, Turkce, Almanca ve Fincede siradan bir uzunluktur. Okudugunuz sey, kimsenin yazmadigi bir cumlenin cevirisiydi ve bir kelimenin eksildigini gosteren hicbir isaret yoktu. Bu magaza metinlerinin 11.583 kelimesi uzerinde olculdu: oncesinde 30 siradan kelime yok ediliyordu, simdi 13 ve hepsi marka adi; emote adlari ise eskisi gibi temizleniyor. Hizli bir sohbette, listenin yeniden kullandigi bir satira dusen mesaj da artik cevriliyor; eskiden sessizce atlaniyordu. Ayrica eklenti artik hicbir dosyasini sayfaya acmiyor, boylece Kick uzerinde calisan bir betik onu kurup kurmadiginizi test edemez.
+
 2.9.2 İLE GELENLER
 
 Dil listesi artık iki harfli kodlardan oluşan bir sütun değil, bayraklardan oluşan bir ızgara, ve tek tıklamayla açılıyor. Eskiden ekranın tüm yüksekliğini kaplıyordu: her satırda bir tane olmak üzere 43 giriş, her biri harf harf okunuyordu, ve liste 45 x 24 boyutundaki bir düğmenin içindeki 10 x 6 piksellik bir okun arkasındaydı; ıskalarsanız tıklama bambaşka bir şey yapıyordu. Üç sütun hâlinde çizilmiş bayraklar aynı listeyi yüzde 42 daha az yükseklikte gösteriyor, düğmenin herhangi bir yerine tıklamak listeyi açıyor ve Kick'in kendi arayüzü artık listenin üzerine çizmiyor. Bayraklar emoji olarak değil CSS ile çiziliyor, çünkü bayrak emojileri Windows'ta görünmüyor: sistem tam da değiştirmek istediğimiz iki harfe geri dönüyor. Çubuktaki AUTO düğmesinin arkasındaki panel de aynı işlemi gördü: kırk girdiden altısını gösteriyordu.
@@ -118,6 +130,10 @@ third after English and Turkish. The extension already ships an Arabic interface
 and handles right-to-left text. No native reader was available; verified by round-tripping each paragraph back to English.
 
 Short summary: دردشة Kick بلغة لا تقرأها؟ تظهر الترجمة أسفل كل رسالة مباشرةً، وردودك تخرج بلغة القناة.
+
+الجديد في 2.9.3
+
+تعود الرسائل مترجمة كاملة. كانت قاعدة تنظيف وُضعت لإزالة أسماء الرموز التعبيرية من الدردشة تحذف معها كلمات عادية: كل فعل تركي ينتهي بـ mez، والإسبانية vez، والتشيكية bez، وأي كلمة بحروف صغيرة من ثلاثة عشر حرفًا فأكثر، وهو طول اعتيادي في الإسبانية والبرتغالية والتركية والألمانية والفنلندية. كنت تقرأ ترجمة لجملة لم يكتبها أحد، دون أي إشارة على الشاشة إلى أن كلمة قد سقطت. قياسًا على 11583 كلمة من نصوص المتجر هذه: 30 كلمة عادية كانت تُتلف قبل ذلك، و13 بعده، جميعها أسماء علامات تجارية، وأسماء الرموز التعبيرية لا تزال تُزال كما ينبغي. في دردشة سريعة، الرسالة التي تحل في صف تعيد القائمة استخدامه تُترجم الآن أيضًا؛ كانت تُتجاهل في صمت. كما أن الإضافة لم تعد تنشر أيًّا من ملفاتها للصفحة، فلم يعد بإمكان أي سكربت يعمل على Kick أن يختبر ما إذا كنت قد ثبّتها.
 
 الجديد في 2.9.2
 
@@ -158,6 +174,10 @@ reader was available; same standard as the Turkish and Arabic blocks above.
 
 Short summary: 読めない言語の Kick チャットが、届いたそばから各メッセージの下に翻訳されます。あなたの返信はチャンネルの言語で送れます。
 
+2.9.3 の新機能
+
+メッセージがふたたび丸ごと翻訳されます。チャットからエモート名を取り除くための整理ルールが、ふつうの単語まで削っていました。-mez で終わるトルコ語の動詞すべて、スペイン語の vez、チェコ語の bez、そして小文字だけで十三文字以上の単語。十三文字はスペイン語、ポルトガル語、トルコ語、ドイツ語、フィンランド語ではごくふつうの長さです。読んでいたのは誰も書いていない文の翻訳で、単語が消えたことを示すものは画面のどこにもありませんでした。このストア文面の 11,583 語で計測しました。以前は 30 語のふつうの単語が壊れ、いまは 13 語、そのすべてがブランド名です。エモート名はこれまでどおり取り除かれます。速いチャットでは、リストが再利用する行に届いたメッセージも翻訳されるようになりました。以前は黙って飛ばされていました。また拡張機能はページにファイルを一切公開しなくなったので、Kick 上で動くスクリプトから導入の有無を調べられません。
+
 2.9.2 の新機能
 
 言語リストが2文字コードの縦一列ではなく、旗のグリッドになりました。クリック一回で開きます。以前は画面の高さいっぱいに43項目が一行ずつ並び、どれも一文字ずつ読む必要があり、しかもリスト自体は45×24のボタンの中にある10×6ピクセルの矢印の奥にありました。そこを外すと、クリックはまったく別のことをしていました。3列に描かれた旗が同じリストを42パーセント低い高さに収め、ボタンのどこをクリックしても開き、Kick 自身の画面がその上に重なることもなくなりました。旗は絵文字ではなく CSS で描いています。旗の絵文字は Windows では表示されず、置き換えたかったはずの2文字に戻ってしまうからです。バーの AUTO ボタンの奥にあるパネルも同じ扱いです。40 項目のうち 6 つしか出ていませんでした。
@@ -194,6 +214,10 @@ Paste into the Spanish listing. Same standard as the other localised blocks:
 no native reader.
 
 Short summary: ¿Chat de Kick en un idioma que no lees? Se traduce bajo cada mensaje, en directo, y tus respuestas salen en el del canal.
+
+NUEVO EN 2.9.3
+
+Los mensajes vuelven a traducirse enteros. Una regla de limpieza pensada para quitar nombres de emotes del chat borraba tambien palabras corrientes: todos los verbos turcos acabados en -mez, el espanol vez, el checo bez y cualquier palabra en minusculas de trece letras o mas, una longitud de lo mas normal en espanol, portugues, turco, aleman y finlandes. Leias la traduccion de una frase que nadie habia escrito, sin nada en pantalla que avisara de que faltaba una palabra. Medido sobre las 11.583 palabras de estos textos de tienda: antes se destruian 30 palabras corrientes, ahora 13, todas nombres de marcas, y los nombres de emotes se siguen quitando igual de bien. En un chat rapido, un mensaje que cae en una fila que la lista esta reutilizando tambien se traduce ya; antes se saltaba en silencio. Y la extension ya no publica ninguno de sus archivos a la pagina, asi que un script que corra en Kick no puede comprobar si la tienes instalada.
 
 NUEVO EN 2.9.2
 
@@ -232,6 +256,10 @@ no native reader.
 
 Short summary: Chat da Kick num idioma que você não lê? Ele é traduzido embaixo de cada mensagem, ao vivo, e suas respostas saem no do canal.
 
+NOVIDADES NA 2.9.3
+
+As mensagens voltam a ser traduzidas inteiras. Uma regra de limpeza feita para tirar nomes de emotes do chat apagava tambem palavras comuns: todo verbo turco terminado em -mez, o espanhol vez, o tcheco bez e qualquer palavra em minusculas com treze letras ou mais, um comprimento banal em espanhol, portugues, turco, alemao e finlandes. Voce lia a traducao de uma frase que ninguem tinha escrito, sem nada na tela avisando que uma palavra havia sumido. Medido sobre as 11.583 palavras destes textos de loja: antes 30 palavras comuns eram destruidas, agora 13, todas nomes de marcas, e os nomes de emotes continuam sendo removidos do mesmo jeito. Num chat rapido, uma mensagem que cai numa linha que a lista esta reaproveitando tambem passa a ser traduzida; antes era pulada em silencio. E a extensao nao publica mais nenhum de seus arquivos para a pagina, entao um script rodando no Kick nao consegue mais testar se voce a tem instalada.
+
 NOVIDADES NA 2.9.2
 
 A lista de idiomas é uma grade de bandeiras em vez de uma coluna de códigos de duas letras, e abre com um clique. Antes ela ocupava a altura inteira da tela, 43 entradas uma por linha, cada uma lida letra por letra, e ficava atrás de uma seta de 10 por 6 pixels dentro de um botão de 45 por 24: se você errasse, o clique fazia outra coisa completamente diferente. Três colunas de bandeiras desenhadas colocam a mesma lista em 42 por cento menos altura, um clique em qualquer ponto do botão a abre, e a interface da própria Kick não passa mais por cima. As bandeiras são desenhadas em CSS e não enviadas como emoji, porque emoji de bandeira não aparece no Windows: o sistema volta justamente para as duas letras que se queria substituir. O painel do botão AUTO da barra recebeu o mesmo tratamento: mostrava seis entradas de quarenta.
@@ -268,6 +296,10 @@ Paste into the Russian listing. Same standard as the other localised blocks:
 no native reader.
 
 Short summary: Чат Kick на языке, который вы не читаете? Перевод появляется под каждым сообщением, а ваши ответы уходят на языке канала.
+
+НОВОЕ В 2.9.3
+
+Сообщения снова переводятся целиком. Правило очистки, написанное чтобы убирать из чата названия эмодзи-эмоций, заодно удаляло обычные слова: каждый турецкий глагол на -mez, испанское vez, чешское bez и любое слово строчными буквами длиной тринадцать букв и больше, а это обычная длина в испанском, португальском, турецком, немецком и финском. Вы читали перевод фразы, которую никто не писал, и ничто на экране не говорило, что слово пропало. Измерено на 11 583 словах этих текстов для магазинов: раньше портилось 30 обычных слов, теперь 13, и все они названия брендов, а названия эмоций удаляются как прежде. В быстром чате сообщение, попавшее в строку, которую список переиспользует, теперь тоже переводится; раньше его молча пропускали. И расширение больше не публикует ни одного своего файла в страницу, так что скрипт на Kick не может проверить, установлено ли оно у вас.
 
 НОВОЕ В 2.9.2
 
@@ -306,6 +338,10 @@ blocks: no native reader.
 
 Short summary: Kick 的聊天是你读不懂的语言？每条消息下方都会实时出现译文，你的回复也会用频道的语言发出。
 
+2.9.3 的新功能
+
+消息重新被完整翻译。一条本用来剔除聊天中表情名称的清理规则，连普通词一起删掉了：所有以 -mez 结尾的土耳其语动词、西班牙语的 vez、捷克语的 bez，以及任何十三个字母及以上的全小写单词。十三个字母在西班牙语、葡萄牙语、土耳其语、德语和芬兰语里再普通不过。你读到的是一句没人写过的话的译文，屏幕上没有任何提示告诉你少了一个词。在这些商店文案的 11,583 个词上测量：此前有 30 个普通词被破坏，现在是 13 个，且全是品牌名，而表情名称依然照常剔除。在快速滚动的聊天里，落进列表正在复用的那一行的消息现在也会被翻译；以前会被悄悄跳过。另外扩展不再向页面公开任何文件，因此在 Kick 上运行的脚本无法再检测你是否安装了它。
+
 2.9.2 的新功能
 
 语言列表现在是旗帜网格，而不是两个字母代码的竖排列表，点一下就打开。它以前占满整个屏幕高度，43 个条目每行一个，每一个都要逐字母去读，而且列表藏在 45×24 按钮里一个 10×6 像素的箭头后面：点偏了，这一下就做了完全不同的事。三列绘制的旗帜把同一份列表放进少 42% 的高度里，点按钮任意位置都能打开，Kick 自己的界面也不再盖在它上面。旗帜用 CSS 绘制而不是用 emoji，因为旗帜 emoji 在 Windows 上根本不显示，系统会退回到我们本想替换掉的那两个字母。工具条上 AUTO 按钮背后的面板也做了同样的处理：原本 40 项只显示 6 项。
@@ -342,6 +378,10 @@ Paste into the Korean listing. Same standard as the other localised blocks: no
 native reader.
 
 Short summary: 읽지 못하는 언어로 흐르는 Kick 채팅? 각 메시지 아래에 실시간으로 번역이 붙고, 답장은 채널의 언어로 나갑니다.
+
+2.9.3의 새로운 기능
+
+메시지가 다시 통째로 번역됩니다. 채팅에서 이모트 이름을 걸러내려던 정리 규칙이 평범한 단어까지 지우고 있었습니다. -mez로 끝나는 모든 터키어 동사, 스페인어 vez, 체코어 bez, 그리고 소문자로만 이루어진 열세 글자 이상의 단어가 그렇습니다. 열세 글자는 스페인어, 포르투갈어, 터키어, 독일어, 핀란드어에서 흔한 길이입니다. 읽고 있던 것은 아무도 쓰지 않은 문장의 번역이었고, 단어가 사라졌다는 표시는 화면 어디에도 없었습니다. 이 스토어 문안 11,583개 단어로 측정했습니다. 이전에는 평범한 단어 30개가 망가졌고 지금은 13개이며 모두 브랜드 이름입니다. 이모트 이름은 예전처럼 걸러집니다. 빠른 채팅에서 목록이 재사용하는 줄에 들어온 메시지도 이제 번역됩니다. 예전에는 조용히 건너뛰었습니다. 또한 확장 프로그램은 더 이상 어떤 파일도 페이지에 공개하지 않으므로, Kick에서 실행되는 스크립트가 설치 여부를 확인할 수 없습니다.
 
 2.9.2의 새로운 기능
 
@@ -381,6 +421,10 @@ four languages that already had text. Same standard as the other localised
 blocks: no native reader.
 
 Short summary: Chat na Kicku v jazyce, který neumíte přečíst? Překlad se objeví pod každou zprávou, živě.
+
+NOVINKY VE VERZI 2.9.3
+
+Zprávy se opět překládají celé. Čisticí pravidlo, které mělo z chatu odstraňovat názvy emotů, mazalo spolu s nimi i běžná slova: každé turecké sloveso končící na -mez, španělské vez, české bez a jakékoli slovo psané malými písmeny o třinácti a více znacích, což je ve španělštině, portugalštině, turečtině, němčině a finštině zcela běžná délka. Četli jste překlad věty, kterou nikdo nenapsal, a nic na obrazovce neupozornilo, že slovo zmizelo. Změřeno na 11 583 slovech těchto textů pro obchody: dříve se zničilo 30 běžných slov, nyní 13 a všechna jsou názvy značek, přičemž názvy emotů se odstraňují stejně dobře jako dřív. V rychlém chatu se nyní přeloží i zpráva, která dopadne do řádku, jejž seznam právě recykluje; dříve se tiše přeskočila. A rozšíření už na stránku nezpřístupňuje žádný ze svých souborů, takže skript běžící na Kicku nemůže zjistit, zda jej máte nainstalované.
 
 NOVINKY VE VERZI 2.9.2
 
@@ -578,19 +622,19 @@ Okuyamadığın bir dildeki Kick sohbeti, her mesajın altında geldiği anda ç
 AMO asks for source when the submitted code is bundled or minified, which this
 is. Paste this into the "Notes for reviewers" field.
 
-Source: https://github.com/Pkkls/kick-chat-translator, public, MIT, tag v2.9.2.
+Source: https://github.com/Pkkls/kick-chat-translator, public, MIT, tag v2.9.3.
 The submitted zip is built from that tag with no patching in between.
 
 Build:
 
   git clone https://github.com/Pkkls/kick-chat-translator
   cd kick-chat-translator
-  git checkout v2.9.2
+  git checkout v2.9.3
   npm ci
   npm run build:firefox
   npm run pack:firefox
 
-The archive lands in release/kick-chat-translator-2.9.2-firefox.zip.
+The archive lands in release/kick-chat-translator-2.9.3-firefox.zip.
 
 Toolchain actually used for the submitted build: Node v22.22.0, npm 10.9.4, on
 Windows. The repository's .nvmrc pins 20 and package.json asks for node >= 20;
