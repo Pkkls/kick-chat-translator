@@ -181,6 +181,22 @@ const MAJ = process.argv.includes('--maj');
  * en espagnol pendant que le chat entrant arrive en anglais.
  */
 const COMPOSE = process.argv.includes('--compose');
+
+/**
+ * Onzieme mode, `--esquive`. Kick ouvre des panneaux au-dessus du compositeur,
+ * le selecteur d'emotes en tete, et l'apercu ne doit pas passer dessous.
+ * `findOverlayTopAbove` les cherche par une liste de selecteurs avec une garde
+ * de taille : au moins 40 par 40, au-dessus du compositeur, et le bas a moins de
+ * huit pixels de son haut.
+ *
+ * Ce mode verifie le MECANISME, avec une superposition fabriquee qui repond a
+ * ces criteres. Il ne dit rien de la question restee ouverte, qui est de savoir
+ * si le vrai selecteur d'emotes de Kick correspond a l'un de ces selecteurs :
+ * celle-la demande la page de kil, parce que Kick sert un `auth-modal` au
+ * contexte Playwright. La moitie verifiable l'est donc, et l'autre reste
+ * nommee pour ce qu'elle est.
+ */
+const ESQUIVE = process.argv.includes('--esquive');
 const RANGEES = 8;
 
 // Le chat de Kick reduit a son contrat, repris de `observer.test.ts` qui est
@@ -416,6 +432,63 @@ if (RECYCLAGE) {
   await page.waitForTimeout(6000);
   rangees = await lireRangees();
   traductionVue = rangees.find((r) => r.traductions.length)?.traductions[0] ?? null;
+} else if (ESQUIVE) {
+  const saisie = page.locator('#channel-chatroom [contenteditable="true"]');
+  await saisie.click();
+  await saisie.type('hello everyone how is it going', { delay: 25 });
+  await page.waitForTimeout(8000);
+
+  const sans = await page.evaluate(() => {
+    const p = document.querySelector('.kt-compose');
+    const r = p?.getBoundingClientRect();
+    return r ? { haut: Math.round(r.top), bas: Math.round(r.bottom) } : null;
+  });
+
+  // Une superposition qui satisfait la garde : plus de 40 par 40, au-dessus du
+  // compositeur, et son bas colle a son haut.
+  const boite = await page.evaluate(() => {
+    const c = document.querySelector('#channel-chatroom [contenteditable="true"]');
+    const r = c.getBoundingClientRect();
+    const o = document.createElement('div');
+    o.setAttribute('role', 'dialog');
+    o.id = 'faux-selecteur-emotes';
+    Object.assign(o.style, {
+      position: 'fixed',
+      left: `${Math.round(r.left)}px`,
+      width: '260px',
+      height: '220px',
+      top: `${Math.round(r.top) - 222}px`,
+      background: '#222',
+      zIndex: '50',
+    });
+    document.body.appendChild(o);
+    const ob = o.getBoundingClientRect();
+    return { haut: Math.round(ob.top), bas: Math.round(ob.bottom), compositeurHaut: Math.round(r.top) };
+  });
+
+  // `positionPanel` se rejoue sur le viewport visuel ; un vrai redimensionnement
+  // le declenche, un evenement fabrique non.
+  await page.setViewportSize({ width: 1201, height: 800 });
+  await page.waitForTimeout(1500);
+
+  const avec = await page.evaluate(() => {
+    const p = document.querySelector('.kt-compose');
+    const r = p?.getBoundingClientRect();
+    return r ? { haut: Math.round(r.top), bas: Math.round(r.bottom) } : null;
+  });
+
+  console.log(
+    `esquive          superposition ${boite.haut}-${boite.bas}, compositeur a ${boite.compositeurHaut}, ` +
+      `panneau ${sans ? sans.haut + '-' + sans.bas : '(aucun)'} puis ${avec ? avec.haut + '-' + avec.bas : '(aucun)'}`,
+  );
+
+  if (!sans) fails0.push('aucun panneau de composition avant meme la superposition');
+  else if (!avec) fails0.push('le panneau a disparu quand la superposition s est ouverte');
+  else if (avec.bas > boite.haut)
+    fails0.push(
+      `le panneau passe sous la superposition : son bas est a ${avec.bas} alors que la superposition commence a ${boite.haut}`,
+    );
+  traductionVue = 'sans objet';
 } else if (COMPOSE) {
   const ECRIT = 'hello everyone how is it going';
   const saisie = page.locator('#channel-chatroom [contenteditable="true"]');
@@ -449,7 +522,7 @@ if (RECYCLAGE) {
         .join(',')}] au lieu de es`,
     );
   traductionVue = 'sans objet';
-} else if (MAJ || COMPOSE) {
+} else if (MAJ || COMPOSE || ESQUIVE) {
   const sw = ctx.serviceWorkers()[0] ?? (await ctx.waitForEvent('serviceworker', { timeout: 20000 }));
   const id = await sw.evaluate(() => chrome.runtime.id);
   const popup = await ctx.newPage();
@@ -685,7 +758,7 @@ if (!traductionVue && console_.length) {
 
 const fails = [...fails0];
 if (!barreMontee) fails.push('le script de contenu ne s est pas execute');
-if (!MAJ && !COMPOSE && vuParLeMoteur.length === 0)
+if (!MAJ && !COMPOSE && !ESQUIVE && vuParLeMoteur.length === 0)
   fails.push('aucun moteur n a ete appele : rien n a traduit');
 const attendu = BASCULE ? REPLI : TRADUIT;
 
@@ -728,7 +801,7 @@ if (MAJ) {
       ? 'apres un changement de chaine, le message suivant n est plus traduit'
       : 'aucune traduction affichee sous le message',
   );
-else if (!RECYCLAGE && !MAJ && !COMPOSE && !traductionVue.includes(attendu))
+else if (!RECYCLAGE && !MAJ && !COMPOSE && !ESQUIVE && !traductionVue.includes(attendu))
   fails.push(
     `la traduction affichee ne vient pas du moteur attendu (${attendu}) : ${JSON.stringify(traductionVue)}`,
   );
@@ -743,4 +816,4 @@ if (fails.length) {
   console.error('FAIL: ' + fails.join(' ; '));
   process.exit(1);
 }
-console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}${NAVIGATION ? ' --navigation' : ''}${SURVOL ? ' --survol' : ''}${REGLAGES ? ' --reglages' : ''}${SEVENTV ? ' --seventv' : ''}${CACHE ? ' --cache' : ''}${MAJ ? ' --maj' : ''}${COMPOSE ? ' --compose' : ''}: OK`);
+console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}${NAVIGATION ? ' --navigation' : ''}${SURVOL ? ' --survol' : ''}${REGLAGES ? ' --reglages' : ''}${SEVENTV ? ' --seventv' : ''}${CACHE ? ' --cache' : ''}${MAJ ? ' --maj' : ''}${COMPOSE ? ' --compose' : ''}${ESQUIVE ? ' --esquive' : ''}: OK`);

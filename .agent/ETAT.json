@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-30T19:26:19.728Z",
+  "genere": "2026-08-30T19:30:35.100Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/gates-tracked",
-    "head": "e67c395587922aefee841bde1d0a0292586f9ed6",
-    "sujet": "Cover the version check end to end",
+    "head": "03c9d762fcb7a446359f9dc8756bdc1b2b3adabf",
+    "sujet": "Cover the compose side offline",
     "arbrePropre": false,
     "fichiersModifies": 4,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-23-ge67c395",
+    "decrit": "v2.9.2-24-g03c9d76",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -132,7 +132,7 @@
   ],
   "portes": {
     "runner": "scratchpad/harness/run-gates.mjs",
-    "enumerees": 34,
+    "enumerees": 35,
     "noms": [
       "snapshot",
       "names",
@@ -162,6 +162,7 @@
       "translate-cache",
       "translate-maj",
       "translate-compose",
+      "translate-esquive",
       "audit-strings",
       "audit-da",
       "audit-rtl",
@@ -223,7 +224,7 @@
   },
   "file": {
     "bloques": [
-      "**Emote picker dodge, compose panel.** `findOverlayTopAbove` uses guessed",
+      "**Emote picker dodge: only the Kick-specific half is still blocked.** The",
       "**Native review of the store text.** 8 languages of 10 on the Chrome side",
       "**Store submissions.** Chrome Web Store and AMO. Packages, listing text,",
       "**The screenshots show a real streamer**, their branding and real viewers'"

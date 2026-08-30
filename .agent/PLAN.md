@@ -80,12 +80,15 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Waiting on kil
 
-- [k] **Emote picker dodge, compose panel.** `findOverlayTopAbove` uses guessed
-  selectors and has never met Kick's real picker. Clicking the button
-  (`svg[data-ds-icon="Smile"]`, which carries no aria-label, no data-testid and
-  no title) opens `auth-modal` in the Playwright context even with
-  `kick_session` and `kick_session_id` present. Two attempts, same wall. Needs
-  kil's own Chrome, not the harness profile.
+- [k] **Emote picker dodge: only the Kick-specific half is still blocked.** The
+  mechanism is verified offline now. A synthetic overlay meeting the size gate,
+  40 by 40 and sitting directly above the composer, moves the preview from
+  625-663 to 403-441, clear of the overlay's top at 447, and disabling
+  `findOverlayTopAbove` leaves all 621 unit tests green while turning that gate
+  red. What remains, and it genuinely needs kil's own Chrome, is whether Kick's
+  real emote picker matches any of the six selectors in `OVERLAY_SELECTORS`:
+  Kick serves an `auth-modal` to the Playwright context, so the real picker
+  cannot be opened here.
 
 - [k] **Native review of the store text.** 8 languages of 10 on the Chrome side
   and 8 of 10 on AMO were written without a native reader, which the file states

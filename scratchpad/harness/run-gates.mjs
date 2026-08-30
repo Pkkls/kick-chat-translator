@@ -98,6 +98,11 @@ const GATES = [
   // la chaine. Couverture propre, mesuree : ne jamais transmettre la langue de
   // la chaine laisse les 621 tests verts et fait rougir cette porte.
   ['translate-compose', 'node', ['scratchpad/harness/translate-offline.mjs', '--compose']],
+  // L'esquive des panneaux que Kick ouvre au-dessus du compositeur. Couverture
+  // propre, mesuree : le calcul geometrique est teste unitairement, mais la
+  // recherche de la superposition dans un vrai DOM ne l'etait pas, et la
+  // desactiver laisse les 621 tests verts.
+  ['translate-esquive', 'node', ['scratchpad/harness/translate-offline.mjs', '--esquive']],
   ['audit-strings', 'python', ['scratchpad/audit_content_strings.py']],
   ['audit-da', 'python', ['scratchpad/audit_da.py']],
   ['audit-rtl', 'python', ['scratchpad/audit_rtl.py']],
