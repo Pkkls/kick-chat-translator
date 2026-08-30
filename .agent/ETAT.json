@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-30T20:47:35.397Z",
+  "genere": "2026-08-30T23:32:02.360Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
     "branche": "master",
-    "head": "55f57d737c70683c28dd939b9f36deabc5db8022",
-    "sujet": "Make the compose screenshot show the feature working",
+    "head": "7a742dd1c7fd5d7a2507739103f506b36b5ed828",
+    "sujet": "Record the 2.9.3 merge and close the screenshots item",
     "arbrePropre": false,
-    "fichiersModifies": 2,
+    "fichiersModifies": 4,
     "dernierTag": "v2.9.3",
-    "decrit": "v2.9.3",
+    "decrit": "v2.9.3-1-g7a742dd",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -18,7 +18,7 @@
     "ecarts": {
       "devcopy": {
         "derriere": 0,
-        "devant": 28,
+        "devant": 29,
         "aJour": false
       },
       "origin": {
@@ -250,6 +250,6 @@
     ],
     "nbBloques": 3,
     "nbOuverts": 2,
-    "nbFaits": 48
+    "nbFaits": 49
   }
 }

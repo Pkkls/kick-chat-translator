@@ -97,7 +97,22 @@ const vu = await page.evaluate(() => ({
 await ctx.close();
 fs.rmSync(profile, { recursive: true, force: true });
 
+// Quel navigateur ce build vise. `package:all` construisait Chrome, empaquetait,
+// construisait Firefox, empaquetait, et s'arretait la : `dist/` restait le build
+// Firefox. Chrome n'en demarre pas le fond, qui declare `background.scripts` au
+// lieu d'un `service_worker`, donc aucun script de contenu n'arrive et l'interface
+// disparait entierement. Quiconque a `dist/` charge en extension non empaquetee
+// se retrouvait avec une extension muette apres une simple mise en paquet, et le
+// symptome ne disait rien de la cause.
+const viseFirefox =
+  !!manifeste.browser_specific_settings || Array.isArray(manifeste.background?.scripts);
+
 const fails = [];
+if (viseFirefox)
+  fails.push(
+    'dist/ contient le build Firefox : `background.scripts` et un bloc gecko. ' +
+      'Chrome ne le demarre pas. Relancer `npm run build`.',
+  );
 if (!vu.url.startsWith('https://kick.com/'))
   fails.push(`la page n a pas garde son URL kick.com : ${vu.url}`);
 if (!vu.style)

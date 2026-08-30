@@ -97,6 +97,19 @@ reads dist/, so it serialises behind any build. D touches no code.
 - [k] **Store submissions.** Chrome Web Store and AMO. Packages, listing text,
   dashboard fields and reviewer notes are ready; the accounts are kil's.
 
+- [x] **`package:all` used to leave `dist/` as the Firefox build.** It builds
+  Chrome, packs, builds Firefox, packs, and stopped there, so the working
+  directory kept the Firefox manifest: a `gecko` block and `background.scripts`
+  where Chrome wants a `service_worker`. Chrome starts nothing from it, so no
+  content script arrives and the whole interface disappears. Anyone running
+  `dist/` as an unpacked extension had a silent extension after a routine
+  packaging run, and the symptom said nothing about the cause. This is what
+  broke kil's browser after the 2.9.3 packaging. The script ends on
+  `npm run build` now, and `extension-load` names the cause before reporting
+  the missing content script, so the next occurrence reads as itself. Two
+  witnesses: building Firefox makes the gate say which build is in `dist/`, and
+  `package:all` leaves a Chrome manifest behind. The shipped archives were never
+  affected; both 2.9.3 zips hash the same before and after.
 - [x] **The screenshots no longer show anybody.** What was waiting on a decision
   was that the images carried a real broadcaster's channel, their branding and
   real viewers' handles. `store-shots-fixture.mjs` takes the same five on a
