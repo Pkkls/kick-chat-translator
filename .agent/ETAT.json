@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-30T19:21:45.966Z",
+  "genere": "2026-08-30T19:26:19.728Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/gates-tracked",
-    "head": "ea909a1f2b28cc85f59bceaf9096e09291465368",
-    "sujet": "Measure both caches, on cost and on display",
+    "head": "e67c395587922aefee841bde1d0a0292586f9ed6",
+    "sujet": "Cover the version check end to end",
     "arbrePropre": false,
     "fichiersModifies": 4,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-22-gea909a1",
+    "decrit": "v2.9.2-23-ge67c395",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -132,7 +132,7 @@
   ],
   "portes": {
     "runner": "scratchpad/harness/run-gates.mjs",
-    "enumerees": 33,
+    "enumerees": 34,
     "noms": [
       "snapshot",
       "names",
@@ -161,6 +161,7 @@
       "translate-seventv",
       "translate-cache",
       "translate-maj",
+      "translate-compose",
       "audit-strings",
       "audit-da",
       "audit-rtl",
@@ -229,6 +230,6 @@
     ],
     "nbBloques": 4,
     "nbOuverts": 3,
-    "nbFaits": 39
+    "nbFaits": 40
   }
 }

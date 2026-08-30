@@ -168,6 +168,19 @@ const CACHE = process.argv.includes('--cache');
  * interroge GitHub, et le popup dessine la banniere.
  */
 const MAJ = process.argv.includes('--maj');
+
+/**
+ * Dixieme mode, `--compose`. L'autre moitie du produit : on ecrit une reponse,
+ * un apercu apparait dans la langue de la chaine, et Ctrl+Entree la met a la
+ * place de ce qu'on a tape. La propriete qui compte n'est pas que l'apercu
+ * s'affiche, c'est vers QUELLE langue il traduit : la chaine, lue chez Kick, et
+ * pas la langue du lecteur. Se tromper la envoie un message poli dans la
+ * mauvaise langue devant tout le monde.
+ *
+ * La fixture repond `lang_iso: es` sur l'API de Kick, donc l'apercu doit partir
+ * en espagnol pendant que le chat entrant arrive en anglais.
+ */
+const COMPOSE = process.argv.includes('--compose');
 const RANGEES = 8;
 
 // Le chat de Kick reduit a son contrat, repris de `observer.test.ts` qui est
@@ -189,6 +202,8 @@ const FIXTURE = `<!doctype html><html lang="en"><head><meta charset="utf-8"><tit
     <div class="no-scrollbar" data-which="messages" style="height:600px;overflow:auto">
       <div data-index="0"><div class="w-full min-w-0 shrink-0"><button class="font-bold" style="color: rgb(1,2,3)">autre</button><span class="font-normal">buenos dias a todos</span></div></div>
     </div>
+    <div contenteditable="true" role="textbox" data-testid="chat-input" class="editor-input"
+         style="min-height:40px;border:1px solid #333"></div>
   </div>
 </body></html>`;
 
@@ -401,7 +416,40 @@ if (RECYCLAGE) {
   await page.waitForTimeout(6000);
   rangees = await lireRangees();
   traductionVue = rangees.find((r) => r.traductions.length)?.traductions[0] ?? null;
-} else if (MAJ) {
+} else if (COMPOSE) {
+  const ECRIT = 'hello everyone how is it going';
+  const saisie = page.locator('#channel-chatroom [contenteditable="true"]');
+  await saisie.click();
+  await saisie.type(ECRIT, { delay: 25 });
+  await page.waitForTimeout(9000);
+
+  const apercu = await page.evaluate(() => {
+    const p = document.querySelector('.kt-compose');
+    const t = p?.querySelector('.kt-compose-text');
+    return p ? { texte: (t ?? p).textContent ?? '', visible: !p.hasAttribute('hidden') } : null;
+  });
+  const versChaine = ciblesDemandees.filter((c) => c.includes(ECRIT));
+  console.log(
+    `compose          apercu ${apercu ? JSON.stringify(apercu.texte.trim().slice(0, 50)) : '(aucun)'}, ` +
+      `langue demandee ${versChaine.map((c) => c.split('|')[0]).join(',') || '(rien)'}`,
+  );
+
+  if (!apercu) fails0.push('aucun panneau de composition apres avoir tape une reponse');
+  else {
+    if (!apercu.visible) fails0.push('le panneau de composition est la mais cache');
+    if (!apercu.texte.includes(TRADUIT))
+      fails0.push(`l apercu ne vient pas du moteur : ${JSON.stringify(apercu.texte.slice(0, 60))}`);
+  }
+  if (versChaine.length === 0)
+    fails0.push('ce qui a ete tape n a jamais ete envoye au moteur : pas d apercu possible');
+  else if (!versChaine.every((c) => c.split('|')[0] === 'es'))
+    fails0.push(
+      `l apercu ne part pas vers la langue de la chaine : demande [${versChaine
+        .map((c) => c.split('|')[0])
+        .join(',')}] au lieu de es`,
+    );
+  traductionVue = 'sans objet';
+} else if (MAJ || COMPOSE) {
   const sw = ctx.serviceWorkers()[0] ?? (await ctx.waitForEvent('serviceworker', { timeout: 20000 }));
   const id = await sw.evaluate(() => chrome.runtime.id);
   const popup = await ctx.newPage();
@@ -637,7 +685,7 @@ if (!traductionVue && console_.length) {
 
 const fails = [...fails0];
 if (!barreMontee) fails.push('le script de contenu ne s est pas execute');
-if (!MAJ && vuParLeMoteur.length === 0)
+if (!MAJ && !COMPOSE && vuParLeMoteur.length === 0)
   fails.push('aucun moteur n a ete appele : rien n a traduit');
 const attendu = BASCULE ? REPLI : TRADUIT;
 
@@ -680,7 +728,7 @@ if (MAJ) {
       ? 'apres un changement de chaine, le message suivant n est plus traduit'
       : 'aucune traduction affichee sous le message',
   );
-else if (!RECYCLAGE && !traductionVue.includes(attendu))
+else if (!RECYCLAGE && !MAJ && !COMPOSE && !traductionVue.includes(attendu))
   fails.push(
     `la traduction affichee ne vient pas du moteur attendu (${attendu}) : ${JSON.stringify(traductionVue)}`,
   );
@@ -695,4 +743,4 @@ if (fails.length) {
   console.error('FAIL: ' + fails.join(' ; '));
   process.exit(1);
 }
-console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}${NAVIGATION ? ' --navigation' : ''}${SURVOL ? ' --survol' : ''}${REGLAGES ? ' --reglages' : ''}${SEVENTV ? ' --seventv' : ''}${CACHE ? ' --cache' : ''}${MAJ ? ' --maj' : ''}: OK`);
+console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}${NAVIGATION ? ' --navigation' : ''}${SURVOL ? ' --survol' : ''}${REGLAGES ? ' --reglages' : ''}${SEVENTV ? ' --seventv' : ''}${CACHE ? ' --cache' : ''}${MAJ ? ' --maj' : ''}${COMPOSE ? ' --compose' : ''}: OK`);

@@ -203,6 +203,17 @@ reads dist/, so it serialises behind any build. D touches no code.
   gitignored `scratchpad/uxkit.path`, then the repository's own
   `node_modules`, and exits 2 with the three ways to fix it when none is there.
   Exit 2 rather than 1 on purpose: a missing prerequisite is not a failed gate.
+- [x] **The compose side is covered offline.** Writing a reply and seeing it in
+  the channel's language is half the product, and it was only ever verified
+  live. The property that matters is not that a preview appears, it is which
+  language it targets: the channel's, read from Kick, and not the reader's.
+  Getting that wrong sends a polite sentence in the wrong language in front of
+  everyone. The fixture answers `lang_iso: es` on Kick's API while incoming chat
+  goes to English, so the two are told apart. Clean coverage, measured: never
+  handing the channel language to the compose controller leaves all 621 unit
+  tests green and turns this gate red. The product's fallback is sound, by the
+  way: with no channel language it shows nothing rather than translating to the
+  wrong one.
 - [x] **The version check is covered end to end.** The extension reads the
   latest GitHub release to tell a reader a newer version exists, and that read
   is one of the permissions both store listings have to justify. If it breaks,

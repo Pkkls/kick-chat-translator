@@ -94,6 +94,10 @@ const GATES = [
   // mesuree : forcer la reponse du worker a "pas de mise a jour" laisse les 621
   // tests verts et fait rougir cette porte.
   ['translate-maj', 'node', ['scratchpad/harness/translate-offline.mjs', '--maj']],
+  // L'autre moitie du produit : ecrire une reponse et la voir dans la langue de
+  // la chaine. Couverture propre, mesuree : ne jamais transmettre la langue de
+  // la chaine laisse les 621 tests verts et fait rougir cette porte.
+  ['translate-compose', 'node', ['scratchpad/harness/translate-offline.mjs', '--compose']],
   ['audit-strings', 'python', ['scratchpad/audit_content_strings.py']],
   ['audit-da', 'python', ['scratchpad/audit_da.py']],
   ['audit-rtl', 'python', ['scratchpad/audit_rtl.py']],
