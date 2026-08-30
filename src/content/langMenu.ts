@@ -461,13 +461,11 @@ export function placeLangMenu(
   // knows nothing about the window. Measured at 420x520 with the chip at y=194,
   // the menu opened upward and its top landed at -132, a third of the list
   // above the top of the screen with no way to reach it.
-  const flow = menu.getBoundingClientRect();
-  const insideViewport =
-    flow.top >= 0 &&
-    flow.left >= 0 &&
-    flow.right <= window.innerWidth &&
-    flow.bottom <= window.innerHeight;
-  if (!isClipped(anchor) && insideViewport) return;
+  // Plus de repli sur la position de flux. Le panneau pend du body : il n'a
+  // plus de place naturelle a cote de son ancre, donc ne rien faire le laisse
+  // en haut a gauche de la page. isClipped reste exporte et teste, le rognage
+  // qu'il detecte est toujours reel, il n'est simplement plus la seule raison
+  // de placer a la main.
 
   // Seen live on kick.com: this ran off the left of the chat column and over
   // the video player, and off the top of the window, because the only bound it

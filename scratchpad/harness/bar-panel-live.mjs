@@ -90,6 +90,28 @@ const shut = await panel.evaluate((el) => el.hidden);
 await btn.click();
 const open = await panel.evaluate((el) => el.hidden);
 
+const diagnostic = await page.evaluate(() => {
+  const el = document.querySelector('.kt-lang-panel');
+  const r = el.getBoundingClientRect();
+  return {
+    classes: el.className,
+    styleEnLigne: el.getAttribute('style') || '(aucun)',
+    position: getComputedStyle(el).position,
+    gauche: Math.round(r.left),
+    largeur: Math.round(r.width),
+    parentPositionne: (() => {
+      for (let n = el.parentElement; n; n = n.parentElement) {
+        if (getComputedStyle(n).position !== 'static') {
+          const b = n.getBoundingClientRect();
+          return n.className.slice(0, 40) + ' @' + Math.round(b.left) + ' w' + Math.round(b.width);
+        }
+      }
+      return '(aucun, donc le viewport)';
+    })(),
+  };
+});
+console.log('diagnostic', JSON.stringify(diagnostic));
+
 const m = await page.evaluate(() => {
   const box = (s) => document.querySelector(s).getBoundingClientRect();
   const chat = box('#panel');
@@ -100,8 +122,25 @@ const m = await page.evaluate(() => {
     chatH: Math.round(chat.height),
     panelH: Math.round(p.height),
     part: Math.round((p.height / chat.height) * 100),
-    escapesWindow: p.top < 0 || p.left < 0 || p.right > innerWidth || p.bottom > innerHeight,
-    tiles: [...document.querySelectorAll('.kt-lang-fav')].map((t) => t.textContent.trim()),
+    // Les quatre bords, pas un booleen. Un "ca deborde" ne dit ni de combien ni
+    // de quel cote, et une tolerance d'un pixel evite de signaler un arrondi
+    // sous-pixel comme un defaut : c'est arrive sur ce panneau, 0.2px rapportes
+    // comme hors ecran.
+    bords: {
+      haut: Math.round(p.top),
+      gauche: Math.round(p.left),
+      droite: +(innerWidth - p.right).toFixed(1),
+      bas: +(innerHeight - p.bottom).toFixed(1),
+    },
+    escapesWindow: p.top < -1 || p.left < -1 || p.right > innerWidth + 1 || p.bottom > innerHeight + 1,
+    // Par le code, plus par le texte visible : la tuile imprimait son code sous
+    // le drapeau a 9px, ce que personne ne lisait et qui repetait son nom
+    // accessible. Le drapeau a pris la place, donc l'identite se lit dans
+    // dataset.code et le nom dans aria-label.
+    tiles: [...document.querySelectorAll('.kt-lang-fav')].map((t) => t.dataset.code ?? ''),
+    tilesNommees: [...document.querySelectorAll('.kt-lang-fav')].every(
+      (t) => (t.getAttribute('aria-label') ?? '').length > 1,
+    ),
     rowHeights: heights,
     // The auto row carries a globe, not a flag, and that is the point: no
     // country speaks "the channel's language". Every other row must draw one.
@@ -136,10 +175,15 @@ await browser.close();
 const fails = [];
 if (!shut) fails.push('the panel was already open before the button was clicked');
 if (open) fails.push('the button did not open the panel');
-if (m.escapesWindow) fails.push('the panel leaves the window');
-if (m.part > 45) fails.push(`covers ${m.part}% of the chat, the native list covered 95%`);
+if (m.escapesWindow) fails.push(`the panel leaves the window: ${JSON.stringify(m.bords)}`);
+// Le panneau a grandi en hauteur exprès : la liste montrait 6 rangees sur 40,
+// elle en montre 25. Le seuil de 45% datait d'avant et mordait a 46. Ce que
+// cette assertion protege est l'ecart avec la liste native de Kick, qui couvre
+// 95% ; a 60 elle le protege toujours et laisse vivre le choix fait depuis.
+if (m.part > 60) fails.push(`covers ${m.part}% of the chat, the native list covered 95%`);
 if (m.rowHeights.length !== 1) fails.push(`uneven rows: ${m.rowHeights.join(', ')}px`);
-if (m.tiles.join(',') !== 'JA,TR,FR,RU') fails.push(`favourite tiles read ${m.tiles.join(',')}`);
+if (m.tiles.join(',') !== 'ja,tr,fr,ru') fails.push(`favourite tiles are ${m.tiles.join(',') || '(vides)'}`);
+if (!m.tilesNommees) fails.push('une tuile de favori sans nom accessible : le drapeau seul ne se lit pas au lecteur d ecran');
 if (m.globes !== 1) fails.push(`${m.globes} rows carry a globe, expected exactly the auto row`);
 if (m.flagsDrawn !== m.rows - 1)
   fails.push(`${m.rows - 1 - m.flagsDrawn} of ${m.rows - 1} language rows draw no flag`);

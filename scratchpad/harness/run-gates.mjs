@@ -39,6 +39,15 @@ const GATES = [
   ['long-content', 'node', ['scratchpad/harness/long-content.mjs']],
   ['da-surfaces', 'node', ['scratchpad/harness/da-surfaces.mjs']],
   ['boundaries', 'node', ['scratchpad/harness/boundaries.mjs']],
+  // Wired late. They existed and asserted and simply were not in this list, so
+  // nothing ran them: bar-panel-live was reporting a panel 4px off the left of
+  // the window, which turned out to be a real placement bug, for as long as it
+  // sat outside. Three shooters stay out on purpose (flag-render,
+  // lang-panel-shoot, probe-row-space): they draw images and print numbers for a
+  // human and assert nothing, so adding them would buy runtime and no verdict.
+  ['bar-panel-live', 'node', ['scratchpad/harness/bar-panel-live.mjs']],
+  ['flags-preview', 'node', ['scratchpad/harness/flags-preview.mjs']],
+  ['lang-panel-measure', 'node', ['scratchpad/harness/lang-panel-measure.mjs']],
   ['audit-strings', 'python', ['scratchpad/audit_content_strings.py']],
   ['audit-da', 'python', ['scratchpad/audit_da.py']],
   ['audit-rtl', 'python', ['scratchpad/audit_rtl.py']],

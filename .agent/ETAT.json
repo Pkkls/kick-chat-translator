@@ -1,5 +1,5 @@
 {
-  "genere": "2026-08-30T05:54:05.532Z",
+  "genere": "2026-08-30T06:39:11.559Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
@@ -12,13 +12,13 @@
         ]
       }
     ],
-    "branche": "master",
-    "head": "39707289fa7f4b2bfd53120ecfb832554b8b63f2",
-    "sujet": "Add .agent: a standing frame, a generated state, and a queue",
+    "branche": "feat/gates-tracked",
+    "head": "4837c24b107a8e25794f3593f88353744b7b6d1d",
+    "sujet": "Track the gates, and take one machine's path out of them",
     "arbrePropre": false,
-    "fichiersModifies": 5,
+    "fichiersModifies": 11,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-2-g3970728",
+    "decrit": "v2.9.2-3-g4837c24",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git",
@@ -26,9 +26,7 @@
     },
     "ecarts": {
       "devcopy": {
-        "derriere": 0,
-        "devant": 0,
-        "aJour": true
+        "note": "pas de devcopy/feat/gates-tracked connu localement"
       },
       "origin": {
         "derriere": 0,
@@ -39,9 +37,7 @@
         ]
       },
       "public": {
-        "derriere": 0,
-        "devant": 17,
-        "aJour": false,
+        "note": "pas de public/feat/gates-tracked connu localement",
         "aliasDe": [
           "origin"
         ]
@@ -154,7 +150,7 @@
   ],
   "portes": {
     "runner": "scratchpad/harness/run-gates.mjs",
-    "enumerees": 18,
+    "enumerees": 21,
     "noms": [
       "snapshot",
       "names",
@@ -170,22 +166,22 @@
       "long-content",
       "da-surfaces",
       "boundaries",
+      "bar-panel-live",
+      "flags-preview",
+      "lang-panel-measure",
       "audit-strings",
       "audit-da",
       "audit-rtl",
       "audit-surfaces-rtl"
     ],
-    "harnaisSurDisque": 34,
+    "harnaisSurDisque": 33,
     "orphelins": [
-      "bar-panel-live",
       "bar-panel-mesure",
       "bar-select",
       "compose-kick-live",
       "flag-render",
-      "flags-preview",
       "kick-dom-recon",
       "lang-menu-live",
-      "lang-panel-measure",
       "lang-panel-shoot",
       "latency",
       "live-fallback",
@@ -193,12 +189,11 @@
       "live-nav",
       "live-profile",
       "live-recycle",
-      "playwright",
       "probe-row-space",
       "session-check",
       "store-shots"
     ],
-    "nbOrphelins": 20,
+    "nbOrphelins": 16,
     "note": "Les portes live ouvrent un navigateur sur kick.com et ne sont dans aucun runner. Un orphelin n est pas forcement un defaut ; un orphelin qui couvre du code livre en est un."
   },
   "releaseGithub": {
@@ -225,7 +220,7 @@
       "**The screenshots show a real streamer**, their branding and real viewers'"
     ],
     "nbBloques": 4,
-    "nbOuverts": 5,
-    "nbFaits": 10
+    "nbOuverts": 6,
+    "nbFaits": 14
   }
 }

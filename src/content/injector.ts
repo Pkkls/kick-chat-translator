@@ -467,13 +467,32 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
       document.removeEventListener('click', onOutside, true);
       return;
     }
-    if (!langMenu.hidden && !langHost.contains(e.target as Node)) closeLang();
+    // Le menu vit sur le body maintenant, donc langHost ne le contient plus :
+    // sans ce second test, un clic DANS la liste la refermait avant que la
+    // selection n'aboutisse.
+    const dedans = langHost.contains(e.target as Node) || langMenu.contains(e.target as Node);
+    if (!langMenu.hidden && !dedans) closeLang();
   };
   document.addEventListener('click', onOutside, true);
 
   langHost.appendChild(langPick);
-  langHost.appendChild(langMenu);
   bar.appendChild(langHost);
+
+  // The panel goes on the body, not inside the bar.
+  //
+  // Measured on a live channel at 1000x750: placeLangMenu computed a correct
+  // position, wrote `top: 222px` inline, and the panel rendered at y=711, which
+  // put 362px of it below the bottom of the window with a third of the list
+  // unreachable. A `position: fixed` element is only viewport-relative while no
+  // ancestor establishes a containing block for it, and `.kt-float` carries a
+  // backdrop-filter, which does exactly that. The offset was the bar's own top,
+  // 489 + 222 = 711, to the pixel.
+  //
+  // So the bug was ours, not Kick's, and the fix is the one the compose panel
+  // and the chip's menu already use: hang it off the body, where `fixed` means
+  // what the placement code assumes. It also survives Kick adding a transform
+  // anywhere above the bar, which no amount of care inside the bar would.
+  document.body.appendChild(langMenu);
 
   const count = document.createElement('span');
   count.className = 'kt-float-count';
@@ -672,4 +691,7 @@ export function unmountFloatingBar(): void {
   // off screen, scoping this would strand it there for good. Removing every
   // match is what "unmount" means, and it cannot pick the wrong one.
   for (const stale of document.querySelectorAll(`#${FLOAT_ID}`)) stale.remove();
+  // Le panneau n'est plus un enfant de la barre : le retirer avec elle, sinon
+  // un remontage par la SPA de Kick en laisse un par passage.
+  for (const stale of document.querySelectorAll(`#${FLOAT_LANG_MENU_ID}`)) stale.remove();
 }

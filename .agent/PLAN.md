@@ -45,12 +45,19 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Open
 
-- [ ] **19 harnesses of 35 are in no runner.** `run-gates.mjs` enumerates 18
-  offline gates. The live ones open a browser onto kick.com and are excluded on
-  purpose, but `lang-menu-live`, `bar-panel-mesure` and `compose-kick-live` are
-  the only things covering the reworked language UI and nothing runs them.
-  Decide per orphan: wire it, retire it, or write down why it is neither. A live
-  runner with its own entry point is probably the shape.
+- [ ] **The live gates are not deterministic.** Two runs of the same suite,
+  minutes apart, disagreed: `kick-dom-recon` and `bar-panel-mesure` failed in
+  one and passed individually in the other. They follow whichever channel
+  `/browse` serves and depend on its chat, its load and the network. A suite
+  that goes red on a quiet channel trains people to skip it, which is the
+  failure mode `audit_da.py` already documents for itself. Worth pricing: a
+  retry on a differing channel, a distinction between "the product is wrong" and
+  "the page gave me nothing to measure", or accepting the noise and saying so.
+
+- [ ] **`latency` cannot run in a normal pass.** It needs
+  `npm run build:metrics`, and every other gate needs the ordinary build, so a
+  suite that builds normally always reports it as a prerequisite. It exits 2 and
+  says why, which is honest, but nothing ever runs it.
 
 - [ ] **`node_modules` is in the git history**: 4308 files added, repository at
   10.9 MB. Public since 2026-08-29, so it is a clone cost for everyone. Removing
@@ -95,6 +102,29 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Done, kept for the record
 
+- [x] **Runner coverage: 31 harnesses of 33.** 21 offline gates plus 10 in
+  `run-live.mjs`. The six left have a stated reason rather than a silence:
+  `flag-render`, `lang-panel-shoot`, `probe-row-space` and `bar-select` assert
+  nothing and exist to draw or print for a human; `store-shots` produces the
+  listing screenshots; `live-profile` is the window someone signs into by hand.
+  Wiring an assertion-free script buys runtime and no verdict.
+
+- [x] **A `position: fixed` panel that was not viewport-relative.** Found by a
+  harness nothing was running. `bar-panel-live` reported the bar's language
+  panel 4px off the left of the window; live at 1000x750 it hung 362px below
+  the bottom, with a third of the list unreachable. The placement code was
+  right all along, writing `top: 222px` inline while the panel rendered at
+  y=711: `.kt-float` carries a `backdrop-filter`, which makes it the containing
+  block for any fixed descendant, and 489 + 222 = 711 to the pixel. Our CSS,
+  not Kick's. The panel hangs off the body now, like the compose preview and
+  the chip's menu, and measures clean at 1000x750, 1280x900 and 1500x950.
+- [x] **A live runner.** `run-live.mjs`, two workers by default rather than six:
+  these open real pages on one host. The three that need a signed-in profile are
+  excluded unless asked for, since failing because nobody signed in is noise.
+- [x] **Three offline harnesses wired into the runner**, `bar-panel-live`,
+  `flags-preview` and `lang-panel-measure`. Three others stay out and the runner
+  says why: they draw images and assert nothing, so running them would buy time
+  and no verdict.
 - [x] **The quality apparatus is tracked.** It was on one machine and nowhere
   else: `git ls-files scratchpad/` returned 0 while `PROMPT.md` told the next
   session to run a gate runner a fresh clone would not have. 40 files enter, 291

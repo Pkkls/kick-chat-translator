@@ -108,8 +108,15 @@ const vu = await page.evaluate(() => {
     return { w: Math.round(r.width), h: Math.round(r.height) };
   };
 
-  const panel = document.querySelector('.kt-lang-panel');
-  if (!panel || panel.hidden) return { ouvert: false };
+  // Combien y en a-t-il. Le panneau pend du body depuis qu'un backdrop-filter
+  // sur la barre lui volait son bloc conteneur ; un remontage par la SPA de
+  // Kick peut donc en laisser plusieurs, et querySelector rendrait le premier,
+  // cache, en faisant croire que rien ne s'ouvre.
+  const tous = [...document.querySelectorAll('.kt-lang-panel')];
+  const panel = tous.find((p) => !p.hidden) ?? tous[0];
+  if (!panel || panel.hidden) {
+    return { ouvert: false, panneauxDansLeDom: tous.length, tousCaches: tous.every((p) => p.hidden) };
+  }
   const pr = panel.getBoundingClientRect();
   const rows = [...panel.querySelectorAll('.kt-lang-row')];
   const favs = [...panel.querySelectorAll('.kt-lang-fav')];
@@ -162,8 +169,49 @@ const vu = await page.evaluate(() => {
 
   const cs = getComputedStyle(panel);
   const lr = liste.getBoundingClientRect();
+  // Ce que placeLangMenu a decide, et avec quoi il l'a decide. Un panneau qui
+  // sort de la fenetre ne dit pas si le clamp n'a pas tourne ou s'il a mal
+  // calcule ; ces champs le disent.
+  const ancre = document.querySelector('.kt-float-lang');
+  const ar = ancre?.getBoundingClientRect();
+  const placement = {
+    classes: panel.className,
+    styleEnLigne: panel.getAttribute('style') || '(aucun)',
+    position: cs.position,
+    ancre: ar ? { haut: Math.round(ar.top), bas: Math.round(ar.bottom) } : null,
+    placeAuDessus: ar ? Math.round(ar.top - pr.bottom) : null,
+    scrollHeight: panel.scrollHeight,
+    placeAvantMesure: Math.round(pr.top),
+    // Qui vole le bloc conteneur d'un position:fixed. transform, filter,
+    // perspective, backdrop-filter, contain et will-change le font tous, et
+    // alors `top` cesse d'etre relatif a la fenetre.
+    volDeBlocConteneur: (() => {
+      const coupables = [];
+      for (let n = panel.parentElement; n; n = n.parentElement) {
+        const s2 = getComputedStyle(n);
+        const causes = [];
+        if (s2.transform !== 'none') causes.push('transform:' + s2.transform.slice(0, 30));
+        if (s2.filter !== 'none') causes.push('filter:' + s2.filter.slice(0, 20));
+        if (s2.perspective !== 'none') causes.push('perspective');
+        if (s2.backdropFilter && s2.backdropFilter !== 'none') causes.push('backdrop-filter');
+        if (/paint|layout|strict|content/.test(s2.contain)) causes.push('contain:' + s2.contain);
+        if (/transform|filter|perspective/.test(s2.willChange)) causes.push('will-change:' + s2.willChange);
+        if (causes.length) {
+          const b = n.getBoundingClientRect();
+          coupables.push({
+            el: n.tagName.toLowerCase() + (typeof n.className === 'string' && n.className ? '.' + n.className.trim().split(/\s+/).slice(0, 2).join('.') : ''),
+            haut: Math.round(b.top),
+            gauche: Math.round(b.left),
+            causes,
+          });
+        }
+      }
+      return coupables;
+    })(),
+  };
   return {
     ouvert: true,
+    panneauxDansLeDom: tous.length,
     panneau: { x: Math.round(pr.x), y: Math.round(pr.y), w: Math.round(pr.width), h: Math.round(pr.height) },
     // Une tolerance d'un pixel : le panneau est aligne sur la colonne de chat,
     // qui finit elle-meme au bord de la fenetre, et le rect rend 0.2px de trop
@@ -202,6 +250,7 @@ const vu = await page.evaluate(() => {
     echRow,
     favs: echFav,
     couverture,
+    placement,
   };
 });
 
@@ -220,7 +269,8 @@ if (vu.ouvert) {
   const etat = () =>
     page.evaluate(() => {
       const a = document.activeElement;
-      const rows = [...document.querySelectorAll('.kt-lang-panel .kt-lang-row')];
+      const vis = [...document.querySelectorAll('.kt-lang-panel')].find((x) => !x.hidden);
+      const rows = vis ? [...vis.querySelectorAll('.kt-lang-row')] : [];
       return {
         classe: a?.className ?? null,
         estRangee: Boolean(a?.classList?.contains('kt-lang-row')),
@@ -232,17 +282,23 @@ if (vu.ouvert) {
 
   // Depuis le champ, pour verifier que l'entree au clavier existe.
   const entree = await page.evaluate(() => {
-    const p = document.querySelector('.kt-lang-panel');
-    p.querySelector('input').focus();
-    p.querySelector('input').dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }));
+    // Le panneau visible, pas le premier venu. Depuis qu'il pend du body, un
+    // remontage de la SPA peut en laisser un cache dans le document, et
+    // querySelector rendait celui-la : la sonde plantait sur un null au lieu
+    // de mesurer, et un plantage de sonde se lit comme une porte rouge.
+    const p = [...document.querySelectorAll('.kt-lang-panel')].find((x) => !x.hidden);
+    const inp = p?.querySelector('input');
+    if (!inp) return { classe: null, entre: false, note: 'aucun panneau visible avec un champ' };
+    inp.focus();
+    inp.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }));
     const a = document.activeElement;
     return { classe: a?.className ?? null, entre: Boolean(a?.classList?.contains('kt-lang-fav') || a?.classList?.contains('kt-lang-row')) };
   });
 
   // Puis depuis une rangee du milieu de la grille, la ou un pas se mesure.
   await page.evaluate(() => {
-    const rows = [...document.querySelectorAll('.kt-lang-panel .kt-lang-row')];
-    rows[6]?.focus();
+    const vis = [...document.querySelectorAll('.kt-lang-panel')].find((x) => !x.hidden);
+    (vis ? [...vis.querySelectorAll('.kt-lang-row')] : [])[6]?.focus();
   });
   const a0 = await etat();
   await page.keyboard.press('ArrowDown');

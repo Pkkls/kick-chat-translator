@@ -189,9 +189,13 @@ function portes() {
     if (bloc) enumerees = [...bloc[1].matchAll(/^\s*\[\s*'([^']+)'/gm)].map((m) => m[1]);
   }
   const dir = path.join(ROOT, 'scratchpad/harness');
+  // Runners and shared modules are not gates and must not be counted as
+  // orphans: doing so inflated the number by two and made the figure the queue
+  // quotes wrong.
+  const PAS_DES_PORTES = new Set(['run-gates.mjs', 'run-live.mjs', 'playwright.mjs']);
   const surDisque = existsSync(dir)
     ? readdirSync(dir)
-        .filter((f) => f.endsWith('.mjs') && f !== 'run-gates.mjs')
+        .filter((f) => f.endsWith('.mjs') && !PAS_DES_PORTES.has(f))
         .map((f) => f.replace(/\.mjs$/, ''))
     : [];
   const orphelins = surDisque.filter((n) => !enumerees.includes(n)).sort();

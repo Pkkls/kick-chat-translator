@@ -425,7 +425,11 @@ describe('injector artifacts', () => {
       const bar = mount(h);
       const pick = bar.querySelector<HTMLElement>('.kt-float-lang')!;
       pick.click();
-      const row = bar.querySelector<HTMLElement>('.kt-lang-row[data-code="ja"]');
+      // Le panneau pend du document, plus de la barre : un backdrop-filter sur
+      // la barre lui volait son bloc conteneur et un position:fixed y rendait
+      // 489px plus bas que son propre `top`. Les tests le cherchent la ou il
+      // est, sinon ils testent une version qui n'existe plus.
+      const row = document.querySelector<HTMLElement>('.kt-lang-row[data-code="ja"]');
       expect(row).not.toBeNull();
       row!.click();
       expect(h.onTargetLang).toHaveBeenCalledWith('ja');
@@ -440,9 +444,12 @@ describe('injector artifacts', () => {
       const bar = mount(h);
       const pick = bar.querySelector<HTMLElement>('.kt-float-lang')!;
       pick.click();
-      const panel = bar.querySelector<HTMLElement>('.kt-lang-panel')!;
+      const panel = document.querySelector<HTMLElement>('.kt-lang-panel')!;
       expect(panel.hidden).toBe(false);
-      bar.querySelector<HTMLElement>('.kt-lang-row[data-code="ja"]')!.click();
+      // Et il n'est pas dans la barre : c'est la moitie du correctif, donc
+      // c'est une assertion et pas un detail d'implementation.
+      expect(bar.contains(panel)).toBe(false);
+      document.querySelector<HTMLElement>('.kt-lang-row[data-code="ja"]')!.click();
       expect(panel.hidden).toBe(true);
     });
 
@@ -452,7 +459,7 @@ describe('injector artifacts', () => {
       const h = handlers();
       const bar = mount(h, { favoriteLangs: ['ja', 'tr'] });
       bar.querySelector<HTMLElement>('.kt-float-lang')!.click();
-      const tiles = [...bar.querySelectorAll<HTMLElement>('.kt-lang-fav')];
+      const tiles = [...document.querySelectorAll<HTMLElement>('.kt-lang-fav')];
       // By code, not by visible text: the tile used to print the ISO code under
       // the flag at 9px, which nobody read and which repeated the accessible
       // name. The flag has that room now, so the assertion follows the identity
