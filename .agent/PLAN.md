@@ -203,6 +203,16 @@ reads dist/, so it serialises behind any build. D touches no code.
   gitignored `scratchpad/uxkit.path`, then the repository's own
   `node_modules`, and exits 2 with the three ways to fix it when none is there.
   Exit 2 rather than 1 on purpose: a missing prerequisite is not a failed gate.
+- [x] **The version check is covered end to end.** The extension reads the
+  latest GitHub release to tell a reader a newer version exists, and that read
+  is one of the permissions both store listings have to justify. If it breaks,
+  everyone stays on an old version and nothing says so.
+  `updateChecker.store.test.ts` covers the decision with `fetch` stubbed and the
+  function called directly; what nothing covered is the trip itself, popup asks
+  the service worker, worker asks GitHub, popup draws the banner. The gate
+  serves a release announcing v99.0.0 and reads the banner's text and link.
+  Clean coverage, measured: forcing the worker's answer to "no update" leaves
+  all 621 unit tests green and turns this gate red.
 - [x] **Both caches are measured, on cost and on display.** The same line comes
   round constantly in chat, and two caches are meant to catch it: the in-tab one
   in `pipeline.ts` and the service worker's. Neither was checked end to end,

@@ -155,6 +155,19 @@ const SEVENTV = process.argv.includes('--seventv');
  * verrait un zero qui ne prouverait rien.
  */
 const CACHE = process.argv.includes('--cache');
+
+/**
+ * Neuvieme mode, `--maj`. L'extension lit la derniere release publiee sur GitHub
+ * pour dire au lecteur qu'une version existe, et c'est une des permissions
+ * qu'il faut justifier dans les fiches des stores. Si ce chemin casse, tout le
+ * monde reste sur une vieille version sans rien voir.
+ *
+ * `updateChecker.store.test.ts` couvre deja la decision elle-meme, mais avec
+ * `fetch` bouchonne et en appelant la fonction directement. Ce qui n'est couvert
+ * nulle part est le trajet complet : le popup demande au service worker, celui-ci
+ * interroge GitHub, et le popup dessine la banniere.
+ */
+const MAJ = process.argv.includes('--maj');
 const RANGEES = 8;
 
 // Le chat de Kick reduit a son contrat, repris de `observer.test.ts` qui est
@@ -201,6 +214,15 @@ const ciblesDemandees = [];
 // vrai site pendant que les sous-ressources, elles, etaient bien interceptees.
 // Une expression reguliere prend les deux formes.
 const KICK = /^https?:\/\/(www\.)?kick\.com\//;
+
+await ctx.route('**://api.github.com/**', async (route) => {
+  vuParLeMoteur.push('github');
+  await route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({ tag_name: 'v99.0.0' }),
+  });
+});
 
 await ctx.route('**://translate.googleapis.com/**', async (route) => {
   vuParLeMoteur.push('google');
@@ -379,6 +401,36 @@ if (RECYCLAGE) {
   await page.waitForTimeout(6000);
   rangees = await lireRangees();
   traductionVue = rangees.find((r) => r.traductions.length)?.traductions[0] ?? null;
+} else if (MAJ) {
+  const sw = ctx.serviceWorkers()[0] ?? (await ctx.waitForEvent('serviceworker', { timeout: 20000 }));
+  const id = await sw.evaluate(() => chrome.runtime.id);
+  const popup = await ctx.newPage();
+  await popup.goto(`chrome-extension://${id}/src/popup/index.html`, {
+    waitUntil: 'domcontentloaded',
+  });
+  await popup.waitForTimeout(6000);
+
+  const banniere = await popup.evaluate(() => {
+    const a = [...document.querySelectorAll('a')].find((e) =>
+      (e.textContent ?? '').toLowerCase().includes('update available'),
+    );
+    return a ? { texte: a.textContent ?? '', titre: a.getAttribute('title') ?? '', href: a.href } : null;
+  });
+  await popup.close();
+
+  console.log(`maj              ${banniere ? JSON.stringify(banniere.texte.trim()) : '(aucune banniere)'}`);
+  if (!banniere)
+    fails0.push('aucune banniere de mise a jour dans le popup alors que la release annonce v99.0.0');
+  else {
+    if (!banniere.texte.includes('99.0.0'))
+      fails0.push(`la banniere n annonce pas la version publiee : ${JSON.stringify(banniere.texte)}`);
+    if (!banniere.href.includes('github.com'))
+      fails0.push(`la banniere ne mene pas aux releases : ${banniere.href}`);
+  }
+  if (!vuParLeMoteur.includes('github'))
+    fails0.push('la release GitHub n a jamais ete demandee : rien ne verifie les versions');
+  // Ce mode ne juge pas la traduction.
+  traductionVue = 'sans objet';
 } else if (CACHE) {
   const REPETE = 'hola a todos como va la partida';
   await poserRangees([REPETE], 1);
@@ -585,7 +637,7 @@ if (!traductionVue && console_.length) {
 
 const fails = [...fails0];
 if (!barreMontee) fails.push('le script de contenu ne s est pas execute');
-if (vuParLeMoteur.length === 0)
+if (!MAJ && vuParLeMoteur.length === 0)
   fails.push('aucun moteur n a ete appele : rien n a traduit');
 const attendu = BASCULE ? REPLI : TRADUIT;
 
@@ -620,7 +672,9 @@ if (RECYCLAGE) {
         'les rangees reutilisees n ont pas ete retraduites',
     );
 }
-if (!RECYCLAGE && traductionVue === null)
+if (MAJ) {
+  // rien de plus a dire sur la traduction dans ce mode
+} else if (!RECYCLAGE && traductionVue === null)
   fails.push(
     NAVIGATION
       ? 'apres un changement de chaine, le message suivant n est plus traduit'
@@ -641,4 +695,4 @@ if (fails.length) {
   console.error('FAIL: ' + fails.join(' ; '));
   process.exit(1);
 }
-console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}${NAVIGATION ? ' --navigation' : ''}${SURVOL ? ' --survol' : ''}${REGLAGES ? ' --reglages' : ''}${SEVENTV ? ' --seventv' : ''}${CACHE ? ' --cache' : ''}: OK`);
+console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}${NAVIGATION ? ' --navigation' : ''}${SURVOL ? ' --survol' : ''}${REGLAGES ? ' --reglages' : ''}${SEVENTV ? ' --seventv' : ''}${CACHE ? ' --cache' : ''}${MAJ ? ' --maj' : ''}: OK`);

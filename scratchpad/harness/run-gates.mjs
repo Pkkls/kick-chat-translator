@@ -89,6 +89,11 @@ const GATES = [
   // verts et fait rougir cette porte, alors que toute repetition d'un message
   // n'afficherait plus rien.
   ['translate-cache', 'node', ['scratchpad/harness/translate-offline.mjs', '--cache']],
+  // Le trajet complet de la verification de version : le popup demande, le
+  // service worker interroge GitHub, la banniere se dessine. Couverture propre,
+  // mesuree : forcer la reponse du worker a "pas de mise a jour" laisse les 621
+  // tests verts et fait rougir cette porte.
+  ['translate-maj', 'node', ['scratchpad/harness/translate-offline.mjs', '--maj']],
   ['audit-strings', 'python', ['scratchpad/audit_content_strings.py']],
   ['audit-da', 'python', ['scratchpad/audit_da.py']],
   ['audit-rtl', 'python', ['scratchpad/audit_rtl.py']],
