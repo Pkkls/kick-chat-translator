@@ -100,6 +100,14 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Done, kept for the record
 
+- [x] **The two reworked menus have an accessibility pass.** axe reports zero
+  violations on the chip menu in both themes, checked against a doctored copy
+  that it does report; target size passes with 96 targets. The kit's keyboard
+  gate fails on the saved HTML because a dump carries the DOM and not the
+  listeners, so the arrows were measured where they exist instead: Down +3,
+  Right +1, Up -3, three columns, in dark, light and RTL. Asserted now, with
+  forcing the column count to 1 as the witness.
+
 - [x] **Czech added to both listings, on measurement rather than inference.**
   A first pass mapped country to language and named Polish as the biggest
   uncovered group. The page-title report says which localised store page people

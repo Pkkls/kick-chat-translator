@@ -261,9 +261,48 @@ for (const [scheme, dir] of [
   // one were written by a hand-typed harness and describe a chip that no longer
   // exists; auditing those is auditing a memory.
   writeFileSync(path.join(HERE, `${name}.html`), await page.content(), 'utf8');
+  // Le clavier, dans un navigateur ou les ecouteurs existent.
+  //
+  // La porte clavier du kit lit le dump HTML de ce harnais et rapporte que les
+  // fleches ne bougent jamais le focus. C'est vrai du fichier et faux du
+  // produit : le dump porte le DOM rendu, pas les ecouteurs, parce que le
+  // montage se fait par page.evaluate et n'est pas dans la page sauvegardee.
+  // La mesure qui tranche se prend ici, la page vivante.
+  const clavier = await page.evaluate(async () => {
+    const attendre = (ms) => new Promise((r) => setTimeout(r, ms));
+    const chip = document.querySelector('.kt-chip');
+    if (!chip) return { erreur: 'pas de puce' };
+    if (document.querySelector('.kt-chip-menu')?.hidden !== false) chip.click();
+    await attendre(200);
+    const menu = document.querySelector('.kt-chip-menu');
+    if (!menu || menu.hidden) return { erreur: 'le menu ne s ouvre pas' };
+    const rangees = [...menu.querySelectorAll('.kt-chip-row:not([hidden])')];
+    if (rangees.length < 10) return { erreur: `seulement ${rangees.length} rangees` };
+    const index = () => rangees.indexOf(document.activeElement);
+    const touche = (key) =>
+      document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+
+    rangees[6].focus();
+    const depart = index();
+    touche('ArrowDown');
+    const bas = index();
+    touche('ArrowRight');
+    const droite = index();
+    touche('ArrowUp');
+    const haut = index();
+    return {
+      depart,
+      sautBas: bas - depart,
+      sautDroite: droite - bas,
+      sautHaut: haut - droite,
+      colonnes: getComputedStyle(menu.querySelector('.kt-chip-list')).getPropertyValue('--kt-chip-cols').trim(),
+    };
+  });
+  console.log(`${name} clavier`, JSON.stringify(clavier));
+
   await page.close();
 
-  report.push({ name, anchor, caret, apresClicCode, apresClicCaret, menu });
+  report.push({ name, anchor, caret, apresClicCode, apresClicCaret, menu, clavier });
 }
 
 await browser.close();
@@ -283,7 +322,7 @@ for (const r of report) {
 // the list never opening, and rows of uneven height because a hyphenated ISO
 // code wrapped.
 const failures = [];
-for (const { name, anchor, caret, apresClicCode, apresClicCaret, menu } of report) {
+for (const { name, anchor, caret, apresClicCode, apresClicCaret, menu, clavier } of report) {
   if (!caret) failures.push(`${name}: pas de caret, la liste reste invisible a la souris`);
   else if (caret.largeur < 8) failures.push(`${name}: caret de ${caret.largeur}px, trop fin pour se voir`);
   else if (caret.contraste < 3) failures.push(`${name}: caret a ${caret.contraste}:1, WCAG 1.4.11 en veut 3`);
@@ -291,6 +330,20 @@ for (const { name, anchor, caret, apresClicCode, apresClicCaret, menu } of repor
   // controle est un seul bouton qui bascule, pas deux moities aux roles
   // differents. Les deux assertions restent, retournees : une seule des deux
   // laisserait passer une puce qui ouvre au premier clic et ne referme jamais.
+  // Le clavier de la grille, asserte et pas seulement imprime.
+  //
+  // La porte clavier du kit lit le dump HTML de ce harnais et rapporte que les
+  // fleches ne bougent jamais le focus. Vrai du fichier, faux du produit : le
+  // dump porte le DOM rendu et pas les ecouteurs, puisque le montage passe par
+  // page.evaluate. Ces trois nombres se prennent dans la page vivante, ou les
+  // ecouteurs existent, et ils sont ce que la porte du kit ne peut pas voir.
+  if (clavier.erreur) failures.push(`${name}: clavier non mesure, ${clavier.erreur}`);
+  else {
+    if (clavier.colonnes !== '3') failures.push(`${name}: la grille annonce ${clavier.colonnes} colonnes`);
+    if (clavier.sautBas !== 3) failures.push(`${name}: Bas saute de ${clavier.sautBas} au lieu d une rangee de 3`);
+    if (clavier.sautDroite !== 1) failures.push(`${name}: Droite saute de ${clavier.sautDroite} au lieu de 1`);
+    if (clavier.sautHaut !== -3) failures.push(`${name}: Haut saute de ${clavier.sautHaut} au lieu de -3`);
+  }
   if (apresClicCode !== 'true') failures.push(`${name}: un clic sur le code n ouvre pas la liste`);
   if (apresClicCaret !== 'false') failures.push(`${name}: un second clic ne referme pas la liste`);
   if (!anchor.dansLeClusterDroit) failures.push(`${name}: la puce n est pas dans le cluster droit`);

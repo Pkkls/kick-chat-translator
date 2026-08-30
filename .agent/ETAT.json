@@ -1,5 +1,5 @@
 {
-  "genere": "2026-08-30T14:02:45.552Z",
+  "genere": "2026-08-30T14:07:56.067Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
@@ -13,12 +13,12 @@
       }
     ],
     "branche": "feat/gates-tracked",
-    "head": "72126da2456089a6ab8b759c1b1839a5a9d87f4a",
-    "sujet": "Give the injected script a budget, since it is the only thing measurable here",
+    "head": "4fc26ffe411bd04260d9eb48b878bba3900e845a",
+    "sujet": "Add Czech to both listings, and correct two claims the fifth export disproved",
     "arbrePropre": false,
     "fichiersModifies": 3,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-9-g72126da",
+    "decrit": "v2.9.2-10-g4fc26ff",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git",
@@ -236,6 +236,6 @@
     ],
     "nbBloques": 4,
     "nbOuverts": 5,
-    "nbFaits": 19
+    "nbFaits": 20
   }
 }
