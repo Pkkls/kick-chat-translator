@@ -97,9 +97,15 @@ reads dist/, so it serialises behind any build. D touches no code.
 - [k] **Store submissions.** Chrome Web Store and AMO. Packages, listing text,
   dashboard fields and reviewer notes are ready; the accounts are kil's.
 
-- [k] **The screenshots show a real streamer**, their branding and real viewers'
-  usernames. Normal for a chat extension listing, and still kil's call before it
-  goes on a store page.
+- [x] **The screenshots no longer show anybody.** What was waiting on a decision
+  was that the images carried a real broadcaster's channel, their branding and
+  real viewers' handles. `store-shots-fixture.mjs` takes the same five on a
+  fabricated page with invented handles and a locally answered engine, so
+  nothing third-party appears and nothing leaves the machine, while the shipped
+  build does the translating in the image. Five PNGs at exactly the 1280x800 the
+  Chrome Web Store requires, each checked for its subject before it counts as
+  taken. The older live set stays in `scratchpad/harness/store/` and the listing
+  says not to submit it.
 
 ---
 

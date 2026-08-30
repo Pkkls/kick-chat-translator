@@ -1,23 +1,25 @@
 {
-  "genere": "2026-08-30T20:40:37.501Z",
+  "genere": "2026-08-30T20:47:35.397Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
-    "branche": "feat/gates-tracked",
-    "head": "752e442330e6c4ea6f21c2dc64627d06cb4e43d1",
-    "sujet": "Package 2.9.3 and make it submittable to Chrome",
+    "branche": "master",
+    "head": "55f57d737c70683c28dd939b9f36deabc5db8022",
+    "sujet": "Make the compose screenshot show the feature working",
     "arbrePropre": false,
-    "fichiersModifies": 3,
-    "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-28-g752e442",
+    "fichiersModifies": 2,
+    "dernierTag": "v2.9.3",
+    "decrit": "v2.9.3",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
     },
     "ecarts": {
       "devcopy": {
-        "note": "pas de devcopy/feat/gates-tracked connu localement"
+        "derriere": 0,
+        "devant": 28,
+        "aJour": false
       },
       "origin": {
         "derriere": 0,
@@ -244,11 +246,10 @@
     "bloques": [
       "**Emote picker dodge: only the Kick-specific half is still blocked.** The",
       "**Native review of the store text.** 8 languages of 10 on the Chrome side",
-      "**Store submissions.** Chrome Web Store and AMO. Packages, listing text,",
-      "**The screenshots show a real streamer**, their branding and real viewers'"
+      "**Store submissions.** Chrome Web Store and AMO. Packages, listing text,"
     ],
-    "nbBloques": 4,
+    "nbBloques": 3,
     "nbOuverts": 2,
-    "nbFaits": 47
+    "nbFaits": 48
   }
 }
