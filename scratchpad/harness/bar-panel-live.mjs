@@ -12,11 +12,12 @@
  *
  *   node scratchpad/harness/bar-panel-live.mjs
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { chromium } from './playwright.mjs';
+import { auditerDump } from './a11y.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '../..');
@@ -49,7 +50,8 @@ const js = readFileSync(BUNDLE, 'utf8');
 const css = readFileSync(path.join(ROOT, 'src/content/inject.css'), 'utf8');
 
 // Kick's chat column, at the size measured on a live channel.
-const PAGE = `<!doctype html><html data-kt-scheme="dark"><head><meta charset="utf-8"><style>
+const PAGE = `<!doctype html><html lang="en" data-kt-scheme="dark"><head><meta charset="utf-8">
+<title>bar panel stage</title><style>
 ${css}
   html, body { margin: 0; background: #0b0b0c; }
   #panel { width: 340px; height: 890px; background: #101012; overflow: hidden;
@@ -167,12 +169,27 @@ await page.screenshot({ path: path.join(HERE, 'bar-panel-live.png'), clip: { x: 
 
 // Picking closes the panel and reports the code.
 await page.locator('.kt-lang-input').fill('');
+// Le panneau entier, filtre vide, pour les portes d accessibilite.
+const rangeesVisiblesAuDump = await page.evaluate(
+  () => [...document.querySelectorAll('.kt-lang-row')].filter((r) => r.offsetParent !== null).length,
+);
+writeFileSync(path.join(HERE, 'bar-panel-live.html'), await page.content(), 'utf8');
+// Ce que le dump porte reellement, mesure dans la page et pas dans le fichier.
+// Les portes d accessibilite ci-dessous passent aussi bien sur deux rangees que
+// sur quarante : la taille de cible ne compte pas les cibles, elle mesure celles
+// qu elle trouve. Un dump pris le filtre encore rempli en a livre 2 sur 43 et la
+// porte est restee verte. Compter dans le HTML ne marche pas non plus : la
+// feuille de style y est inlinee, donc `hidden` et les selecteurs de rangee y
+// apparaissent en texte et polluent le compte.
 await page.locator('.kt-lang-fav').first().click();
 const shutAgain = await panel.evaluate((el) => el.hidden);
 
 await browser.close();
 
 const fails = [];
+if (rangeesVisiblesAuDump !== m.rows)
+  fails.push(`le dump audite montre ${rangeesVisiblesAuDump} rangees sur ${m.rows} : il a ete pris dans un etat filtre`);
+fails.push(...(await auditerDump(path.join(HERE, 'bar-panel-live.html'), 'bar-panel')));
 if (!shut) fails.push('the panel was already open before the button was clicked');
 if (open) fails.push('the button did not open the panel');
 if (m.escapesWindow) fails.push(`the panel leaves the window: ${JSON.stringify(m.bords)}`);

@@ -201,6 +201,25 @@ reads dist/, so it serialises behind any build. D touches no code.
   gitignored `scratchpad/uxkit.path`, then the repository's own
   `node_modules`, and exits 2 with the three ways to fix it when none is there.
   Exit 2 rather than 1 on purpose: a missing prerequisite is not a failed gate.
+- [x] **Both reworked menus audited, and the audit made permanent.** axe 0
+  violations and 96 targets at or above 24x24 on each, in dark, light and RTL.
+  The kit's keyboard gate reads a saved dump, which carries no listeners, so
+  arrow behaviour is measured live instead: Down +3, Right +1, Up -3, 3 columns,
+  asserted and witnessed by forcing `MENU_COLS` to 1. The audits hang off
+  `chip-live` and `bar-panel-live` rather than being a gate of their own,
+  because a pooled runner could schedule a separate gate before the harness that
+  writes its input. Four dumps per sweep, about 4.4s.
+- [x] **A dump audited in the wrong state reads as coverage.** The bar panel's
+  first dump was taken with the filter still holding "por", leaving 2 of 39 rows
+  visible, and both accessibility gates stayed green on it: the target-size gate
+  measures the targets it finds and does not count them. The harness now
+  measures visible rows as it writes the file. Witness: taking the dump filtered
+  gives 2 of 39 and exit 1, axe still green on the same run.
+- [x] **`npm run lint` was red and nothing said so**, since `e3ea484` added
+  `scripts/kick-chat-collector.js`: a console-paste snippet under a directory
+  `tsconfig` includes without `allowJs`, which the type-aware parser fails on
+  before it lints anything else. Ignored like `scripts/pack.ts`, with a witness
+  proving the rule still fires on real code.
 - [x] Language list drawn as a grid of flags, chip menu: 202x894 to 408x518,
   every row at 30px.
 - [x] Chip menu lifted out of Kick's stacking context: covered at 5 of 9 sampled

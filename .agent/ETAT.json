@@ -1,5 +1,5 @@
 {
-  "genere": "2026-08-30T14:07:56.067Z",
+  "genere": "2026-08-30T14:21:57.602Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
@@ -13,12 +13,12 @@
       }
     ],
     "branche": "feat/gates-tracked",
-    "head": "4fc26ffe411bd04260d9eb48b878bba3900e845a",
-    "sujet": "Add Czech to both listings, and correct two claims the fifth export disproved",
+    "head": "4df5f6ae0b80718eedb10d37b04fc76ddf3d5abd",
+    "sujet": "Audit the reworked menus for accessibility, and measure what a dump cannot show",
     "arbrePropre": false,
-    "fichiersModifies": 3,
+    "fichiersModifies": 7,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-10-g4fc26ff",
+    "decrit": "v2.9.2-11-g4df5f6a",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git",
@@ -176,8 +176,9 @@
       "audit-selecteurs",
       "audit-poids"
     ],
-    "harnaisSurDisque": 34,
+    "harnaisSurDisque": 35,
     "orphelins": [
+      "a11y",
       "bar-panel-mesure",
       "bar-select",
       "compose-kick-live",
@@ -196,7 +197,7 @@
       "session-check",
       "store-shots"
     ],
-    "nbOrphelins": 17,
+    "nbOrphelins": 18,
     "note": "Les portes live ouvrent un navigateur sur kick.com et ne sont dans aucun runner. Un orphelin n est pas forcement un defaut ; un orphelin qui couvre du code livre en est un."
   },
   "releaseGithub": {
@@ -236,6 +237,6 @@
     ],
     "nbBloques": 4,
     "nbOuverts": 5,
-    "nbFaits": 20
+    "nbFaits": 23
   }
 }

@@ -18,6 +18,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { chromium } from './playwright.mjs';
+import { auditerDump } from './a11y.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '../..');
@@ -322,6 +323,10 @@ for (const r of report) {
 // the list never opening, and rows of uneven height because a hyphenated ISO
 // code wrapped.
 const failures = [];
+for (const { name } of report) {
+  failures.push(...(await auditerDump(path.join(HERE, `${name}.html`), name)));
+}
+
 for (const { name, anchor, caret, apresClicCode, apresClicCaret, menu, clavier } of report) {
   if (!caret) failures.push(`${name}: pas de caret, la liste reste invisible a la souris`);
   else if (caret.largeur < 8) failures.push(`${name}: caret de ${caret.largeur}px, trop fin pour se voir`);

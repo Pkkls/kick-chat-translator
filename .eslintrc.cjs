@@ -20,7 +20,12 @@ module.exports = {
   // outside the package. Type-aware linting cannot parse a file the project
   // does not include, so anything landing there fails the whole run: a copy of
   // a source file kept beside a script, or an esbuild bundle a harness wrote.
-  ignorePatterns: ['dist', 'release', 'node_modules', 'scratchpad', '*.config.js', '*.config.cjs', 'scripts/pack.ts'],
+  ignorePatterns: ['dist', 'release', 'node_modules', 'scratchpad', '*.config.js', '*.config.cjs', 'scripts/pack.ts',
+    // Un extrait a coller dans la console d un onglet kick.com, pas un
+    // module du paquet. `tsconfig` inclut `scripts` sans `allowJs`, donc le
+    // parser type-aware ne le trouve dans aucun projet et fait echouer tout
+    // le run. Rouge depuis son arrivee, sans que rien ne le dise.
+    'scripts/kick-chat-collector.js'],
   rules: {
     '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
