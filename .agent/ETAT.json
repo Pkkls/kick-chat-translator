@@ -1,5 +1,5 @@
 {
-  "genere": "2026-08-30T06:39:11.559Z",
+  "genere": "2026-08-30T06:51:03.401Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
@@ -13,12 +13,12 @@
       }
     ],
     "branche": "feat/gates-tracked",
-    "head": "4837c24b107a8e25794f3593f88353744b7b6d1d",
-    "sujet": "Track the gates, and take one machine's path out of them",
+    "head": "a99d422384546a5c8377fbdafba73b65bbaf2caf",
+    "sujet": "Give the live gates a runner, and fix what one of them had been reporting",
     "arbrePropre": false,
-    "fichiersModifies": 11,
+    "fichiersModifies": 1,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-3-g4837c24",
+    "decrit": "v2.9.2-4-ga99d422",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git",
