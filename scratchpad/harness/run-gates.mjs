@@ -48,6 +48,11 @@ const GATES = [
   ['bar-panel-live', 'node', ['scratchpad/harness/bar-panel-live.mjs']],
   ['flags-preview', 'node', ['scratchpad/harness/flags-preview.mjs']],
   ['lang-panel-measure', 'node', ['scratchpad/harness/lang-panel-measure.mjs']],
+  // La seule porte qui charge la vraie extension. Toutes les autres montent les
+  // composants a la main et ne touchent jamais le manifeste ni le chemin par
+  // lequel Chrome injecte. Elle ouvre une fenetre, parce que sans fenetre
+  // l'extension n'est pas chargee du tout, et la pousse hors de l'ecran.
+  ['extension-load', 'node', ['scratchpad/harness/extension-load.mjs']],
   ['audit-strings', 'python', ['scratchpad/audit_content_strings.py']],
   ['audit-da', 'python', ['scratchpad/audit_da.py']],
   ['audit-rtl', 'python', ['scratchpad/audit_rtl.py']],

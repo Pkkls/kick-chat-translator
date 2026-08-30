@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-30T14:28:34.486Z",
+  "genere": "2026-08-30T14:38:19.946Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/gates-tracked",
-    "head": "2768a86e5ffa7efb7ef873a6aae3055da9a81d29",
-    "sujet": "Audit the bar panel too, and attach both audits to their harnesses",
+    "head": "b5df5c3c2c829b4dfd1b275fbb2ea9cbe5b1da00",
+    "sujet": "Run the offline gates on Playwright's Chromium, not the machine's Chrome",
     "arbrePropre": false,
-    "fichiersModifies": 23,
+    "fichiersModifies": 6,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-12-g2768a86",
+    "decrit": "v2.9.2-13-gb5df5c3",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -132,7 +132,7 @@
   ],
   "portes": {
     "runner": "scratchpad/harness/run-gates.mjs",
-    "enumerees": 23,
+    "enumerees": 24,
     "noms": [
       "snapshot",
       "names",
@@ -151,6 +151,7 @@
       "bar-panel-live",
       "flags-preview",
       "lang-panel-measure",
+      "extension-load",
       "audit-strings",
       "audit-da",
       "audit-rtl",
@@ -158,7 +159,7 @@
       "audit-selecteurs",
       "audit-poids"
     ],
-    "harnaisSurDisque": 35,
+    "harnaisSurDisque": 36,
     "orphelins": [
       "a11y",
       "bar-panel-mesure",
@@ -219,6 +220,6 @@
     ],
     "nbBloques": 4,
     "nbOuverts": 3,
-    "nbFaits": 26
+    "nbFaits": 28
   }
 }

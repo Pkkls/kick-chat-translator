@@ -203,6 +203,27 @@ reads dist/, so it serialises behind any build. D touches no code.
   gitignored `scratchpad/uxkit.path`, then the repository's own
   `node_modules`, and exits 2 with the three ways to fix it when none is there.
   Exit 2 rather than 1 on purpose: a missing prerequisite is not a failed gate.
+- [x] **The extension exposes nothing to kick.com pages any more.** The built
+  manifest listed six web-accessible resources: a stylesheet, an icon glob, and
+  four ESM chunks crxjs adds for the loader that `scripts/bundle-content.ts`
+  replaced. Measured on the built bundle: zero `getURL`, zero
+  `chrome-extension`, zero dynamic import, zero icon reference, and all 22
+  `url()` in the stylesheet are inline `data:` SVG. Nothing was reachable for a
+  reason, and what was listed gave any script on a kick.com page a stable URL to
+  request as a test for whether the extension is installed. This matters here:
+  the site already walls off what it detects. Removed at the source and dropped
+  again after crxjs, in both the Chrome and Firefox builds.
+- [x] **A gate that loads the real extension.** Every other offline gate mounts
+  components by hand and never touches the manifest, `content_scripts`, or the
+  path Chrome actually injects through. The only harnesses that did open the
+  real kick.com, so they need the network and do not run in the suite: the
+  defect `bundle-content.ts` exists to fix, a dynamic import losing its race and
+  injecting nothing silently, was invisible to every gate. `extension-load`
+  intercepts `https://kick.com/**` and serves a local fixture, so the document
+  keeps its kick.com URL, Chrome injects, and nothing leaves the machine. Two
+  witnesses: pointing `content_scripts` at a missing file, and re-exposing one
+  chunk. It needs a window, since a headless run loads no extension at all, and
+  the window is pushed off screen.
 - [x] **The offline gates no longer need a Google Chrome on the machine.**
   Seventeen gates and three shooters launched `channel: 'chrome'`, which makes
   the browser a property of the machine, in an apparatus that was just made

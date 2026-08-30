@@ -58,12 +58,14 @@ export default defineManifest({
     'https://lingva.lunar.icu/*',
     'https://lingva.ml/*',
   ],
-  web_accessible_resources: [
-    {
-      resources: ['src/content/inject.css', 'public/icons/*.png'],
-      matches: ['https://kick.com/*', 'https://www.kick.com/*'],
-    },
-  ],
+  // Aucune ressource exposee aux pages du site. Le script de contenu est
+  // re-bundle en un seul fichier autonome par `scripts/bundle-content.ts`, la
+  // feuille de style y est inline par `?inline`, et ses 22 `url()` sont des SVG
+  // `data:`. Mesure du 2026-08-30 sur le bundle construit : zero `getURL`, zero
+  // `chrome-extension`, zero import dynamique, zero reference a une icone. Rien
+  // n'etait donc joignable pour une raison. Ce qui restait listé donnait a
+  // n'importe quel script d'une page kick.com une URL stable a interroger pour
+  // confirmer que l'extension est installee.
   ...(isFirefox && {
     browser_specific_settings: {
       gecko: {

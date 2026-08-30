@@ -71,10 +71,17 @@ async function bundleContent(): Promise<void> {
 function patchManifest(): void {
   const mf = JSON.parse(readFileSync(MANIFEST, 'utf8')) as {
     content_scripts?: Array<{ js?: string[] }>;
+    web_accessible_resources?: unknown[];
   };
   const cs = mf.content_scripts?.[0];
   if (!cs) throw new Error('[bundle-content] manifest has no content_scripts to patch');
   cs.js = [MANIFEST_REF];
+  // @crxjs exposes the ESM chunks its loader would have fetched at runtime.
+  // Repointing content_scripts at the self-contained bundle above is exactly
+  // what stops them being fetched, so what is left is four chunk URLs any
+  // script on a kick.com page can request to confirm the extension is
+  // installed. The source manifest declares nothing web-accessible either.
+  delete mf.web_accessible_resources;
   writeFileSync(MANIFEST, `${JSON.stringify(mf, null, 2)}\n`);
 }
 
