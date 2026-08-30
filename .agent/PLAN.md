@@ -45,14 +45,13 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Open
 
-- [ ] **The listing serves a fifth of its readers in a language it does not
-  have.** About four fifths of visitors are in countries covered by one of the
-  ten listing languages; the rest fall back to English, and the largest single
-  uncovered group is bigger than four of the countries that are covered. Adding
-  a language is mechanical now that the derivation exists, but it widens a
-  surface already written without a native reader, and it hands a reader a page
-  in their language followed by an interface that is not. Not a decision to take
-  from a spreadsheet.
+- [ ] **The install rate is 40.5 percent and nothing is tuned against it.**
+  Eighty-five installs for two hundred and ten first visits, over eight months.
+  Fifty-eight percent of arrivals come from organic search, thirty-one direct,
+  six from an AI assistant. The listing that produced that number has never been
+  updated past 2.5.0 while the product is at 2.9.2, so the figure is a baseline
+  for a page nobody has touched, not a verdict on the current text. Resubmitting
+  is the experiment, and it is blocked on kil.
 
 - [ ] **The local 2.9.2 archives are not the published ones.** Rebuilding after
   the placement fix overwrote them: chromium is 294379 bytes locally against
@@ -100,6 +99,16 @@ reads dist/, so it serialises behind any build. D touches no code.
 ---
 
 ## Done, kept for the record
+
+- [x] **Czech added to both listings, on measurement rather than inference.**
+  A first pass mapped country to language and named Polish as the biggest
+  uncovered group. The page-title report says which localised store page people
+  actually land on, and Polish appears on none of them: the order is English,
+  Turkish, Arabic, then Czech, which is ahead of Russian, Japanese, Chinese and
+  Korean, all four of which already had text. Czech had none. Eleven languages
+  each side now, 34 fields inside their limits, and the shape check caught the
+  same duplicated privacy paragraph in the derived Czech that it caught in the
+  other eight.
 
 - [x] **The one cost every reader pays now has a budget.** Store analytics were
   offered as a basis for optimisation and could not serve as one: they describe

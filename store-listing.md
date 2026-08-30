@@ -373,6 +373,45 @@ Chrome과 Edge 138 이상은 기기 내 번역도 할 수 있습니다. 하드�
 
 오픈 소스, MIT: github.com/Pkkls/kick-chat-translator
 
+## Description (CS)
+
+Paste into the Czech listing. Chosen on measurement rather than inference: the
+Czech listing page is the fourth most viewed of the localised ones, ahead of
+four languages that already had text. Same standard as the other localised
+blocks: no native reader.
+
+Short summary: Chat na Kicku v jazyce, který neumíte přečíst? Překlad se objeví pod každou zprávou, živě.
+
+NOVINKY VE VERZI 2.9.2
+
+Seznam jazyků je mřížka vlajek místo sloupce dvoupísmenných kódů a otevře se jedním kliknutím. Dříve zabíral celou výšku obrazovky, 43 položek po jedné na řádek, každou bylo nutné číst písmeno po písmenu, a samotný seznam se skrýval za šipkou o velikosti 10 na 6 pixelů uvnitř tlačítka 45 na 24. Když jste ji minuli, kliknutí udělalo něco úplně jiného. Tři sloupce kreslených vlajek vejdou stejný seznam do o 42 procent menší výšky, kliknutí kamkoli na tlačítko jej otevře a rozhraní samotného Kicku už jej nepřekrývá. Vlajky jsou kreslené v CSS, ne posílané jako emoji, protože vlajkové emoji se ve Windows nezobrazují a systém se vrátí právě k těm dvěma písmenům, která jsme chtěli nahradit. Panel za tlačítkem AUTO na liště prošel stejnou úpravou: zobrazoval šest položek ze čtyřiceti.
+
+Otevřete na Kicku vysílání, kde chat běží v jazyce, který neumíte přečíst. Každá zpráva dostane svůj překlad přímo pod sebou, jakmile dorazí. Zelený pruh nahoře v chatu ukazuje, že to běží.
+
+Napíšete odpověď a nad polem chatu se objeví náhled v jazyce kanálu. Klikněte na náhled nebo stiskněte Ctrl+Enter a tato verze nahradí to, co jste napsali, připravená k odeslání.
+
+Není co nastavovat. Příchozí chat se překládá do jazyka vašeho prohlížeče a to, co píšete, odchází v jazyce, ve kterém kanál vysílá, načteném přímo z Kicku. Obojí lze změnit v nastavení. Funguje na živých vysíláních i na záznamech VOD a zvládá emotikony 7TV.
+
+ENGINY
+
+Google funguje rovnou, bez klíče a bez účtu. Přidejte vlastní bezplatný klíč DeepL (bezplatný tarif pokrývá milion znaků měsíčně bez karty) a kvalita u evropských jazyků výrazně stoupne. DeepL navíc dostává poslední řádky kanálu jako kontext, takže formulace sedí do konverzace, a je požádán o zdvořilý registr tam, kde jej jazyk má: keigo v japonštině, vous místo tu ve francouzštině. Aby bezplatná kvóta vydržela, DeepL se spotřebovává jen na dvojicích, kde skutečně překonává bezplatné enginy. MyMemory a Lingva čekají vzadu jako záloha, a když jeden engine selže, převezme to další. Pořadí určujete vy.
+
+Chrome a Edge 138 a novější umí překládat i přímo v zařízení, pokud to hardware dovolí. Model se stáhne jednou pro každou dvojici jazyků a pak vše běží lokálně: offline, bez limitu, a text chatu neopustí váš počítač. Brave a Firefox toto API zatím nemají, takže používají enginy výše.
+
+ZOBRAZENÍ
+
+Překlad pod originálem, na stejném řádku, za ním menší kurzívou, nebo jen při najetí myší. Režim najetí myší si nic nevyžádá, dokud na zprávu neukážete, což v rychlém chatu sníží spotřebu zhruba desetkrát.
+
+FILTRY
+
+Přeskočit boty, blokovat uživatele nebo kanály, nebo omezit, které zdrojové jazyky se vůbec překládají. Emotikony, zmínky, odkazy a záplavy emoji se odstraní před odesláním, takže neplatíte za překlad „kkkkkk“. Panely na pozadí se samy pozastaví.
+
+42 jazyků, včetně písma zprava doleva (arabština, hebrejština, perština), s odděleně vedenými regionálními variantami (pt-BR, zh-TW). Rozhraní samotného rozšíření existuje v 10 jazycích: angličtina, španělština, francouzština, portugalština, turečtina, ruština, arabština, čínština, japonština a korejština.
+
+Žádný účet, žádná analytika, žádný můj server. Rozšíření žádá o úložiště, o časovač, aby překladač zůstal připravený, zatímco se díváte, a o přístup ke kick.com a k překladovým enginům, které může volat: Google, DeepL, MyMemory a Lingva. Čte také stránku vydání na GitHubu, aby vám oznámilo, že existuje novější verze, a s tímto požadavkem neposílá nic. Text vašeho chatu jde jen do enginu, který jste zvolili, a nikam jinam; v režimu v zařízení ani tam.
+
+Otevřený zdrojový kód, MIT: github.com/Pkkls/kick-chat-translator
+
 ## manifest.json description field (132 char limit)
 
 Shipped value, already in public/_locales/en. It used to carry an em dash and
@@ -613,6 +652,40 @@ Kick 的聊天是你读不懂的语言？每条消息一到，下方就出现译
 ## AMO summary (KO)
 
 읽지 못하는 언어로 흐르는 Kick 채팅? 메시지가 도착하는 대로 그 아래에 번역이 붙고, 답장은 채널의 언어로 나갑니다. 계정도 설정도 필요 없습니다. 라이브와 다시보기 모두에서 동작합니다.
+
+## AMO summary (CS)
+
+Chat na Kicku v jazyce, který neumíte přečíst? Překlad se objeví pod každou zprávou, jak přicházejí, a vaše odpovědi odejdou v jazyce kanálu. Bez účtu a bez nastavování. Funguje živě i u záznamů.
+
+## AMO description (CS)
+
+Otevřete na Kicku vysílání, kde chat běží v jazyce, který neumíte přečíst. Každá zpráva dostane svůj překlad přímo pod sebou, jakmile dorazí. Zelený pruh nahoře v chatu ukazuje, že to běží.
+
+Napíšete odpověď a nad polem chatu se objeví náhled v jazyce kanálu. Klikněte na náhled nebo stiskněte Ctrl+Enter a tato verze nahradí to, co jste napsali, připravená k odeslání.
+
+Není co nastavovat. Příchozí chat se překládá do jazyka vašeho prohlížeče a to, co píšete, odchází v jazyce, ve kterém kanál vysílá, načteném přímo z Kicku. Obojí lze změnit v nastavení. Funguje na živých vysíláních i na záznamech VOD a zvládá emotikony 7TV.
+
+ENGINY
+
+Google funguje rovnou, bez klíče a bez účtu. Přidejte vlastní bezplatný klíč DeepL (bezplatný tarif pokrývá milion znaků měsíčně bez karty) a kvalita u evropských jazyků výrazně stoupne. DeepL navíc dostává poslední řádky kanálu jako kontext, takže formulace sedí do konverzace, a je požádán o zdvořilý registr tam, kde jej jazyk má: keigo v japonštině, vous místo tu ve francouzštině. Aby bezplatná kvóta vydržela, DeepL se spotřebovává jen na dvojicích, kde skutečně překonává bezplatné enginy. MyMemory a Lingva čekají vzadu jako záloha, a když jeden engine selže, převezme to další. Pořadí určujete vy.
+
+ZOBRAZENÍ
+
+Překlad pod originálem, na stejném řádku, za ním menší kurzívou, nebo jen při najetí myší. Režim najetí myší si nic nevyžádá, dokud na zprávu neukážete, což v rychlém chatu sníží spotřebu zhruba desetkrát.
+
+FILTRY
+
+Přeskočit boty, blokovat uživatele nebo kanály, nebo omezit, které zdrojové jazyky se vůbec překládají. Emotikony, zmínky, odkazy a záplavy emoji se odstraní před odesláním, takže neplatíte za překlad „kkkkkk“. Panely na pozadí se samy pozastaví.
+
+42 jazyků, včetně písma zprava doleva (arabština, hebrejština, perština), s odděleně vedenými regionálními variantami (pt-BR, zh-TW). Rozhraní samotného rozšíření existuje v 10 jazycích: angličtina, španělština, francouzština, portugalština, turečtina, ruština, arabština, čínština, japonština a korejština.
+
+CO OPOUŠTÍ VÁŠ PROHLÍŽEČ
+
+Text zprávy z chatu, a nic jiného, jde do překladového enginu, který jste zvolili. Ne vaše uživatelské jméno, ne kanál, ne kdo co řekl. To je to, co znamená řádek „obsah webu“ v oprávněních výše, a je to vše, co znamená. Žádný účet, žádná analytika, žádný můj server: rozšíření komunikuje s Kickem, s enginem, který jste zvolili, a se stránkou vydání na GitHubu, aby oznámilo novější verzi, přičemž s tímto posledním požadavkem neposílá nic.
+
+Firefox zatím nenabízí překladové API na úrovni prohlížeče, které mají Chrome a Edge 138 a novější, takže tato verze vždy používá enginy výše. Pokud jej Mozilla přidá, rozšíření už ví, jak jej použít, a bude překládat přímo ve vašem zařízení, offline a bez limitů.
+
+Otevřený zdrojový kód, MIT: github.com/Pkkls/kick-chat-translator
 
 ## AMO description (FR)
 
