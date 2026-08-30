@@ -1,0 +1,230 @@
+{
+  "genere": "2026-08-30T05:42:47.563Z",
+  "parQui": ".agent/state.mjs",
+  "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
+  "git": {
+    "remotesEnDouble": [
+      {
+        "url": "https://github.com/Pkkls/kick-chat-translator.git",
+        "noms": [
+          "origin",
+          "public"
+        ]
+      }
+    ],
+    "branche": "master",
+    "head": "954ba4d0c2ed6e0cf51a32155da0c6fecf9fe10a",
+    "sujet": "Bring both store listings to 2.9.2, and give AMO what it asks for",
+    "arbrePropre": false,
+    "fichiersModifies": 1,
+    "dernierTag": "v2.9.2",
+    "decrit": "v2.9.2-1-g954ba4d",
+    "remotes": {
+      "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
+      "origin": "https://github.com/Pkkls/kick-chat-translator.git",
+      "public": "https://github.com/Pkkls/kick-chat-translator.git"
+    },
+    "ecarts": {
+      "devcopy": {
+        "derriere": 0,
+        "devant": 0,
+        "aJour": true
+      },
+      "origin": {
+        "derriere": 0,
+        "devant": 0,
+        "aJour": true,
+        "aliasDe": [
+          "public"
+        ]
+      },
+      "public": {
+        "derriere": 0,
+        "devant": 16,
+        "aJour": false,
+        "aliasDe": [
+          "origin"
+        ]
+      }
+    }
+  },
+  "versions": {
+    "packageJson": "2.9.2",
+    "distManifest": "2.9.2",
+    "accordent": true,
+    "note": null
+  },
+  "paquets": [
+    {
+      "fichier": "kick-chat-translator-2.7.0-chromium.zip",
+      "octets": 276567,
+      "versionDuNom": "2.7.0",
+      "versionDuManifest": "2.7.0",
+      "accordent": true,
+      "erreur": null
+    },
+    {
+      "fichier": "kick-chat-translator-2.7.0-firefox.zip",
+      "octets": 276491,
+      "versionDuNom": "2.7.0",
+      "versionDuManifest": "2.7.0",
+      "accordent": true,
+      "erreur": null
+    },
+    {
+      "fichier": "kick-chat-translator-2.8.0-chromium.zip",
+      "octets": 277034,
+      "versionDuNom": "2.8.0",
+      "versionDuManifest": "2.8.0",
+      "accordent": true,
+      "erreur": null
+    },
+    {
+      "fichier": "kick-chat-translator-2.8.0-firefox.zip",
+      "octets": 276960,
+      "versionDuNom": "2.8.0",
+      "versionDuManifest": "2.8.0",
+      "accordent": true,
+      "erreur": null
+    },
+    {
+      "fichier": "kick-chat-translator-2.8.1-chromium.zip",
+      "octets": 277034,
+      "versionDuNom": "2.8.1",
+      "versionDuManifest": "2.8.1",
+      "accordent": true,
+      "erreur": null
+    },
+    {
+      "fichier": "kick-chat-translator-2.8.1-firefox.zip",
+      "octets": 276959,
+      "versionDuNom": "2.8.1",
+      "versionDuManifest": "2.8.1",
+      "accordent": true,
+      "erreur": null
+    },
+    {
+      "fichier": "kick-chat-translator-2.9.0-chromium.zip",
+      "octets": 294983,
+      "versionDuNom": "2.9.0",
+      "versionDuManifest": "2.9.0",
+      "accordent": true,
+      "erreur": null
+    },
+    {
+      "fichier": "kick-chat-translator-2.9.0-firefox.zip",
+      "octets": 294909,
+      "versionDuNom": "2.9.0",
+      "versionDuManifest": "2.9.0",
+      "accordent": true,
+      "erreur": null
+    },
+    {
+      "fichier": "kick-chat-translator-2.9.1-chromium.zip",
+      "octets": 294358,
+      "versionDuNom": "2.9.1",
+      "versionDuManifest": "2.9.1",
+      "accordent": true,
+      "erreur": null
+    },
+    {
+      "fichier": "kick-chat-translator-2.9.1-firefox.zip",
+      "octets": 294282,
+      "versionDuNom": "2.9.1",
+      "versionDuManifest": "2.9.1",
+      "accordent": true,
+      "erreur": null
+    },
+    {
+      "fichier": "kick-chat-translator-2.9.2-chromium.zip",
+      "octets": 294586,
+      "versionDuNom": "2.9.2",
+      "versionDuManifest": "2.9.2",
+      "accordent": true,
+      "erreur": null
+    },
+    {
+      "fichier": "kick-chat-translator-2.9.2-firefox.zip",
+      "octets": 294511,
+      "versionDuNom": "2.9.2",
+      "versionDuManifest": "2.9.2",
+      "accordent": true,
+      "erreur": null
+    }
+  ],
+  "portes": {
+    "runner": "scratchpad/harness/run-gates.mjs",
+    "enumerees": 18,
+    "noms": [
+      "snapshot",
+      "names",
+      "chip-live",
+      "chat-live",
+      "measure-popup",
+      "emote-survival",
+      "bar-live",
+      "compose-live",
+      "rtl-live",
+      "rtl-surfaces",
+      "reduced-motion",
+      "long-content",
+      "da-surfaces",
+      "boundaries",
+      "audit-strings",
+      "audit-da",
+      "audit-rtl",
+      "audit-surfaces-rtl"
+    ],
+    "harnaisSurDisque": 33,
+    "orphelins": [
+      "bar-panel-live",
+      "bar-panel-mesure",
+      "bar-select",
+      "compose-kick-live",
+      "flag-render",
+      "flags-preview",
+      "kick-dom-recon",
+      "lang-menu-live",
+      "lang-panel-measure",
+      "lang-panel-shoot",
+      "latency",
+      "live-fallback",
+      "live-kick",
+      "live-nav",
+      "live-profile",
+      "live-recycle",
+      "probe-row-space",
+      "session-check",
+      "store-shots"
+    ],
+    "nbOrphelins": 19,
+    "note": "Les portes live ouvrent un navigateur sur kick.com et ne sont dans aucun runner. Un orphelin n est pas forcement un defaut ; un orphelin qui couvre du code livre en est un."
+  },
+  "releaseGithub": {
+    "depot": "Pkkls/kick-chat-translator",
+    "http": 200,
+    "tag": "v2.9.2",
+    "publiee": "2026-08-29T22:57:22Z",
+    "assets": [
+      {
+        "nom": "kick-chat-translator-2.9.2-chromium.zip",
+        "octets": 294586
+      },
+      {
+        "nom": "kick-chat-translator-2.9.2-firefox.zip",
+        "octets": 294511
+      }
+    ]
+  },
+  "file": {
+    "bloques": [
+      "**Emote picker dodge, compose panel.** `findOverlayTopAbove` uses guessed",
+      "**Native review of the store text.** 8 languages of 10 on the Chrome side",
+      "**Store submissions.** Chrome Web Store and AMO. Packages, listing text,",
+      "**The screenshots show a real streamer**, their branding and real viewers'"
+    ],
+    "nbBloques": 4,
+    "nbOuverts": 6,
+    "nbFaits": 8
+  }
+}
