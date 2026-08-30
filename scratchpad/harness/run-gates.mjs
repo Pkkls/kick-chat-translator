@@ -57,6 +57,9 @@ const GATES = [
   // a count of a class deleted in 2.8.0, and a dead selector hidden behind a
   // `??` fallback that quietly did the work instead.
   ['audit-selecteurs', 'python', ['scratchpad/audit_selecteurs.py']],
+  // The one cost every reader pays on every page. It rose 12.5% in one version
+  // and nobody saw it for three days, because nothing was looking.
+  ['audit-poids', 'python', ['scratchpad/audit_poids.py']],
 ];
 
 const argv = process.argv.slice(2);

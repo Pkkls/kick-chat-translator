@@ -45,17 +45,6 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Open
 
-- [ ] **There is no runtime measurement of this extension, by design.** Store
-  analytics were offered as a basis for optimisation; they describe the listing
-  page, not the product. Roughly a sixth of that traffic is on phones and
-  tablets and another eighth on browsers that cannot install a Chrome extension
-  at all, which is a fact about who reads the page, not about how the code runs.
-  The extension ships no telemetry on purpose and the listing says so, so the
-  only runtime numbers that exist are the ones a harness takes. That makes
-  `latency` the sole performance instrument in the project, and it had never run
-  once before today. Worth pricing: what else deserves a measured budget the way
-  latency has one, and whether any of it can be asserted rather than watched.
-
 - [ ] **The listing serves a fifth of its readers in a language it does not
   have.** About four fifths of visitors are in countries covered by one of the
   ten listing languages; the rest fall back to English, and the largest single
@@ -111,6 +100,27 @@ reads dist/, so it serialises behind any build. D touches no code.
 ---
 
 ## Done, kept for the record
+
+- [x] **The one cost every reader pays now has a budget.** Store analytics were
+  offered as a basis for optimisation and could not serve as one: they describe
+  the listing page, a sixth of that traffic is on phones and another eighth on
+  browsers that cannot install a Chrome extension, and there is no install or
+  usage figure in them. The extension ships no telemetry on purpose. So the
+  question became what can be measured here, and the answer was the injected
+  script: `assets/content.js` is parsed on every kick.com page whether or not
+  anyone opens anything, with `inject.css` inlined into it. Read out of the
+  published archives rather than out of a note: flat at 199.4 KB from 2.7.0 to
+  2.8.1, then 224.3 at 2.9.0, up 12.5 percent in one version for the drawn flags
+  and the shared panel, unseen for three days. `audit_poids.py` compares against
+  a baseline that lives in the file itself, since a JSON beside it would be
+  gitignored and would not survive a machine. Checked both ways: green at the
+  current size, red against a baseline 12 percent lower, which is the jump it
+  would have caught.
+
+  Not done, on purpose: the flag rules are 10.9 KB of that bundle, 45 rules and
+  7.5 KB of SVG data URIs, and moving them to a stylesheet injected on first use
+  would save 4.9 percent of the bundle and a sub-millisecond parse. That is
+  optimising a number rather than an experience.
 
 - [x] **The live suite was not non-deterministic; three probes were broken.**
   Filed as a systemic property of live gates, which was the wrong shape. The

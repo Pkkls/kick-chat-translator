@@ -1,5 +1,5 @@
 {
-  "genere": "2026-08-30T13:46:42.902Z",
+  "genere": "2026-08-30T13:50:29.607Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
@@ -13,12 +13,12 @@
       }
     ],
     "branche": "feat/gates-tracked",
-    "head": "1a81ad7c072b97cac0017298187d1a1d3c70c1ba",
-    "sujet": "Make live-kick perform the action it was claiming to test",
+    "head": "b34f061c0dabc4dcc1d03676f32073f6f13a5746",
+    "sujet": "Sweep for probes that cannot fail, and gate the sweep",
     "arbrePropre": false,
-    "fichiersModifies": 11,
+    "fichiersModifies": 4,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-7-g1a81ad7",
+    "decrit": "v2.9.2-8-gb34f061",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git",
@@ -150,7 +150,7 @@
   ],
   "portes": {
     "runner": "scratchpad/harness/run-gates.mjs",
-    "enumerees": 22,
+    "enumerees": 23,
     "noms": [
       "snapshot",
       "names",
@@ -173,7 +173,8 @@
       "audit-da",
       "audit-rtl",
       "audit-surfaces-rtl",
-      "audit-selecteurs"
+      "audit-selecteurs",
+      "audit-poids"
     ],
     "harnaisSurDisque": 34,
     "orphelins": [
@@ -234,7 +235,7 @@
       "**The screenshots show a real streamer**, their branding and real viewers'"
     ],
     "nbBloques": 4,
-    "nbOuverts": 6,
-    "nbFaits": 17
+    "nbOuverts": 5,
+    "nbFaits": 18
   }
 }
