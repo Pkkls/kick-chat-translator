@@ -203,6 +203,14 @@ reads dist/, so it serialises behind any build. D touches no code.
   gitignored `scratchpad/uxkit.path`, then the repository's own
   `node_modules`, and exits 2 with the three ways to fix it when none is there.
   Exit 2 rather than 1 on purpose: a missing prerequisite is not a failed gate.
+- [x] **Choosing a language in the bar reaches the page without a reload.** The
+  gate drives the product's own control rather than writing settings by hand,
+  and reads back the `tl` parameter the engine actually received, so the
+  assertion is about the language requested and not about a label. Clean
+  coverage, measured: cutting `pipeline.updateSettings` leaves all 621 unit
+  tests green and turns this gate red. A first version wrote a partial settings
+  object straight into `chrome.storage` and did not propagate, which says
+  nothing about the product: a partial object is not what the bar writes.
 - [x] **The hover mode's economy claim is measured.** Both store listings sell
   hover mode on a number: roughly ten times less consumption on a fast chat.
   That only holds if nothing is requested before the pointer arrives, which only

@@ -75,6 +75,10 @@ const GATES = [
   // avant que la souris passe. Couverture propre, mesuree : court-circuiter
   // l'armement laisse les 621 tests verts et fait rougir cette porte.
   ['translate-survol', 'node', ['scratchpad/harness/translate-offline.mjs', '--survol']],
+  // Choisir une langue dans la barre doit atteindre la page sans rechargement.
+  // Couverture propre, mesuree : couper `pipeline.updateSettings` laisse les 621
+  // tests verts et fait rougir cette porte.
+  ['translate-reglages', 'node', ['scratchpad/harness/translate-offline.mjs', '--reglages']],
   ['audit-strings', 'python', ['scratchpad/audit_content_strings.py']],
   ['audit-da', 'python', ['scratchpad/audit_da.py']],
   ['audit-rtl', 'python', ['scratchpad/audit_rtl.py']],

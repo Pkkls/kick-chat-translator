@@ -42,6 +42,7 @@ import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 import { chromium } from './playwright.mjs';
+import { poserLangueCible } from './kick-actions.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const EXT = path.resolve(HERE, '../../dist');
@@ -111,6 +112,18 @@ const NAVIGATION = process.argv.includes('--navigation');
  * dans un navigateur et invisible a tout test unitaire, faute de disposition.
  */
 const SURVOL = process.argv.includes('--survol');
+
+/**
+ * Sixieme mode, `--reglages`. Changer la langue cible depuis la barre ou le
+ * popup ecrit dans `chrome.storage`, et le script de contenu doit s'en
+ * apercevoir sans rechargement : `watchSettings` existe pour ca. Si le
+ * changement n'arrive pas, le lecteur choisit une langue et rien ne bouge
+ * jusqu'a ce qu'il recharge, ce qui ressemble a une extension cassee.
+ *
+ * L'assertion est exacte parce que le faux moteur voit le parametre `tl` que
+ * `google.ts` pose : on lit la langue reellement demandee, pas un affichage.
+ */
+const REGLAGES = process.argv.includes('--reglages');
 const RANGEES = 8;
 
 // Le chat de Kick reduit a son contrat, repris de `observer.test.ts` qui est
@@ -149,6 +162,8 @@ const ctx = await chromium.launchPersistentContext(profile, {
 });
 
 const vuParLeMoteur = [];
+/** La langue cible que le moteur a reellement recue, requete par requete. */
+const ciblesDemandees = [];
 
 // Le glob de Playwright ne fait pas matcher `*.kick.com` sur `kick.com` : `*`
 // veut au moins un caractere avant le point, donc le document partait sur le
@@ -158,6 +173,7 @@ const KICK = /^https?:\/\/(www\.)?kick\.com\//;
 
 await ctx.route('**://translate.googleapis.com/**', async (route) => {
   vuParLeMoteur.push('google');
+  ciblesDemandees.push(new URL(route.request().url()).searchParams.get('tl') ?? '?');
   if (BASCULE) {
     // 429 est ce que `google.ts` lit comme `rate_limit`, la raison pour laquelle
     // un lecteur reel bascule : le quota gratuit qui tombe en pleine diffusion.
@@ -328,6 +344,51 @@ if (RECYCLAGE) {
   await page.waitForTimeout(6000);
   rangees = await lireRangees();
   traductionVue = rangees.find((r) => r.traductions.length)?.traductions[0] ?? null;
+} else if (REGLAGES) {
+  await poserRangees([SOURCE]);
+  // Attendre LA traduction de ce message, pas une traduction quelconque :
+  // l'amorce est traduite en premier et sortait de l'attente trop tot, si bien
+  // que la requete du message se rangeait dans le "apres" et brouillait la
+  // lecture.
+  await page
+    .waitForFunction(
+      (src) =>
+        [...document.querySelectorAll('#channel-chatroom [data-which="messages"] div[data-index]')]
+          .some(
+            (r) =>
+              r.querySelector('.font-normal')?.textContent === src &&
+              r.querySelector('.kt-translation, .kt-translation-inline, .kt-translation-replace'),
+          ),
+      SOURCE,
+      { timeout: 25000 },
+    )
+    .catch(() => {});
+  const avant = [...ciblesDemandees];
+
+  // Le geste du lecteur, pas une ecriture en stockage devinee : la barre de
+  // l'extension est montee dans cette page, et `poserLangueCible` ouvre son
+  // panneau, clique la langue, et relit l'etiquette du controle avant de rendre
+  // la main. Ce qui est teste est donc le chemin complet, du clic jusqu'au
+  // parametre `tl` recu par le moteur.
+  const pose = await poserLangueCible(page, 'fr');
+  if (!pose?.ok) fails0.push(`le panneau de langues n a pas pris le choix : ${JSON.stringify(pose)}`);
+  await page.waitForTimeout(3000);
+
+  // Index 2 et suivants : 1 porte deja le premier message, et `poserRangees`
+  // saute les rangees existantes.
+  await poserRangees(['otro mensaje distinto para probar', 'y uno mas para estar seguro'], 2);
+  await page.waitForTimeout(10000);
+  rangees = await lireRangees();
+  const apres = ciblesDemandees.slice(avant.length);
+  console.log(`reglages         cibles avant [${avant.join(',')}], apres [${apres.join(',')}]`);
+  if (apres.length === 0)
+    fails0.push('apres le changement de langue, plus rien n a ete demande au moteur');
+  else if (!apres.every((c) => c === 'fr'))
+    fails0.push(
+      `la nouvelle langue cible n a pas atteint la page : le moteur a recu [${apres.join(',')}] au lieu de fr`,
+    );
+  traductionVue =
+    rangees.find((r) => r.source === 'otro mensaje distinto para probar')?.traductions[0] ?? null;
 } else if (SURVOL) {
   await poserRangees([SOURCE]);
   // Rien ne doit partir tant que la souris n'est pas passee. C'est l'argument
@@ -464,4 +525,4 @@ if (fails.length) {
   console.error('FAIL: ' + fails.join(' ; '));
   process.exit(1);
 }
-console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}${NAVIGATION ? ' --navigation' : ''}${SURVOL ? ' --survol' : ''}: OK`);
+console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}${NAVIGATION ? ' --navigation' : ''}${SURVOL ? ' --survol' : ''}${REGLAGES ? ' --reglages' : ''}: OK`);
