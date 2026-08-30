@@ -84,6 +84,22 @@
 
 /* Re-translate button — hidden until the translation block is hovered. */
 .kt-retry {
+  /* La commande la plus repetee du produit : elle est sur chaque ligne traduite.
+   * Mesuree a 10 par 15 dans le build livre, la ou WCAG 2.5.8 demande 24 par 24,
+   * et c'est exactement le defaut du chevron de la puce de langue, un 10 par 6
+   * dans un 45 par 24.
+   *
+   * La boite grandit, la ligne non : les marges negatives rendent la hauteur
+   * ajoutee, sinon chaque message du chat grandirait de neuf pixels et la
+   * densite mesuree par `chat-live`, quatorze messages la ou il y en avait huit,
+   * repartirait en arriere. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 24px;
+  min-block-size: 24px;
+  margin-block: -6px;
+  vertical-align: middle;
   margin-inline-start: 6px;
   font-size: 0.85em;
   cursor: pointer;
@@ -390,6 +406,24 @@ html[data-kt-scheme='light'] .kt-translation-replace {
    is doing. */
 .kt-float-lang:hover {
   border-color: rgba(83, 252, 24, 0.4);
+}
+
+/* Les deux boutons de la barre, a la taille que la main demande.
+ *
+ * Mesures sur le build livre, a dix largeurs de 340 a 1500 : la pause faisait
+ * 26 par 18 et l'engrenage 25 par 19, parce qu'un padding de 2px sur une ligne
+ * de 12 ne fait pas plus de boite que ca. WCAG 2.5.8 demande 24 par 24, et
+ * c'est exactement le defaut corrige sur le chevron de la puce de langue, qui
+ * etait un 10 par 6 dans un 45 par 24. Les boutons de la barre, eux, n'avaient
+ * jamais ete mesures. La barre fait 37px de haut, donc 24 y tient sans la
+ * deplacer. */
+.kt-float-power,
+.kt-float-opts {
+  min-inline-size: 24px;
+  min-block-size: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .kt-float-power {

@@ -97,6 +97,25 @@ reads dist/, so it serialises behind any build. D touches no code.
 - [k] **Store submissions.** Chrome Web Store and AMO. Packages, listing text,
   dashboard fields and reviewer notes are ready; the accounts are kil's.
 
+- [x] **Two controls were too small to hit, and no gate looked at them.** The
+  accessibility audits run on the dumps of the chip menu and the language panel,
+  where the bar itself does not appear, and `bar-live` measures the bar's
+  placement without measuring its buttons. Measured across ten window widths
+  from 340 to 1500 on the shipped build: the pause button was 26 by 18, the
+  settings gear 25 by 19, and the retry arrow on every translated line 10 by 15,
+  where WCAG 2.5.8 asks 24 by 24. Same defect as the language chip's caret, a 10
+  by 6 inside a 45 by 24, which was fixed on kil's report two days ago; these
+  had simply never been measured. All three are 24 tall now, the bar stays 37px
+  and `chat-live` still passes on density, so nothing moved: negative block
+  margins give the added height back to the line. `bar-widths` is a gate, and
+  removing the rule turns it red at all ten widths.
+- [x] **The rest of the interactive surface is clean, checked rather than
+  assumed.** The same sweep over the compose preview, the popup and the options
+  page found nothing else. The popup's one-pixel inputs and the options
+  checkboxes are deliberate: a real input under a styled control, wrapped in the
+  label that is the actual target, both documented in their own components. The
+  one short link, `deepl.com/pro#developer` at 126 by 15, sits inside a sentence
+  and falls under 2.5.8's inline exception.
 - [x] **`package:all` used to leave `dist/` as the Firefox build.** It builds
   Chrome, packs, builds Firefox, packs, and stopped there, so the working
   directory kept the Firefox manifest: a `gecko` block and `background.scripts`

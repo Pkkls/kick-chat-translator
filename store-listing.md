@@ -1,13 +1,17 @@
 # Chrome Web Store listing
 
 Plain text. The store renders no markdown, so the CAPS headers are the only
-structure available. Fact-checked against manifest 2.9.3, README, CHANGELOG.
+structure available. Fact-checked against manifest 2.9.4, README, CHANGELOG.
 
 ## Short summary (132 char limit)
 
 Kick chat in a language you don't read? It gets translated under each message, live, and your replies go out in the channel's.
 
 ## Description (EN)
+
+NEW IN 2.9.4
+
+Two controls are now big enough to hit. The pause button and the settings gear on the bar were 26 by 18 and 25 by 19, and the retry arrow that sits on every translated line was 10 by 15, where the accessibility guidelines ask for 24 by 24. They are 24 tall now and the bar and the chat are exactly as compact as they were.
 
 NEW IN 2.9.3
 
@@ -46,6 +50,10 @@ Open source, MIT: github.com/Pkkls/kick-chat-translator
 ## Description (FR)
 
 Short summary: Chat Kick dans une langue que tu ne lis pas ? Traduit sous chaque message, en direct. Tes reponses partent dans celle de la chaine.
+
+NOUVEAU EN 2.9.4
+
+Deux commandes sont enfin assez grandes pour la main. Le bouton pause et l'engrenage de la barre faisaient 26 par 18 et 25 par 19, et la fleche de relance posee sur chaque ligne traduite faisait 10 par 15, la ou les regles d'accessibilite demandent 24 par 24. Elles font 24 de haut, et la barre comme le chat restent aussi compacts qu'avant.
 
 NOUVEAU EN 2.9.3
 
@@ -89,6 +97,10 @@ the Turkish store. No native reader was available; verified by round-tripping ea
 
 Short summary: Okuyamadığın bir dilde Kick sohbeti mi? Her mesajın altına canlı çeviri gelir, yanıtların da kanalın dilinde gider.
 
+2.9.4 İLE GELENLER
+
+Iki denetim artik parmakla isabet ettirilecek kadar buyuk. Cubuktaki duraklat dugmesi ve ayar disllisi 26'ya 18 ve 25'e 19'du, cevrilmis her satirda duran yeniden deneme oku ise 10'a 15'ti; erisilebilirlik kurallari 24'e 24 ister. Artik 24 yuksekliginde, ve cubuk da sohbet de eskisi kadar derli toplu.
+
 2.9.3 İLE GELENLER
 
 Mesajlar yeniden eksiksiz cevriliyor. Sohbetteki emote adlarini ayiklamak icin yazilan bir temizleme kurali siradan kelimeleri de siliyordu: -mez ile biten her Turkce fiil, Ispanyolca vez, Cekce bez ve on uc harf ve uzeri her kucuk harfli kelime. On uc harf; Ispanyolca, Portekizce, Turkce, Almanca ve Fincede siradan bir uzunluktur. Okudugunuz sey, kimsenin yazmadigi bir cumlenin cevirisiydi ve bir kelimenin eksildigini gosteren hicbir isaret yoktu. Bu magaza metinlerinin 11.583 kelimesi uzerinde olculdu: oncesinde 30 siradan kelime yok ediliyordu, simdi 13 ve hepsi marka adi; emote adlari ise eskisi gibi temizleniyor. Hizli bir sohbette, listenin yeniden kullandigi bir satira dusen mesaj da artik cevriliyor; eskiden sessizce atlaniyordu. Ayrica eklenti artik hicbir dosyasini sayfaya acmiyor, boylece Kick uzerinde calisan bir betik onu kurup kurmadiginizi test edemez.
@@ -130,6 +142,10 @@ third after English and Turkish. The extension already ships an Arabic interface
 and handles right-to-left text. No native reader was available; verified by round-tripping each paragraph back to English.
 
 Short summary: دردشة Kick بلغة لا تقرأها؟ تظهر الترجمة أسفل كل رسالة مباشرةً، وردودك تخرج بلغة القناة.
+
+الجديد في 2.9.4
+
+أصبح عنصران من عناصر التحكم كبيرين بما يكفي للنقر عليهما. كان زر الإيقاف المؤقت وترس الإعدادات في الشريط بمقاس 26 في 18 و25 في 19، وكان سهم إعادة المحاولة الموجود على كل سطر مترجم بمقاس 10 في 15، بينما تطلب إرشادات إمكانية الوصول 24 في 24. ارتفاعها الآن 24، ويظل الشريط والدردشة بالإحكام نفسه تمامًا.
 
 الجديد في 2.9.3
 
@@ -174,6 +190,10 @@ reader was available; same standard as the Turkish and Arabic blocks above.
 
 Short summary: 読めない言語の Kick チャットが、届いたそばから各メッセージの下に翻訳されます。あなたの返信はチャンネルの言語で送れます。
 
+2.9.4 の新機能
+
+二つの操作が、ようやく指で狙える大きさになりました。バーの一時停止ボタンと設定の歯車は 26×18 と 25×19、翻訳された行すべてに付く再試行の矢印は 10×15 でしたが、アクセシビリティの指針は 24×24 を求めます。いまはどれも高さ 24 で、バーもチャットも以前とまったく同じ詰まり具合のままです。
+
 2.9.3 の新機能
 
 メッセージがふたたび丸ごと翻訳されます。チャットからエモート名を取り除くための整理ルールが、ふつうの単語まで削っていました。-mez で終わるトルコ語の動詞すべて、スペイン語の vez、チェコ語の bez、そして小文字だけで十三文字以上の単語。十三文字はスペイン語、ポルトガル語、トルコ語、ドイツ語、フィンランド語ではごくふつうの長さです。読んでいたのは誰も書いていない文の翻訳で、単語が消えたことを示すものは画面のどこにもありませんでした。このストア文面の 11,583 語で計測しました。以前は 30 語のふつうの単語が壊れ、いまは 13 語、そのすべてがブランド名です。エモート名はこれまでどおり取り除かれます。速いチャットでは、リストが再利用する行に届いたメッセージも翻訳されるようになりました。以前は黙って飛ばされていました。また拡張機能はページにファイルを一切公開しなくなったので、Kick 上で動くスクリプトから導入の有無を調べられません。
@@ -214,6 +234,10 @@ Paste into the Spanish listing. Same standard as the other localised blocks:
 no native reader.
 
 Short summary: ¿Chat de Kick en un idioma que no lees? Se traduce bajo cada mensaje, en directo, y tus respuestas salen en el del canal.
+
+NUEVO EN 2.9.4
+
+Dos controles ya son lo bastante grandes para acertarles. El boton de pausa y el engranaje de ajustes de la barra median 26 por 18 y 25 por 19, y la flecha de reintento que hay en cada linea traducida median 10 por 15, cuando las pautas de accesibilidad piden 24 por 24. Ahora miden 24 de alto, y tanto la barra como el chat siguen igual de compactos.
 
 NUEVO EN 2.9.3
 
@@ -256,6 +280,10 @@ no native reader.
 
 Short summary: Chat da Kick num idioma que você não lê? Ele é traduzido embaixo de cada mensagem, ao vivo, e suas respostas saem no do canal.
 
+NOVIDADES NA 2.9.4
+
+Dois controles agora sao grandes o bastante para acertar. O botao de pausa e a engrenagem de ajustes da barra tinham 26 por 18 e 25 por 19, e a seta de repetir que fica em cada linha traduzida tinha 10 por 15, quando as diretrizes de acessibilidade pedem 24 por 24. Agora tem 24 de altura, e tanto a barra quanto o chat continuam igualmente compactos.
+
 NOVIDADES NA 2.9.3
 
 As mensagens voltam a ser traduzidas inteiras. Uma regra de limpeza feita para tirar nomes de emotes do chat apagava tambem palavras comuns: todo verbo turco terminado em -mez, o espanhol vez, o tcheco bez e qualquer palavra em minusculas com treze letras ou mais, um comprimento banal em espanhol, portugues, turco, alemao e finlandes. Voce lia a traducao de uma frase que ninguem tinha escrito, sem nada na tela avisando que uma palavra havia sumido. Medido sobre as 11.583 palavras destes textos de loja: antes 30 palavras comuns eram destruidas, agora 13, todas nomes de marcas, e os nomes de emotes continuam sendo removidos do mesmo jeito. Num chat rapido, uma mensagem que cai numa linha que a lista esta reaproveitando tambem passa a ser traduzida; antes era pulada em silencio. E a extensao nao publica mais nenhum de seus arquivos para a pagina, entao um script rodando no Kick nao consegue mais testar se voce a tem instalada.
@@ -296,6 +324,10 @@ Paste into the Russian listing. Same standard as the other localised blocks:
 no native reader.
 
 Short summary: Чат Kick на языке, который вы не читаете? Перевод появляется под каждым сообщением, а ваши ответы уходят на языке канала.
+
+НОВОЕ В 2.9.4
+
+Два элемента управления наконец стали достаточно крупными, чтобы в них попасть. Кнопка паузы и шестерёнка настроек на панели были 26 на 18 и 25 на 19, а стрелка повтора на каждой переведённой строке была 10 на 15, тогда как правила доступности требуют 24 на 24. Теперь их высота 24, а панель и чат остались ровно такими же компактными.
 
 НОВОЕ В 2.9.3
 
@@ -338,6 +370,10 @@ blocks: no native reader.
 
 Short summary: Kick 的聊天是你读不懂的语言？每条消息下方都会实时出现译文，你的回复也会用频道的语言发出。
 
+2.9.4 的新功能
+
+两个控件终于大到可以点中了。栏上的暂停按钮和设置齿轮此前是 26×18 和 25×19，每条已翻译消息旁的重试箭头是 10×15，而无障碍规范要求 24×24。现在它们的高度都是 24，栏和聊天区依旧和从前一样紧凑。
+
 2.9.3 的新功能
 
 消息重新被完整翻译。一条本用来剔除聊天中表情名称的清理规则，连普通词一起删掉了：所有以 -mez 结尾的土耳其语动词、西班牙语的 vez、捷克语的 bez，以及任何十三个字母及以上的全小写单词。十三个字母在西班牙语、葡萄牙语、土耳其语、德语和芬兰语里再普通不过。你读到的是一句没人写过的话的译文，屏幕上没有任何提示告诉你少了一个词。在这些商店文案的 11,583 个词上测量：此前有 30 个普通词被破坏，现在是 13 个，且全是品牌名，而表情名称依然照常剔除。在快速滚动的聊天里，落进列表正在复用的那一行的消息现在也会被翻译；以前会被悄悄跳过。另外扩展不再向页面公开任何文件，因此在 Kick 上运行的脚本无法再检测你是否安装了它。
@@ -378,6 +414,10 @@ Paste into the Korean listing. Same standard as the other localised blocks: no
 native reader.
 
 Short summary: 읽지 못하는 언어로 흐르는 Kick 채팅? 각 메시지 아래에 실시간으로 번역이 붙고, 답장은 채널의 언어로 나갑니다.
+
+2.9.4의 새로운 기능
+
+두 개의 컨트롤이 이제 누를 수 있을 만큼 커졌습니다. 바의 일시정지 버튼과 설정 톱니바퀴는 26×18과 25×19였고, 번역된 모든 줄에 붙는 재시도 화살표는 10×15였습니다. 접근성 지침은 24×24를 요구합니다. 이제 높이가 24이며, 바와 채팅은 예전과 똑같이 조밀합니다.
 
 2.9.3의 새로운 기능
 
@@ -421,6 +461,10 @@ four languages that already had text. Same standard as the other localised
 blocks: no native reader.
 
 Short summary: Chat na Kicku v jazyce, který neumíte přečíst? Překlad se objeví pod každou zprávou, živě.
+
+NOVINKY VE VERZI 2.9.4
+
+Dva ovládací prvky jsou konečně dost velké na to, aby se do nich dalo trefit. Tlačítko pauzy a ozubené kolo nastavení na liště měly 26 na 18 a 25 na 19 a šipka opakování, která je na každém přeloženém řádku, měla 10 na 15, přičemž pravidla přístupnosti žádají 24 na 24. Nyní jsou vysoké 24 a lišta i chat zůstávají stejně kompaktní jako dřív.
 
 NOVINKY VE VERZI 2.9.3
 
@@ -627,19 +671,19 @@ Okuyamadığın bir dildeki Kick sohbeti, her mesajın altında geldiği anda ç
 AMO asks for source when the submitted code is bundled or minified, which this
 is. Paste this into the "Notes for reviewers" field.
 
-Source: https://github.com/Pkkls/kick-chat-translator, public, MIT, tag v2.9.3.
+Source: https://github.com/Pkkls/kick-chat-translator, public, MIT, tag v2.9.4.
 The submitted zip is built from that tag with no patching in between.
 
 Build:
 
   git clone https://github.com/Pkkls/kick-chat-translator
   cd kick-chat-translator
-  git checkout v2.9.3
+  git checkout v2.9.4
   npm ci
   npm run build:firefox
   npm run pack:firefox
 
-The archive lands in release/kick-chat-translator-2.9.3-firefox.zip.
+The archive lands in release/kick-chat-translator-2.9.4-firefox.zip.
 
 Toolchain actually used for the submitted build: Node v22.22.0, npm 10.9.4, on
 Windows. The repository's .nvmrc pins 20 and package.json asks for node >= 20;

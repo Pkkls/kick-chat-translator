@@ -46,6 +46,9 @@ const GATES = [
   // lang-panel-shoot, probe-row-space): they draw images and print numbers for a
   // human and assert nothing, so adding them would buy runtime and no verdict.
   ['bar-panel-live', 'node', ['scratchpad/harness/bar-panel-live.mjs']],
+  // La barre flottante a dix largeurs. Elle n'etait dans aucun dump audite et
+  // ses deux boutons vivaient sous 24x24 depuis toujours.
+  ['bar-widths', 'node', ['scratchpad/harness/bar-widths.mjs']],
   ['flags-preview', 'node', ['scratchpad/harness/flags-preview.mjs']],
   ['lang-panel-measure', 'node', ['scratchpad/harness/lang-panel-measure.mjs']],
   // La seule porte qui charge la vraie extension. Toutes les autres montent les

@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-30T23:32:02.360Z",
+  "genere": "2026-08-30T23:46:25.527Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
     "branche": "master",
-    "head": "7a742dd1c7fd5d7a2507739103f506b36b5ed828",
-    "sujet": "Record the 2.9.3 merge and close the screenshots item",
+    "head": "a765dcad7641f20c7a96dfe20d3c0c11be885cff",
+    "sujet": "Leave dist/ as the Chrome build after packaging",
     "arbrePropre": false,
-    "fichiersModifies": 4,
+    "fichiersModifies": 7,
     "dernierTag": "v2.9.3",
-    "decrit": "v2.9.3-1-g7a742dd",
+    "decrit": "v2.9.3-2-ga765dca",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -18,7 +18,7 @@
     "ecarts": {
       "devcopy": {
         "derriere": 0,
-        "devant": 29,
+        "devant": 30,
         "aJour": false
       },
       "origin": {
@@ -29,8 +29,8 @@
     }
   },
   "versions": {
-    "packageJson": "2.9.3",
-    "distManifest": "2.9.3",
+    "packageJson": "2.9.4",
+    "distManifest": "2.9.4",
     "accordent": true,
     "note": null
   },
@@ -146,11 +146,27 @@
       "versionDuManifest": "2.9.3",
       "accordent": true,
       "erreur": null
+    },
+    {
+      "fichier": "kick-chat-translator-2.9.4-chromium.zip",
+      "octets": 278025,
+      "versionDuNom": "2.9.4",
+      "versionDuManifest": "2.9.4",
+      "accordent": true,
+      "erreur": null
+    },
+    {
+      "fichier": "kick-chat-translator-2.9.4-firefox.zip",
+      "octets": 277957,
+      "versionDuNom": "2.9.4",
+      "versionDuManifest": "2.9.4",
+      "accordent": true,
+      "erreur": null
     }
   ],
   "portes": {
     "runner": "scratchpad/harness/run-gates.mjs",
-    "enumerees": 36,
+    "enumerees": 37,
     "noms": [
       "snapshot",
       "names",
@@ -167,6 +183,7 @@
       "da-surfaces",
       "boundaries",
       "bar-panel-live",
+      "bar-widths",
       "flags-preview",
       "lang-panel-measure",
       "extension-load",
@@ -189,7 +206,7 @@
       "audit-poids",
       "audit-fiche"
     ],
-    "harnaisSurDisque": 38,
+    "harnaisSurDisque": 39,
     "orphelins": [
       "a11y",
       "bar-panel-mesure",
@@ -250,6 +267,6 @@
     ],
     "nbBloques": 3,
     "nbOuverts": 2,
-    "nbFaits": 49
+    "nbFaits": 51
   }
 }
