@@ -203,6 +203,22 @@ reads dist/, so it serialises behind any build. D touches no code.
   gitignored `scratchpad/uxkit.path`, then the repository's own
   `node_modules`, and exits 2 with the three ways to fix it when none is there.
   Exit 2 rather than 1 on purpose: a missing prerequisite is not a failed gate.
+- [x] **The product's one job is tested offline.** A message arrives in chat and
+  its translation appears under it: nothing offline verified that. `chat-live`
+  calls `inject()` by hand and measures rendering, the 620 unit tests stub at
+  module boundaries, and the only end-to-end coverage was live harnesses that
+  open the real kick.com. `translate-offline` loads the real extension, serves a
+  local chat fixture taken from `observer.test.ts`, and answers the translation
+  engine with a made-up string, so the assertion is exact. Witness: breaking
+  `font-normal` in `selectors.ts` turns it red. Measured limit, stated in the
+  file: removing the engine's host permission does not turn it red, because the
+  interception answers before the permission matters.
+- [x] **`extension-load` was hitting the real network and said it was not.**
+  Playwright's glob does not match `*.kick.com` against `kick.com`, so the
+  document navigation went to the real site while its subresources were
+  intercepted, which is why the run reported 70 interceptions and looked right.
+  A regular expression takes both forms. The claim that nothing left the machine
+  was false when it was written.
 - [x] **The extension exposes nothing to kick.com pages any more.** The built
   manifest listed six web-accessible resources: a stylesheet, an icon glob, and
   four ESM chunks crxjs adds for the loader that `scripts/bundle-content.ts`

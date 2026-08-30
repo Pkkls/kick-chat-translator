@@ -53,6 +53,9 @@ const GATES = [
   // lequel Chrome injecte. Elle ouvre une fenetre, parce que sans fenetre
   // l'extension n'est pas chargee du tout, et la pousse hors de l'ecran.
   ['extension-load', 'node', ['scratchpad/harness/extension-load.mjs']],
+  // Le produit fait une seule chose et rien hors ligne ne la verifiait : un
+  // message arrive, sa traduction apparait dessous. Meme fenetre hors ecran.
+  ['translate-offline', 'node', ['scratchpad/harness/translate-offline.mjs']],
   ['audit-strings', 'python', ['scratchpad/audit_content_strings.py']],
   ['audit-da', 'python', ['scratchpad/audit_da.py']],
   ['audit-rtl', 'python', ['scratchpad/audit_rtl.py']],

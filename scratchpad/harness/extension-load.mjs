@@ -64,7 +64,13 @@ const page = ctx.pages()[0] ?? (await ctx.newPage());
 // Tout ce qui part vers kick.com est servi localement. Le harnais echoue si une
 // requete quelconque sort quand meme.
 const sorties = [];
-await ctx.route('**://*.kick.com/**', async (route) => {
+// Le glob de Playwright ne fait pas matcher `*.kick.com` sur `kick.com` : `*`
+// veut au moins un caractere avant le point, donc le document partait sur le
+// vrai site pendant que les sous-ressources, elles, etaient bien interceptees.
+// Une expression reguliere prend les deux formes.
+const KICK = /^https?:\/\/(www\.)?kick\.com\//;
+
+await ctx.route(KICK, async (route) => {
   const url = route.request().url();
   if (route.request().resourceType() === 'document') {
     await route.fulfill({ status: 200, contentType: 'text/html', body: FIXTURE });
