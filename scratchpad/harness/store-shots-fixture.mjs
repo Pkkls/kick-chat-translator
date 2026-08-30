@@ -66,6 +66,10 @@ const CONVERSATION = [
 
 /** Ce que le faux moteur rend, phrase par phrase. */
 const TRADUCTIONS = new Map([
+  // Ce que le lecteur tape, vers la langue de la chaine. Sans cette entree
+  // l'apercu rendait la phrase anglaise telle quelle et la capture montrait la
+  // fonctionnalite en train de ne rien faire.
+  ['thanks for the stream, see you tomorrow', 'gracias por el stream, nos vemos manana'],
   ['la ultima ronda ha estado muy reninda', 'that last round was really close'],
   ['me tengo que ir pero vuelvo luego', 'I have to go, but I will be back later'],
   ['suerte con el torneo de esta noche', 'good luck with tonight is tournament'],
