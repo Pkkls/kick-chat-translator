@@ -42,7 +42,7 @@ const PAGE = `<!doctype html>
   .big { font-size:22px; }
 </style></head><body><div id="stage"></div></body></html>`;
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 520, height: 420 }, deviceScaleFactor: 2 });
 await page.setContent(PAGE);
 

@@ -72,7 +72,7 @@ const PAGE = (scheme) => `<!doctype html>
 const LONG =
   'je pense que ce que tu viens de dire merite une reponse un peu plus longue que la moyenne';
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 const report = [];
 
 for (const scheme of ['dark', 'light']) {

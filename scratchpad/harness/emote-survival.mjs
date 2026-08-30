@@ -95,7 +95,7 @@ const build = `(pixel) => {
   });
 }`;
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 500, height: 600 } });
 await page.setContent(PAGE);
 

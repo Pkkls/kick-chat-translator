@@ -43,7 +43,7 @@ const DURATIONS_OK = new Set(['0s', '0.15s']);
  */
 const PREVIEW_CLASSES = ['kt-translation', 'kt-flag', 'kt-provider', 'kt-error', 'kt-retry'];
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 const counts = { radii: new Map(), durations: new Map(), shadows: new Map(), sizes: new Map() };
 const failures = [];
 let elements = 0;

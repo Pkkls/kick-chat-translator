@@ -47,7 +47,7 @@ const PAGE = `<!doctype html><html data-kt-scheme="dark"><head><style>${css}</st
   .font-normal { overflow-wrap: break-word }
 </style></head><body><div class="col" id="c"></div><script>${js}</script></body></html>`;
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 const failures = [];
 let measured = 0;
 

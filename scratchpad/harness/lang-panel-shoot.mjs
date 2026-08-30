@@ -15,7 +15,7 @@ import { chromium } from './playwright.mjs';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const FILE = pathToFileURL(path.join(HERE, 'lang-panel.html')).href;
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 
 for (const theme of ['dark', 'light']) {
   const page = await browser.newPage({

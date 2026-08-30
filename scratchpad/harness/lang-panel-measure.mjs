@@ -16,7 +16,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { chromium } from './playwright.mjs';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 1100 } });
 await page.goto(pathToFileURL(path.join(HERE, 'lang-panel.html')).href);
 

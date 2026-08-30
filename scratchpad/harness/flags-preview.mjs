@@ -70,7 +70,7 @@ for (const host of ['small','large']) {
 }
 </script></body></html>`;
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1180, height: 1500 }, deviceScaleFactor: 2 });
 await page.setContent(PAGE);
 

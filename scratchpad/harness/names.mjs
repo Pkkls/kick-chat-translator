@@ -29,7 +29,7 @@ const SURFACES = [
   ]),
 ];
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 const failures = [];
 let counted = 0;
 

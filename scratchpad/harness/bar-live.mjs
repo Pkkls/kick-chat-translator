@@ -64,7 +64,7 @@ const PAGE = `<!doctype html>
 </style></head>
 <body><div id="channel-chatroom"><div class="rows"></div></div><script>${js}</script></body></html>`;
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 const report = [];
 
 for (const charge of [false, true]) {

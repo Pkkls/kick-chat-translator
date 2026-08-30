@@ -63,7 +63,7 @@ const PAGE = (dir) => `<!doctype html>
 
 const STYLES = ['below', 'inline', 'replace'];
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 const report = [];
 
 for (const dir of ['ltr', 'rtl']) {

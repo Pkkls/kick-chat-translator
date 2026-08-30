@@ -88,7 +88,7 @@ function shim(locale) {
   };
 }
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 const over = [];
 console.log(`popup height per interface language (budget ${BUDGET}px)`);
 for (const locale of LOCALES) {

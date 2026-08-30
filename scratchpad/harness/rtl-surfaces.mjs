@@ -49,7 +49,7 @@ const WATCHED = [
   '.kt-btn-ghost',
 ];
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 const failures = [];
 let compared = 0;
 

@@ -40,7 +40,7 @@ const PAGE = (panel) => `<!doctype html>
 </style></head>
 <body>${STAGE}<script>${js}</script></body></html>`;
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 // 340 is the harness panel; 300 and 260 stand for a narrowed window and the
 // mobile layout, which is where a row runs out of room first.
 for (const panel of [340, 300, 260]) {

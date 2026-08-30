@@ -65,14 +65,16 @@ reads dist/, so it serialises behind any build. D touches no code.
   10.9 MB. Public since 2026-08-29, so it is a clone cost for everyone. Removing
   it rewrites history, which is a decision with consequences, not a chore.
 
-- [ ] **A duplicate remote.** `public` and `origin` are the same URL, and
-  `public`'s tracking ref is stale, so a naive read reports one remote up to
-  date and the other 16 commits behind for the same repository. `state.mjs`
-  names the alias now; the remote itself is still there.
+- [x] **The duplicate remote is gone.** `public` pointed at `origin`'s URL with
+  a stale tracking ref, so a naive read reported one remote current and the
+  other 16 commits behind for the same repository. Removed locally; `devcopy` is
+  a different repository and stays. Restore with `git remote add public` and the
+  URL if it is ever wanted back.
 
-- [ ] **`c6cb904`'s commit message lost a word** to a bash heredoc eating
-  backticks. Pushed to a public master, so fixing it means a force-push of a
-  shared branch. Probably not worth it; decide and close.
+- [x] **`c6cb904`'s truncated commit message stays as it is.** Fixing it means
+  rewriting a commit already on a public master, so every clone and every fork
+  point moves to spare one word in one message. The cost is larger than the
+  defect. Closed as a decision, not as a fix.
 
 ---
 
@@ -201,6 +203,17 @@ reads dist/, so it serialises behind any build. D touches no code.
   gitignored `scratchpad/uxkit.path`, then the repository's own
   `node_modules`, and exits 2 with the three ways to fix it when none is there.
   Exit 2 rather than 1 on purpose: a missing prerequisite is not a failed gate.
+- [x] **The offline gates no longer need a Google Chrome on the machine.**
+  Seventeen gates and three shooters launched `channel: 'chrome'`, which makes
+  the browser a property of the machine, in an apparatus that was just made
+  tracked so a clone could run it. They use Playwright's own Chromium now, which
+  `package.json` pins. Speed is not what decided it: the system Chrome is
+  faster, 914 to 1443 ms against 1474 to 2256 ms on one gate over three launches
+  each. An apparatus that may run on either browser produces two sets of numbers
+  and these gates assert pixels. Both agreed on the day of the change, and they
+  are two version streams with no reason to keep agreeing. `live-kick` and
+  `compose-kick-live` keep the real Chrome: they open the real kick.com, where
+  the profile and the site's bot detection are part of what is measured.
 - [x] **Both reworked menus audited, and the audit made permanent.** axe 0
   violations and 96 targets at or above 24x24 on each, in dark, light and RTL.
   The kit's keyboard gate reads a saved dump, which carries no listeners, so

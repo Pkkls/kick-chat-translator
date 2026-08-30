@@ -78,7 +78,7 @@ const PAGE = `<!doctype html><html data-kt-scheme="dark"><head><style>${css}</st
   @keyframes kick-pulse { 50% { opacity: .4 } }
 </style></head><body>${MARKUP}</body></html>`;
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 const failures = [];
 
 for (const mode of ['no-preference', 'reduce']) {

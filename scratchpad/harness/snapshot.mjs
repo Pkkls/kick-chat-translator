@@ -56,7 +56,7 @@ const SETTINGS = {
   myMemoryEmail: '', deeplBudgetPct: 0, deeplSmartRouting: true,
 };
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 
 async function open(url, width, height) {
   const page = await browser.newPage({ viewport: { width, height }, colorScheme: 'dark' });

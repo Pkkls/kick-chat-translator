@@ -71,3 +71,25 @@ const pw = await import(pathToFileURL(trouve).href);
 
 export const { chromium, firefox, webkit, devices } = pw;
 export const provenance = trouve;
+
+/**
+ * Le navigateur des portes hors-ligne est le Chromium embarque avec Playwright,
+ * jamais le Chrome de la machine.
+ *
+ * Dix-sept portes et trois tireurs demandaient `channel: 'chrome'`, ce qui fait
+ * du navigateur une propriete de la machine : un clone sans Google Chrome
+ * installe ne pouvait pas les lancer, alors que ce depot vient justement de
+ * rendre son appareil de mesure suivi pour qu'un clone puisse le lancer.
+ *
+ * Le Chrome de la machine est plus rapide, mesure sur une porte, trois lancements
+ * chacun : 914 a 1443 ms contre 1474 a 2256 ms, soit une demi-seconde de plus par
+ * porte. Ce n'est pas la vitesse qui tranche. Un appareil de mesure qui peut
+ * s'executer sur deux navigateurs selon la machine produit deux jeux de nombres,
+ * et ces portes assertent des pixels. Les deux etaient d'accord le jour du
+ * changement, 151.0.7922.34 embarque contre 151.0.7922.174 systeme, et ce sont
+ * deux flux de versions qui n'ont aucune raison de le rester.
+ *
+ * Deux harnais gardent le Chrome de la machine, `live-kick` et
+ * `compose-kick-live` : ils ouvrent le vrai kick.com, ou le profil et la
+ * detection de robot du site font partie de ce qui est mesure.
+ */

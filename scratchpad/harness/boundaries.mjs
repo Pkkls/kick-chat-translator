@@ -45,7 +45,7 @@ const ratio = (a, b) => {
   return +((Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05)).toFixed(2);
 };
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 const failures = [];
 let measured = 0;
 

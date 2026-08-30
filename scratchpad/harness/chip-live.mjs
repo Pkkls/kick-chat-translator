@@ -110,7 +110,7 @@ const PAGE = (scheme, dir) => `<!doctype html>
 </style></head>
 <body>${STAGE}<script>${js}</script></body></html>`;
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 const report = [];
 
 for (const [scheme, dir] of [

@@ -62,7 +62,7 @@ ${css}
   <script>${js}</script>
 </body></html>`;
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 2 });
 await page.setContent(PAGE);
 

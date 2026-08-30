@@ -81,7 +81,7 @@ const PAGE = (scheme) => `<!doctype html>
 // had been translated yet.
 const STYLES = ['brut', 'below', 'inline', 'replace', 'hover', 'erreur'];
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await chromium.launch();
 const report = [];
 
 for (const scheme of ['dark', 'light']) {

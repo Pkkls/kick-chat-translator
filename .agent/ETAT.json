@@ -1,28 +1,19 @@
 {
-  "genere": "2026-08-30T14:21:57.602Z",
+  "genere": "2026-08-30T14:28:34.486Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
-    "remotesEnDouble": [
-      {
-        "url": "https://github.com/Pkkls/kick-chat-translator.git",
-        "noms": [
-          "origin",
-          "public"
-        ]
-      }
-    ],
+    "remotesEnDouble": [],
     "branche": "feat/gates-tracked",
-    "head": "4df5f6ae0b80718eedb10d37b04fc76ddf3d5abd",
-    "sujet": "Audit the reworked menus for accessibility, and measure what a dump cannot show",
+    "head": "2768a86e5ffa7efb7ef873a6aae3055da9a81d29",
+    "sujet": "Audit the bar panel too, and attach both audits to their harnesses",
     "arbrePropre": false,
-    "fichiersModifies": 7,
+    "fichiersModifies": 23,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-11-g4df5f6a",
+    "decrit": "v2.9.2-12-g2768a86",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
-      "origin": "https://github.com/Pkkls/kick-chat-translator.git",
-      "public": "https://github.com/Pkkls/kick-chat-translator.git"
+      "origin": "https://github.com/Pkkls/kick-chat-translator.git"
     },
     "ecarts": {
       "devcopy": {
@@ -31,16 +22,7 @@
       "origin": {
         "derriere": 0,
         "devant": 0,
-        "aJour": true,
-        "aliasDe": [
-          "public"
-        ]
-      },
-      "public": {
-        "note": "pas de public/feat/gates-tracked connu localement",
-        "aliasDe": [
-          "origin"
-        ]
+        "aJour": true
       }
     }
   },
@@ -236,7 +218,7 @@
       "**The screenshots show a real streamer**, their branding and real viewers'"
     ],
     "nbBloques": 4,
-    "nbOuverts": 5,
-    "nbFaits": 23
+    "nbOuverts": 3,
+    "nbFaits": 26
   }
 }
