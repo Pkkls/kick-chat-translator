@@ -135,7 +135,11 @@ for (const [scheme, dir] of [
   // ahead of the gear, not floating above the message box.
   const anchor = await page.evaluate(() => {
     const chip = document.querySelector('.kt-chip');
-    const wrap = chip.closest('.kt-chip-wrap') ?? chip.parentElement;
+    // .kt-chip-host, pas .kt-chip-wrap : cette classe n existe nulle part dans
+    // le produit, et le repli sur parentElement faisait le travail en silence.
+    // Un selecteur mort derriere un ?? est un selecteur que personne ne verra
+    // mourir.
+    const wrap = chip.closest('.kt-chip-host') ?? chip.parentElement;
     const composer = document.querySelector('.composer');
     const right = document.querySelector('.right');
     const cr = chip.getBoundingClientRect();

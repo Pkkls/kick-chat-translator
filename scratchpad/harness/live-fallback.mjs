@@ -26,6 +26,7 @@ import fs from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { chromium } from './playwright.mjs';
+import { poserLangueCible } from './kick-actions.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const EXT = path.resolve(HERE, '../../dist');
@@ -90,13 +91,14 @@ async function openChannel(ctx) {
     await page.waitForTimeout(11000);
     if ((await page.evaluate(() => document.querySelectorAll('#channel-chatroom [data-index]').length)) > 5) {
       // Aim at a language the chat is not written in, or nothing is requested.
-      await page.evaluate(() => {
-        const s = document.querySelector('#kt-floating-bar .kt-float-lang');
-        if (s) {
-          s.value = 'fr';
-          s.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-      });
+      // Through the real control: this used to poke `.value` on what is a
+      // button, so the target never moved and every count below was taken on
+      // the default one.
+      const pose = await poserLangueCible(page, 'fr');
+      if (!pose.ok) {
+        console.error('live-fallback: ' + pose.raison);
+        return { page: null, channel: null, raison: pose.raison };
+      }
       return { page, channel: c };
     }
   }

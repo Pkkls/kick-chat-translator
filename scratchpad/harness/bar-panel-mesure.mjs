@@ -122,16 +122,16 @@ const vu = await page.evaluate(() => {
   const favs = [...panel.querySelectorAll('.kt-lang-fav')];
   const liste = panel.querySelector('.kt-lang-list') ?? panel;
 
+  // Ni code ISO ni tag : le produit ne les dessine plus, donc les lire rendait
+  // null pour toujours et les assertions de contraste qui en dependaient ne
+  // pouvaient plus echouer. Le drapeau porte l'identite maintenant, et c'est lui
+  // qui est mesure.
   const echRow = rows.slice(0, 3).map((r) => ({
     code: r.dataset.code ?? null,
     rangee: boite(r),
     drapeau: boite(r.querySelector('.kt-lang-flag')),
-    iso: r.querySelector('.kt-lang-iso')?.textContent ?? null,
-    boiteIso: boite(r.querySelector('.kt-lang-iso')),
-    tailleIso: r.querySelector('.kt-lang-iso') ? +parseFloat(getComputedStyle(r.querySelector('.kt-lang-iso')).fontSize).toFixed(1) : null,
     nom: r.querySelector('.kt-lang-name')?.textContent?.slice(0, 22) ?? null,
     tailleNom: r.querySelector('.kt-lang-name') ? +parseFloat(getComputedStyle(r.querySelector('.kt-lang-name')).fontSize).toFixed(1) : null,
-    contrasteIso: contraste(r.querySelector('.kt-lang-iso')),
     contrasteNom: contraste(r.querySelector('.kt-lang-name')),
     nomTronque: (() => {
       const n = r.querySelector('.kt-lang-name');
@@ -142,13 +142,6 @@ const vu = await page.evaluate(() => {
   const echFav = favs.map((f) => ({
     tuile: boite(f),
     drapeau: boite(f.querySelector('.kt-flag')),
-    tag: f.querySelector('.kt-lang-tag')?.textContent ?? null,
-    tailleTag: f.querySelector('.kt-lang-tag') ? +parseFloat(getComputedStyle(f.querySelector('.kt-lang-tag')).fontSize).toFixed(1) : null,
-    tagTronque: (() => {
-      const t = f.querySelector('.kt-lang-tag');
-      return t ? t.scrollWidth > Math.ceil(t.getBoundingClientRect().width) + 1 : null;
-    })(),
-    contrasteTag: contraste(f.querySelector('.kt-lang-tag')),
   }));
 
   // Ce qui est peint par-dessus, aux neuf points du panneau.
@@ -356,13 +349,10 @@ if (vu.ouvert) {
     if (clavier.sautHaut !== -3) ech.push(`Haut saute de ${clavier.sautHaut} au lieu de -3`);
   }
   for (const r of vu.echRow) {
-    if (r.contrasteIso !== null && r.contrasteIso < 4.5) ech.push(`code de ${r.code} a ${r.contrasteIso}:1`);
     if (r.contrasteNom !== null && r.contrasteNom < 4.5) ech.push(`nom de ${r.code} a ${r.contrasteNom}:1`);
     if (r.nomTronque) ech.push(`nom de ${r.code} tronque`);
   }
   for (const f of vu.favs) {
-    if (f.contrasteTag !== null && f.contrasteTag < 4.5) ech.push(`tag ${f.tag} a ${f.contrasteTag}:1`);
-    if (f.tagTronque) ech.push(`tag ${f.tag} tronque dans sa tuile`);
   }
 }
 if (ech.length) {

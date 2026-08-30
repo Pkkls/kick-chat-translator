@@ -25,6 +25,7 @@ import fs from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { chromium } from './playwright.mjs';
+import { poserLangueCible, SELECTEUR_TRADUCTIONS } from './kick-actions.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const EXT = path.resolve(HERE, '../../dist');
@@ -97,7 +98,18 @@ const chat = await page.evaluate(() => {
     chipHeadsCluster: host ? host.parentElement?.firstElementChild === host : null,
     caret: Boolean(chip?.querySelector('.kt-chip-caret')),
     lines: document.querySelectorAll('#channel-chatroom [data-index]').length,
-    hoverLabels: document.querySelectorAll('.kt-hover-placeholder').length,
+    // .kt-hover-placeholder n existe plus depuis 2.8.0, qui a retire le libelle
+    // « hover to translate » : cette ligne comptait une classe que le produit ne
+    // peut pas emettre, valait donc toujours zero, et l assertion en dessous ne
+    // pouvait pas echouer. Le marqueur reel est .kt-hover-armed, et ce qui
+    // compte est qu il ne dessine rien : la regle lui met display:none, et le
+    // defaut d origine etait justement une ligne qui grossissait de 31.4 a
+    // 50.6px. Les deux nombres sont rendus pour qu un zero d armes ne se lise
+    // pas comme une couverture.
+    hoverArmes: document.querySelectorAll('.kt-hover-armed').length,
+    hoverVisibles: [...document.querySelectorAll('.kt-hover-armed')].filter(
+      (m) => m.getBoundingClientRect().height > 0 || (m.textContent ?? '').trim().length > 0,
+    ).length,
     overflows: doc.scrollWidth > doc.clientWidth,
   };
 });
@@ -109,7 +121,8 @@ if (chat.barHeight > 44) failures.push(`barre sur plusieurs lignes, ${chat.barHe
 if (chat.chipBelowField !== true) failures.push('la puce n est pas sous le champ de saisie');
 if (chat.chipHeadsCluster !== true) failures.push('la puce n ouvre pas le cluster d action');
 if (!chat.caret) failures.push('la puce n a pas de chevron');
-if (chat.hoverLabels > 0) failures.push(`${chat.hoverLabels} libelle(s) de survol sous les messages`);
+if (chat.hoverVisibles > 0)
+  failures.push(`${chat.hoverVisibles} marqueur(s) de survol dessinent quelque chose sur ${chat.hoverArmes} armes`);
 if (chat.overflows) failures.push('la page kick deborde horizontalement');
 
 /**
@@ -119,46 +132,29 @@ if (chat.overflows) failures.push('la page kick deborde horizontalement');
  * and zero errors, which reads like success and proves nothing: every line was
  * correctly skipped.
  */
-const translated = await page.evaluate(async () => {
-  const attendre = (ms) => new Promise((r) => setTimeout(r, ms));
-  const bouton = document.querySelector('#kt-floating-bar .kt-float-lang');
-  if (!bouton) return { error: 'pas de bouton de langue dans la barre' };
-
-  // Le controle est un BOUTON qui ouvre un panneau. Ce bloc posait
-  // `select.value = 'fr'` et dispatchait un `change`, ce qui sur un bouton ne
-  // fait rien du tout : la cible n'etait jamais changee, et le compte de
-  // traductions qui suivait mesurait la cible par defaut. Il passait ou
-  // echouait selon la langue de la chaine tiree de /browse, ce qui a ete lu
-  // comme de la non-determination alors que c'etait une sonde muette.
-  const avant = document.querySelectorAll('#channel-chatroom [data-index]').length;
-  bouton.click();
-  await attendre(600);
-  const panneau = [...document.querySelectorAll('.kt-lang-panel')].find((p) => !p.hidden);
-  if (!panneau) return { error: 'le bouton de langue n ouvre pas le panneau' };
-  const rangee = panneau.querySelector('.kt-lang-row[data-code="fr"]');
-  if (!rangee) return { error: 'pas de rangee francais dans le panneau' };
-  rangee.click();
-  await attendre(600);
-
-  // Ce que le controle affiche apres le choix. Sans cette lecture, un panneau
-  // qui s ouvre et ne pose rien rendrait exactement le meme zero qu un
-  // pipeline casse.
-  const etiquette = (bouton.textContent ?? '').trim().toUpperCase();
-  if (!etiquette.includes('FR')) {
-    return { error: `cible non posee : le bouton affiche "${etiquette}" apres un clic sur francais` };
-  }
-
-  await attendre(20000);
-  const nodes = [...document.querySelectorAll('.kt-translation, .kt-translation-inline, .kt-translation-replace')];
-  return {
-    cible: etiquette,
-    count: nodes.length,
-    errors: document.querySelectorAll('.kt-error').length,
-    lignesAvant: avant,
-    lignesApres: document.querySelectorAll('#channel-chatroom [data-index]').length,
-    sample: nodes.slice(0, 3).map((n) => n.textContent.trim().slice(0, 48)),
-  };
-});
+const lignesAvant = await page.evaluate(
+  () => document.querySelectorAll('#channel-chatroom [data-index]').length,
+);
+const pose = await poserLangueCible(page, 'fr');
+const translated = pose.ok
+  ? await (async () => {
+      await page.waitForTimeout(20000);
+      return page.evaluate(
+        ({ sel, avant, etiquette }) => {
+          const nodes = [...document.querySelectorAll(sel)];
+          return {
+            cible: etiquette,
+            count: nodes.length,
+            errors: document.querySelectorAll('.kt-error').length,
+            lignesAvant: avant,
+            lignesApres: document.querySelectorAll('#channel-chatroom [data-index]').length,
+            sample: nodes.slice(0, 3).map((n) => n.textContent.trim().slice(0, 48)),
+          };
+        },
+        { sel: SELECTEUR_TRADUCTIONS, avant: lignesAvant, etiquette: pose.etiquette },
+      );
+    })()
+  : { error: pose.raison };
 console.log('traduction :', JSON.stringify(translated));
 if (translated.error) failures.push(translated.error);
 else if (translated.count === 0) {

@@ -22,6 +22,7 @@ import fs from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { chromium } from './playwright.mjs';
+import { poserLangueCible } from './kick-actions.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const EXT = path.resolve(HERE, '../../dist');
@@ -78,13 +79,13 @@ await page.goto('https://kick.com' + best.channel, { waitUntil: 'domcontentloade
 await page.waitForTimeout(12000);
 // Aim at a language the chat is not written in, or nothing is ever translated
 // and every check below passes on an empty set.
-await page.evaluate(() => {
-  const s = document.querySelector('#kt-floating-bar .kt-float-lang');
-  if (s) {
-    s.value = 'fr';
-    s.dispatchEvent(new Event('change', { bubbles: true }));
-  }
-});
+const poseCible = await poserLangueCible(page, 'fr');
+if (!poseCible.ok) {
+  console.error('live-recycle: ' + poseCible.raison);
+  console.error('  Sans cible posee, tout ce qui suit compte un ensemble vide et passe.');
+  await browser.close();
+  process.exit(1);
+}
 
 const sample = () =>
   page.evaluate(() => {

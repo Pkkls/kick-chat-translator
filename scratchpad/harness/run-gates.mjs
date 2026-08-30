@@ -52,6 +52,11 @@ const GATES = [
   ['audit-da', 'python', ['scratchpad/audit_da.py']],
   ['audit-rtl', 'python', ['scratchpad/audit_rtl.py']],
   ['audit-surfaces-rtl', 'python', ['scratchpad/audit_surfaces_rtl.py']],
+  // Selectors the harnesses query and the product can no longer emit. Cheap,
+  // static, and it caught two assertions that had stopped being able to fail:
+  // a count of a class deleted in 2.8.0, and a dead selector hidden behind a
+  // `??` fallback that quietly did the work instead.
+  ['audit-selecteurs', 'python', ['scratchpad/audit_selecteurs.py']],
 ];
 
 const argv = process.argv.slice(2);

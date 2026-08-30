@@ -1,5 +1,5 @@
 {
-  "genere": "2026-08-30T13:10:00.042Z",
+  "genere": "2026-08-30T13:46:42.902Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
@@ -13,12 +13,12 @@
       }
     ],
     "branche": "feat/gates-tracked",
-    "head": "388fca72ee4c058cf1c486e7c598d168afb22fd5",
-    "sujet": "Make two gates able to fire, and catch a package that lied about its version",
+    "head": "1a81ad7c072b97cac0017298187d1a1d3c70c1ba",
+    "sujet": "Make live-kick perform the action it was claiming to test",
     "arbrePropre": false,
-    "fichiersModifies": 4,
+    "fichiersModifies": 11,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-6-g388fca7",
+    "decrit": "v2.9.2-7-g1a81ad7",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git",
@@ -150,7 +150,7 @@
   ],
   "portes": {
     "runner": "scratchpad/harness/run-gates.mjs",
-    "enumerees": 21,
+    "enumerees": 22,
     "noms": [
       "snapshot",
       "names",
@@ -172,14 +172,16 @@
       "audit-strings",
       "audit-da",
       "audit-rtl",
-      "audit-surfaces-rtl"
+      "audit-surfaces-rtl",
+      "audit-selecteurs"
     ],
-    "harnaisSurDisque": 33,
+    "harnaisSurDisque": 34,
     "orphelins": [
       "bar-panel-mesure",
       "bar-select",
       "compose-kick-live",
       "flag-render",
+      "kick-actions",
       "kick-dom-recon",
       "lang-menu-live",
       "lang-panel-shoot",
@@ -193,7 +195,7 @@
       "session-check",
       "store-shots"
     ],
-    "nbOrphelins": 16,
+    "nbOrphelins": 17,
     "note": "Les portes live ouvrent un navigateur sur kick.com et ne sont dans aucun runner. Un orphelin n est pas forcement un defaut ; un orphelin qui couvre du code livre en est un."
   },
   "releaseGithub": {
@@ -232,7 +234,7 @@
       "**The screenshots show a real streamer**, their branding and real viewers'"
     ],
     "nbBloques": 4,
-    "nbOuverts": 4,
+    "nbOuverts": 6,
     "nbFaits": 17
   }
 }

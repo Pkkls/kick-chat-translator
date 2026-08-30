@@ -45,6 +45,26 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Open
 
+- [ ] **There is no runtime measurement of this extension, by design.** Store
+  analytics were offered as a basis for optimisation; they describe the listing
+  page, not the product. Roughly a sixth of that traffic is on phones and
+  tablets and another eighth on browsers that cannot install a Chrome extension
+  at all, which is a fact about who reads the page, not about how the code runs.
+  The extension ships no telemetry on purpose and the listing says so, so the
+  only runtime numbers that exist are the ones a harness takes. That makes
+  `latency` the sole performance instrument in the project, and it had never run
+  once before today. Worth pricing: what else deserves a measured budget the way
+  latency has one, and whether any of it can be asserted rather than watched.
+
+- [ ] **The listing serves a fifth of its readers in a language it does not
+  have.** About four fifths of visitors are in countries covered by one of the
+  ten listing languages; the rest fall back to English, and the largest single
+  uncovered group is bigger than four of the countries that are covered. Adding
+  a language is mechanical now that the derivation exists, but it widens a
+  surface already written without a native reader, and it hands a reader a page
+  in their language followed by an interface that is not. Not a decision to take
+  from a spreadsheet.
+
 - [ ] **The local 2.9.2 archives are not the published ones.** Rebuilding after
   the placement fix overwrote them: chromium is 294379 bytes locally against
   294586 published, a delta of 207. Same version number, different build, which
