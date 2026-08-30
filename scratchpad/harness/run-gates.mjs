@@ -56,6 +56,11 @@ const GATES = [
   // Le produit fait une seule chose et rien hors ligne ne la verifiait : un
   // message arrive, sa traduction apparait dessous. Meme fenetre hors ecran.
   ['translate-offline', 'node', ['scratchpad/harness/translate-offline.mjs']],
+  // La chaine de repli, qui garde la traduction vivante quand le premier moteur
+  // limite le lecteur. Couverture propre, mesuree : tronquer la cascade a un
+  // seul moteur dans `background/translator/index.ts` laisse les 620 tests verts
+  // et fait rougir cette porte.
+  ['translate-repli', 'node', ['scratchpad/harness/translate-offline.mjs', '--bascule']],
   ['audit-strings', 'python', ['scratchpad/audit_content_strings.py']],
   ['audit-da', 'python', ['scratchpad/audit_da.py']],
   ['audit-rtl', 'python', ['scratchpad/audit_rtl.py']],

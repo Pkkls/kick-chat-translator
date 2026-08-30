@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-30T14:47:58.098Z",
+  "genere": "2026-08-30T14:55:20.214Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/gates-tracked",
-    "head": "46587b983bbdf18fc5693eb34f0d743cacbb7f71",
-    "sujet": "Stop exposing extension resources to kick.com pages",
+    "head": "128257a4462e40362dfa9a6db4ff884819cf0acc",
+    "sujet": "Test the thing the product is for, offline",
     "arbrePropre": false,
-    "fichiersModifies": 5,
+    "fichiersModifies": 4,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-14-g46587b9",
+    "decrit": "v2.9.2-15-g128257a",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -132,7 +132,7 @@
   ],
   "portes": {
     "runner": "scratchpad/harness/run-gates.mjs",
-    "enumerees": 25,
+    "enumerees": 26,
     "noms": [
       "snapshot",
       "names",
@@ -153,6 +153,7 @@
       "lang-panel-measure",
       "extension-load",
       "translate-offline",
+      "translate-repli",
       "audit-strings",
       "audit-da",
       "audit-rtl",
@@ -221,6 +222,6 @@
     ],
     "nbBloques": 4,
     "nbOuverts": 3,
-    "nbFaits": 30
+    "nbFaits": 31
   }
 }

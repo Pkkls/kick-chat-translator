@@ -23,6 +23,12 @@
  * service worker, l'adaptateur du moteur lit la reponse, et le rendu se pose
  * sous le bon message. Aucun de ces sauts n'est franchi ailleurs hors ligne.
  *
+ * Le mode `--bascule` couvre ce que rien d'autre ne couvre, et c'est mesure :
+ * tronquer la cascade a un seul moteur dans `background/translator/index.ts`
+ * laisse les 620 tests unitaires verts et fait rougir cette porte. Retirer la
+ * chaine des reglages par defaut, en revanche, est attrape par un test qui
+ * asserte la constante, ce qui ne dit rien sur le fait qu'elle s'execute.
+ *
  * Ce qu'elle n'attrape pas, mesure aussi. Retirer
  * `https://translate.googleapis.com/*` des `host_permissions` ne la fait pas
  * rougir : l'interception repond avant que la permission compte. Elle ne dit
@@ -49,7 +55,20 @@ if (!fs.existsSync(path.join(EXT, 'manifest.json'))) {
     dans la page, afin qu'une assertion qui le trouve ne puisse pas le trouver
     ailleurs par accident. */
 const TRADUIT = 'ZZTRADUCTIONZZ';
+const REPLI = 'ZZREPLIZZ';
 const SOURCE = 'hola amigo que tal';
+
+/**
+ * Deux modes. Par defaut le premier moteur repond ; avec `--bascule` il rend un
+ * 429 et c'est le suivant de `providerOrder` qui doit fournir le texte.
+ *
+ * La bascule n'etait verifiee que par `live-fallback`, qui tue les moteurs au
+ * resolveur DNS parce que sa premiere version routait avec `page.route` et ne
+ * mesurait rien : en MV3 les requetes de traduction partent du service worker.
+ * `ctx.route`, au niveau du contexte, les voit ; c'est mesure ici, le moteur est
+ * bien appele. La chaine de repli devient donc testable sans reseau.
+ */
+const BASCULE = process.argv.includes('--bascule');
 
 // Le chat de Kick reduit a son contrat, repris de `observer.test.ts` qui est
 // ce que le produit dit savoir lire : `#channel-chatroom .no-scrollbar`, un
@@ -88,13 +107,28 @@ const vuParLeMoteur = [];
 const KICK = /^https?:\/\/(www\.)?kick\.com\//;
 
 await ctx.route('**://translate.googleapis.com/**', async (route) => {
-  vuParLeMoteur.push(route.request().url());
+  vuParLeMoteur.push('google');
+  if (BASCULE) {
+    // 429 est ce que `google.ts` lit comme `rate_limit`, la raison pour laquelle
+    // un lecteur reel bascule : le quota gratuit qui tombe en pleine diffusion.
+    await route.fulfill({ status: 429, contentType: 'text/plain', body: 'quota' });
+    return;
+  }
   // La forme que `src/background/translator/google.ts` sait lire :
   // data[0] = segments, chaque segment [traduit, original, ...], data[2] = langue source.
   await route.fulfill({
     status: 200,
     contentType: 'application/json',
     body: JSON.stringify([[[TRADUIT, SOURCE, null, null, 10]], null, 'es']),
+  });
+});
+
+await ctx.route('**://api.mymemory.translated.net/**', async (route) => {
+  vuParLeMoteur.push('mymemory');
+  await route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({ responseData: { translatedText: REPLI }, responseStatus: 200 }),
   });
 });
 
@@ -153,7 +187,7 @@ await ctx.close();
 fs.rmSync(profile, { recursive: true, force: true });
 
 console.log(`content script   ${barreMontee ? 'injecte' : 'ABSENT'}`);
-console.log(`moteur appele    ${vuParLeMoteur.length} fois`);
+console.log(`moteurs appeles  ${vuParLeMoteur.join(', ') || '(aucun)'}`);
 console.log(`traduction       ${traductionVue === null ? '(aucune)' : JSON.stringify(traductionVue)}`);
 if (!traductionVue && console_.length) {
   console.log('console de la page :');
@@ -163,13 +197,22 @@ if (!traductionVue && console_.length) {
 const fails = [];
 if (!barreMontee) fails.push('le script de contenu ne s est pas execute');
 if (vuParLeMoteur.length === 0)
-  fails.push('le moteur de traduction n a jamais ete appele : rien n a traduit');
+  fails.push('aucun moteur n a ete appele : rien n a traduit');
+const attendu = BASCULE ? REPLI : TRADUIT;
 if (traductionVue === null) fails.push('aucune traduction affichee sous le message');
-else if (!traductionVue.includes(TRADUIT))
-  fails.push(`la traduction affichee ne vient pas du moteur : ${JSON.stringify(traductionVue)}`);
+else if (!traductionVue.includes(attendu))
+  fails.push(
+    `la traduction affichee ne vient pas du moteur attendu (${attendu}) : ${JSON.stringify(traductionVue)}`,
+  );
+if (BASCULE) {
+  if (!vuParLeMoteur.includes('google'))
+    fails.push('le premier moteur n a jamais ete essaye : la bascule ne prouve rien');
+  if (!vuParLeMoteur.includes('mymemory'))
+    fails.push('le second moteur n a jamais ete appele apres le 429 du premier');
+}
 
 if (fails.length) {
   console.error('FAIL: ' + fails.join(' ; '));
   process.exit(1);
 }
-console.log('translate-offline: OK');
+console.log(`translate-offline${BASCULE ? ' --bascule' : ''}: OK`);

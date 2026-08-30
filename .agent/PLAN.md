@@ -203,6 +203,19 @@ reads dist/, so it serialises behind any build. D touches no code.
   gitignored `scratchpad/uxkit.path`, then the repository's own
   `node_modules`, and exits 2 with the three ways to fix it when none is there.
   Exit 2 rather than 1 on purpose: a missing prerequisite is not a failed gate.
+- [x] **The fallback chain is tested offline, and it covers ground nothing else
+  does.** When the first engine rate-limits a reader mid-stream, the next one is
+  supposed to take over. That was verified only by `live-fallback`, which kills
+  providers at the DNS resolver because its first version routed with
+  `page.route` and measured nothing: in MV3 the translation requests leave from
+  the service worker. `ctx.route`, at the context level, does see them, measured
+  here. So `translate-offline --bascule` returns 429 from the first engine and a
+  canned answer from the second, and asserts both were called and that the text
+  on screen came from the second. Truncating the runtime cascade to one provider
+  in `background/translator/index.ts` leaves all 620 unit tests green and turns
+  this gate red. Removing the chain from the default settings is caught by a
+  unit test, but that one asserts a constant and says nothing about the chain
+  running.
 - [x] **The product's one job is tested offline.** A message arrives in chat and
   its translation appears under it: nothing offline verified that. `chat-live`
   calls `inject()` by hand and measures rendering, the 620 unit tests stub at
