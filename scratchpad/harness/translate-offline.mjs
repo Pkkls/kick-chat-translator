@@ -70,6 +70,25 @@ const SOURCE = 'hola amigo que tal';
  */
 const BASCULE = process.argv.includes('--bascule');
 
+/**
+ * Troisieme mode, `--recyclage`. Kick recycle ses rangees de chat : le
+ * virtualiseur reutilise la meme valeur de `data-index` pour un autre message
+ * quand on defile, ce que `selectors.ts` signale en majuscules. La panne
+ * cherchee est une rangee recyclee qui garde la traduction du message
+ * precedent, sous un texte auquel elle n'appartient pas.
+ *
+ * `live-recycle` la guette sur un vrai chat charge, echantillonne toutes les 20
+ * secondes, parce qu'il faut attendre que le defilement veuille bien recycler.
+ * Ici on le provoque : on reecrit le texte des memes `data-index`, ce que fait
+ * exactement le virtualiseur, et la reponse est immediate et deterministe.
+ *
+ * Pour que la panne soit visible, le faux moteur repond en fonction de ce qu'on
+ * lui donne au lieu de rendre une constante. Une traduction perimee se lit alors
+ * a l'oeil : elle porte le texte d'un autre message.
+ */
+const RECYCLAGE = process.argv.includes('--recyclage');
+const RANGEES = 8;
+
 // Le chat de Kick reduit a son contrat, repris de `observer.test.ts` qui est
 // ce que le produit dit savoir lire : `#channel-chatroom .no-scrollbar`, un
 // leurre vide en premier comme sur le vrai site, puis des `div[data-index]`
@@ -119,7 +138,33 @@ await ctx.route('**://translate.googleapis.com/**', async (route) => {
   await route.fulfill({
     status: 200,
     contentType: 'application/json',
-    body: JSON.stringify([[[TRADUIT, SOURCE, null, null, 10]], null, 'es']),
+    // La reponse depend de la requete : `google.ts` met le texte dans `q`.
+    // Rendre une constante rendrait une traduction perimee indetectable, ce qui
+    // est precisement la panne que le mode recyclage cherche.
+    // Le groupage de Google, tel que `batchCall` le pratique : les textes du lot
+    // sont joints par des sauts de ligne dans UN seul `q`, et la reponse est
+    // redecoupee par lignes. Les segments sont recolles avec '' par `call`, donc
+    // le saut de ligne doit vivre dans le segment.
+    //
+    // Deux versions de ce bouchon ont accuse le produit avant celle-ci. La
+    // premiere ne lisait qu'un `q` ; la seconde rendait un segment unique pour
+    // le texte joint, si bien que seule la premiere ligne portait la marque et
+    // que les six autres revenaient identiques a l'original. Le produit les
+    // ecartait alors avec raison, en le disant sur la ligne : "the translation
+    // came back the same as the original". La sonde avait tort, deux fois.
+    body: (() => {
+      const q = new URL(route.request().url()).searchParams.get('q') ?? '';
+      const SAUT = String.fromCharCode(10);
+      const lignes = q.split(SAUT);
+      const segments = lignes.map((l, k) => [
+        `${TRADUIT}:${l}` + (k < lignes.length - 1 ? SAUT : ''),
+        l,
+        null,
+        null,
+        10,
+      ]);
+      return JSON.stringify([segments, null, 'es']);
+    })(),
   });
 });
 
@@ -158,29 +203,91 @@ await page.waitForTimeout(3000);
 
 const barreMontee = await page.evaluate(() => !!document.getElementById('kt-inject-style'));
 
-// Un message arrive, exactement comme Kick en ajoute un.
-await page.evaluate((texte) => {
-  const liste = document.querySelector('#channel-chatroom [data-which="messages"]');
-  const ligne = document.createElement('div');
-  ligne.setAttribute('data-index', '0');
-  ligne.innerHTML =
-    '<button class="font-bold" style="color: rgb(1,2,3)">quelquun</button>' +
-    `<span class="font-normal">${texte}</span>`;
-  liste.appendChild(ligne);
-}, SOURCE);
+// Ajoute des rangees comme Kick le fait : un `div[data-index]` avec le pseudo
+// dans un `button.font-bold` et le texte dans un `span.font-normal`.
+//
+// Ecrire le contenu d une rangee qui en a deja detruit ce que l extension y a
+// insere. Une premiere version de ce pilote reecrivait toutes les rangees a
+// chaque tour et rapportait une traduction sur huit : la panne etait dans le
+// pilote, pas dans le produit, qui avait bien appele le moteur huit fois.
+// Poser et recycler sont donc deux gestes distincts.
+async function poserRangees(textes, depart = 1) {
+  await page.evaluate(({ liste, depart }) => {
+    const cible = document.querySelector('#channel-chatroom [data-which="messages"]');
+    for (const [k, texte] of liste.entries()) {
+      const i = depart + k;
+      if (cible.querySelector(`div[data-index="${i}"]`)) continue;
+      const ligne = document.createElement('div');
+      ligne.setAttribute('data-index', String(i));
+      ligne.innerHTML =
+        `<button class="font-bold" style="color: rgb(1,2,3)">pseudo${i}</button>` +
+        `<span class="font-normal">${texte}</span>`;
+      cible.appendChild(ligne);
+    }
+  }, { liste: textes, depart });
+}
+
+// Ce que fait le virtualiseur en recyclant : la meme rangee, un autre message.
+// La rangee ne bouge pas, son contenu est remplace, et ce qui y avait ete
+// insere disparait avec.
+async function recyclerRangees(textes, depart = 1) {
+  await page.evaluate(({ liste, depart }) => {
+    const cible = document.querySelector('#channel-chatroom [data-which="messages"]');
+    for (const [k, texte] of liste.entries()) {
+      const i = depart + k;
+      const ligne = cible.querySelector(`div[data-index="${i}"]`);
+      if (!ligne) continue;
+      ligne.innerHTML =
+        `<button class="font-bold" style="color: rgb(1,2,3)">pseudo${i}</button>` +
+        `<span class="font-normal">${texte}</span>`;
+    }
+  }, { liste: textes, depart });
+}
+
+const SEL_TR = '.kt-translation, .kt-translation-inline, .kt-translation-replace';
+
+/** Ce que chaque rangee porte : son texte source et ses traductions. */
+async function lireRangees() {
+  return page.evaluate((sel) => {
+    const cible = document.querySelector('#channel-chatroom [data-which="messages"]');
+    return [...cible.querySelectorAll('div[data-index]')].map((r) => ({
+      index: r.getAttribute('data-index'),
+      source: r.querySelector('.font-normal')?.textContent ?? '',
+      traductions: [...r.querySelectorAll(sel)].map((t) => t.textContent ?? ''),
+    }));
+  }, SEL_TR);
+}
 
 let traductionVue = null;
-try {
-  await page.waitForSelector('.kt-translation, .kt-translation-inline, .kt-translation-replace', {
-    timeout: 15000,
-  });
-  traductionVue = await page.evaluate(
-    () =>
-      document.querySelector('.kt-translation, .kt-translation-inline, .kt-translation-replace')
-        ?.textContent ?? null,
-  );
-} catch {
-  traductionVue = null;
+let rangees = [];
+
+if (RECYCLAGE) {
+  const premiers = Array.from({ length: RANGEES }, (_, i) => `hola numero ${i} uno`);
+  await poserRangees(premiers);
+  await page
+    .waitForFunction(
+      ([sel, n]) => document.querySelectorAll(sel).length >= n,
+      [SEL_TR, RANGEES],
+      { timeout: 20000 },
+    )
+    .catch(() => {});
+
+  // Le recyclage : memes `data-index`, autres messages.
+  const seconds = Array.from({ length: RANGEES }, (_, i) => `adios numero ${i} dos`);
+  await recyclerRangees(seconds);
+  await page.waitForTimeout(6000);
+  rangees = await lireRangees();
+  traductionVue = rangees.find((r) => r.traductions.length)?.traductions[0] ?? null;
+} else {
+  await poserRangees([SOURCE]);
+  try {
+    await page.waitForSelector(SEL_TR, { timeout: 15000 });
+    await page.waitForTimeout(1500);
+  } catch {
+    /* l assertion plus bas dira ce qui manque */
+  }
+  rangees = await lireRangees();
+  traductionVue = rangees.find((r) => r.source === SOURCE)?.traductions[0] ?? null;
 }
 
 await ctx.close();
@@ -189,6 +296,10 @@ fs.rmSync(profile, { recursive: true, force: true });
 console.log(`content script   ${barreMontee ? 'injecte' : 'ABSENT'}`);
 console.log(`moteurs appeles  ${vuParLeMoteur.join(', ') || '(aucun)'}`);
 console.log(`traduction       ${traductionVue === null ? '(aucune)' : JSON.stringify(traductionVue)}`);
+if (RECYCLAGE)
+  console.log(
+    `rangees          ${rangees.length}, portant ${rangees.reduce((n, r) => n + r.traductions.length, 0)} traductions`,
+  );
 if (!traductionVue && console_.length) {
   console.log('console de la page :');
   for (const l of console_.slice(-8)) console.log('  ' + l);
@@ -199,8 +310,41 @@ if (!barreMontee) fails.push('le script de contenu ne s est pas execute');
 if (vuParLeMoteur.length === 0)
   fails.push('aucun moteur n a ete appele : rien n a traduit');
 const attendu = BASCULE ? REPLI : TRADUIT;
-if (traductionVue === null) fails.push('aucune traduction affichee sous le message');
-else if (!traductionVue.includes(attendu))
+
+if (RECYCLAGE) {
+  // Les trois formes de la panne, telles que `live-recycle` les guette sur un
+  // vrai chat : plus de traductions que de rangees pouvant en porter, une
+  // rangee qui en porte deux, et une traduction posee sous un texte auquel elle
+  // n appartient pas.
+  const portees = rangees.reduce((n, r) => n + r.traductions.length, 0);
+  if (portees > rangees.length)
+    fails.push(`${portees} traductions pour ${rangees.length} rangees : il en reste des anciennes`);
+  for (const r of rangees) {
+    if (r.traductions.length > 1)
+      fails.push(`la rangee ${r.index} porte ${r.traductions.length} traductions`);
+    for (const t of r.traductions) {
+      // Le faux moteur repond `MARQUE:<texte source>`, donc une traduction
+      // correcte porte le texte de la rangee ou elle se trouve. Une perimee
+      // porte celui du message que le virtualiseur a remplace.
+      if (!t.includes(`${TRADUIT}:${r.source}`))
+        fails.push(
+          `traduction perimee sur la rangee ${r.index} : source ${JSON.stringify(r.source)}, ` +
+            `traduction ${JSON.stringify(t)}`,
+        );
+    }
+  }
+  // Compter, pas seulement constater. Une premiere version n'echouait qu'a zero
+  // et passait au vert sur une traduction pour neuf rangees, ce qui est
+  // exactement la panne qu'elle etait censee voir.
+  if (portees !== rangees.length)
+    fails.push(
+      `${portees} traductions pour ${rangees.length} rangees apres recyclage : ` +
+        'les rangees reutilisees n ont pas ete retraduites',
+    );
+}
+if (!RECYCLAGE && traductionVue === null)
+  fails.push('aucune traduction affichee sous le message');
+else if (!RECYCLAGE && !traductionVue.includes(attendu))
   fails.push(
     `la traduction affichee ne vient pas du moteur attendu (${attendu}) : ${JSON.stringify(traductionVue)}`,
   );
@@ -215,4 +359,4 @@ if (fails.length) {
   console.error('FAIL: ' + fails.join(' ; '));
   process.exit(1);
 }
-console.log(`translate-offline${BASCULE ? ' --bascule' : ''}: OK`);
+console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}: OK`);

@@ -61,6 +61,10 @@ const GATES = [
   // seul moteur dans `background/translator/index.ts` laisse les 620 tests verts
   // et fait rougir cette porte.
   ['translate-repli', 'node', ['scratchpad/harness/translate-offline.mjs', '--bascule']],
+  // Le recyclage de rangees du virtualiseur de Kick, provoque plutot qu'attendu.
+  // A trouve un vrai defaut : les rangees reutilisees n'etaient jamais
+  // retraduites, sans raison sur la ligne et sans appel au moteur.
+  ['translate-recyclage', 'node', ['scratchpad/harness/translate-offline.mjs', '--recyclage']],
   ['audit-strings', 'python', ['scratchpad/audit_content_strings.py']],
   ['audit-da', 'python', ['scratchpad/audit_da.py']],
   ['audit-rtl', 'python', ['scratchpad/audit_rtl.py']],

@@ -86,6 +86,20 @@ export function findChatContainer(root: ParentNode = document): Element | null {
   return null;
 }
 
+/**
+ * The message row a mutation happened inside, if any.
+ *
+ * A virtual scroller reusing a row replaces its CONTENTS: the added nodes are
+ * the new message's spans, and the row itself is only the mutation target.
+ * Collecting candidates from added nodes and their descendants therefore never
+ * reaches the row, and the new message is never translated. Nothing was left on
+ * the line either, because nothing decided anything about it.
+ */
+export function enclosingMessageRow(node: Node): Element | undefined {
+  const el = node instanceof Element ? node : node.parentElement;
+  return el?.closest('div[data-index]') ?? undefined;
+}
+
 export function findAllRows(container: ParentNode): Element[] {
   return Array.from(container.querySelectorAll('div[data-index]'));
 }

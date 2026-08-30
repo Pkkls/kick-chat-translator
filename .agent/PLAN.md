@@ -203,6 +203,17 @@ reads dist/, so it serialises behind any build. D touches no code.
   gitignored `scratchpad/uxkit.path`, then the repository's own
   `node_modules`, and exits 2 with the three ways to fix it when none is there.
   Exit 2 rather than 1 on purpose: a missing prerequisite is not a failed gate.
+- [x] **A recycled chat row was never re-translated.** Kick's virtual scroller
+  reuses rows by replacing their CONTENTS, which makes the row the mutation
+  TARGET and never an added node. The observer collected candidates from added
+  nodes and their descendants only, so it walked straight past the row: measured
+  with the extension loaded, eight recycled rows carried no translation, no
+  reason on the line, and produced no provider call. The comment above that code
+  said the case was covered; the code did not do it. `enclosingMessageRow` walks
+  up from the mutation target. Two witnesses: the new gate goes from 9 of 9 to 1
+  of 9 without it, and a unit test in `observer.test.ts` fails without it. That
+  test needed the test double to stop discarding the `MutationObserver`
+  callback, which is why nothing in the unit suite could reach this branch.
 - [x] **The fallback chain is tested offline, and it covers ground nothing else
   does.** When the first engine rate-limits a reader mid-stream, the next one is
   supposed to take over. That was verified only by `live-fallback`, which kills

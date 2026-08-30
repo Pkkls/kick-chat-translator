@@ -4,13 +4,18 @@ import { ChatObserver } from './observer';
 interface Recorded {
   disconnected: boolean;
   target: unknown;
+  cb?: MutationCallback;
 }
 
 const created: Recorded[] = [];
 
 class RecordingObserver {
   private rec: Recorded = { disconnected: false, target: undefined };
-  constructor(_cb: unknown) {
+  // The callback used to be dropped on the floor, which meant no test could
+  // deliver a mutation and the whole mutation-handling branch was unreachable
+  // from here. A recycled row bug lived in it.
+  constructor(cb: MutationCallback) {
+    this.rec.cb = cb;
     created.push(this.rec);
   }
   observe(target: unknown): void {
@@ -41,6 +46,38 @@ beforeEach(() => {
 afterEach(() => {
   vi.unstubAllGlobals();
   document.body.innerHTML = '';
+});
+
+describe('a recycled row', () => {
+  // Kick reuses chat rows: the virtual scroller replaces a row's CONTENTS and
+  // leaves the row element in place. The row is then the mutation TARGET and
+  // never an added node, so collecting candidates from added nodes and their
+  // descendants walks straight past it.
+  //
+  // Measured with the extension loaded before this was written: eight recycled
+  // rows kept no translation, carried no reason, and produced no provider call.
+  it('is delivered when its contents are replaced', () => {
+    const seen: string[] = [];
+    const obs = new ChatObserver((m) => seen.push(m.text));
+    obs.start();
+    seen.length = 0;
+
+    const liste = document.querySelector('[data-which="messages"]')!;
+    const row = liste.querySelector('div[data-index="0"]')!;
+    row.innerHTML =
+      '<button class="font-bold" style="color: rgb(1,2,3)">ana</button>' +
+      '<span class="font-normal">otro mensaje distinto</span>';
+
+    const rec = created.find((r) => r.target === liste);
+    expect(rec?.cb).toBeTypeOf('function');
+    rec!.cb!(
+      [{ type: 'childList', target: row, addedNodes: [...row.childNodes] } as unknown as MutationRecord],
+      {} as MutationObserver,
+    );
+
+    expect(seen).toContain('otro mensaje distinto');
+    obs.stop();
+  });
 });
 
 describe('ChatObserver lifecycle', () => {

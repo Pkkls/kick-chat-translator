@@ -1,5 +1,6 @@
 import {
   buildSyntheticId,
+  enclosingMessageRow,
   extractMessageText,
   extractUsername,
   findAllRows,
@@ -101,6 +102,15 @@ export class ChatObserver {
             for (const row of findAllRows(node)) candidates.add(row);
           }
         }
+        // Upward, for the recycling case the comment above describes. Replacing
+        // a row's contents makes the row the mutation TARGET and never an added
+        // node, so the loop above walks past it: measured with the extension
+        // loaded, eight recycled rows were left untranslated, with no reason on
+        // the line and no provider call. Re-processing a row whose text has not
+        // changed costs nothing, since `process` returns on the id it already
+        // carries, which is what keeps our own insertions from looping.
+        const row = enclosingMessageRow(mut.target);
+        if (row) candidates.add(row);
       }
       for (const row of candidates) this.process(row);
     });
