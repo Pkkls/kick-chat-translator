@@ -59,10 +59,29 @@ for f in sorted(glob.glob('public/_locales/*/messages.json')):
                 echecs.append(f'description livree ({langue}) : {n} caracteres pour 132')
 comptes['description livree'] = livrees
 
+# Chaque permission livree doit etre justifiee dans la fiche. Ajouter une
+# permission et oublier sa justification est un motif de rejet, et cela se
+# decouvre autrement une semaine plus tard.
+manifeste = json.load(io.open('dist/manifest.json', encoding='utf8'))
+i = s.find('## Chrome dashboard: permission justifications')
+j = s.find('## Chrome dashboard: data usage')
+bloc = s[i:j] if i >= 0 and j > i else ''
+if not bloc:
+    echecs.append('la section des justifications de permissions est introuvable')
+justifiees = 0
+for perm in list(manifeste.get('permissions', [])) + list(manifeste.get('host_permissions', [])):
+    cle = perm.replace('https://', '').replace('/*', '')
+    if perm in bloc or cle in bloc:
+        justifiees += 1
+    else:
+        echecs.append(f'permission livree sans justification dans la fiche : {perm}')
+comptes['permission justifiee'] = justifiees
+
 print('champs comptes :')
 for genre, n in sorted(comptes.items()):
     print(f'  {genre.ljust(22)} {n}')
 print('total :', sum(comptes.values()))
+
 
 cadratins = s.count(chr(8212)) + s.count(chr(8211))
 print('tirets cadratins ou demi-cadratins :', cadratins)

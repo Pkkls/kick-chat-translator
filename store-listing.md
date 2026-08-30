@@ -550,7 +550,12 @@ Language: English, with the localised listings above pasted into their own
   language tabs
 Privacy policy URL: https://github.com/Pkkls/kick-chat-translator/blob/master/PRIVACY.md
 Support / homepage URL: https://github.com/Pkkls/kick-chat-translator
-Screenshots: five 1280x800 PNGs, see scratchpad/harness/store/
+Screenshots: five 1280x800 PNGs from scratchpad/harness/store-fixture/,
+  produced by store-shots-fixture.mjs. They are taken on a fabricated chat
+  with invented handles and a locally answered engine, so no third party's
+  channel, branding or viewers appear, while the shipped build does the
+  actual translating in the image. scratchpad/harness/store/ holds the older
+  set taken on a live channel; do not submit those.
 
 # AMO listing (Firefox)
 

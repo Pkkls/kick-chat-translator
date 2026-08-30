@@ -216,6 +216,14 @@ reads dist/, so it serialises behind any build. D touches no code.
   at 1. The Chrome Web Store takes exactly 1280x800 or 640x400 and rejects the
   rest, so the submission would have bounced with nothing here to say why. The
   harness asserts the dimensions now, read out of the PNG header.
+- [x] **Every shipped permission is checked against its justification.** The
+  listing gate reads `dist/manifest.json` and requires each of the ten entries,
+  two permissions and eight hosts, to appear in the Chrome dashboard section.
+  Adding a permission and forgetting to justify it is a rejection reason that
+  otherwise surfaces a week later. Witness: two invented entries produce two
+  named failures. And the metadata section pointed submitters at
+  `scratchpad/harness/store/`, the older set taken on a live channel; it names
+  `store-fixture/` now and says not to submit the other one.
 - [x] **The listing is at 2.9.3 in all eleven languages**, each with a paragraph
   on what changed: whole messages again, a recycled row translated, no file
   published to the page. `audit_fiche.py` is a gate and counts 44 fields against

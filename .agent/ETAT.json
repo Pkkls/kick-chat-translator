@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-30T20:38:00.584Z",
+  "genere": "2026-08-30T20:40:37.501Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/gates-tracked",
-    "head": "7c64018cb6d6e96130e48e95a514766cc6e8c9a9",
-    "sujet": "Stop deleting ordinary words before translating them",
+    "head": "752e442330e6c4ea6f21c2dc64627d06cb4e43d1",
+    "sujet": "Package 2.9.3 and make it submittable to Chrome",
     "arbrePropre": false,
-    "fichiersModifies": 9,
+    "fichiersModifies": 3,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-27-g7c64018",
+    "decrit": "v2.9.2-28-g752e442",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -249,6 +249,6 @@
     ],
     "nbBloques": 4,
     "nbOuverts": 2,
-    "nbFaits": 46
+    "nbFaits": 47
   }
 }
