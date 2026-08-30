@@ -45,22 +45,7 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Open
 
-- [ ] **The entire quality apparatus is untracked.** `git ls-files scratchpad/`
-  returns 0. The 18 gates, the 33 harnesses and the 4 audits live under
-  `scratchpad/`, which `.gitignore` line 18 excludes, so they exist on one
-  machine and nowhere else. A fresh clone of the public repository gets none of
-  them, and `.agent/PROMPT.md` tells the next session to run a gate runner that
-  would not be there. This is the one that undermines everything else in this
-  directory: state survives a session limit, and the means of checking it does
-  not survive a machine.
-
-  Not a chore. Moving them in publishes every measurement script and the
-  screenshots they write, which is a decision about what the public repository
-  is for. Options worth pricing: move only `run-gates.mjs`, the four audits and
-  the offline harnesses; keep the live ones and their PNGs out; or leave it and
-  accept the apparatus is machine-local and say so in `PROMPT.md`.
-
-- [ ] **19 harnesses of 33 are in no runner.** `run-gates.mjs` enumerates 18
+- [ ] **19 harnesses of 35 are in no runner.** `run-gates.mjs` enumerates 18
   offline gates. The live ones open a browser onto kick.com and are excluded on
   purpose, but `lang-menu-live`, `bar-panel-mesure` and `compose-kick-live` are
   the only things covering the reworked language UI and nothing runs them.
@@ -110,6 +95,20 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Done, kept for the record
 
+- [x] **The quality apparatus is tracked.** It was on one machine and nowhere
+  else: `git ls-files scratchpad/` returned 0 while `PROMPT.md` told the next
+  session to run a gate runner a fresh clone would not have. 40 files enter, 291
+  KB: 35 harnesses and 5 audits. The output stays out, which is the whole
+  argument, 272 MB of screenshots, HTML dumps, bundles and browser profiles
+  against 422 KB of scripts. The French working prompts under `scratchpad/*.md`
+  stay private too.
+- [x] **No machine path left in the harnesses.** 33 files carried the same
+  absolute path into one home directory as Playwright's fallback location,
+  invisible while everything was ignored and unusable the moment it was not.
+  They import `./playwright.mjs` now, which looks at `$UX_KIT`, then a
+  gitignored `scratchpad/uxkit.path`, then the repository's own
+  `node_modules`, and exits 2 with the three ways to fix it when none is there.
+  Exit 2 rather than 1 on purpose: a missing prerequisite is not a failed gate.
 - [x] Language list drawn as a grid of flags, chip menu: 202x894 to 408x518,
   every row at 30px.
 - [x] Chip menu lifted out of Kick's stacking context: covered at 5 of 9 sampled

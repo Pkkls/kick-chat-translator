@@ -14,8 +14,19 @@ coverage/
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 graft/
 
-# Working notes and state-harness output — not part of the package.
-scratchpad/
+# Working notes and harness OUTPUT stay out: screenshots, HTML dumps, bundles
+# and browser profiles come to 272 MB, against 422 KB of scripts.
+#
+# The scripts themselves are tracked. They are the eighteen gates, the audits
+# and the harnesses, and until now they existed on exactly one machine: a fresh
+# clone got none of them while .agent/PROMPT.md told the next session to run
+# them. State that survives a session limit is worth little if the means of
+# checking it does not survive a machine.
+scratchpad/*
+!scratchpad/audit_*.py
+!scratchpad/harness/
+scratchpad/harness/*
+!scratchpad/harness/*.mjs
 
 # Local Claude Code tooling. The graft shims bake an absolute npm-cache path
 # from the machine that generated them, and none of it is project source.
