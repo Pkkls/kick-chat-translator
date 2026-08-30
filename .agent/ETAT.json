@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-30T19:42:45.684Z",
+  "genere": "2026-08-30T19:53:43.799Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/gates-tracked",
-    "head": "bfc581ba694d89014c3387c729da7d0694226e29",
-    "sujet": "Verify the overlay dodge, and narrow what it still needs",
+    "head": "0ad3b409ddedd8c0c3721659473d7820757aa665",
+    "sujet": "Set our own box model instead of borrowing the page's",
     "arbrePropre": false,
     "fichiersModifies": 5,
     "dernierTag": "v2.9.2",
-    "decrit": "v2.9.2-25-gbfc581b",
+    "decrit": "v2.9.2-26-g0ad3b40",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -232,6 +232,6 @@
     ],
     "nbBloques": 4,
     "nbOuverts": 3,
-    "nbFaits": 41
+    "nbFaits": 42
   }
 }

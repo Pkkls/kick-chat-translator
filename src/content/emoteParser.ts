@@ -108,15 +108,35 @@ export function parseKickContent(content: string): ParsedContent {
  * Preserves real text around them.
  */
 function stripInlineEmoteNames(text: string): string {
-  return text
-    // Token with mixed case + digits, typically emote names (namedarumajankiss2, xqcL3)
-    .replace(/\b[a-zA-Z]*[a-z][A-Z][a-zA-Z0-9]*\b/g, ' ')
-    // Token that's all lowercase+digits but >12 chars and no spaces — likely concatenated emote slug
-    .replace(/\b[a-z]{3,}[a-z0-9]{10,}\b/g, ' ')
-    // Known emote suffixes (common Kick/BTTV/7TV patterns)
-    .replace(/\b\w+(kiss|wave|hug|love|dab|pog|kek|lul|gg|ez|clap|jam|hype)\d*\b/gi, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  return (
+    text
+      // Token with mixed case, typically emote names (pepeLaugh, catJam, xqcL3).
+      // The workhorse: 8 of 13 sampled emote names, with brand names as its only
+      // measured cost.
+      .replace(/\b[a-zA-Z]*[a-z][A-Z][a-zA-Z0-9]*\b/g, ' ')
+      // A long all-lowercase slug, but only when it carries a digit.
+      //
+      // This used to be `[a-z]{3,}[a-z0-9]{10,}`: any lowercase word of 13
+      // characters or more. Measured over 11583 words of the store listings it
+      // destroyed completamente, almacenamiento, armazenamento, justifications,
+      // communications, certifications, creditworthiness and conditionally, and
+      // it caught exactly one emote name of thirteen, namedarumajankiss2, which
+      // the suffix rule below already catches. Thirteen characters is an
+      // ordinary word length in Spanish, Portuguese, Turkish, German, Finnish.
+      .replace(/\b[a-z]{3,}[a-z0-9]*\d[a-z0-9]*\b/g, (m) => (m.length >= 13 ? ' ' : m))
+      // Known emote suffixes (common Kick/BTTV/7TV patterns).
+      //
+      // `ez` and `gg` were in this list and were pure damage. Turkish forms the
+      // negative aorist with -mez, so etmez, istemez, gitmez, gerekmez and
+      // gondermez were all deleted before translation, and Turkish is the second
+      // most read of the localised listings. Spanish vez, Czech bez and kez went
+      // the same way. All nine words this rule destroyed in that corpus came
+      // from those two alternatives, and dropping them costs no emote: OMEGALUL
+      // is still caught by `lul`.
+      .replace(/\b\w+(kiss|wave|hug|love|dab|pog|kek|lul|clap|jam|hype)\d*\b/gi, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+  );
 }
 
 function overlaps(markers: Marker[], start: number, end: number): boolean {

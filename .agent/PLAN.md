@@ -206,6 +206,22 @@ reads dist/, so it serialises behind any build. D touches no code.
   gitignored `scratchpad/uxkit.path`, then the repository's own
   `node_modules`, and exits 2 with the three ways to fix it when none is there.
   Exit 2 rather than 1 on purpose: a missing prerequisite is not a failed gate.
+- [x] **Words were being deleted from messages before translation.** The
+  inline emote-name stripper carried two rules that hit ordinary language.
+  `ez` in the suffix list deleted every Turkish negative aorist, a productive
+  grammatical form: `etmez`, `istemez`, `gitmez`, `gerekmez`, `gondermez`, plus
+  Spanish `vez`, Czech `bez`, `kez`. Turkish is the second most read of the
+  localised listings. And a rule deleting any all-lowercase word of thirteen
+  characters or more took `completamente`, `almacenamiento`, `armazenamento`,
+  `justifications`, `communications`, `certifications`, `creditworthiness`,
+  `conditionally`. Measured over 11583 words of the store listings: 30 distinct
+  ordinary words destroyed, and the reader saw a translation of a sentence
+  nobody wrote, with nothing to show a word had gone. After: 13, all of them
+  brand names caught by the mixed-case rule that earns its place, and emote
+  coverage unchanged at 10 of 13 sampled names. The long-word rule now needs a
+  digit; the suffix list lost `ez` and `gg`, which costs no emote since OMEGALUL
+  is still caught by `lul`. Eight regression tests, seven of which fail against
+  the old rules while the ten existing parser tests passed either way.
 - [x] **The extension's own box model no longer comes from the host page.** One
   `box-sizing` declaration existed in the whole stylesheet, on a fixed-position
   element; everything else inherited Kick's Tailwind reset. Measured on a page

@@ -63,3 +63,40 @@ describe('parseKickContent', () => {
     expect(r.plain).toBe(':A: :B: text');
   });
 });
+
+describe('the inline emote-name stripper leaves ordinary words alone', () => {
+  // Measured over 11583 words of the store listings: the previous rules
+  // destroyed 30 distinct ordinary words before anything was translated, and
+  // the reader saw a translation of a sentence they had not written. Nothing
+  // pinned those rules, so all ten tests above passed either way.
+  const intacts = [
+    // Turkish forms the negative aorist with -mez. An `ez` alternative in the
+    // suffix list deleted a whole grammatical class, in the second most read of
+    // the localised listings.
+    'bu is gerekmez ama yine de deneyelim',
+    'o gelmez ve bize haber göndermez',
+    // Spanish and Czech pay the same price for `ez`.
+    'no me lo puedo creer otra vez lo mismo',
+    'bez problemu, uvidime se zitra',
+    // A lowercase word of thirteen characters or more is ordinary in Spanish,
+    // Portuguese, Turkish, German and Finnish. The rule that deleted those
+    // caught exactly one emote name, which the suffix rule catches too.
+    'que configuracion usas para el raton',
+    'esto es completamente diferente amigo',
+    'obrigado pelo armazenamento gratuito',
+  ];
+
+  for (const phrase of intacts) {
+    it(`keeps every word of ${JSON.stringify(phrase.slice(0, 28))}`, () => {
+      expect(parseKickContent(phrase).realText).toBe(phrase);
+    });
+  }
+
+  it('still strips emote names mixed into a sentence', () => {
+    expect(parseKickContent('hola pepeLaugh que tal la partida').realText).toBe(
+      'hola que tal la partida',
+    );
+    expect(parseKickContent('eso fue OMEGALUL de verdad').realText).toBe('eso fue de verdad');
+    expect(parseKickContent('mira namedarumajankiss2 ahora').realText).toBe('mira ahora');
+  });
+});
