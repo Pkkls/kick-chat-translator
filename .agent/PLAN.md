@@ -154,6 +154,30 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Done, kept for the record
 
+- [x] **franc against tinyld-light: measured, and tinyld wins on every axis that
+  matters.** The experiment the previous pass named, run on the same corpora.
+  Short chat, 30 non-English messages and 10 English: franc gets 9 right, 12
+  wrong, 9 silent; tinyld gets 17 right, 9 wrong, 4 silent. The number that
+  decides, non-English messages classified English and therefore dropped in
+  silence by `ignoreEnglish`: franc 1 of 30, tinyld **0 of 30**. And on actual
+  English, which is what `ignoreEnglish` exists to catch, franc recognises 2 of
+  10 against tinyld's 8.
+- [x] **Coverage is a tie, which is the finding that surprised me.** One phrase
+  per language across the product's 42, long enough that the question is
+  coverage and not length: franc-min recognises 26, tinyld-light 25. franc's
+  extra 35 languages buy exactly one more correct answer, and franc misses
+  Arabic and Hebrew entirely, returning nothing, which is why the Unicode script
+  pre-check had to exist. tinyld gets both.
+- [x] **And it is far smaller.** Bundled and minified, measured rather than read
+  off a metafile: franc-min 174824 bytes, tinyld-light 81121. That is 93703
+  bytes, forty percent of the whole injected script, and it is MIT with no
+  dependencies.
+- [x] **Transliteration is not subsumed by it.** Both detectors guess and both
+  guess wrong: romanised Russian is Norwegian to tinyld and Indonesian to franc,
+  greeklish is German, romaji is Turkish. The transliteration families stay a
+  separate problem with their own word lists.
+## Done, kept for the record
+
 - [x] **Arabizi is detected, and the damage it did was not what the grid
   assumed.** The grid scored it 0 of 5 for returning no language. Measured
   properly, an absent language costs nothing on the engine path: the `sl` sent
