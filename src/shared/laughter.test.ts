@@ -13,7 +13,7 @@ describe('isLaughter', () => {
     'haha', 'hahaha', 'ahahah', 'hehe', 'hihihi',
     'lol', 'lolol', 'lmao', 'rofl', 'kek', 'kekw', 'uwu',
     'xd', 'xdxd', 'xdxdxd', 'XDXD',
-    'ахаха', 'хахаха', 'гггг', 'χαχα', 'ههههه', 'خخخخ', 'חחחח',
+    'ахаха', 'хахаха', 'гггг', 'ххх', 'хххх', 'χαχα', 'ههههه', 'خخخخ', 'חחחח',
     'ㅋㅋㅋ', 'ㅎㅎㅎ', '哈哈哈', '呵呵', '草', 'हाहा',
   ])('reconnait %s', (forme) => {
     expect(isLaughter(forme)).toBe(true);

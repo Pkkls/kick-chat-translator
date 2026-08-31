@@ -129,6 +129,7 @@ const FORMES: FormeDeRire[] = [
   // ── Non-Latin scripts. The script check resolves the language already, so
   //    these earn their place by being recognised as laughter, not as marks.
   { motif: /^[ха]*(?:ах|ха){2,}[ха]*$/i, note: 'Cyrillic hahaha and ahahaha' },
+  { motif: /^х{3,}$/i, note: 'Cyrillic khkhkh: the letter repeated on its own, without the vowel' },
   { motif: /^г{3,}$/i, note: 'Cyrillic gggg, the older Slavic form' },
   { motif: /^(?:хα|χα){2,}χ?α?$/i, langue: 'el', note: 'Greek chacha. Greek script is not in the script pre-check' },
   { motif: /^(?:χ[εοι]){2,}$/i, langue: 'el', note: 'Greek cheche, chocho and chichi' },
