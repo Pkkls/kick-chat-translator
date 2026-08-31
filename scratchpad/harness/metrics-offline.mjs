@@ -35,6 +35,13 @@ import { chromium } from './playwright.mjs';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const EXT = process.env.KT_EXT ?? path.resolve(HERE, '../../dist');
 const JSON_SEUL = process.argv.includes('--json');
+/**
+ * `--lent` fait arriver les messages un par un, espaces, comme un chat ordinaire
+ * plutot que par paquets. C'est le regime ou le groupage ne collecte rien et ou
+ * la fenetre d'attente est du delai pur, ce que le commentaire de
+ * `adaptiveWindowMs` dit lui-meme de la branche qu'il choisit alors.
+ */
+const LENT = process.argv.includes('--lent');
 
 const manifeste = path.join(EXT, 'manifest.json');
 if (!fs.existsSync(manifeste)) {
@@ -152,6 +159,21 @@ await ctx.route(KICK, async (route) => {
   }
 });
 
+/** Les compteurs des deux scopes, agreges, a l'instant ou on appelle. */
+async function lireCompteurs() {
+  const w = ctx.serviceWorkers()[0] ?? (await ctx.waitForEvent('serviceworker', { timeout: 20000 }));
+  const brut = await w.evaluate(async (marqueur) => {
+    const cles = [`${marqueur}.sw`, `${marqueur}.content`];
+    const o = await chrome.storage.local.get(cles);
+    return cles.map((c) => o[c] ?? null);
+  }, 'kt.metrics.v1');
+  const out = {};
+  for (const sc of brut.filter(Boolean)) {
+    for (const [k, v] of Object.entries(sc.counts ?? {})) out[k] = (out[k] ?? 0) + v;
+  }
+  return out;
+}
+
 const page = ctx.pages()[0] ?? (await ctx.newPage());
 await page.goto('https://kick.com/kt-mesure', { waitUntil: 'domcontentloaded' });
 await page.waitForTimeout(5000);
@@ -159,8 +181,10 @@ await page.waitForTimeout(5000);
 // Les messages arrivent comme sur un chat : par petits paquets, espaces, pas
 // tous dans le meme tick. Un seul tick mesurerait un lot et rien d'autre.
 let index = 1;
-for (let i = 0; i < CORPUS.length; i += 3) {
-  const paquet = CORPUS.slice(i, i + 3);
+const PAS = LENT ? 1 : 3;
+const ATTENTE = LENT ? 1200 : 900;
+for (let i = 0; i < CORPUS.length; i += PAS) {
+  const paquet = CORPUS.slice(i, i + PAS);
   await page.evaluate(
     ({ lignes, depart }) => {
       const cible = document.querySelector('#channel-chatroom [data-which="messages"]');
@@ -177,7 +201,7 @@ for (let i = 0; i < CORPUS.length; i += 3) {
     { lignes: paquet, depart: index },
   );
   index += paquet.length;
-  await page.waitForTimeout(900);
+  await page.waitForTimeout(ATTENTE);
 }
 
 // Le meme texte, reenvoye par quelqu'un d'autre : c'est ce qui doit toucher le
@@ -198,7 +222,9 @@ await page.evaluate(
   { textes: CORPUS.filter((c) => c[1] === 'traduit').slice(0, 8).map((c) => c[2]), depart: index },
 );
 
-// Ce que chaque ligne est devenue, lue sur la ligne elle-meme. Les compteurs
+// Ce que chaque ligne est devenue, lue sur la ligne elle-meme, et lue AVANT le
+// rechargement plus bas : celui-ci vide le chat, et prendre l'attribution
+// apres ne mesurait plus que les huit lignes reposees pour le cache. Les compteurs
 // donnent des totaux par raison ; ils ne disent pas QUELLE ligne a ete ecartee,
 // et c'est exactement la question que `pipeline.ts` dit ne pas savoir repondre.
 // Le produit laisse sa raison dans le `title` de la cible d'injection.
@@ -213,6 +239,38 @@ const sort = await page.evaluate(() => {
       .find((t) => t && t.startsWith('Not translated')) ?? null,
   }));
 });
+
+// Le second etage de cache ne peut pas gagner tant que le premier repond.
+//
+// `stats.ts` compte un seul totalCacheHits pour les deux etages, donc rien ne
+// dit si la carte en memoire de l'onglet paie sa taille ou si celle du service
+// worker fait tout le travail. Dans une meme page la question ne se pose meme
+// pas : la memoire est interrogee en premier, donc elle repond toujours et
+// l'autre etage ne voit que des defauts. Le seul moment ou le service worker
+// peut gagner est celui ou la memoire disparait et pas lui : un rechargement.
+const avantRechargement = { ...(await lireCompteurs()) };
+await page.reload({ waitUntil: 'domcontentloaded' });
+await page.waitForTimeout(5000);
+const repetes = CORPUS.filter((c) => c[1] === 'traduit').slice(0, 8).map((c) => c[2]);
+await page.evaluate(
+  ({ textes }) => {
+    const cible = document.querySelector('#channel-chatroom [data-which="messages"]');
+    for (const [k, texte] of textes.entries()) {
+      const d = document.createElement('div');
+      d.setAttribute('data-index', String(500 + k));
+      d.innerHTML =
+        '<div class="w-full min-w-0 shrink-0">' +
+        `<button class="font-bold" style="color:#53FC18">apres${k}</button>` +
+        `<span class="font-normal">${texte}</span></div>`;
+      cible.appendChild(d);
+    }
+  },
+  { textes: repetes },
+);
+const moteurAvantRechargement = appelsMoteur;
+await page.waitForTimeout(7000);
+const apresRechargement = { ...(await lireCompteurs()) };
+const moteurApresRechargement = appelsMoteur;
 
 // `FLUSH_DEBOUNCE_MS` vaut 2000 : lire plus tot lirait un stockage encore vide.
 await page.waitForTimeout(6000);
@@ -261,11 +319,24 @@ for (const l of sort) {
   }
 }
 
+// Ce que le rechargement a change : la memoire est repartie de zero, le service
+// worker non. Les touches qu'il prend ici sont exactement ce qu'il rapporte.
+const delta = (k) => (apresRechargement[k] ?? 0) - (avantRechargement[k] ?? 0);
+const etages = {
+  memoireTouches: delta('cache.mem.hit'),
+  memoireDefauts: delta('cache.mem.miss'),
+  swTouches: delta('cache.sw.hit'),
+  swDefauts: delta('cache.sw.miss'),
+  messagesRepetes: repetes.length,
+  appelsMoteurApresRechargement: moteurApresRechargement - moteurAvantRechargement,
+};
+
 const sortie = {
   scopes: scopes.map((s) => s.scope),
   messagesPoses: CORPUS.length,
   appelsMoteur,
   parLigne: comptes,
+  etagesDeCache: etages,
   desaccords,
   compteurs,
   durees: Object.fromEntries(
@@ -292,6 +363,12 @@ if (JSON_SEUL) {
       );
     }
   }
+  console.log(
+    `cache, apres rechargement  ${etages.messagesRepetes} messages deja vus : ` +
+      `memoire ${etages.memoireTouches} touches / ${etages.memoireDefauts} defauts, ` +
+      `service worker ${etages.swTouches} touches / ${etages.swDefauts} defauts, ` +
+      `${etages.appelsMoteurApresRechargement} appel(s) moteur`,
+  );
   console.log('compteurs :');
   for (const [k, v] of Object.entries(compteurs).sort((a, b) => b[1] - a[1])) {
     console.log(`  ${k.padEnd(34)} ${v}`);
@@ -316,4 +393,6 @@ if (fails.length) {
   console.error('FAIL: ' + fails.join(' ; '));
   process.exit(1);
 }
-console.log('metrics-offline: OK');
+// En mode JSON le verdict part sur stderr : melanger les deux rendait la sortie
+// illisible a un analyseur JSON, ce qui est tout l'interet du mode.
+(JSON_SEUL ? console.error : console.log)('metrics-offline: OK');

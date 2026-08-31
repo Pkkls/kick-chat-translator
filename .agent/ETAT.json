@@ -1,25 +1,23 @@
 {
-  "genere": "2026-08-31T14:42:23.122Z",
+  "genere": "2026-08-31T15:02:50.377Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
-    "branche": "master",
-    "head": "cfbaef1dd213b58764eb59e56c139b209169f972",
-    "sujet": "Give the bar's buttons and the retry arrow a real target size",
-    "arbrePropre": true,
-    "fichiersModifies": 0,
+    "branche": "feat/metriques-hors-ligne",
+    "head": "4ccb578dd9ee0c1fb7608a779f6e23bda4257247",
+    "sujet": "Read the thirty counters without a network, and close the xd gap",
+    "arbrePropre": false,
+    "fichiersModifies": 3,
     "dernierTag": "v2.9.3",
-    "decrit": "v2.9.3-3-gcfbaef1",
+    "decrit": "v2.9.3-4-g4ccb578",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
     },
     "ecarts": {
       "devcopy": {
-        "derriere": 0,
-        "devant": 31,
-        "aJour": false
+        "note": "pas de devcopy/feat/metriques-hors-ligne connu localement"
       },
       "origin": {
         "derriere": 0,
@@ -206,7 +204,7 @@
       "audit-poids",
       "audit-fiche"
     ],
-    "harnaisSurDisque": 39,
+    "harnaisSurDisque": 40,
     "orphelins": [
       "a11y",
       "bar-panel-mesure",
@@ -223,12 +221,13 @@
       "live-nav",
       "live-profile",
       "live-recycle",
+      "metrics-offline",
       "probe-row-space",
       "session-check",
       "store-shots",
       "store-shots-fixture"
     ],
-    "nbOrphelins": 19,
+    "nbOrphelins": 20,
     "note": "Les portes live ouvrent un navigateur sur kick.com et ne sont dans aucun runner. Un orphelin n est pas forcement un defaut ; un orphelin qui couvre du code livre en est un."
   },
   "releaseGithub": {
@@ -266,7 +265,7 @@
       "**Store submissions.** Chrome Web Store and AMO. Packages, listing text,"
     ],
     "nbBloques": 3,
-    "nbOuverts": 2,
+    "nbOuverts": 3,
     "nbFaits": 51
   }
 }

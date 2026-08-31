@@ -71,6 +71,21 @@ export class TranslationCoalescer {
     this.recentSubmits = this.recentSubmits.filter((t) => now - t < 10_000);
     const perSecond = this.recentSubmits.length / 10;
     // Below this, a window collects less than one extra line and is pure delay.
+    //
+    // "Pure delay" is true of the arrival RATE and false of the floor, and the
+    // difference was measured by trying to remove it. Setting the low tier to 0:
+    // on messages spaced 1.2s apart, the wait went from 44ms to 0 at p50 and the
+    // provider was called 15 times either way, so the window bought nothing
+    // there. On the same corpus arriving in bursts of three, the calls went from
+    // 6 to 15 for the same 24 translations, 2.5x the requests against an
+    // endpoint that soft-bans per IP.
+    //
+    // The reason is that a burst does not reach submit() in one tick: each row
+    // goes through the observer, language detection and a cache lookup first, so
+    // the siblings land a few milliseconds apart and a setTimeout(0) fires
+    // before them. The 40ms floor is what absorbs that spread. Reverted, and
+    // written down here so the next reading of the line above does not cost
+    // another round trip to find out.
     const chosen =
       perSecond * (BATCH_WINDOW_MS / 1000) < 1
         ? MIN_BATCH_WINDOW_MS

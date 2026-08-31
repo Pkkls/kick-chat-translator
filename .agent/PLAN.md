@@ -45,6 +45,16 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Open
 
+- [ ] **Question 2, local-first against cloud, is not measurable here.**
+  `e2e.local` never records: the on-device Translator API is present in this
+  Chromium but no model is ready, which `local.pair.downloadable` at 14 says
+  exactly. `e2e.cloud` is p50 46ms against a mock that answers in 2ms, so it
+  measures the pipeline and not a provider. Answering this needs a profile with
+  a downloaded model, which needs the network, and a real provider for the other
+  side. The counters are in place and the reader exists; only the environment is
+  missing.
+
+
 - [ ] **The install rate is 40.5 percent and nothing is tuned against it.**
   Eighty-five installs for two hundred and ten first visits, over eight months.
   Fifty-eight percent of arrivals come from organic search, thirty-one direct,
