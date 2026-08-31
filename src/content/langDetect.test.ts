@@ -165,6 +165,43 @@ describe('un nom d hote n est pas du rire japonais', () => {
   });
 });
 
+// Signale par kil en testant sur une chaine mongole. Le cyrillique rendait `ru`
+// pour tout, et le rendait comme reponse SURE : vingt lignes mongoles sur vingt
+// partaient au moteur en `sl=ru`, c'est-a-dire en demandant de traduire du
+// mongol depuis le russe. franc ne peut rien y faire, franc-min ne porte pas le
+// mongol du tout.
+describe('l ecriture cyrillique se partage entre plusieurs langues', () => {
+  // Le mongol n'est pas dans les 42 langues du produit, donc il rend undefined
+  // et pas un code. Ce qui compte est qu'il cesse d'etre annonce russe : avec
+  // `sl` vide, le moteur detecte seul et rend une vraie traduction.
+  it('cesse d annoncer le mongol comme du russe', () => {
+    expect(detectLanguage('энэ тоглоом хэцүү байна')).not.toBe('ru');
+    expect(detectLanguage('хэн энд байна вэ')).not.toBe('ru');
+    expect(confidentLanguage('юу болоод байгаа юм бэ')).toBeUndefined();
+  });
+
+  // Le temoin de frontiere : le russe ne perd rien. Douze sur douze a la mesure,
+  // et aucune de ces lignes ne porte de lettre ou de particule mongole.
+  it('ne prend pas le russe pour du mongol', () => {
+    expect(detectLanguage('что тут происходит')).toBe('ru');
+    expect(detectLanguage('спасибо за стрим')).toBe('ru');
+    expect(confidentLanguage('он играет очень плохо')).toBe('ru');
+  });
+
+  // L'ukrainien EST dans les 42, donc il prend son code. Ses lettres propres
+  // sont absentes du russe.
+  it('lit l ukrainien a ses lettres propres', () => {
+    expect(detectLanguage('що тут відбувається')).toBe('uk');
+    expect(confidentLanguage('привіт усім')).toBe('uk');
+  });
+
+  // La limite, ecrite plutot que cachee : le bulgare partage l'alphabet russe
+  // sans une seule lettre exclusive, donc rien ne l'en separe par les lettres.
+  it('rend russe le bulgare, et c est la limite connue', () => {
+    expect(detectLanguage('какво става тук')).toBe('ru');
+  });
+});
+
 // L'ecriture arabe n'est pas une langue. Mesure avant correction : douze lignes
 // persanes sur douze rendues `ar`, et rendues comme langue source SURE, donc
 // envoyees au moteur en `sl=ar`. Le persan est une des 42 langues proposees et

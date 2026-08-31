@@ -183,6 +183,45 @@ function arabeOuPersan(text: string): string | undefined {
   return 'ar';
 }
 
+/**
+ * L'ecriture cyrillique n'est pas une langue non plus.
+ *
+ * Signale par kil en testant sur une chaine mongole : le pre-controle rendait
+ * `ru` pour tout ce qui s'ecrit en cyrillique, et le rendait comme une reponse
+ * SURE. Mesure : vingt lignes mongoles sur vingt declarees russes avec `sl=ru`,
+ * huit lignes ukrainiennes sur huit, huit bulgares sur huit. Le degat est le
+ * meme que pour le persan pris pour de l'arabe, et il est pire ici parce que
+ * franc ne peut pas rattraper : franc-min ne porte pas le mongol du tout, sa
+ * liste cyrillique est rus, ukr, bos, srp, uzn, azj, koi, bel, bul, kaz.
+ *
+ * Le mongol se reconnait a deux voyelles que le russe n'a pas, ө et ү, et a une
+ * poignee de particules qui reviennent dans presque toutes ses phrases. Mesure
+ * de la couverture : les lettres seules prennent 8 lignes sur 20, les lettres
+ * plus les particules en prennent 17, et l'ensemble fait ZERO faux positif sur
+ * douze lignes russes, huit ukrainiennes et huit bulgares.
+ *
+ * Le mongol rend `undefined` et non un code : il n'est pas dans les 42 langues
+ * du produit. Ce qui compte est qu'il cesse de partir au moteur en `sl=ru`, ce
+ * qui demandait de traduire du mongol depuis le russe ; avec `sl` vide le moteur
+ * detecte seul et rend une vraie traduction.
+ *
+ * L'ukrainien, lui, est dans les 42, donc il prend son code. Ses lettres propres
+ * sont i, yi, ye et ge, absentes du russe : 6 lignes sur 8 a la mesure.
+ *
+ * La limite, ecrite plutot que cachee : le bulgare partage l'alphabet russe sans
+ * une seule lettre exclusive, donc aucune regle par lettres ne le separe et il
+ * reste lu `ru`. Huit sur huit, et c'est mesure, pas oublie.
+ */
+const LETTRES_MONGOLES = /[өү]/iu;
+const MOTS_MONGOLS = /(^|[^\p{L}])(байна|байгаа|юм|вэ|бэ|сайхан|байлаа)([^\p{L}]|$)/iu;
+const LETTRES_UKRAINIENNES = /[іїєґ]/iu;
+
+function cyrilliqueQuelleLangue(text: string): string | undefined {
+  if (LETTRES_MONGOLES.test(text) || MOTS_MONGOLS.test(text)) return undefined;
+  if (LETTRES_UKRAINIENNES.test(text)) return 'uk';
+  return 'ru';
+}
+
 /** Unicode script → language mapping. More reliable than franc on short texts. */
 function detectByScript(text: string): string | undefined {
   // Count non-ASCII, non-space chars by script range.
@@ -242,7 +281,7 @@ function detectByScript(text: string): string | undefined {
   if (pct(han)) return undefined;
   if (pct(arabic)) return arabeOuPersan(text);
   if (pct(hebrew)) return 'he';
-  if (pct(cyrillic)) return 'ru';
+  if (pct(cyrillic)) return cyrilliqueQuelleLangue(text);
   if (pct(thai)) return 'th';
   if (pct(devanagari)) return 'hi';
   return undefined;
