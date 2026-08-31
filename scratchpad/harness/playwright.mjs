@@ -69,8 +69,67 @@ if (!trouve) {
 
 const pw = await import(pathToFileURL(trouve).href);
 
-export const { chromium, firefox, webkit, devices } = pw;
+/**
+ * Sans fenetre, et la nuance qui a fait croire pendant des mois que c'etait
+ * impossible.
+ *
+ * Ce que ce depot tenait pour acquis : une extension MV3 ne se charge pas en
+ * headless, donc les portes ouvrent une vraie fenetre et la poussent a
+ * -2400,-2400. C'est vrai du `headless: true` de Playwright, qui utilise encore
+ * son propre mode, et c'est faux du mode headless de Chromium lui-meme.
+ *
+ * Mesure, meme build et meme page, trois modes :
+ *
+ *   headed hors ecran     content script INJECTE   worker demarre
+ *   --headless=new        content script INJECTE   worker demarre
+ *   headless: true        content script absent    worker absent
+ *
+ * Donc `KT_HEADLESS=1` garde `headless: false` cote Playwright et passe le
+ * drapeau a Chromium. Ce qui change pour la machine de kil : plus de fenetre qui
+ * apparait et vole le focus a chaque porte, et une CI sans serveur d'affichage
+ * devient possible.
+ *
+ * Deux exceptions, et elles sont dans la regle plutot que dans une liste :
+ * une option `channel` veut le Chrome de la machine, donc `live-kick` et
+ * `compose-kick-live`, qui ouvrent le vrai kick.com ou la detection de robot
+ * fait partie de ce qui est mesure ; et un appelant qui a deja demande un mode
+ * headless n'est pas contredit.
+ */
+const sansFenetre = process.env.KT_HEADLESS === '1';
+
+function avecHeadless(options = {}) {
+  if (!sansFenetre) return options;
+  if (options.channel) return options;
+  if (options.headless === true) return options;
+  const args = options.args ?? [];
+  if (args.some((a) => String(a).startsWith('--headless'))) return options;
+  return {
+    ...options,
+    headless: false,
+    // La position hors ecran ne veut plus rien dire sans fenetre, et la garder
+    // ferait porter au journal une option qui ne s'applique a rien.
+    args: [...args.filter((a) => !String(a).startsWith('--window-position')), '--headless=new'],
+  };
+}
+
+// Un Proxy plutot qu'une copie : `pw.chromium` est une instance dont les
+// methodes vivent sur le prototype et dont l'etat interne est prive, donc un
+// spread la casse en silence. Tout est renvoye lie a l'objet reel, et seules les
+// deux methodes de lancement sont interceptees.
+const chromiumBrut = pw.chromium;
+export const chromium = new Proxy(chromiumBrut, {
+  get(cible, prop) {
+    if (prop === 'launch') return (o) => cible.launch(avecHeadless(o));
+    if (prop === 'launchPersistentContext') return (dir, o) => cible.launchPersistentContext(dir, avecHeadless(o));
+    const v = Reflect.get(cible, prop, cible);
+    return typeof v === 'function' ? v.bind(cible) : v;
+  },
+});
+
+export const { firefox, webkit, devices } = pw;
 export const provenance = trouve;
+/** Vrai quand ce processus a demande a Chromium de tourner sans fenetre. */
+export const headless = sansFenetre;
 
 /**
  * Le navigateur des portes hors-ligne est le Chromium embarque avec Playwright,

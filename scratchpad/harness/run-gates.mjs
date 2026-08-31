@@ -9,6 +9,7 @@
  *   node scratchpad/harness/run-gates.mjs --jobs 1     # the serial baseline
  *   node scratchpad/harness/run-gates.mjs --only chip-live,rtl-live
  *   node scratchpad/harness/run-gates.mjs --no-build
+ *   node scratchpad/harness/run-gates.mjs --headless   # sans ouvrir de fenetre
  *
  * Exit code is the gates': non-zero if any of them failed. Nothing here pipes a
  * gate anywhere or chains it behind &&, which is how a script that threw an
@@ -165,6 +166,21 @@ if (!Number.isInteger(jobs) || jobs < 1) {
   process.exit(2);
 }
 const only = flag('--only', '')?.split(',').filter(Boolean) ?? [];
+
+/**
+ * `--headless` : les portes tournent sans ouvrir une seule fenetre.
+ *
+ * Mesure qui rend ce drapeau possible, sur le meme build et la meme page :
+ * `--headless=new` charge l'extension et demarre le service worker, alors que
+ * le `headless: true` de Playwright n'en charge aucun des deux. Le depot avait
+ * conclu de ce second echec que le headless etait impossible ici, et ouvrait
+ * donc une vraie fenetre poussee a -2400,-2400 a chaque porte.
+ *
+ * Le drapeau est passe aux enfants par l'environnement plutot que par la ligne
+ * de commande : c'est `scratchpad/harness/playwright.mjs` qui le lit, une fois,
+ * pour les trente-neuf harnais a la fois.
+ */
+const sansFenetre = argv.includes('--headless');
 const build = !argv.includes('--no-build');
 
 const chosen = only.length ? GATES.filter(([n]) => only.includes(n)) : GATES;
@@ -178,7 +194,11 @@ if (only.length && chosen.length !== only.length) {
 function run(cmd, args) {
   return new Promise((resolve) => {
     const started = Date.now();
-    const child = spawn(cmd, args, { cwd: ROOT, shell: process.platform === 'win32' });
+    const child = spawn(cmd, args, {
+      cwd: ROOT,
+      shell: process.platform === 'win32',
+      env: sansFenetre ? { ...process.env, KT_HEADLESS: '1' } : process.env,
+    });
     let out = '';
     child.stdout.on('data', (b) => (out += b));
     child.stderr.on('data', (b) => (out += b));

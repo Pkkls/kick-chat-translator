@@ -12,12 +12,22 @@
 Real-time translation for Kick.com chat, on live streams and VOD replays. Open a stream, and any
 message in another language gets its translation rendered right underneath. Nothing to set up.
 
-<img width="354" height="593" alt="Kick chat with a translation under each foreign-language message" src="https://github.com/user-attachments/assets/4f7ae414-6c2a-4ee5-b191-6af9e29d46ec" />
-
-
 Runs on **Brave, Chrome, Edge and Firefox**, and understands 7TV emotes.
 
-![Japanese chat translated to English](screenshots/japanese-chat.jpg)
+| Chat, translated as it scrolls | The toolbar popup |
+|---|---|
+| <img src="screenshots/chat.png" alt="Kick chat where each Spanish message carries an English translation underneath, with the extension's status bar above the list" width="360"> | <img src="screenshots/popup.png" alt="The extension popup with target language, display mode, provider list and the day's request counts" width="360"> |
+
+| What you type, before you send it | Pick a language, or let it pick |
+|---|---|
+| <img src="screenshots/compose.png" alt="The compose box holding an English message, with a preview above it showing the Spanish version that will be sent" width="360"> | <img src="screenshots/languages.png" alt="A searchable grid of language flags and names, with the channel's own language first" width="360"> |
+
+<sub>Taken from the shipping build by
+<code>scratchpad/harness/store-shots-fixture.mjs</code>, in a chat room this
+repository makes up. The usernames and messages are invented, the translations
+are answered locally, and nothing leaves the machine, so no real person's handle
+ends up on this page. What the images show of the product is real: it is
+<code>dist/</code> running, reading that room the way it reads any other.</sub>
 
 **Zero config.** Incoming chat is translated into *your* browser's language. When you type, a live preview
 shows your own message in the *channel's* language (auto-detected from Kick) just above the chat box; click
@@ -62,88 +72,9 @@ translated line, all under the 24 by 24 WCAG asks for.
 
 And the injected script is smaller than it was in 2.9.2, despite all of the above.
 
-## What's new in [2.9.2](https://github.com/Pkkls/kick-chat-translator/releases/tag/v2.9.2)
+Every release before this one is in [CHANGELOG.md](CHANGELOG.md), with the
+measurement behind each entry.
 
-**The bar's language panel showed six entries out of forty.** 1200px of list inside a panel 281px tall, so
-most of it was a scroll, and every row spent 17% of its width on an ISO code repeating what the flag and
-the name already said. The code is gone, the list runs in three columns, and twenty-five entries are on
-screen instead of six. Same shape as the chip's menu, because two lists of the same 42 languages should not
-look like two different products.
-
-## What's new in [2.9.1](https://github.com/Pkkls/kick-chat-translator/releases/tag/v2.9.1)
-
-**The language list opens on a plain click.** It sat behind a caret of 10x6 CSS pixels on a 45x24 chip,
-where WCAG asks 24x24 of a target, and missing it did something else: the click toggled between the
-channel's language and your first favourite. The two other ways in were a 400ms press-and-hold and the Down
-arrow. One click opens the list now, wherever on the chip it lands.
-
-**Russian shows Russia's flag.** A flag in that list says which language a row is and nothing else.
-
-## What's new in [2.9.0](https://github.com/Pkkls/kick-chat-translator/releases/tag/v2.9.0)
-
-**The language list is a grid of flags.** It listed 43 languages one per line as two-letter codes, 894px
-tall on a 950px window, so it ran the full height of the screen and each entry had to be read letter by
-letter. Three columns of drawn flags fit the same 43 entries and their names into 518px, and the flags are
-drawn in CSS because flag emoji do not render on Windows: the system falls back to the very letters being
-replaced.
-
-**Kick no longer paints over that menu.** It declared a z-index of 2147483000 and was still covered at five
-of nine sampled points once the page was scrolled, because a z-index only ranks an element inside its own
-stacking context. It hangs off the document body now, like the compose preview, and measures zero of nine
-covered at three window sizes.
-
-## What's new in [2.8.1](https://github.com/Pkkls/kick-chat-translator/releases/tag/v2.8.1)
-
-**Translations arrive about twice as fast.** Lines were held for a batching window before being sent, and
-that window only pays for itself if another line turns up while it is open. It almost never did: measured
-on a live channel, twenty-four of twenty-seven dispatches went out carrying a single message, and the wait
-was 186ms of a 217ms median while the translation call itself answered in 43ms. The median is 111ms now,
-with no extra requests sent, and nothing changes on a fast chat where batching does pay.
-
-## What's new in [2.8.0](https://github.com/Pkkls/kick-chat-translator/releases/tag/v2.8.0)
-
-A pass over every surface the extension puts on screen: the chat, the bar above it, the popup and the six
-settings tabs. Some of it is new, most of it is things that were quietly wrong.
-
-**A language button, where your hand already is.** Changing the language you write in meant travelling to
-the bar at the top of the chat and back. The button now sits in the chat's own action bar, just before the
-gear, so the pointer never leaves the text field. A click swaps between the channel's language and your
-last pick, the caret opens the full list, and typing two letters filters it. The first language you choose
-becomes your favourite; there is nothing to configure.
-
-**Translations were invisible for some of you, and had been for a long time.** The injected text followed
-the *operating system's* light or dark setting rather than the chat it sits in. On a light desktop reading
-a dark Kick, that painted dark text on Kick's dark background: measured at 1.01:1 against what it sat on,
-which is no contrast at all. It reads the chat's own background now and follows Kick's theme switch without
-a reload. Measured after: 10.98:1.
-
-**"Replace" replaces.** It had been a fourth display setting that no control could reach, naming a style
-that rendered exactly like "Inline" with the original still standing beside it. It now fits 12 messages on
-screen where inline fits 9. "On hover" also stopped writing a label under every message whether or not you
-ever hovered one, which had been costing the chat a third of what it could show. **Below is still the style
-to use; the other three are being worked on, and the settings say so.**
-
-**Everything speaks your language.** The chat, the bar and every language menu follow the interface language
-you chose in the extension rather than your browser's, across all ten interfaces. Thirty-nine strings that
-were English whatever you had selected now come from the catalogue, and the shipped locale files went from
-three languages to ten.
-
-**It works without a mouse, and mirrors for Arabic.** The settings tab bar was six unrelated buttons to a
-screen reader and took five presses to cross; it is one stop now, with the arrows, Home and End. Every
-control has a name, none share one, and no interactive edge is invisible any more. The chat, the popup and
-the settings all mirror properly for right-to-left reading. Everything animated stops for anyone who has
-asked their system to stop it, without touching Kick's own motion.
-
-**And the small ruinous things.** A long URL or a wall of spam no longer pushes the chat sideways. A failed
-line no longer takes a row of its own, which mattered because failures never arrive alone: with a provider
-down, the chat went from 13 messages on screen to 8. The retry control works from the keyboard and on touch,
-where it had answered to a mouse hover and nothing else. The settings page no longer scrolls sideways in a
-narrow window.
-
-All of it verified with the extension loaded in a real browser on a real channel, which is how the language
-button turned out to be anchored in the wrong place to begin with.
-
-Full list in [CHANGELOG.md](CHANGELOG.md).
 ---
 
 ## Install
@@ -152,8 +83,7 @@ Full list in [CHANGELOG.md](CHANGELOG.md).
 &nbsp;·&nbsp;
 **[➥ Firefox · Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
-One click to install. Open any Kick stream, and a green bar at the top of chat tells you it's live.
-<img width="347" height="193" alt="The green status bar at the top of chat" src="https://github.com/user-attachments/assets/3973b7a0-4767-42a2-974c-7f94b2534595" />
+One click to install. Open any Kick stream, and the green bar at the top of chat tells you it's live.
 
 <details>
 <summary>Or install manually (unpacked / dev build)</summary>
@@ -294,6 +224,61 @@ a classic IIFE for reliable injection on Brave.
 development-only instrumentation module, and this fails the build if any part of it,
 or even one of its measurement key strings, survives into a release bundle. It
 checks both directions, so an instrumented build that lost the code fails too.
+
+## Tests
+
+```bash
+npm run release:check    # typecheck, lint, 1032 unit tests, build
+```
+
+Run it rather than its parts. Running only three of the four is how three lint
+errors once reached a release branch unnoticed.
+
+Beyond the unit tests there are 39 offline gates. They load the built extension
+into a real browser, drive it, and assert what it does: a chat row gets its
+translation, the fallback chain takes over when the first engine rate-limits, a
+recycled row is re-translated, the language change reaches the page without a
+reload, the compose preview targets the channel's language and not the reader's.
+None of them touches the network or kick.com. The page is served locally and the
+translation engine is answered locally, so the assertions are exact rather than
+dependent on what some server felt like returning.
+
+```bash
+node scratchpad/harness/run-gates.mjs --headless            # all 39, no window
+node scratchpad/harness/run-gates.mjs --headless --jobs 8   # 50s on 8 workers
+node scratchpad/harness/run-gates.mjs --only translate-offline,extension-load
+```
+
+Playwright is deliberately not a dependency of this project: CI installs with
+`npm ci` on two jobs and never runs these gates, so adding it would pull browser
+binaries into both for nothing. Point the harness at an existing install with
+`UX_KIT=<dir containing node_modules/playwright>`, or `npm i -D playwright` in
+the clone. Without it the runner exits 2 and says so, because a missing
+prerequisite is not a failed test.
+
+**On `--headless`, since the obvious version of it does not work.** Playwright's
+own `headless: true` does not load an MV3 extension at all: no content script, no
+service worker. Chromium's `--headless=new` does, which is what this flag passes.
+Measured on the same build and the same page:
+
+| mode | content script | service worker |
+|---|---|---|
+| windowed, pushed off screen | injected | started |
+| `--headless=new` | injected | started |
+| Playwright `headless: true` | absent | absent |
+
+All 39 gates pass either way, pixel assertions included, so the flag costs
+nothing and buys a run with no window and no stolen focus.
+
+The screenshots in this README are generated, not collected:
+
+```bash
+node scratchpad/harness/store-shots-fixture.mjs   # writes to scratchpad/harness/readme/
+```
+
+Every image is checked for the thing it is supposed to show before it counts as
+taken, so a redesign that empties a panel fails the run instead of shipping a
+picture of nothing.
 
 ## Related projects
 

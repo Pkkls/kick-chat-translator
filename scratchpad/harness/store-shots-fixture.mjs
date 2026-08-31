@@ -56,7 +56,7 @@ const CONVERSATION = [
   ['pixel_raton', 'yo creo que en media hora mas o menos'],
   ['calcetin_azul', 'me encanta este mapa es mi favorito'],
   ['nubecita77', 'no me lo puedo creer otra vez lo mismo'],
-  ['ventana_rota', 'la ultima ronda ha estado muy reninda'],
+  ['ventana_rota', 'la ultima ronda ha estado muy renida'],
   ['calcetin_azul', 'me tengo que ir pero vuelvo luego'],
   ['pixel_raton', 'suerte con el torneo de esta noche'],
   ['tortuga_veloz', 'que configuracion usas para el raton'],
@@ -70,9 +70,9 @@ const TRADUCTIONS = new Map([
   // l'apercu rendait la phrase anglaise telle quelle et la capture montrait la
   // fonctionnalite en train de ne rien faire.
   ['thanks for the stream, see you tomorrow', 'gracias por el stream, nos vemos manana'],
-  ['la ultima ronda ha estado muy reninda', 'that last round was really close'],
+  ['la ultima ronda ha estado muy renida', 'that last round was really close'],
   ['me tengo que ir pero vuelvo luego', 'I have to go, but I will be back later'],
-  ['suerte con el torneo de esta noche', 'good luck with tonight is tournament'],
+  ['suerte con el torneo de esta noche', 'good luck in the tournament tonight'],
   ['que configuracion usas para el raton', 'what settings do you use for your mouse'],
   ['buenas noches a todos que tal va la cosa', 'good evening everyone, how is it going'],
   ['esa jugada ha sido increible de verdad', 'that play was genuinely incredible'],
@@ -213,6 +213,8 @@ await page.evaluate(() => {
 await page.waitForTimeout(600);
 
 const notes = [];
+/** Constats faits pendant la prise, verses dans `fails` plus bas. */
+const failsAlign = [];
 
 /** Prend une image et verifie qu'elle montre son sujet, sinon elle ne compte pas. */
 async function prendre(nom, sujet, cible = page) {
@@ -221,10 +223,104 @@ async function prendre(nom, sujet, cible = page) {
   notes.push({ nom, montre: !!montre });
 }
 
+/**
+ * Les images du README, qui ne sont pas les memes que celles du store.
+ *
+ * Le store impose 1280x800 et la page fabriquee y est aux trois quarts un
+ * rectangle noir : c'est la zone video, et elle ne montre rien. Acceptable pour
+ * une fiche, ou l'image est cliquee et agrandie ; inutilisable dans un README ou
+ * la meme image est reduite a la largeur d'une colonne de texte et ou le produit
+ * devient illisible.
+ *
+ * Le cadre est donc DERIVE de la page au lieu d'etre un rectangle ecrit ici.
+ * Des nombres fixes survivraient a un changement de mise en page en cadrant a
+ * cote sans que rien ne rougisse, ce qui est exactement la panne que le controle
+ * "montre bien son sujet" existe pour attraper.
+ */
+const OUT_README = path.join(HERE, 'readme');
+fs.mkdirSync(OUT_README, { recursive: true });
+
+/** Le rectangle qu'occupent reellement des elements, en un seul cadre. */
+async function cadreDe(p, selecteurs) {
+  const c = await p.evaluate((sels) => {
+    const boites = sels
+      .map((s) => document.querySelector(s))
+      .filter(Boolean)
+      .map((e) => e.getBoundingClientRect())
+      .filter((b) => b.width > 1 && b.height > 1);
+    if (boites.length === 0) return null;
+    const gauche = Math.min(...boites.map((b) => b.left));
+    const haut = Math.min(...boites.map((b) => b.top));
+    const droite = Math.max(...boites.map((b) => b.right));
+    const bas = Math.max(...boites.map((b) => b.bottom));
+    return { gauche, haut, droite, bas, vl: window.innerWidth, vh: window.innerHeight };
+  }, selecteurs);
+  if (!c) return null;
+  const marge = 10;
+  const x = Math.max(0, Math.floor(c.gauche - marge));
+  const y = Math.max(0, Math.floor(c.haut - marge));
+  return {
+    x,
+    y,
+    width: Math.min(c.vl - x, Math.ceil(c.droite - c.gauche + marge * 2)),
+    height: Math.min(c.vh - y, Math.ceil(c.bas - c.haut + marge * 2)),
+  };
+}
+
+async function prendreReadme(nom, selecteurs, sujet) {
+  const clip = await cadreDe(page, selecteurs);
+  const montre = clip !== null && (await page.evaluate(sujet));
+  if (clip) await page.screenshot({ path: path.join(OUT_README, `${nom}.png`), clip });
+  notes.push({ nom, montre: !!montre, readme: true, clip });
+}
+
 // 01 : le chat qui fait son travail. Verifie en comptant les traductions
 // reellement posees, pas en supposant qu'elles sont la.
 await prendre(
   '01-chat-traduit',
+  () => document.querySelectorAll('.kt-translation, .kt-translation-inline, .kt-translation-replace').length >= 6,
+);
+
+// Une rangee coupee en deux sur le bord haut d'une image se lit comme un defaut
+// de rendu, pas comme un chat defile.
+//
+// Premiere tentative, et pourquoi elle ne pouvait pas marcher : ajuster
+// `scrollTop`. Mesure, `scrollable: false`, `scrollTop: 0`, rangee toujours
+// coupee. La liste est en `justify-content: flex-end`, et un contenu qui deborde
+// par le DEBUT d'un conteneur flex n'est pas atteignable par le defilement. Il
+// n'y a rien a faire defiler ; il y a une rangee que le conteneur ne peut pas
+// montrer.
+//
+// Donc les rangees que le cadre coupe sont retirees, pas repositionnees. C'est
+// un salon fabrique : une conversation plus courte reste une conversation, et ce
+// que l'image montre du produit ne change pas. La boucle est derivee du DOM,
+// donc elle suit une mise en page qui bouge.
+const alignement = await page.evaluate(() => {
+  const l = document.querySelector('#channel-chatroom [data-which="messages"]');
+  if (!l) return { absent: true };
+  const depassante = () => {
+    const haut = l.getBoundingClientRect().top;
+    return [...l.querySelectorAll('[data-index]')].find((r) => r.getBoundingClientRect().top < haut - 1);
+  };
+  let retirees = 0;
+  let r;
+  // Un plafond, sinon une mise en page cassee viderait le chat en silence et
+  // l'image partirait vide en passant le controle du sujet de justesse.
+  while ((r = depassante()) && retirees < 5) {
+    r.remove();
+    retirees += 1;
+  }
+  return { retirees, reste: depassante() ? 1 : 0, rangees: l.querySelectorAll('[data-index]').length };
+});
+await page.waitForTimeout(300);
+console.log(`alignement       ${alignement.retirees} rangee(s) retiree(s), ${alignement.rangees} restantes, ${alignement.reste} encore coupee(s)`);
+if (alignement.reste) failsAlign.push('une rangee reste coupee en haut du cadre du README');
+
+// Le meme instant, cadre pour le README : la barre et la liste de messages, sans
+// la zone video vide qui occupe les trois quarts de l'image du store.
+await prendreReadme(
+  'chat',
+  ['#kt-floating-bar', '#channel-chatroom [data-which="messages"]'],
   () => document.querySelectorAll('.kt-translation, .kt-translation-inline, .kt-translation-replace').length >= 6,
 );
 
@@ -236,6 +332,10 @@ await prendre(
 await page.evaluate(() => document.querySelector('#kt-floating-bar .kt-float-lang')?.click());
 await page.waitForTimeout(900);
 await prendre('02-langues', () => {
+  const l = document.querySelector('.kt-lang-panel, .kt-chip-menu');
+  return !!l && l.querySelectorAll('.kt-lang-row, .kt-chip-row').length > 10;
+});
+await prendreReadme('languages', ['.kt-lang-panel', '.kt-chip-menu'], () => {
   const l = document.querySelector('.kt-lang-panel, .kt-chip-menu');
   return !!l && l.querySelectorAll('.kt-lang-row, .kt-chip-row').length > 10;
 });
@@ -251,6 +351,24 @@ await prendre('03-composition', () => {
   const p = document.querySelector('.kt-compose');
   return !!p && !p.hasAttribute('hidden') && (p.textContent ?? '').trim().length > 3;
 });
+
+// Pour le README, le compositeur et son apercu seulement : c'est la ou se passe
+// la chose, et la liste de messages au-dessus la noierait.
+await prendreReadme(
+  'compose',
+  [
+    // L'avant-derniere rangee du chat plutot qu'une marge en pixels : le cadre
+    // reste derive du DOM et il donne son contexte a l'apercu, qui seul ne
+    // montrait qu'une boite de saisie coupee en haut.
+    '#channel-chatroom [data-which="messages"] > div:nth-last-child(2)',
+    '.kt-compose',
+    '#channel-chatroom [contenteditable="true"]',
+  ],
+  () => {
+    const p = document.querySelector('.kt-compose');
+    return !!p && !p.hasAttribute('hidden') && (p.textContent ?? '').trim().length > 3;
+  },
+);
 
 // 04 et 05 : des pages de l'extension, aucun salon en jeu.
 const sw = ctx.serviceWorkers()[0] ?? (await ctx.waitForEvent('serviceworker', { timeout: 20000 }));
@@ -271,6 +389,11 @@ await pop.goto(`chrome-extension://${extId}/src/popup/index.html`);
 await pop.waitForTimeout(2500);
 const popOk = await pop.evaluate(() => document.querySelectorAll('select, button').length > 2);
 const brut = await pop.screenshot();
+// Le popup a sa taille reelle pour le README : le cadre 1280x800 ci-dessous
+// existe pour le store, qui impose cette dimension, et il noierait le popup dans
+// une page reduite a la largeur d'une colonne de texte.
+fs.writeFileSync(path.join(OUT_README, 'popup.png'), brut);
+notes.push({ nom: 'popup', montre: popOk, readme: true, clip: { natif: true } });
 await pop.close();
 
 const cadre = await ctx.newPage();
@@ -290,7 +413,7 @@ await cadre.close();
 await ctx.close();
 fs.rmSync(profile, { recursive: true, force: true });
 
-const fails = [];
+const fails = [...failsAlign];
 /** Largeur et hauteur lues dans l'en-tete PNG, sans dependance. */
 function dimensions(fichier) {
   const b = fs.readFileSync(fichier);
@@ -298,21 +421,34 @@ function dimensions(fichier) {
 }
 
 for (const n of notes) {
-  const f = path.join(OUT, `${n.nom}.png`);
+  const f = path.join(n.readme ? OUT_README : OUT, `${n.nom}.png`);
   const octets = fs.existsSync(f) ? fs.statSync(f).size : 0;
   const [l, h] = octets ? dimensions(f) : [0, 0];
   console.log(
-    `${n.nom.padEnd(18)} ${String(l).padStart(4)}x${String(h).padEnd(4)} ` +
+    `${(n.readme ? 'readme/' + n.nom : n.nom).padEnd(20)} ${String(l).padStart(4)}x${String(h).padEnd(4)} ` +
       `${String(Math.round(octets / 1024)).padStart(4)}Ko  sujet visible: ${n.montre}`,
   );
-  if (octets < 8000) fails.push(`${n.nom} pese ${octets} octets : l image est vide ou n a pas ete ecrite`);
-  if (!(l === 1280 && h === 800))
+  const plancher = n.readme ? 3000 : 8000;
+  if (octets < plancher) fails.push(`${n.nom} pese ${octets} octets : l image est vide ou n a pas ete ecrite`);
+  if (n.readme) {
+    // Le cadre est derive de la page, donc sa taille varie avec la mise en page.
+    // Ce qui doit rester vrai est qu'il cadre quelque chose : une image large de
+    // toute la fenetre veut dire que le selecteur n'a rien trouve et que le cadre
+    // est retombe sur le viewport entier.
+    if (n.clip === null) fails.push(`${n.nom} : aucun element trouve, rien a cadrer`);
+    else if (l >= 1200) fails.push(`${n.nom} fait ${l}px de large : le cadre couvre toute la fenetre, il ne cadre rien`);
+    else if (l < 200 || h < 100) fails.push(`${n.nom} fait ${l}x${h} : trop petit pour montrer quoi que ce soit`);
+  } else if (!(l === 1280 && h === 800)) {
     fails.push(
       `${n.nom} fait ${l}x${h} : le Chrome Web Store veut exactement 1280x800 ou 640x400 et rejette le reste`,
     );
+  }
   if (!n.montre) fails.push(`${n.nom} ne montre pas son sujet`);
 }
-if (notes.length !== 5) fails.push(`${notes.length} images sur 5`);
+const nStore = notes.filter((n) => !n.readme).length;
+const nReadme = notes.filter((n) => n.readme).length;
+if (nStore !== 5) fails.push(`${nStore} images de store sur 5`);
+if (nReadme !== 4) fails.push(`${nReadme} images de README sur 4`);
 
 console.log(`\n${OUT}`);
 if (fails.length) {
