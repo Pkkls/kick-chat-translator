@@ -323,6 +323,59 @@ reads dist/, so it serialises behind any build. D touches no code.
   Kick page, +0.68 percent against the reference where the pass had been sitting
   at +0.35, and the build is what caught it. Moved into a `//` comment, which
   the minifier erases, and the notes are back to the length of their neighbours.
+- [x] **CI had been red for fifteen days and forty-eight runs, and the defect it
+  named was real.** Found by rendering the README to look at it: the badge at the
+  top said `failing`. Last green run 2026-08-16. Nothing surfaced it because the
+  39 offline gates are green, the unit tests are green on this machine, and the
+  badge lives on a page nobody reopens.
+  **The two failing assertions were not flakes.** `localLangName` promised in its
+  own comment to fall back to the native name when the engine answers nothing,
+  and did not: `Intl.DisplayNames` defaults to `fallback: 'code'`, which echoes
+  the code back rather than answering nothing. Measured, `of('xx')` returns
+  `"xx"`, truthy, so `|| fallback` never ran and a reader got `xx` in a language
+  row. `of('zzzz')` throws instead, being malformed rather than unknown, and only
+  on some runtimes: the test covered only that path, so it passed here and failed
+  on CI while the defect neither described went unexercised.
+  **Then the fix did not take, because there were three implementations.**
+  `langChip.ts` carried the same defect; `langMenu.ts` avoided it with an
+  `n !== code` guard written against the symptom, which also drops a legitimate
+  name equal to its code. Both delegate to `shared/languages.ts` now. Green on
+  two consecutive runs after the fix.
+- [x] **The gates run without opening a window.** The repository had concluded
+  headless was impossible for an MV3 extension. True of Playwright's
+  `headless: true`, false of Chromium's `--headless=new`. Measured on one build
+  and one page: windowed-off-screen and `--headless=new` both inject the content
+  script and start the worker, `headless: true` does neither. `run-gates.mjs
+  --headless` sets `KT_HEADLESS=1` and `playwright.mjs` reads it once for all 39
+  harnesses, so it is one edit and not thirty-nine; a `channel` option still
+  means the machine's Chrome and is left alone. All 39 pass either way, pixel
+  assertions included, and with no window there is no contention: **50.1s at
+  `--jobs 8` against 83.6s at `--jobs 3` headed**. The probe asserts the user
+  agent says `HeadlessChrome` rather than trusting the flag it passed, and its
+  first version ran the windowed control through the shim under test, so all four
+  rows agreed and the control witnessed nothing.
+- [x] **The README shows the product, and nobody real is in it.** It carried one
+  capture of a live Japanese channel with four real chatters' handles and their
+  messages, plus two images hosted outside the repository: one whose alt text
+  described a chat while showing the popup, one showing real usernames beside a
+  status bar from a version that no longer exists. All three are gone from the
+  four README files, replaced by four generated from the fabricated room the
+  screenshot harness was written for. Frames are derived from the DOM rather than
+  written as pixel rectangles, and each image is checked for its own subject
+  before it counts. Five release-note sections moved out to the CHANGELOG they
+  duplicated, which takes Install from line 156 to line 80, and a Tests section
+  now documents the gates and why the obvious headless flag is the wrong one.
+  A row cut in half at a frame's top edge took a real diagnosis: `scrollTop` did
+  nothing because the list is `justify-content: flex-end` and content overflowing
+  the START of a flex container is unreachable by scrolling, so the rows the
+  frame cannot show are removed instead.
+- [ ] **The three localised READMEs are behind, in two ways that differ.** Their
+  images are fixed, so no real person's handle is on any of them any more. What
+  is not fixed: their release-note sections stop at 2.8.1 while the product is at
+  2.10.0, and the alt strings written for the new images were written without a
+  native reader, in es, pt-BR and ja. That is the same class as the store listing
+  item below, and it wants the same answer rather than more of me guessing.
+
 - [x] **The transliteration guard is rescued, measured against the real
   provider, and wired.** 427 lines that existed on one disk, untracked since
   2026-06-08 in a stale second clone, addressing a hole this branch does not

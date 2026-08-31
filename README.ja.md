@@ -12,12 +12,10 @@
 Kick.com のチャットをリアルタイムで翻訳します。ライブ配信でも VOD のアーカイブでも同じように動作します。
 配信を開くと、外国語のメッセージの下に翻訳が表示されます。設定は不要です。
 
-<img width="354" height="593" alt="image" src="https://github.com/user-attachments/assets/4f7ae414-6c2a-4ee5-b191-6af9e29d46ec" />
 
 
 **Brave・Chrome・Edge・Firefox** で動作し、7TV のエモートにも対応しています。
 
-![日本語チャットの翻訳例](screenshots/japanese-chat.jpg)
 
 **設定ゼロ。** 受信したチャットは*あなたのブラウザの*言語に翻訳されます。入力すると、あなたのメッセージを
 *配信チャンネルの*言語（Kick から自動判定）に直したプレビューがチャット欄の上に表示されます。それをクリック
@@ -28,6 +26,16 @@ Kick.com のチャットをリアルタイムで翻訳します。ライブ配�
 （ブラジルポルトガル語・繁体字中国語）も含みます。
 
 ---
+
+| 流れながら翻訳されるチャット | ツールバーのポップアップ |
+|---|---|
+| <img src="screenshots/chat.png" alt="Kick のチャット。スペイン語の各メッセージの下に英訳が表示され、リストの上に拡張機能のステータスバーがある" width="360"> | <img src="screenshots/popup.png" alt="拡張機能のポップアップ。翻訳先の言語、表示方法、翻訳エンジンの一覧、その日の件数" width="360"> |
+
+| 送信する前の、自分が書いた文 | 言語を選ぶ、または任せる |
+|---|---|
+| <img src="screenshots/compose.png" alt="入力欄の英語のメッセージと、その上に表示される、送信されるスペイン語のプレビュー" width="360"> | <img src="screenshots/languages.png" alt="旗と言語名のグリッド。チャンネルの言語が先頭にある" width="360"> |
+
+<sub><code>scratchpad/harness/store-shots-fixture.mjs</code> が公開ビルドから撮影したもので、チャットルームはこのリポジトリが作った架空のものです。ユーザー名もメッセージも架空で、翻訳はローカルで返され、マシンの外には何も出ません。実在の人物のユーザー名はこのページに載りません。</sub>
 
 ## [2.8.1](https://github.com/Pkkls/kick-chat-translator/releases/latest) の新機能
 
@@ -86,7 +94,6 @@ Kick.com のチャットをリアルタイムで翻訳します。ライブ配�
 **[➥ Firefox · Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
 ワンクリックでインストール。Kick の配信を開いて、チャット上部に緑のバーが出れば動作中です。
-<img width="347" height="193" alt="image" src="https://github.com/user-attachments/assets/3973b7a0-4767-42a2-974c-7f94b2534595" />
 
 <details>
 <summary>手動でインストールする（展開済み / 開発ビルド）</summary>

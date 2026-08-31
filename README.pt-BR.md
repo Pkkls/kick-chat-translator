@@ -12,12 +12,10 @@
 Tradução em tempo real do chat da Kick.com, tanto em lives quanto em replays de VOD. Você abre uma
 transmissão e qualquer mensagem em outro idioma aparece traduzida logo abaixo. Sem nada para configurar.
 
-<img width="354" height="593" alt="image" src="https://github.com/user-attachments/assets/4f7ae414-6c2a-4ee5-b191-6af9e29d46ec" />
 
 
 Funciona no **Brave, Chrome, Edge e Firefox**, e entende os emotes do 7TV.
 
-![Chat japonês traduzido para inglês](screenshots/japanese-chat.jpg)
 
 **Configuração zero.** O chat recebido é traduzido para o idioma do *seu* navegador. Quando você digita, uma
 prévia mostra a sua mensagem no idioma *do canal* (detectado automaticamente a partir da Kick) logo acima da
@@ -28,6 +26,16 @@ sozinhas, então você nunca precisa escolher um idioma. (Ainda assim, dá para 
 regionais (português do Brasil, chinês tradicional).
 
 ---
+
+| O chat, traduzido enquanto rola | O popup da barra |
+|---|---|
+| <img src="screenshots/chat.png" alt="Chat da Kick em que cada mensagem em espanhol traz embaixo a traducao em ingles, com a barra de status da extensao acima da lista" width="360"> | <img src="screenshots/popup.png" alt="O popup da extensao com idioma de destino, modo de exibicao, lista de provedores e as contagens do dia" width="360"> |
+
+| O que voce digita, antes de enviar | Escolha um idioma, ou deixe ele escolher |
+|---|---|
+| <img src="screenshots/compose.png" alt="A caixa de escrita com uma mensagem em ingles e, acima, a previa da versao em espanhol que sera enviada" width="360"> | <img src="screenshots/languages.png" alt="Uma grade de idiomas com bandeiras e nomes, com o idioma do canal em primeiro" width="360"> |
+
+<sub>Feitas a partir da build publicada por <code>scratchpad/harness/store-shots-fixture.mjs</code>, numa sala de chat que este repositorio inventa. Os nomes e as mensagens sao inventados, as traducoes sao respondidas localmente e nada sai da maquina, entao o nome de nenhuma pessoa real vai parar nesta pagina.</sub>
 
 ## Novidades da [2.8.1](https://github.com/Pkkls/kick-chat-translator/releases/latest)
 
@@ -90,7 +98,6 @@ Lista completa em [CHANGELOG.md](CHANGELOG.md).
 **[➥ Firefox · Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
 Um clique para instalar. Abra qualquer live da Kick: uma barra verde no topo do chat indica que está funcionando.
-<img width="347" height="193" alt="image" src="https://github.com/user-attachments/assets/3973b7a0-4767-42a2-974c-7f94b2534595" />
 
 <details>
 <summary>Ou instale manualmente (descompactada / build de desenvolvimento)</summary>

@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-31T20:41:25.090Z",
+  "genere": "2026-08-31T21:19:16.602Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase. La version commitee decrit l'etat d'AVANT le commit qui la porte, puisque la fin de passe genere puis commite : git.head y pointe le commit precedent et git.arbrePropre y est faux. Relancer `node .agent/state.mjs` avant de lire, ce que le prompt demande deja en premier.",
   "git": {
     "remotesEnDouble": [],
     "branche": "master",
-    "head": "646612441e8f4e363e3ba5e444b90382ec2d78b0",
-    "sujet": "Record the 2.10.0 release, verified against what GitHub actually serves",
+    "head": "420074623ebd3e9635a371dc9deb426001b3240f",
+    "sujet": "Run the gates without a window, and show the product on the front page",
     "arbrePropre": false,
-    "fichiersModifies": 4,
+    "fichiersModifies": 5,
     "dernierTag": "v2.10.0",
-    "decrit": "v2.10.0-1-g6466124",
+    "decrit": "v2.10.0-4-g4200746",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -18,7 +18,7 @@
     "ecarts": {
       "devcopy": {
         "derriere": 0,
-        "devant": 63,
+        "devant": 66,
         "aJour": false
       },
       "origin": {
@@ -224,13 +224,14 @@
       "poids-notes",
       "audit-fiche"
     ],
-    "harnaisSurDisque": 47,
+    "harnaisSurDisque": 49,
     "orphelins": [
       "a11y",
       "bar-panel-mesure",
       "bar-select",
       "compose-kick-live",
       "flag-render",
+      "headless-probe",
       "kick-actions",
       "kick-dom-recon",
       "lang-menu-live",
@@ -243,6 +244,7 @@
       "live-recycle",
       "metrics-offline",
       "probe-row-space",
+      "readme-rendu",
       "session-check",
       "shlyokavitsa",
       "shlyokavitsa-bout-en-bout",
@@ -253,7 +255,7 @@
       "translit-reel",
       "translit-source"
     ],
-    "nbOrphelins": 26,
+    "nbOrphelins": 28,
     "note": "Les portes live ouvrent un navigateur sur kick.com et ne sont dans aucun runner. Un orphelin n est pas forcement un defaut ; un orphelin qui couvre du code livre en est un."
   },
   "releaseGithub": {
@@ -311,7 +313,7 @@
       "**Store submissions.** The 2.10.0 archives exist and are published on"
     ],
     "nbBloques": 6,
-    "nbOuverts": 4,
-    "nbFaits": 96
+    "nbOuverts": 5,
+    "nbFaits": 99
   }
 }
