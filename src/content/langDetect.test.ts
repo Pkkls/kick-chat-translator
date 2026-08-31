@@ -138,6 +138,27 @@ describe('l arabizi dans la detection ordinaire', () => {
   });
 });
 
+describe('la table de mots courts porte jusqu a 30 caracteres, sous veto de franc', () => {
+  // Le gain. Sur ces trois lignes de 26 a 28 caracteres franc se trompe et la
+  // table a raison ; elles etaient hors de sa portee a 20. Ramener
+  // SHORT_TEXT_MAX a 20 rend la main a franc et elles redeviennent it, fr, nl.
+  it('lit une ligne de 21 a 30 caracteres portant un mot de la table', () => {
+    expect(detectLanguage('pourquoi il fait ca serieux')).toBe('fr');
+    expect(detectLanguage('grazie mille per lo stream')).toBe('it');
+    expect(detectLanguage('evet ben de oyle dusunuyorum')).toBe('tr');
+  });
+
+  // Le degat que la borne de longueur protegeait, et qu'elle protegeait mal :
+  // une ligne anglaise portant un seul mot de la table. Le vote a l'unanimite ne
+  // peut pas la voir, l'anglais n'etant pas dans la table. Retirer le veto rend
+  // `es` sur celle-ci, et la rend comme une reponse SURE, donc comme `sl` envoye
+  // au moteur.
+  it('ne vole pas une ligne anglaise a cause d un seul mot etranger', () => {
+    expect(detectLanguage('no mucho love for this map lol')).toBe('en');
+    expect(confidentLanguage('no mucho love for this map lol')).toBeUndefined();
+  });
+});
+
 describe('les langues romanisees dans la detection ordinaire', () => {
   // La fonction a sa propre batterie. Ce bloc teste la REPARATION, sans quoi
   // retirer le cablage ne casserait rien, et une regle qu on peut retirer sans

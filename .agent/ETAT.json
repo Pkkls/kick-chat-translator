@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-31T16:47:08.886Z",
+  "genere": "2026-08-31T17:05:36.921Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/metriques-hors-ligne",
-    "head": "27f41edaf8c6df858f54b657e7088fcf8769ceee",
-    "sujet": "Detect Russian, Greek and Japanese typed on a Latin keyboard",
-    "arbrePropre": true,
-    "fichiersModifies": 0,
+    "head": "66438b592b9246800e5f3d202325ebef473d7223",
+    "sujet": "Settle the platform-text question without a corpus",
+    "arbrePropre": false,
+    "fichiersModifies": 4,
     "dernierTag": "v2.9.3",
-    "decrit": "v2.9.3-14-g27f41ed",
+    "decrit": "v2.9.3-15-g66438b5",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -266,6 +266,6 @@
     ],
     "nbBloques": 3,
     "nbOuverts": 2,
-    "nbFaits": 73
+    "nbFaits": 76
   }
 }

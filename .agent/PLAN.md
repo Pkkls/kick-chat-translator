@@ -46,6 +46,70 @@ reads dist/, so it serialises behind any build. D touches no code.
 ## Open
 
 
+- [x] **Platform-injected text is settled without a corpus.** The category was
+  blocked on a live chat capture. Kick's own i18n payload, inlined in the page
+  it serves, answers most of it. The notices live under two namespaces:
+  `EventBanner` carries `"<username/> has subscribed for <count/> {monthCount,
+  plural, ...}"` and the gift and host equivalents, `ChatroomEvents` carries
+  `"<user/> has subscribed! They have been subscribed for a total of
+  <months/>"`. They are ICU strings with plurals and substitution tags, which
+  means they render in the viewer's interface language rather than the
+  channel's. Running the real strings through the pipeline settles the damage:
+  an English notice is detected `en`, so it equals an English target and is not
+  translated, and against any other target `ignoreEnglish` drops it; a French
+  notice is detected `fr` and equals a French target. Both common
+  configurations neutralise the notice with no rule at all. The residue is a
+  Spanish notice detected Portuguese and therefore translated, which is the
+  short-text detection weakness already measured elsewhere, not a category of
+  its own. Two corrections on the way there: a first reading claimed
+  `kick.com/locales/en.json` was a 349 KB lexicon, when it returns the SPA
+  shell and the keys found in it were the page's own inlined payload; and a
+  search for hard-coded notice sentences in the 66 chunks found none, which was
+  the clue that they are localised rather than the absence of evidence it first
+  looked like. What stays open is narrow: whether these rows carry `data-index`
+  at all. `EventBanner` reads like a banner outside the message list and
+  `ChatroomEvents` like a row inside it. Only a real DOM settles it, and given
+  the measurement above the answer changes little.
+
+- [x] **The short-text residue has its damage measured, and two repairs were
+  measured and thrown away.** 51 short chat lines in 14 languages through the
+  real detection: 28 right, 10 silent, 13 confidently wrong. The wrong answers
+  are the interesting half, because `prepare()` kills a line on `detectLanguage`
+  alone through `isSameLanguageAsTarget`, which does not require the wrong
+  answer to be English, only that it equals the reader's target. Over the 663
+  (message, target) pairs that need a translation, 11 are silently skipped as
+  "already in your language", 1.7 percent, and 11 of the 51 messages are lost at
+  at least one target. All 11 are on non-English targets, fr 4, pt 3, de 2, es 1,
+  id 1, so this is a second silent-loss path beside the one `ignoreEnglish`
+  owns. **Repair A, only a table answer may skip a line**: takes the 11 losses to
+  0 and adds 37 provider calls over the same pairs, and only 2 of the 51 messages
+  have a table answer at all, so in the configuration that matters (a Spanish
+  reader on a Spanish stream) it sends every line to an endpoint that soft-bans
+  per IP. Rejected on the same ground as the coalescing floor. **Repair B, a
+  length floor under the guess**: 11 losses at 15 characters, 6 at 20, 3 at 22,
+  0 at 30, against 0, 6, 10 then 23 correct skips lost out of 26. No knee, the
+  same shape as tinyld's confidence bar. Rejected. What ships instead is the
+  table reach below.
+
+- [x] **The short-word table reaches 30 characters, under a veto from franc.**
+  `SHORT_TEXT_MAX` was 20 and eight of the thirteen wrong answers sat between 21
+  and 26 characters, out of the table's reach. Measured at 20, 25, 30, 35 and 40
+  on two benches of the same lengths: 13 foreign lines of 23 to 31 characters
+  carrying a table word, 10 read right at 20, 12 at 30, 13 at 35; and 8 English
+  chat lines also carrying a table word, 2 wrong at 20, 3 at 30, **8 at 35**.
+  Length does not separate the two, it lets them in together, which is the same
+  answer repair B gave. What separates them is franc: it answers `eng` on 6 of
+  the 8 English lines and on none of the 13 foreign ones, so an explicit `eng`
+  now cancels the table's vote. `und` does not cancel it, and that is the point:
+  `und` is franc's answer on short text, the one the table exists to replace.
+  Net at 30 with the veto: 12 of 13 foreign lines read right, English damage
+  stays at 2 of 8, both of which franc was already getting wrong on its own.
+  Cost 51 bytes in the shipped bundle and one extra franc call on lines that
+  touch the table, 23.5 to 38.9 microseconds per message over seven short lines.
+  Two witnesses: putting the constant back to 20 turns three assertions red, and
+  deleting the veto makes an English line detect as Spanish and hands `es` to
+  the engine as a confident source.
+
 - [ ] **The install rate is 40.5 percent and nothing is tuned against it.**
   Eighty-five installs for two hundred and ten first visits, over eight months.
   Fifty-eight percent of arrivals come from organic search, thirty-one direct,
