@@ -30,7 +30,39 @@ pick a language. (You still can, in settings.)
 
 ---
 
-## What's new in [2.9.2](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+## What's new in [2.10.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+
+**A release about reading the language right, because getting it wrong costs a message.** A line detected as
+your own language is skipped as "already in your language", in silence, so a wrong answer is not a wrong
+flag: it is a message you never see.
+
+**Persian was read as Arabic, Mongolian and Ukrainian and Bulgarian as Russian, all with confidence.** A
+writing system is not a language, and the code treated it as one. Twelve Persian lines of twelve, twenty
+Mongolian of twenty. The engine was told the wrong source language, the flag was wrong on every line, and a
+reader of the language it guessed lost the message entirely. Each is now separated by the letters that
+actually differ, measured on lines written after the rule rather than the ones that built it.
+
+**One emoji could erase a line's writing system**, and no chat is emoji-free. The script check counted every
+non-ASCII character, and an emoji feeds no script while inflating the count, so "да" plus two emoji came out
+as nothing at all and Arabic plus four emoji came out as Persian.
+
+**Four writing systems typed on a Latin keyboard are recognised now**: arabizi, romanised Russian, Greek and
+Japanese, and Bulgarian in Latin letters. All four were being read as some Latin language.
+
+**Written laughter has a dictionary.** 45 forms across nine writing systems, jajaja, kkkk, mdr, wkwk, 555,
+2333, ㅋㅋㅋ, хахаха. They are skipped before a translation is paid for, and the unambiguous ones say what
+language the line is in, which no detector manages at five characters.
+
+**Short greetings came back spelled out instead of translated.** bonjour aimed at Japanese returned the
+French syllables in katakana rather than the Japanese word. Ninety common expressions now have an answer
+that ships with the extension, so they are both correct and free.
+
+**Three controls were too small to hit**, the pause button, the settings gear and the retry arrow on every
+translated line, all under the 24 by 24 WCAG asks for.
+
+And the injected script is smaller than it was in 2.9.2, despite all of the above.
+
+## What's new in [2.9.2](https://github.com/Pkkls/kick-chat-translator/releases/tag/v2.9.2)
 
 **The bar's language panel showed six entries out of forty.** 1200px of list inside a panel 281px tall, so
 most of it was a scroll, and every row spent 17% of its width on an ISO code repeating what the flag and

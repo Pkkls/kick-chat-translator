@@ -7,6 +7,134 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.10.0] - 2026-08-31
+
+Two versions were tagged and never published, 2.9.3 and 2.9.4. Everything they
+carried is folded in here, so this entry covers everything since 2.9.2.
+
+Most of what follows is language detection. The reason it got a whole release is
+that a wrong answer there is not a wrong flag, it is a message the reader never
+sees: a line detected as the reader's own language is skipped as "already in
+your language", in silence.
+
+### Added
+
+- **Written laughter has a dictionary, by language, with its sources.** 45 forms
+  across nine writing systems: jajaja, jejeje and jsjsjs for Spanish, kkkk and
+  rsrs and huehue for Brazilian Portuguese, mdr and ptdr for French, asg for
+  Swedish, høhøhø for Danish, wkwk and wakaka for Indonesian, 555 for Thai, 2333
+  for Chinese, ｗｗｗ for Japanese, ㅋㅋㅋ, хахаха, ههههه, חחחח, 哈哈, हाहा. Laughter is
+  the most repeated thing in a chat and the hardest thing to detect, since a
+  detector is unreliable under about twenty characters and "kkkkk" is five. Each
+  form is skipped before a provider is called, and the ones that are unambiguous
+  also say which language the line is in. haha, lol and xd mark nothing, because
+  they are used everywhere.
+
+- **Keyboard smash is no longer translated.** asdasdasd came back as Portuguese,
+  zxcvbnm as Spanish, hjkhjkhjk as Dutch. The signal is the share of adjacent
+  letter pairs living on the same keyboard row, measured against 15 smashes and
+  33 real words picked as the worst case. The absence of vowels was tried first
+  and rejected: it also catches krk, prst, smrt and vlk, which are ordinary Czech
+  words. Held letters and stretched words are safe, so siiiiiii and NOOOOOO still
+  go through.
+
+- **Four writing systems typed on a Latin keyboard are recognised.** Arabizi,
+  the Arabic chat alphabet with its digits for the letters that have no Latin
+  shape. Russian, Greek and Japanese romanised. And Bulgarian in Latin letters,
+  the shlyokavitsa a Bulgarian chat writes daily. All four were being read as
+  some Latin language: romanised Russian came out Indonesian, Czech, Italian,
+  Swedish or Polish depending on the sentence, and shlyokavitsa came out
+  Romanian, Polish, Indonesian or Swedish. None of these is sent to the engine as
+  a source language, since announcing Cyrillic on Latin letters would make it
+  translate from a script that is not there.
+
+- **Short expressions that came back spelled instead of translated.** Every
+  engine answers a short Latin word aimed at a distant script by writing its
+  sounds down: bonjour to Japanese returned ボンジュール, the syllables of the
+  French word, where a translation says こんにちは. Measured on 90 pairs of a
+  common chat expression and a non-Latin target through the shipped provider, 18
+  came back as a phonetic spelling and 8 more as the wrong sense of a real word,
+  coucou read as the cuckoo bird in four target languages of five. Roughly ninety
+  common expressions now have an answer that ships with the extension, which also
+  means they cost no network call at all.
+
+- **Malay and Hebrew are identified.** Two of the 42 offered languages, and the
+  listing sells Hebrew in its right-to-left claim. They were translated all along
+  with the engine guessing; what is new is a correct source language and a
+  correct badge.
+
+### Fixed
+
+- **A batch told the engine one message's source language for all of them.**
+  Messages are grouped by target language and sent together. The joined request
+  borrowed the first message's fields, so a batch carrying a Japanese line and an
+  Arabic one went out declaring Japanese for both, and the engine translated the
+  Arabic line from the wrong language. Disagreeing hints now declare nothing.
+
+- **An emoji erased a line's writing system, and no chat is emoji-free.** The
+  check that reads Arabic, Cyrillic, Hangul, kana, Thai, Hebrew, Devanagari and
+  Han decided on a majority of every non-ASCII character, and an emoji is
+  non-ASCII while belonging to no script. "да" plus two emoji fell to no
+  majority and returned nothing; "رائع" plus four emoji fell the same way and the
+  fallback answered Persian on Arabic text. Only script-bearing characters count
+  now, and the four test languages hold through six emoji.
+
+- **Persian was declared Arabic, and declared it with confidence.** Twelve
+  Persian lines of twelve came out as Arabic, and came out through the path that
+  hands the engine a source language, so the engine translated from the wrong
+  language, the flag was wrong on every line, and an Arabic-reading viewer had
+  every Persian line skipped as already in their language. The Arabic script is
+  not a language: Persian adds six letters, Urdu adds seven more on top of
+  Persian. Persian 11 of 12 now, Arabic 12 of 12 with no false positive.
+
+- **Mongolian, Ukrainian and Bulgarian were declared Russian, with confidence.**
+  Same defect on another writing system, reported by a viewer testing a Mongolian
+  channel. Twenty Mongolian lines of twenty, eight Ukrainian of eight, twelve
+  Bulgarian of twelve. Mongolian is separated by two vowels Russian does not
+  have, Ukrainian takes its own code, and Bulgarian is separated by an absence,
+  since Russian writes ы, э and ё and Bulgarian writes none of the three.
+  Measured on lines written after the rules, and with no false positive on 44
+  Russian, Ukrainian and Mongolian lines held aside.
+
+- **A hostname was read as Japanese laughter.** www is laughter in Japanese, and
+  the vote is taken on tokens, so www.kick.com produced the tokens www, kick and
+  com and the first one voted alone. Three real hostnames of four went to the
+  engine declared Japanese. Half-width www stays laughter and marks nothing;
+  full-width ｗｗ takes the mark instead, since no hostname is written that way.
+
+- **xdxd was translated while every other repeated laughter was skipped.** The
+  pattern caught xd, xdd and xddd and missed the repeated syllable, where jaja,
+  haha, rsrs, huehue, lolol, hehe and hihi were all handled.
+
+- **Three controls were too small to hit.** The pause button was 26 by 18, the
+  settings gear 25 by 19, and the retry arrow on every translated line 10 by 15,
+  where WCAG 2.5.8 asks 24 by 24. Measured across ten window widths on the
+  shipped build. All three are 24 tall now and the bar keeps its height.
+
+- **Ordinary words were deleted before translation.** The pass that strips inline
+  emote names was eating iPhone, McDonald and PlayStation out of a message.
+
+- **The extension's own resources were reachable from a kick.com page.**
+
+- **The bar sets its own box model instead of borrowing the page's.**
+
+### Changed
+
+- **The short-word table holds the words a sentence contains, not greetings.** It
+  was hola, merci, danke, grazie, obrigado, which is what one writes thinking
+  about chat and not what an arbitrary message carries. Half of the lines
+  detection could not name were perfectly ordinary Portuguese and Turkish
+  carrying none of them. Structure words separate the Spanish and Portuguese
+  pairs that spelling distinguishes cleanly: nao against no, hoje against hoy,
+  agora against ahora. On a 176-line bench in 19 languages: 152 right to 157,
+  silences 11 to 8, silent losses 8 to 6, and not one extra provider call.
+
+- **1754 bytes of prose stopped travelling to every viewer.** The laughter
+  table's provenance notes were strings in the shipped script, 0.85 percent of
+  everything a reader downloads, about half of what that table costs. They are
+  test-only data now and the bundler drops them. The injected script is smaller
+  than the 2.9.2 reference despite everything above.
+
 ## [2.9.2] - 2026-08-30
 
 ### Fixed

@@ -176,4 +176,60 @@ describe('googleProvider per-message fallback', () => {
     expect(out).toHaveLength(N);
     for (const r of out) expect(r.translatedText).toBe('ok');
   });
+
+  describe('la langue source annoncee pour un lot', () => {
+    /** Rend une reponse valide et retient le `sl` recu. */
+    function fetchQuiRetientSl(vus: string[]) {
+      return vi.fn(async (url: string) => {
+        const u = new URL(String(url));
+        vus.push(u.searchParams.get('sl') ?? '(aucun)');
+        const q = u.searchParams.get('q') ?? '';
+        const lignes = q.split(String.fromCharCode(10));
+        return new Response(
+          JSON.stringify([
+            lignes.map((l, i) => [
+              'T:' + l + (i < lignes.length - 1 ? String.fromCharCode(10) : ''),
+              l,
+            ]),
+            null,
+            'es',
+          ]),
+          { status: 200 },
+        );
+      });
+    }
+
+    const req = (id: string, text: string, sourceLangHint?: string) => ({
+      messageId: id,
+      text,
+      targetLang: 'en',
+      sourceLangHint,
+    });
+
+    // Le coalesceur groupe par langue CIBLE et rien d'autre, donc un lot melange
+    // les sources. Le lot heritait de celle du premier message : mesure sur un
+    // chat multilingue, une requete portant une ligne japonaise et une ligne
+    // arabe partait avec sl=ja.
+    it('n annonce aucune source quand le lot en melange plusieurs', async () => {
+      const vus: string[] = [];
+      globalThis.fetch = fetchQuiRetientSl(vus) as unknown as typeof fetch;
+      await googleProvider.translateBatch!(
+        [req('1', 'konbanwa minasan', 'ja'), req('2', 'masa alkhayr', 'ar')],
+        {} as never,
+      );
+      expect(vus).toEqual(['auto']);
+    });
+
+    // Le temoin de la limite : un lot d une seule langue doit garder son
+    // indication, sinon "ne jamais rien annoncer" passerait le test ci-dessus.
+    it('garde la source quand tout le lot est dans la meme langue', async () => {
+      const vus: string[] = [];
+      globalThis.fetch = fetchQuiRetientSl(vus) as unknown as typeof fetch;
+      await googleProvider.translateBatch!(
+        [req('1', 'buenas noches', 'es'), req('2', 'hasta luego', 'es')],
+        {} as never,
+      );
+      expect(vus).toEqual(['es']);
+    });
+  });
 });

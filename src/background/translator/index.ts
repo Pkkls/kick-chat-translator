@@ -4,6 +4,7 @@ import { rootLogger } from '~/shared/logger';
 import { createMetrics } from '~/shared/metrics';
 import { decodeHtmlEntities } from '~/shared/decode';
 import { isDeeplPremium, routeForBudget } from '~/shared/langTiers';
+import { isTransliteration } from '~/shared/transliterationGuard';
 import { ConcurrencyQueue } from '../queue';
 import { googleProvider } from './google';
 import { deeplProvider } from './deepl';
@@ -175,6 +176,21 @@ export async function translateGroup(
   // call and a first choice that always answers look identical there.
   let depth = 0;
 
+  // A provider that spelled the input's sounds in the target's script answered
+  // successfully and answered nothing. The item stays unresolved so the next
+  // provider gets a turn, and the spelling is kept here so that all-providers-
+  // transliterate returns a bad translation rather than a failure.
+  //
+  // Its ceiling, measured, because this layer looks stronger than it is. It can
+  // only see Japanese: pure katakana out of Latin input is visible, while a
+  // phonetic spelling in hangul, hanzi, Cyrillic or Arabic looks exactly like a
+  // word, so 14 of the 18 transliterations found on 90 pairs are invisible to it.
+  // On 50 short Latin lines outside the override table it fires 3 times and one
+  // of those is repaired by the next provider; the other two are `clutch` and
+  // `sheesh`, whose katakana is the correct Japanese. The cost of a false
+  // positive is one round trip and never a worse answer.
+  const translitFallback = new Map<number, TranslationOutcome>();
+
   for (const id of eligibleOrder(settings, ctx, reqs[0]?.targetLang)) {
     if (unresolved.size === 0) break;
     const provider = PROVIDERS[id];
@@ -196,7 +212,12 @@ export async function translateGroup(
         if (__KT_METRICS__) metrics.count(`chain.depth.${depth}`);
         out.forEach((r, k) => {
           const idx = indices[k]!;
-          results[idx] = ok(reqs[idx]!, id, r.translatedText, r.detectedLang);
+          const outcome = ok(reqs[idx]!, id, r.translatedText, r.detectedLang);
+          if (isTransliteration(reqs[idx]!.text, r.translatedText, reqs[idx]!.targetLang)) {
+            if (!translitFallback.has(idx)) translitFallback.set(idx, outcome);
+            return;
+          }
+          results[idx] = outcome;
           unresolved.delete(idx);
         });
         continue;
@@ -220,9 +241,16 @@ export async function translateGroup(
             const runItem = (): ReturnType<typeof provider.translate> => provider.translate(reqs[idx]!, ctx);
             const r = __KT_METRICS__ ? await metrics.measure(`provider.${id}.item`, runItem) : await runItem();
             if (!r.translatedText.trim()) throw new ProviderError(id, 'empty', 'empty');
-            results[idx] = ok(reqs[idx]!, id, r.translatedText, r.detectedLang);
-            unresolved.delete(idx);
+            // Marked before the guard: the provider did answer, so its health is
+            // not in question, only the usefulness of what it said.
             anySuccess = true;
+            const outcome = ok(reqs[idx]!, id, r.translatedText, r.detectedLang);
+            if (isTransliteration(reqs[idx]!.text, r.translatedText, reqs[idx]!.targetLang)) {
+              if (!translitFallback.has(idx)) translitFallback.set(idx, outcome);
+              return;
+            }
+            results[idx] = outcome;
+            unresolved.delete(idx);
           } catch (err: unknown) {
             lastError = asProviderError(id, err);
             anyFail = true;
@@ -238,7 +266,9 @@ export async function translateGroup(
     }
   }
 
-  return reqs.map((req, i) => results[i] ?? failOutcome(req, lastError));
+  // A kept transliteration beats a failure: the reader sees something, and the
+  // retry arrow on the row is still there.
+  return reqs.map((req, i) => results[i] ?? translitFallback.get(i) ?? failOutcome(req, lastError));
 }
 
 function asProviderError(id: CloudProviderId, err: unknown): ProviderError {

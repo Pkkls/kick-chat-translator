@@ -45,6 +45,379 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Open
 
+
+- [x] **Platform-injected text is settled without a corpus.** The category was
+  blocked on a live chat capture. Kick's own i18n payload, inlined in the page
+  it serves, answers most of it. The notices live under two namespaces:
+  `EventBanner` carries `"<username/> has subscribed for <count/> {monthCount,
+  plural, ...}"` and the gift and host equivalents, `ChatroomEvents` carries
+  `"<user/> has subscribed! They have been subscribed for a total of
+  <months/>"`. They are ICU strings with plurals and substitution tags, which
+  means they render in the viewer's interface language rather than the
+  channel's. Running the real strings through the pipeline settles the damage:
+  an English notice is detected `en`, so it equals an English target and is not
+  translated, and against any other target `ignoreEnglish` drops it; a French
+  notice is detected `fr` and equals a French target. Both common
+  configurations neutralise the notice with no rule at all. The residue is a
+  Spanish notice detected Portuguese and therefore translated, which is the
+  short-text detection weakness already measured elsewhere, not a category of
+  its own. Two corrections on the way there: a first reading claimed
+  `kick.com/locales/en.json` was a 349 KB lexicon, when it returns the SPA
+  shell and the keys found in it were the page's own inlined payload; and a
+  search for hard-coded notice sentences in the 66 chunks found none, which was
+  the clue that they are localised rather than the absence of evidence it first
+  looked like. What stays open is narrow: whether these rows carry `data-index`
+  at all. `EventBanner` reads like a banner outside the message list and
+  `ChatroomEvents` like a row inside it. Only a real DOM settles it, and given
+  the measurement above the answer changes little.
+
+- [x] **The bench covered five of the ten languages the product speaks, and the
+  five it missed were exactly the non-Latin ones.** The product translates into
+  42 languages but it SPEAKS ten: its interface and its store listing exist in
+  en, ar, es, fr, ja, ko, pt, ru, tr and zh, which `ls src/content/i18n/`
+  settles. The corpus was 51 lines in 14 languages, all Latin, so every figure
+  published on detection was a Latin figure and ar, ja, ko, ru and zh had never
+  been looked at once. Extended to 176 lines in 19 languages, 25 per missing
+  language, all ten covered. Read per language, never as a total: **ar 25/25,
+  ja 25/25, ko 25/25, ru 25/25, zh 24/25**, against es 3/8, fr 4/5, pt 3/6,
+  tr 1/4. Silent losses: 0 of 1125 pairs on the non-Latin half, 8 of 483 on the
+  Latin half. The whole of the damage measured over the previous passes lives in
+  the Latin half, and the half that is decided by writing system is clean. That
+  is not a compliment to the code, it is the reason the two halves must never be
+  averaged again.
+- [x] **The non-Latin bench now lives in the repository, not in a scratchpad.**
+  `src/content/langDetect.dix.test.ts` carries the 125 lines for ar, ja, ko, ru
+  and zh with a floor per language: 25 of 25 identified and 25 of 25 handed to
+  the engine as a source language for the four the table decides, and for
+  Chinese 24 of 25 identified with 0 of 25 confident, which pins the asymmetry
+  in place. This is what happened to the 41-case grid, measured then lost then
+  measured again, and the Latin corpus is heading the same way. A test file
+  weighs nothing in the shipped bundle and that is checked rather than assumed:
+  `audit-poids` reads the same +0.32 percent before and after adding it. The
+  Latin half stays out because a floor there would be noise, 1 of 4 to 4 of 5
+  depending on the language; it is covered case by case instead.
+
+- [x] **An emoji diluted the writing system out of a line, and a chat without
+  emoji does not exist.** `detectByScript` decided on a strict majority of all
+  non-ASCII characters, and an emoji is non-ASCII while feeding none of the
+  eight scripts, so it inflated the denominator without ever being able to win.
+  Measured on the five languages this check is the only mechanism for: "да" plus
+  two emoji fell to 2 of 4, no strict majority, `undefined`; "رائع" plus four
+  emoji fell the same way and franc took over to answer **Persian** on Arabic.
+  The denominator counts only script-bearing characters now, and all four test
+  languages hold through six emoji. The earlier fix that gave bare Korean jamo
+  their own bucket was this same bug treated locally: its comment said those
+  letters "counted toward the total while feeding no script", which is the
+  general defect, described once and fixed in one place.
+- [k] **The Persian split is measured but never observed running.** The rule
+  changes what detection returns for an entire writing system, so the flag, the
+  badge name and the right-to-left rendering of a Persian line all move, and
+  none of that has been looked at. kil's ruling: a Persian stream is too hard to
+  find to make a live harness worth building, so this one stays theoretical, on
+  tests and measurement only. Written down as a `[k]` rather than as done,
+  because "never say done about behaviour you have not observed" does not stop
+  applying just because looking is expensive.
+- [x] **Persian was declared Arabic, and declared it as a confident source
+  language.** The Arabic script is not a language. Measured on twelve Persian
+  lines: twelve of twelve returned `ar`, and returned it through
+  `confidentLanguage`, so the engine was told `sl=ar` on Persian text, the flag
+  was wrong on every line, and an Arabic-reading viewer had every Persian line
+  skipped as already in their language. Persian is one of the 42 and the store
+  listing sells right-to-left as "Arabic, Hebrew, Persian". franc knew, answering
+  `pes` on seven of eight, and was never consulted because the script answered
+  first. What separates the three is letters, not statistics: Persian adds peh,
+  tcheh, jeh, gaf, keheh and farsi yeh, and Urdu adds seven more on top of
+  Persian, so Urdu is tested first or its Persian letters make it Persian.
+  Measured: Persian 11/12, Arabic 12/12 with no false positive, Urdu 4/4. Urdu
+  returns undefined rather than a code, since it is not among the 42 and naming
+  it would ask for a flag nothing can draw. The one Persian line missed carries
+  no letter outside the Arabic set and nothing in the text separates it.
+- [x] **The two-character floor was measured and kept, and its price is
+  written down.** At a floor of one, "Amazing play" spelled with a Cyrillic A
+  becomes Russian and so does "so good" with a Cyrillic o, which is a homoglyph
+  trick chat sees every day. At two, those are safe and the price is the CJK
+  message of a single character: 草, は, 네 stay unread. Both sides have a
+  witness in the test file.
+- [x] **The non-Latin half of code-switching and laughter is clean, and here is
+  the measurement that shows the probe looked.** Eight mixed lines: `gg やばい`
+  reads ja, `gg 대박` ko, `omg 太厉害了` zh, `gg давай` ru, `thanks شكرا` ar,
+  seven of eight. The eighth is an English sentence carrying one kana, which the
+  floor leaves undefined, and undefined is the right answer there since it sends
+  the line out with the engine deciding for itself. This is the mirror of the
+  Latin case that was reverted two commits ago, and the difference is principled:
+  a script is a fact about the text, franc's guess is not. Eight laughter forms
+  across five writing systems, 草, 草草草, wwwww, ㅋㅋㅋㅋ, 233333, ｗｗｗ, хахаха,
+  ههههه, are all dropped by `isNoise` before any of this runs.
+- [ ] **Nothing maps franc's `arb`, its own top answer for Arabic.** franc
+  scores `arb` at 1.00 on an Arabic sentence and `francToIso2` returns
+  undefined, which is the same class as the Malay `zlm` gap a previous pass
+  fixed. It is latent rather than live: the script check answers before franc on
+  anything Arabic-majority, so no measured case reaches it. Written down instead
+  of fixed, because a table entry with no case behind it is a guess.
+- [ ] **Chinese never gets a confident source language, alone among the five.**
+  ar, ja, ko and ru all come out of `detectByScript` as looked-up facts and go
+  to the engine as `sl`; zh is deferred to franc by `if (pct(han)) return
+  undefined`, so `confidentLanguage` withholds it and every Chinese line leaves
+  with the engine guessing. Measured: zh 24/25 identified, 0/25 with a confident
+  source. The deferral is deliberate, Han-only text can be Japanese, and the
+  cost is small since engines auto-detect Chinese well. Recorded so the
+  asymmetry is a decision rather than a surprise.
+
+- [x] **The short-text residue has its damage measured, and two repairs were
+  measured and thrown away.** 51 short chat lines in 14 languages through the
+  real detection: 28 right, 10 silent, 13 confidently wrong. The wrong answers
+  are the interesting half, because `prepare()` kills a line on `detectLanguage`
+  alone through `isSameLanguageAsTarget`, which does not require the wrong
+  answer to be English, only that it equals the reader's target. Over the 663
+  (message, target) pairs that need a translation, 11 are silently skipped as
+  "already in your language", 1.7 percent, and 11 of the 51 messages are lost at
+  at least one target. All 11 are on non-English targets, fr 4, pt 3, de 2, es 1,
+  id 1, so this is a second silent-loss path beside the one `ignoreEnglish`
+  owns. **Repair A, only a table answer may skip a line**: takes the 11 losses to
+  0 and adds 37 provider calls over the same pairs, and only 2 of the 51 messages
+  have a table answer at all, so in the configuration that matters (a Spanish
+  reader on a Spanish stream) it sends every line to an endpoint that soft-bans
+  per IP. Rejected on the same ground as the coalescing floor. **Repair B, a
+  length floor under the guess**: 11 losses at 15 characters, 6 at 20, 3 at 22,
+  0 at 30, against 0, 6, 10 then 23 correct skips lost out of 26. No knee, the
+  same shape as tinyld's confidence bar. Rejected. What ships instead is the
+  table reach below.
+
+- [x] **The short-word table was given a 30 character reach, and it is taken
+  back.** `SHORT_TEXT_MAX` was 20 and eight of the thirteen wrong answers sat
+  between 21 and 26 characters, out of the table's reach. Measured at 20, 25,
+  30, 35 and 40 on two benches of the same lengths: 13 foreign lines carrying a
+  table word, 10 read right at 20, 12 at 30, 13 at 35; and 8 English chat lines
+  also carrying a table word, 2 wrong at 20, 3 at 30, **8 at 35**. Length does
+  not separate the two, it lets them in together, the same answer repair B gave.
+  franc does separate them, answering `eng` on 6 of the 8 English lines and on
+  none of the 13 foreign ones, so an explicit `eng` cancelling the table's vote
+  paid for the extension: 12 of 13 right, English damage unchanged at 2 of 8, 51
+  bytes, one extra franc call at 23.5 to 38.9 microseconds per message. It
+  shipped on that measurement and is reverted on the next one.
+- [x] **What the bench could not see was the message that changes language
+  mid-sentence, and it is the case that decides.** Eight mixed lines through the
+  real order: at `SHORT_TEXT_MAX` 20, three are killed before the call and none
+  gets a source language declared on one half; at 30, six are killed and four
+  do. "merci bro that was insane" is one French word in an English sentence,
+  and at 30 it leaves as `sl=fr` and disappears for a French reader. The franc
+  veto rescues nothing there, because franc answers `eng` on none of the eight.
+  A single foreign word inside another language is more common in a chat than a
+  25 character foreign sentence, so the bound stays at 20. It stays there on
+  this measurement, not because 20 was ever measured as optimal. The witness is
+  in the test file: raising the constant turns it red on the source language,
+  which is the half of the damage that reaches the engine.
+
+- [x] **The experiment the weight item was waiting on has been run, twice, and
+  the first run was wrong in two ways.** `franc(text, { only: [...] })` is
+  exactly a model reduced to a list, so the before and after costs nothing to
+  measure. **First correction, the list.** It was built by pushing three
+  sentences through `francAll`, which only ever returns the languages of those
+  sentences' scripts: 21 codes, missing `cmn`, `jpn`, `kor`, `tha`, `hin` and
+  `pes`. Since `only` also filters the final answer, the reduced variant was
+  destroying Chinese, Japanese and Korean detection outright, so the run
+  measured that hole and nothing else. The list is read out of the package now,
+  `data.js` for the trigrams and `expressions.js` for the script regexes: 76
+  codes, 29 mapped. **Second correction, the target set.** The published delta,
+  11 silent losses becoming 13, was counted against 14 targets including nl, id,
+  cs, ro, sv and vi, which the product does not speak. Against the ten it
+  speaks, the same measurement gives 8 and 8: the trim costs nothing at all on
+  the number that decides. Against all 42 targets it gives 43 and 50.
+  Rerun on 176 messages through the whole detection: right 152 to 158, silences
+  11 to 1, wrong 13 to 17. Still not shipped, and the reason is now the only one
+  that survives: `only:` frees zero bytes. The 61 KB stays in the bundle either
+  way, so the weight motive that justified the experiment does not exist, and
+  what remains is an accuracy trade that changes sign with the target set.
+- [x] **franc-min carries trigram data for four scripts only**: Latin,
+  Cyrillic, Arabic and Devanagari. The other sixteen it recognises with a single
+  regex per script that returns one language, which is where `cmn`, `jpn` and
+  `kor` come from. So for Chinese, Japanese and Korean, franc is not a second
+  opinion on top of `detectByScript`, it is the same idea one level down. The
+  comment saying pure Han is deferred to franc "so Chinese isn't mislabelled as
+  Japanese" is true in effect and misleading in mechanism.
+- [x] **The ten silences are not franc saying `und`.** They are franc answering
+  Somali, Lingala, Fulfulde, Uzbek, Hausa, Croatian, Sundanese and Javanese on
+  Spanish, Portuguese, Italian, Turkish, Polish and Indonesian chat, and
+  `francToIso2` returning undefined because the product does not translate those
+  languages. The 40 unmapped languages are absorbing wrong answers, which is
+  worth knowing before anyone trims them to save bytes, and it is also why the
+  trim above turns silences into answers rather than fixing anything.
+- [x] **The short-word table was built from greetings, and a chat message is not
+  a greeting.** hola, merci, danke, grazie, obrigado: that is what you write when
+  you picture a chat, and it is not what an arbitrary message contains. Measured
+  cost: of the eleven lines detection could not name, half were ordinary
+  Portuguese and Turkish, "nao acredito nisso", "vamos ganhar essa", "ne oluyor
+  burada", carrying no table word at all. The second set of entries is STRUCTURE
+  words, the ones that turn up in any sentence, under the table's own rule, and
+  that rule is what picks the es/pt pairs since spelling separates them cleanly:
+  nao against no, hoje against hoy, agora against ahora, pode against puede,
+  estao against estan, essa against esa. Measured over the 176-line bench: right
+  152 to **157**, silent 11 to **8**, confidently wrong 13 to **11**, silently
+  lost pairs 8 to **6**; over the ten alone, right 138/152 to **143/152** and
+  losses 5 to **3**. Six lines moved on the Latin bench, all in the right
+  direction, two of them from wrong to right, and five gained a correct source
+  language for the engine. 530 bytes, and not one extra provider call.
+- [x] **The Latin bench is in the repository too, as a ledger rather than a
+  floor.** `src/content/langDetect.latin.test.ts` pins all 51 lines with what
+  detection returns today and what it dares send as a source language. Where the
+  verdict differs from the truth the line is a known defect, written as such.
+  A floor would be noise here since the rates run from 1 of 4 to 4 of 5, so what
+  the file guarantees instead is that any change to the detector turns exactly
+  the lines that moved red. It earned that in the same pass: the structure words
+  above turned six red, and reading them was how the direction of the change was
+  checked rather than assumed. Two invariants sit beside the ledger and are real
+  rules rather than records: no non-English line may be classified English, and
+  no confident source language may ever be wrong.
+- [x] **The source allowlist was fixed one layer below itself.**
+  `shouldDropBySourceLang` returns `lang_unknown` when detection is silent, and
+  the line dies before any call with that reason left on it, so it is visible to
+  whoever hovers rather than silent in the strict sense. The rate this item first
+  carried, one short message in five, was a Latin rate; on the full bench it was
+  11 of 176, and exactly one of those 11 was non-Latin. The obvious repair, let
+  the line through and decide on the engine's own `detectedLang` after the call,
+  was measured and cannot be right for both readers, because **the two sides are
+  the same lines**: what the viewer whose allowlist matches the chat loses is
+  precisely what the viewer whose allowlist does not match would newly pay for,
+  message for message. The option promises "ONLY translate those", so both
+  readings are legitimate and no threshold arbitrates between them. So it was
+  fixed in detection instead, where it costs nothing and serves both: pt from 3
+  lost of 6 to 1, tr from 2 of 4 to 1, bench total 11 to 8. What remains, per
+  language rather than as one rate: id 2/3, es 1/8, pt 1/6, it 1/4, tr 1/4,
+  pl 1/3, zh 1/25, zero for ar, ja, ko and ru. Reopening the allowlist itself
+  needs a case detection cannot reach.
+
+- [x] **Three impurity categories rebuilt with their intent written down first,
+  and the tenth probe that accused working code.** The deleted grid left
+  identity at 3 of 5, no-language at 5 of 6 and slang at 6 of 7, and what was
+  missing from it was not the cases but the definition of correct: a case
+  without a stated intent gets judged afterwards, and always in favour of what
+  the product already does. Rebuilt on 21 cases with the intent stated per
+  category and run in the pipeline's real order. **The probe's first version
+  accused the product on four of them**: it judged the raw text, and
+  `parseKickContent` already strips `@mentions` and scheme-carrying URLs, so
+  `@handle`, two handles, a bare `https://` URL and a handle followed by a URL
+  all come out of the parser as an empty string and die on `minTextLength`
+  before anything looks at them. A fix was written for that non-problem, wiring
+  `isLinkOrMentionOnly` from `composeLogic` into `prepare()` with a localised
+  reason in nine catalogues, and the pipeline test written for it failed by
+  reporting the length reason instead, which is what exposed the mistake. All of
+  it reverted.
+- [x] **A hostname was read as Japanese laughter and declared Japanese to the
+  engine.** kil's remark, that `wwwww` and even `www` are laughter in Japanese
+  chat, was aimed at the scheme-less domain idea below. It turned out to name a
+  defect that was already live in the opposite direction. The laughter table
+  carried `ja` on `/^w{3,}$/i` with the note "three or more, so it cannot be a
+  bare www host". That argument reads the whole message; the vote runs per
+  token, and `detectByShortWords` splits on non-letters, so `www.kick.com`
+  becomes the tokens www, kick, com and the first one votes alone. Measured:
+  three real hostnames of four came out `ja` **with `sl=ja`**, asking the engine
+  to translate a URL from Japanese. The table's own rule settles it, an entry
+  earns a language only when it is unambiguous, and `www` is not. The half-width
+  form stays laughter and marks nothing; the full-width `ｗｗ` takes the mark
+  instead, since no hostname is ever written in full-width letters, and that is
+  a gain rather than a swap: `sugoi ｗｗｗ` reads ja now and did not before. The
+  price is written down too: romaji Japanese followed by half-width `www` leaves
+  with an empty `sl` and the engine detects for itself.
+- [x] **The `note` field of a language table is a value, not a comment, and it
+  ships.** Writing the reasoning above into two notes cost 770 bytes on every
+  Kick page, +0.68 percent against the reference where the pass had been sitting
+  at +0.35, and the build is what caught it. Moved into a `//` comment, which
+  the minifier erases, and the notes are back to the length of their neighbours.
+- [x] **The transliteration guard is rescued, measured against the real
+  provider, and wired.** 427 lines that existed on one disk, untracked since
+  2026-06-08 in a stale second clone, addressing a hole this branch does not
+  touch: a provider that answers a short Latin-script message with a phonetic
+  spelling in the target's script instead of a translation. Committed verbatim
+  first, wiring second, on `feat/transliteration-guard`, pushed. I did not write
+  it and cannot claim it; a fresh session has no record of the work and the file
+  carries no authorship.
+  **What 90 pairs through the endpoint the product actually calls said**, with
+  the intent per category written before the counting. Transliteration, the
+  input's sounds in the target's script and no meaning delivered: ja 4/18,
+  ko 5/18, zh 2/18, ru 5/18, ar 2/18, so 18 of 90. A second defect the guard was
+  not built for and repairs by accident, the wrong sense of a real word, `coucou`
+  read as the cuckoo bird in four targets of five and `merci` as mercy in ko and
+  ar: 8 of 90. The remaining 64 are fine, register differences included.
+  **The dictionary is mostly a zero-latency cache and its own header does not say
+  so**: it repairs 26 of the 90, replaces 35 already-correct answers with its own
+  chat register, matches 29, and answers all 90 without touching an endpoint that
+  soft-bans per IP. Recorded as `local`, not `google`.
+  **The cascade ships with its ceiling written beside it.** It can only see
+  Japanese, since pure katakana out of Latin input is visible while a phonetic
+  spelling in hangul, hanzi, Cyrillic or Arabic looks exactly like a word, so 14
+  of the 18 are invisible to it. On 50 short Latin lines outside the dictionary
+  it fires three times and one is repaired by the next provider; the other two
+  are `clutch` and `sheesh`, whose katakana is correct Japanese. A false positive
+  costs one round trip and never a worse answer.
+  **A free repair measured and thrown away**: the provider returns the source
+  language it detected, so gating the cascade on "not English" looked free. It is
+  anti-correlated. Google answers `en` for bonjour, merci, gracias, ciao and
+  lindo precisely because it failed to identify them, so the rule kills five
+  repairs of six and keeps none of the six controls.
+  **Weight is the question that was open and it is now a measurement**: +0.82
+  percent before and after, because the 90-entry dictionary is tree-shaken out of
+  the content script entirely. The DeepL hint moved out of `compose.ts`, where
+  the rescued wiring built it and it cost 380 bytes on every Kick page for a
+  field only one provider reads, into `deepl.ts`.
+  Three witnesses, each seen red, including a new offline gate,
+  `translate-override`, that drives the real extension with a Japanese target.
+- [k] **Whether the transliteration branch lands, and as what version.** The
+  branch is green on its own gates and adds a user-visible behaviour to a 2.9.4
+  that is not released. Nothing was bumped: naming a release is kil's, like
+  merging and tagging. The two branches do not conflict, they touch disjoint
+  files apart from `run-gates.mjs`.
+- [x] **The 1754 bytes of prose no longer travel, and the field did not need a
+  build step to stop.** 42 of the laughter table's 45 notes were in the shipped
+  content script, 0.85 percent of it, about half of what that table was measured
+  to cost. The plan called for stripping the field at build time; the cheaper
+  answer was that `note` did not have to be a field. It is `LAUGHTER_NOTES` now,
+  keyed by the source of the pattern it describes, exported for the test and
+  never referenced by shipped code, so the bundler drops it with no build
+  configuration at all. Keyed rather than indexed because a parallel array would
+  shift silently on an insertion and the parity test could only see a length
+  mismatch. Weight went from +0.82 percent against the reference to **-0.10**:
+  2.1 KB left the page for 1754 bytes of prose, the field names and the entry
+  structure paying the difference. The discipline is untouched, one note over
+  eight characters per form, plus a new assertion against a note whose form is
+  gone. The probe that measured this now measures zero by construction, so it was
+  retargeted into a tracked gate, `poids-notes`, that asserts the same property
+  from the other side. It covers what `audit-poids` cannot: 0.85 percent fits
+  inside a 2 percent margin without a word. **The witness is worth keeping**:
+  referencing `LAUGHTER_NOTES` from `isLaughter` with a CONSTANT key does not
+  turn the gate red, because esbuild folds the lookup and the object still
+  leaves; with a dynamic key it goes red on all thirty notes. The first witness
+  proved nothing and looked like it did.
+- [x] **Bulgarian in Latin letters is read, and what a marker table cannot do is
+  the finding.** The item called shlyokavitsa "a third table of the
+  `romanised.ts` kind". It is a fourth language in that one, which is what made
+  it small: the file defines itself as languages written in Latin letters that
+  are not written that way. Markers built from grammatical paradigms take 10 of
+  20 lines written alongside them and **zero of the 4 written the day before**,
+  before the list existed. A paradigm gives a textbook's words; a chat writes
+  "mnogo dobre igra" and "az sam tuk", which carry none of them, and the words a
+  chat writes are the ambiguous ones, `dobre` Polish, `az` Hungarian, `sam` an
+  English given name, `mnogo` and `smeshno` romanised Russian. One decides
+  nothing, two in a line decide: **zero false positives over the repository's own
+  187 bench lines in 19 languages**, and 3 of the 4 held-out lines against 0.
+  The table's five-letter floor then rejected nine strong markers and was
+  respected rather than worked around; held-out recall did not move. End to end,
+  three lines become right and none becomes wrong, and `sl` stays empty on all
+  eight, asserted. **The collision is named**: `mnogo` and `smeshno` are spelled
+  the same in both romanisations, so a Russian line carrying only those comes out
+  `bg`; two of four trap lines are held by a strong `ru` marker and two are
+  taken, and what detection returned on those two before was `undefined` and
+  `pl`. Not covered by anyone: shlyokavitsa substitutes digits for letters, 6 for
+  sh and 4 for ch, so "6te" and "4ovek", and no marker sees it.
+- [ ] **The domain written without a scheme stays as it is, and kil's reason is
+  better than the measurement.** `kick.com/somechannel` is detected Spanish and
+  `www.example.com/watch` French, so both reach the engine as text, pay for a
+  call and wear a wrong flag. The obvious half of the repair was to match `www.`
+  on its own. `www` is Japanese laughter, so that rule would fight the table on
+  every Japanese line that ends in a full stop, and the collision is not
+  hypothetical: the entry above had to be demoted for the mirror image of it.
+  A bare domain still needs a list of what looks like a TLD, and widening the
+  parser's URL rule also changes what renders as a link in the row. Left alone.
+
 - [ ] **The install rate is 40.5 percent and nothing is tuned against it.**
   Eighty-five installs for two hundred and ten first visits, over eight months.
   Fifty-eight percent of arrivals come from organic search, thirty-one direct,
@@ -61,9 +434,45 @@ reads dist/, so it serialises behind any build. D touches no code.
   uncompressed, is no longer emitted now that nothing exposes it, and the
   stylesheet has always been inlined into the content bundle.
 
-- [ ] **`node_modules` is in the git history**: 4308 files added, repository at
-  10.9 MB. Public since 2026-08-29, so it is a clone cost for everyone. Removing
-  it rewrites history, which is a decision with consequences, not a chore.
+- [k] **`node_modules` in the history: the cost is measured, the consequences
+  turn out to be nearly nil, and the one real risk is a person.** 4695 objects
+  belong to it, **9.49 MB of 16.41 MB on disk, 57.8 percent of the repository**,
+  and it sits in exactly two commits: `c30564b`, the root commit, and `c4bd837`,
+  which untracked it. Nothing is tracked at HEAD. A rewrite would take the repo
+  to about 6.9 MB and every clone pays the difference today.
+  **What it costs downstream, measured rather than feared**: the repository has
+  0 forks, 0 stars, 0 watchers and 0 open pull requests. Nobody downstream has a
+  history to break, which is what "a decision with consequences" was standing in
+  for and it is no longer true. What does move: all 324 commits change SHA since
+  the root is rewritten, the 8 tags move with them, the 8 remote branches move,
+  and `devcopy`, a different repository sharing this history, diverges unless it
+  is rewritten in the same operation. The GitHub release for v2.9.2 keeps its
+  attached archives, which hang off the release and not the tag, but its tag
+  points somewhere new.
+  **The risk that remains is not technical, and it now has a number.** A sweep
+  of every git repository on the machine found a **second clone of this
+  repository** at a different path, still pointing at the same `origin`, with
+  its HEAD three months stale. What a rewrite would do to it: the three
+  local-only commits it holds are README edits from 2026-05-30 that this clone
+  holds too, so nothing unique is lost, but every SHA it knows becomes unknown
+  and it has to be re-cloned rather than pulled. What matters far more is what
+  sits in it uncommitted: `src/shared/transliterationGuard.ts` and its test, 427
+  lines, untracked since 2026-06-08, plus 57 lines of wiring across three source
+  files. It solves a problem this branch does not touch, an engine returning a
+  phonetic transliteration instead of a translation, and nothing on this branch
+  or on any remote has a copy. Rescuing that is a separate decision from the
+  rewrite, and it has to happen first, because it is the only unique thing in
+  the way. **Done, and it is no longer in the way**: `feat/transliteration-guard`
+  is pushed, the two files committed verbatim first and the wiring second. The
+  second clone still holds the working-tree copy; nothing there is unique any
+  more, so it can be re-cloned rather than merged when the rewrite happens. See
+  the entry below for what the measurement said about it.
+  **Tooling**: `git filter-repo` is not installed and neither is its Python
+  module, so the operation needs `pip install git-filter-repo` first;
+  `filter-branch` over 324 commits is the slow fallback nobody should pick.
+  Prepared and stopped here. Rewriting a public history and force-pushing is on
+  kil's explicit order, like merging and tagging, and "we should start cleaning
+  this up" is a direction rather than that order.
 
 - [x] **The duplicate remote is gone.** `public` pointed at `origin`'s URL with
   a stale tracking ref, so a naive read reported one remote current and the
@@ -79,6 +488,18 @@ reads dist/, so it serialises behind any build. D touches no code.
 ---
 
 ## Waiting on kil
+
+- [k] **A real chat capture, once, so the frequencies stop being guesses.**
+  Three items now end on the same sentence: the damage is measured and the
+  frequency is not, because every corpus here is hand-written. Four decisions
+  are waiting on that number, and each of them is currently taken by refusing to
+  move: whether the short-text losses are worth more provider calls, whether
+  trimming franc's 40 unmapped languages is a gain or a regression, whether a
+  source allowlist should let an unidentified line through, and what share of a
+  real chat is code-switched. `scripts/kick-chat-collector.js` pastes into the
+  console of a kick.com tab and `copy(ktCorpus.dump())` puts the capture on the
+  clipboard. A few thousand lines from two or three channels of different
+  languages is enough. Asked once; the work continues without it.
 
 - [k] **Emote picker dodge: only the Kick-specific half is still blocked.** The
   mechanism is verified offline now. A synthetic overlay meeting the size gate,
@@ -143,6 +564,195 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Done, kept for the record
 
+- [x] **Transliteration is closed: 0 of 5 to 5 of 5.** Russian, Greek and
+  Japanese typed on a Latin keyboard keep their language and lose their script,
+  so the script pre-check sees nothing and the detector answers for a Latin
+  language. Measured before writing a line: `privet kak dela segodnya` was
+  Indonesian, `spasibo bolshoe za stream` Czech, `pozhaluysta pomogite mne`
+  Italian, `khorosho ochen khorosho` Swedish, and the Greek and Japanese
+  sentences were nothing at all. Russian was the worst of the three, a confident
+  wrong answer: with a source allowlist it came out `lang_not_allowed`, and with
+  Indonesian as target it was not translated at all.
+- [x] **32 markers, one rule, and the words deliberately left out.** An entry
+  earns a language only if it is unambiguous against common English and against
+  the other entries, which is the rule the short-word table already states about
+  itself. That is what keeps `kawaii`, `sugoi`, `senpai`, `baka`, `desu` and
+  `sensei` out: English internet slang adopted them, and a reader writes them
+  without a word of Japanese. Same for Greek `malaka`, and for `net`, `poka` and
+  `davai`, too short or too common elsewhere. A test asserts every marker is at
+  least five letters so that door stays shut. Measured: 20 transliterated
+  sentences marked, 0 false positives on 20 traps.
+- [x] **Not a confident answer, for the same reason as arabizi.** Declaring
+  `sl=ru` on Latin-script text asks the engine to read Cyrillic where there is
+  none. The markers feed ordinary detection, which feeds the filters and the
+  badge; the engine keeps guessing. Cost: 617 bytes, +0.26 percent, well inside
+  the margin.
+## Done, kept for the record
+
+- [x] **franc against tinyld-light: franc keeps the job, and the first verdict I
+  published was wrong.** A first duel on 30 messages had tinyld winning
+  everything, including the number declared decisive before the experiment:
+  non-English messages classified English and therefore dropped in silence by
+  `ignoreEnglish`, franc 1 of 30 against tinyld 0. Four more messages were then
+  added, taken from the tests the swap had broken, and the decisive number
+  reversed: **franc 1 of 34, tinyld 5**. tinyld calls `guten abend`, `tebrikler`
+  and `velmi dobre` English. The first corpus was too small to contain the cases
+  that decide, which is the whole reason that number was chosen in advance.
+- [x] **No threshold design rescues it, and the reason is instructive.** tinyld
+  returns a confidence score where franc returns none, so the obvious repair is
+  to stay silent below a bar. It makes things worse: below the bar the ASCII
+  fallback calls the message English, so a stricter bar anglicises more, 20 of
+  34 at 0.15. Applying the bar only to the English verdict takes 5 down to 4 and
+  costs English recognition, 9 of 10 down to 5, and the result is flat from 0.2
+  to 0.8, meaning tinyld is confidently wrong on those three rather than
+  hesitant.
+- [x] **What tinyld does win, for the record.** Global accuracy, 18 correct
+  against 11, and 4 silences against 9. Coverage is a tie, 25 against 26 on one
+  phrase per language across the product's 42, and franc misses Arabic and
+  Hebrew entirely. And weight: bundled and minified, 81121 bytes against 174824,
+  which is 93703 and forty percent of the injected script. That saving is real
+  and it is not available: it costs four readers their message for every one it
+  saves. The margin cannot be bought this way.
+
+
+- [x] **Arabizi is detected, and the damage it did was not what the grid
+  assumed.** The grid scored it 0 of 5 for returning no language. Measured
+  properly, an absent language costs nothing on the engine path: the `sl` sent
+  is `auto` for arabizi and for correctly detected Spanish alike, because
+  `confidentLanguage` withholds everything franc guesses. The real harm is in
+  the filters. With a source allowlist set, an arabizi message came out
+  `lang_unknown`, so an Arabic-reading user who restricts sources to `ar` lost
+  exactly the messages they asked for.
+- [x] **The arabizi signal, and the trap it had to survive.** Arabizi replaces
+  Arabic consonants with digits chosen for their shape: 3 for ع, 5 for خ, 7 for
+  ح, 9 for ق. Latin SMS also puts digits in words, but chosen for their sound:
+  8 for eight, 4 for four, 2 for two, 1 for one. The two sets overlap only on 2,
+  6 and 8, so keeping [3579] keeps the signal and drops the collision. Measured
+  on 12 arabizi sentences and 29 traps including team names `c9`, `g2`, `d4`,
+  `k9`, `s1mple`: with the wide digit set, 3 false positives; with [3579],
+  12 of 12 and none. No proportion threshold is needed, one word is enough.
+- [x] **It is deliberately not a confident answer.** `confidentLanguage` feeds
+  the `sl` sent to the engine, and declaring `sl=ar` on Latin-script text asks
+  the engine to read Arabic where there is no Arabic script, which is not
+  measured here. Arabizi therefore sits in ordinary detection, which feeds the
+  filters and the badge, and the engine keeps guessing for itself.
+- [x] **A first version of these tests could not fail.** They exercised
+  `isArabizi` alone, so removing the wiring from `langDetect` broke nothing:
+  863 tests stayed green with the repair deleted. The repair has its own test
+  now, and deleting the wiring fails it.
+- [x] **The weight gate went red, as predicted, and the reference is raised with
+  its accounting.** 233217 bytes against 228460, +4757 and +2.08 percent.
+  Measured per module, minified and in isolation: the laughter table 3791, the
+  smash filter 424, arabizi 227, which is 4442; the remaining ~315 are the
+  2.9.3 and 2.9.4 product fixes. The way to buy the margin back is identified
+  rather than guessed: franc's data is 98 KB in this file and
+  `tinyld.light.browser` is 68 KB under MIT, so 30 KB and thirteen percent of
+  the bundle ride on an accuracy experiment that has not been run.
+## Done, kept for the record
+
+- [x] **Keyboard smash is filtered, and the earlier claim about it was wrong.**
+  Yesterday's note said eleven of fifteen smashes were already dropped through
+  the English rule. Measured directly on `detectLanguage`: **zero of eleven** were
+  dropped, all eleven reached the engine, and three came back with a language,
+  `asdasdasd` Portuguese, `zxcvbnm` Spanish, `hjkhjkhjk` Dutch. The error was
+  conflating `franc()` returning `und` with `detectLanguage` returning `'en'`: at
+  the `minLength: 3` floor franc returns codes that map to nothing, so detection
+  returns undefined and nothing drops the message. `isKeyboardSmash` now catches
+  15 of 15 with 0 false positives.
+- [x] **The obvious criterion for smash was measured and thrown away.** Absence
+  of vowels catches every smash and also `krk`, `prst`, `smrt` and `vlk`, which
+  are real Czech words. The criterion kept is the share of adjacent letter pairs
+  living on the same keyboard row: against 15 smashes and 33 real words chosen
+  as the worst case, Slavic consonant clusters included, 0.6 still leaves two
+  false positives and 0.65 upward leaves none. 0.7 with a six-letter floor is
+  what shipped, with margin on both sides.
+- [x] **Stretched words broke the first version, and are witnesses now.** A held
+  letter necessarily lives on one row, so `siiiiiiii` and `NOOOOOO` carried the
+  smash signature and were dropped as noise. What separates them is the number
+  of distinct letters, or a repeated GROUP rather than a held letter:
+  `asdasdasd` is three times "asd", `holaaaaa` is "hola" plus a held a. Thirteen
+  stretched words are in the test battery for that reason.
+- [x] **The seven impurity categories have their damage measured**, on 41 cases
+  through the real pipeline order: 23 behave as intended, up from 19 before this
+  pass. Platform text 3/8, identity 3/5, input artefacts 5/7, code-switching
+  1/3, transliteration **0/5**, no-language 5/6, gaming slang 6/7. Frequency is
+  a separate number and it needs a corpus that does not exist here.
+
+## Done, kept for the record
+
+- [x] **Written laughter has a dictionary, by language, with its sources.** It
+  was handled in two unrelated places grown by hand: an alternation of about ten
+  forms inside `isNoise`, and two French entries in the short-word table. Nothing
+  reusable exists to import, which was checked rather than assumed: the academic
+  work on social-media normalisation treats laughter as a category and publishes
+  no lexicon, the popular write-ups are prose, and the one machine-readable list
+  on GitHub carries no licence at all. `src/shared/laughter.ts` records 43 forms
+  drawn from three cross-checked sources, each with a note saying where it is
+  attested, and 22 of them mark a language.
+- [x] **A laugh is a fact about the text, so it feeds the confident path.**
+  `confidentLanguage` returns only what was looked up in a table, never what
+  franc guessed, and that value is what goes to the engine as the source
+  language. Laughter now votes in the same token lookup as the chat-word table,
+  under the same conflict rule. Measured on ten mixed messages of the shape
+  "jajaja que bueno eso": 3 of 10 had a usable source language before, 10 of 10
+  after, and two of the three franc had guessed were wrong, calling that Spanish
+  line Portuguese and a Portuguese one French. Forms used everywhere, `haha`,
+  `lol`, `xd`, mark nothing, because a wrong answer here is handed to an engine.
+  It costs 3555 bytes on every page, 1.55 percent, inside the weight gate's 2
+  percent margin and close enough to it that the next addition trips the gate.
+- [x] **The `minLength: 3` floor under franc stays, and the measurement says
+  why.** It looks like a mistake against franc's own documented unreliability,
+  and removing it makes things worse. Measured on 30 short non-English chat
+  messages: at the shipped floor of 3, franc is wrong more often than right, 7
+  right against 14 wrong, but only 1 of 30 messages ends up classified English.
+  At franc's default floor of 10 the wrong answers halve, to 8, and 11 of 30 are
+  classified English instead, because a floor raises how often franc says `und`
+  and `und` on ASCII becomes English, which `ignoreEnglish` then drops in
+  silence. Franc's wrong identities are already withheld from the engine by
+  `confidentLanguage`; its silence is not. The low floor is protecting foreign
+  chat, not undermining it.
+- [x] **Keyboard smash is mostly already handled, by accident.** Fifteen forms
+  attested in the sources, Turkish `askfhsjkd` among them: eleven return `und`
+  from franc and are dropped through the English rule, and four get a confident
+  wrong language, `asdasdasd` as Portuguese, `zxcvbnm` as Spanish. The first
+  measurement said fifteen of fifteen reach the engine, which was wrong: it
+  checked `isNoise` and `isSlangOnly` and left out the drop that actually
+  catches them. What remains is four wasted calls and four wrong badges, which
+  is small enough not to justify a detector of its own yet.
+- [x] **A batch inherited one message's source language and declared it for all
+  the others.** The coalescer groups by TARGET language and nothing else, so a
+  batch mixes sources, and `batchCall` built its joined request as
+  `{ ...reqs[0], text: joined }`. Measured on a multilingual corpus: a request
+  went out with `sl=ja` carrying a Japanese line and an Arabic one. `call` only
+  sends `sl` when the language was looked up rather than guessed, precisely
+  because a wrong `sl` makes the engine translate from the wrong language and
+  return either the original or something else; taking the first message's hint
+  for all the rest is that same fault by another route. When the hints disagree
+  the request now declares none, which is what an unknown language already
+  sends. Witness: the test fails with `expected [ 'ja' ] to deeply equal
+  [ 'auto' ]`, and a second keeps a single-language batch declaring `es`, so
+  never declaring anything would not pass either.
+- [x] **Two of the 42 offered languages were never identified.** Malay: franc
+  emits `zlm` and the table knew only `msa` and `zsm`. Hebrew: franc-min does
+  not cover it at all, returning `und`, and the Unicode pre-check had ranges for
+  Arabic, Cyrillic, Thai, Devanagari, Hangul and kana but not Hebrew, though the
+  store listing sells right-to-left support as "Arabic, Hebrew, Persian". What
+  it cost is smaller than it first looked, and the measurement says so: an
+  unidentified language is not dropped, it goes out with `sl=auto`, so those
+  messages were translated all along. What changes is that the engine is told
+  the right source and the reader sees the right source badge. Three tests, one
+  of them the boundary between the Hebrew and Arabic blocks.
+- [x] **Where the injected bundle's bytes go, measured in the shipped file.**
+  `content.js` is 228896 bytes and franc's trigram data is 100394 of them,
+  43.9 percent, across 65 blocks; the inlined stylesheet is 30474, 13.3 percent.
+  A first reading claimed 48.8 percent from an esbuild metafile whose
+  `bytesInOutput` disagreed with the source file by more than a factor of two;
+  the artefact settles it. Of the 61 languages franc-min can return, 21 map to
+  something the product translates and 40 do not, carrying about 61 KB. Trimming
+  them is not free and is not done: dropping a language franc would have chosen
+  makes it choose another, and a mapped wrong answer is worse than an unmapped
+  right one. Measuring detection quality before and after is the experiment that
+  would settle it.
 - [x] **The two reworked menus have an accessibility pass.** axe reports zero
   violations on the chip menu in both themes, checked against a doctored copy
   that it does report; target size passes with 96 targets. The kit's keyboard

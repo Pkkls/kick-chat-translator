@@ -1,4 +1,5 @@
 import { PROVIDER_ENDPOINTS } from '~/shared/constants';
+import { enhanceContextForShortInput } from '~/shared/transliterationGuard';
 import type { TranslationRequest } from '~/shared/types';
 import { ProviderError, type ProviderContext, type ProviderResult, type TranslationProvider } from './types';
 
@@ -78,8 +79,19 @@ async function translate(req: TranslationRequest, ctx: ProviderContext): Promise
   form.set('text', req.text);
   form.set('target_lang', deeplTargetCode(req.targetLang));
   if (req.sourceLangHint) form.set('source_lang', deeplSourceCode(req.sourceLangHint));
-  // Untranslated context improves disambiguation on short chat lines.
-  if (req.context) form.set('context', req.context);
+  // Untranslated context improves disambiguation on short chat lines. On a short
+  // message aimed at a non-Latin script an anti-transliteration hint rides in the
+  // same free field, which DeepL does not bill.
+  //
+  // This lives here rather than in the content script, where the rescued wiring
+  // put it. `context` is a DeepL parameter, so the knowledge belongs next to the
+  // request that carries it; the version that built the hint in `compose.ts` cost
+  // 380 bytes on every Kick page for a field only this provider reads, and
+  // covered outgoing messages only.
+  //
+  // Never observed working: DeepL needs a key this machine does not have.
+  const context = enhanceContextForShortInput(req.text, req.targetLang, req.context);
+  if (context) form.set('context', context);
   // Compose (formal) → prefer the polite register where DeepL supports it (keigo for JA).
   if (req.formal && DEEPL_FORMALITY.has(req.targetLang.toLowerCase())) {
     form.set('formality', 'prefer_more');

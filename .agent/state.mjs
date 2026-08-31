@@ -303,7 +303,11 @@ const laRelease = await releaseGithub(g.remotes);
 const etat = {
   genere: new Date().toISOString(),
   parQui: '.agent/state.mjs',
-  avertissement: 'Genere. Ne pas editer a la main : la prochaine passe ecrase.',
+  avertissement:
+    'Genere. Ne pas editer a la main : la prochaine passe ecrase. La version commitee decrit ' +
+    "l'etat d'AVANT le commit qui la porte, puisque la fin de passe genere puis commite : " +
+    'git.head y pointe le commit precedent et git.arbrePropre y est faux. Relancer ' +
+    '`node .agent/state.mjs` avant de lire, ce que le prompt demande deja en premier.',
   git: g,
   versions: versions(),
   paquets: lesPaquets,

@@ -1,30 +1,28 @@
 {
-  "genere": "2026-08-30T23:46:25.527Z",
+  "genere": "2026-08-31T20:19:25.379Z",
   "parQui": ".agent/state.mjs",
-  "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
+  "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase. La version commitee decrit l'etat d'AVANT le commit qui la porte, puisque la fin de passe genere puis commite : git.head y pointe le commit precedent et git.arbrePropre y est faux. Relancer `node .agent/state.mjs` avant de lire, ce que le prompt demande deja en premier.",
   "git": {
     "remotesEnDouble": [],
-    "branche": "master",
-    "head": "a765dcad7641f20c7a96dfe20d3c0c11be885cff",
-    "sujet": "Leave dist/ as the Chrome build after packaging",
+    "branche": "feat/metriques-hors-ligne",
+    "head": "355a1b27ce7a700099a2d55450606c338218c424",
+    "sujet": "Read Bulgarian written in Latin letters, and say what a marker table cannot do",
     "arbrePropre": false,
-    "fichiersModifies": 7,
+    "fichiersModifies": 2,
     "dernierTag": "v2.9.3",
-    "decrit": "v2.9.3-2-ga765dca",
+    "decrit": "v2.9.3-28-g355a1b2",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
     },
     "ecarts": {
       "devcopy": {
-        "derriere": 0,
-        "devant": 30,
-        "aJour": false
+        "note": "pas de devcopy/feat/metriques-hors-ligne connu localement"
       },
       "origin": {
         "derriere": 0,
-        "devant": 0,
-        "aJour": true
+        "devant": 2,
+        "aJour": false
       }
     }
   },
@@ -149,7 +147,7 @@
     },
     {
       "fichier": "kick-chat-translator-2.9.4-chromium.zip",
-      "octets": 278025,
+      "octets": 283447,
       "versionDuNom": "2.9.4",
       "versionDuManifest": "2.9.4",
       "accordent": true,
@@ -157,7 +155,7 @@
     },
     {
       "fichier": "kick-chat-translator-2.9.4-firefox.zip",
-      "octets": 277957,
+      "octets": 283381,
       "versionDuNom": "2.9.4",
       "versionDuManifest": "2.9.4",
       "accordent": true,
@@ -166,7 +164,7 @@
   ],
   "portes": {
     "runner": "scratchpad/harness/run-gates.mjs",
-    "enumerees": 37,
+    "enumerees": 38,
     "noms": [
       "snapshot",
       "names",
@@ -204,9 +202,10 @@
       "audit-surfaces-rtl",
       "audit-selecteurs",
       "audit-poids",
+      "poids-notes",
       "audit-fiche"
     ],
-    "harnaisSurDisque": 39,
+    "harnaisSurDisque": 43,
     "orphelins": [
       "a11y",
       "bar-panel-mesure",
@@ -223,12 +222,15 @@
       "live-nav",
       "live-profile",
       "live-recycle",
+      "metrics-offline",
       "probe-row-space",
       "session-check",
+      "shlyokavitsa",
+      "shlyokavitsa-bout-en-bout",
       "store-shots",
       "store-shots-fixture"
     ],
-    "nbOrphelins": 19,
+    "nbOrphelins": 22,
     "note": "Les portes live ouvrent un navigateur sur kick.com et ne sont dans aucun runner. Un orphelin n est pas forcement un defaut ; un orphelin qui couvre du code livre en est un."
   },
   "releaseGithub": {
@@ -261,12 +263,16 @@
   },
   "file": {
     "bloques": [
+      "**The Persian split is measured but never observed running.** The rule",
+      "**Whether the transliteration branch lands, and as what version.** The",
+      "**`node_modules` in the history: the cost is measured, the consequences",
+      "**A real chat capture, once, so the frequencies stop being guesses.**",
       "**Emote picker dodge: only the Kick-specific half is still blocked.** The",
       "**Native review of the store text.** 8 languages of 10 on the Chrome side",
       "**Store submissions.** Chrome Web Store and AMO. Packages, listing text,"
     ],
-    "nbBloques": 3,
-    "nbOuverts": 2,
-    "nbFaits": 51
+    "nbBloques": 7,
+    "nbOuverts": 4,
+    "nbFaits": 95
   }
 }

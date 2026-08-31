@@ -106,6 +106,12 @@ const GATES = [
   // recherche de la superposition dans un vrai DOM ne l'etait pas, et la
   // desactiver laisse les 621 tests verts.
   ['translate-esquive', 'node', ['scratchpad/harness/translate-offline.mjs', '--esquive']],
+  // Le dictionnaire qui repond avant le reseau sur une expression courte visee
+  // vers une ecriture non latine. Couverture propre, mesuree : rendre
+  // `getSemanticOverride` muet laisse typecheck, lint et les 984 tests verts et
+  // fait rougir cette porte sur ses deux moities, le mot parti au moteur et la
+  // rangee portant l'epellation au lieu de la salutation.
+  ['translate-override', 'node', ['scratchpad/harness/translate-offline.mjs', '--override']],
   ['audit-strings', 'python', ['scratchpad/audit_content_strings.py']],
   ['audit-da', 'python', ['scratchpad/audit_da.py']],
   ['audit-rtl', 'python', ['scratchpad/audit_rtl.py']],
@@ -118,6 +124,13 @@ const GATES = [
   // The one cost every reader pays on every page. It rose 12.5% in one version
   // and nobody saw it for three days, because nothing was looking.
   ['audit-poids', 'python', ['scratchpad/audit_poids.py']],
+  // La prose des tables, qui n'est pas couverte par la porte au-dessus : les
+  // notes des rires pesaient 1754 octets, soit 0.85 pour cent, et la marge du
+  // poids est de 2 pour cent, donc leur retour y passerait sans un mot.
+  // Couverture propre, mesuree : une reference a `LAUGHTER_NOTES` depuis
+  // `isLaughter` avec une CLE DYNAMIQUE fait rougir cette porte. Avec une cle
+  // constante elle reste verte et c'est correct, esbuild replie l'acces.
+  ['poids-notes', 'node', ['scratchpad/harness/poids-notes.mjs']],
   // Les limites de champ des deux stores, plus les descriptions telles qu'elles
   // sont livrees dans `public/_locales`. Une soumission rejetee pour un champ
   // trop long se decouvre autrement une semaine plus tard.

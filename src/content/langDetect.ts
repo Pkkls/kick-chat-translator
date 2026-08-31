@@ -1,5 +1,8 @@
 import { franc } from 'franc-min';
 import { francToIso2 } from '~/shared/languages';
+import { laughterLanguage } from '~/shared/laughter';
+import { isArabizi } from '~/shared/arabizi';
+import { romanisedLanguage } from '~/shared/romanised';
 
 const COMMON_SHORT_TOKENS = new Set([
   'lol',
@@ -43,6 +46,20 @@ const COMMON_SHORT_TOKENS = new Set([
  * these words are checked first. Entries must be unambiguous against common
  * English and against each other, which is why near-twins across Spanish and
  * Portuguese ("gente", "vamos", "cara") are deliberately absent.
+ *
+ * La table a d'abord ete faite de salutations et de politesse, hola, merci,
+ * danke, grazie, obrigado. C'est ce qu'on ecrit en pensant a du chat, et ce
+ * n'est pas ce qu'un message quelconque contient. Mesure de ce que ca coutait :
+ * sur onze lignes que la detection ne savait pas nommer, la moitie etait du
+ * portugais et du turc ordinaires, "nao acredito nisso", "vamos ganhar essa",
+ * "ne oluyor burada", sans un seul mot de la table. Un lecteur qui restreint ses
+ * sources a `pt` perdait alors la moitie de son portugais, et pareil en turc.
+ *
+ * Le second jeu d'entrees est donc fait de mots de STRUCTURE, ceux qui reviennent
+ * dans n'importe quelle phrase. Ils suivent la meme regle et c'est elle qui
+ * decide des paires es/pt, ou l'orthographe separe nettement : nao contre no,
+ * hoje contre hoy, agora contre ahora, pode contre puede, estao contre estan,
+ * essa contre esa.
  */
 const SHORT_WORD_LANG = new Map<string, string>([
   ['hola', 'es'], ['gracias', 'es'], ['buenas', 'es'], ['buenos', 'es'], ['adios', 'es'],
@@ -73,21 +90,157 @@ const SHORT_WORD_LANG = new Map<string, string>([
   ['selam', 'tr'], ['merhaba', 'tr'], ['tamam', 'tr'], ['güzel', 'tr'], ['guzel', 'tr'],
   ['kanka', 'tr'], ['teşekkür', 'tr'], ['tesekkur', 'tr'], ['evet', 'tr'], ['hayır', 'tr'],
   ['hayir', 'tr'], ['kardeşim', 'tr'],
+
+  // Mots de structure. Meme regle que ci-dessus : chacun est separe de son
+  // jumeau dans l'autre langue par l'orthographe, pas par le contexte.
+  ['hace', 'es'], ['alguien', 'es'], ['puede', 'es'], ['estan', 'es'], ['están', 'es'],
+  ['nadie', 'es'], ['eso', 'es'], ['esa', 'es'],
+
+  ['nao', 'pt'], ['não', 'pt'], ['hoje', 'pt'], ['agora', 'pt'], ['pode', 'pt'],
+  ['estao', 'pt'], ['estão', 'pt'], ['essa', 'pt'], ['esse', 'pt'], ['isso', 'pt'],
+  ['alguem', 'pt'], ['alguém', 'pt'],
+
+  ['vraiment', 'fr'], ['rien', 'fr'], ['mec', 'fr'],
+
+  ['jemand', 'de'], ['denn', 'de'], ['ist', 'de'],
+
+  ['qualcuno', 'it'], ['questo', 'it'], ['bene', 'it'],
+
+  ['burada', 'tr'], ['oluyor', 'tr'], ['bir', 'tr'], ['için', 'tr'], ['icin', 'tr'],
+  ['değil', 'tr'], ['degil', 'tr'],
 ]);
 
-/** Longest message still treated as "short" for detection purposes. */
+/**
+ * Longest message still treated as "short" for detection purposes.
+ *
+ * Monte a 30, mesure, et redescendu. Le gain etait reel : sur 13 lignes
+ * etrangeres de 23 a 31 caracteres portant un mot de la table, 10 lues juste a
+ * 20 et 12 a 30, et sur 8 lignes anglaises portant elles aussi un mot de la
+ * table le degat restait a 2, un veto sur un `eng` explicite de franc payant
+ * l'ecart. Ce que ce banc-la ne pouvait pas voir, c'est le message qui change de
+ * langue en cours de route. Sur 8 lignes melangees, passer de 20 a 30 fait
+ * passer les lignes tuees avant l'appel de 3 a 6 et les `sl` declares sur une
+ * seule moitie de 0 a 4 : "merci bro that was insane" part alors au moteur en
+ * `sl=fr` et disparait pour un lecteur francophone. Le veto ne rattrape rien la,
+ * franc ne rend `eng` sur aucune des 8.
+ *
+ * La borne tient donc a 20 parce que le melange de langues est plus frequent
+ * dans un chat que la phrase etrangere de 25 caracteres, pas parce que 20 aurait
+ * ete mesure comme optimal.
+ */
 const SHORT_TEXT_MAX = 20;
 
 /** Unanimous vote from the lexicon, or undefined when the words disagree. */
 function detectByShortWords(text: string): string | undefined {
   let vote: string | undefined;
   for (const token of text.toLowerCase().split(/[^\p{L}]+/u)) {
-    const lang = token ? SHORT_WORD_LANG.get(token) : undefined;
+    // Une forme de rire est un fait sur le texte au meme titre qu'un mot de la
+    // table : `jajaja` est espagnol, `kkkk` bresilien, `wkwk` indonesien. C'est
+    // ce qui permet a `confidentLanguage` de s'en servir, alors qu'il refuse la
+    // reponse de franc. `haha`, `lol` et `xd` ne marquent rien et ne votent pas.
+    const lang = token ? (SHORT_WORD_LANG.get(token) ?? laughterLanguage(token)) : undefined;
     if (!lang) continue;
     if (vote && vote !== lang) return undefined;
     vote = lang;
   }
   return vote;
+}
+
+/**
+ * L'ecriture arabe n'est pas une langue.
+ *
+ * Le pre-controle rendait `ar` pour tout ce qui s'ecrit dans le bloc arabe, et
+ * il le rendait comme une reponse SURE, donc comme `sl` envoye au moteur.
+ * Mesure sur douze lignes persanes : douze sur douze declarees arabes, avec
+ * `sl=ar`. Le persan est une des 42 langues proposees et la fiche des stores
+ * vend le sens droite-a-gauche par "arabe, hebreu, persan". Trois degats a la
+ * fois : le moteur traduit depuis la mauvaise langue, le drapeau est faux, et
+ * un lecteur arabophone voit chaque ligne persane sautee comme "deja dans ta
+ * langue". franc, lui, sait : il rend `pes` sur sept de ces huit lignes, et il
+ * n'etait jamais consulte puisque l'ecriture repondait avant lui.
+ *
+ * Ce qui separe les trois, ce sont des LETTRES, pas une statistique : le persan
+ * ajoute pe, tcheh, jeh, gaf, keheh et farsi yeh au jeu arabe, et l'ourdou
+ * ajoute encore tteh, ddal, rreh, noon ghunna, heh doachashmee, yeh barree et
+ * heh goal par-dessus le persan. L'ourdou se teste donc EN PREMIER, sinon ses
+ * lettres persanes le font passer pour du persan.
+ *
+ * Mesure de la regle : persan 11 sur 12, arabe 12 sur 12 sans un seul faux
+ * positif, ourdou 4 sur 4. La ligne persane manquee, "salam be hame", ne
+ * contient aucune lettre hors du jeu arabe et rien dans le texte ne permet de
+ * la distinguer.
+ *
+ * L'ourdou rend `undefined` et non son code : il n'est pas dans les 42 langues
+ * du produit, donc l'annoncer produirait un drapeau que rien ne sait dessiner.
+ * Ce qui compte est qu'il ne soit plus annonce comme arabe.
+ */
+const LETTRES_PERSANES = /[پچژگکی]/u;
+const LETTRES_OURDOUES = /[ٹڈڑںھےہ]/u;
+
+function arabeOuPersan(text: string): string | undefined {
+  if (LETTRES_OURDOUES.test(text)) return undefined;
+  if (LETTRES_PERSANES.test(text)) return 'fa';
+  return 'ar';
+}
+
+/**
+ * L'ecriture cyrillique n'est pas une langue non plus.
+ *
+ * Signale par kil en testant sur une chaine mongole : le pre-controle rendait
+ * `ru` pour tout ce qui s'ecrit en cyrillique, et le rendait comme une reponse
+ * SURE. Mesure : vingt lignes mongoles sur vingt declarees russes avec `sl=ru`,
+ * huit lignes ukrainiennes sur huit, huit bulgares sur huit. Le degat est le
+ * meme que pour le persan pris pour de l'arabe, et il est pire ici parce que
+ * franc ne peut pas rattraper : franc-min ne porte pas le mongol du tout, sa
+ * liste cyrillique est rus, ukr, bos, srp, uzn, azj, koi, bel, bul, kaz.
+ *
+ * Le mongol se reconnait a deux voyelles que le russe n'a pas, ө et ү, et a une
+ * poignee de particules qui reviennent dans presque toutes ses phrases. Mesure
+ * de la couverture : les lettres seules prennent 8 lignes sur 20, les lettres
+ * plus les particules en prennent 17, et l'ensemble fait ZERO faux positif sur
+ * douze lignes russes, huit ukrainiennes et huit bulgares.
+ *
+ * Le mongol rend `undefined` et non un code : il n'est pas dans les 42 langues
+ * du produit. Ce qui compte est qu'il cesse de partir au moteur en `sl=ru`, ce
+ * qui demandait de traduire du mongol depuis le russe ; avec `sl` vide le moteur
+ * detecte seul et rend une vraie traduction.
+ *
+ * L'ukrainien, lui, est dans les 42, donc il prend son code. Ses lettres propres
+ * sont i, yi, ye et ge, absentes du russe : 6 lignes sur 8 a la mesure.
+ *
+ * Le bulgare, signale lui aussi par kil, n'a pas de lettre exclusive : il
+ * partage l'alphabet russe. Ce qui le separe est l'inverse, une ABSENCE, plus
+ * deux signaux positifs. Le russe ecrit ы, э et ё, le bulgare aucun des trois ;
+ * le bulgare ecrit ъ comme une voyelle ordinaire la ou le russe l'emploie a
+ * peine ; et sa copule au present, съм si сме сте са, n'existe pas en russe, qui
+ * n'en a pas au present du tout.
+ *
+ * Le chiffre de couverture du bulgare est le seul de ce fichier qui ait ete
+ * mesure DEUX fois, et la difference vaut d'etre gardee. Une premiere liste,
+ * etendue jusqu'a couvrir le banc qui avait servi a l'ecrire, donnait 20 sur 20 ;
+ * la meme regle sur douze lignes bulgares ecrites APRES elle donnait 4 sur 12.
+ * Le premier chiffre ne mesurait que l'ajustement. La liste a ensuite ete
+ * completee par PARADIGME, la copule entiere et les interrogatifs entiers,
+ * jamais par la liste des ratés, et le chiffre tenu a l'ecart est monte a 7 sur
+ * 12. C'est celui-la qui compte.
+ *
+ * Ce qui ne bouge pas, et c'est le cote qui protege : zero faux positif sur
+ * vingt-huit lignes russes, dix ukrainiennes et six mongoles, aucune n'ayant
+ * servi a batir quoi que ce soit.
+ */
+const LETTRES_MONGOLES = /[өү]/iu;
+const MOTS_MONGOLS = /(^|[^\p{L}])(байна|байгаа|юм|вэ|бэ|сайхан|байлаа)([^\p{L}]|$)/iu;
+const LETTRES_UKRAINIENNES = /[іїєґ]/iu;
+const LETTRES_RUSSES = /[ыэё]/iu;
+const ER_BULGARE = /ъ/iu;
+const MOTS_BULGARES =
+  /(^|[^\p{L}])(съм|си|сме|сте|са|какво|кой|кога|къде|защо|много|добре|това|няма|ще|аз|мога|гледа|гледам|искам|този|започва|благодаря|страхотен|поздрави|дошли)([^\p{L}]|$)/iu;
+
+function cyrilliqueQuelleLangue(text: string): string | undefined {
+  if (LETTRES_MONGOLES.test(text) || MOTS_MONGOLS.test(text)) return undefined;
+  if (LETTRES_UKRAINIENNES.test(text)) return 'uk';
+  if (!LETTRES_RUSSES.test(text) && (ER_BULGARE.test(text) || MOTS_BULGARES.test(text))) return 'bg';
+  return 'ru';
 }
 
 /** Unicode script → language mapping. More reliable than franc on short texts. */
@@ -98,24 +251,48 @@ function detectByScript(text: string): string | undefined {
   let hangul = 0;
   let arabic = 0;
   let cyrillic = 0;
+  // L'hebreu est aussi peu ambigu que l'arabe depuis son ecriture, et il
+  // manquait. Mesure : franc-min ne le couvre pas du tout, il rend `und` sur une
+  // phrase hebraique complete, donc `detectLanguage` rendait undefined et le
+  // pipeline ecartait le message pour langue inconnue. L'hebreu est pourtant une
+  // des 42 langues proposees et la fiche des stores annonce l'ecriture de droite
+  // a gauche par "arabe, hebreu, persan".
+  let hebrew = 0;
   let thai = 0;
   let devanagari = 0;
-  let total = 0;
   for (const ch of text) {
     const c = ch.codePointAt(0)!;
     if (c <= 0x7f || /\s/.test(ch)) continue;
-    total++;
     if (c >= 0x3040 && c <= 0x30ff) kana++;
     else if ((c >= 0x3400 && c <= 0x9fff) || (c >= 0xf900 && c <= 0xfaff)) han++;
     // Syllables, plus the compatibility jamo Korean chat writes on their own
-    // (ㅋㅋ, ㅠㅠ, ㅇㅇ). Without them those letters counted toward the total while
-    // feeding no script, which pushed a short line below the majority threshold.
+    // (ㅋㅋ, ㅠㅠ, ㅇㅇ). Sans eux, une ligne de jamo nus ne nourrit aucune ecriture
+    // et le denominateur ci-dessous vaut zero, donc plus rien n'est lu. Ce
+    // correctif-la etait le symptome ; la cause etait le denominateur, qui
+    // comptait tout le non-ASCII et est corrige plus bas.
     else if ((c >= 0xac00 && c <= 0xd7af) || (c >= 0x3130 && c <= 0x318f)) hangul++;
     else if (c >= 0x0600 && c <= 0x06ff) arabic++;
+    else if (c >= 0x0590 && c <= 0x05ff) hebrew++;
     else if (c >= 0x0400 && c <= 0x04ff) cyrillic++;
     else if (c >= 0x0e00 && c <= 0x0e7f) thai++;
     else if (c >= 0x0900 && c <= 0x097f) devanagari++;
   }
+  // Le denominateur ne compte QUE les caracteres qui portent une ecriture
+  // connue. Il comptait tout le non-ASCII, emoji compris, et un emoji ne
+  // nourrit aucune des huit ecritures : il gonflait le denominateur sans
+  // jamais pouvoir gagner la majorite.
+  //
+  // Mesure de ce que cela coutait, sur les cinq langues majoritaires que ce
+  // pre-controle est le seul a servir : "да" plus deux emoji tombait a 2 sur 4,
+  // donc pas de majorite stricte, donc `undefined` ; "رائع" plus quatre emoji
+  // tombait pareil et franc reprenait la main pour repondre PERSAN sur de
+  // l'arabe. Un chat sans emoji n'existe pas, donc ce n'etait pas un cas limite.
+  const total = kana + han + hangul + arabic + hebrew + cyrillic + thai + devanagari;
+  // Le plancher reste a deux, et c'est lui qui empeche un seul caractere
+  // etranger de voler une ligne latine : un homoglyphe cyrillique dans un mot
+  // anglais compte 1, et a un plancher de 1 la ligne entiere devient russe.
+  // Le prix est connu et accepte : un message CJK d'un seul caractere reste
+  // muet.
   if (total < 2) return undefined;
   const pct = (n: number) => n / total > 0.5;
   // Any kana ⇒ Japanese (Chinese never uses it). Pure Han is ambiguous → defer to
@@ -123,8 +300,9 @@ function detectByScript(text: string): string | undefined {
   if (kana > 0) return 'ja';
   if (pct(hangul)) return 'ko';
   if (pct(han)) return undefined;
-  if (pct(arabic)) return 'ar';
-  if (pct(cyrillic)) return 'ru';
+  if (pct(arabic)) return arabeOuPersan(text);
+  if (pct(hebrew)) return 'he';
+  if (pct(cyrillic)) return cyrilliqueQuelleLangue(text);
   if (pct(thai)) return 'th';
   if (pct(devanagari)) return 'hi';
   return undefined;
@@ -184,6 +362,25 @@ export function detectLanguage(text: string): string | undefined {
 
   const lookedUp = detectByLookup(trimmed);
   if (lookedUp) return lookedUp;
+
+  // L'arabizi, apres la recherche en table et avant franc.
+  //
+  // Il n'est pas dans `detectByLookup` a dessein : ce que cette fonction rend
+  // part au moteur comme langue source via `confidentLanguage`, et annoncer
+  // `sl=ar` sur du texte en lettres latines n'a pas ete mesure. Ici, la reponse
+  // alimente les filtres et le drapeau, et le moteur continue de deviner seul.
+  //
+  // Ce que cela repare : avec une liste de langues sources autorisee, un message
+  // arabizi sortait en `lang_unknown`, donc un lecteur arabophone qui restreint
+  // ses sources a `ar` perdait exactement les messages qu'il voulait lire.
+  // Les langues ecrites au clavier latin sans l'etre : russe, grec, japonais
+  // romanises. Meme place et meme raison que l'arabizi : la reponse nourrit les
+  // filtres et le drapeau, pas le `sl` envoye au moteur, parce qu'annoncer une
+  // ecriture qui n'est pas dans le texte n'a pas ete mesure.
+  const romanise = romanisedLanguage(trimmed);
+  if (romanise) return romanise;
+
+  if (isArabizi(trimmed)) return 'ar';
 
   const francCode = franc(trimmed, { minLength: 3 });
   if (francCode === 'und') {

@@ -47,6 +47,69 @@ const EMOJI_OR_SYMBOL = /[\p{Emoji_Presentation}\p{Extended_Pictographic}\p{P}\p
  * (wwww, kkkk, jajaja, 草草草, lololol), single repeated character, digits/punct only.
  * Cheap to skip and avoids garbage translations like "WWWW" -> "wwww".
  */
+import { isLaughter } from '~/shared/laughter';
+
+/**
+ * Une promenade sur une rangee du clavier, pas un mot.
+ *
+ * Le martelement est frequent et couteux : mesure sur quinze formes attestees,
+ * dont le turc `askfhsjkd` et l'espagnol `asdasdasd`, ZERO n'etait ecarte. Les
+ * quinze partaient au moteur, et trois en ressortaient avec une langue :
+ * `asdasdasd` portugais, `zxcvbnm` espagnol, `hjkhjkhjk` neerlandais. Une langue
+ * fausse sur un message qui n'en a aucune.
+ *
+ * Le critere est la proportion de paires de lettres voisines qui vivent sur la
+ * MEME rangee du clavier. Le critere evident, l'absence de voyelles, a ete
+ * mesure et jete : le tcheque a de vrais mots sans voyelle, `krk`, `prst`,
+ * `smrt`, et un filtre qui les avale ecarte de la parole en silence.
+ *
+ * Seuils choisis sur mesure, pas au jugement. Contre quinze martelements et
+ * quarante mots reels pris dans le pire cas, consonnes alignees des langues
+ * slaves comprises : a 0,6 il reste deux faux positifs, `wzglad` et `jugada` ;
+ * a partir de 0,65 il n'y en a plus aucun et les quinze sont pris. 0,7 laisse la
+ * marge des deux cotes. Sous six lettres le signal ne veut rien dire, au-dessus
+ * de sept on commence a rater `zxcvbnm`.
+ *
+ * Ce que ce critere ne pretend pas etre : universel. Les rangees sont celles de
+ * QWERTY. Un martelement tape sur AZERTY tombe en grande partie dans les memes
+ * lettres, la rangee du milieu ne differant que par ses extremites, mais ce
+ * n'est pas mesure et le filtre ne s'applique qu'a un message d'un seul mot,
+ * ou le doute coute le moins.
+ */
+const RANGEES_CLAVIER = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
+const MARTELEMENT_LONGUEUR_MIN = 6;
+const MARTELEMENT_PROPORTION = 0.7;
+
+export function isKeyboardSmash(text: string): boolean {
+  const t = text.trim().toLowerCase();
+  // Un seul mot : c'est ainsi que le martelement se tape, et restreindre la
+  // regle a ce cas est ce qui garde une phrase reelle hors de portee.
+  if (/\s/.test(t)) return false;
+  const lettres = t.replace(/[^a-z]/g, '');
+  if (lettres.length < MARTELEMENT_LONGUEUR_MIN) return false;
+  if (lettres.length !== t.length) return false;
+
+  // Un mot etire n'est pas un martelement, et il en porte pourtant la signature :
+  // une lettre tenue vit forcement sur une seule rangee. Mesure : `siiiiiiii` et
+  // `NOOOOOO` etaient pris a tort par la seule regle des rangees. Ce qui les
+  // separe est le nombre de lettres differentes, six ou plus contre deux ou
+  // trois, ou bien un GROUPE de lettres repete plutot qu'une lettre tenue :
+  // `asdasdasd` est trois fois "asd", `holaaaaa` est "hola" plus un a tenu.
+  // Le rire est teste avant celui-ci dans `isNoise`, donc `jajaja` et `wkwkwk`
+  // n'arrivent jamais ici.
+  const distinctes = new Set(lettres).size;
+  const groupeRepete = /^(.{2,4})\1{2,}$/.test(lettres);
+  if (distinctes < 6 && !groupeRepete) return false;
+
+  let memeRangee = 0;
+  for (let i = 0; i < lettres.length - 1; i++) {
+    const a = RANGEES_CLAVIER.findIndex((r) => r.includes(lettres[i]!));
+    const b = RANGEES_CLAVIER.findIndex((r) => r.includes(lettres[i + 1]!));
+    if (a >= 0 && a === b) memeRangee++;
+  }
+  return memeRangee / (lettres.length - 1) >= MARTELEMENT_PROPORTION;
+}
+
 export function isNoise(text: string): boolean {
   const t = text.trim();
   if (!t) return true;
@@ -58,15 +121,16 @@ export function isNoise(text: string): boolean {
   const lower = stripped.toLowerCase();
   // single character repeated (wwww, ーーー, 草草草, !!!)
   if (/^(.)\1*$/u.test(lower)) return true;
-  // laughter variants across languages:
-  //  EN wwww/lol/lolol/haha · BR-PT kkkk/rsrs/huehue · ES jaja · xd/xddd · hehe/hihi · uwu/owo
-  if (
-    /^(?:w+|ｗ+|k{2,}|x{2,}|x+d+|(?:rs)+|(?:hue)+|(?:l+o+)+l*|(?:ja){2,}|(?:ha){2,}|(?:ah){2,}|(?:he){2,}|(?:hi){2,}|u?wu|owo)$/i.test(
-      lower,
-    )
-  ) {
-    return true;
-  }
+  // Le rire vit dans `~/shared/laughter`, une table par langue avec ses
+  // sources, plutot qu'une alternation grossie a la main ici. Elle sert deux
+  // fois : reconnaitre un message qui n'est que du rire, et dire de quelle
+  // langue une forme releve quand elle en marque une.
+  if (isLaughter(lower)) return true;
+  // Sur le texte ORIGINAL, pas sur `lower` : le filtrage ci-dessus retire les
+  // espaces, et le martelement se reconnait a ce qu'il est d'un seul mot. Passe
+  // la version sans espaces, "hahaha ha que risa" devient un mot de quinze
+  // lettres majoritairement sur la rangee du milieu, donc du martelement.
+  if (isKeyboardSmash(t)) return true;
   // digits / punctuation only
   if (/^[\d\s.,!?'"()-]+$/u.test(t)) return true;
 

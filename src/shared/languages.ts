@@ -101,6 +101,12 @@ const FRANC_MAP: Record<string, string> = {
   tam: 'ta',
   msa: 'ms',
   zsm: 'ms',
+  // Le code que franc-min emet reellement pour le malais. `msa` est le
+  // macrolangage et `zsm` le malais standard ; franc rend `zlm`, et sans lui la
+  // table ne reconnaissait rien, donc le chat malais partait en langue inconnue.
+  // Mesure sur une phrase malaise : franc `zlm`, table undefined,
+  // `detectLanguage` undefined.
+  zlm: 'ms',
   tgl: 'tl',
   fil: 'tl',
 };
