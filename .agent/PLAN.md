@@ -323,16 +323,91 @@ reads dist/, so it serialises behind any build. D touches no code.
   Kick page, +0.68 percent against the reference where the pass had been sitting
   at +0.35, and the build is what caught it. Moved into a `//` comment, which
   the minifier erases, and the notes are back to the length of their neighbours.
-- [ ] **1754 bytes of prose travel to every viewer.** 42 of the laughter table's
-  45 notes are in the shipped content script, 0.85 percent of it, and roughly
-  half of the 3791 bytes that table was measured to cost. Nothing reads `note`
-  at runtime: the only reader is `laughter.test.ts`, which asserts every form
-  carries one longer than eight characters, and that rule is worth keeping since
-  it is what makes provenance non-optional. So the bytes are reclaimable by
-  stripping the field at build time rather than by dropping the discipline. Not
-  done: the weight item has been looking for margin in the detector for three
-  passes, and this is the first lead that does not cost accuracy, which makes it
-  worth a decision rather than a reflex.
+- [x] **The transliteration guard is rescued, measured against the real
+  provider, and wired.** 427 lines that existed on one disk, untracked since
+  2026-06-08 in a stale second clone, addressing a hole this branch does not
+  touch: a provider that answers a short Latin-script message with a phonetic
+  spelling in the target's script instead of a translation. Committed verbatim
+  first, wiring second, on `feat/transliteration-guard`, pushed. I did not write
+  it and cannot claim it; a fresh session has no record of the work and the file
+  carries no authorship.
+  **What 90 pairs through the endpoint the product actually calls said**, with
+  the intent per category written before the counting. Transliteration, the
+  input's sounds in the target's script and no meaning delivered: ja 4/18,
+  ko 5/18, zh 2/18, ru 5/18, ar 2/18, so 18 of 90. A second defect the guard was
+  not built for and repairs by accident, the wrong sense of a real word, `coucou`
+  read as the cuckoo bird in four targets of five and `merci` as mercy in ko and
+  ar: 8 of 90. The remaining 64 are fine, register differences included.
+  **The dictionary is mostly a zero-latency cache and its own header does not say
+  so**: it repairs 26 of the 90, replaces 35 already-correct answers with its own
+  chat register, matches 29, and answers all 90 without touching an endpoint that
+  soft-bans per IP. Recorded as `local`, not `google`.
+  **The cascade ships with its ceiling written beside it.** It can only see
+  Japanese, since pure katakana out of Latin input is visible while a phonetic
+  spelling in hangul, hanzi, Cyrillic or Arabic looks exactly like a word, so 14
+  of the 18 are invisible to it. On 50 short Latin lines outside the dictionary
+  it fires three times and one is repaired by the next provider; the other two
+  are `clutch` and `sheesh`, whose katakana is correct Japanese. A false positive
+  costs one round trip and never a worse answer.
+  **A free repair measured and thrown away**: the provider returns the source
+  language it detected, so gating the cascade on "not English" looked free. It is
+  anti-correlated. Google answers `en` for bonjour, merci, gracias, ciao and
+  lindo precisely because it failed to identify them, so the rule kills five
+  repairs of six and keeps none of the six controls.
+  **Weight is the question that was open and it is now a measurement**: +0.82
+  percent before and after, because the 90-entry dictionary is tree-shaken out of
+  the content script entirely. The DeepL hint moved out of `compose.ts`, where
+  the rescued wiring built it and it cost 380 bytes on every Kick page for a
+  field only one provider reads, into `deepl.ts`.
+  Three witnesses, each seen red, including a new offline gate,
+  `translate-override`, that drives the real extension with a Japanese target.
+- [k] **Whether the transliteration branch lands, and as what version.** The
+  branch is green on its own gates and adds a user-visible behaviour to a 2.9.4
+  that is not released. Nothing was bumped: naming a release is kil's, like
+  merging and tagging. The two branches do not conflict, they touch disjoint
+  files apart from `run-gates.mjs`.
+- [x] **The 1754 bytes of prose no longer travel, and the field did not need a
+  build step to stop.** 42 of the laughter table's 45 notes were in the shipped
+  content script, 0.85 percent of it, about half of what that table was measured
+  to cost. The plan called for stripping the field at build time; the cheaper
+  answer was that `note` did not have to be a field. It is `LAUGHTER_NOTES` now,
+  keyed by the source of the pattern it describes, exported for the test and
+  never referenced by shipped code, so the bundler drops it with no build
+  configuration at all. Keyed rather than indexed because a parallel array would
+  shift silently on an insertion and the parity test could only see a length
+  mismatch. Weight went from +0.82 percent against the reference to **-0.10**:
+  2.1 KB left the page for 1754 bytes of prose, the field names and the entry
+  structure paying the difference. The discipline is untouched, one note over
+  eight characters per form, plus a new assertion against a note whose form is
+  gone. The probe that measured this now measures zero by construction, so it was
+  retargeted into a tracked gate, `poids-notes`, that asserts the same property
+  from the other side. It covers what `audit-poids` cannot: 0.85 percent fits
+  inside a 2 percent margin without a word. **The witness is worth keeping**:
+  referencing `LAUGHTER_NOTES` from `isLaughter` with a CONSTANT key does not
+  turn the gate red, because esbuild folds the lookup and the object still
+  leaves; with a dynamic key it goes red on all thirty notes. The first witness
+  proved nothing and looked like it did.
+- [x] **Bulgarian in Latin letters is read, and what a marker table cannot do is
+  the finding.** The item called shlyokavitsa "a third table of the
+  `romanised.ts` kind". It is a fourth language in that one, which is what made
+  it small: the file defines itself as languages written in Latin letters that
+  are not written that way. Markers built from grammatical paradigms take 10 of
+  20 lines written alongside them and **zero of the 4 written the day before**,
+  before the list existed. A paradigm gives a textbook's words; a chat writes
+  "mnogo dobre igra" and "az sam tuk", which carry none of them, and the words a
+  chat writes are the ambiguous ones, `dobre` Polish, `az` Hungarian, `sam` an
+  English given name, `mnogo` and `smeshno` romanised Russian. One decides
+  nothing, two in a line decide: **zero false positives over the repository's own
+  187 bench lines in 19 languages**, and 3 of the 4 held-out lines against 0.
+  The table's five-letter floor then rejected nine strong markers and was
+  respected rather than worked around; held-out recall did not move. End to end,
+  three lines become right and none becomes wrong, and `sl` stays empty on all
+  eight, asserted. **The collision is named**: `mnogo` and `smeshno` are spelled
+  the same in both romanisations, so a Russian line carrying only those comes out
+  `bg`; two of four trap lines are held by a strong `ru` marker and two are
+  taken, and what detection returned on those two before was `undefined` and
+  `pl`. Not covered by anyone: shlyokavitsa substitutes digits for letters, 6 for
+  sh and 4 for ch, so "6te" and "4ovek", and no marker sees it.
 - [ ] **The domain written without a scheme stays as it is, and kil's reason is
   better than the measurement.** `kick.com/somechannel` is detected Spanish and
   `www.example.com/watch` French, so both reach the engine as text, pay for a
@@ -387,7 +462,11 @@ reads dist/, so it serialises behind any build. D touches no code.
   phonetic transliteration instead of a translation, and nothing on this branch
   or on any remote has a copy. Rescuing that is a separate decision from the
   rewrite, and it has to happen first, because it is the only unique thing in
-  the way.
+  the way. **Done, and it is no longer in the way**: `feat/transliteration-guard`
+  is pushed, the two files committed verbatim first and the wiring second. The
+  second clone still holds the working-tree copy; nothing there is unique any
+  more, so it can be re-cloned rather than merged when the rewrite happens. See
+  the entry below for what the measurement said about it.
   **Tooling**: `git filter-repo` is not installed and neither is its Python
   module, so the operation needs `pip install git-filter-repo` first;
   `filter-branch` over 324 commits is the slow fallback nobody should pick.
