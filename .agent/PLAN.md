@@ -242,21 +242,49 @@ reads dist/, so it serialises behind any build. D touches no code.
   languages. The 40 unmapped languages are absorbing wrong answers, which is
   worth knowing before anyone trims them to save bytes, and it is also why the
   trim above turns silences into answers rather than fixing anything.
-- [ ] **A source allowlist drops a short message for a reason the reader did not
-  ask for, and the rate is a Latin rate.** `shouldDropBySourceLang` returns
-  `lang_unknown` when detection is silent. Silent on 10 of the 51 Latin lines,
-  20 percent, which is the figure this item first carried; on the full bench of
-  176 it is 11, and of those 11 exactly one is non-Latin, the two-character
-  Chinese line. So the number to quote is per language: es 1/8, pt 3/6, tr 2/4,
-  it 1/4, pl 1/3, id 2/3, zh 1/25, and zero for ar, ja, ko and ru. The option says "Pick specific ones to ONLY translate those", so
-  dropping what cannot be identified is consistent with what it promises, and a
-  reader who allowlists JA and KO does want Latin chat gone. But a reader who
-  allowlists ES loses the Spanish lines franc could not place, which is not what
-  they asked for and nothing tells them. Not touched: the fix that suggests
-  itself, letting a silent line through and deciding on the engine's own
-  `detectedLang` after the call, spends provider calls on messages the reader
-  may not want, and choosing between the two needs the frequency, which needs a
-  corpus.
+- [x] **The short-word table was built from greetings, and a chat message is not
+  a greeting.** hola, merci, danke, grazie, obrigado: that is what you write when
+  you picture a chat, and it is not what an arbitrary message contains. Measured
+  cost: of the eleven lines detection could not name, half were ordinary
+  Portuguese and Turkish, "nao acredito nisso", "vamos ganhar essa", "ne oluyor
+  burada", carrying no table word at all. The second set of entries is STRUCTURE
+  words, the ones that turn up in any sentence, under the table's own rule, and
+  that rule is what picks the es/pt pairs since spelling separates them cleanly:
+  nao against no, hoje against hoy, agora against ahora, pode against puede,
+  estao against estan, essa against esa. Measured over the 176-line bench: right
+  152 to **157**, silent 11 to **8**, confidently wrong 13 to **11**, silently
+  lost pairs 8 to **6**; over the ten alone, right 138/152 to **143/152** and
+  losses 5 to **3**. Six lines moved on the Latin bench, all in the right
+  direction, two of them from wrong to right, and five gained a correct source
+  language for the engine. 530 bytes, and not one extra provider call.
+- [x] **The Latin bench is in the repository too, as a ledger rather than a
+  floor.** `src/content/langDetect.latin.test.ts` pins all 51 lines with what
+  detection returns today and what it dares send as a source language. Where the
+  verdict differs from the truth the line is a known defect, written as such.
+  A floor would be noise here since the rates run from 1 of 4 to 4 of 5, so what
+  the file guarantees instead is that any change to the detector turns exactly
+  the lines that moved red. It earned that in the same pass: the structure words
+  above turned six red, and reading them was how the direction of the change was
+  checked rather than assumed. Two invariants sit beside the ledger and are real
+  rules rather than records: no non-English line may be classified English, and
+  no confident source language may ever be wrong.
+- [x] **The source allowlist was fixed one layer below itself.**
+  `shouldDropBySourceLang` returns `lang_unknown` when detection is silent, and
+  the line dies before any call with that reason left on it, so it is visible to
+  whoever hovers rather than silent in the strict sense. The rate this item first
+  carried, one short message in five, was a Latin rate; on the full bench it was
+  11 of 176, and exactly one of those 11 was non-Latin. The obvious repair, let
+  the line through and decide on the engine's own `detectedLang` after the call,
+  was measured and cannot be right for both readers, because **the two sides are
+  the same lines**: what the viewer whose allowlist matches the chat loses is
+  precisely what the viewer whose allowlist does not match would newly pay for,
+  message for message. The option promises "ONLY translate those", so both
+  readings are legitimate and no threshold arbitrates between them. So it was
+  fixed in detection instead, where it costs nothing and serves both: pt from 3
+  lost of 6 to 1, tr from 2 of 4 to 1, bench total 11 to 8. What remains, per
+  language rather than as one rate: id 2/3, es 1/8, pt 1/6, it 1/4, tr 1/4,
+  pl 1/3, zh 1/25, zero for ar, ja, ko and ru. Reopening the allowlist itself
+  needs a case detection cannot reach.
 
 - [x] **Three impurity categories rebuilt with their intent written down first,
   and the tenth probe that accused working code.** The deleted grid left

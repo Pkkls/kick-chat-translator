@@ -46,6 +46,20 @@ const COMMON_SHORT_TOKENS = new Set([
  * these words are checked first. Entries must be unambiguous against common
  * English and against each other, which is why near-twins across Spanish and
  * Portuguese ("gente", "vamos", "cara") are deliberately absent.
+ *
+ * La table a d'abord ete faite de salutations et de politesse, hola, merci,
+ * danke, grazie, obrigado. C'est ce qu'on ecrit en pensant a du chat, et ce
+ * n'est pas ce qu'un message quelconque contient. Mesure de ce que ca coutait :
+ * sur onze lignes que la detection ne savait pas nommer, la moitie etait du
+ * portugais et du turc ordinaires, "nao acredito nisso", "vamos ganhar essa",
+ * "ne oluyor burada", sans un seul mot de la table. Un lecteur qui restreint ses
+ * sources a `pt` perdait alors la moitie de son portugais, et pareil en turc.
+ *
+ * Le second jeu d'entrees est donc fait de mots de STRUCTURE, ceux qui reviennent
+ * dans n'importe quelle phrase. Ils suivent la meme regle et c'est elle qui
+ * decide des paires es/pt, ou l'orthographe separe nettement : nao contre no,
+ * hoje contre hoy, agora contre ahora, pode contre puede, estao contre estan,
+ * essa contre esa.
  */
 const SHORT_WORD_LANG = new Map<string, string>([
   ['hola', 'es'], ['gracias', 'es'], ['buenas', 'es'], ['buenos', 'es'], ['adios', 'es'],
@@ -76,6 +90,24 @@ const SHORT_WORD_LANG = new Map<string, string>([
   ['selam', 'tr'], ['merhaba', 'tr'], ['tamam', 'tr'], ['güzel', 'tr'], ['guzel', 'tr'],
   ['kanka', 'tr'], ['teşekkür', 'tr'], ['tesekkur', 'tr'], ['evet', 'tr'], ['hayır', 'tr'],
   ['hayir', 'tr'], ['kardeşim', 'tr'],
+
+  // Mots de structure. Meme regle que ci-dessus : chacun est separe de son
+  // jumeau dans l'autre langue par l'orthographe, pas par le contexte.
+  ['hace', 'es'], ['alguien', 'es'], ['puede', 'es'], ['estan', 'es'], ['están', 'es'],
+  ['nadie', 'es'], ['eso', 'es'], ['esa', 'es'],
+
+  ['nao', 'pt'], ['não', 'pt'], ['hoje', 'pt'], ['agora', 'pt'], ['pode', 'pt'],
+  ['estao', 'pt'], ['estão', 'pt'], ['essa', 'pt'], ['esse', 'pt'], ['isso', 'pt'],
+  ['alguem', 'pt'], ['alguém', 'pt'],
+
+  ['vraiment', 'fr'], ['rien', 'fr'], ['mec', 'fr'],
+
+  ['jemand', 'de'], ['denn', 'de'], ['ist', 'de'],
+
+  ['qualcuno', 'it'], ['questo', 'it'], ['bene', 'it'],
+
+  ['burada', 'tr'], ['oluyor', 'tr'], ['bir', 'tr'], ['için', 'tr'], ['icin', 'tr'],
+  ['değil', 'tr'], ['degil', 'tr'],
 ]);
 
 /**
