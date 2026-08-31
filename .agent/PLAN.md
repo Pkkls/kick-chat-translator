@@ -154,29 +154,31 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Done, kept for the record
 
-- [x] **franc against tinyld-light: measured, and tinyld wins on every axis that
-  matters.** The experiment the previous pass named, run on the same corpora.
-  Short chat, 30 non-English messages and 10 English: franc gets 9 right, 12
-  wrong, 9 silent; tinyld gets 17 right, 9 wrong, 4 silent. The number that
-  decides, non-English messages classified English and therefore dropped in
-  silence by `ignoreEnglish`: franc 1 of 30, tinyld **0 of 30**. And on actual
-  English, which is what `ignoreEnglish` exists to catch, franc recognises 2 of
-  10 against tinyld's 8.
-- [x] **Coverage is a tie, which is the finding that surprised me.** One phrase
-  per language across the product's 42, long enough that the question is
-  coverage and not length: franc-min recognises 26, tinyld-light 25. franc's
-  extra 35 languages buy exactly one more correct answer, and franc misses
-  Arabic and Hebrew entirely, returning nothing, which is why the Unicode script
-  pre-check had to exist. tinyld gets both.
-- [x] **And it is far smaller.** Bundled and minified, measured rather than read
-  off a metafile: franc-min 174824 bytes, tinyld-light 81121. That is 93703
-  bytes, forty percent of the whole injected script, and it is MIT with no
-  dependencies.
-- [x] **Transliteration is not subsumed by it.** Both detectors guess and both
-  guess wrong: romanised Russian is Norwegian to tinyld and Indonesian to franc,
-  greeklish is German, romaji is Turkish. The transliteration families stay a
-  separate problem with their own word lists.
-## Done, kept for the record
+- [x] **franc against tinyld-light: franc keeps the job, and the first verdict I
+  published was wrong.** A first duel on 30 messages had tinyld winning
+  everything, including the number declared decisive before the experiment:
+  non-English messages classified English and therefore dropped in silence by
+  `ignoreEnglish`, franc 1 of 30 against tinyld 0. Four more messages were then
+  added, taken from the tests the swap had broken, and the decisive number
+  reversed: **franc 1 of 34, tinyld 5**. tinyld calls `guten abend`, `tebrikler`
+  and `velmi dobre` English. The first corpus was too small to contain the cases
+  that decide, which is the whole reason that number was chosen in advance.
+- [x] **No threshold design rescues it, and the reason is instructive.** tinyld
+  returns a confidence score where franc returns none, so the obvious repair is
+  to stay silent below a bar. It makes things worse: below the bar the ASCII
+  fallback calls the message English, so a stricter bar anglicises more, 20 of
+  34 at 0.15. Applying the bar only to the English verdict takes 5 down to 4 and
+  costs English recognition, 9 of 10 down to 5, and the result is flat from 0.2
+  to 0.8, meaning tinyld is confidently wrong on those three rather than
+  hesitant.
+- [x] **What tinyld does win, for the record.** Global accuracy, 18 correct
+  against 11, and 4 silences against 9. Coverage is a tie, 25 against 26 on one
+  phrase per language across the product's 42, and franc misses Arabic and
+  Hebrew entirely. And weight: bundled and minified, 81121 bytes against 174824,
+  which is 93703 and forty percent of the injected script. That saving is real
+  and it is not available: it costs four readers their message for every one it
+  saves. The margin cannot be bought this way.
+
 
 - [x] **Arabizi is detected, and the damage it did was not what the grid
   assumed.** The grid scored it 0 of 5 for returning no language. Measured
