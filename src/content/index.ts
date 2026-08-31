@@ -32,6 +32,7 @@ import { extractChannelSlug, fetchChannelLangIso } from './kickApi';
 import { localEngine } from './localEngine';
 import { logPlatform, refresh7TV } from './platform';
 import { langFlag, withFavorite } from '~/shared/languages';
+import { PAUSED_CHANNELS_MAX, ROUTE_POLL_MS } from '~/shared/constants';
 import { msg as localised, setContentLocale } from './msg';
 
 const log = rootLogger.child('content');
@@ -66,9 +67,29 @@ async function main(): Promise<void> {
     });
   }
 
-  const pipeline = new TranslationPipeline(settings);
-  const compose = new ComposeController(settings, (patch) => void patchSettings(patch));
   let currentSlug: string | undefined;
+
+  /**
+   * Les reglages tels que CETTE chaine les voit.
+   *
+   * `enabled` est l'interrupteur general, celui du popup et de la page d'options.
+   * Le bouton du bandeau est une PAUSE sur un chat, et c'est ce qu'il a l'air
+   * d'etre : il n'ecrit plus `enabled`, il ajoute ou retire la chaine courante de
+   * `pausedChannels`. Avant, mettre en pause sur un stream eteignait le produit
+   * sur tous les autres, dans tous les onglets, et durablement, ce qu'aucun
+   * bouton pause ne promet.
+   *
+   * Tout ce qui lit `enabled` recoit cette vue et rien d'autre : le pipeline, la
+   * composition et le bandeau. Aucun de ces modules n'a eu a changer, et il n'y a
+   * donc qu'un seul endroit ou la regle vit.
+   */
+  function vueLocale(base: Settings = settings, slug = currentSlug): Settings {
+    if (!slug || !base.pausedChannels.includes(slug)) return base;
+    return { ...base, enabled: false };
+  }
+
+  const pipeline = new TranslationPipeline(vueLocale());
+  const compose = new ComposeController(vueLocale(), (patch) => void patchSettings(patch));
 
   const observer = new ChatObserver((msg) => {
     void pipeline.onDomMessage({
@@ -121,8 +142,18 @@ async function main(): Promise<void> {
           barPolling = false;
           return;
         }
-        mountFloatingBar(host, settings, {
-          onToggle: (enabled) => void patchSettings({ enabled }),
+        mountFloatingBar(host, vueLocale(), {
+          onToggle: (enabled) => {
+            const slug = currentSlug;
+            // Hors d'une chaine il n'y a rien a mettre en pause localement, donc
+            // le bouton retombe sur l'interrupteur general plutot que de ne rien
+            // faire sous le doigt.
+            if (!slug) return void patchSettings({ enabled });
+            const sansElle = settings.pausedChannels.filter((c) => c !== slug);
+            void patchSettings({
+              pausedChannels: enabled ? sansElle : [slug, ...sansElle].slice(0, PAUSED_CHANNELS_MAX),
+            });
+          },
           // Picking on the bar seeds the favourites, the same way picking in
           // the composer already did. That is the whole configuration step for
           // the flag tiles: the three or four languages someone actually
@@ -197,11 +228,25 @@ async function main(): Promise<void> {
     }, 12_000);
   }
 
-  function attachForRoute(): void {
+  /**
+   * `force` sert quand le slug n'a pas bouge mais que son verdict, si : mettre
+   * la chaine courante en pause ou l'en sortir. Sans lui, la sortie anticipee
+   * sur `slug === currentSlug` avalait la reprise et le bandeau repassait au
+   * vert sans que rien ne redemarre.
+   */
+  function attachForRoute(force = false): void {
     const slug = extractChannelSlug(location.pathname);
-    if (slug === currentSlug) return;
+    if (slug === currentSlug && !force) return;
     currentSlug = slug;
     log.debug('route change, channel slug:', slug);
+
+    // La chaine a change, donc la vue locale aussi : une chaine en pause et une
+    // qui ne l'est pas ne donnent pas le meme `enabled`, et le pipeline comme le
+    // bandeau doivent l'apprendre avant que la premiere ligne arrive.
+    const vue = vueLocale(settings, slug);
+    pipeline.updateSettings(vue);
+    compose.updateSettings(vue);
+    updateFloatingBar(vue);
 
     if (!slug) {
       observer.stop();
@@ -231,12 +276,41 @@ async function main(): Promise<void> {
   if (settings.showFloatingBar) mountBar();
   watchBar();
 
-  const origPush = history.pushState.bind(history);
-  history.pushState = ((...args: Parameters<typeof origPush>): void => {
-    origPush(...args);
+  // Le changement de chaine, et pourquoi le patch qui etait ici ne pouvait pas
+  // marcher.
+  //
+  // Il y avait deux declencheurs : un patch de `history.pushState` et un
+  // ecouteur `popstate`. `popstate` ne se declenche pas sur un `pushState`, il
+  // ne sert qu'au retour arriere du navigateur. Restait le patch, et un script
+  // de contenu vit dans un MONDE ISOLE : son `history` est un autre objet
+  // JavaScript au-dessus du meme historique, donc patcher la n'intercepte rien
+  // de ce que le routeur du site appelle chez lui. Mesure depuis le monde
+  // principal, celui du site : `String(history.pushState)` rend
+  // `function pushState() { [native code] }`.
+  //
+  // Consequence, mesuree sur trois chaines visitees sans rechargement : l'API de
+  // Kick n'a ete interrogee que pour la premiere, donc l'apercu de composition
+  // continuait d'ecrire dans la langue d'une chaine quittee. Les traductions
+  // entrantes, elles, survivaient par un autre chemin, le `containerWatcher` de
+  // l'observateur, ce qui est exactement pourquoi la porte `translate-navigation`
+  // etait verte sur un produit casse.
+  //
+  // Un sondage de l'URL n'a pas ce probleme : il ne depend d'aucun monde,
+  // d'aucun evenement que le site voudrait bien emettre, et il marche pareil sur
+  // Firefox, qui n'a pas d'API de navigation. `attachForRoute` compare le slug et
+  // sort tout de suite quand il n'a pas bouge, donc le prix est une comparaison
+  // de chaines deux fois par seconde. `popstate` reste pour que le retour arriere
+  // soit immediat au lieu d'attendre le prochain tour.
+  let dernierChemin = location.pathname;
+  setInterval(() => {
+    if (location.pathname === dernierChemin) return;
+    dernierChemin = location.pathname;
     attachForRoute();
-  }) as typeof history.pushState;
-  window.addEventListener('popstate', () => attachForRoute());
+  }, ROUTE_POLL_MS);
+  window.addEventListener('popstate', () => {
+    dernierChemin = location.pathname;
+    attachForRoute();
+  });
 
   // Retry on focus: when pauseWhenHidden is ON and the user comes back to this tab,
   // messages that arrived while hidden are marked (data-kt-id) but never translated.
@@ -346,25 +420,31 @@ async function main(): Promise<void> {
   }
 
   watchSettings((next) => {
-    const wasEnabled = settings.enabled;
+    // Le verdict qui compte est celui de la chaine courante, pas l'interrupteur
+    // general : c'est lui qui decide si l'observateur tourne et ce que le
+    // bandeau affiche.
+    const wasEnabled = vueLocale().enabled;
     const prev = settings;
     settings = next;
-    pipeline.updateSettings(next);
-    compose.updateSettings(next);
+    const vue = vueLocale(next);
+    pipeline.updateSettings(vue);
+    compose.updateSettings(vue);
     rootLogger.setEnabled(next.debug);
     // Ahead of everything that redraws below, so the bar and the chip come back
     // in the language that was just chosen rather than one change late.
     setContentLocale(next.uiLang);
-    updateFloatingBar(next);
+    updateFloatingBar(vue);
     applyShowOriginal(next.showOriginal);
     refreshChip();
 
     // Ordered after updateSettings on purpose: the rows are re-run through the
     // pipeline, which must already hold the new settings when they arrive.
-    if (next.enabled && RERENDER_KEYS.some((k) => prev[k] !== next[k])) retranslateHandledRows();
+    if (vue.enabled && RERENDER_KEYS.some((k) => prev[k] !== next[k])) retranslateHandledRows();
 
-    if (next.enabled && !wasEnabled) attachForRoute();
-    if (!next.enabled && wasEnabled) {
+    // `force` : sortir la chaine courante de pause ne change pas le slug, donc
+    // sans lui la reprise etait avalee par la sortie anticipee.
+    if (vue.enabled && !wasEnabled) attachForRoute(true);
+    if (!vue.enabled && wasEnabled) {
       observer.stop();
     }
     if (next.showFloatingBar) mountBar();

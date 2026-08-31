@@ -19,6 +19,18 @@ export const LINGVA_POOL = ['https://lingva.lunar.icu', 'https://lingva.ml'];
 // Google web-endpoint client params; rotating helps avoid per-(IP,client) throttling.
 export const GOOGLE_CLIENTS = ['gtx', 'dict-chrome-ex'];
 
+/**
+ * A quelle cadence l'URL est relue pour voir un changement de chaine.
+ *
+ * Un script de contenu ne peut pas intercepter le `pushState` du site : il vit
+ * dans un monde isole et son `history` est un autre objet. Mesure depuis le
+ * monde principal, `history.pushState` y est natif malgre le patch. Relire
+ * `location.pathname` ne depend d'aucun monde et marche pareil sur Firefox, qui
+ * n'a pas d'API de navigation. Le comparateur sort sur un slug inchange, donc le
+ * prix est une comparaison de chaines deux fois par seconde.
+ */
+export const ROUTE_POLL_MS = 500;
+
 export const DEEPL_BATCH_MAX = 40; // DeepL accepts up to 50 text params; stay under.
 // Coalescing window: short enough to keep latency low on quiet chats; busy chats
 // hit BATCH_MAX_ITEMS well before this elapses, so batching is preserved.
@@ -98,3 +110,15 @@ export const COMMON_BOTS = new Set([
 
 /** How many languages the composer chip keeps pinned. Four fits 340px; five does not. */
 export const FAVORITE_LANGS_MAX = 4;
+
+/**
+ * Combien de chaines peuvent rester en pause en meme temps.
+ *
+ * La pause du bandeau eteignait `enabled`, qui est global : mettre en pause sur
+ * une chaine eteignait le produit sur toutes les autres, dans tous les onglets,
+ * et durablement, alors que le bouton se lit comme "silence CETTE chaine". La
+ * liste est bornee pour la meme raison que les favoris : elle vit dans
+ * `storage.sync`, dont le quota par cle est petit, et une liste qui grandit sans
+ * fin finit par faire echouer l'ecriture de TOUS les reglages.
+ */
+export const PAUSED_CHANNELS_MAX = 50;

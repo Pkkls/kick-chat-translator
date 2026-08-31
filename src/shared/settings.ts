@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { FAVORITE_LANGS_MAX, MIN_TEXT_LENGTH, STORAGE_KEY_DEEPL_KEY, STORAGE_KEY_SETTINGS } from './constants';
+import { FAVORITE_LANGS_MAX, MIN_TEXT_LENGTH, PAUSED_CHANNELS_MAX, STORAGE_KEY_DEEPL_KEY, STORAGE_KEY_SETTINGS } from './constants';
 import { AUTO, isSupportedLang } from './languages';
 
 // A language setting is either 'auto' or a supported ISO code; anything else
@@ -18,6 +18,11 @@ export type CloudProviderId = z.infer<typeof ProviderOrderSchema>[number];
 
 export const SettingsSchema = z.object({
   enabled: z.boolean().default(true),
+  // Les chaines mises en pause depuis le bandeau, par slug. `enabled` reste
+  // l'interrupteur general, celui du popup et des options ; celui du bandeau est
+  // local, parce que c'est ce qu'un bouton pause sur un chat veut dire. Avant,
+  // il ecrivait `enabled` et eteignait tout partout.
+  pausedChannels: z.array(z.string()).max(PAUSED_CHANNELS_MAX).default([]),
   // 'auto' = read in the browser's own language (resolveBrowserLang). Works for any
   // user, anywhere, with no configuration. An explicit ISO code overrides it.
   targetLang: langSetting,
