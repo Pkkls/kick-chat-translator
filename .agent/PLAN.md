@@ -150,6 +150,32 @@ reads dist/, so it serialises behind any build. D touches no code.
   may not want, and choosing between the two needs the frequency, which needs a
   corpus.
 
+- [x] **Three impurity categories rebuilt with their intent written down first,
+  and the tenth probe that accused working code.** The deleted grid left
+  identity at 3 of 5, no-language at 5 of 6 and slang at 6 of 7, and what was
+  missing from it was not the cases but the definition of correct: a case
+  without a stated intent gets judged afterwards, and always in favour of what
+  the product already does. Rebuilt on 21 cases with the intent stated per
+  category and run in the pipeline's real order. **The probe's first version
+  accused the product on four of them**: it judged the raw text, and
+  `parseKickContent` already strips `@mentions` and scheme-carrying URLs, so
+  `@handle`, two handles, a bare `https://` URL and a handle followed by a URL
+  all come out of the parser as an empty string and die on `minTextLength`
+  before anything looks at them. A fix was written for that non-problem, wiring
+  `isLinkOrMentionOnly` from `composeLogic` into `prepare()` with a localised
+  reason in nine catalogues, and the pipeline test written for it failed by
+  reporting the length reason instead, which is what exposed the mistake. All of
+  it reverted.
+- [ ] **What survives that rebuild is the domain written without a scheme.**
+  `kick.com/somechannel` is detected Spanish and `www.example.com/watch` French:
+  the parser's URL rule wants `https?://`, so these reach the engine as text,
+  pay for a call, wear a wrong flag, and are skipped as "already in your
+  language" for a Spanish or French reader. `www.` is unambiguous enough to
+  match on its own; a bare domain needs a list of what looks like a TLD, and
+  widening the parser's URL rule also changes what renders as a link in the row,
+  which is a second decision. Frequency unknown, like everything else here, so
+  it is written down rather than fixed.
+
 - [ ] **The install rate is 40.5 percent and nothing is tuned against it.**
   Eighty-five installs for two hundred and ten first visits, over eight months.
   Fifty-eight percent of arrivals come from organic search, thirty-one direct,
