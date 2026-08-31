@@ -38,7 +38,26 @@ MANIFESTE = 'dist/manifest.json'
 # Reference : 2.9.2, la derniere version publiee au moment ou cette porte a ete
 # ecrite. Un instantane, pas un ideal. La marge laisse passer le bruit d'un
 # build a l'autre sans laisser passer une fonctionnalite.
-REFERENCE_OCTETS = 228_460
+# Reference relevee le 2026-08-31, de 228_460 a 233217, soit +4757 octets et
+# +2,08 %, ce que la porte avait signale en rougissant. La hausse est voulue et
+# se decompose, chaque module mesure minifie et isolement :
+#
+#     table des rires        3791 o   44 formes, 22 marquant une langue
+#     filtre de martelement   424 o   15/15, 0 faux positif
+#     detection arabizi       227 o   12/12, 0 faux positif
+#     ---------------------------------
+#     total attribue         4442 o
+#
+# Les ~315 octets restants sont les correctifs produit de 2.9.3 et 2.9.4 : la
+# rangee recyclee retraduite, la langue source d'un lot melange, l'hebreu et le
+# malais enfin detectes.
+#
+# La marge est de nouveau pleine, et la facon de la racheter est identifiee, pas
+# devinee : les donnees de franc pesent 98 Ko dans ce fichier, et
+# `tinyld.light.browser` en pese 68, sous licence MIT. Trente kilo-octets de
+# rendus, soit treize pour cent du bundle, si l'experience de justesse tourne en
+# sa faveur. Elle n'a pas encore tourne.
+REFERENCE_OCTETS = 233217
 MARGE = 0.02
 
 if not os.path.exists(CIBLE):

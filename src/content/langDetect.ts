@@ -1,6 +1,7 @@
 import { franc } from 'franc-min';
 import { francToIso2 } from '~/shared/languages';
 import { laughterLanguage } from '~/shared/laughter';
+import { isArabizi } from '~/shared/arabizi';
 
 const COMMON_SHORT_TOKENS = new Set([
   'lol',
@@ -198,6 +199,18 @@ export function detectLanguage(text: string): string | undefined {
 
   const lookedUp = detectByLookup(trimmed);
   if (lookedUp) return lookedUp;
+
+  // L'arabizi, apres la recherche en table et avant franc.
+  //
+  // Il n'est pas dans `detectByLookup` a dessein : ce que cette fonction rend
+  // part au moteur comme langue source via `confidentLanguage`, et annoncer
+  // `sl=ar` sur du texte en lettres latines n'a pas ete mesure. Ici, la reponse
+  // alimente les filtres et le drapeau, et le moteur continue de deviner seul.
+  //
+  // Ce que cela repare : avec une liste de langues sources autorisee, un message
+  // arabizi sortait en `lang_unknown`, donc un lecteur arabophone qui restreint
+  // ses sources a `ar` perdait exactement les messages qu'il voulait lire.
+  if (isArabizi(trimmed)) return 'ar';
 
   const francCode = franc(trimmed, { minLength: 3 });
   if (francCode === 'und') {

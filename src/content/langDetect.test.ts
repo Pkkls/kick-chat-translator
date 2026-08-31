@@ -113,3 +113,27 @@ describe('les langues proposees que rien ne detectait', () => {
     expect(detectLanguage('مساء الخير للجميع كيف حالكم اليوم في هذا البث')).toBe('ar');
   });
 });
+
+describe('l arabizi dans la detection ordinaire', () => {
+  // La fonction `isArabizi` a sa propre batterie. Ce bloc teste la REPARATION,
+  // qui est autre chose : sans lui, retirer le cablage de langDetect ne cassait
+  // aucun test, et une regle qu on peut retirer sans rien casser ne sert a rien.
+  it('rend ar pour un message ecrit en lettres latines', () => {
+    expect(detectLanguage('ya 3ammi shu hal 7aki')).toBe('ar');
+    expect(detectLanguage('kifak ya 7abibi kif el 7al')).toBe('ar');
+  });
+
+  // Le point qui compte : `confidentLanguage` alimente le `sl` envoye au moteur,
+  // et annoncer l arabe sur du texte latin n a pas ete mesure. L arabizi doit
+  // donc rester en dehors de la reponse sure, pour que le moteur continue de
+  // deviner seul.
+  it('ne devient pas une langue source sure, le moteur garde la main', () => {
+    expect(confidentLanguage('ya 3ammi shu hal 7aki')).toBeUndefined();
+  });
+
+  it('ne touche pas au texte latin ordinaire', () => {
+    expect(detectLanguage('hola amigos como estan todos')).toBe('es');
+    expect(detectLanguage('c9 andy')).not.toBe('ar');
+    expect(detectLanguage('that was gr8')).not.toBe('ar');
+  });
+});

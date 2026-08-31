@@ -45,30 +45,15 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Open
 
-- [ ] **Transliteration is invisible to the product: 0 of 5.** Arabizi
-  (`ya 3ammi shu hal 7aki`), greeklish (`ti kaneis re file`), romaji
-  (`konnichiwa minna genki desu ka`) all return no language, and romanised
-  Russian (`privet kak dela segodnya`) returns **Indonesian**. franc sees Latin
-  letters and answers for a Latin language. The arabizi digits, 3 for ع and 7
-  for ح inside a Latin word, are a clean and cheap signal; the others need a
-  word list per language. Nothing shipped: the damage is measured, the fix is
-  not designed, and a wrong answer here becomes the engine's source language.
-- [ ] **Platform-injected text: measured damage, unverified reach.** Eight
-  sample notices through the pipeline: 3 handled, 5 translated, detected as
-  French, Portuguese and Indonesian for English text nobody spoke. But the
-  product only ever sees rows matching `div[data-index]`, and whether Kick puts
-  its subscription and moderation notices in such rows is not established.
-  Reading a real chatroom's DOM settles it, and `scripts/kick-chat-collector.js`
-  is the tool for that and has never been run. Blocked on a real corpus, not on
-  a decision.
-- [ ] **Question 2, local-first against cloud, is not measurable here.**
-  `e2e.local` never records: the on-device Translator API is present in this
-  Chromium but no model is ready, which `local.pair.downloadable` at 14 says
-  exactly. `e2e.cloud` is p50 46ms against a mock that answers in 2ms, so it
-  measures the pipeline and not a provider. Answering this needs a profile with
-  a downloaded model, which needs the network, and a real provider for the other
-  side. The counters are in place and the reader exists; only the environment is
-  missing.
+- [ ] **Transliteration: arabizi is handled, three families are not.** Arabizi
+  is detected and the repair is measured; greeklish, romaji and romanised
+  Russian still return nothing or the wrong thing. Romanised Russian is the one
+  that still bites: `privet kak dela segodnya` is detected Indonesian, so with a
+  source allowlist it is dropped as not allowed, and with an Indonesian target
+  it is not translated at all. The remaining three need a word list per
+  language, on the rule the short-word table already states: an entry earns a
+  language only if it is unambiguous against common English and against the
+  other entries.
 
 
 - [ ] **The install rate is 40.5 percent and nothing is tuned against it.**
@@ -167,6 +152,41 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ---
 
+## Done, kept for the record
+
+- [x] **Arabizi is detected, and the damage it did was not what the grid
+  assumed.** The grid scored it 0 of 5 for returning no language. Measured
+  properly, an absent language costs nothing on the engine path: the `sl` sent
+  is `auto` for arabizi and for correctly detected Spanish alike, because
+  `confidentLanguage` withholds everything franc guesses. The real harm is in
+  the filters. With a source allowlist set, an arabizi message came out
+  `lang_unknown`, so an Arabic-reading user who restricts sources to `ar` lost
+  exactly the messages they asked for.
+- [x] **The arabizi signal, and the trap it had to survive.** Arabizi replaces
+  Arabic consonants with digits chosen for their shape: 3 for ع, 5 for خ, 7 for
+  ح, 9 for ق. Latin SMS also puts digits in words, but chosen for their sound:
+  8 for eight, 4 for four, 2 for two, 1 for one. The two sets overlap only on 2,
+  6 and 8, so keeping [3579] keeps the signal and drops the collision. Measured
+  on 12 arabizi sentences and 29 traps including team names `c9`, `g2`, `d4`,
+  `k9`, `s1mple`: with the wide digit set, 3 false positives; with [3579],
+  12 of 12 and none. No proportion threshold is needed, one word is enough.
+- [x] **It is deliberately not a confident answer.** `confidentLanguage` feeds
+  the `sl` sent to the engine, and declaring `sl=ar` on Latin-script text asks
+  the engine to read Arabic where there is no Arabic script, which is not
+  measured here. Arabizi therefore sits in ordinary detection, which feeds the
+  filters and the badge, and the engine keeps guessing for itself.
+- [x] **A first version of these tests could not fail.** They exercised
+  `isArabizi` alone, so removing the wiring from `langDetect` broke nothing:
+  863 tests stayed green with the repair deleted. The repair has its own test
+  now, and deleting the wiring fails it.
+- [x] **The weight gate went red, as predicted, and the reference is raised with
+  its accounting.** 233217 bytes against 228460, +4757 and +2.08 percent.
+  Measured per module, minified and in isolation: the laughter table 3791, the
+  smash filter 424, arabizi 227, which is 4442; the remaining ~315 are the
+  2.9.3 and 2.9.4 product fixes. The way to buy the margin back is identified
+  rather than guessed: franc's data is 98 KB in this file and
+  `tinyld.light.browser` is 68 KB under MIT, so 30 KB and thirteen percent of
+  the bundle ride on an accuracy experiment that has not been run.
 ## Done, kept for the record
 
 - [x] **Keyboard smash is filtered, and the earlier claim about it was wrong.**
