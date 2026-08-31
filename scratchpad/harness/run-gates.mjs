@@ -118,6 +118,13 @@ const GATES = [
   // The one cost every reader pays on every page. It rose 12.5% in one version
   // and nobody saw it for three days, because nothing was looking.
   ['audit-poids', 'python', ['scratchpad/audit_poids.py']],
+  // La prose des tables, qui n'est pas couverte par la porte au-dessus : les
+  // notes des rires pesaient 1754 octets, soit 0.85 pour cent, et la marge du
+  // poids est de 2 pour cent, donc leur retour y passerait sans un mot.
+  // Couverture propre, mesuree : une reference a `LAUGHTER_NOTES` depuis
+  // `isLaughter` avec une CLE DYNAMIQUE fait rougir cette porte. Avec une cle
+  // constante elle reste verte et c'est correct, esbuild replie l'acces.
+  ['poids-notes', 'node', ['scratchpad/harness/poids-notes.mjs']],
   // Les limites de champ des deux stores, plus les descriptions telles qu'elles
   // sont livrees dans `public/_locales`. Une soumission rejetee pour un champ
   // trop long se decouvre autrement une semaine plus tard.

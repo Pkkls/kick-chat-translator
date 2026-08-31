@@ -43,8 +43,6 @@ interface FormeDeRire {
   motif: RegExp;
   /** ISO-2 code when the form marks a language on its own, else undefined. */
   langue?: string;
-  /** What it is, and where it is attested. */
-  note: string;
 }
 
 const FORMES: FormeDeRire[] = [
@@ -52,68 +50,56 @@ const FORMES: FormeDeRire[] = [
   {
     motif: /^(?:ja){2,}j?a?$/i,
     langue: 'es',
-    note: 'Spanish: j is pronounced as English h, so jajaja reads hahaha',
   },
   {
     motif: /^(?:je){2,}j?e?$/i,
     langue: 'es',
-    note: 'Spanish jejeje, the ironic register',
   },
   {
     motif: /^(?:ji){2,}j?i?$/i,
     langue: 'es',
-    note: 'Spanish jijiji, the mischievous register',
   },
   {
     motif: /^(?:js){2,}j?s?$/i,
     langue: 'es',
-    note: 'Spanish jsjsjs, jaja typed with the neighbouring key',
   },
   {
     motif: /^k{3,}$/i,
     langue: 'pt',
-    note: 'Brazilian Portuguese kkkk. Three or more: kk alone is too short to claim a language',
   },
   {
     motif: /^(?:rs){2,}$/i,
     langue: 'pt',
-    note: 'Brazilian Portuguese rsrsrs, repeated from riso, laughter',
   },
   {
     motif: /^(?:hue){2,}h?u?e?$/i,
     langue: 'pt',
-    note: 'Brazilian Portuguese huehuehue',
   },
-  { motif: /^m+d+r+$/i, langue: 'fr', note: 'French mort de rire' },
-  { motif: /^p+t+d+r+$/i, langue: 'fr', note: 'French pete de rire' },
+  { motif: /^m+d+r+$/i, langue: 'fr' },
+  { motif: /^p+t+d+r+$/i, langue: 'fr' },
   {
     motif: /^m+o?u+ha(?:ha)+h?a?$/i,
     langue: 'fr',
-    note: 'French mouhahaha, the villain laugh',
   },
-  { motif: /^asg$/i, langue: 'sv', note: 'Swedish, short for asgarv, uproarious laughter' },
+  { motif: /^asg$/i, langue: 'sv' },
   {
     motif: /^(?:h[oø]){1,}(?:hø)(?:h[oø])*h?[oø]?$/i,
     langue: 'da',
-    note: 'Danish hohohoe. At least one slashed o is required: plain hohoho is the Santa laugh and belongs to nobody',
   },
   {
     motif: /^(?:h[aæ])*(?:hæ)(?:h[aæ])*h?[aæ]?$/i,
     langue: 'da',
-    note: 'Danish haehaehae. At least one ae is required, or this swallows hahaha, which marks nothing',
   },
   {
     motif: /^(?:wk){2,}w?k?$/i,
     langue: 'id',
-    note: 'Indonesian wkwkwk',
   },
-  { motif: /^wa?(?:kaka)+k?a?$/i, langue: 'id', note: 'Indonesian wakaka' },
-  { motif: /^(?:xi){2,}x?i?$/i, langue: 'id', note: 'Indonesian xixixi' },
-  { motif: /^(?:ha3)+$/i, langue: 'ms', note: 'Malay ha3, the 3 standing for a third ha' },
+  { motif: /^wa?(?:kaka)+k?a?$/i, langue: 'id' },
+  { motif: /^(?:xi){2,}x?i?$/i, langue: 'id' },
+  { motif: /^(?:ha3)+$/i, langue: 'ms' },
   {
     motif: /^5{3,}$/,
     langue: 'th',
-    note: 'Thai: five is pronounced ha, so 555 reads hahaha. Also used in Lao',
   },
   // `note` est une VALEUR, pas un commentaire : chaque caractere part dans le
   // bundle injecte sur toutes les pages Kick. La table entiere pese 3791 octets
@@ -135,50 +121,46 @@ const FORMES: FormeDeRire[] = [
   // `www` part au moteur avec `sl` vide, donc le moteur detecte seul.
   {
     motif: /^w{3,}$/i,
-    note: 'Japanese w for warai. Marks nothing: www is a hostname token too',
   },
   {
     motif: /^ｗ{2,}$/,
     langue: 'ja',
-    note: 'Japanese warai typed full-width, which no hostname ever is',
   },
   {
     motif: /^2+3{3,}$/,
     langue: 'zh',
-    note: 'Mandarin 2333. Three threes minimum: 233 on its own is the emoticon number, and a number',
   },
 
   // ── Non-Latin scripts. The script check resolves the language already, so
   //    these earn their place by being recognised as laughter, not as marks.
-  { motif: /^[ха]*(?:ах|ха){2,}[ха]*$/i, note: 'Cyrillic hahaha and ahahaha' },
-  { motif: /^х{3,}$/i, note: 'Cyrillic khkhkh: the letter repeated on its own, without the vowel' },
-  { motif: /^г{3,}$/i, note: 'Cyrillic gggg, the older Slavic form' },
-  { motif: /^(?:хα|χα){2,}χ?α?$/i, langue: 'el', note: 'Greek chacha. Greek script is not in the script pre-check' },
-  { motif: /^(?:χ[εοι]){2,}$/i, langue: 'el', note: 'Greek cheche, chocho and chichi' },
-  { motif: /^ه{3,}$/, note: 'Arabic hhh' },
-  { motif: /^خ{3,}$/, note: 'Arabic and Persian khkhkh' },
-  { motif: /^ח{3,}$/, note: 'Hebrew chchch' },
-  { motif: /^[ㅋㅎ]{2,}$/, note: 'Korean jamo kk and hh typed on their own' },
-  { motif: /^(?:哈){2,}$/, note: 'Mandarin haha' },
-  { motif: /^(?:呵){2,}$/, note: 'Mandarin hehe, the dry register' },
-  { motif: /^(?:草|大草原)$/, note: 'Japanese grass, from www looking like blades of it' },
-  { motif: /^(?:हा){2,}$/, note: 'Devanagari haha' },
-  { motif: /^(?:হা\s?){2,}$/, note: 'Bengali haha' },
+  { motif: /^[ха]*(?:ах|ха){2,}[ха]*$/i },
+  { motif: /^х{3,}$/i },
+  { motif: /^г{3,}$/i },
+  { motif: /^(?:хα|χα){2,}χ?α?$/i, langue: 'el' },
+  { motif: /^(?:χ[εοι]){2,}$/i, langue: 'el' },
+  { motif: /^ه{3,}$/ },
+  { motif: /^خ{3,}$/ },
+  { motif: /^ח{3,}$/ },
+  { motif: /^[ㅋㅎ]{2,}$/ },
+  { motif: /^(?:哈){2,}$/ },
+  { motif: /^(?:呵){2,}$/ },
+  { motif: /^(?:草|大草原)$/ },
+  { motif: /^(?:हा){2,}$/ },
+  { motif: /^(?:হা\s?){2,}$/ },
 
   // ── Latin script, marks nothing: used across too many languages ──────────
-  { motif: /^a*(?:ha){2,}h?a*$/i, note: 'hahaha, everywhere' },
-  { motif: /^(?:he){2,}h?e?$/i, note: 'hehehe, everywhere' },
-  { motif: /^(?:hi){2,}h?i?$/i, note: 'hihihi, everywhere including Vietnamese' },
-  { motif: /^(?:ah){2,}a?$/i, note: 'ahahah, common in Italian and Turkish' },
-  { motif: /^l+o+l+(?:o+l+)*$/i, note: 'lol and lolol' },
-  { motif: /^l+m+f?a+o+$/i, note: 'lmao and lmfao' },
-  { motif: /^rofl$/i, note: 'rofl, rolling on the floor laughing, borrowed into many languages' },
+  { motif: /^a*(?:ha){2,}h?a*$/i },
+  { motif: /^(?:he){2,}h?e?$/i },
+  { motif: /^(?:hi){2,}h?i?$/i },
+  { motif: /^(?:ah){2,}a?$/i },
+  { motif: /^l+o+l+(?:o+l+)*$/i },
+  { motif: /^l+m+f?a+o+$/i },
+  { motif: /^rofl$/i },
   {
     motif: /^(?:x+d+|(?:xd){2,})$/i,
-    note: 'xd and xdxd. The repeated syllable was the form that used to slip through',
   },
-  { motif: /^ke+k+(?:w)?$/i, note: 'kek and kekw, from streaming chat' },
-  { motif: /^u?wu$|^owo$/i, note: 'uwu and owo' },
+  { motif: /^ke+k+(?:w)?$/i },
+  { motif: /^u?wu$|^owo$/i },
 ];
 
 /** Every message that is nothing but laughter, in any of the forms above. */
@@ -203,6 +185,114 @@ export function laughterLanguage(text: string): string | undefined {
   }
   return undefined;
 }
+
+
+/**
+ * Where each form is attested, keyed by the source of its pattern.
+ *
+ * This used to be a `note` field on every entry, which reads like a comment
+ * and is not one: it is a string in an object, the minifier keeps it, and it
+ * travelled to every Kick page. Measured in the shipped script, 42 of the 45
+ * were in it, 1754 bytes, 0.85 percent of everything a reader downloads, and
+ * about half of what this table was measured to cost in the first place.
+ *
+ * Nothing reads it at runtime. Keeping it out of the executed path is
+ * therefore free, and the rule that made provenance non-optional survives:
+ * the test below asserts one note per form, keyed so that inserting a form
+ * cannot silently shift the notes of the ones after it.
+ */
+export const LAUGHTER_NOTES: Readonly<Record<string, string>> = {
+  '^(?:ja){2,}j?a?$':
+    'Spanish: j is pronounced as English h, so jajaja reads hahaha',
+  '^(?:je){2,}j?e?$':
+    'Spanish jejeje, the ironic register',
+  '^(?:ji){2,}j?i?$':
+    'Spanish jijiji, the mischievous register',
+  '^(?:js){2,}j?s?$':
+    'Spanish jsjsjs, jaja typed with the neighbouring key',
+  '^k{3,}$':
+    'Brazilian Portuguese kkkk. Three or more: kk alone is too short to claim a language',
+  '^(?:rs){2,}$':
+    'Brazilian Portuguese rsrsrs, repeated from riso, laughter',
+  '^(?:hue){2,}h?u?e?$':
+    'Brazilian Portuguese huehuehue',
+  '^m+o?u+ha(?:ha)+h?a?$':
+    'French mouhahaha, the villain laugh',
+  '^(?:h[oø]){1,}(?:hø)(?:h[oø])*h?[oø]?$':
+    'Danish hohohoe. At least one slashed o is required: plain hohoho is the Santa laugh and belongs to nobody',
+  '^(?:h[aæ])*(?:hæ)(?:h[aæ])*h?[aæ]?$':
+    'Danish haehaehae. At least one ae is required, or this swallows hahaha, which marks nothing',
+  '^(?:wk){2,}w?k?$':
+    'Indonesian wkwkwk',
+  '^5{3,}$':
+    'Thai: five is pronounced ha, so 555 reads hahaha. Also used in Lao',
+  '^w{3,}$':
+    'Japanese w for warai. Marks nothing: www is a hostname token too',
+  '^ｗ{2,}$':
+    'Japanese warai typed full-width, which no hostname ever is',
+  '^2+3{3,}$':
+    'Mandarin 2333. Three threes minimum: 233 on its own is the emoticon number, and a number',
+  '^(?:x+d+|(?:xd){2,})$':
+    'xd and xdxd. The repeated syllable was the form that used to slip through',
+  '^m+d+r+$':
+    'French mort de rire',
+  '^p+t+d+r+$':
+    'French pete de rire',
+  '^asg$':
+    'Swedish, short for asgarv, uproarious laughter',
+  '^wa?(?:kaka)+k?a?$':
+    'Indonesian wakaka',
+  '^(?:xi){2,}x?i?$':
+    'Indonesian xixixi',
+  '^(?:ha3)+$':
+    'Malay ha3, the 3 standing for a third ha',
+  '^[ха]*(?:ах|ха){2,}[ха]*$':
+    'Cyrillic hahaha and ahahaha',
+  '^х{3,}$':
+    'Cyrillic khkhkh: the letter repeated on its own, without the vowel',
+  '^г{3,}$':
+    'Cyrillic gggg, the older Slavic form',
+  '^(?:хα|χα){2,}χ?α?$':
+    'Greek chacha. Greek script is not in the script pre-check',
+  '^(?:χ[εοι]){2,}$':
+    'Greek cheche, chocho and chichi',
+  '^ه{3,}$':
+    'Arabic hhh',
+  '^خ{3,}$':
+    'Arabic and Persian khkhkh',
+  '^ח{3,}$':
+    'Hebrew chchch',
+  '^[ㅋㅎ]{2,}$':
+    'Korean jamo kk and hh typed on their own',
+  '^(?:哈){2,}$':
+    'Mandarin haha',
+  '^(?:呵){2,}$':
+    'Mandarin hehe, the dry register',
+  '^(?:草|大草原)$':
+    'Japanese grass, from www looking like blades of it',
+  '^(?:हा){2,}$':
+    'Devanagari haha',
+  '^(?:হা\\s?){2,}$':
+    'Bengali haha',
+  '^a*(?:ha){2,}h?a*$':
+    'hahaha, everywhere',
+  '^(?:he){2,}h?e?$':
+    'hehehe, everywhere',
+  '^(?:hi){2,}h?i?$':
+    'hihihi, everywhere including Vietnamese',
+  '^(?:ah){2,}a?$':
+    'ahahah, common in Italian and Turkish',
+  '^l+o+l+(?:o+l+)*$':
+    'lol and lolol',
+  '^l+m+f?a+o+$':
+    'lmao and lmfao',
+  '^rofl$':
+    'rofl, rolling on the floor laughing, borrowed into many languages',
+  '^ke+k+(?:w)?$':
+    'kek and kekw, from streaming chat',
+  '^u?wu$|^owo$':
+    'uwu and owo',
+};
 
 /** For tests and for anyone auditing the table rather than trusting it. */
 export const LAUGHTER_FORMS: ReadonlyArray<Readonly<FormeDeRire>> = FORMES;

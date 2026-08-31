@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isLaughter, laughterLanguage, LAUGHTER_FORMS } from './laughter';
+import { isLaughter, laughterLanguage, LAUGHTER_FORMS, LAUGHTER_NOTES } from './laughter';
 
 describe('isLaughter', () => {
   // Chaque famille attestee dans les sources citees en tete de la table.
@@ -77,8 +77,19 @@ describe('laughterLanguage', () => {
 describe('la table elle-meme', () => {
   it('donne une note a chaque forme, pour qu on puisse l auditer', () => {
     for (const f of LAUGHTER_FORMS) {
-      expect(f.note.length).toBeGreaterThan(8);
+      expect(LAUGHTER_NOTES[f.motif.source]?.length ?? 0).toBeGreaterThan(8);
     }
+  });
+
+  it('ne garde aucune note orpheline', () => {
+    // La note vit hors de l'entree pour qu'elle ne parte pas sur chaque page
+    // Kick. Le prix de ce deplacement est qu'elle peut survivre a la forme
+    // qu'elle decrit, ce que seule cette assertion voit.
+    const sources = new Set(LAUGHTER_FORMS.map((f) => f.motif.source));
+    for (const cle of Object.keys(LAUGHTER_NOTES)) {
+      expect(sources.has(cle)).toBe(true);
+    }
+    expect(Object.keys(LAUGHTER_NOTES)).toHaveLength(LAUGHTER_FORMS.length);
   });
 
   it('n emploie que des codes ISO-2 pour les langues marquees', () => {
