@@ -25,6 +25,7 @@
     "test:cov": "vitest run --coverage",
     "icons": "tsx scripts/generate-icons.ts",
     "pack": "tsx scripts/pack.ts",
+    "metrics": "npm run build:metrics && node scratchpad/harness/metrics-offline.mjs && npm run build",
     "pack:firefox": "cross-env BROWSER=firefox tsx scripts/pack.ts",
     "package:all": "npm run build && npm run pack && npm run build:firefox && npm run pack:firefox && npm run build",
     "release:check": "npm run typecheck && npm run lint && npm run test && npm run build"

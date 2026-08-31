@@ -60,8 +60,12 @@ export function isNoise(text: string): boolean {
   if (/^(.)\1*$/u.test(lower)) return true;
   // laughter variants across languages:
   //  EN wwww/lol/lolol/haha · BR-PT kkkk/rsrs/huehue · ES jaja · xd/xddd · hehe/hihi · uwu/owo
+  // `(xd){2,}` en plus de `x+d+` : la syllabe repetee est la forme courante et
+  // elle passait. Mesure sur la fonction livree : xd, xdd, xddd ecartes, xdxd,
+  // xdxdxd, xdxdxdxd et XDXDXD traduits, alors que jaja, haha, rsrs, huehue,
+  // lolol, hehe et hihi le sont tous sous leur forme repetee.
   if (
-    /^(?:w+|ｗ+|k{2,}|x{2,}|x+d+|(?:rs)+|(?:hue)+|(?:l+o+)+l*|(?:ja){2,}|(?:ha){2,}|(?:ah){2,}|(?:he){2,}|(?:hi){2,}|u?wu|owo)$/i.test(
+    /^(?:w+|ｗ+|k{2,}|x{2,}|x+d+|(?:xd){2,}|(?:rs)+|(?:hue)+|(?:l+o+)+l*|(?:ja){2,}|(?:ha){2,}|(?:ah){2,}|(?:he){2,}|(?:hi){2,}|u?wu|owo)$/i.test(
       lower,
     )
   ) {

@@ -87,6 +87,28 @@ describe('isNoise', () => {
   });
 });
 
+describe('isNoise, la syllabe de rire repetee', () => {
+  // `x+d+` attrapait xd, xdd et xddd, et laissait passer xdxd. Toutes les autres
+  // formes a syllabe repetee etaient deja couvertes, ce qui rendait la lacune
+  // difficile a voir : mesure sur la fonction livree, jaja, haha, rsrs, huehue,
+  // lolol, hehe et hihi etaient ecartes sous leur forme repetee, xdxd non.
+  it.each(['xd', 'xdd', 'xddd', 'xdxd', 'xdxdxd', 'xdxdxdxd', 'XDXDXD'])(
+    'ecarte %s',
+    (forme) => {
+      expect(isNoise(forme)).toBe(true);
+    },
+  );
+
+  // Le temoin de la limite : un mot qui commence par les memes lettres reste du
+  // texte. Sans lui, elargir le motif jusqu'a tout avaler passerait le test.
+  it.each(['xdesign', 'jajapan', 'hahaha ha que risa', 'lo mas raro'])(
+    'ne touche pas a %s',
+    (texte) => {
+      expect(isNoise(texte)).toBe(false);
+    },
+  );
+});
+
 describe('username matching across letter case', () => {
   const drop = (name: string, blacklisted: string) =>
     shouldDropByUserOrChannel(
