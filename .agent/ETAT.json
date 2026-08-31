@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-31T15:17:43.566Z",
+  "genere": "2026-08-31T15:41:49.163Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/metriques-hors-ligne",
-    "head": "cd206cb2005fee779ed90717d9eb3b2b5d931ab3",
-    "sujet": "Stop a batch declaring one message's source language for all of them",
+    "head": "d59d9e479d8105aa15f29473021bde67ced4b6cd",
+    "sujet": "Write down the pass that read the counters",
     "arbrePropre": false,
-    "fichiersModifies": 1,
+    "fichiersModifies": 5,
     "dernierTag": "v2.9.3",
-    "decrit": "v2.9.3-6-gcd206cb",
+    "decrit": "v2.9.3-7-gd59d9e4",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -266,6 +266,6 @@
     ],
     "nbBloques": 3,
     "nbOuverts": 3,
-    "nbFaits": 54
+    "nbFaits": 58
   }
 }

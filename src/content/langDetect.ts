@@ -1,5 +1,6 @@
 import { franc } from 'franc-min';
 import { francToIso2 } from '~/shared/languages';
+import { laughterLanguage } from '~/shared/laughter';
 
 const COMMON_SHORT_TOKENS = new Set([
   'lol',
@@ -82,7 +83,11 @@ const SHORT_TEXT_MAX = 20;
 function detectByShortWords(text: string): string | undefined {
   let vote: string | undefined;
   for (const token of text.toLowerCase().split(/[^\p{L}]+/u)) {
-    const lang = token ? SHORT_WORD_LANG.get(token) : undefined;
+    // Une forme de rire est un fait sur le texte au meme titre qu'un mot de la
+    // table : `jajaja` est espagnol, `kkkk` bresilien, `wkwk` indonesien. C'est
+    // ce qui permet a `confidentLanguage` de s'en servir, alors qu'il refuse la
+    // reponse de franc. `haha`, `lol` et `xd` ne marquent rien et ne votent pas.
+    const lang = token ? (SHORT_WORD_LANG.get(token) ?? laughterLanguage(token)) : undefined;
     if (!lang) continue;
     if (vote && vote !== lang) return undefined;
     vote = lang;

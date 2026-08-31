@@ -153,6 +153,45 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Done, kept for the record
 
+- [x] **Written laughter has a dictionary, by language, with its sources.** It
+  was handled in two unrelated places grown by hand: an alternation of about ten
+  forms inside `isNoise`, and two French entries in the short-word table. Nothing
+  reusable exists to import, which was checked rather than assumed: the academic
+  work on social-media normalisation treats laughter as a category and publishes
+  no lexicon, the popular write-ups are prose, and the one machine-readable list
+  on GitHub carries no licence at all. `src/shared/laughter.ts` records 43 forms
+  drawn from three cross-checked sources, each with a note saying where it is
+  attested, and 22 of them mark a language.
+- [x] **A laugh is a fact about the text, so it feeds the confident path.**
+  `confidentLanguage` returns only what was looked up in a table, never what
+  franc guessed, and that value is what goes to the engine as the source
+  language. Laughter now votes in the same token lookup as the chat-word table,
+  under the same conflict rule. Measured on ten mixed messages of the shape
+  "jajaja que bueno eso": 3 of 10 had a usable source language before, 10 of 10
+  after, and two of the three franc had guessed were wrong, calling that Spanish
+  line Portuguese and a Portuguese one French. Forms used everywhere, `haha`,
+  `lol`, `xd`, mark nothing, because a wrong answer here is handed to an engine.
+  It costs 3555 bytes on every page, 1.55 percent, inside the weight gate's 2
+  percent margin and close enough to it that the next addition trips the gate.
+- [x] **The `minLength: 3` floor under franc stays, and the measurement says
+  why.** It looks like a mistake against franc's own documented unreliability,
+  and removing it makes things worse. Measured on 30 short non-English chat
+  messages: at the shipped floor of 3, franc is wrong more often than right, 7
+  right against 14 wrong, but only 1 of 30 messages ends up classified English.
+  At franc's default floor of 10 the wrong answers halve, to 8, and 11 of 30 are
+  classified English instead, because a floor raises how often franc says `und`
+  and `und` on ASCII becomes English, which `ignoreEnglish` then drops in
+  silence. Franc's wrong identities are already withheld from the engine by
+  `confidentLanguage`; its silence is not. The low floor is protecting foreign
+  chat, not undermining it.
+- [x] **Keyboard smash is mostly already handled, by accident.** Fifteen forms
+  attested in the sources, Turkish `askfhsjkd` among them: eleven return `und`
+  from franc and are dropped through the English rule, and four get a confident
+  wrong language, `asdasdasd` as Portuguese, `zxcvbnm` as Spanish. The first
+  measurement said fifteen of fifteen reach the engine, which was wrong: it
+  checked `isNoise` and `isSlangOnly` and left out the drop that actually
+  catches them. What remains is four wasted calls and four wrong badges, which
+  is small enough not to justify a detector of its own yet.
 - [x] **A batch inherited one message's source language and declared it for all
   the others.** The coalescer groups by TARGET language and nothing else, so a
   batch mixes sources, and `batchCall` built its joined request as

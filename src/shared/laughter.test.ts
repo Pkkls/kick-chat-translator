@@ -1,0 +1,86 @@
+import { describe, expect, it } from 'vitest';
+import { isLaughter, laughterLanguage, LAUGHTER_FORMS } from './laughter';
+
+describe('isLaughter', () => {
+  // Chaque famille attestee dans les sources citees en tete de la table.
+  it.each([
+    'jaja', 'jajaja', 'jeje', 'jijiji', 'jsjsjs',
+    'kkk', 'kkkkk', 'rsrs', 'huehue',
+    'mdr', 'ptdr', 'mouhahaha',
+    'asg', 'høhøhø', 'hæhæhæ',
+    'wkwk', 'wakaka', 'xixixi', 'ha3', 'ha3ha3ha3',
+    '555', '55555', 'www', '2333',
+    'haha', 'hahaha', 'ahahah', 'hehe', 'hihihi',
+    'lol', 'lolol', 'lmao', 'rofl', 'kek', 'kekw', 'uwu',
+    'xd', 'xdxd', 'xdxdxd', 'XDXD',
+    'ахаха', 'хахаха', 'гггг', 'χαχα', 'ههههه', 'خخخخ', 'חחחח',
+    'ㅋㅋㅋ', 'ㅎㅎㅎ', '哈哈哈', '呵呵', '草', 'हाहा',
+  ])('reconnait %s', (forme) => {
+    expect(isLaughter(forme)).toBe(true);
+  });
+
+  // Les pieges. Chacun a une raison d'etre la : un mot qui commence comme un
+  // rire, un nombre, une marque, un rire suivi de vrai texte.
+  it.each([
+    'hola amigos', 'good game', 'kkona', 'kappa', 'jajaja que risa buena',
+    'www.google.com', 'lolita', 'asgard', 'wakanda', 'mdr je rigole',
+    'ja', 'ha', 'k', 'ok', '5', '55', '233', '2020',
+    'xdesign', 'jajapan', 'hohoho', 'kekw andy',
+  ])('ne prend pas %s pour un rire', (texte) => {
+    expect(isLaughter(texte)).toBe(false);
+  });
+});
+
+describe('laughterLanguage', () => {
+  it.each([
+    ['jajaja', 'es'], ['jejeje', 'es'], ['jsjsjs', 'es'],
+    ['kkkkk', 'pt'], ['rsrsrs', 'pt'], ['huehuehue', 'pt'],
+    ['mdr', 'fr'], ['ptdr', 'fr'],
+    ['asg', 'sv'], ['høhøhø', 'da'], ['hæhæhæ', 'da'],
+    ['wkwkwk', 'id'], ['wakaka', 'id'], ['xixixi', 'id'],
+    ['ha3', 'ms'], ['555', 'th'], ['www', 'ja'], ['2333', 'zh'],
+    ['χαχα', 'el'],
+  ])('%s marque %s', (forme, langue) => {
+    expect(laughterLanguage(forme)).toBe(langue);
+  });
+
+  // La regle que la table se donne : une forme employee partout ne marque rien.
+  // Une mauvaise reponse ici serait envoyee au moteur comme langue source.
+  it.each(['haha', 'hahaha', 'hehe', 'hihi', 'lol', 'lmao', 'rofl', 'xd', 'xdxd', 'kek', 'uwu'])(
+    '%s ne marque aucune langue',
+    (forme) => {
+      expect(laughterLanguage(forme)).toBeUndefined();
+    },
+  );
+
+  // Le temoin des lettres danoises : sans elles, ces motifs avalent hahaha et
+  // hohoho, qui n'appartiennent a personne. Mesure faite, la premiere version
+  // rendait bien `da` pour `haha`.
+  it('ne prend pas hahaha ni hohoho pour du danois', () => {
+    expect(laughterLanguage('hahaha')).toBeUndefined();
+    expect(laughterLanguage('hohoho')).toBeUndefined();
+  });
+});
+
+describe('la table elle-meme', () => {
+  it('donne une note a chaque forme, pour qu on puisse l auditer', () => {
+    for (const f of LAUGHTER_FORMS) {
+      expect(f.note.length).toBeGreaterThan(8);
+    }
+  });
+
+  it('n emploie que des codes ISO-2 pour les langues marquees', () => {
+    for (const f of LAUGHTER_FORMS) {
+      if (f.langue) expect(f.langue).toMatch(/^[a-z]{2}$/);
+    }
+  });
+
+  it('ancre chaque motif sur le message entier', () => {
+    // Un motif non ancre attraperait un rire au milieu d'une phrase et
+    // ecarterait un vrai message.
+    for (const f of LAUGHTER_FORMS) {
+      expect(f.motif.source.startsWith('^')).toBe(true);
+      expect(f.motif.source.endsWith('$')).toBe(true);
+    }
+  });
+});
