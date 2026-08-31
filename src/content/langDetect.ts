@@ -208,17 +208,38 @@ function arabeOuPersan(text: string): string | undefined {
  * L'ukrainien, lui, est dans les 42, donc il prend son code. Ses lettres propres
  * sont i, yi, ye et ge, absentes du russe : 6 lignes sur 8 a la mesure.
  *
- * La limite, ecrite plutot que cachee : le bulgare partage l'alphabet russe sans
- * une seule lettre exclusive, donc aucune regle par lettres ne le separe et il
- * reste lu `ru`. Huit sur huit, et c'est mesure, pas oublie.
+ * Le bulgare, signale lui aussi par kil, n'a pas de lettre exclusive : il
+ * partage l'alphabet russe. Ce qui le separe est l'inverse, une ABSENCE, plus
+ * deux signaux positifs. Le russe ecrit ы, э et ё, le bulgare aucun des trois ;
+ * le bulgare ecrit ъ comme une voyelle ordinaire la ou le russe l'emploie a
+ * peine ; et sa copule au present, съм si сме сте са, n'existe pas en russe, qui
+ * n'en a pas au present du tout.
+ *
+ * Le chiffre de couverture du bulgare est le seul de ce fichier qui ait ete
+ * mesure DEUX fois, et la difference vaut d'etre gardee. Une premiere liste,
+ * etendue jusqu'a couvrir le banc qui avait servi a l'ecrire, donnait 20 sur 20 ;
+ * la meme regle sur douze lignes bulgares ecrites APRES elle donnait 4 sur 12.
+ * Le premier chiffre ne mesurait que l'ajustement. La liste a ensuite ete
+ * completee par PARADIGME, la copule entiere et les interrogatifs entiers,
+ * jamais par la liste des ratés, et le chiffre tenu a l'ecart est monte a 7 sur
+ * 12. C'est celui-la qui compte.
+ *
+ * Ce qui ne bouge pas, et c'est le cote qui protege : zero faux positif sur
+ * vingt-huit lignes russes, dix ukrainiennes et six mongoles, aucune n'ayant
+ * servi a batir quoi que ce soit.
  */
 const LETTRES_MONGOLES = /[өү]/iu;
 const MOTS_MONGOLS = /(^|[^\p{L}])(байна|байгаа|юм|вэ|бэ|сайхан|байлаа)([^\p{L}]|$)/iu;
 const LETTRES_UKRAINIENNES = /[іїєґ]/iu;
+const LETTRES_RUSSES = /[ыэё]/iu;
+const ER_BULGARE = /ъ/iu;
+const MOTS_BULGARES =
+  /(^|[^\p{L}])(съм|си|сме|сте|са|какво|кой|кога|къде|защо|много|добре|това|няма|ще|аз|мога|гледа|гледам|искам|този|започва|благодаря|страхотен|поздрави|дошли)([^\p{L}]|$)/iu;
 
 function cyrilliqueQuelleLangue(text: string): string | undefined {
   if (LETTRES_MONGOLES.test(text) || MOTS_MONGOLS.test(text)) return undefined;
   if (LETTRES_UKRAINIENNES.test(text)) return 'uk';
+  if (!LETTRES_RUSSES.test(text) && (ER_BULGARE.test(text) || MOTS_BULGARES.test(text))) return 'bg';
   return 'ru';
 }
 

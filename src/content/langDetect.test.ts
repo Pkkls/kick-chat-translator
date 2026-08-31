@@ -195,10 +195,29 @@ describe('l ecriture cyrillique se partage entre plusieurs langues', () => {
     expect(confidentLanguage('привіт усім')).toBe('uk');
   });
 
-  // La limite, ecrite plutot que cachee : le bulgare partage l'alphabet russe
-  // sans une seule lettre exclusive, donc rien ne l'en separe par les lettres.
-  it('rend russe le bulgare, et c est la limite connue', () => {
-    expect(detectLanguage('какво става тук')).toBe('ru');
+  // Le bulgare n'a pas de lettre exclusive : ce qui le separe est une ABSENCE,
+  // le russe ecrit ы, э et ё et lui aucun des trois, plus deux signaux positifs,
+  // le ъ voyelle et la copule au present que le russe n'a pas.
+  it('lit le bulgare a son absence de lettres russes', () => {
+    expect(detectLanguage('какво става тук')).toBe('bg');
+    expect(detectLanguage('аз съм тук')).toBe('bg');
+    expect(confidentLanguage('защо не работи звука')).toBe('bg');
+  });
+
+  // Le temoin qui compte le plus ici : aucune de ces lignes russes n'a servi a
+  // batir la regle, et aucune ne doit basculer. Vingt-huit a la mesure.
+  it('ne prend pas le russe pour du bulgare', () => {
+    expect(detectLanguage('где ты')).toBe('ru');
+    expect(detectLanguage('почему не работает')).toBe('ru');
+    expect(detectLanguage('кто здесь')).toBe('ru');
+    expect(detectLanguage('сколько времени')).toBe('ru');
+  });
+
+  // La limite, mesuree sur des lignes ecrites APRES la regle : 7 sur 12. Une
+  // premiere version donnait 20 sur 20 sur le banc qui avait servi a l'ecrire,
+  // et ce chiffre ne mesurait que l'ajustement.
+  it('et laisse passer du bulgare sans marqueur, ce qui est la limite', () => {
+    expect(detectLanguage('падна ми мивката')).toBe('ru');
   });
 });
 

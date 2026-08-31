@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-31T18:44:44.468Z",
+  "genere": "2026-08-31T18:50:58.986Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase. La version commitee decrit l'etat d'AVANT le commit qui la porte, puisque la fin de passe genere puis commite : git.head y pointe le commit precedent et git.arbrePropre y est faux. Relancer `node .agent/state.mjs` avant de lire, ce que le prompt demande deja en premier.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/metriques-hors-ligne",
-    "head": "a2d8e173bc60694ea7f7d8368239ede7ccd47e48",
-    "sujet": "Inventory what exists only on this machine",
+    "head": "2874aeb50c5be9b0bdf17281e6f44f7085d92676",
+    "sujet": "Stop calling every Cyrillic line Russian",
     "arbrePropre": false,
     "fichiersModifies": 3,
     "dernierTag": "v2.9.3",
-    "decrit": "v2.9.3-24-ga2d8e17",
+    "decrit": "v2.9.3-25-g2874aeb",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -147,7 +147,7 @@
     },
     {
       "fichier": "kick-chat-translator-2.9.4-chromium.zip",
-      "octets": 282722,
+      "octets": 282993,
       "versionDuNom": "2.9.4",
       "versionDuManifest": "2.9.4",
       "accordent": true,
@@ -155,7 +155,7 @@
     },
     {
       "fichier": "kick-chat-translator-2.9.4-firefox.zip",
-      "octets": 282656,
+      "octets": 282927,
       "versionDuNom": "2.9.4",
       "versionDuManifest": "2.9.4",
       "accordent": true,
