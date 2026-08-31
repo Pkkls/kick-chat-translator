@@ -252,6 +252,110 @@ async function releaseGithub(remotes) {
   }
 }
 
+/**
+ * What the two stores are actually serving, read rather than remembered.
+ *
+ * This field exists because of a mistake. A note written in June said both
+ * stores were on 2.5.0. It was repeated across a plan entry, a memory file and a
+ * report, three months later, without once being re-derived. Read off the pages
+ * on 2026-08-31: Chrome was on 2.9.2 and AMO on 2.7.0, which is not one wrong
+ * number but two, plus the false claim that the listing text had never been
+ * rewritten when it opens on "NEW IN 2.9.2".
+ *
+ * A store version is a page. It changes with no commit, so it cannot live in a
+ * tracked file and stay true, and the only safe form for it is a request made
+ * now. The two identifiers come out of README.md rather than being written here,
+ * so this can never end up reading a listing the project does not link to.
+ *
+ * Chrome has no public API for this, so its version is scraped out of the page
+ * next to the "Version" label. A scrape breaks silently, which is the one thing
+ * this file must not do, so a shape that does not match reports the failure
+ * instead of a value.
+ */
+async function boutiques() {
+  const readme = (() => {
+    try {
+      return readFileSync(path.join(ROOT, 'README.md'), 'utf8');
+    } catch {
+      return '';
+    }
+  })();
+  const idChrome = readme.match(/chromewebstore\.google\.com\/detail\/[^/\s)]+\/([a-p]{32})/)?.[1] ?? null;
+  const slugAmo = readme.match(/addons\.mozilla\.org\/(?:[a-z-]+\/)?firefox\/addon\/([a-z0-9-]+)/)?.[1] ?? null;
+
+  const out = {
+    note:
+      'Lu sur les pages, jamais recopie. Une version de boutique change sans commit : ' +
+      "la valeur commitee ici decrit l'instant de la generation et rien d'autre.",
+    chrome: { id: idChrome },
+    amo: { slug: slugAmo },
+  };
+  if (horsLigne) {
+    out.chrome.note = 'non interroge (--hors-ligne)';
+    out.amo.note = 'non interroge (--hors-ligne)';
+    return out;
+  }
+
+  if (idChrome) {
+    try {
+      const r = await fetch(
+        `https://chromewebstore.google.com/detail/kick-chat-translator/${idChrome}`,
+        { headers: { 'User-Agent': 'Mozilla/5.0' } },
+      );
+      out.chrome.http = r.status;
+      if (r.ok) {
+        const html = await r.text();
+        // La page pose la valeur apres le libelle, avec du balisage entre les deux.
+        const bloc = html.slice(html.indexOf('>Version<'), html.indexOf('>Version<') + 400);
+        out.chrome.version = bloc.match(/>(\d+\.\d+\.\d+)</)?.[1] ?? null;
+        out.chrome.maj = bloc.match(/>([A-Z][a-z]+ \d{1,2}, \d{4})</)?.[1] ?? null;
+        out.chrome.utilisateurs = Number(html.match(/([\d,]+)\s*users/)?.[1]?.replace(/,/g, '')) || null;
+        if (!out.chrome.version) {
+          out.chrome.note = 'page recue mais aucune version lisible : le balisage a bouge, ne rien deduire';
+        }
+      }
+    } catch (e) {
+      out.chrome.note = 'requete impossible: ' + String(e).slice(0, 80);
+    }
+  } else {
+    out.chrome.note = 'aucun identifiant Chrome trouve dans README.md';
+  }
+
+  if (slugAmo) {
+    try {
+      const r = await fetch(`https://addons.mozilla.org/api/v5/addons/addon/${slugAmo}/`, {
+        headers: { 'User-Agent': 'kct-agent-state' },
+      });
+      out.amo.http = r.status;
+      if (r.ok) {
+        const j = await r.json();
+        out.amo.version = j.current_version?.version ?? null;
+        out.amo.relue = j.current_version?.reviewed ?? null;
+        out.amo.utilisateurs = j.average_daily_users ?? null;
+        out.amo.statut = j.status ?? null;
+      }
+    } catch (e) {
+      out.amo.note = 'requete impossible: ' + String(e).slice(0, 80);
+    }
+  } else {
+    out.amo.note = 'aucun slug AMO trouve dans README.md';
+  }
+  return out;
+}
+
+/** L'ecart entre ce que le depot construit et ce que chaque boutique sert. */
+function boutiquesContreVersion(b, versionLocale) {
+  const ecart = (v) => (v == null ? null : v === versionLocale ? 'a jour' : `${v} contre ${versionLocale} ici`);
+  return {
+    versionLocale,
+    chrome: ecart(b.chrome.version),
+    amo: ecart(b.amo.version),
+    note:
+      "Un retard n'est pas un defaut : soumettre est du ressort de kil. " +
+      "Ce champ existe pour qu'on cesse de citer un chiffre de tete.",
+  };
+}
+
 // ─── la file ─────────────────────────────────────────────────────────────────
 
 /** Items PLAN.md marks as waiting on kil, lifted so they are visible at once. */
@@ -300,6 +404,8 @@ function paquetsContreRelease(locaux, release) {
 const g = git();
 const lesPaquets = paquets();
 const laRelease = await releaseGithub(g.remotes);
+const lesVersions = versions();
+const lesBoutiques = await boutiques();
 const etat = {
   genere: new Date().toISOString(),
   parQui: '.agent/state.mjs',
@@ -309,11 +415,13 @@ const etat = {
     'git.head y pointe le commit precedent et git.arbrePropre y est faux. Relancer ' +
     '`node .agent/state.mjs` avant de lire, ce que le prompt demande deja en premier.',
   git: g,
-  versions: versions(),
+  versions: lesVersions,
   paquets: lesPaquets,
   portes: portes(),
   releaseGithub: laRelease,
   paquetsContreRelease: paquetsContreRelease(lesPaquets, laRelease),
+  boutiques: lesBoutiques,
+  boutiquesContreVersion: boutiquesContreVersion(lesBoutiques, lesVersions.packageJson),
   file: bloqueSurKil(),
 };
 
@@ -344,6 +452,18 @@ if (texte) {
   } else if (pc.compares) {
     console.log(`paquets/release ${pc.compares} compare(s), aucun ecart`);
   }
+  // Les boutiques passent avant la file : c'est le chiffre qu'on a cite de tete
+  // et rate deux fois, une par boutique.
+  const bq = etat.boutiques;
+  const bcv = etat.boutiquesContreVersion;
+  console.log(
+    `chrome       ${bq.chrome.version ?? bq.chrome.note ?? '?'}` +
+      `${bq.chrome.version ? `  (${bcv.chrome}, ${bq.chrome.utilisateurs ?? '?'} users, ${bq.chrome.maj ?? '?'})` : ''}`,
+  );
+  console.log(
+    `amo          ${bq.amo.version ?? bq.amo.note ?? '?'}` +
+      `${bq.amo.version ? `  (${bcv.amo}, ${bq.amo.utilisateurs ?? '?'} users, ${(bq.amo.relue ?? '').slice(0, 10)})` : ''}`,
+  );
   console.log(`file         ${etat.file.nbOuverts} ouvert(s), ${etat.file.nbBloques} bloque(s) sur kil, ${etat.file.nbFaits} fait(s)`);
   for (const b of etat.file.bloques ?? []) console.log(`  bloque: ${b.slice(0, 90)}`);
 }

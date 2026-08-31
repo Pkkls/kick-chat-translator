@@ -432,11 +432,18 @@ reads dist/, so it serialises behind any build. D touches no code.
 - [ ] **The install rate is 40.5 percent and nothing is tuned against it.**
   Eighty-five installs for two hundred and ten first visits, over eight months.
   Fifty-eight percent of arrivals come from organic search, thirty-one direct,
-  six from an AI assistant. The listing that produced that number has never been
-  updated past 2.5.0 while the product is at 2.10.0, five published releases
-  further on, so the figure is a baseline for a page nobody has touched, not a
-  verdict on the current text. Resubmitting
-  is the experiment, and it is blocked on kil.
+  six from an AI assistant.
+  **Correction, and it was published wrong.** This entry said the listing "has
+  never been updated past 2.5.0". Read off the two store pages instead of
+  inherited: Chrome carries **2.9.2, updated 2026-08-30, 75 users**, and its
+  description opens on "NEW IN 2.9.2", so the text was rewritten for that
+  release and is not a page nobody has touched. AMO carries **2.7.0, reviewed
+  2026-08-16, 4 daily users**. The 2.5.0 figure came from a note written in June
+  and repeated without being re-derived, which is the whole of the mistake: it
+  was read, not measured. What that does to the item is remove its excuse. The
+  40.5 percent was produced by a current listing, so it is a verdict on the text
+  and not a baseline for a stale one, and the experiment is a rewrite rather than
+  a resubmission. Blocked on kil either way, since the accounts are his.
 
 - [x] **The 2.9.2 archive divergence is closed by 2.9.3.** The branch carried
   four user-visible fixes past 2.9.2, so it is packaged as 2.9.3: chromium
@@ -527,11 +534,17 @@ reads dist/, so it serialises behind any build. D touches no code.
   and 8 of 10 on AMO were written without a native reader, which the file states
   about itself. ZH and KO are the least certain.
 
-- [k] **Store submissions.** Chrome Web Store and AMO. The 2.10.0 archives exist
-  and are published on GitHub, listing text, dashboard fields and reviewer notes
-  are ready; the accounts are kil's. The stores are still on 2.5.0, which is now
-  five published releases behind, and that gap is what the install-rate item
-  above is really measuring.
+- [k] **Store submissions.** The 2.10.0 archives exist and are published on
+  GitHub, listing text, dashboard fields and reviewer notes are ready; the
+  accounts are kil's.
+  **Where the two stores actually stand**, read off their own pages on
+  2026-08-31 rather than taken from a note: Chrome Web Store **2.9.2**, updated
+  2026-08-30, 75 users, 290 KiB, 8 languages. Firefox AMO **2.7.0**, reviewed
+  2026-08-16, 4 daily users, public. So Chrome is one release behind and AMO is
+  four, and the two are not in step with each other. An earlier version of this
+  file said both were on 2.5.0; that was inherited from a June note and never
+  re-derived. Do not take a store version from this file: it is a page, it
+  changes without a commit, and it has already rotted once here.
 
 - [x] **Two controls were too small to hit, and no gate looked at them.** The
   accessibility audits run on the dumps of the chip menu and the language panel,
