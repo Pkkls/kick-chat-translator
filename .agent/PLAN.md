@@ -153,6 +153,40 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Done, kept for the record
 
+- [x] **A batch inherited one message's source language and declared it for all
+  the others.** The coalescer groups by TARGET language and nothing else, so a
+  batch mixes sources, and `batchCall` built its joined request as
+  `{ ...reqs[0], text: joined }`. Measured on a multilingual corpus: a request
+  went out with `sl=ja` carrying a Japanese line and an Arabic one. `call` only
+  sends `sl` when the language was looked up rather than guessed, precisely
+  because a wrong `sl` makes the engine translate from the wrong language and
+  return either the original or something else; taking the first message's hint
+  for all the rest is that same fault by another route. When the hints disagree
+  the request now declares none, which is what an unknown language already
+  sends. Witness: the test fails with `expected [ 'ja' ] to deeply equal
+  [ 'auto' ]`, and a second keeps a single-language batch declaring `es`, so
+  never declaring anything would not pass either.
+- [x] **Two of the 42 offered languages were never identified.** Malay: franc
+  emits `zlm` and the table knew only `msa` and `zsm`. Hebrew: franc-min does
+  not cover it at all, returning `und`, and the Unicode pre-check had ranges for
+  Arabic, Cyrillic, Thai, Devanagari, Hangul and kana but not Hebrew, though the
+  store listing sells right-to-left support as "Arabic, Hebrew, Persian". What
+  it cost is smaller than it first looked, and the measurement says so: an
+  unidentified language is not dropped, it goes out with `sl=auto`, so those
+  messages were translated all along. What changes is that the engine is told
+  the right source and the reader sees the right source badge. Three tests, one
+  of them the boundary between the Hebrew and Arabic blocks.
+- [x] **Where the injected bundle's bytes go, measured in the shipped file.**
+  `content.js` is 228896 bytes and franc's trigram data is 100394 of them,
+  43.9 percent, across 65 blocks; the inlined stylesheet is 30474, 13.3 percent.
+  A first reading claimed 48.8 percent from an esbuild metafile whose
+  `bytesInOutput` disagreed with the source file by more than a factor of two;
+  the artefact settles it. Of the 61 languages franc-min can return, 21 map to
+  something the product translates and 40 do not, carrying about 61 KB. Trimming
+  them is not free and is not done: dropping a language franc would have chosen
+  makes it choose another, and a mapped wrong answer is worse than an unmapped
+  right one. Measuring detection quality before and after is the experiment that
+  would settle it.
 - [x] **The two reworked menus have an accessibility pass.** axe reports zero
   violations on the chip menu in both themes, checked against a doctored copy
   that it does report; target size passes with 96 targets. The kit's keyboard

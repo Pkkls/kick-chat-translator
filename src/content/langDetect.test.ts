@@ -90,3 +90,26 @@ describe('bare Korean letters count as Korean', () => {
     expect(confidentLanguage('これはテストメッセージです')).toBe('ja');
   });
 });
+
+describe('les langues proposees que rien ne detectait', () => {
+  // Deux des 42 langues du produit rentraient en "langue inconnue" et le
+  // pipeline ecartait le message. Mesure avant correction, sur une phrase
+  // complete de chaque : malais, franc rend `zlm` et la table ne connaissait que
+  // `msa` et `zsm`, donc undefined ; hebreu, franc-min ne le couvre pas du tout
+  // et rend `und`, et le pre-controle par ecriture n'avait pas sa plage alors
+  // qu'il a celle de l'arabe.
+  it('detecte le malais, dont franc emet le code zlm', () => {
+    expect(detectLanguage('selamat petang semua apa khabar hari ini di siaran ini')).toBe('ms');
+  });
+
+  it('detecte l hebreu par son ecriture, que franc-min ne couvre pas', () => {
+    expect(detectLanguage('ערב טוב לכולם מה שלומכם היום בשידור החי הזה')).toBe('he');
+  });
+
+  // Le temoin de la plage : le bloc hebreu s'arrete a U+05FF, l'arabe commence a
+  // U+0600. Elargir l'un jusqu'a manger l'autre passerait les deux tests
+  // ci-dessus et casserait celui-ci.
+  it('ne prend pas l arabe pour de l hebreu', () => {
+    expect(detectLanguage('مساء الخير للجميع كيف حالكم اليوم في هذا البث')).toBe('ar');
+  });
+});

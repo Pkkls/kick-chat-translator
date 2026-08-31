@@ -93,7 +93,26 @@ async function batchCall(reqs: TranslationRequest[], ctx: ProviderContext): Prom
     return [r];
   }
   const joined = reqs.map((r) => r.text).join('\n');
-  const fakeReq: TranslationRequest = { ...reqs[0]!, text: joined };
+  // Le lot n'herite pas de la langue source du PREMIER message.
+  //
+  // Le coalesceur groupe par langue CIBLE et rien d'autre, donc un lot melange
+  // les sources : mesure sur un chat multilingue, une requete est partie avec
+  // `sl=ja` en portant une ligne japonaise et une ligne arabe. Or `call` ne
+  // transmet `sl` que lorsqu'on a cherche la langue au lieu de la deviner,
+  // precisement parce qu'un `sl` faux fait traduire depuis la mauvaise langue et
+  // rend soit un texte identique a l'original, soit un texte qui dit autre
+  // chose. Reprendre l'indication du premier message pour tous les autres est la
+  // meme faute par un autre chemin.
+  //
+  // Quand les indications ne concordent pas, on n'en annonce aucune : `auto` est
+  // ce que le moteur recoit deja quand la langue est inconnue, et c'est moins
+  // faux que d'en affirmer une.
+  const indications = new Set(reqs.map((r) => r.sourceLangHint));
+  const fakeReq: TranslationRequest = {
+    ...reqs[0]!,
+    text: joined,
+    sourceLangHint: indications.size === 1 ? reqs[0]!.sourceLangHint : undefined,
+  };
   const result = await call(fakeReq, ctx);
   const lines = result.translatedText.split('\n');
   // If Google merged/split lines differently, fall back to per-item.

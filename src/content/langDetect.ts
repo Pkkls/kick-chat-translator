@@ -98,6 +98,13 @@ function detectByScript(text: string): string | undefined {
   let hangul = 0;
   let arabic = 0;
   let cyrillic = 0;
+  // L'hebreu est aussi peu ambigu que l'arabe depuis son ecriture, et il
+  // manquait. Mesure : franc-min ne le couvre pas du tout, il rend `und` sur une
+  // phrase hebraique complete, donc `detectLanguage` rendait undefined et le
+  // pipeline ecartait le message pour langue inconnue. L'hebreu est pourtant une
+  // des 42 langues proposees et la fiche des stores annonce l'ecriture de droite
+  // a gauche par "arabe, hebreu, persan".
+  let hebrew = 0;
   let thai = 0;
   let devanagari = 0;
   let total = 0;
@@ -112,6 +119,7 @@ function detectByScript(text: string): string | undefined {
     // feeding no script, which pushed a short line below the majority threshold.
     else if ((c >= 0xac00 && c <= 0xd7af) || (c >= 0x3130 && c <= 0x318f)) hangul++;
     else if (c >= 0x0600 && c <= 0x06ff) arabic++;
+    else if (c >= 0x0590 && c <= 0x05ff) hebrew++;
     else if (c >= 0x0400 && c <= 0x04ff) cyrillic++;
     else if (c >= 0x0e00 && c <= 0x0e7f) thai++;
     else if (c >= 0x0900 && c <= 0x097f) devanagari++;
@@ -124,6 +132,7 @@ function detectByScript(text: string): string | undefined {
   if (pct(hangul)) return 'ko';
   if (pct(han)) return undefined;
   if (pct(arabic)) return 'ar';
+  if (pct(hebrew)) return 'he';
   if (pct(cyrillic)) return 'ru';
   if (pct(thai)) return 'th';
   if (pct(devanagari)) return 'hi';

@@ -77,6 +77,10 @@ const CORPUS = [
   ['ru', 'traduit', 'привет всем как дела сегодня вечером'],
   ['ja', 'traduit', 'みなさんこんばんは今日はどうですか'],
   ['ar', 'traduit', 'مساء الخير للجميع كيف حالكم اليوم'],
+  // Deux langues proposees par le produit que rien ne detectait : franc emet
+  // `zlm` pour le malais, absent de la table, et ne couvre pas l'hebreu du tout.
+  ['ms', 'traduit', 'selamat petang semua apa khabar hari ini di siaran ini'],
+  ['he', 'traduit', 'ערב טוב לכולם מה שלומכם היום בשידור החי הזה'],
   // Ce que le produit est cense ecarter, et pourquoi.
   ['en', 'anglais', 'good evening everyone how is everybody doing'],
   ['en', 'anglais', 'that play was genuinely incredible to watch'],
@@ -126,11 +130,19 @@ const ctx = await chromium.launchPersistentContext(profile, {
 });
 
 let appelsMoteur = 0;
+/** La langue source annoncee au moteur, requete par requete. */
+const slVus = [];
 const KICK = /^https?:\/\/(www\.)?kick\.com\//;
 const SAUT = String.fromCharCode(10);
 
 await ctx.route('**://translate.googleapis.com/**', async (route) => {
   appelsMoteur += 1;
+  {
+    const u = new URL(route.request().url());
+    const sl = u.searchParams.get('sl') ?? '?';
+    const q = (u.searchParams.get('q') ?? '').slice(0, 26);
+    slVus.push(sl + ' <- ' + JSON.stringify(q));
+  }
   const q = new URL(route.request().url()).searchParams.get('q') ?? '';
   const lignes = q.split(SAUT);
   await route.fulfill({
@@ -369,6 +381,8 @@ if (JSON_SEUL) {
       `service worker ${etages.swTouches} touches / ${etages.swDefauts} defauts, ` +
       `${etages.appelsMoteurApresRechargement} appel(s) moteur`,
   );
+  console.log('sl annonce au moteur :');
+  for (const l of slVus) console.log('  ' + l);
   console.log('compteurs :');
   for (const [k, v] of Object.entries(compteurs).sort((a, b) => b[1] - a[1])) {
     console.log(`  ${k.padEnd(34)} ${v}`);
