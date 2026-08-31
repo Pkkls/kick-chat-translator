@@ -53,11 +53,70 @@ const MARQUEURS: Record<string, readonly string[]> = {
     'konnichiwa', 'arigatou', 'gozaimasu', 'ohayou', 'yoroshiku',
     'onegaishimasu', 'kudasai', 'ganbatte', 'subarashii',
   ],
+  // Le bulgare en lettres latines, la shlyokavitsa, que le chat bulgare ecrit
+  // couramment. Bati par PARADIGME et jamais par la liste des rates : les
+  // interrogatifs, et les racines ou le bulgare diverge du russe, donc hors de
+  // portee de `ru` ci-dessus. Le reste des paradigmes, le futur et les
+  // demonstratifs, est passe au second etage par le plancher de cinq lettres.
+  // `si`, `sa` et `ste` restent dehors partout, trop courts ou trop communs.
+  bg: [
+    'kakvo', 'zashto', 'kolko', 'kakav', 'kakva',
+    'chovek', 'neshto', 'vsichko', 'blagodarya', 'zdravey', 'zdravei',
+    'hubavo', 'hubava', 'hubav', 'razbira',
+  ],
+};
+
+/**
+ * Marqueurs qui ne suffisent pas seuls, et pourquoi il en faut.
+ *
+ * Mesure qui a impose ce second etage. Les marqueurs FORTS ci-dessus, batis par
+ * paradigme et tenus au plancher de cinq lettres, prennent 10 des 20 lignes de
+ * shlyokavitsa ecrites en meme temps qu'eux et **ZERO des 4 ecrites la veille**,
+ * avant que la liste existe. Un
+ * paradigme grammatical donne les mots d'un manuel ; un chat ecrit "mnogo dobre
+ * igra" et "az sam tuk", qui ne portent aucun d'eux. C'est le meme defaut que la
+ * table de mots courts faite de salutations, vu avant d'etre livre cette fois.
+ *
+ * Ces mots-la appartiennent aussi a d'autres langues, `dobre` au polonais, `az`
+ * au hongrois, `sam` a l'anglais comme prenom, `mnogo` et `smeshno` au russe
+ * romanise. Un seul ne peut donc rien decider. DEUX dans la meme ligne le
+ * peuvent : sur les deux bancs du depot, 187 lignes en 19 langues que ces listes
+ * n'ont jamais regardees, la regle fait zero faux positif, et elle prend 3 des 4
+ * lignes tenues a l'ecart contre 0 pour les marqueurs forts seuls.
+ *
+ * LA COLLISION EST NOMMEE PLUTOT QUE CACHEE. `mnogo` et `smeshno` s'ecrivent
+ * pareil en bulgare et en russe romanises, donc une ligne russe qui ne porte que
+ * ces deux mots sort `bg`. Mesure sur quatre lignes russes ecrites pour ce
+ * piege : deux sont protegees par un marqueur `ru` fort, `ochen` et `spasibo`,
+ * et deux sont prises. Ce que la detection rendait sur ces deux-la avant :
+ * `undefined` et `pl`. Aucune des deux n'etait juste, et le texte lui-meme est
+ * indecidable.
+ */
+const FAIBLES_PAR_LANGUE: Record<string, readonly string[]> = {
+  bg: [
+    'mnogo', 'dobre', 'az', 'sam', 'tuk', 'tuka', 'stiga', 'smeshno',
+    'nali', 'sega', 'taka', 'nyama', 'nqma', 'mislya', 'pravish', 'stava',
+    // Descendus des forts par le plancher de cinq lettres que la table se donne,
+    // qui a rejete neuf entrees. Respecte plutot que contourne : ce sont des
+    // paradigmes entiers, la particule du futur et les demonstratifs, et ils
+    // gardent leur valeur, simplement ils ne decident plus seuls. Le rappel tenu
+    // a l'ecart ne bouge pas d'un point, 3 sur 4 avant comme apres ; c'est le
+    // rappel sur mes propres lignes qui tombe de 16 a 14 sur 20, et celui-la ne
+    // mesurait que l'ajustement.
+    'shte', 'kade', 'kude', 'koga',
+    'tova', 'tozi', 'tazi', 'tezi',
+    'sme',
+  ],
 };
 
 const TABLE = new Map<string, string>();
 for (const [langue, mots] of Object.entries(MARQUEURS)) {
   for (const m of mots) TABLE.set(m, langue);
+}
+
+const FAIBLES = new Map<string, string>();
+for (const [langue, mots] of Object.entries(FAIBLES_PAR_LANGUE)) {
+  for (const m of mots) FAIBLES.set(m, langue);
 }
 
 /**
@@ -69,14 +128,38 @@ for (const [langue, mots] of Object.entries(MARQUEURS)) {
  */
 export function romanisedLanguage(text: string): string | undefined {
   let vote: string | undefined;
+  /** Marqueurs faibles vus, par langue, dedupliques : "tuk tuk" n'est qu'un. */
+  const faibles = new Map<string, Set<string>>();
+
   for (const jeton of text.toLowerCase().split(/[^\p{L}]+/u)) {
-    const langue = jeton ? TABLE.get(jeton) : undefined;
-    if (!langue) continue;
-    if (vote && vote !== langue) return undefined;
-    vote = langue;
+    if (!jeton) continue;
+    const fort = TABLE.get(jeton);
+    if (fort) {
+      if (vote && vote !== fort) return undefined;
+      vote = fort;
+      continue;
+    }
+    const faible = FAIBLES.get(jeton);
+    if (faible) {
+      let vus = faibles.get(faible);
+      if (!vus) {
+        vus = new Set();
+        faibles.set(faible, vus);
+      }
+      vus.add(jeton);
+    }
   }
-  return vote;
+
+  // Un marqueur fort tranche toujours, et le second etage ne peut pas le
+  // contredire : c'est ce qui garde `ochen mnogo ludey` en russe.
+  if (vote) return vote;
+
+  const gagnantes = [...faibles].filter(([, vus]) => vus.size >= 2);
+  return gagnantes.length === 1 ? gagnantes[0]?.[0] : undefined;
 }
 
 /** Pour les tests et pour qui veut auditer la table plutot que la croire. */
 export const ROMANISED_MARKERS = MARQUEURS;
+
+/** Idem, pour le second etage. */
+export const ROMANISED_WEAK_MARKERS = FAIBLES_PAR_LANGUE;

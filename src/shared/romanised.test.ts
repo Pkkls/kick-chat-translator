@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { romanisedLanguage, ROMANISED_MARKERS } from './romanised';
+import { romanisedLanguage, ROMANISED_MARKERS, ROMANISED_WEAK_MARKERS } from './romanised';
 
 describe('romanisedLanguage', () => {
   it.each([
@@ -60,7 +60,67 @@ describe('romanisedLanguage', () => {
         // Sous cinq lettres, un mot romanise entre en collision avec trop de
         // choses. C est ce qui tient `net`, `poka` et `davai` hors de la table.
         expect(m.length).toBeGreaterThanOrEqual(5);
+        // Un marqueur ne peut pas etre dans les deux etages : il deciderait
+        // seul tout en pretendant avoir besoin d un second.
+        expect(Object.values(ROMANISED_WEAK_MARKERS).flat()).not.toContain(m);
       }
     }
+  });
+});
+
+/**
+ * Le bulgare en lettres latines, et le second etage qu il a impose.
+ *
+ * Ce que la detection rendait avant, mesure ligne par ligne : "mnogo dobre igra"
+ * rien, "mnogo smeshno" pl, "az sam tuk" id, "ai stiga be" sv. Trois etiquettes
+ * fausses et un silence, et sur les trois fausses le lecteur de CETTE langue
+ * perdait la ligne comme "deja dans ta langue".
+ *
+ * Ces quatre lignes ont ete ecrites la veille des marqueurs, donc elles sont la
+ * seule mesure de rappel qui ne soit pas de l ajustement.
+ */
+describe('romanisedLanguage, bulgare latinise', () => {
+  it.each([
+    ['mnogo dobre igra', 'les deux mots que le paradigme grammatical rate'],
+    ['mnogo smeshno', 'deux mots, et smeshno appartient aussi au russe'],
+    ['az sam tuk', 'trois mots faibles, aucun decisif seul'],
+  ])('prend %s (%s)', (texte) => {
+    expect(romanisedLanguage(texte)).toBe('bg');
+  });
+
+  // La quatrieme des lignes tenues a l ecart, celle qui reste ratee. Elle ne
+  // porte qu un seul marqueur faible et la regle en demande deux, ce qui est le
+  // prix de zero faux positif et non un oubli.
+  it('laisse passer une ligne a un seul marqueur faible', () => {
+    expect(romanisedLanguage('ai stiga be')).toBeUndefined();
+  });
+
+  it.each(['kakvo stava tuka', 'zashto pravish taka', 'vsichko e nared', 'kolko e chasa'])(
+    'un marqueur fort suffit sur %s',
+    (texte) => {
+      expect(romanisedLanguage(texte)).toBe('bg');
+    },
+  );
+
+  // Le temoin du second etage : UN seul marqueur faible ne decide rien, sinon
+  // `dobre` prendrait le polonais et `sam` prendrait l anglais.
+  it.each(['bardzo dobre zagranie', 'sam is streaming today', 'sega'])(
+    'un seul marqueur faible ne decide rien : %s',
+    (texte) => {
+      expect(romanisedLanguage(texte)).toBeUndefined();
+    },
+  );
+
+  // La collision nommee dans la table. `mnogo` et `smeshno` s ecrivent pareil
+  // dans les deux langues, donc un marqueur `ru` fort doit continuer a trancher.
+  it('un marqueur russe fort bat le second etage', () => {
+    expect(romanisedLanguage('ochen mnogo ludey tut')).toBe('ru');
+    expect(romanisedLanguage('spasibo bylo smeshno')).toBe('ru');
+  });
+
+  // Le meme mot deux fois n est pas deux marqueurs. Sans la deduplication,
+  // "tuk tuk" suffirait et la regle des deux ne voudrait rien dire.
+  it('ne compte pas deux fois le meme marqueur', () => {
+    expect(romanisedLanguage('tuk tuk tuk')).toBeUndefined();
   });
 });
