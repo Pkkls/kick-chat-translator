@@ -38,10 +38,22 @@ describe('laughterLanguage', () => {
     ['mdr', 'fr'], ['ptdr', 'fr'],
     ['asg', 'sv'], ['høhøhø', 'da'], ['hæhæhæ', 'da'],
     ['wkwkwk', 'id'], ['wakaka', 'id'], ['xixixi', 'id'],
-    ['ha3', 'ms'], ['555', 'th'], ['www', 'ja'], ['2333', 'zh'],
+    ['ha3', 'ms'], ['555', 'th'], ['ｗｗｗ', 'ja'], ['2333', 'zh'],
     ['χαχα', 'el'],
   ])('%s marque %s', (forme, langue) => {
     expect(laughterLanguage(forme)).toBe(langue);
+  });
+
+  // Le `www` demi-chasse est reste du rire, mais il ne marque plus le japonais.
+  // Mesure : le vote de `detectByShortWords` porte sur les JETONS et il decoupe
+  // sur les non-lettres, donc `www.kick.com` donnait les jetons www, kick, com
+  // et le premier votait seul. Trois vrais noms d hotes sur quatre sortaient ja
+  // AVEC sl=ja, ce qui demande au moteur de traduire une URL depuis le japonais.
+  // La pleine chasse ne connait pas cette ambiguite : aucun nom d hote ne
+  // s ecrit en ｗ.
+  it('www demi-chasse reste du rire sans marquer une langue', () => {
+    expect(isLaughter('www')).toBe(true);
+    expect(laughterLanguage('www')).toBeUndefined();
   });
 
   // La regle que la table se donne : une forme employee partout ne marque rien.

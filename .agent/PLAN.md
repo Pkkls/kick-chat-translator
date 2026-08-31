@@ -109,6 +109,14 @@ reads dist/, so it serialises behind any build. D touches no code.
   their own bucket was this same bug treated locally: its comment said those
   letters "counted toward the total while feeding no script", which is the
   general defect, described once and fixed in one place.
+- [k] **The Persian split is measured but never observed running.** The rule
+  changes what detection returns for an entire writing system, so the flag, the
+  badge name and the right-to-left rendering of a Persian line all move, and
+  none of that has been looked at. kil's ruling: a Persian stream is too hard to
+  find to make a live harness worth building, so this one stays theoretical, on
+  tests and measurement only. Written down as a `[k]` rather than as done,
+  because "never say done about behaviour you have not observed" does not stop
+  applying just because looking is expensive.
 - [x] **Persian was declared Arabic, and declared it as a confident source
   language.** The Arabic script is not a language. Measured on twelve Persian
   lines: twelve of twelve returned `ar`, and returned it through
@@ -266,15 +274,46 @@ reads dist/, so it serialises behind any build. D touches no code.
   reason in nine catalogues, and the pipeline test written for it failed by
   reporting the length reason instead, which is what exposed the mistake. All of
   it reverted.
-- [ ] **What survives that rebuild is the domain written without a scheme.**
-  `kick.com/somechannel` is detected Spanish and `www.example.com/watch` French:
-  the parser's URL rule wants `https?://`, so these reach the engine as text,
-  pay for a call, wear a wrong flag, and are skipped as "already in your
-  language" for a Spanish or French reader. `www.` is unambiguous enough to
-  match on its own; a bare domain needs a list of what looks like a TLD, and
-  widening the parser's URL rule also changes what renders as a link in the row,
-  which is a second decision. Frequency unknown, like everything else here, so
-  it is written down rather than fixed.
+- [x] **A hostname was read as Japanese laughter and declared Japanese to the
+  engine.** kil's remark, that `wwwww` and even `www` are laughter in Japanese
+  chat, was aimed at the scheme-less domain idea below. It turned out to name a
+  defect that was already live in the opposite direction. The laughter table
+  carried `ja` on `/^w{3,}$/i` with the note "three or more, so it cannot be a
+  bare www host". That argument reads the whole message; the vote runs per
+  token, and `detectByShortWords` splits on non-letters, so `www.kick.com`
+  becomes the tokens www, kick, com and the first one votes alone. Measured:
+  three real hostnames of four came out `ja` **with `sl=ja`**, asking the engine
+  to translate a URL from Japanese. The table's own rule settles it, an entry
+  earns a language only when it is unambiguous, and `www` is not. The half-width
+  form stays laughter and marks nothing; the full-width `ｗｗ` takes the mark
+  instead, since no hostname is ever written in full-width letters, and that is
+  a gain rather than a swap: `sugoi ｗｗｗ` reads ja now and did not before. The
+  price is written down too: romaji Japanese followed by half-width `www` leaves
+  with an empty `sl` and the engine detects for itself.
+- [x] **The `note` field of a language table is a value, not a comment, and it
+  ships.** Writing the reasoning above into two notes cost 770 bytes on every
+  Kick page, +0.68 percent against the reference where the pass had been sitting
+  at +0.35, and the build is what caught it. Moved into a `//` comment, which
+  the minifier erases, and the notes are back to the length of their neighbours.
+- [ ] **1754 bytes of prose travel to every viewer.** 42 of the laughter table's
+  45 notes are in the shipped content script, 0.85 percent of it, and roughly
+  half of the 3791 bytes that table was measured to cost. Nothing reads `note`
+  at runtime: the only reader is `laughter.test.ts`, which asserts every form
+  carries one longer than eight characters, and that rule is worth keeping since
+  it is what makes provenance non-optional. So the bytes are reclaimable by
+  stripping the field at build time rather than by dropping the discipline. Not
+  done: the weight item has been looking for margin in the detector for three
+  passes, and this is the first lead that does not cost accuracy, which makes it
+  worth a decision rather than a reflex.
+- [ ] **The domain written without a scheme stays as it is, and kil's reason is
+  better than the measurement.** `kick.com/somechannel` is detected Spanish and
+  `www.example.com/watch` French, so both reach the engine as text, pay for a
+  call and wear a wrong flag. The obvious half of the repair was to match `www.`
+  on its own. `www` is Japanese laughter, so that rule would fight the table on
+  every Japanese line that ends in a full stop, and the collision is not
+  hypothetical: the entry above had to be demoted for the mirror image of it.
+  A bare domain still needs a list of what looks like a TLD, and widening the
+  parser's URL rule also changes what renders as a link in the row. Left alone.
 
 - [ ] **The install rate is 40.5 percent and nothing is tuned against it.**
   Eighty-five installs for two hundred and ten first visits, over eight months.

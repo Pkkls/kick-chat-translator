@@ -115,10 +115,32 @@ const FORMES: FormeDeRire[] = [
     langue: 'th',
     note: 'Thai: five is pronounced ha, so 555 reads hahaha. Also used in Lao',
   },
+  // `note` est une VALEUR, pas un commentaire : chaque caractere part dans le
+  // bundle injecte sur toutes les pages Kick. La table entiere pese 3791 octets
+  // pour cette raison. Le raisonnement va donc ici, ou le minifieur l'efface, et
+  // la note reste de la longueur des autres.
+  //
+  // Le `www` demi-chasse portait `ja` avec pour argument que trois w ou plus
+  // "ne peuvent pas etre un hote www nu". L'argument lit le message ENTIER ; le
+  // vote de `detectByShortWords` porte sur les JETONS et decoupe sur les
+  // non-lettres, donc `www.kick.com` donne les jetons www, kick, com et le
+  // premier vote seul. Mesure : trois vrais noms d'hotes sur quatre sortaient
+  // `ja` AVEC `sl=ja`, ce qui demande au moteur de traduire une URL depuis le
+  // japonais. La table se donne deja la regle qui tranche, une entree ne merite
+  // une langue que si elle est non ambigue, et celle-ci ne l'est pas.
+  //
+  // La pleine chasse garde la marque : aucun nom d'hote ne s'ecrit en ｗ. Deux
+  // ou plus, le plancher d'un caractere de `detectByScript` ne la voyant jamais.
+  // Ce que le demi-chasse perd en face, mesure : le japonais en romaji suivi de
+  // `www` part au moteur avec `sl` vide, donc le moteur detecte seul.
   {
     motif: /^w{3,}$/i,
+    note: 'Japanese w for warai. Marks nothing: www is a hostname token too',
+  },
+  {
+    motif: /^ｗ{2,}$/,
     langue: 'ja',
-    note: 'Japanese: w for warai, laughter. Three or more, so it cannot be a bare www host',
+    note: 'Japanese warai typed full-width, which no hostname ever is',
   },
   {
     motif: /^2+3{3,}$/,

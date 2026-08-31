@@ -138,6 +138,33 @@ describe('l arabizi dans la detection ordinaire', () => {
   });
 });
 
+// Le vote de la table porte sur les JETONS, et `detectByShortWords` decoupe sur
+// les non-lettres. Une entree jugee non ambigue sur le message entier peut donc
+// l'etre sur un jeton. Mesure : la forme de rire japonaise `www` portait `ja`
+// avec la note "trois w ou plus, donc ce ne peut pas etre un hote www nu", et
+// `www.kick.com` sortait ja AVEC sl=ja. Trois vrais noms d hotes sur quatre.
+describe('un nom d hote n est pas du rire japonais', () => {
+  it('ne declare pas une URL comme source japonaise', () => {
+    expect(confidentLanguage('www.kick.com')).toBeUndefined();
+    expect(confidentLanguage('www.example.com')).toBeUndefined();
+    expect(confidentLanguage('www.twitch.tv')).toBeUndefined();
+  });
+
+  // Ce que la pleine chasse recupere en face, et pourquoi elle a le droit de
+  // marquer la langue : aucun nom d hote ne s ecrit en ｗ.
+  it('lit le rire japonais tape en pleine chasse', () => {
+    expect(detectLanguage('sugoi ｗｗｗ')).toBe('ja');
+    expect(confidentLanguage('sugoi ｗｗｗ')).toBe('ja');
+  });
+
+  // Le prix, ecrit plutot que cache : le japonais en romaji suivi d un rire
+  // demi-chasse perd sa marque. Il part au moteur avec `sl` vide, donc le moteur
+  // detecte seul, ce qui est la sortie sure.
+  it('et laisse le romaji plus www au moteur', () => {
+    expect(confidentLanguage('sugoi www')).toBeUndefined();
+  });
+});
+
 // L'ecriture arabe n'est pas une langue. Mesure avant correction : douze lignes
 // persanes sur douze rendues `ar`, et rendues comme langue source SURE, donc
 // envoyees au moteur en `sl=ar`. Le persan est une des 42 langues proposees et
