@@ -359,9 +359,31 @@ reads dist/, so it serialises behind any build. D touches no code.
   uncompressed, is no longer emitted now that nothing exposes it, and the
   stylesheet has always been inlined into the content bundle.
 
-- [ ] **`node_modules` is in the git history**: 4308 files added, repository at
-  10.9 MB. Public since 2026-08-29, so it is a clone cost for everyone. Removing
-  it rewrites history, which is a decision with consequences, not a chore.
+- [k] **`node_modules` in the history: the cost is measured, the consequences
+  turn out to be nearly nil, and the one real risk is a person.** 4695 objects
+  belong to it, **9.49 MB of 16.41 MB on disk, 57.8 percent of the repository**,
+  and it sits in exactly two commits: `c30564b`, the root commit, and `c4bd837`,
+  which untracked it. Nothing is tracked at HEAD. A rewrite would take the repo
+  to about 6.9 MB and every clone pays the difference today.
+  **What it costs downstream, measured rather than feared**: the repository has
+  0 forks, 0 stars, 0 watchers and 0 open pull requests. Nobody downstream has a
+  history to break, which is what "a decision with consequences" was standing in
+  for and it is no longer true. What does move: all 324 commits change SHA since
+  the root is rewritten, the 8 tags move with them, the 8 remote branches move,
+  and `devcopy`, a different repository sharing this history, diverges unless it
+  is rewritten in the same operation. The GitHub release for v2.9.2 keeps its
+  attached archives, which hang off the release and not the tag, but its tag
+  points somewhere new.
+  **The risk that remains is not technical.** A second account works on this
+  machine, and a force-push over a rewritten root strands any local commit it
+  has not pushed. That has to be settled with a person before anything runs, not
+  measured.
+  **Tooling**: `git filter-repo` is not installed and neither is its Python
+  module, so the operation needs `pip install git-filter-repo` first;
+  `filter-branch` over 324 commits is the slow fallback nobody should pick.
+  Prepared and stopped here. Rewriting a public history and force-pushing is on
+  kil's explicit order, like merging and tagging, and "we should start cleaning
+  this up" is a direction rather than that order.
 
 - [x] **The duplicate remote is gone.** `public` pointed at `origin`'s URL with
   a stale tracking ref, so a naive read reported one remote current and the

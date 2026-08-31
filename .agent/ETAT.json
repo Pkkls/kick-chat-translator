@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-31T18:19:09.333Z",
+  "genere": "2026-08-31T18:20:57.984Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase. La version commitee decrit l'etat d'AVANT le commit qui la porte, puisque la fin de passe genere puis commite : git.head y pointe le commit precedent et git.arbrePropre y est faux. Relancer `node .agent/state.mjs` avant de lire, ce que le prompt demande deja en premier.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/metriques-hors-ligne",
-    "head": "393f713aec175df785261c12391ab56e983642a2",
-    "sujet": "Stop reading a hostname as Japanese laughter",
+    "head": "4ce6865965e9792cf8fa8cfb5a3a27147b3cc210",
+    "sujet": "Give the short-word table the words a sentence actually contains",
     "arbrePropre": false,
-    "fichiersModifies": 4,
+    "fichiersModifies": 2,
     "dernierTag": "v2.9.3",
-    "decrit": "v2.9.3-21-g393f713",
+    "decrit": "v2.9.3-22-g4ce6865",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -261,13 +261,14 @@
   "file": {
     "bloques": [
       "**The Persian split is measured but never observed running.** The rule",
+      "**`node_modules` in the history: the cost is measured, the consequences",
       "**A real chat capture, once, so the frequencies stop being guesses.**",
       "**Emote picker dodge: only the Kick-specific half is still blocked.** The",
       "**Native review of the store text.** 8 languages of 10 on the Chrome side",
       "**Store submissions.** Chrome Web Store and AMO. Packages, listing text,"
     ],
-    "nbBloques": 5,
-    "nbOuverts": 6,
+    "nbBloques": 6,
+    "nbOuverts": 5,
     "nbFaits": 92
   }
 }
