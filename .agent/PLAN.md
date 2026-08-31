@@ -361,11 +361,22 @@ reads dist/, so it serialises behind any build. D touches no code.
   field only one provider reads, into `deepl.ts`.
   Three witnesses, each seen red, including a new offline gate,
   `translate-override`, that drives the real extension with a Japanese target.
-- [k] **Whether the transliteration branch lands, and as what version.** The
-  branch is green on its own gates and adds a user-visible behaviour to a 2.9.4
-  that is not released. Nothing was bumped: naming a release is kil's, like
-  merging and tagging. The two branches do not conflict, they touch disjoint
-  files apart from `run-gates.mjs`.
+- [x] **Both branches landed as 2.10.0, on kil's order, and the release is
+  published.** `feat/transliteration-guard` merged into `feat/metriques-hors-ligne`
+  with no conflict, the pair verified as one tree, then merged into `master` as a
+  single no-fast-forward commit. Minor and not a patch: the release adds
+  behaviour rather than only fixing it. 2.9.3 and 2.9.4 were tagged and never
+  published, so the changelog folds both in and the entry covers everything since
+  2.9.2; neither ever reached a user.
+  **What was verified is the archive and not `dist/`.** The chromium zip was
+  unpacked and loaded into Chromium through its own manifest: the content script
+  arrives, a chat row is translated, and the new override path answers from
+  inside the archive. `pack.ts` notes that `.nvmrc` pins node 20 while this
+  machine runs 22, as it has for every archive built here.
+  Published: 39/39 gates, typecheck 0, lint 0, 1032 tests, and `state.mjs`
+  reports the release at HTTP 200 with both assets and **zero divergence**
+  between the local packages and what is on the release, which is what the 2.9.2
+  entry above was about.
 - [x] **The 1754 bytes of prose no longer travel, and the field did not need a
   build step to stop.** 42 of the laughter table's 45 notes were in the shipped
   content script, 0.85 percent of it, about half of what that table was measured
@@ -422,8 +433,9 @@ reads dist/, so it serialises behind any build. D touches no code.
   Eighty-five installs for two hundred and ten first visits, over eight months.
   Fifty-eight percent of arrivals come from organic search, thirty-one direct,
   six from an AI assistant. The listing that produced that number has never been
-  updated past 2.5.0 while the product is at 2.9.2, so the figure is a baseline
-  for a page nobody has touched, not a verdict on the current text. Resubmitting
+  updated past 2.5.0 while the product is at 2.10.0, five published releases
+  further on, so the figure is a baseline for a page nobody has touched, not a
+  verdict on the current text. Resubmitting
   is the experiment, and it is blocked on kil.
 
 - [x] **The 2.9.2 archive divergence is closed by 2.9.3.** The branch carried
@@ -515,8 +527,11 @@ reads dist/, so it serialises behind any build. D touches no code.
   and 8 of 10 on AMO were written without a native reader, which the file states
   about itself. ZH and KO are the least certain.
 
-- [k] **Store submissions.** Chrome Web Store and AMO. Packages, listing text,
-  dashboard fields and reviewer notes are ready; the accounts are kil's.
+- [k] **Store submissions.** Chrome Web Store and AMO. The 2.10.0 archives exist
+  and are published on GitHub, listing text, dashboard fields and reviewer notes
+  are ready; the accounts are kil's. The stores are still on 2.5.0, which is now
+  five published releases behind, and that gap is what the install-rate item
+  above is really measuring.
 
 - [x] **Two controls were too small to hit, and no gate looked at them.** The
   accessibility audits run on the dumps of the chip menu and the language panel,

@@ -1,38 +1,56 @@
 {
-  "genere": "2026-08-31T20:19:25.379Z",
+  "genere": "2026-08-31T20:36:04.943Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase. La version commitee decrit l'etat d'AVANT le commit qui la porte, puisque la fin de passe genere puis commite : git.head y pointe le commit precedent et git.arbrePropre y est faux. Relancer `node .agent/state.mjs` avant de lire, ce que le prompt demande deja en premier.",
   "git": {
     "remotesEnDouble": [],
-    "branche": "feat/metriques-hors-ligne",
-    "head": "355a1b27ce7a700099a2d55450606c338218c424",
-    "sujet": "Read Bulgarian written in Latin letters, and say what a marker table cannot do",
+    "branche": "master",
+    "head": "ccf6ddcbba217ffe7664ff202a5d5ec0f1849dd3",
+    "sujet": "Merge 2.10.0: language detection across ten languages, and the transliteration guard",
     "arbrePropre": false,
-    "fichiersModifies": 2,
-    "dernierTag": "v2.9.3",
-    "decrit": "v2.9.3-28-g355a1b2",
+    "fichiersModifies": 3,
+    "dernierTag": "v2.10.0",
+    "decrit": "v2.10.0",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
     },
     "ecarts": {
       "devcopy": {
-        "note": "pas de devcopy/feat/metriques-hors-ligne connu localement"
+        "derriere": 0,
+        "devant": 62,
+        "aJour": false
       },
       "origin": {
         "derriere": 0,
-        "devant": 2,
-        "aJour": false
+        "devant": 0,
+        "aJour": true
       }
     }
   },
   "versions": {
-    "packageJson": "2.9.4",
-    "distManifest": "2.9.4",
+    "packageJson": "2.10.0",
+    "distManifest": "2.10.0",
     "accordent": true,
     "note": null
   },
   "paquets": [
+    {
+      "fichier": "kick-chat-translator-2.10.0-chromium.zip",
+      "octets": 286213,
+      "versionDuNom": "2.10.0",
+      "versionDuManifest": "2.10.0",
+      "accordent": true,
+      "erreur": null
+    },
+    {
+      "fichier": "kick-chat-translator-2.10.0-firefox.zip",
+      "octets": 286145,
+      "versionDuNom": "2.10.0",
+      "versionDuManifest": "2.10.0",
+      "accordent": true,
+      "erreur": null
+    },
     {
       "fichier": "kick-chat-translator-2.7.0-chromium.zip",
       "octets": 276567,
@@ -164,7 +182,7 @@
   ],
   "portes": {
     "runner": "scratchpad/harness/run-gates.mjs",
-    "enumerees": 38,
+    "enumerees": 39,
     "noms": [
       "snapshot",
       "names",
@@ -196,6 +214,7 @@
       "translate-maj",
       "translate-compose",
       "translate-esquive",
+      "translate-override",
       "audit-strings",
       "audit-da",
       "audit-rtl",
@@ -205,7 +224,7 @@
       "poids-notes",
       "audit-fiche"
     ],
-    "harnaisSurDisque": 43,
+    "harnaisSurDisque": 47,
     "orphelins": [
       "a11y",
       "bar-panel-mesure",
@@ -228,51 +247,47 @@
       "shlyokavitsa",
       "shlyokavitsa-bout-en-bout",
       "store-shots",
-      "store-shots-fixture"
+      "store-shots-fixture",
+      "translit-grille",
+      "translit-horsdico",
+      "translit-reel",
+      "translit-source"
     ],
-    "nbOrphelins": 22,
+    "nbOrphelins": 26,
     "note": "Les portes live ouvrent un navigateur sur kick.com et ne sont dans aucun runner. Un orphelin n est pas forcement un defaut ; un orphelin qui couvre du code livre en est un."
   },
   "releaseGithub": {
     "depot": "Pkkls/kick-chat-translator",
     "http": 200,
-    "tag": "v2.9.2",
-    "publiee": "2026-08-29T22:57:22Z",
+    "tag": "v2.10.0",
+    "publiee": "2026-08-31T20:34:29Z",
     "assets": [
       {
-        "nom": "kick-chat-translator-2.9.2-chromium.zip",
-        "octets": 294586
+        "nom": "kick-chat-translator-2.10.0-chromium.zip",
+        "octets": 286213
       },
       {
-        "nom": "kick-chat-translator-2.9.2-firefox.zip",
-        "octets": 294511
+        "nom": "kick-chat-translator-2.10.0-firefox.zip",
+        "octets": 286145
       }
     ]
   },
   "paquetsContreRelease": {
     "compares": 2,
-    "ecarts": [
-      {
-        "fichier": "kick-chat-translator-2.9.2-chromium.zip",
-        "local": 294379,
-        "publie": 294586,
-        "delta": -207
-      }
-    ],
-    "note": "un zip local porte un numero publie sans etre ce build : ne pas le soumettre, republier ou le supprimer"
+    "ecarts": [],
+    "note": null
   },
   "file": {
     "bloques": [
       "**The Persian split is measured but never observed running.** The rule",
-      "**Whether the transliteration branch lands, and as what version.** The",
       "**`node_modules` in the history: the cost is measured, the consequences",
       "**A real chat capture, once, so the frequencies stop being guesses.**",
       "**Emote picker dodge: only the Kick-specific half is still blocked.** The",
       "**Native review of the store text.** 8 languages of 10 on the Chrome side",
-      "**Store submissions.** Chrome Web Store and AMO. Packages, listing text,"
+      "**Store submissions.** Chrome Web Store and AMO. The 2.10.0 archives exist"
     ],
-    "nbBloques": 7,
+    "nbBloques": 6,
     "nbOuverts": 4,
-    "nbFaits": 95
+    "nbFaits": 96
   }
 }
