@@ -85,6 +85,18 @@ reads dist/, so it serialises behind any build. D touches no code.
   the Latin half, and the half that is decided by writing system is clean. That
   is not a compliment to the code, it is the reason the two halves must never be
   averaged again.
+- [x] **The non-Latin bench now lives in the repository, not in a scratchpad.**
+  `src/content/langDetect.dix.test.ts` carries the 125 lines for ar, ja, ko, ru
+  and zh with a floor per language: 25 of 25 identified and 25 of 25 handed to
+  the engine as a source language for the four the table decides, and for
+  Chinese 24 of 25 identified with 0 of 25 confident, which pins the asymmetry
+  in place. This is what happened to the 41-case grid, measured then lost then
+  measured again, and the Latin corpus is heading the same way. A test file
+  weighs nothing in the shipped bundle and that is checked rather than assumed:
+  `audit-poids` reads the same +0.32 percent before and after adding it. The
+  Latin half stays out because a floor there would be noise, 1 of 4 to 4 of 5
+  depending on the language; it is covered case by case instead.
+
 - [x] **An emoji diluted the writing system out of a line, and a chat without
   emoji does not exist.** `detectByScript` decided on a strict majority of all
   non-ASCII characters, and an emoji is non-ASCII while feeding none of the
@@ -222,10 +234,13 @@ reads dist/, so it serialises behind any build. D touches no code.
   languages. The 40 unmapped languages are absorbing wrong answers, which is
   worth knowing before anyone trims them to save bytes, and it is also why the
   trim above turns silences into answers rather than fixing anything.
-- [ ] **A source allowlist drops one short message in five for a reason the
-  reader did not ask for.** `shouldDropBySourceLang` returns `lang_unknown` when
-  detection is silent, and detection is silent on 10 of the 51 short messages,
-  20 percent. The option says "Pick specific ones to ONLY translate those", so
+- [ ] **A source allowlist drops a short message for a reason the reader did not
+  ask for, and the rate is a Latin rate.** `shouldDropBySourceLang` returns
+  `lang_unknown` when detection is silent. Silent on 10 of the 51 Latin lines,
+  20 percent, which is the figure this item first carried; on the full bench of
+  176 it is 11, and of those 11 exactly one is non-Latin, the two-character
+  Chinese line. So the number to quote is per language: es 1/8, pt 3/6, tr 2/4,
+  it 1/4, pl 1/3, id 2/3, zh 1/25, and zero for ar, ja, ko and ru. The option says "Pick specific ones to ONLY translate those", so
   dropping what cannot be identified is consistent with what it promises, and a
   reader who allowlists JA and KO does want Latin chat gone. But a reader who
   allowlists ES loses the Spanish lines franc could not place, which is not what
