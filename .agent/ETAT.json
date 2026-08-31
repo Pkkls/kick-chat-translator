@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-31T21:24:26.574Z",
+  "genere": "2026-08-31T21:45:55.036Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase. La version commitee decrit l'etat d'AVANT le commit qui la porte, puisque la fin de passe genere puis commite : git.head y pointe le commit precedent et git.arbrePropre y est faux. Relancer `node .agent/state.mjs` avant de lire, ce que le prompt demande deja en premier.",
   "git": {
     "remotesEnDouble": [],
     "branche": "master",
-    "head": "493d66faf8edfb167f319f7dce4c0929437faec1",
-    "sujet": "Take the real chatters out of the three localised READMEs, and record the pass",
+    "head": "0ea2f49b3b9463b44a993727084494523953c2d2",
+    "sujet": "Gate the README screenshots, which nothing was watching",
     "arbrePropre": false,
-    "fichiersModifies": 3,
+    "fichiersModifies": 2,
     "dernierTag": "v2.10.0",
-    "decrit": "v2.10.0-5-g493d66f",
+    "decrit": "v2.10.0-6-g0ea2f49",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -18,7 +18,7 @@
     "ecarts": {
       "devcopy": {
         "derriere": 0,
-        "devant": 67,
+        "devant": 68,
         "aJour": false
       },
       "origin": {
@@ -314,7 +314,7 @@
       "**Store submissions.** The 2.10.0 archives exist and are published on"
     ],
     "nbBloques": 6,
-    "nbOuverts": 5,
-    "nbFaits": 100
+    "nbOuverts": 7,
+    "nbFaits": 101
   }
 }

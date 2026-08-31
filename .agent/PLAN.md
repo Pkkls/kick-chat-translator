@@ -323,6 +323,55 @@ reads dist/, so it serialises behind any build. D touches no code.
   Kick page, +0.68 percent against the reference where the pass had been sitting
   at +0.35, and the build is what caught it. Moved into a `//` comment, which
   the minifier erases, and the notes are back to the length of their neighbours.
+- [x] **Switching stream needed a second page load, and the gate that watched it
+  was green.** Reported by kil on his own build. Root cause measured, not
+  reasoned: `index.ts` had two triggers for re-attaching to a route, a patch of
+  `history.pushState` and a `popstate` listener. `popstate` does not fire on a
+  `pushState`, it is back and forward only. That leaves the patch, and a content
+  script lives in an ISOLATED WORLD: its `history` is a different JavaScript
+  object over the same session history, so patching there intercepts nothing the
+  site's router calls. Read from the main world, `String(history.pushState)` is
+  `function pushState() { [native code] }`.
+  **Why the gate lied.** The observer has a net of its own, a `containerWatcher`
+  that re-attaches when the container leaves the document. It rescues the
+  incoming translations, which is all `translate-navigation` asserts, and nothing
+  `attachForRoute` carries above them. Measured over three channels visited
+  without a reload: Kick's API was queried for the first one only, so the compose
+  preview kept writing in the language of a channel the reader had left. Three of
+  three after the fix, which is reading `location.pathname` twice a second: no
+  world, no event the site chooses to emit, and it works on Firefox, which has no
+  Navigation API. On `feat/nav-monde-isole`, not merged.
+- [ ] **Per-channel pause: three quarters measured, one quarter open.** The bar's
+  control wrote `settings.enabled`, which is global and synced, so pausing on one
+  stream turned the product off on every other stream, in every tab, durably.
+  That was kil's second report. It writes `pausedChannels` now and one derived
+  view, `vueLocale`, is the single place the rule lives; the pipeline, the compose
+  controller and the bar take that view and none of them changed.
+
+      pause clicked, same channel        stops translating     OK
+      resume clicked, same channel       translates again      OK
+      next channel after a pause         translates            OK   <- the report
+      returning to a paused channel      translates            MISS
+
+  **The miss is where to start.** Coming back to a channel that is still paused
+  resumes it. `attachForRoute` does push the recomputed view to the pipeline on
+  the channel change, so the cause is below that and is not located yet. Run
+  `node scratchpad/harness/nav-monde.mjs`, which fails on exactly that line and
+  passes on the other three. Not on master on purpose: the unverified quarter is
+  a regression risk on a path nobody watches, and the old behaviour at least did
+  something.
+  **A probe artefact worth keeping.** The pause was first tested after two
+  navigations and the click wrote nothing at all. The scenario that replaces
+  `#channel-chatroom` with a clone copies its contents through `innerHTML`, which
+  rebuilds the bar as inert markup without its listeners, so the click landed on
+  a dead button. Testing the pause before any navigation separated the two.
+- [ ] **`translate-navigation` asserts less than its name promises.** It replaces
+  the container wholesale, which the observer's own net rescues, so it stays
+  green while every other consequence of a channel switch is broken. It wants the
+  four assertions `nav-monde.mjs` makes, per channel: translations resume, the
+  bar is there, the channel language is re-queried, and the pause state follows
+  the channel. Until then a green run on it means less than it looks.
+
 - [x] **CI had been red for fifteen days and forty-eight runs, and the defect it
   named was real.** Found by rendering the README to look at it: the badge at the
   top said `failing`. Last green run 2026-08-16. Nothing surfaced it because the
