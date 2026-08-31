@@ -114,6 +114,43 @@ function detectByShortWords(text: string): string | undefined {
   return vote;
 }
 
+/**
+ * L'ecriture arabe n'est pas une langue.
+ *
+ * Le pre-controle rendait `ar` pour tout ce qui s'ecrit dans le bloc arabe, et
+ * il le rendait comme une reponse SURE, donc comme `sl` envoye au moteur.
+ * Mesure sur douze lignes persanes : douze sur douze declarees arabes, avec
+ * `sl=ar`. Le persan est une des 42 langues proposees et la fiche des stores
+ * vend le sens droite-a-gauche par "arabe, hebreu, persan". Trois degats a la
+ * fois : le moteur traduit depuis la mauvaise langue, le drapeau est faux, et
+ * un lecteur arabophone voit chaque ligne persane sautee comme "deja dans ta
+ * langue". franc, lui, sait : il rend `pes` sur sept de ces huit lignes, et il
+ * n'etait jamais consulte puisque l'ecriture repondait avant lui.
+ *
+ * Ce qui separe les trois, ce sont des LETTRES, pas une statistique : le persan
+ * ajoute pe, tcheh, jeh, gaf, keheh et farsi yeh au jeu arabe, et l'ourdou
+ * ajoute encore tteh, ddal, rreh, noon ghunna, heh doachashmee, yeh barree et
+ * heh goal par-dessus le persan. L'ourdou se teste donc EN PREMIER, sinon ses
+ * lettres persanes le font passer pour du persan.
+ *
+ * Mesure de la regle : persan 11 sur 12, arabe 12 sur 12 sans un seul faux
+ * positif, ourdou 4 sur 4. La ligne persane manquee, "salam be hame", ne
+ * contient aucune lettre hors du jeu arabe et rien dans le texte ne permet de
+ * la distinguer.
+ *
+ * L'ourdou rend `undefined` et non son code : il n'est pas dans les 42 langues
+ * du produit, donc l'annoncer produirait un drapeau que rien ne sait dessiner.
+ * Ce qui compte est qu'il ne soit plus annonce comme arabe.
+ */
+const LETTRES_PERSANES = /[پچژگکی]/u;
+const LETTRES_OURDOUES = /[ٹڈڑںھےہ]/u;
+
+function arabeOuPersan(text: string): string | undefined {
+  if (LETTRES_OURDOUES.test(text)) return undefined;
+  if (LETTRES_PERSANES.test(text)) return 'fa';
+  return 'ar';
+}
+
 /** Unicode script → language mapping. More reliable than franc on short texts. */
 function detectByScript(text: string): string | undefined {
   // Count non-ASCII, non-space chars by script range.
@@ -131,16 +168,16 @@ function detectByScript(text: string): string | undefined {
   let hebrew = 0;
   let thai = 0;
   let devanagari = 0;
-  let total = 0;
   for (const ch of text) {
     const c = ch.codePointAt(0)!;
     if (c <= 0x7f || /\s/.test(ch)) continue;
-    total++;
     if (c >= 0x3040 && c <= 0x30ff) kana++;
     else if ((c >= 0x3400 && c <= 0x9fff) || (c >= 0xf900 && c <= 0xfaff)) han++;
     // Syllables, plus the compatibility jamo Korean chat writes on their own
-    // (ㅋㅋ, ㅠㅠ, ㅇㅇ). Without them those letters counted toward the total while
-    // feeding no script, which pushed a short line below the majority threshold.
+    // (ㅋㅋ, ㅠㅠ, ㅇㅇ). Sans eux, une ligne de jamo nus ne nourrit aucune ecriture
+    // et le denominateur ci-dessous vaut zero, donc plus rien n'est lu. Ce
+    // correctif-la etait le symptome ; la cause etait le denominateur, qui
+    // comptait tout le non-ASCII et est corrige plus bas.
     else if ((c >= 0xac00 && c <= 0xd7af) || (c >= 0x3130 && c <= 0x318f)) hangul++;
     else if (c >= 0x0600 && c <= 0x06ff) arabic++;
     else if (c >= 0x0590 && c <= 0x05ff) hebrew++;
@@ -148,6 +185,22 @@ function detectByScript(text: string): string | undefined {
     else if (c >= 0x0e00 && c <= 0x0e7f) thai++;
     else if (c >= 0x0900 && c <= 0x097f) devanagari++;
   }
+  // Le denominateur ne compte QUE les caracteres qui portent une ecriture
+  // connue. Il comptait tout le non-ASCII, emoji compris, et un emoji ne
+  // nourrit aucune des huit ecritures : il gonflait le denominateur sans
+  // jamais pouvoir gagner la majorite.
+  //
+  // Mesure de ce que cela coutait, sur les cinq langues majoritaires que ce
+  // pre-controle est le seul a servir : "да" plus deux emoji tombait a 2 sur 4,
+  // donc pas de majorite stricte, donc `undefined` ; "رائع" plus quatre emoji
+  // tombait pareil et franc reprenait la main pour repondre PERSAN sur de
+  // l'arabe. Un chat sans emoji n'existe pas, donc ce n'etait pas un cas limite.
+  const total = kana + han + hangul + arabic + hebrew + cyrillic + thai + devanagari;
+  // Le plancher reste a deux, et c'est lui qui empeche un seul caractere
+  // etranger de voler une ligne latine : un homoglyphe cyrillique dans un mot
+  // anglais compte 1, et a un plancher de 1 la ligne entiere devient russe.
+  // Le prix est connu et accepte : un message CJK d'un seul caractere reste
+  // muet.
   if (total < 2) return undefined;
   const pct = (n: number) => n / total > 0.5;
   // Any kana ⇒ Japanese (Chinese never uses it). Pure Han is ambiguous → defer to
@@ -155,7 +208,7 @@ function detectByScript(text: string): string | undefined {
   if (kana > 0) return 'ja';
   if (pct(hangul)) return 'ko';
   if (pct(han)) return undefined;
-  if (pct(arabic)) return 'ar';
+  if (pct(arabic)) return arabeOuPersan(text);
   if (pct(hebrew)) return 'he';
   if (pct(cyrillic)) return 'ru';
   if (pct(thai)) return 'th';

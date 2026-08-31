@@ -71,6 +71,78 @@ reads dist/, so it serialises behind any build. D touches no code.
   `ChatroomEvents` like a row inside it. Only a real DOM settles it, and given
   the measurement above the answer changes little.
 
+- [x] **The bench covered five of the ten languages the product speaks, and the
+  five it missed were exactly the non-Latin ones.** The product translates into
+  42 languages but it SPEAKS ten: its interface and its store listing exist in
+  en, ar, es, fr, ja, ko, pt, ru, tr and zh, which `ls src/content/i18n/`
+  settles. The corpus was 51 lines in 14 languages, all Latin, so every figure
+  published on detection was a Latin figure and ar, ja, ko, ru and zh had never
+  been looked at once. Extended to 176 lines in 19 languages, 25 per missing
+  language, all ten covered. Read per language, never as a total: **ar 25/25,
+  ja 25/25, ko 25/25, ru 25/25, zh 24/25**, against es 3/8, fr 4/5, pt 3/6,
+  tr 1/4. Silent losses: 0 of 1125 pairs on the non-Latin half, 8 of 483 on the
+  Latin half. The whole of the damage measured over the previous passes lives in
+  the Latin half, and the half that is decided by writing system is clean. That
+  is not a compliment to the code, it is the reason the two halves must never be
+  averaged again.
+- [x] **An emoji diluted the writing system out of a line, and a chat without
+  emoji does not exist.** `detectByScript` decided on a strict majority of all
+  non-ASCII characters, and an emoji is non-ASCII while feeding none of the
+  eight scripts, so it inflated the denominator without ever being able to win.
+  Measured on the five languages this check is the only mechanism for: "да" plus
+  two emoji fell to 2 of 4, no strict majority, `undefined`; "رائع" plus four
+  emoji fell the same way and franc took over to answer **Persian** on Arabic.
+  The denominator counts only script-bearing characters now, and all four test
+  languages hold through six emoji. The earlier fix that gave bare Korean jamo
+  their own bucket was this same bug treated locally: its comment said those
+  letters "counted toward the total while feeding no script", which is the
+  general defect, described once and fixed in one place.
+- [x] **Persian was declared Arabic, and declared it as a confident source
+  language.** The Arabic script is not a language. Measured on twelve Persian
+  lines: twelve of twelve returned `ar`, and returned it through
+  `confidentLanguage`, so the engine was told `sl=ar` on Persian text, the flag
+  was wrong on every line, and an Arabic-reading viewer had every Persian line
+  skipped as already in their language. Persian is one of the 42 and the store
+  listing sells right-to-left as "Arabic, Hebrew, Persian". franc knew, answering
+  `pes` on seven of eight, and was never consulted because the script answered
+  first. What separates the three is letters, not statistics: Persian adds peh,
+  tcheh, jeh, gaf, keheh and farsi yeh, and Urdu adds seven more on top of
+  Persian, so Urdu is tested first or its Persian letters make it Persian.
+  Measured: Persian 11/12, Arabic 12/12 with no false positive, Urdu 4/4. Urdu
+  returns undefined rather than a code, since it is not among the 42 and naming
+  it would ask for a flag nothing can draw. The one Persian line missed carries
+  no letter outside the Arabic set and nothing in the text separates it.
+- [x] **The two-character floor was measured and kept, and its price is
+  written down.** At a floor of one, "Amazing play" spelled with a Cyrillic A
+  becomes Russian and so does "so good" with a Cyrillic o, which is a homoglyph
+  trick chat sees every day. At two, those are safe and the price is the CJK
+  message of a single character: 草, は, 네 stay unread. Both sides have a
+  witness in the test file.
+- [x] **The non-Latin half of code-switching and laughter is clean, and here is
+  the measurement that shows the probe looked.** Eight mixed lines: `gg やばい`
+  reads ja, `gg 대박` ko, `omg 太厉害了` zh, `gg давай` ru, `thanks شكرا` ar,
+  seven of eight. The eighth is an English sentence carrying one kana, which the
+  floor leaves undefined, and undefined is the right answer there since it sends
+  the line out with the engine deciding for itself. This is the mirror of the
+  Latin case that was reverted two commits ago, and the difference is principled:
+  a script is a fact about the text, franc's guess is not. Eight laughter forms
+  across five writing systems, 草, 草草草, wwwww, ㅋㅋㅋㅋ, 233333, ｗｗｗ, хахаха,
+  ههههه, are all dropped by `isNoise` before any of this runs.
+- [ ] **Nothing maps franc's `arb`, its own top answer for Arabic.** franc
+  scores `arb` at 1.00 on an Arabic sentence and `francToIso2` returns
+  undefined, which is the same class as the Malay `zlm` gap a previous pass
+  fixed. It is latent rather than live: the script check answers before franc on
+  anything Arabic-majority, so no measured case reaches it. Written down instead
+  of fixed, because a table entry with no case behind it is a guess.
+- [ ] **Chinese never gets a confident source language, alone among the five.**
+  ar, ja, ko and ru all come out of `detectByScript` as looked-up facts and go
+  to the engine as `sl`; zh is deferred to franc by `if (pct(han)) return
+  undefined`, so `confidentLanguage` withholds it and every Chinese line leaves
+  with the engine guessing. Measured: zh 24/25 identified, 0/25 with a confident
+  source. The deferral is deliberate, Han-only text can be Japanese, and the
+  cost is small since engines auto-detect Chinese well. Recorded so the
+  asymmetry is a decision rather than a surprise.
+
 - [x] **The short-text residue has its damage measured, and two repairs were
   measured and thrown away.** 51 short chat lines in 14 languages through the
   real detection: 28 right, 10 silent, 13 confidently wrong. The wrong answers
@@ -116,20 +188,33 @@ reads dist/, so it serialises behind any build. D touches no code.
   in the test file: raising the constant turns it red on the source language,
   which is the half of the damage that reaches the engine.
 
-- [x] **The experiment the weight item was waiting on has been run: trimming
-  franc's languages is not decidable on the corpus that exists.** franc-min
-  carries 61 languages, 21 map to something the product translates, and the
-  other 40 are about 61 KB on every page. `franc(text, { only: [...] })` is
-  exactly a model reduced to a list, so the before and after is measurable
-  without forking anything. Through the whole detection on the 51 short
-  messages: right 28 to 34, silences 10 to 0, silently lost pairs 11 to 13,
-  wasted calls 23 to 17. Six of the ten silences resolve correctly and four
-  resolve wrong. So the trim buys 6 identifications and 6 saved calls for 2 more
-  messages lost in silence, which is the number that kept franc over tinyld, and
-  a difference of 2 on a corpus of 51 hand-written lines is inside its noise.
-  Not shipped. The other half of the answer is that `only:` does not remove the
-  61 KB anyway: the data stays in the bundle, so the weight motive is gone and
-  what is left is a quality question a real corpus would have to settle.
+- [x] **The experiment the weight item was waiting on has been run, twice, and
+  the first run was wrong in two ways.** `franc(text, { only: [...] })` is
+  exactly a model reduced to a list, so the before and after costs nothing to
+  measure. **First correction, the list.** It was built by pushing three
+  sentences through `francAll`, which only ever returns the languages of those
+  sentences' scripts: 21 codes, missing `cmn`, `jpn`, `kor`, `tha`, `hin` and
+  `pes`. Since `only` also filters the final answer, the reduced variant was
+  destroying Chinese, Japanese and Korean detection outright, so the run
+  measured that hole and nothing else. The list is read out of the package now,
+  `data.js` for the trigrams and `expressions.js` for the script regexes: 76
+  codes, 29 mapped. **Second correction, the target set.** The published delta,
+  11 silent losses becoming 13, was counted against 14 targets including nl, id,
+  cs, ro, sv and vi, which the product does not speak. Against the ten it
+  speaks, the same measurement gives 8 and 8: the trim costs nothing at all on
+  the number that decides. Against all 42 targets it gives 43 and 50.
+  Rerun on 176 messages through the whole detection: right 152 to 158, silences
+  11 to 1, wrong 13 to 17. Still not shipped, and the reason is now the only one
+  that survives: `only:` frees zero bytes. The 61 KB stays in the bundle either
+  way, so the weight motive that justified the experiment does not exist, and
+  what remains is an accuracy trade that changes sign with the target set.
+- [x] **franc-min carries trigram data for four scripts only**: Latin,
+  Cyrillic, Arabic and Devanagari. The other sixteen it recognises with a single
+  regex per script that returns one language, which is where `cmn`, `jpn` and
+  `kor` come from. So for Chinese, Japanese and Korean, franc is not a second
+  opinion on top of `detectByScript`, it is the same idea one level down. The
+  comment saying pure Han is deferred to franc "so Chinese isn't mislabelled as
+  Japanese" is true in effect and misleading in mechanism.
 - [x] **The ten silences are not franc saying `und`.** They are franc answering
   Somali, Lingala, Fulfulde, Uzbek, Hausa, Croatian, Sundanese and Javanese on
   Spanish, Portuguese, Italian, Turkish, Polish and Indonesian chat, and

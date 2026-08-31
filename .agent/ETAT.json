@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-31T17:25:18.353Z",
+  "genere": "2026-08-31T17:51:28.929Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/metriques-hors-ligne",
-    "head": "3cf87f532b3617a653d5cf2a74af11178f413272",
-    "sujet": "Take back the table's 30 character reach: it eats code-switched lines",
+    "head": "d0de25b33b501879b99bc31fe07b7e352ba7d157",
+    "sujet": "Rebuild three impurity categories, and revert a fix for a non-problem",
     "arbrePropre": false,
-    "fichiersModifies": 2,
+    "fichiersModifies": 5,
     "dernierTag": "v2.9.3",
-    "decrit": "v2.9.3-17-g3cf87f5",
+    "decrit": "v2.9.3-18-gd0de25b",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -266,7 +266,7 @@
       "**Store submissions.** Chrome Web Store and AMO. Packages, listing text,"
     ],
     "nbBloques": 4,
-    "nbOuverts": 4,
-    "nbFaits": 80
+    "nbOuverts": 6,
+    "nbFaits": 86
   }
 }

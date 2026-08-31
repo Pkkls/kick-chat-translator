@@ -138,6 +138,70 @@ describe('l arabizi dans la detection ordinaire', () => {
   });
 });
 
+// L'ecriture arabe n'est pas une langue. Mesure avant correction : douze lignes
+// persanes sur douze rendues `ar`, et rendues comme langue source SURE, donc
+// envoyees au moteur en `sl=ar`. Le persan est une des 42 langues proposees et
+// la fiche des stores vend le sens droite-a-gauche par "arabe, hebreu, persan".
+describe('l ecriture arabe se partage entre plusieurs langues', () => {
+  it('lit le persan a ses lettres propres', () => {
+    expect(detectLanguage('چه خبر')).toBe('fa');
+    expect(detectLanguage('این بازی خیلی سخته')).toBe('fa');
+    expect(confidentLanguage('ممنون از استریم')).toBe('fa');
+  });
+
+  // Le temoin de frontiere : l'arabe ne doit rien perdre. Aucune de ces lignes
+  // ne porte de lettre persane, et douze sur douze restent `ar` a la mesure.
+  it('ne prend pas l arabe pour du persan', () => {
+    expect(detectLanguage('ما هذا يا رجل')).toBe('ar');
+    expect(detectLanguage('شكرا على الاشتراك')).toBe('ar');
+    expect(confidentLanguage('مساء الخير للجميع')).toBe('ar');
+  });
+
+  // L'ourdou porte les lettres persanes PLUS les siennes, donc il se teste en
+  // premier. Il n'est pas dans les 42 langues du produit : ce qui compte est
+  // qu'il cesse d'etre annonce comme arabe, pas qu'il recoive un code.
+  it('n annonce pas l ourdou comme de l arabe', () => {
+    expect(detectLanguage('یہ کیا ہو رہا ہے')).not.toBe('ar');
+    expect(detectLanguage('بہت اچھا کھیل')).not.toBe('ar');
+  });
+
+  // La limite, ecrite plutot que cachee : une ligne persane qui n'emploie que
+  // des lettres du jeu arabe reste indiscernable. Une sur douze a la mesure.
+  it('rend arabe une ligne persane sans lettre persane, et c est la limite', () => {
+    expect(detectLanguage('سلام به همه')).toBe('ar');
+  });
+});
+
+// Le pre-controle par ecriture est le seul mecanisme qui sert ar, ja, ko, ru et
+// zh, soit cinq des dix langues que le produit parle. Il decidait a la majorite
+// de TOUT le non-ASCII, emoji compris, et un emoji ne nourrit aucune ecriture.
+describe('un emoji ne dilue pas l ecriture d une ligne', () => {
+  // Mesure avant correction : "да" plus deux emoji tombait a 2 sur 4, donc pas
+  // de majorite stricte, donc undefined ; "رائع" plus quatre emoji tombait pareil
+  // et franc reprenait la main pour repondre PERSAN sur de l'arabe. Rendre son
+  // ancien denominateur a `detectByScript` rend ces deux lignes rouges.
+  it('lit une ligne courte noyee sous les emoji', () => {
+    expect(detectLanguage('да 😂😂')).toBe('ru');
+    expect(detectLanguage('やばい 😂😂😂😂')).toBe('ja');
+    expect(detectLanguage('대박 😂😂😂😂')).toBe('ko');
+    expect(detectLanguage('رائع 😂😂😂😂')).toBe('ar');
+  });
+
+  // Le plancher de deux caracteres d'ecriture reste, et voici ce qu'il paie.
+  // Mesure a un caractere : "Amazing play" ecrit avec un A cyrillique devient
+  // russe, et "so good" avec un o cyrillique aussi. L'homoglyphe est du
+  // quotidien dans un chat. Le prix accepte en face est juste en dessous.
+  it('ne laisse pas un seul caractere etranger voler une ligne latine', () => {
+    expect(detectLanguage('Аmazing play')).not.toBe('ru');
+    expect(detectLanguage('sо good')).not.toBe('ru');
+  });
+
+  it('et paie ce plancher par le message CJK d un seul caractere', () => {
+    expect(detectLanguage('は')).toBeUndefined();
+    expect(detectLanguage('네')).toBeUndefined();
+  });
+});
+
 describe('la portee de la table de mots courts s arrete a 20 caracteres', () => {
   // Ce test est le temoin d'une mesure, pas d'une intuition. Monter
   // SHORT_TEXT_MAX a 30 fait gagner deux lignes etrangeres sur treize et coute
