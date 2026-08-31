@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-31T17:05:36.921Z",
+  "genere": "2026-08-31T17:16:06.684Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/metriques-hors-ligne",
-    "head": "66438b592b9246800e5f3d202325ebef473d7223",
-    "sujet": "Settle the platform-text question without a corpus",
+    "head": "d261ca14e52ea9954a16410157bbdb2b4f76c4c1",
+    "sujet": "Let the short-word table reach 30 characters, under a veto from franc",
     "arbrePropre": false,
     "fichiersModifies": 4,
     "dernierTag": "v2.9.3",
-    "decrit": "v2.9.3-15-g66438b5",
+    "decrit": "v2.9.3-16-gd261ca1",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -260,12 +260,13 @@
   },
   "file": {
     "bloques": [
+      "**A real chat capture, once, so the frequencies stop being guesses.**",
       "**Emote picker dodge: only the Kick-specific half is still blocked.** The",
       "**Native review of the store text.** 8 languages of 10 on the Chrome side",
       "**Store submissions.** Chrome Web Store and AMO. Packages, listing text,"
     ],
-    "nbBloques": 3,
-    "nbOuverts": 2,
-    "nbFaits": 76
+    "nbBloques": 4,
+    "nbOuverts": 3,
+    "nbFaits": 79
   }
 }

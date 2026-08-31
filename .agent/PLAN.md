@@ -91,24 +91,64 @@ reads dist/, so it serialises behind any build. D touches no code.
   same shape as tinyld's confidence bar. Rejected. What ships instead is the
   table reach below.
 
-- [x] **The short-word table reaches 30 characters, under a veto from franc.**
-  `SHORT_TEXT_MAX` was 20 and eight of the thirteen wrong answers sat between 21
-  and 26 characters, out of the table's reach. Measured at 20, 25, 30, 35 and 40
-  on two benches of the same lengths: 13 foreign lines of 23 to 31 characters
-  carrying a table word, 10 read right at 20, 12 at 30, 13 at 35; and 8 English
-  chat lines also carrying a table word, 2 wrong at 20, 3 at 30, **8 at 35**.
-  Length does not separate the two, it lets them in together, which is the same
-  answer repair B gave. What separates them is franc: it answers `eng` on 6 of
-  the 8 English lines and on none of the 13 foreign ones, so an explicit `eng`
-  now cancels the table's vote. `und` does not cancel it, and that is the point:
-  `und` is franc's answer on short text, the one the table exists to replace.
-  Net at 30 with the veto: 12 of 13 foreign lines read right, English damage
-  stays at 2 of 8, both of which franc was already getting wrong on its own.
-  Cost 51 bytes in the shipped bundle and one extra franc call on lines that
-  touch the table, 23.5 to 38.9 microseconds per message over seven short lines.
-  Two witnesses: putting the constant back to 20 turns three assertions red, and
-  deleting the veto makes an English line detect as Spanish and hands `es` to
-  the engine as a confident source.
+- [x] **The short-word table was given a 30 character reach, and it is taken
+  back.** `SHORT_TEXT_MAX` was 20 and eight of the thirteen wrong answers sat
+  between 21 and 26 characters, out of the table's reach. Measured at 20, 25,
+  30, 35 and 40 on two benches of the same lengths: 13 foreign lines carrying a
+  table word, 10 read right at 20, 12 at 30, 13 at 35; and 8 English chat lines
+  also carrying a table word, 2 wrong at 20, 3 at 30, **8 at 35**. Length does
+  not separate the two, it lets them in together, the same answer repair B gave.
+  franc does separate them, answering `eng` on 6 of the 8 English lines and on
+  none of the 13 foreign ones, so an explicit `eng` cancelling the table's vote
+  paid for the extension: 12 of 13 right, English damage unchanged at 2 of 8, 51
+  bytes, one extra franc call at 23.5 to 38.9 microseconds per message. It
+  shipped on that measurement and is reverted on the next one.
+- [x] **What the bench could not see was the message that changes language
+  mid-sentence, and it is the case that decides.** Eight mixed lines through the
+  real order: at `SHORT_TEXT_MAX` 20, three are killed before the call and none
+  gets a source language declared on one half; at 30, six are killed and four
+  do. "merci bro that was insane" is one French word in an English sentence,
+  and at 30 it leaves as `sl=fr` and disappears for a French reader. The franc
+  veto rescues nothing there, because franc answers `eng` on none of the eight.
+  A single foreign word inside another language is more common in a chat than a
+  25 character foreign sentence, so the bound stays at 20. It stays there on
+  this measurement, not because 20 was ever measured as optimal. The witness is
+  in the test file: raising the constant turns it red on the source language,
+  which is the half of the damage that reaches the engine.
+
+- [x] **The experiment the weight item was waiting on has been run: trimming
+  franc's languages is not decidable on the corpus that exists.** franc-min
+  carries 61 languages, 21 map to something the product translates, and the
+  other 40 are about 61 KB on every page. `franc(text, { only: [...] })` is
+  exactly a model reduced to a list, so the before and after is measurable
+  without forking anything. Through the whole detection on the 51 short
+  messages: right 28 to 34, silences 10 to 0, silently lost pairs 11 to 13,
+  wasted calls 23 to 17. Six of the ten silences resolve correctly and four
+  resolve wrong. So the trim buys 6 identifications and 6 saved calls for 2 more
+  messages lost in silence, which is the number that kept franc over tinyld, and
+  a difference of 2 on a corpus of 51 hand-written lines is inside its noise.
+  Not shipped. The other half of the answer is that `only:` does not remove the
+  61 KB anyway: the data stays in the bundle, so the weight motive is gone and
+  what is left is a quality question a real corpus would have to settle.
+- [x] **The ten silences are not franc saying `und`.** They are franc answering
+  Somali, Lingala, Fulfulde, Uzbek, Hausa, Croatian, Sundanese and Javanese on
+  Spanish, Portuguese, Italian, Turkish, Polish and Indonesian chat, and
+  `francToIso2` returning undefined because the product does not translate those
+  languages. The 40 unmapped languages are absorbing wrong answers, which is
+  worth knowing before anyone trims them to save bytes, and it is also why the
+  trim above turns silences into answers rather than fixing anything.
+- [ ] **A source allowlist drops one short message in five for a reason the
+  reader did not ask for.** `shouldDropBySourceLang` returns `lang_unknown` when
+  detection is silent, and detection is silent on 10 of the 51 short messages,
+  20 percent. The option says "Pick specific ones to ONLY translate those", so
+  dropping what cannot be identified is consistent with what it promises, and a
+  reader who allowlists JA and KO does want Latin chat gone. But a reader who
+  allowlists ES loses the Spanish lines franc could not place, which is not what
+  they asked for and nothing tells them. Not touched: the fix that suggests
+  itself, letting a silent line through and deciding on the engine's own
+  `detectedLang` after the call, spends provider calls on messages the reader
+  may not want, and choosing between the two needs the frequency, which needs a
+  corpus.
 
 - [ ] **The install rate is 40.5 percent and nothing is tuned against it.**
   Eighty-five installs for two hundred and ten first visits, over eight months.
@@ -144,6 +184,18 @@ reads dist/, so it serialises behind any build. D touches no code.
 ---
 
 ## Waiting on kil
+
+- [k] **A real chat capture, once, so the frequencies stop being guesses.**
+  Three items now end on the same sentence: the damage is measured and the
+  frequency is not, because every corpus here is hand-written. Four decisions
+  are waiting on that number, and each of them is currently taken by refusing to
+  move: whether the short-text losses are worth more provider calls, whether
+  trimming franc's 40 unmapped languages is a gain or a regression, whether a
+  source allowlist should let an unidentified line through, and what share of a
+  real chat is code-switched. `scripts/kick-chat-collector.js` pastes into the
+  console of a kick.com tab and `copy(ktCorpus.dump())` puts the capture on the
+  clipboard. A few thousand lines from two or three channels of different
+  languages is enough. Asked once; the work continues without it.
 
 - [k] **Emote picker dodge: only the Kick-specific half is still blocked.** The
   mechanism is verified offline now. A synthetic overlay meeting the size gate,

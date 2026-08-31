@@ -138,24 +138,20 @@ describe('l arabizi dans la detection ordinaire', () => {
   });
 });
 
-describe('la table de mots courts porte jusqu a 30 caracteres, sous veto de franc', () => {
-  // Le gain. Sur ces trois lignes de 26 a 28 caracteres franc se trompe et la
-  // table a raison ; elles etaient hors de sa portee a 20. Ramener
-  // SHORT_TEXT_MAX a 20 rend la main a franc et elles redeviennent it, fr, nl.
-  it('lit une ligne de 21 a 30 caracteres portant un mot de la table', () => {
-    expect(detectLanguage('pourquoi il fait ca serieux')).toBe('fr');
-    expect(detectLanguage('grazie mille per lo stream')).toBe('it');
-    expect(detectLanguage('evet ben de oyle dusunuyorum')).toBe('tr');
-  });
-
-  // Le degat que la borne de longueur protegeait, et qu'elle protegeait mal :
-  // une ligne anglaise portant un seul mot de la table. Le vote a l'unanimite ne
-  // peut pas la voir, l'anglais n'etant pas dans la table. Retirer le veto rend
-  // `es` sur celle-ci, et la rend comme une reponse SURE, donc comme `sl` envoye
-  // au moteur.
-  it('ne vole pas une ligne anglaise a cause d un seul mot etranger', () => {
-    expect(detectLanguage('no mucho love for this map lol')).toBe('en');
-    expect(confidentLanguage('no mucho love for this map lol')).toBeUndefined();
+describe('la portee de la table de mots courts s arrete a 20 caracteres', () => {
+  // Ce test est le temoin d'une mesure, pas d'une intuition. Monter
+  // SHORT_TEXT_MAX a 30 fait gagner deux lignes etrangeres sur treize et coute
+  // le message qui change de langue : sur huit lignes melangees, les lignes
+  // tuees avant l'appel passent de 3 a 6 et les `sl` declares sur une seule
+  // moitie de 0 a 4. Ces deux-la sont a 25 et 21 caracteres : un seul mot
+  // etranger dans une phrase anglaise, ce que le vote a l'unanimite ne peut pas
+  // voir puisque l'anglais n'est pas dans la table.
+  //
+  // Le `sl` est ce qui rend le cas grave : "merci bro that was insane" partirait
+  // au moteur en `sl=fr` et disparaitrait pour un lecteur francophone.
+  it('ne declare pas une langue sure sur un seul mot etranger', () => {
+    expect(confidentLanguage('merci bro that was insane')).toBeUndefined();
+    expect(confidentLanguage('tamam kanka good game')).toBeUndefined();
   });
 });
 

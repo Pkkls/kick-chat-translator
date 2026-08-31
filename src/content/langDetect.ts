@@ -81,14 +81,22 @@ const SHORT_WORD_LANG = new Map<string, string>([
 /**
  * Longest message still treated as "short" for detection purposes.
  *
- * Mesure a 20, 25, 30, 35 et 40 sur deux bancs de meme longueur. Le gain, 13
- * lignes etrangeres de 23 a 31 caracteres portant un mot de la table : 10 justes
- * a 20, 12 a 30, 13 a 35. Le degat, 8 lignes anglaises de chat portant elles
- * aussi un mot de la table : 2 fausses a 20, 3 a 30, 8 a 35. La longueur ne
- * separe pas les deux, elle les fait entrer ensemble, ce qui est aussi ce qu'a
- * dit le plancher de longueur essaye sur le saut "deja dans ta langue".
+ * Monte a 30, mesure, et redescendu. Le gain etait reel : sur 13 lignes
+ * etrangeres de 23 a 31 caracteres portant un mot de la table, 10 lues juste a
+ * 20 et 12 a 30, et sur 8 lignes anglaises portant elles aussi un mot de la
+ * table le degat restait a 2, un veto sur un `eng` explicite de franc payant
+ * l'ecart. Ce que ce banc-la ne pouvait pas voir, c'est le message qui change de
+ * langue en cours de route. Sur 8 lignes melangees, passer de 20 a 30 fait
+ * passer les lignes tuees avant l'appel de 3 a 6 et les `sl` declares sur une
+ * seule moitie de 0 a 4 : "merci bro that was insane" part alors au moteur en
+ * `sl=fr` et disparait pour un lecteur francophone. Le veto ne rattrape rien la,
+ * franc ne rend `eng` sur aucune des 8.
+ *
+ * La borne tient donc a 20 parce que le melange de langues est plus frequent
+ * dans un chat que la phrase etrangere de 25 caracteres, pas parce que 20 aurait
+ * ete mesure comme optimal.
  */
-const SHORT_TEXT_MAX = 30;
+const SHORT_TEXT_MAX = 20;
 
 /** Unanimous vote from the lexicon, or undefined when the words disagree. */
 function detectByShortWords(text: string): string | undefined {
@@ -179,22 +187,7 @@ function detectByLookup(trimmed: string): string | undefined {
   // Short Latin message: a known chat word beats franc, which guesses at this length.
   if (trimmed.length <= SHORT_TEXT_MAX) {
     const byWord = detectByShortWords(trimmed);
-    // Ce que la borne de longueur protegeait vraiment, c'est la ligne ANGLAISE
-    // qui contient un mot de la table : "hola guys what is going on here",
-    // "merci for the clip that was sick". Le vote a l'unanimite ne peut pas les
-    // voir, l'anglais n'etant pas dans la table. franc les lit : il rend `eng`
-    // sur 6 de ces 8 lignes et sur aucune des 13 lignes etrangeres du meme banc
-    // de longueur. Un `eng` explicite annule donc le vote.
-    //
-    // `und` ne l'annule pas, et c'est le point : `und` est la reponse de franc
-    // sur le texte court, celle que la table existe pour remplacer. Mesure sur
-    // les entrees deja couvertes, franc rend `zul` pour "hola", `jav` pour
-    // "danke", `uzn` pour "obrigado" et `eng` pour aucune.
-    //
-    // Cout : franc tourne une fois de plus sur les lignes qui touchent la table.
-    // Mesure sur sept lignes courtes, detectLanguage + confidentLanguage,
-    // 23.5 us par message avant, 38.9 us apres.
-    if (byWord && franc(trimmed, { minLength: 3 }) !== 'eng') return byWord;
+    if (byWord) return byWord;
   }
 
   // Unicode script pre-check: more reliable than franc on short texts.
