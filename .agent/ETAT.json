@@ -1,16 +1,16 @@
 {
-  "genere": "2026-08-31T21:19:16.602Z",
+  "genere": "2026-08-31T21:24:26.574Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase. La version commitee decrit l'etat d'AVANT le commit qui la porte, puisque la fin de passe genere puis commite : git.head y pointe le commit precedent et git.arbrePropre y est faux. Relancer `node .agent/state.mjs` avant de lire, ce que le prompt demande deja en premier.",
   "git": {
     "remotesEnDouble": [],
     "branche": "master",
-    "head": "420074623ebd3e9635a371dc9deb426001b3240f",
-    "sujet": "Run the gates without a window, and show the product on the front page",
+    "head": "493d66faf8edfb167f319f7dce4c0929437faec1",
+    "sujet": "Take the real chatters out of the three localised READMEs, and record the pass",
     "arbrePropre": false,
-    "fichiersModifies": 5,
+    "fichiersModifies": 3,
     "dernierTag": "v2.10.0",
-    "decrit": "v2.10.0-4-g4200746",
+    "decrit": "v2.10.0-5-g493d66f",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -18,7 +18,7 @@
     "ecarts": {
       "devcopy": {
         "derriere": 0,
-        "devant": 66,
+        "devant": 67,
         "aJour": false
       },
       "origin": {
@@ -182,7 +182,7 @@
   ],
   "portes": {
     "runner": "scratchpad/harness/run-gates.mjs",
-    "enumerees": 39,
+    "enumerees": 40,
     "noms": [
       "snapshot",
       "names",
@@ -215,6 +215,7 @@
       "translate-compose",
       "translate-esquive",
       "translate-override",
+      "captures-readme",
       "audit-strings",
       "audit-da",
       "audit-rtl",
@@ -314,6 +315,6 @@
     ],
     "nbBloques": 6,
     "nbOuverts": 5,
-    "nbFaits": 99
+    "nbFaits": 100
   }
 }

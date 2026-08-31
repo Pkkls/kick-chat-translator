@@ -369,6 +369,16 @@ reads dist/, so it serialises behind any build. D touches no code.
   nothing because the list is `justify-content: flex-end` and content overflowing
   the START of a flex container is unreachable by scrolling, so the rows the
   frame cannot show are removed instead.
+- [x] **The screenshots cannot go stale in silence any more.** The harness that
+  makes them was in no runner, so a redesign could empty a panel while the four
+  README files kept showing a product that no longer exists, with every test
+  green. It is the 40th gate now, `captures-readme`, which the headless mode made
+  affordable: 26.9s, and the whole suite is 73.5s at `--jobs 6`. It does not
+  compare the committed images, it checks the harness can still produce valid
+  ones, which is the half that a machine can judge. Witness, measured: renaming
+  the language panel's selector the way a redesign would turns it red on both
+  halves, "no element found, nothing to frame" and "does not show its subject",
+  instead of writing a picture of an empty page.
 - [ ] **The three localised READMEs are behind, in two ways that differ.** Their
   images are fixed, so no real person's handle is on any of them any more. What
   is not fixed: their release-note sections stop at 2.8.1 while the product is at

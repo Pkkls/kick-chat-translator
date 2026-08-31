@@ -113,6 +113,15 @@ const GATES = [
   // fait rougir cette porte sur ses deux moities, le mot parti au moteur et la
   // rangee portant l'epellation au lieu de la salutation.
   ['translate-override', 'node', ['scratchpad/harness/translate-offline.mjs', '--override']],
+  // Les quatre images des quatre READMEs. Elles sont generees, donc elles peuvent
+  // perimer en silence : une refonte qui vide un panneau laisse les 1034 tests
+  // verts et la page d'accueil du depot montrant un produit qui n'existe plus.
+  // Cette porte ne compare pas les images commitees, elle verifie que le harnais
+  // sait encore en produire de valides : chaque capture doit montrer son sujet,
+  // au moins six traductions posees pour le chat, plus de dix rangees pour la
+  // grille de langues, un apercu monte et non vide pour la composition. Elle
+  // devient abordable maintenant que les portes tournent sans fenetre.
+  ['captures-readme', 'node', ['scratchpad/harness/store-shots-fixture.mjs']],
   ['audit-strings', 'python', ['scratchpad/audit_content_strings.py']],
   ['audit-da', 'python', ['scratchpad/audit_da.py']],
   ['audit-rtl', 'python', ['scratchpad/audit_rtl.py']],
