@@ -374,10 +374,20 @@ reads dist/, so it serialises behind any build. D touches no code.
   is rewritten in the same operation. The GitHub release for v2.9.2 keeps its
   attached archives, which hang off the release and not the tag, but its tag
   points somewhere new.
-  **The risk that remains is not technical.** A second account works on this
-  machine, and a force-push over a rewritten root strands any local commit it
-  has not pushed. That has to be settled with a person before anything runs, not
-  measured.
+  **The risk that remains is not technical, and it now has a number.** A sweep
+  of every git repository on the machine found a **second clone of this
+  repository** at a different path, still pointing at the same `origin`, with
+  its HEAD three months stale. What a rewrite would do to it: the three
+  local-only commits it holds are README edits from 2026-05-30 that this clone
+  holds too, so nothing unique is lost, but every SHA it knows becomes unknown
+  and it has to be re-cloned rather than pulled. What matters far more is what
+  sits in it uncommitted: `src/shared/transliterationGuard.ts` and its test, 427
+  lines, untracked since 2026-06-08, plus 57 lines of wiring across three source
+  files. It solves a problem this branch does not touch, an engine returning a
+  phonetic transliteration instead of a translation, and nothing on this branch
+  or on any remote has a copy. Rescuing that is a separate decision from the
+  rewrite, and it has to happen first, because it is the only unique thing in
+  the way.
   **Tooling**: `git filter-repo` is not installed and neither is its Python
   module, so the operation needs `pip install git-filter-repo` first;
   `filter-branch` over 324 commits is the slow fallback nobody should pick.
