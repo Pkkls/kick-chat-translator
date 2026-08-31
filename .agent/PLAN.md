@@ -45,16 +45,6 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Open
 
-- [ ] **Transliteration: arabizi is handled, three families are not.** Arabizi
-  is detected and the repair is measured; greeklish, romaji and romanised
-  Russian still return nothing or the wrong thing. Romanised Russian is the one
-  that still bites: `privet kak dela segodnya` is detected Indonesian, so with a
-  source allowlist it is dropped as not allowed, and with an Indonesian target
-  it is not translated at all. The remaining three need a word list per
-  language, on the rule the short-word table already states: an entry earns a
-  language only if it is unambiguous against common English and against the
-  other entries.
-
 
 - [ ] **The install rate is 40.5 percent and nothing is tuned against it.**
   Eighty-five installs for two hundred and ten first visits, over eight months.
@@ -152,6 +142,31 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ---
 
+## Done, kept for the record
+
+- [x] **Transliteration is closed: 0 of 5 to 5 of 5.** Russian, Greek and
+  Japanese typed on a Latin keyboard keep their language and lose their script,
+  so the script pre-check sees nothing and the detector answers for a Latin
+  language. Measured before writing a line: `privet kak dela segodnya` was
+  Indonesian, `spasibo bolshoe za stream` Czech, `pozhaluysta pomogite mne`
+  Italian, `khorosho ochen khorosho` Swedish, and the Greek and Japanese
+  sentences were nothing at all. Russian was the worst of the three, a confident
+  wrong answer: with a source allowlist it came out `lang_not_allowed`, and with
+  Indonesian as target it was not translated at all.
+- [x] **32 markers, one rule, and the words deliberately left out.** An entry
+  earns a language only if it is unambiguous against common English and against
+  the other entries, which is the rule the short-word table already states about
+  itself. That is what keeps `kawaii`, `sugoi`, `senpai`, `baka`, `desu` and
+  `sensei` out: English internet slang adopted them, and a reader writes them
+  without a word of Japanese. Same for Greek `malaka`, and for `net`, `poka` and
+  `davai`, too short or too common elsewhere. A test asserts every marker is at
+  least five letters so that door stays shut. Measured: 20 transliterated
+  sentences marked, 0 false positives on 20 traps.
+- [x] **Not a confident answer, for the same reason as arabizi.** Declaring
+  `sl=ru` on Latin-script text asks the engine to read Cyrillic where there is
+  none. The markers feed ordinary detection, which feeds the filters and the
+  badge; the engine keeps guessing. Cost: 617 bytes, +0.26 percent, well inside
+  the margin.
 ## Done, kept for the record
 
 - [x] **franc against tinyld-light: franc keeps the job, and the first verdict I

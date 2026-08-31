@@ -2,6 +2,7 @@ import { franc } from 'franc-min';
 import { francToIso2 } from '~/shared/languages';
 import { laughterLanguage } from '~/shared/laughter';
 import { isArabizi } from '~/shared/arabizi';
+import { romanisedLanguage } from '~/shared/romanised';
 
 const COMMON_SHORT_TOKENS = new Set([
   'lol',
@@ -210,6 +211,13 @@ export function detectLanguage(text: string): string | undefined {
   // Ce que cela repare : avec une liste de langues sources autorisee, un message
   // arabizi sortait en `lang_unknown`, donc un lecteur arabophone qui restreint
   // ses sources a `ar` perdait exactement les messages qu'il voulait lire.
+  // Les langues ecrites au clavier latin sans l'etre : russe, grec, japonais
+  // romanises. Meme place et meme raison que l'arabizi : la reponse nourrit les
+  // filtres et le drapeau, pas le `sl` envoye au moteur, parce qu'annoncer une
+  // ecriture qui n'est pas dans le texte n'a pas ete mesure.
+  const romanise = romanisedLanguage(trimmed);
+  if (romanise) return romanise;
+
   if (isArabizi(trimmed)) return 'ar';
 
   const francCode = franc(trimmed, { minLength: 3 });

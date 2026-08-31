@@ -137,3 +137,19 @@ describe('l arabizi dans la detection ordinaire', () => {
     expect(detectLanguage('that was gr8')).not.toBe('ar');
   });
 });
+
+describe('les langues romanisees dans la detection ordinaire', () => {
+  // La fonction a sa propre batterie. Ce bloc teste la REPARATION, sans quoi
+  // retirer le cablage ne casserait rien, et une regle qu on peut retirer sans
+  // rien casser ne sert a rien.
+  it('rend la langue au lieu d une devinette latine', () => {
+    // Avant : id pour le russe, rien pour le grec et le japonais.
+    expect(detectLanguage('privet kak dela segodnya')).toBe('ru');
+    expect(detectLanguage('ti kaneis re file einai kalo')).toBe('el');
+    expect(detectLanguage('konnichiwa minna genki desu ka')).toBe('ja');
+  });
+
+  it('ne devient pas une langue source sure, le moteur garde la main', () => {
+    expect(confidentLanguage('privet kak dela segodnya')).toBeUndefined();
+  });
+});
