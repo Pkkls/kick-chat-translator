@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { defaultSettings } from '~/shared/settings';
 import {
+  isKeyboardSmash,
   isNoise,
   isSameLanguageAsTarget,
   shouldDropBySourceLang,
@@ -133,5 +134,60 @@ describe('username matching across letter case', () => {
 
   it('does not block a different name', () => {
     expect(drop('İbrahim', 'mehmet')).toBeUndefined();
+  });
+});
+
+describe('isKeyboardSmash', () => {
+  // Quinze formes attestees, dont le turc askfhsjkd et l espagnol asdasdasd.
+  // Mesure avant ce filtre : zero sur quinze etait ecarte, les quinze partaient
+  // au moteur, et trois en ressortaient avec une langue inventee.
+  it.each([
+    'askfhsjkd', 'dksajdksajdosad', 'asdasdasd', 'asdfghjkl', 'sdfsdfsdf',
+    'kjhgfdsa', 'qwertyuiop', 'fjdkslafj', 'aksjdhaksjd', 'zxcvbnm',
+    'hjkhjkhjk', 'lkjhgfdsa', 'ashdkjashd', 'dfghjkl', 'sdjfhskjdfh',
+  ])('reconnait %s', (forme) => {
+    expect(isKeyboardSmash(forme)).toBe(true);
+  });
+
+  // Les temoins de frontiere. Ce sont eux qui interdisent d elargir la regle :
+  // le critere evident, l absence de voyelles, avale krk, prst et smrt, qui sont
+  // de vrais mots tcheques. Ils sont ici pour que ce chemin reste ferme.
+  it.each([
+    'krk', 'prst', 'smrt', 'vlk', 'zmrzlina', 'ctvrtek', 'strc', 'trh',
+    'wszystko', 'przypadek', 'szczescie', 'brzmi', 'pstrag', 'wzglad',
+    'strength', 'rhythms', 'sphinx', 'schmutz', 'angstschreeuw',
+    'hola', 'increible', 'jugada', 'bonsoir', 'magnifique',
+    'aksamlar', 'nasilsiniz', 'tebrikler', 'gorusuruz',
+    'obrigado', 'saudade', 'geschwindigkeit', 'goedenavond', 'alsjeblieft',
+  ])('laisse passer %s', (mot) => {
+    expect(isKeyboardSmash(mot)).toBe(false);
+  });
+
+  // Les mots etires. Ce sont eux qui ont casse la premiere version : une lettre
+  // tenue vit forcement sur une seule rangee, donc `siiiiiiii` et `NOOOOOO`
+  // portaient la signature d'un martelement et etaient ecartes comme du bruit.
+  // Ce qui les separe est le nombre de lettres differentes, ou bien un GROUPE
+  // repete plutot qu'une lettre tenue.
+  it.each([
+    'siiiiiiii', 'noooooo', 'holaaaaa', 'ouiiiii', 'siiii', 'yesssss',
+    'claroooo', 'vamosss', 'goooool', 'nooooo', 'eyyyyy', 'ahhhhh', 'ouahhhh',
+  ])('laisse passer le mot etire %s', (mot) => {
+    expect(isKeyboardSmash(mot)).toBe(false);
+  });
+
+  it('ne touche pas a une phrase, meme si un mot y ressemble', () => {
+    expect(isKeyboardSmash('asdfghjkl mais je rigole')).toBe(false);
+    expect(isKeyboardSmash('regarde asdfghjkl')).toBe(false);
+  });
+
+  it('ne juge pas sous six lettres, ou le signal ne veut rien dire', () => {
+    expect(isKeyboardSmash('asdf')).toBe(false);
+    expect(isKeyboardSmash('asdfg')).toBe(false);
+    expect(isKeyboardSmash('asdfgh')).toBe(true);
+  });
+
+  it('ecarte le martelement au titre du bruit, comme le rire', () => {
+    expect(isNoise('asdfghjkl')).toBe(true);
+    expect(isNoise('hola amigos')).toBe(false);
   });
 });

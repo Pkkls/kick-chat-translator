@@ -45,6 +45,22 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Open
 
+- [ ] **Transliteration is invisible to the product: 0 of 5.** Arabizi
+  (`ya 3ammi shu hal 7aki`), greeklish (`ti kaneis re file`), romaji
+  (`konnichiwa minna genki desu ka`) all return no language, and romanised
+  Russian (`privet kak dela segodnya`) returns **Indonesian**. franc sees Latin
+  letters and answers for a Latin language. The arabizi digits, 3 for ع and 7
+  for ح inside a Latin word, are a clean and cheap signal; the others need a
+  word list per language. Nothing shipped: the damage is measured, the fix is
+  not designed, and a wrong answer here becomes the engine's source language.
+- [ ] **Platform-injected text: measured damage, unverified reach.** Eight
+  sample notices through the pipeline: 3 handled, 5 translated, detected as
+  French, Portuguese and Indonesian for English text nobody spoke. But the
+  product only ever sees rows matching `div[data-index]`, and whether Kick puts
+  its subscription and moderation notices in such rows is not established.
+  Reading a real chatroom's DOM settles it, and `scripts/kick-chat-collector.js`
+  is the tool for that and has never been run. Blocked on a real corpus, not on
+  a decision.
 - [ ] **Question 2, local-first against cloud, is not measurable here.**
   `e2e.local` never records: the on-device Translator API is present in this
   Chromium but no model is ready, which `local.pair.downloadable` at 14 says
@@ -150,6 +166,36 @@ reads dist/, so it serialises behind any build. D touches no code.
   says not to submit it.
 
 ---
+
+## Done, kept for the record
+
+- [x] **Keyboard smash is filtered, and the earlier claim about it was wrong.**
+  Yesterday's note said eleven of fifteen smashes were already dropped through
+  the English rule. Measured directly on `detectLanguage`: **zero of eleven** were
+  dropped, all eleven reached the engine, and three came back with a language,
+  `asdasdasd` Portuguese, `zxcvbnm` Spanish, `hjkhjkhjk` Dutch. The error was
+  conflating `franc()` returning `und` with `detectLanguage` returning `'en'`: at
+  the `minLength: 3` floor franc returns codes that map to nothing, so detection
+  returns undefined and nothing drops the message. `isKeyboardSmash` now catches
+  15 of 15 with 0 false positives.
+- [x] **The obvious criterion for smash was measured and thrown away.** Absence
+  of vowels catches every smash and also `krk`, `prst`, `smrt` and `vlk`, which
+  are real Czech words. The criterion kept is the share of adjacent letter pairs
+  living on the same keyboard row: against 15 smashes and 33 real words chosen
+  as the worst case, Slavic consonant clusters included, 0.6 still leaves two
+  false positives and 0.65 upward leaves none. 0.7 with a six-letter floor is
+  what shipped, with margin on both sides.
+- [x] **Stretched words broke the first version, and are witnesses now.** A held
+  letter necessarily lives on one row, so `siiiiiiii` and `NOOOOOO` carried the
+  smash signature and were dropped as noise. What separates them is the number
+  of distinct letters, or a repeated GROUP rather than a held letter:
+  `asdasdasd` is three times "asd", `holaaaaa` is "hola" plus a held a. Thirteen
+  stretched words are in the test battery for that reason.
+- [x] **The seven impurity categories have their damage measured**, on 41 cases
+  through the real pipeline order: 23 behave as intended, up from 19 before this
+  pass. Platform text 3/8, identity 3/5, input artefacts 5/7, code-switching
+  1/3, transliteration **0/5**, no-language 5/6, gaming slang 6/7. Frequency is
+  a separate number and it needs a corpus that does not exist here.
 
 ## Done, kept for the record
 
