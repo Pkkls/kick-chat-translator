@@ -218,7 +218,11 @@ describe('localName', () => {
   });
 
   it('falls back to the native name for a code nothing recognises', () => {
+    // `zzzz` est malforme et fait lever le moteur sur certains runtimes
+    // seulement ; `xx` est bien forme et simplement inconnu, ce qui est le cas
+    // qu'un lecteur rencontre. Les deux doivent rendre le nom natif.
     expect(localName('zzzz', 'Fallback')).toBe('Fallback');
+    expect(localName('xx', 'Fallback')).toBe('Fallback');
   });
 });
 

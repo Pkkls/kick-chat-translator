@@ -19,7 +19,7 @@
  * is re-rendered by Kick's SPA, so the chip has to be re-mountable at any time,
  * and it must never be the reason a layout moves.
  */
-import { LANGUAGES, getLang, uiLocale } from '~/shared/languages';
+import { LANGUAGES, getLang, localLangName, uiLocale } from '~/shared/languages';
 import { flagClass } from '~/shared/flags';
 import { msg } from './msg';
 
@@ -366,18 +366,14 @@ function autoLabel(): string {
 /**
  * The language's name in the reader's own language.
  *
- * The list used to render in English whatever the interface language was, so a
- * Japanese user configuring a fully translated extension still met a list they
- * could not read. Intl.DisplayNames knows all of these already; falling back to
- * the native name keeps the row meaningful if it ever answers nothing.
+ * Une seule implementation, dans `~/shared/languages`. Il y en avait TROIS, et
+ * elles ne se comportaient pas pareil : celle-ci rendait le code lui-meme pour
+ * une langue inconnue, celle de `langMenu` s'en sortait par un `n !== code`
+ * ecrit contre le symptome sans nommer la cause, et celle de `languages.ts` a
+ * la vraie reparation. Trois copies d'une fonction, deux facons de se tromper.
  */
 export function localName(code: string, fallback: string): string {
-  try {
-    const dn = new Intl.DisplayNames([uiLocale()], { type: 'language' });
-    return dn.of(code) || fallback;
-  } catch {
-    return fallback;
-  }
+  return localLangName(code, fallback);
 }
 
 /**

@@ -15,7 +15,7 @@
  * through the filter. Forty-two rows fit in no window at screen height, so the
  * list is not meant to be walked.
  */
-import { LANGUAGES, getLang, uiLocale } from '~/shared/languages';
+import { LANGUAGES, getLang, localLangName, uiLocale } from '~/shared/languages';
 import { flagClass } from '~/shared/flags';
 
 /**
@@ -104,20 +104,14 @@ function collator(): Intl.Collator {
 /**
  * The language's name in the reader's own language.
  *
- * The list used to render in English whatever the interface language was, so a
- * Japanese reader configuring a fully translated extension still met a list
- * they could not read. Intl.DisplayNames knows all of these already; falling
- * back to the native name keeps a name on screen if it does not.
+ * Une seule implementation, dans `~/shared/languages`. Il y en avait TROIS, et
+ * elles ne se comportaient pas pareil : celle-ci rendait le code lui-meme pour
+ * une langue inconnue, celle de `langMenu` s'en sortait par un `n !== code`
+ * ecrit contre le symptome sans nommer la cause, et celle de `languages.ts` a
+ * la vraie reparation. Trois copies d'une fonction, deux facons de se tromper.
  */
 export function localName(code: string, fallback: string): string {
-  try {
-    const dn = new Intl.DisplayNames([uiLocale()], { type: 'language' });
-    const n = dn.of(code);
-    if (n && n !== code) return n;
-  } catch {
-    /* Intl.DisplayNames is missing or refuses the tag; the native name stands. */
-  }
-  return fallback;
+  return localLangName(code, fallback);
 }
 
 /** Is any ancestor clipping this element? */

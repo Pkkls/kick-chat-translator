@@ -240,10 +240,22 @@ export function uiLocale(): string {
  * `Intl.DisplayNames` already knows all of these: 0 strings to maintain against
  * 42 languages x 11 interface locales. Falls back to the native name when the
  * engine answers nothing for a code.
+ *
+ * `fallback: 'none'` is what makes that last sentence true, and it was missing.
+ * The default is `'code'`, which does not answer nothing: it echoes the code
+ * back. So an unknown but well-formed code reached the reader as `xx` instead of
+ * the native name, and `|| fallback` never ran because a code is truthy.
+ * Measured: `of('xx')` returns `"xx"` by default and `undefined` with this
+ * option, while `of('zzzz')` throws either way, being malformed rather than
+ * unknown.
+ *
+ * The test covering this only ever exercised the throwing path, so it passed on
+ * a runtime that throws and failed on one that does not, and CI was red on two
+ * assertions while the product carried a defect neither of them described.
  */
 export function localLangName(code: string, fallback: string, locale = uiLocale()): string {
   try {
-    return new Intl.DisplayNames([locale], { type: 'language' }).of(code) || fallback;
+    return new Intl.DisplayNames([locale], { type: 'language', fallback: 'none' }).of(code) || fallback;
   } catch {
     return fallback;
   }
