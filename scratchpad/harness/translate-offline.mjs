@@ -200,6 +200,30 @@ const COMPOSE = process.argv.includes('--compose');
  * nommee pour ce qu'elle est.
  */
 const ESQUIVE = process.argv.includes('--esquive');
+
+/**
+ * Douzieme mode, `--override`. Le dictionnaire de `transliterationGuard` repond
+ * avant tout appel reseau sur une expression courte visee vers une ecriture non
+ * latine, parce que les moteurs y rendent une TRANSLITTERATION phonetique au
+ * lieu d'une traduction : mesure sur le vrai point de sortie de Google,
+ * "bonjour" vers le japonais revient en ボンジュール, "merci" en メルシー,
+ * "gracias" en グラシアス et "ciao" en チャオ.
+ *
+ * Ce qui se verifie ici est le CABLAGE, pas la table : que la reponse arrive
+ * sous la rangee sans qu'aucun moteur ait ete appele. Le mode porte donc deux
+ * lignes, une couverte par la table et une qui ne l'est pas, et la seconde est
+ * ce qui empeche un vert a vide : si rien ne partait au moteur du tout, le zero
+ * de la premiere ne prouverait rien.
+ */
+const OVERRIDE = process.argv.includes('--override');
+
+/** Couverte par la table, et le mot que le moteur rend en katakana. */
+const MOT_TABLE = 'bonjour';
+/** Reponse attendue de la table, la vraie salutation et pas son epellation. */
+const MOT_TABLE_JA = 'こんにちは';
+/** Hors table : doit atteindre le moteur, sinon la porte est verte a vide. */
+const MOT_HORS_TABLE = 'trop fort le mec';
+
 const RANGEES = 8;
 
 // Le chat de Kick reduit a son contrat, repris de `observer.test.ts` qui est
@@ -339,17 +363,21 @@ await page.waitForTimeout(3000);
 
 const barreMontee = await page.evaluate(() => !!document.getElementById('kt-inject-style'));
 
-if (SURVOL) {
+if (SURVOL || OVERRIDE) {
   // Le reglage se pose la ou l'extension le lit, depuis son propre service
   // worker : c'est le seul contexte de la page qui ait `chrome.storage`. Le
   // worker MV3 est paresseux, d'ou l'ouverture d'une page kick.com avant.
   const sw = ctx.serviceWorkers()[0] ?? (await ctx.waitForEvent('serviceworker', { timeout: 20000 }));
-  await sw.evaluate(async (cle) => {
-    await chrome.storage.sync.set({ [cle]: { displayStyle: 'hover' } });
-  }, 'kt.settings.v2');
+  // La cible doit etre une ecriture non latine, sinon la table ne repond pas du
+  // tout et la porte mesurerait le vide.
+  const reglage = OVERRIDE ? { targetLang: 'ja' } : { displayStyle: 'hover' };
+  await sw.evaluate(async ({ cle, reglage }) => {
+    await chrome.storage.sync.set({ [cle]: reglage });
+  }, { cle: 'kt.settings.v2', reglage });
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(3000);
   vuParLeMoteur.length = 0;
+  ciblesDemandees.length = 0;
 }
 
 // Ajoute des rangees comme Kick le fait : un `div[data-index]` avec le pseudo
@@ -418,7 +446,43 @@ let rangees = [];
 // Constats faits pendant le scenario, verses dans `fails` plus bas.
 const fails0 = [];
 
-if (RECYCLAGE) {
+if (OVERRIDE) {
+  await poserRangees([MOT_TABLE, MOT_HORS_TABLE]);
+  await page.waitForTimeout(8000);
+  rangees = await lireRangees();
+
+  const rangeeTable = rangees.find((r) => r.source === MOT_TABLE);
+  const rangeeHors = rangees.find((r) => r.source === MOT_HORS_TABLE);
+  // `ciblesDemandees` porte `<cible>|<texte>` par appel : c'est le seul endroit
+  // qui dise ce que le moteur a VU, plutot que combien de fois il a repondu.
+  const vusParGoogle = ciblesDemandees.map((c) => c.slice(c.indexOf('|') + 1));
+  const tableEstPartie = vusParGoogle.some((q) => q.includes(MOT_TABLE));
+  const horsEstParti = vusParGoogle.some((q) => q.includes(MOT_HORS_TABLE));
+
+  console.log(
+    `override         table "${MOT_TABLE}" ${tableEstPartie ? 'PARTIE au moteur' : 'jamais partie'}, ` +
+      `temoin "${MOT_HORS_TABLE}" ${horsEstParti ? 'parti' : 'JAMAIS PARTI'}`,
+  );
+
+  if (!horsEstParti)
+    fails0.push(
+      `le temoin hors table n a jamais atteint le moteur : la porte serait verte a vide (moteur a vu [${vusParGoogle.join(' / ')}])`,
+    );
+  if (tableEstPartie)
+    fails0.push(
+      `"${MOT_TABLE}" a ete envoye au moteur : le dictionnaire ne repond pas avant l appel`,
+    );
+  const rendue = rangeeTable?.traductions[0] ?? null;
+  if (rendue === null) fails0.push(`aucune traduction posee sous "${MOT_TABLE}"`);
+  else if (!rendue.includes(MOT_TABLE_JA))
+    fails0.push(
+      `la rangee "${MOT_TABLE}" porte ${JSON.stringify(rendue)} au lieu de la reponse de la table ${JSON.stringify(MOT_TABLE_JA)}`,
+    );
+  if (!rangeeHors?.traductions.length)
+    fails0.push(`aucune traduction posee sous le temoin "${MOT_HORS_TABLE}"`);
+
+  traductionVue = rendue;
+} else if (RECYCLAGE) {
   const premiers = Array.from({ length: RANGEES }, (_, i) => `hola numero ${i} uno`);
   await poserRangees(premiers);
   await page
@@ -804,7 +868,7 @@ if (MAJ) {
       ? 'apres un changement de chaine, le message suivant n est plus traduit'
       : 'aucune traduction affichee sous le message',
   );
-else if (!RECYCLAGE && !MAJ && !COMPOSE && !ESQUIVE && !traductionVue.includes(attendu))
+else if (!RECYCLAGE && !MAJ && !COMPOSE && !ESQUIVE && !OVERRIDE && !traductionVue.includes(attendu))
   fails.push(
     `la traduction affichee ne vient pas du moteur attendu (${attendu}) : ${JSON.stringify(traductionVue)}`,
   );
@@ -819,4 +883,4 @@ if (fails.length) {
   console.error('FAIL: ' + fails.join(' ; '));
   process.exit(1);
 }
-console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}${NAVIGATION ? ' --navigation' : ''}${SURVOL ? ' --survol' : ''}${REGLAGES ? ' --reglages' : ''}${SEVENTV ? ' --seventv' : ''}${CACHE ? ' --cache' : ''}${MAJ ? ' --maj' : ''}${COMPOSE ? ' --compose' : ''}${ESQUIVE ? ' --esquive' : ''}: OK`);
+console.log(`translate-offline${BASCULE ? ' --bascule' : ''}${RECYCLAGE ? ' --recyclage' : ''}${NAVIGATION ? ' --navigation' : ''}${SURVOL ? ' --survol' : ''}${REGLAGES ? ' --reglages' : ''}${SEVENTV ? ' --seventv' : ''}${CACHE ? ' --cache' : ''}${MAJ ? ' --maj' : ''}${COMPOSE ? ' --compose' : ''}${ESQUIVE ? ' --esquive' : ''}${OVERRIDE ? ' --override' : ''}: OK`);

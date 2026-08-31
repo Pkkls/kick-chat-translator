@@ -11,6 +11,7 @@ import { anyProviderReady, getProviderStatus, setDeeplUsagePct } from './transla
 import { installKeepalive } from './keepalive';
 import { getUpdateStatus } from './updateChecker';
 import { DEEPL_USAGE_FREE, DEEPL_USAGE_PRO, STORAGE_KEY_SETTINGS } from '~/shared/constants';
+import { getSemanticOverride } from '~/shared/transliterationGuard';
 import type { ProviderId, TranslationOutcome, TranslationRequest } from '~/shared/types';
 
 const log = rootLogger.child('sw');
@@ -61,6 +62,34 @@ async function handleTranslate(req: TranslationRequest): Promise<TranslationOutc
   // Deciding what is already in the user's language belongs to the content script,
   // which runs a real detector and honours the ignoreEnglish setting before it
   // ever calls in here.
+
+  // Semantic override, ahead of the cache because it is a synchronous map lookup
+  // and the cache is IndexedDB. Nothing is written back: the answer is a pure
+  // function of (text, target), so a cache entry would only buy a stale copy of a
+  // table that ships with the build.
+  //
+  // Measured against the shipped provider on 90 pairs of a short expression and a
+  // non-Latin target: it repairs 26, replaces 35 already-correct answers with the
+  // table's own chat register, matches on 29, and answers all 90 without touching
+  // the network. The saved calls are the larger half of what it buys, and the
+  // file's header does not say so.
+  const override = getSemanticOverride(req.text, req.targetLang);
+  if (override) {
+    const detected = req.sourceLangHint ?? 'auto';
+    // 'local' and not 'google': nothing was asked of a provider, and 'local'
+    // already means answered on this device everywhere else in the stats.
+    stats.recordRequest('local', detected, req.text.length, false, req.channel);
+    return {
+      ok: true,
+      result: {
+        messageId: req.messageId,
+        translatedText: override,
+        detectedLang: detected,
+        provider: 'local',
+        cached: false,
+      },
+    };
+  }
 
   if (!req.noCache) {
     // IndexedDB, on the path of every single line. A hit is the fastest possible

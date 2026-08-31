@@ -106,6 +106,12 @@ const GATES = [
   // recherche de la superposition dans un vrai DOM ne l'etait pas, et la
   // desactiver laisse les 621 tests verts.
   ['translate-esquive', 'node', ['scratchpad/harness/translate-offline.mjs', '--esquive']],
+  // Le dictionnaire qui repond avant le reseau sur une expression courte visee
+  // vers une ecriture non latine. Couverture propre, mesuree : rendre
+  // `getSemanticOverride` muet laisse typecheck, lint et les 984 tests verts et
+  // fait rougir cette porte sur ses deux moities, le mot parti au moteur et la
+  // rangee portant l'epellation au lieu de la salutation.
+  ['translate-override', 'node', ['scratchpad/harness/translate-offline.mjs', '--override']],
   ['audit-strings', 'python', ['scratchpad/audit_content_strings.py']],
   ['audit-da', 'python', ['scratchpad/audit_da.py']],
   ['audit-rtl', 'python', ['scratchpad/audit_rtl.py']],

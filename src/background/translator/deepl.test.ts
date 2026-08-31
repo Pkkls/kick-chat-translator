@@ -165,4 +165,69 @@ describe('deeplProvider', () => {
     );
     expect(sentBody).not.toContain('formality');
   });
+
+  // `context` is free on DeepL's side, so the anti-transliteration hint costs a
+  // few bytes of request and nothing else. It rides here rather than in the
+  // content script, where the rescued wiring built it: the field is a DeepL
+  // parameter and building it on the page cost 380 bytes on every Kick page for
+  // something only this provider reads.
+  //
+  // Never observed against the real API: that needs a key this machine has not
+  // got. What is asserted is that the hint reaches the request body.
+  describe('anti-transliteration hint in context', () => {
+    let sentBody = '';
+    const captureFetch = (): void => {
+      globalThis.fetch = vi.fn(async (_url: unknown, init: { body?: string }) => {
+        sentBody = String(init.body);
+        return new Response(
+          JSON.stringify({ translations: [{ detected_source_language: 'FR', text: 'x' }] }),
+          { status: 200 },
+        );
+      }) as unknown as typeof fetch;
+    };
+    // The body is a form: spaces come back as '+', so reading it as a raw
+    // string finds neither the hint nor the chat context. Three assertions were
+    // red on that and the product was right on all three.
+    const contextSent = (): string | null => new URLSearchParams(sentBody).get('context');
+
+    it('rides along on a short message aimed at a non-Latin script', async () => {
+      captureFetch();
+      await deeplProvider.translate(
+        { messageId: '1', text: 'bonjour', targetLang: 'ja' },
+        { ...baseCtx, deeplApiKey: 'k:fx' },
+      );
+      expect(contextSent()).toContain('Do not transliterate');
+    });
+
+    it('keeps the chat context it was given and appends the hint', async () => {
+      captureFetch();
+      await deeplProvider.translate(
+        { messageId: '1', text: 'merci', targetLang: 'ja', context: 'previous chat lines' },
+        { ...baseCtx, deeplApiKey: 'k:fx' },
+      );
+      const body = contextSent() ?? '';
+      expect(body).toContain('previous chat lines');
+      expect(body).toContain('Do not transliterate');
+    });
+
+    it('stays out of a Latin target, where the defect cannot happen', async () => {
+      captureFetch();
+      await deeplProvider.translate(
+        { messageId: '1', text: 'bonjour', targetLang: 'es', context: 'previous chat lines' },
+        { ...baseCtx, deeplApiKey: 'k:fx' },
+      );
+      const body = contextSent() ?? '';
+      expect(body).toContain('previous chat lines');
+      expect(body).not.toContain('Do not transliterate');
+    });
+
+    it('stays out of a long message, where providers translate anyway', async () => {
+      captureFetch();
+      await deeplProvider.translate(
+        { messageId: '1', text: 'this is a much longer chat line', targetLang: 'ja' },
+        { ...baseCtx, deeplApiKey: 'k:fx' },
+      );
+      expect(contextSent() ?? '').not.toContain('Do not transliterate');
+    });
+  });
 });
