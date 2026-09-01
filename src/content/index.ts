@@ -32,6 +32,7 @@ import { extractChannelSlug, fetchChannelLangIso } from './kickApi';
 import { localEngine } from './localEngine';
 import { logPlatform, refresh7TV } from './platform';
 import { langFlag, withFavorite } from '~/shared/languages';
+import { ROUTE_POLL_MS } from '~/shared/constants';
 import { msg as localised, setContentLocale } from './msg';
 
 const log = rootLogger.child('content');
@@ -231,12 +232,41 @@ async function main(): Promise<void> {
   if (settings.showFloatingBar) mountBar();
   watchBar();
 
-  const origPush = history.pushState.bind(history);
-  history.pushState = ((...args: Parameters<typeof origPush>): void => {
-    origPush(...args);
+  // Le changement de chaine, et pourquoi le patch qui etait ici ne pouvait pas
+  // marcher.
+  //
+  // Il y avait deux declencheurs : un patch de `history.pushState` et un
+  // ecouteur `popstate`. `popstate` ne se declenche pas sur un `pushState`, il
+  // ne sert qu'au retour arriere du navigateur. Restait le patch, et un script
+  // de contenu vit dans un MONDE ISOLE : son `history` est un autre objet
+  // JavaScript au-dessus du meme historique, donc patcher la n'intercepte rien
+  // de ce que le routeur du site appelle chez lui. Mesure depuis le monde
+  // principal, celui du site : `String(history.pushState)` rend
+  // `function pushState() { [native code] }`.
+  //
+  // Consequence, mesuree sur trois chaines visitees sans rechargement : l'API de
+  // Kick n'a ete interrogee que pour la premiere, donc l'apercu de composition
+  // continuait d'ecrire dans la langue d'une chaine quittee. Les traductions
+  // entrantes, elles, survivaient par un autre chemin, le `containerWatcher` de
+  // l'observateur, ce qui est exactement pourquoi la porte `translate-navigation`
+  // etait verte sur un produit casse.
+  //
+  // Un sondage de l'URL n'a pas ce probleme : il ne depend d'aucun monde,
+  // d'aucun evenement que le site voudrait bien emettre, et il marche pareil sur
+  // Firefox, qui n'a pas d'API de navigation. `attachForRoute` compare le slug et
+  // sort tout de suite quand il n'a pas bouge, donc le prix est une comparaison
+  // de chaines deux fois par seconde. `popstate` reste pour que le retour arriere
+  // soit immediat au lieu d'attendre le prochain tour.
+  let dernierChemin = location.pathname;
+  setInterval(() => {
+    if (location.pathname === dernierChemin) return;
+    dernierChemin = location.pathname;
     attachForRoute();
-  }) as typeof history.pushState;
-  window.addEventListener('popstate', () => attachForRoute());
+  }, ROUTE_POLL_MS);
+  window.addEventListener('popstate', () => {
+    dernierChemin = location.pathname;
+    attachForRoute();
+  });
 
   // Retry on focus: when pauseWhenHidden is ON and the user comes back to this tab,
   // messages that arrived while hidden are marked (data-kt-id) but never translated.
