@@ -366,6 +366,13 @@ reads dist/, so it serialises behind any build. D touches no code.
   Touching the registry is not something I do, so that one is kil's, and it is
   worth more than this bug: it reopens the whole 'look at the real signed-in
   site' path for every future pass.
+  **A seventh way was tried and it produced the direct proof.** On a real channel
+  page in Brave, anonymously: Kick is Next, `window.next.router` is reachable, and
+  `history.pushState` in the main world is NOT native. Kick's own router has
+  already replaced it, so the content script's isolated-world patch could never
+  fire. That is the diagnosis read off the page kil opens rather than argued from
+  how worlds work. Asking that router to navigate still produced a full document
+  load, on every anonymous path measured.
   The check is one build and one switch: `npm run build`, load `dist/` unpacked,
   switch stream from the sidebar, and see whether the next channel translates
   without a reload.

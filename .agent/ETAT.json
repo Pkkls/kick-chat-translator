@@ -1,16 +1,16 @@
 {
-  "genere": "2026-09-01T07:32:16.869Z",
+  "genere": "2026-09-01T07:35:37.019Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase. La version commitee decrit l'etat d'AVANT le commit qui la porte, puisque la fin de passe genere puis commite : git.head y pointe le commit precedent et git.arbrePropre y est faux. Relancer `node .agent/state.mjs` avant de lire, ce que le prompt demande deja en premier.",
   "git": {
     "remotesEnDouble": [],
     "branche": "master",
-    "head": "31eebc0f734fd627934e0f45c726cb5ca4e7490d",
-    "sujet": "Run the probe on Brave, the browser the report came from",
+    "head": "4cb1175ee907bf280c3c66bca4a57b3e6e2b2c00",
+    "sujet": "List the six ways in that were tried, so nobody spends the pass redoing them",
     "arbrePropre": false,
-    "fichiersModifies": 2,
+    "fichiersModifies": 3,
     "dernierTag": "v2.10.0",
-    "decrit": "v2.10.0-12-g31eebc0",
+    "decrit": "v2.10.0-13-g4cb1175",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -18,7 +18,7 @@
     "ecarts": {
       "devcopy": {
         "derriere": 0,
-        "devant": 74,
+        "devant": 75,
         "aJour": false
       },
       "origin": {
@@ -225,7 +225,7 @@
       "poids-notes",
       "audit-fiche"
     ],
-    "harnaisSurDisque": 51,
+    "harnaisSurDisque": 52,
     "orphelins": [
       "a11y",
       "bar-panel-mesure",
@@ -246,6 +246,7 @@
       "metrics-offline",
       "nav-monde",
       "nav-recon",
+      "nav-routeur",
       "probe-row-space",
       "readme-rendu",
       "session-check",
@@ -258,7 +259,7 @@
       "translit-reel",
       "translit-source"
     ],
-    "nbOrphelins": 30,
+    "nbOrphelins": 31,
     "note": "Les portes live ouvrent un navigateur sur kick.com et ne sont dans aucun runner. Un orphelin n est pas forcement un defaut ; un orphelin qui couvre du code livre en est un."
   },
   "releaseGithub": {
