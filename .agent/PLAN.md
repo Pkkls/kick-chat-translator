@@ -378,6 +378,14 @@ reads dist/, so it serialises behind any build. D touches no code.
   in Brave were counted on `data-kt-id`, the mark the observer leaves on a row it
   saw: 3 of 3 attached first time, the other three being offline channels with no
   chat at all. No race on that path. What is left is one variable, the session.
+  **And the check that needs it is no longer tedious, which is what kil actually
+  flagged.** `scripts/kick-switch-check.js` pastes into the console of a channel
+  page, in his browser with his session, and prints a verdict across a switch. It
+  reads only, and it tells a client route from a reload by whether a
+  `sessionStorage` marker survived. Verified both ways in Brave on a client-side
+  route: with the extension it says it works without reloading, without it says
+  the content script is absent and that this is not the route re-attachment. It
+  separates three causes, so whichever one he hits comes back named.
   The check is one build and one switch: `npm run build`, load `dist/` unpacked,
   switch stream from the sidebar, and see whether the next channel translates
   without a reload.
