@@ -373,6 +373,11 @@ reads dist/, so it serialises behind any build. D touches no code.
   fire. That is the diagnosis read off the page kil opens rather than argued from
   how worlds work. Asking that router to navigate still produced a full document
   load, on every anonymous path measured.
+  **An eighth eliminated the last cause I could test without him.** "Needing a
+  second load" is the signature of a RACE, so six arrivals on real channel pages
+  in Brave were counted on `data-kt-id`, the mark the observer leaves on a row it
+  saw: 3 of 3 attached first time, the other three being offline channels with no
+  chat at all. No race on that path. What is left is one variable, the session.
   The check is one build and one switch: `npm run build`, load `dist/` unpacked,
   switch stream from the sidebar, and see whether the next channel translates
   without a reload.
