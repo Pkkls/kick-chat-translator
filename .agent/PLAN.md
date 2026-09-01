@@ -340,7 +340,16 @@ reads dist/, so it serialises behind any build. D touches no code.
   preview kept writing in the language of a channel the reader had left. Three of
   three after the fix, which is reading `location.pathname` twice a second: no
   world, no event the site chooses to emit, and it works on Firefox, which has no
-  Navigation API. On `feat/nav-monde-isole`, not merged.
+  Navigation API. **On master**, 40/40 gates, four channels of four queried.
+  **Not established, and it is the part only kil can close:** his exact symptom.
+  This fixes the route re-attachment and everything it carries. The incoming
+  translations survived a navigation in both simulated shapes, so if they do not
+  survive on his Brave there is a third shape no fixture reproduces.
+  `nav-recon.mjs` looked at the real site and saw a full frame navigation on the
+  anonymous path, which is a full reload, not the signed-in sidebar path he uses.
+  The check is one build and one switch: `npm run build`, load `dist/` unpacked,
+  switch stream from the sidebar, and see whether the next channel translates
+  without a reload.
 - [ ] **Per-channel pause: three quarters measured, one quarter open.** The bar's
   control wrote `settings.enabled`, which is global and synced, so pausing on one
   stream turned the product off on every other stream, in every tab, durably.
