@@ -53,9 +53,16 @@ const FIXTURE = `<!doctype html><html lang="en"><head><meta charset="utf-8"><tit
   <div contenteditable="true" role="textbox" data-testid="chat-input" class="editor-input" style="min-height:38px"></div>
 </div></body></html>`;
 
+// `KT_BROWSER` pointe sur un autre binaire Chromium, Brave par exemple. kil
+// tourne sur Brave et tout ce qui precede a ete mesure sur le Chromium de
+// Playwright : tant que la sonde n'a pas tourne sur SON navigateur, "Brave" reste
+// une variable non testee et pas une hypothese eliminee. Profil neuf a chaque
+// fois, donc jamais le sien, et aucune session.
+const binaire = process.env.KT_BROWSER;
 const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'kct-nav-'));
 const ctx = await chromium.launchPersistentContext(profile, {
   headless: false,
+  ...(binaire ? { executablePath: binaire } : {}),
   viewport: { width: 1200, height: 800 },
   args: [
     `--disable-extensions-except=${EXT}`,

@@ -352,6 +352,12 @@ reads dist/, so it serialises behind any build. D touches no code.
   app that server-renders for an anonymous visitor very ordinarily routes on the
   client for a signed-in one. Signing in is not something I do, so that half is
   his. What matters: the fix covers exactly the case I cannot observe.
+  **Brave itself is no longer a variable.** `KT_BROWSER=<brave.exe>` runs the
+  probe on kil's own browser with a fresh profile and no session: identical to
+  Chromium, four channels of four queried, so the fix works there. The same run
+  reproduces his SECOND report in his own browser, pausing one channel turning
+  off the next. What is left needs a signed-in session, and entering credentials
+  is not something I do. That is a boundary, not a skipped step.
   The check is one build and one switch: `npm run build`, load `dist/` unpacked,
   switch stream from the sidebar, and see whether the next channel translates
   without a reload.
