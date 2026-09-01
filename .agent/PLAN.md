@@ -358,6 +358,14 @@ reads dist/, so it serialises behind any build. D touches no code.
   reproduces his SECOND report in his own browser, pausing one channel turning
   off the next. What is left needs a signed-in session, and entering credentials
   is not something I do. That is a boundary, not a skipped step.
+  **Six ways in were tried and the journal lists them** so nobody redoes it. The
+  only one that would have shown a signed-in client-side route is kil's real
+  browser through claude-in-chrome, and it is shut: `list_connected_browsers`
+  returns empty, which the Brave bridge note has said since 2026-08-16. The
+  unblock is a native-messaging registry key copied from Chrome to Brave.
+  Touching the registry is not something I do, so that one is kil's, and it is
+  worth more than this bug: it reopens the whole 'look at the real signed-in
+  site' path for every future pass.
   The check is one build and one switch: `npm run build`, load `dist/` unpacked,
   switch stream from the sidebar, and see whether the next channel translates
   without a reload.
