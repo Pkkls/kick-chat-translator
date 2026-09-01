@@ -358,6 +358,13 @@ reads dist/, so it serialises behind any build. D touches no code.
   reproduces his SECOND report in his own browser, pausing one channel turning
   off the next. What is left needs a signed-in session, and entering credentials
   is not something I do. That is a boundary, not a skipped step.
+  **And the unblock is smaller than I said.** I repeated from a June note that a
+  registry key had to be copied to Brave. Read from the registry instead: the key
+  is there, the manifest and host are valid, and the Claude extension is installed
+  in Brave's Default profile at v1.0.90 while Brave is running. Yet
+  `list_connected_browsers` returns empty. So it is neither the registry nor the
+  install: the extension simply is not CONNECTED, which is a click in its own UI.
+  Once it is, a session can look at the signed-in site and this closes.
   **Six ways in were tried and the journal lists them** so nobody redoes it. The
   only one that would have shown a signed-in client-side route is kil's real
   browser through claude-in-chrome, and it is shut: `list_connected_browsers`

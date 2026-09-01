@@ -1,16 +1,16 @@
 {
-  "genere": "2026-09-01T07:42:43.829Z",
+  "genere": "2026-09-01T07:46:04.571Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase. La version commitee decrit l'etat d'AVANT le commit qui la porte, puisque la fin de passe genere puis commite : git.head y pointe le commit precedent et git.arbrePropre y est faux. Relancer `node .agent/state.mjs` avant de lire, ce que le prompt demande deja en premier.",
   "git": {
     "remotesEnDouble": [],
     "branche": "master",
-    "head": "4f06c958590c1a3b861138d0c8fd41d81136eb46",
-    "sujet": "Eliminate the startup race, the last cause testable without kil's session",
+    "head": "109a3be6fc9cd12e06d28340ae9136143f8fe808",
+    "sujet": "Make the one check I cannot run cost a paste instead of a chore",
     "arbrePropre": false,
-    "fichiersModifies": 3,
+    "fichiersModifies": 2,
     "dernierTag": "v2.10.0",
-    "decrit": "v2.10.0-15-g4f06c95",
+    "decrit": "v2.10.0-16-g109a3be",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -18,7 +18,7 @@
     "ecarts": {
       "devcopy": {
         "derriere": 0,
-        "devant": 77,
+        "devant": 78,
         "aJour": false
       },
       "origin": {
