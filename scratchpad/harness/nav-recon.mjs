@@ -134,21 +134,44 @@ if (!avant.present) {
   );
 }
 
-// La navigation telle qu'un lecteur la fait : on suit un lien du site.
+// La navigation telle qu'un lecteur la fait DEPUIS une page de chaine : un lien
+// de la barre laterale. C'est le chemin que kil emprunte, et c'est celui qui a
+// des chances d'etre une route d'application plutot qu'un chargement.
+//
+// Premiere version : le lien etait cherche par son href releve sur l'ACCUEIL, et
+// il n'existait plus sur la page de chaine. Le clic ne partait pas, et la
+// navigation de frame observee ensuite venait d'autre chose. Le lien se cherche
+// donc dans la page ou l'on se trouve.
 journal.length = 0;
+const cible = await page.evaluate(() => {
+  const reserve = new Set([
+    'browse', 'categories', 'category', 'following', 'subscriptions', 'help', 'about',
+    'tos', 'privacy', 'search', 'clips', 'videos', 'wallet', 'dashboard', 'settings',
+  ]);
+  const ici = location.pathname.split('/').filter(Boolean)[0];
+  for (const a of document.querySelectorAll('a[href^="/"]')) {
+    const parts = a.getAttribute('href').split('/').filter(Boolean);
+    if (parts.length !== 1) continue;
+    const slug = parts[0].toLowerCase();
+    if (reserve.has(slug) || slug === ici) continue;
+    return a.getAttribute('href');
+  }
+  return null;
+});
+console.log(`  lien de chaine sur la page de chaine : ${cible ? 'trouve' : 'AUCUN'}`);
 const depart = Date.now();
-const clique = await page.evaluate((href) => {
-  const a = document.querySelector(`a[href="${href}"]`);
-  if (!a) return false;
-  a.click();
-  return true;
-}, liens[1]);
-
-if (!clique) {
-  // Le lien peut ne plus etre dans le DOM de la page de chaine : on repasse par
-  // l'accueil, ce qui reste une navigation du site et pas un goto.
-  console.log('  (le second lien n est pas sur cette page, navigation par l accueil)');
-}
+const clique = cible
+  ? await page.evaluate((href) => {
+      const a = document.querySelector(`a[href="${href}"]`);
+      if (!a) return false;
+      // Un clic de confiance autant que possible : les routeurs interceptent le
+      // click, donc c'est bien la route d'application qui doit partir.
+      a.scrollIntoView();
+      a.click();
+      return true;
+    }, cible)
+  : false;
+if (!clique) console.log('  (aucun lien de chaine cliquable depuis la page de chaine)');
 
 const etapes = [];
 for (let i = 0; i < 14; i++) {

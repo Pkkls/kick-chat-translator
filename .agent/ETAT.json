@@ -1,16 +1,16 @@
 {
-  "genere": "2026-09-01T07:25:31.286Z",
+  "genere": "2026-09-01T07:28:02.139Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase. La version commitee decrit l'etat d'AVANT le commit qui la porte, puisque la fin de passe genere puis commite : git.head y pointe le commit precedent et git.arbrePropre y est faux. Relancer `node .agent/state.mjs` avant de lire, ce que le prompt demande deja en premier.",
   "git": {
     "remotesEnDouble": [],
     "branche": "master",
-    "head": "f6868764890c19c6a856f3c2282b882b9c8f96e7",
-    "sujet": "Detect a channel switch from a world that can actually see it",
-    "arbrePropre": true,
-    "fichiersModifies": 0,
+    "head": "0c1780824a6f0b6e40eaf8d822e7e2dede8698b0",
+    "sujet": "Say where the navigation fix landed and what only kil can close",
+    "arbrePropre": false,
+    "fichiersModifies": 3,
     "dernierTag": "v2.10.0",
-    "decrit": "v2.10.0-8-gf686876",
+    "decrit": "v2.10.0-10-g0c17808",
     "remotes": {
       "devcopy": "https://github.com/Pkkls/kick-chat-translator-dev.git",
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
@@ -18,7 +18,7 @@
     "ecarts": {
       "devcopy": {
         "derriere": 0,
-        "devant": 70,
+        "devant": 72,
         "aJour": false
       },
       "origin": {

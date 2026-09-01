@@ -345,8 +345,13 @@ reads dist/, so it serialises behind any build. D touches no code.
   This fixes the route re-attachment and everything it carries. The incoming
   translations survived a navigation in both simulated shapes, so if they do not
   survive on his Brave there is a third shape no fixture reproduces.
-  `nav-recon.mjs` looked at the real site and saw a full frame navigation on the
-  anonymous path, which is a full reload, not the signed-in sidebar path he uses.
+  `nav-recon.mjs` looked at the real site twice, the second time clicking a
+  channel link FROM a channel page, which is kil's own gesture: one main-frame
+  navigation, so a full reload, and the product recovers by itself, bar mounted
+  and 24 rows back at two seconds. The remaining difference is the session. An
+  app that server-renders for an anonymous visitor very ordinarily routes on the
+  client for a signed-in one. Signing in is not something I do, so that half is
+  his. What matters: the fix covers exactly the case I cannot observe.
   The check is one build and one switch: `npm run build`, load `dist/` unpacked,
   switch stream from the sidebar, and see whether the next channel translates
   without a reload.
