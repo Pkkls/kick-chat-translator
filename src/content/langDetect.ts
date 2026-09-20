@@ -243,6 +243,76 @@ function cyrilliqueQuelleLangue(text: string): string | undefined {
   return 'ru';
 }
 
+/**
+ * Le han n'est pas une langue non plus, et c'est la troisieme fois.
+ *
+ * Meme forme que le persan pris pour de l'arabe et le mongol pris pour du russe,
+ * a une difference pres qui change tout : ici les deux langues partagent
+ * l'ECRITURE ENTIERE. Le chinois ecrit standard et le cantonais vernaculaire
+ * s'ecrivent tous les deux en caracteres han, et la majorite d'une ligne
+ * cantonaise est faite de caracteres que le chinois standard emploie aussi. Une
+ * regle de proportion, celle que ce fichier applique partout ailleurs, ne peut
+ * donc pas servir : il faut une regle de PRESENCE, un seul marqueur suffit.
+ *
+ * Une regle de presence produit des faux positifs par construction, donc elle se
+ * mesure des deux cotes ou elle ne vaut rien. Banc dans
+ * scratchpad/harness/canto-bench.mjs, ecrit et non recolte : Kick n'a
+ * pratiquement pas de chaine hongkongaise, et attendre qu'il y en ait une n'est
+ * pas un plan. La moitie tenue a l'ecart a ete ecrite AVANT la regle.
+ *
+ * Ce que franc en dit : rien d'utilisable. Mesure directe, franc-min rend `cmn`
+ * sur une phrase cantonaise complete et `und` sur une courte. Il n'a pas de
+ * modele `yue`, donc le cantonais lui ressort mandarin, et `confidentLanguage`
+ * refuse sa reponse de toute facon. Aucune bibliotheque legere ne fait mieux :
+ * ELD ne porte pas `yue`, lingua non plus, cld3 est archive, et le seul modele
+ * qui le porte vraiment, fastText lid.176, pese 917 Ko compresse contre un
+ * budget de content script de 69 Ko. La table de caracteres est la seule voie.
+ *
+ * CE QUI EST DEHORS, et c'est la moitie du travail. Les candidats evidents sont
+ * des pieges :
+ *   係  vit dans 關係, mot courant du chinois standard. Le marqueur le plus
+ *       frequent du cantonais est aussi celui qui casse le plus de lignes.
+ *   晒  vit dans 晒太陽. 嗮, lui, est cantonais seul, donc c'est celui-la.
+ *   喇  vit dans 喇叭. 咪 vit dans 咪表. 嘛, 啦, 好, 得, 返, 埋, 重, 邊, 度
+ *       ont un sens cantonais ET un sens standard que la graphie ne separe pas.
+ * Ce qui reste est un jeu ou chaque caractere est absent du chinois ecrit
+ * moderne, pas seulement rare.
+ *
+ * Les marqueurs a deux caracteres portent leur propre risque, et il n'etait pas
+ * theorique : le chinois s'ecrit sans espaces, donc 反而 suivi de 家裡 fabrique
+ * 而家, et 依 suivi de 家長 fabrique 依家. Six lignes de chinois standard bâties
+ * exprès sur ce defaut ont ete mises dans le seau qui protege, et elles ont pris
+ * QUATRE marqueurs d'un coup : 而家, 依家, 食飯 et 咩.
+ *
+ * Les trois premiers sont sortis. Le cout est nul sur la moitie tenue a l'ecart
+ * et de deux lignes sur celle d'ajustement, ou 依家幾點 et 食飯未 ne portaient
+ * pas d'autre marqueur ; 我哋而家真係好攰 et 屋企人嗌我食飯 en portaient
+ * d'autres et n'ont rien perdu. Un marqueur qui casse du chinois standard coute
+ * plus cher qu'une ligne cantonaise manquee : le chinois standard marche
+ * aujourd'hui.
+ *
+ * 咩 est reste, avec une garde. Son seul emploi en chinois standard est le cri
+ * du mouton, et il est toujours redouble : 咩咩. La garde refuse le caractere
+ * quand il touche son jumeau des deux cotes, ce qui laisse passer 咩事 et
+ * 你估我唔知咩 et arrete 小羊咩咩叫. C'est la meme forme que l'absence de ы, э,
+ * ё qui separe le bulgare du russe plus haut : un signal negatif, pas un
+ * caractere de plus.
+ *
+ * 𨋢 est hors du plan multilingue de base. La boucle de detectByScript itere par
+ * point de code, cette regle s'applique au texte entier, les deux le voient.
+ */
+const CARACTERES_CANTONAIS = /[唔嘅喺咗哋佢啲嘢冇嗰嚟㗎乜攰嘥噉喎嘞咁睇諗嗮畀冚]|(?<!咩)咩(?!咩)|\u{282E2}/u;
+const MOTS_CANTONAIS = /點解|點樣|邊個|邊度|得閒|屋企|傾偈|靚仔|靚女|呢個|呢度/u;
+
+function cantonaisOuChinois(text: string): string | undefined {
+  if (CARACTERES_CANTONAIS.test(text) || MOTS_CANTONAIS.test(text)) return 'yue';
+  // Le chinois standard reste ambigu entre ses deux ecritures et le japonais sans
+  // kana : inchange, franc reprend la main et `confidentLanguage` refusera sa
+  // reponse. Une ligne cantonaise sans marqueur retombe ici, et c'est correct :
+  // "笑死我" est la meme phrase dans les deux langues.
+  return undefined;
+}
+
 /** Unicode script → language mapping. More reliable than franc on short texts. */
 function detectByScript(text: string): string | undefined {
   // Count non-ASCII, non-space chars by script range.
@@ -299,7 +369,7 @@ function detectByScript(text: string): string | undefined {
   // franc so Chinese isn't mislabelled as Japanese.
   if (kana > 0) return 'ja';
   if (pct(hangul)) return 'ko';
-  if (pct(han)) return undefined;
+  if (pct(han)) return cantonaisOuChinois(text);
   if (pct(arabic)) return arabeOuPersan(text);
   if (pct(hebrew)) return 'he';
   if (pct(cyrillic)) return cyrilliqueQuelleLangue(text);

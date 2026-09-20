@@ -68,6 +68,30 @@ describe('new languages', () => {
   });
 });
 
+describe('Cantonese', () => {
+  it('is its own language in the list, not a variant of Chinese', () => {
+    expect(getLang('yue')?.label).toBe('Cantonese');
+    expect(getLang('yue')?.native).toBe('廣東話');
+    expect(isSupportedLang('yue')).toBe(true);
+  });
+
+  it('answers to the tags that really mean the language', () => {
+    expect(normalizeLang('yue')).toBe('yue');
+    expect(normalizeLang('yue-HK')).toBe('yue');
+    expect(normalizeLang('yue-Hant')).toBe('yue');
+    expect(normalizeLang('zh-yue')).toBe('yue');
+  });
+
+  // The conservative half, and the one worth a test of its own: a browser set to
+  // zh-HK is asking for Chinese as Hong Kong reads it, which is the traditional
+  // standard. Repointing that tag at Cantonese would switch every Hong Kong
+  // reader to a register they never picked.
+  it('does not capture the zh-HK browser locale', () => {
+    expect(normalizeLang('zh-HK')).toBe('zh-tw');
+    expect(normalizeLang('zh-MO')).toBe('zh-tw');
+  });
+});
+
 describe('isRtl', () => {
   it('flags right-to-left scripts', () => {
     expect(isRtl('ar')).toBe(true);

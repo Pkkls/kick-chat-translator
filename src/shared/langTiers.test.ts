@@ -3,9 +3,17 @@ import { isContextCritical, isDeeplPremium, routeForBudget } from './langTiers';
 
 describe('isContextCritical', () => {
   it('flags subject-dropping languages that misattribute person', () => {
-    for (const c of ['ja', 'ko', 'zh', 'zh-tw', 'vi', 'th', 'ar']) {
+    for (const c of ['ja', 'ko', 'zh', 'zh-tw', 'yue', 'vi', 'th', 'ar']) {
       expect(isContextCritical(c), c).toBe(true);
     }
+  });
+  // 'zh-tw' is in the tier twice over: by its own name and by 'zh' after the
+  // hyphen split. 'yue' has neither a hyphen nor a base code, so listing it in
+  // full is the only thing that puts it in the tier at all.
+  it('flags Cantonese, which has no base code to inherit it from', () => {
+    expect(isContextCritical('yue')).toBe(true);
+    expect(isContextCritical('YUE')).toBe(true);
+    expect(isContextCritical('yue-HK')).toBe(true);
   });
   it('does NOT flag languages that recover person from the verb', () => {
     for (const c of ['en', 'fr', 'es', 'de', 'ru', 'pl', 'pt-br']) {

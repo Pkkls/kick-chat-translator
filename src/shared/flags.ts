@@ -42,6 +42,12 @@ export const FLAG_BY_LANG: Readonly<Record<string, string>> = {
   ko: 'kr',
   zh: 'cn',
   'zh-tw': 'tw',
+  // Cantonese is spoken well beyond Hong Kong: Guangdong, Macau, and diasporas
+  // older than either. Hong Kong's flag is still the one a reader scanning the
+  // list will recognise as "that language", which is the only thing this table
+  // is for. Same trade as Arabic on one flag for twenty countries, and it is a
+  // trade, not a claim.
+  yue: 'hk',
   th: 'th',
   vi: 'vn',
   id: 'id',

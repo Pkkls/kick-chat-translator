@@ -29,6 +29,14 @@ export const LANGUAGES: readonly LangInfo[] = [
   { code: 'ko', label: 'Korean', native: '한국어', flag: 'KO' },
   { code: 'zh', label: 'Chinese (Simplified)', native: '简体中文', flag: 'ZH' },
   { code: 'zh-tw', label: 'Chinese (Traditional)', native: '繁體中文', flag: 'TW' },
+  // Cantonese is 'yue' and not 'zh-hk' on purpose, and the two are not the same
+  // thing. 'zh-hk' is Chinese as Hong Kong writes it formally: standard Chinese
+  // grammar in traditional characters, which a Taipei reader reads without
+  // effort, and which 'zh-tw' already covers. 'yue' is the vernacular a chat
+  // actually types, with its own grammar and its own characters, and a Mandarin
+  // reader does not read it. The free Google endpoint agrees: it answers to
+  // tl=yue and returns 唔, which is a word 'zh-tw' never produces.
+  { code: 'yue', label: 'Cantonese', native: '廣東話', flag: 'HK' },
   { code: 'th', label: 'Thai', native: 'ไทย', flag: 'TH' },
   { code: 'vi', label: 'Vietnamese', native: 'Tiếng Việt', flag: 'VI' },
   { code: 'id', label: 'Indonesian', native: 'Bahasa Indonesia', flag: 'ID' },
@@ -131,6 +139,18 @@ const REGION_VARIANTS: Record<string, string> = {
   'zh-cn': 'zh',
   'zh-hans': 'zh',
   'zh-sg': 'zh',
+  // 'zh-hk' above stays pointed at 'zh-tw', and that is the conservative half of
+  // adding Cantonese. A browser set to zh-HK asks for Chinese as Hong Kong reads
+  // it, which is the traditional standard, not the vernacular. Repointing it at
+  // 'yue' would silently switch every Hong Kong reader to a register they did
+  // not choose. Cantonese is in the list to be picked, not to be assumed.
+  //
+  // These three are the tags that really do mean the language: the ISO 639-3
+  // code with a region, the script form, and the legacy IANA tag the Cantonese
+  // Wikipedia still uses.
+  'yue-hk': 'yue',
+  'yue-hant': 'yue',
+  'zh-yue': 'yue',
   nb: 'no',
   nn: 'no',
 };

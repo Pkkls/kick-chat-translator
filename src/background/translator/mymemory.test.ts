@@ -16,6 +16,13 @@ describe('toMyMemoryCode', () => {
     expect(toMyMemoryCode('nb')).toBe('no');
   });
 
+  // Measured, not assumed: MyMemory echoes `target: "yue-CN"` for a bare 'yue',
+  // and the reader this serves is in Hong Kong.
+  it('names the region for Cantonese, which otherwise resolves to yue-CN', () => {
+    expect(toMyMemoryCode('yue')).toBe('yue-HK');
+    expect(toMyMemoryCode('YUE')).toBe('yue-HK');
+  });
+
   it('passes plain 2-letter codes through (case-insensitive)', () => {
     expect(toMyMemoryCode('en')).toBe('en');
     expect(toMyMemoryCode('ja')).toBe('ja');

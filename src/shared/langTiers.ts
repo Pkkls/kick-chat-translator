@@ -18,7 +18,11 @@ const baseLang = (code: string): string => code.toLowerCase().split('-')[0] ?? c
  * Translating FROM these, we feed more prior chat lines so the engine can infer who
  * is meant. (Tier-1 "wrong-person" set from the study.)
  */
-const CONTEXT_CRITICAL = new Set(['ja', 'ko', 'zh', 'zh-tw', 'vi', 'th', 'ar']);
+// 'yue' is listed in full because `baseLang` cannot reach it: it splits on the
+// hyphen, and Cantonese has no hyphen and no base code to fall back to. It is
+// isolating and pro-drop for the same reason the rest of the Chinese family is,
+// so it belongs in the same tier; it just cannot inherit it.
+const CONTEXT_CRITICAL = new Set(['ja', 'ko', 'zh', 'zh-tw', 'yue', 'vi', 'th', 'ar']);
 
 export function isContextCritical(code: string | undefined): boolean {
   if (!code) return false;
