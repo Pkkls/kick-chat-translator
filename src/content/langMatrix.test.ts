@@ -391,6 +391,7 @@ describe('neither the corpus nor the matrix reaches the shipped extension', () =
           entry === 'langChatCorpus.ts' ||
           entry === 'langChatCorpus2.ts' ||
           entry === 'langChatCorpus3.ts' ||
+          entry === 'langChatPaireCorpus.ts' ||
           entry === 'langChatNonLatin.ts' ||
           entry === 'langMixedCorpus.ts'
         ) {
