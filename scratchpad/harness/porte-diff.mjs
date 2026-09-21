@@ -20,6 +20,23 @@ import { LANG_MIXED } from '../../src/content/langMixedCorpus.ts';
 import * as neuf from '../../src/content/langDetect.ts';
 import * as vieux from '../../src/content/langDetectV0.ts';
 
+/**
+ * Diacritiques retirees, comme le fait un clavier presse. Copie de la fonction
+ * de `langChat.test.ts` : si l'une des deux bouge, l'autre doit suivre.
+ */
+const MARQUES = /[̀-ͯ]/g;
+const sansDiacritiques = (t) =>
+  t
+    .normalize('NFD')
+    .replace(MARQUES, '')
+    .replace(/ł/g, 'l')
+    .replace(/ø/g, 'o')
+    .replace(/æ/g, 'ae')
+    .replace(/đ/g, 'd')
+    .replace(/ı/g, 'i');
+const nu = (corpus) =>
+  Object.fromEntries(Object.entries(corpus).map(([l, v]) => [l, v.map(sansDiacritiques)]));
+
 const BANCS = [
   ['tatoeba', LANG_CORPUS],
   ['chat1-flatte', LANG_CHAT],
@@ -31,6 +48,12 @@ const BANCS = [
   // ordre : un gain sur le reglage seul ne prouve rien.
   ['paire-AVEUGLE', LANG_CHAT_PAIRE],
   ['paire-reglage', LANG_CHAT_PAIRE_REGLAGE],
+  // LE CLAVIER, et sans ce banc une ablation ment. La moitie des entrees de
+  // lexique existent en double, forme accentuee et forme nue, et la forme nue ne
+  // sert QUE sur des lignes tapees vite. Aucun autre banc n'en contient, donc
+  // une ablation qui s'arrete au-dessus conclut que `khong`, `loti` et `kapec`
+  // sont morts, et elle casserait le seul cas pour lequel ils ont ete ecrits.
+  ['chat1-SANS-DIACRITIQUES', nu(LANG_CHAT)],
 ];
 
 const n = (c) => c.right + c.silent + c.wrong;

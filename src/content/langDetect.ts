@@ -88,9 +88,7 @@ const SHORT_WORD_LANG = new Map<string, string>([
   ['oggi', 'it'],
 
   ['selam', 'tr'], ['merhaba', 'tr'], ['tamam', 'tr'], ['güzel', 'tr'], ['guzel', 'tr'],
-  ['kanka', 'tr'], ['teşekkür', 'tr'], ['tesekkur', 'tr'], ['evet', 'tr'], ['hayır', 'tr'],
-  ['hayir', 'tr'], ['kardeşim', 'tr'],
-
+  ['kanka', 'tr'], ['tesekkur', 'tr'], ['evet', 'tr'],   ['hayir', 'tr'], 
   // Mots de structure. Meme regle que ci-dessus : chacun est separe de son
   // jumeau dans l'autre langue par l'orthographe, pas par le contexte.
   ['hace', 'es'], ['alguien', 'es'], ['puede', 'es'], ['estan', 'es'], ['están', 'es'],
@@ -107,7 +105,7 @@ const SHORT_WORD_LANG = new Map<string, string>([
   ['qualcuno', 'it'], ['questo', 'it'], ['bene', 'it'],
 
   ['burada', 'tr'], ['oluyor', 'tr'], ['bir', 'tr'], ['için', 'tr'], ['icin', 'tr'],
-  ['değil', 'tr'], ['degil', 'tr'],
+  ['degil', 'tr'],
 
   // L'ANGLAIS, et il est entre en dernier parce qu'il est le cas particulier.
   //
@@ -225,17 +223,14 @@ const SHORT_WORD_LANG = new Map<string, string>([
   ['aitah', 'et'], ['aitäh', 'et'], ['väga', 'et'], ['tere', 'et'], ['miks', 'et'],
   ['jalle', 'et'], ['jälle', 'et'], ['praegu', 'et'], ['midagi', 'et'],
 
-  ['bardzo', 'pl'], ['dzieki', 'pl'], ['dzięki', 'pl'], ['czesc', 'pl'], ['cześć', 'pl'],
-  ['jeszcze', 'pl'], ['wszystko', 'pl'], ['dlaczego', 'pl'], ['ktos', 'pl'], ['ktoś', 'pl'],
-
-  ['jsem', 'cs'], ['neni', 'cs'], ['není', 'cs'], ['dekuju', 'cs'], ['děkuju', 'cs'],
-  ['jeste', 'cs'], ['ještě', 'cs'], ['vzdycky', 'cs'], ['vždycky', 'cs'], ['proc', 'cs'],
+  ['bardzo', 'pl'], ['dzieki', 'pl'], ['dzięki', 'pl'], ['czesc', 'pl'],   ['jeszcze', 'pl'], ['wszystko', 'pl'], ['dlaczego', 'pl'], ['ktos', 'pl'], 
+  ['jsem', 'cs'], ['neni', 'cs'], ['není', 'cs'], ['dekuju', 'cs'],   ['jeste', 'cs'], ['vzdycky', 'cs'], ['vždycky', 'cs'], ['proc', 'cs'],
   ['proč', 'cs'],
 
-  ['dakujem', 'sk'], ['ďakujem', 'sk'], ['veľmi', 'sk'], ['ešte', 'sk'], ['preco', 'sk'],
+  ['dakujem', 'sk'], ['ďakujem', 'sk'], ['ešte', 'sk'], ['preco', 'sk'],
   ['prečo', 'sk'], ['vzdy', 'sk'], ['vždy', 'sk'],
 
-  ['foarte', 'ro'], ['multumesc', 'ro'], ['mulțumesc', 'ro'], ['acum', 'ro'], ['nimic', 'ro'],
+  ['foarte', 'ro'], ['multumesc', 'ro'], ['acum', 'ro'], ['nimic', 'ro'],
   ['cand', 'ro'], ['când', 'ro'], ['iarasi', 'ro'], ['bine', 'ro'],
 
   ['khong', 'vi'], ['không', 'vi'], ['duoc', 'vi'], ['được', 'vi'], ['rồi', 'vi'],
@@ -264,10 +259,9 @@ const SHORT_WORD_LANG = new Map<string, string>([
   ['vedno', 'sl'], ['danes', 'sl'],
 
   ['labai', 'lt'], ['aciu', 'lt'], ['ačiū', 'lt'], ['labas', 'lt'], ['kodel', 'lt'],
-  ['kodėl', 'lt'], ['nieko', 'lt'], ['dabar', 'lt'], ['visada', 'lt'],
+  ['nieko', 'lt'], ['dabar', 'lt'], ['visada', 'lt'],
 
-  ['loti', 'lv'], ['ļoti', 'lv'], ['paldies', 'lv'], ['kapec', 'lv'], ['kāpēc', 'lv'],
-  ['tagad', 'lv'], ['vienmer', 'lv'], ['vienmēr', 'lv'], ['atkal', 'lv'],
+  ['loti', 'lv'], ['paldies', 'lv'], ['kapec', 'lv'],   ['tagad', 'lv'], ['vienmer', 'lv'], ['atkal', 'lv'],
 
   ['ang', 'tl'], ['naman', 'tl'], ['mga', 'tl'], ['siya', 'tl'], ['talaga', 'tl'], ['salamat', 'tl'], ['grabe', 'tl'],
   ['sobrang', 'tl'], ['yan', 'tl'], ['wala', 'tl'],

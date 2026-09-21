@@ -407,3 +407,52 @@ describe('neither the corpus nor the matrix reaches the shipped extension', () =
     expect(offenders).toEqual([]);
   });
 });
+
+describe('aucune entree de lexique ne peut etre masquee par une lettre exclusive', () => {
+  // UNE CLASSE ENTIERE DE CODE MORT, et elle se prouve sans corpus.
+  //
+  // `detectByLookup` lit la table des lettres exclusives AVANT le lexique,
+  // commit `528c3af`. Donc une entree de lexique dont l'orthographe contient une
+  // lettre exclusive de SA PROPRE langue ne peut jamais se declencher : la
+  // lettre a deja repondu, et la meme reponse. Elle ne coute pas une erreur,
+  // elle coute des octets et une ligne que quelqu'un relira un jour.
+  //
+  // Quatorze entrees etaient dans ce cas, et elles y etaient arrivees par en
+  // haut : elles ont ete ecrites quand la table des lettres etait plus courte,
+  // et c'est la table qui les a rattrapees. `teşekkür` et `kardeşim` sont mortes
+  // le jour ou le s cedille est entre, dans cette meme passe.
+  //
+  // Le garde est statique et lit la source, comme celui du bundle au-dessus : ni
+  // `SHORT_WORD_LANG` ni `LETTRES_EXCLUSIVES` n'est exporte, et les exporter
+  // pour un test serait payer en surface publique ce qu'on gagne en confort.
+  it('ne laisse aucune entree ombragee dans SHORT_WORD_LANG', () => {
+    const src = readFileSync(resolve(process.cwd(), 'src/content/langDetect.ts'), 'utf8');
+    /** langue -> lettres que la table lui donne en propre, une par une. */
+    const exclusives = new Map<string, Set<string>>();
+    for (const m of src.matchAll(/\[\/\[([^\]]+)\]\/[a-z]*, '([a-z-]+)'\],/g)) {
+      const classe = m[1]!;
+      const lang = m[2]!;
+      const vu = exclusives.get(lang) ?? new Set<string>();
+      for (const c of classe) vu.add(c.toLowerCase());
+      exclusives.set(lang, vu);
+    }
+    // Une lettre seule hors classe, `[/ñ/iu, 'es']`, compte pareil.
+    for (const m of src.matchAll(/\[\/(\p{L})\/[a-z]*, '([a-z-]+)'\],/gu)) {
+      const lettre = m[1]!;
+      const lang = m[2]!;
+      const vu = exclusives.get(lang) ?? new Set<string>();
+      vu.add(lettre.toLowerCase());
+      exclusives.set(lang, vu);
+    }
+    const ombragees: string[] = [];
+    for (const m of src.matchAll(/\['([^']+)', '([a-z-]+)'\],/g)) {
+      const mot = m[1]!;
+      const lang = m[2]!;
+      const propres = exclusives.get(lang);
+      if (!propres) continue;
+      const touche = [...mot.toLowerCase()].filter((c) => propres.has(c));
+      if (touche.length > 0) ombragees.push(`${mot} (${lang}, ${[...new Set(touche)].join('')})`);
+    }
+    expect(ombragees).toEqual([]);
+  });
+});
