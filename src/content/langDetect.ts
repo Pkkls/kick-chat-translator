@@ -984,6 +984,17 @@ const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [
   // tue une entree ailleurs dans le fichier sans qu'aucun total ne le signale.
   [/ę/iu, ['pl', 'lt']],
   [/ū/iu, ['lv', 'lt']],
+  // DEUX PORTES A MOT ONT ETE RETIREES D'ICI, `il` fr/it et `per` ca/it. Elles
+  // sont mortes le jour ou le francais et l'italien ont recu leurs propres mots
+  // outils exclusifs, `est pour ici nous cette une deux` et `sono quello
+  // allora`. Troisieme et quatrieme porte retiree pour cette raison, apres
+  // `tas|tik` lv/lt et `ce|au` ro/fr.
+  //
+  // C'est la regle generale du fichier, ecrite ici une fois pour toutes : une
+  // porte est un PIS-ALLER pour quand aucune des deux langues n'a de marqueur
+  // propre. Donnez-en un aux deux et la porte cesse de gagner sa ligne. Elles
+  // ne meurent pas d'etre mauvaises, elles meurent d'avoir ete remplacees.
+  //
   // LES PORTES A MOT, troisieme passe du crible.
   //
   // Un TOKEN entier n'a pas le defaut des sequences ASCII juste en dessous : il
@@ -1001,7 +1012,6 @@ const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [
   // DEHORS : `bet`, que le crible donne a bruit zero pour le lituanien et le
   // letton. C'est de l'anglais de chat courant, et le corpus n'en contient
   // simplement pas. Critere (a), comme `may` pour le tagalog.
-  [/(^|[^\p{L}])(il)([^\p{L}]|$)/iu, ['fr', 'it']],
   [/(^|[^\p{L}])(para|por|está|vez)([^\p{L}]|$)/iu, ['es', 'pt']],
   [/(^|[^\p{L}])(co|jak)([^\p{L}]|$)/iu, ['cs', 'pl']],
   // Descente du plancher du crible de huit lignes a quatre, deuxieme recolte.
@@ -1023,7 +1033,6 @@ const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [
   // lv/lt rapportent ZERO sur les quatre corpus, alors que le lot ou ils se
   // trouvaient rapportait +4. Un total de lot ne dit pas qui l'a gagne, et ces
   // deux-la seraient partis en production comme poids mort.
-  [/(^|[^\p{L}])(per)([^\p{L}]|$)/iu, ['ca', 'it']],
   // PAS DE SEQUENCE ASCII ICI, et c'est un resultat mesure, pas un oubli.
   //
   // Le deuxieme passage du crible a rendu `sz` hongrois-polonais et `dz`
