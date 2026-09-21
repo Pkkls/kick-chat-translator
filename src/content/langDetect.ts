@@ -281,6 +281,26 @@ function detectByShortWords(text: string): string | undefined {
  * U+021B, distincte de la cedille turque, donc les deux jeux ne se croisent pas.
  * Le catalan s'identifie par le point volat `l·l`, une sequence et non une lettre.
  *
+ * QUATRE LANGUES ONT ETE AJOUTEES UNE PASSE PLUS TARD, et le fait qu'elles
+ * aient ete oubliees est plus instructif que leur gain. La table avait ete
+ * concue en cherchant les diacritiques exotiques, ceux qu'on remarque, et elle
+ * avait saute les plus ordinaires parce qu'ils sont familiers :
+ *   ñ  espagnol. Aucune autre des 43 ne l'ecrit, le catalan dit ny et le
+ *      portugais nh. RESERVE ecrite : le tagalog l'admet officiellement dans
+ *      les emprunts espagnols et les noms propres. Zero ligne mesuree sur les
+ *      deux corpus, mais c'est la seule entree de cette table dont
+ *      l'exclusivite repose sur un usage et non sur un alphabet.
+ *   ß  allemand seul.      œ û  francais seuls.
+ *   ā ē ī  letton, et ce sont les plus gros du lot : 72, 45 et 52 lignes sur
+ *      120, contre 33 pour le jeu ģķļņ qui etait deja la. La langue la moins
+ *      bien servie de la table l'etait parce qu'on avait pris ses lettres rares
+ *      et laisse ses lettres frequentes.
+ * `ū` reste dehors, le lituanien l'ecrit aussi, onze lignes.
+ *
+ * Ces quatre-la ont vide la liste des langues que le chemin sur ne sait jamais
+ * nommer : vingt-six au depart de ce chantier, zero depuis. Chercher ce qui
+ * manque dans une table vaut mieux que raffiner ce qui y est deja.
+ *
  * `da fi no sl et` n'ont aucune lettre exclusive et ne sont pas dans la table :
  * ils attendent du lexique.
  */
@@ -290,11 +310,14 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/[żźćśń]/iu, 'pl'],
   [/[őű]/iu, 'hu'],
   [/[ėįų]/iu, 'lt'],
-  [/[ģķļņ]/iu, 'lv'],
+  [/[ģķļņāēī]/iu, 'lv'],
   [/[ığ]/iu, 'tr'],
   [/[șț]/iu, 'ro'],
   [/l·l/iu, 'ca'],
   [/[ơưđ]/iu, 'vi'],
+  [/ñ/iu, 'es'],
+  [/ß/iu, 'de'],
+  [/[œû]/iu, 'fr'],
 ];
 
 /**

@@ -65,8 +65,8 @@ describe('le chemin sur, sur du chat', () => {
   // et c'est le lexique de mots courts qui le fera baisser, pas une regle de
   // lettres de plus.
   it('se tait sur trois lignes de chat sur quatre', () => {
-    expect(plain(CHAT_SURE.total)).toEqual({ right: 103, silent: 287, wrong: 0 });
-    expect(muet(CHAT_SURE.total)).toBe(74);
+    expect(plain(CHAT_SURE.total)).toEqual({ right: 109, silent: 281, wrong: 0 });
+    expect(muet(CHAT_SURE.total)).toBe(72);
   });
 
   // Ce que coute le clavier, et c'est la fragilite de toute l'approche par
@@ -95,7 +95,7 @@ describe('le chemin brut, sur du chat', () => {
   // n'est pas comble, il est court-circuite, et il reapparaitra entier des que
   // le lexique manquera un mot.
   it('se trompe sur plus d une ligne de chat sur quatre', () => {
-    expect(plain(CHAT_BRUT.total)).toEqual({ right: 184, silent: 98, wrong: 108 });
+    expect(plain(CHAT_BRUT.total)).toEqual({ right: 190, silent: 93, wrong: 107 });
     const tatoeba = runMatrix(detectLanguage, memesLangues());
     const partChat = CHAT_BRUT.total.wrong / 390;
     const partTatoeba = tatoeba.total.wrong / (26 * 120);
@@ -133,8 +133,8 @@ describe('le contraste avec Tatoeba, sur les memes langues', () => {
   // franc, et elle bouge dans le mauvais sens.
   it('montre que le registre coute a franc et pas au chemin sur', () => {
     const t = runMatrix(confidentLanguage, memesLangues());
-    expect(muet(t.total)).toBe(81);
-    expect(muet(CHAT_SURE.total)).toBe(74);
+    expect(muet(t.total)).toBe(78);
+    expect(muet(CHAT_SURE.total)).toBe(72);
     expect(t.total.wrong).toBe(5);
   });
 });

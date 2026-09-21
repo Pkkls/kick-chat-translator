@@ -28,11 +28,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on two lines in five and is almost never wrong.
   // The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 2348, silent: 2677, wrong: 15 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 2439, silent: 2586, wrong: 15 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
-    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 733, silent: 935, wrong: 12 });
+    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 759, silent: 909, wrong: 12 });
   });
 
   // The expensive one. This is the answer that deletes a message in silence when
@@ -40,11 +40,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
   it('detectLanguage is wrong on a fifth of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 3395, silent: 713, wrong: 932 });
+    expect(plain(DETECT.total)).toEqual({ right: 3473, silent: 683, wrong: 884 });
   });
 
   it('detectLanguage is wrong on a quarter of short lines', () => {
-    expect(plain(DETECT.shortOnly)).toEqual({ right: 969, silent: 344, wrong: 367 });
+    expect(plain(DETECT.shortOnly)).toEqual({ right: 994, silent: 331, wrong: 355 });
   });
 });
 
@@ -70,8 +70,8 @@ describe('the languages the detector cannot name at all', () => {
   });
 
   // The other half of the same problem, and the reason phase 1 cannot simply
-  // swap the raw guess for the safe one: the safe one can only name forty
-  // languages out of forty-two on this corpus. Sixteen before the exclusive
+  // swap the raw guess for the safe one: the safe one now names all forty-two
+  // languages of this corpus, where it named sixteen. Sixteen before the exclusive
   // letters, twenty-nine after them.
   //
   // Read this one with a caveat, because it flatters nothing and misleads in
@@ -81,8 +81,8 @@ describe('the languages the detector cannot name at all', () => {
   // here while it would score on a real chat line. That is no longer a supposition:
   // `langChat.test.ts` measures it, and on chat register the two score 3 and 1 of
   // 15. They are an artefact of the corpus, not of the detector.
-  it('names the two the confident path can never name on this corpus', () => {
-    expect(zeroRight(CONFIDENT)).toEqual(['es', 'fr']);
+  it('leaves no language the confident path cannot name', () => {
+    expect(zeroRight(CONFIDENT)).toEqual([]);
   });
 
   // Two scripts that were simply not counted. Every Bengali and Tamil line, at
