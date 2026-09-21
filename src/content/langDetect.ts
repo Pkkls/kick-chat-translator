@@ -546,6 +546,12 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   // plus etroite sans rien perdre, apres `ijn` et `jse`.
   [/gje/iu, 'no'],
   [/æl/iu, 'da'],
+  // SIXIEME ET DERNIERE RECOLTE, les paires des langues encore faibles.
+  //   agy  hu=13, aucune autre. `nagy`, `agyon`. Le hongrois est a 52 sur 120.
+  //   niy  tl=14, aucune autre. `niya`, `kaniya`, `niyang`. La table avait deja
+  //        `niya` en MOT ; non bornee la sequence voit aussi les formes flechies.
+  [/agy/iu, 'hu'],
+  [/niy/iu, 'tl'],
   // LE TAGALOG, la derniere langue de la matrice sans un seul marqueur.
   //
   // Il s'ecrit en latin nu, sans un diacritique, donc aucune passe de lettres ne

@@ -55,9 +55,9 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
   // quatre. Un mecanisme qui rapporte autant la ou il n'a pas ete regle que la
   // ou il l'a ete est exactement ce que le lexique n'arrivait plus a faire.
   it('rappelle un tiers de moins en brut, mais la longueur en explique la moitie', () => {
-    expect(plain(SURE2.total)).toEqual({ right: 114, silent: 146, wrong: 0 });
+    expect(plain(SURE2.total)).toEqual({ right: 116, silent: 144, wrong: 0 });
     expect(rappel(SURE1.total)).toBe(54);
-    expect(rappel(SURE2.total)).toBe(44);
+    expect(rappel(SURE2.total)).toBe(45);
     // Le facteur confondant, mesure : les deux corpus ne sont pas comparables tels quels.
     const lignes = (c: Record<string, readonly string[]>): string[] => Object.values(c).flat();
     const part = (c: Record<string, readonly string[]>): number =>
@@ -69,7 +69,7 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
   // LA MESURE HONNETE, bande par bande.
   //
   //   <= 20 car : 55 % sur le corpus de reglage, 51 % a l'aveugle -> 4 points
-  //   >  20 car : 50 % contre 40 %                  -> 10 points
+  //   >  20 car : 51 % contre 41 %                  -> 10 points
   //
   // Les sept points de la bande courte sont la memorisation du lexique, et ils
   // sont reels : c'est une liste de mots choisie en lisant un corpus.
@@ -103,8 +103,8 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
     const long = (t: string): boolean => t.length > 20;
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, court)).total)).toBe(55);
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, court)).total)).toBe(51);
-    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, long)).total)).toBe(50);
-    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, long)).total)).toBe(40);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, long)).total)).toBe(51);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, long)).total)).toBe(41);
   });
 
   // Le chemin brut perd moins parce qu'il ne depend pas du lexique : franc lit

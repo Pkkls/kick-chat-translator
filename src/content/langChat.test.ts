@@ -70,7 +70,7 @@ describe('le chemin sur, sur du chat', () => {
   // derniers points pendant que le lexique avait cesse de rapporter quoi que ce
   // soit. C'etait une prediction, pas une mesure, et elle s'est trompee.
   it('se tait sur trois lignes de chat sur quatre', () => {
-    expect(plain(CHAT_SURE.total)).toEqual({ right: 211, silent: 179, wrong: 0 });
+    expect(plain(CHAT_SURE.total)).toEqual({ right: 212, silent: 178, wrong: 0 });
     expect(muet(CHAT_SURE.total)).toBe(46);
   });
 
@@ -85,8 +85,8 @@ describe('le chemin sur, sur du chat', () => {
   // vingt-six portes a lettre sont muettes. Une ligne de plus ici, et c'est la
   // direction a retenir pour les langues que le clavier deshabille.
   it('perd un tiers de son rappel quand les diacritiques tombent', () => {
-    expect(plain(NU_SURE.total)).toEqual({ right: 137, silent: 253, wrong: 0 });
-    expect(muet(NU_SURE.total)).toBe(65);
+    expect(plain(NU_SURE.total)).toEqual({ right: 139, silent: 251, wrong: 0 });
+    expect(muet(NU_SURE.total)).toBe(64);
   });
 });
 
