@@ -3,7 +3,7 @@
 État vivant de ce chantier, mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `0235ee5`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
+Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `e7736d0`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
 
 ---
 
@@ -21,7 +21,7 @@ skill     .claude/skills/add-language/SKILL.md   (la checklist, lire en premier)
 cd "C:/Users/kil/Downloads/kick-chat-translator"
 git checkout feat/lang-matrix
 npm ci                 # seulement si node_modules absent
-npm run release:check  # 70 fichiers, 1140 tests, doit sortir en 0
+npm run release:check  # 71 fichiers, 1144 tests, doit sortir en 0
 ```
 
 **Avertissement sur l'arbre de travail.** Il contient un WIP de kil sans rapport avec ce chantier, un redesign d'UI de chat : `src/content/inject.css`, `src/content/langMenu.ts`, `src/options/styles.css`, `src/popup/styles.css`, `tailwind.config.ts`, `src/content/chatStyles.test.ts`, `src/content/injector.test.ts`, `scratchpad/audit_da.py`, plus trois fichiers non suivis `src/shared/theme.css`, `src/shared/theme.test.ts`, `src/content/langPanelGeometry.test.ts`.
@@ -113,7 +113,7 @@ Le bas du tableau n'est plus fait de langues sans règle mais de langues dont le
 
 `src/content/langChatCorpus.ts` et `src/content/langChat.test.ts`. 390 lignes écrites à la main, 15 par langue, sur les **26 langues latines**, celles que le pré-contrôle d'écriture ne sert pas du tout.
 
-**Lire la réserve en tête du module avant de citer un chiffre d'ici.** Le corpus est écrit par ce projet, donc ajustable par lui, exactement ce que Tatoeba n'est pas. Un chiffre de rappel y mesure le vocabulaire choisi autant que le détecteur. Trois choses tiennent quand même : le **silence**, qui ne dépend pas de savoir si la réponse est juste ; la **protection** contre les régressions ; et le **contraste** avec Tatoeba sur les mêmes langues.
+**Ce banc est FLATTÉ : ses lignes ont servi à choisir les mots du lexique. Le chiffre honnête est en 2bis-bis.** Lire aussi la réserve en tête du module. Le corpus est écrit par ce projet, donc ajustable par lui, exactement ce que Tatoeba n'est pas. Un chiffre de rappel y mesure le vocabulaire choisi autant que le détecteur. Trois choses tiennent quand même : le **silence**, qui ne dépend pas de savoir si la réponse est juste ; la **protection** contre les régressions ; et le **contraste** avec Tatoeba sur les mêmes langues.
 
 Mesuré **deux fois**, tel quel et diacritiques retirées, parce qu'un chat contient les deux et que choisir un camp truquerait le résultat.
 
@@ -127,9 +127,33 @@ Mesuré **deux fois**, tel quel et diacritiques retirées, parce qu'un chat cont
 Quatre choses qu'il dit et que Tatoeba ne pouvait pas dire :
 
 1. **Le chemin sûr se trompe ZÉRO fois sur 390, dans les deux régimes.** Les règles écrites contre de la prose ne se mettent pas à mentir quand le registre change, elles se taisent. C'est l'invariant qui compte et il est asserté.
-2. **Il répond à la question de la phase 1, et la réponse est encore non, mais de moins en moins.** Le silence était de **85 %** quand ce banc a été construit, il est à **54 %**. Sur du chat latin le chemin sûr est muet 54 fois sur 100, donc donner sa réponse au moteur on-device enverrait les trois quarts de ce chat au cloud, avec sa latence et son quota. Le chiffre à faire baisser d'abord est le silence.
+2. **Il répond à la question de la phase 1, et la réponse est non.** Le silence mesuré ici est de 54 %, mais **c'est le chiffre flatté** : sur le corpus aveugle il est de **70 %**. Donner sa réponse au moteur on-device enverrait donc plus des deux tiers du chat latin au cloud, avec sa latence et son quota. Voir 2bis-bis avant de citer un chiffre de cette section.
 3. **Les diacritiques valent 30 % du rappel**, 181 contre 128. L'écart s'est réduit à mesure que le lexique grossissait : les mots de structure fréquents ne portent pas d'accent, les lettres exclusives oui. C'est la fragilité de toute l'approche par lettre exclusive en un chiffre : une règle qui lit `ř` ou `ų` ne lit plus rien dès que l'utilisateur tape vite, ce qui est le cas majoritaire sur téléphone.
 4. **83 % des lignes de chat font ≤20 caractères**, médiane 16, contre 33 % chez Tatoeba. Le lexique de mots courts, borné à 20, a donc une portée bien plus grande sur le régime réel que sur le corpus qui sert à le mesurer.
+
+---
+
+## 2bis-bis. LE CORPUS AVEUGLE, et ce qu'il corrige
+
+`src/content/langChatCorpus2.ts` et `src/content/langChat2.test.ts`. 260 lignes, 10 par langue, **écrites après tout le travail de lexique et jamais consultées**.
+
+**Pourquoi il existe : le premier banc de chat avait cessé d'en être un.** Ses lignes muettes ont été lues, des mots ont été choisis pour les couvrir, et le résultat mesuré sur les mêmes lignes. Tout ce qui a été dit du rappel sur le chat était flatté d'une quantité inconnue, et rien ne permettait de le savoir de l'intérieur.
+
+| | corpus 1, qui a construit le lexique | corpus 2, **AVEUGLE** |
+|---|---:|---:|
+| chemin sûr, justes | 181 / 390 | 77 / 260 |
+| **rappel** | **46 %** | **30 %** |
+| **erreurs** | **0** | **0** |
+| chemin brut, rappel | 61 % | 55 % |
+| chemin brut, erreurs | 79 | 65 |
+
+**Seize points d'écart, et c'est la mémorisation, chiffrée.** Le nombre à citer quand on parle du produit est **30 %**, pas 46.
+
+**Ce qui a généralisé est la moitié qui compte** : zéro erreur sur 260 lignes neuves, après plus de deux cents entrées de lexique choisies contre un autre corpus. La sûreté ne se mémorise pas, parce que chaque entrée a été criblée contre 5490 lignes avant d'entrer. *Le rappel a été ajusté, la justesse a été gagnée.*
+
+Le chemin brut ne perd que six points parce qu'il ne dépend pas du lexique : franc lit des trigrammes, pas des mots choisis à la main. C'est la preuve la plus nette que les seize points sont réels et spécifiques au lexique.
+
+**RÈGLE À NE JAMAIS ENFREINDRE** : ne jamais prendre un mot dans ce corpus pour l'ajouter au lexique. Le jour où ça arrive, il devient le premier corpus et il en faut un troisième. Une propriété d'aveuglement ne se reconstruit pas.
 
 ---
 
@@ -199,11 +223,26 @@ puis passer les deux exports de chaque version à `runMatrix` et comparer clé p
 
 Un candidat testé sur les seules lignes qui atteignent la règle paraît plus propre qu'il n'est. Cas réel : le suffixe `-ите`, proposé comme marqueur bulgare, montrait **1** ligne russe dans la zone ambiguë et **4** sur les 120. C'est l'impératif pluriel russe. Il serait passé avec une mesure étroite.
 
-### 4.4 Tatoeba ne voit pas le registre chat : lancer les DEUX bancs
+### 4.4 Lancer les QUATRE bancs, et savoir lequel est flatté
 
 `src/content/langDetect.dix.test.ts` contient 25 lignes de chat écrites à la main pour ar, ja, ko, ru et zh. Ce fichier a attrapé ce que Tatoeba ne pouvait pas voir : le russe de chat n'écrit presque jamais `ы э ё`, donc une règle jugée acceptable sur Tatoeba y cassait six assertions.
 
-`src/content/langChat.test.ts` fait la même chose pour les 26 langues latines, section 2bis. **Un changement de détection se mesure sur les deux, pas sur la matrice seule.** Un corpus de prose et un corpus de chat ne se contredisent pas par accident : ils mesurent deux régimes et le produit tourne dans le second.
+`src/content/langChat.test.ts` fait la même chose pour les 26 langues latines, section 2bis. **Un changement de détection se mesure sur les quatre bancs, pas sur la matrice seule.**
+
+| banc | ce qu'il mesure | sens de lecture |
+|---|---|---|
+| `langMatrix.test.ts` | prose, 42 langues, 5040 lignes | rappel haut = bon |
+| `langChat.test.ts` | chat, 26 langues, 390 lignes | **flatté**, a servi à construire le lexique |
+| `langChat2.test.ts` | chat **aveugle**, 260 lignes | le chiffre honnête |
+| `langMixed.test.ts` | 60 lignes à deux langues | **à l'envers** : nommées = mauvais |
+
+### 4.4bis Un banc qu'on a regardé cesse d'être un banc
+
+C'est la leçon la plus coûteuse de ce chantier et elle est arrivée sans que personne la voie venir. Le corpus de chat a été construit correctement, avec sa réserve écrite en tête. Puis on a lu ses lignes muettes pour choisir des mots de lexique, et il a cessé d'être une mesure pour devenir une cible. Rien n'a changé dans le fichier, aucun test n'est passé au rouge, et le chiffre qu'il publiait est devenu faux de seize points.
+
+**On ne s'en aperçoit jamais de l'intérieur.** Il a fallu écrire 260 lignes neuves pour le voir.
+
+Conséquence pratique : dès qu'un corpus sert à CHOISIR quelque chose et plus seulement à vérifier, il faut en écrire un autre. Et l'ancien garde sa valeur, mais comme banc de non-régression, pas comme mesure de rappel.
 
 ### 4.5 Faire échouer l'instrument avant de lui faire confiance
 
@@ -485,6 +524,8 @@ tl tgl   pt-br aucun (partage por)   zh-tw aucun (partage cmn)
 | `src/content/langMatrix.test.ts` | les assertions Tatoeba, tourne en CI | oui |
 | `src/content/langChatCorpus.ts` | **écrit à la main**, 26 langues, 390 lignes de chat | oui |
 | `src/content/langChat.test.ts` | les assertions du registre chat, tourne en CI | oui |
+| `src/content/langChatCorpus2.ts` | **le corpus AVEUGLE**, 260 lignes, ne jamais y puiser | oui |
+| `src/content/langChat2.test.ts` | la mesure aveugle, section 2bis-bis | oui |
 | `src/content/langMixedCorpus.ts` | **écrit à la main**, 60 lignes qui changent de langue | oui |
 | `src/content/langMixed.test.ts` | le banc qui garde la borne de 20 caractères | oui |
 | `src/content/langDetect.dix.test.ts` | le banc de chat des 5 langues non latines | oui |
@@ -543,6 +584,8 @@ Commits, du plus ancien au plus récent :
 | `550221a` | Record the broken-guard lesson and point the protocol at the committed screen |
 | `9e18889` | Aim the lexicon at the silence instead of at the languages without a rule |
 | `0235ee5` | Take the chat silence from sixty percent to fifty-four |
+| `048bfce` | Rewrite the queue around the lever that is working |
+| `e7736d0` | Measure the lexicon on chat it has never seen, and find a third of the recall gone |
 
 ---
 
