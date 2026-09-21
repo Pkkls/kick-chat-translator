@@ -477,7 +477,7 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   //        lignes chacun, et ce sont de vraies desinences, pas des queues de mot.
   //   -szik  classe verbale hongroise.
   //   -ould -not -ity -day  anglais. `would could should`, `not cannot`.
-  //   -aar -eken -iets -ekt  neerlandais.  -oir  infinitif francais.
+  //   -aar -eken -iets  neerlandais.  -oir  infinitif francais.
   //   -eht -ufen  allemand.  -nys -uest  catalan.
   //
   // RESERVE sur -aar, la seule de ce groupe, et de la meme nature que celle de
@@ -489,12 +489,41 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   // DEHORS malgre une mesure propre, protocole 4.6 : -mma est `mamma` en
   // italien, -tude est anglais autant que francais, -hte est `echte` en
   // neerlandais, -tic est anglais et francais.
+  //
+  // -ekt A ETE RETIRE APRES COUP et c'est le seul motif de cette table qu'un
+  // corpus ait attrape apres son entree. Il mesurait propre sur les 5490 lignes
+  // de Tatoeba et du premier chat, trois lignes neerlandaises et rien ailleurs.
+  // Le corpus de reglage `langChatCorpus3`, ecrit ensuite, l'a fait tomber en
+  // quatre lignes d'un coup : `perfekt` est allemand, suedois, norvegien et
+  // danois, comme `direkt`, `korrekt` et `objekt`. Une absence sur 5490 lignes
+  // ne prouve toujours rien, et c'est exactement ce que le protocole 4.6 dit.
   [/(ött|ában|ünk|ára|ért|szik)([^\p{L}]|$)/iu, 'hu'],
-  [/(aar|eken|iets|ekt)([^\p{L}]|$)/iu, 'nl'],
+  [/(aar|eken|iets)([^\p{L}]|$)/iu, 'nl'],
   [/(ould|not|ity|day)([^\p{L}]|$)/iu, 'en'],
   [/oir([^\p{L}]|$)/iu, 'fr'],
   [/(eht|ufen)([^\p{L}]|$)/iu, 'de'],
   [/(nys|uest)([^\p{L}]|$)/iu, 'ca'],
+  // Quatrieme groupe, et la difference avec le troisieme est la SOURCE : ces
+  // motifs-la ont ete extraits du registre chat et non de la prose. Le groupe
+  // precedent avait rapporte 76 lignes sur Tatoeba et une seule a l'aveugle,
+  // parce qu'une regle tiree de la prose lit des formes flechies et que le chat
+  // en ecrit peu. Celui-ci est extrait du corpus de reglage `langChatCorpus3`,
+  // jamais du corpus aveugle, et mesure sur ce dernier.
+  //   -ijn   neerlandais, seize lignes, le plus gros du lot : zijn, mijn, klein.
+  //   -ght   anglais : right, night, thought.   -ople : people, couple.
+  //   -tou   preterit portugais : voltou, gostou, estou.
+  //   -gjen  norvegien, la ou le danois ecrit igen sans j.
+  //   -stà   catalan, la ou l'italien ecrit sta sans accent.
+  //   -ämä -eveel  finnois et neerlandais.
+  // DEHORS : -indo est `lindo` en espagnol, -seen est de l'anglais, -tic est
+  // anglais et francais, -hora -utti -jtra -gain sont des queues de mots.
+  [/ijn([^\p{L}]|$)/iu, 'nl'],
+  [/eveel([^\p{L}]|$)/iu, 'nl'],
+  [/(ght|ople)([^\p{L}]|$)/iu, 'en'],
+  [/tou([^\p{L}]|$)/iu, 'pt'],
+  [/gjen([^\p{L}]|$)/iu, 'no'],
+  [/stà([^\p{L}]|$)/iu, 'ca'],
+  [/ämä([^\p{L}]|$)/iu, 'fi'],
 ];
 
 /**
