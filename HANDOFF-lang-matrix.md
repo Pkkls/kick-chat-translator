@@ -128,16 +128,16 @@ Mesuré **deux fois**, tel quel et diacritiques retirées, parce qu'un chat cont
 
 | | right | silent | wrong | muet |
 |---|---:|---:|---:|---:|
-| chemin sûr, tel quel | 186 | 204 | **0** | 52 % |
-| chemin sûr, sans diacritiques | 131 | 259 | **0** | 66 % |
-| chemin brut, tel quel | 241 | 71 | 78 | 18 % |
-| chemin brut, sans diacritiques | 199 | 97 | 94 | 25 % |
+| chemin sûr, tel quel | 216 | 174 | **0** | 45 % |
+| chemin sûr, sans diacritiques | 146 | 244 | **0** | 63 % |
+| chemin brut, tel quel | 258 | 60 | 72 | 15 % |
+| chemin brut, sans diacritiques | 206 | 92 | 92 | 24 % |
 
 Quatre choses qu'il dit et que Tatoeba ne pouvait pas dire :
 
 1. **Le chemin sûr se trompe ZÉRO fois sur 390, dans les deux régimes.** Les règles écrites contre de la prose ne se mettent pas à mentir quand le registre change, elles se taisent. C'est l'invariant qui compte et il est asserté.
-2. **Il répond à la question de la phase 1, et la réponse est non.** Le silence mesuré ici est de 54 %, et il est flatté de deux façons : la mémorisation du lexique et la brièveté des lignes. Sur le corpus aveugle le silence brut est de 70 %, dont la moitié de l'écart est de la longueur. À longueur comparable, compter sur **56 % de silence sur du chat court inconnu**. Donner sa réponse au moteur on-device enverrait donc plus des deux tiers du chat latin au cloud, avec sa latence et son quota. Voir 2bis-bis avant de citer un chiffre de cette section.
-3. **Les diacritiques valent 30 % du rappel**, 181 contre 128. L'écart s'est réduit à mesure que le lexique grossissait : les mots de structure fréquents ne portent pas d'accent, les lettres exclusives oui. C'est la fragilité de toute l'approche par lettre exclusive en un chiffre : une règle qui lit `ř` ou `ų` ne lit plus rien dès que l'utilisateur tape vite, ce qui est le cas majoritaire sur téléphone.
+2. **Il répond à la question de la phase 1, et la réponse n'est plus la même.** Le silence mesuré ici était de 54 % et il est de **45 %**, et il reste flatté de deux façons : la mémorisation du lexique et la brièveté des lignes. Sur le corpus aveugle il est de **52 %**, et sur la bande courte de ce même corpus de **49 %**. Donner sa réponse au moteur on-device enverrait donc **une ligne sur deux** au cloud, là où c'était plus des deux tiers quand cette section a été écrite. Voir 2bis-bis et la section 10 avant de citer un chiffre d'ici.
+3. **Les diacritiques valent 32 % du rappel**, 216 contre 146. L'écart s'est réduit à mesure que le lexique grossissait : les mots de structure fréquents ne portent pas d'accent, les lettres exclusives oui. C'est la fragilité de toute l'approche par lettre exclusive en un chiffre : une règle qui lit `ř` ou `ų` ne lit plus rien dès que l'utilisateur tape vite, ce qui est le cas majoritaire sur téléphone.
 4. **83 % des lignes de chat font ≤20 caractères**, médiane 16, contre 33 % chez Tatoeba. Le lexique de mots courts, borné à 20, a donc une portée bien plus grande sur le régime réel que sur le corpus qui sert à le mesurer.
 
 ---
