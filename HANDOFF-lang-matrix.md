@@ -3,7 +3,7 @@
 État vivant de ce chantier. Mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-21. Commit le plus récent du chantier : `8cd28e3`. Phase 2 en cours, 9 langues restantes.
+Dernière mise à jour : 2026-09-21. Dernier commit de **code** du chantier : `0bd3699` (les commits qui suivent et ne touchent que ce fichier sont des mises à jour de ce document). Phase 2 en cours, **5 langues restantes** et ce sont les cinq sans lettre propre, donc la phase 2 ne peut plus avancer sans lexique.
 
 ---
 
@@ -63,7 +63,7 @@ Le diagnostic initial était à moitié faux et la vraie cause est pire. Résum�
 | 0 | banc 43x43 + corpus + chiffre de référence, **zéro correction** | **FAIT**, voir section 4bis |
 | 0b | corpus chat synthétique pour le rappel en registre court | pas commencé |
 | 1 | plomberie : `confidentLanguage` là où la réponse brute sert | **1 des 3 faits**, voir section 4ter |
-| 2 | combler les langues sans règle | **commencée** : `zh-tw` fait (`4dc5710`), 9 restantes |
+| 2 | combler les langues sans règle | **commencée** : `zh-tw` (`4dc5710`), `bn ta` (`8cd28e3`), `ca lt lv sk` plus six autres (`0bd3699`), **5 restantes** |
 | 3 | clusters de confusion, classés par la matrice | pas commencé |
 | 4 | barrière anti-régression en CI | pas commencé |
 
@@ -92,6 +92,7 @@ Commits de ce chantier, sur `feat/lang-matrix`, du plus ancien au plus récent :
 | `4dc5710` | Tell the two Chinese scripts apart, which nothing here could do |
 | `f40b9bf` | Bring the handoff up to the three commits that exist |
 | `8cd28e3` | Count Bengali and Tamil, which detectByScript never did |
+| `0bd3699` | Name ten languages by a letter only they write |
 
 Commandes :
 
@@ -126,45 +127,51 @@ Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR. Trois issues, jamais add
 
 Lecture du point de départ : **presque un message court sur trois recevait une mauvaise langue** sur le chemin qui supprime des messages en silence et qui pilote le moteur par défaut de Chrome.
 
-### État courant (commit `8cd28e3`)
+### État courant (commit `0bd3699`)
 
 | chemin | portée | right | silent | wrong |
 |---|---|---:|---:|---:|
-| `confidentLanguage` | toutes | 1694 (34%) | 3255 (65%) | **91 (2%)** |
-| `confidentLanguage` | court | 550 (33%) | 1076 (64%) | **54 (3%)** |
-| `detectLanguage` | toutes | 3126 (62%) | 804 (16%) | **1110 (22%)** |
-| `detectLanguage` | court | 871 (52%) | 364 (22%) | **445 (26%)** |
+| `confidentLanguage` | toutes | 2179 (43%) | 2770 (55%) | **91 (2%)** |
+| `confidentLanguage` | court | 667 (40%) | 959 (57%) | **54 (3%)** |
+| `detectLanguage` | toutes | 3324 (66%) | 691 (14%) | **1025 (20%)** |
+| `detectLanguage` | court | 935 (56%) | 332 (20%) | **413 (25%)** |
 
-Le chemin sûr est passé de 25 % à 34 % de réponses sans que son taux d'erreur bouge (2 %). C'est le seul mouvement qui compte vraiment : il répond plus souvent, pas plus faux.
+Le chemin sûr est passé de 25 % à 43 % de réponses **sans qu'un seul de ses deux compteurs d'erreur bouge**, 91 et 54 depuis le point de départ. C'est le seul mouvement qui compte vraiment : il répond plus souvent, pas plus faux. La règle des lettres exclusives a fait à elle seule 34 % -> 43 %.
+
+Le chemin brut a perdu 85 erreurs d'un coup, pour la même raison : une lettre lue bat une devinette de franc sur la même ligne.
 
 Ces quatre chiffres sont **assertés** dans `src/content/langMatrix.test.ts`. Les bouger est normal, les bouger sans dire dans quel sens et pourquoi ne l'est pas. Quand ils changent : relancer `node --import tsx scratchpad/harness/lang-matrix.mjs`, lire le rapport, mettre à jour le test **et cette section**.
 
-### Les neuf langues qui ne marquent jamais un seul point
+### Les cinq langues qui ne marquent jamais un seul point
 
-`ca da et fi lt lv no sk sl`
+`da et fi no sl`
 
-Pas "souvent fausses" : **jamais justes**, sur aucune ligne, à aucune longueur. C'est la file de travail de la phase 2. `zh-tw` en est sorti au commit `4dc5710`.
+Pas "souvent fausses" : **jamais justes**, sur aucune ligne, à aucune longueur. C'est la file de travail de la phase 2. `zh-tw` en est sorti au commit `4dc5710`, `ca lt lv sk` au commit `0bd3699`.
+
+**Ces cinq-là sont exactement les cinq sans lettre exclusive.** Ce n'est pas une coïncidence, c'est la limite de la méthode : tout ce qui était atteignable par lecture d'un caractère l'a été. Les cinq restantes demandent du lexique, donc la phase 0b, et non une règle de plus du même genre.
 
 ### Les paires qui volent le plus de lignes
 
-Table du point de départ. `zh-tw -> zh` est passé de 120 à 15 au commit `4dc5710`, les autres n'ont pas bougé.
+Colonne de gauche : le point de départ. Colonne de droite : aujourd'hui, au commit `0bd3699`.
 
-| de -> vers | lignes |
-|---|---:|
-| zh-tw -> zh | 120 sur 120 au départ, **15 aujourd'hui** |
-| bg -> ru | 50 |
-| id -> ms | 49 |
-| no -> sv | 48 |
-| da -> sv | 44 |
-| ca -> es | 43 |
-| ms -> id | 38 |
-| da -> nl | 35 |
-| ca -> fr | 30 |
-| sk -> cs | 30 |
-| uk -> ru | 22 |
-| no -> nl | 20 |
-| es -> pt | 18 |
-| pt -> es | 18 |
+| de -> vers | départ | aujourd'hui |
+|---|---:|---:|
+| zh-tw -> zh | 120 | **15** (`4dc5710`) |
+| bg -> ru | 50 | 50 |
+| id -> ms | 49 | 49 |
+| no -> sv | 48 | 48 |
+| da -> sv | 44 | 44 |
+| ca -> es | 43 | **42** |
+| ms -> id | 38 | 38 |
+| da -> nl | 35 | 35 |
+| ca -> fr | 30 | **29** |
+| sk -> cs | 30 | **27** |
+| uk -> ru | 22 | 22 |
+| no -> nl | 20 | 20 |
+| es -> pt | 18 | 18 |
+| pt -> es | 18 | 18 |
+
+Les lettres exclusives ont à peine entamé ce tableau, et c'est attendu : elles répondent surtout là où le détecteur se taisait. Le catalan ne perd qu'une ligne vers l'espagnol parce que `l·l` n'apparaît que 2 fois sur 120, et le slovaque en reprend 3 au tchèque parce que `ľ ĺ ŕ` ne couvrent que 10 lignes sur 120. Les deux langues sortent de la liste à zéro sans que leur confusion principale bouge vraiment. **Sortir de la liste à zéro et fermer une paire sont deux choses différentes**, et ces paires restent la phase 3.
 
 Le chinois traditionnel était répondu simplifié **sur 100 % des lignes**, drapeau de la Chine compris. Ce n'était pas une règle à corriger, c'était une règle absente : franc n'a aucun modèle trigramme pour le han, il résout toute l'écriture en `cmn`, et `FRANC_MAP` envoie `cmn` et `zho` sur `zh`. Corrigé au commit `4dc5710` par deux classes de caractères dans `cantonaisOuChinois`.
 
@@ -172,13 +179,15 @@ Le chinois traditionnel était répondu simplifié **sur 100 % des lignes**, dra
 
 **Piège à ne pas réintroduire** : le japonais a fait sa propre simplification et il est tombé d'accord avec la Chine sur certains caractères et avec Taïwan sur d'autres. `会 学 実 体 万 与 区 医 点 来 国` sont japonais ET simplifiés, ils sont donc DEHORS de la liste simplifiée. `結 議 龍` sont japonais ET traditionnels, ils sont dehors de la liste traditionnelle. Ne jamais les rajouter.
 
-### Les vingt-deux langues que le chemin sûr ne peut jamais nommer
+### Les treize langues que le chemin sûr ne peut jamais nommer
 
-`ca cs da el es et fi fr hu id lt lv ms nl no pl ro sk sl sv tl vi`
+`da el es et fi fr id ms nl no sl sv tl`
 
-(`zh` et `zh-tw` en sont sortis au commit `4dc5710`, `bn` et `ta` au commit `8cd28e3`.)
+(`zh` et `zh-tw` en sont sortis au commit `4dc5710`, `bn` et `ta` au commit `8cd28e3`, `ca cs hu lt lv pl ro sk tr vi` au commit `0bd3699`.)
 
-C'est la raison pour laquelle la phase 1 ne peut pas se contenter de remplacer la réponse brute par la réponse sûre : la réponse sûre ne sait nommer que 16 langues sur 42.
+C'est la raison pour laquelle la phase 1 ne peut pas se contenter de remplacer la réponse brute par la réponse sûre : la réponse sûre ne sait nommer que **29 langues sur 42**, contre 16 avant les lettres exclusives.
+
+**Ce chiffre ne rouvre PAS la question `ignoreEnglish` de la section 4ter, et c'est vérifié et non supposé** : l'anglais n'a pas de lettre exclusive, donc son rappel sur le chemin sûr est resté à **1 ligne sur 120**, identique à la mesure qui avait décidé de le laisser sur la réponse brute. Ce qui débloquera cette ligne-là est le lexique de la phase 0b, pas la couverture générale du chemin sûr.
 
 **Ce chiffre est à lire avec sa réserve, et elle joue dans les deux sens.** Tatoeba est de la phrase écrite, et le lexique de mots courts qui alimente `confidentLanguage` est un vocabulaire de chat : hola, merci, danke, selam. Une phrase espagnole de Tatoeba n'en contient aucun, donc `es` marque zéro ici alors qu'il marquerait sur une vraie ligne de chat. Les 26 sont donc une **borne haute** du trou, pas sa mesure. La phase 0b tranchera.
 
@@ -241,11 +250,13 @@ Reprendre ici. Chaque entrée est indépendante des autres, prendre celle qu'on 
 
 1. ~~`bn` et `ta` sans plage dans `detectByScript`~~ **FAIT au commit `8cd28e3`.** 120/120 sur les deux, sur les deux chemins. Le gain était bien sur `confidentLanguage` et non sur `detectLanguage`, exactement comme prévu.
 
+1bis. ~~La règle des lettres exclusives, section 8~~ **FAIT au commit `0bd3699`.** Mesurée, zéro ligne volée sur les deux chemins, 9 langues à zéro ramenées à 5. Le détail de ce que le banc a corrigé dans la table conçue est en section 8, qui est maintenant un compte rendu et non une proposition.
+
 2. **Le cluster nordique, `no da sv`.** 48 lignes norvégiennes et 44 danoises partent en suédois, et ni `no` ni `da` ne marque un seul point. Protocole du cantonais : hold-out écrit avant la règle, lignes adversariales, zéro faux positif exigé sur le voisin. Les trois langues partagent presque tout, donc chercher des marqueurs orthographiques durs (`ø` et `æ` sont danois et norvégiens contre `ö` et `ä` suédois, ce qui sépare déjà sv du couple ; séparer no de da demande du lexique).
 
-3. **Le catalan.** 0 point, 43 lignes en espagnol et 30 en français. Marqueurs orthographiques disponibles et durs : le point volat `l·l`, les terminaisons `-ació`, `ny` là où l'espagnol écrit `ñ`, les mots `amb`, `això`, `què`, `perquè`, `tots`.
+3. **Le catalan.** ~~0 point~~ **2 points sur 120 au commit `0bd3699`**, par le point volat `l·l`, qui est certain mais rare. Il reste 42 lignes en espagnol et 29 en français. Sortir de la liste à zéro ne l'a donc quasiment pas soigné : ce qui reste demande les marqueurs lexicaux et morphologiques déjà listés ici, les terminaisons `-ació`, `ny` là où l'espagnol écrit `ñ`, les mots `amb`, `això`, `què`, `perquè`, `tots`. Ceux-là ne sont pas des lettres exclusives et devront être mesurés séparément.
 
-4. **`sk` contre `cs`.** 30 lignes slovaques en tchèque, `sk` à 0 point. Séparables par lettres : `ä ľ ĺ ŕ ô` sont slovaques et absentes du tchèque, `ř ě ů` sont tchèques et absentes du slovaque.
+4. **`sk` contre `cs`.** ~~30 lignes~~ **27 lignes** slovaques en tchèque, `sk` à **10 points sur 120** depuis `0bd3699`. Les lettres exclusives sont posées et faites : `ľ ĺ ŕ` côté slovaque, `ř ě ů` côté tchèque. Ce qui reste est la part de lignes slovaques qui n'écrit aucune des trois, et `ä ô` ne peuvent pas la prendre : `ä` est aussi allemand, suédois, finnois, estonien et `ô` est aussi français. Du lexique, donc.
 
 5. **`bg` et `uk` lus comme `ru`.** 50 et 22 lignes, et c'est le **résidu principal du chemin SÛR** après la phase 1. La règle cyrillique existe déjà dans `cyrilliqueQuelleLangue`, elle est donc à resserrer et non à écrire. Son commentaire porte déjà sa mesure tenue à l'écart (7 sur 12 pour le bulgare), la relire avant d'y toucher.
 
@@ -268,9 +279,54 @@ Reprendre ici. Chaque entrée est indépendante des autres, prendre celle qu'on 
 
 ---
 
-## 8. Travail conçu mais NON mesuré, à reprendre tel quel
+## 8. La règle des lettres exclusives : MESURÉE ET COMMITTÉE (`0bd3699`)
 
-Écrit en fin de session et **annulé de l'arbre avant commit** parce qu'il n'avait pas été passé au banc. Rien de cassé, l'arbre est propre au commit `8cd28e3`. Le raisonnement est ici en entier pour que la reprise coûte quinze minutes et non une heure.
+Conçue en fin de session précédente et annulée de l'arbre avant commit faute de mesure. Reprise, mesurée, corrigée sur un point, committée. **Ce qui suit est le compte rendu ; la proposition d'origine est conservée telle quelle pour que l'écart entre ce qui était prévu et ce qui a été mesuré reste lisible.**
+
+### Ce que le banc a rendu
+
+| chemin | right | silent | wrong |
+|---|---:|---:|---:|
+| `confidentLanguage` avant (`8cd28e3`) | 1694 | 3255 | 91 |
+| `confidentLanguage` après (`0bd3699`) | **2179** | 2770 | **91, inchangé** |
+| `detectLanguage` avant | 3126 | 804 | 1110 |
+| `detectLanguage` après | **3324** | 691 | **1025** |
+
+**Zéro ligne volée**, exigence du protocole, et vérifiée de la seule façon qui prouve quelque chose : en diffant la **carte de confusions entière** contre `HEAD`, et non en regardant les totaux. Un total d'erreurs stable peut cacher une erreur échangée contre une autre. Résultat du diff : sur le chemin sûr aucune confusion ne bouge, ni en hausse ni en baisse ; sur `detectLanguage` 85 disparaissent et **aucune n'apparaît**.
+
+Langues à zéro : 9 -> 5. Sorties : `ca lt lv sk`. Chemin sûr : nomme 29 langues sur 42 contre 16.
+
+Poids du bundle content : 91484 -> 91654 octets gzippés, soit **+170**, les deux bouts mesurés ici en `gzip -9`. Note pour la prochaine session : ce chiffre ne se raccorde pas aux 91747 du commit `8cd28e3`, dont la méthode de mesure n'est pas écrite. Mesurer les deux bouts soi-même, ne pas comparer au journal.
+
+### La seule correction que le banc a imposée à la table conçue
+
+**Le polonais ne prend pas `ł`.** La lettre est bien polonaise seule parmi les 43, et c'est exactement le piège : *une lettre exclusive à une langue n'est pas la même chose qu'une ligne qui la porte étant dans cette langue.* Une phrase slovaque du corpus parle des enfants de `Łazarz`, ne porte aucune lettre slovaque exclusive, et le vote unanime ne la sauve donc pas. Un nom propre n'est pas un fait sur la langue de la phrase.
+
+Il n'y a pas eu d'arbitrage à faire, parce que le remplacement est meilleur des deux côtés : `żźćśń` prend **70** lignes polonaises contre 48 pour `ł`, et ne vole rien. La lettre proposée était simplement la mauvaise. Un test nomme cette ligne slovaque pour que remettre `ł` coûte une assertion rouge.
+
+Le piège que la conception avait déjà nommé a tenu : `ą` et `ę` restent dehors, le lituanien les écrit sur 20 et 6 lignes du corpus.
+
+### Table finale, telle qu'elle est dans `langDetect.ts`
+
+```
+[/[řěů]/iu, 'cs']   [/[ľĺŕ]/iu, 'sk']   [/[żźćśń]/iu, 'pl']  [/[őű]/iu, 'hu']
+[/[ėįų]/iu, 'lt']   [/[ģķļņ]/iu, 'lv']  [/[ığ]/iu, 'tr']     [/[șț]/iu, 'ro']
+[/l·l/iu, 'ca']     [/[ơưđ]/iu, 'vi']
+```
+
+Deux écarts de forme avec la proposition, tous deux vérifiés : le turc prend le drapeau `i` parce que `/ı/iu` ne rend vrai **ni sur `I` ni sur `i`** en JS, ce qui était le seul vrai danger de la table, et le drapeau rattrape `Ğ`. Le roumain s'écrit avec la virgule souscrite U+0219 et U+021B, distincte de la cédille turque `ş`, donc les deux jeux ne se croisent pas.
+
+### Rappel par langue sur le chemin sûr, pour savoir laquelle vaut encore du travail
+
+```
+tr 86/120   vi 80   cs 75   pl 70   ro 58   lt 50   lv 33   hu 24   sk 10   ca 2
+```
+
+`ca` et `sk` sont sortis de la liste à zéro mais restent pratiquement muets. Ne pas lire leur sortie comme une langue réglée.
+
+---
+
+### La proposition d'origine, conservée
 
 **Idée.** Le pré-contrôle d'écriture ne sert que les alphabets entiers, donc 27 langues latines n'ont pour tout recours que franc. Mais une **lettre** qu'une seule des 43 langues écrit identifie cette langue aussi sûrement qu'une écriture entière. C'est une recherche, pas une statistique, donc elle a sa place dans `confidentLanguage`.
 
@@ -295,4 +351,8 @@ Le turc `ı` est le i sans point U+0131, pas le i ordinaire. Le catalan s'identi
 
 **Gain attendu, à vérifier et non à croire** : couvre 5 des 9 langues à zéro (`sk lt lv ca` plus `ro tr hu pl cs vi` déjà partiellement servis). Ne couvre pas `da fi no sl et`.
 
+*Vérifié : 4 des 9 et non 5, parce que le catalan et le slovaque sortent de la liste à zéro avec 2 et 10 lignes. La prévision comptait les langues servies, pas les lignes, et l'écart est là.*
+
 **Protocole obligatoire avant de committer** : c'est un ajout au chemin SÛR, donc discipline du cantonais. Lancer `node --import tsx scratchpad/harness/lang-matrix.mjs`, exiger **zéro nouvelle ligne volée** aux 42 autres langues, et retirer toute lettre qui en vole une, quel que soit son gain en rappel. Puis mettre à jour les quatre chiffres assertés dans `langMatrix.test.ts` ET la section 4bis de ce document.
+
+*Suivi intégralement. Une remarque pour la prochaine règle : le protocole dit de lancer le rapport, mais le rapport seul ne montre pas les lignes volées, il montre des totaux. La mesure qui répond vraiment à l'exigence est le **diff de la carte de confusions** contre `HEAD`, obtenu en copiant `git show HEAD:src/content/langDetect.ts` dans un fichier temporaire de `src/content/` et en passant ses deux exports à `runMatrix`. Trois minutes, et c'est ce qui transforme "les totaux n'ont pas bougé" en preuve.*
