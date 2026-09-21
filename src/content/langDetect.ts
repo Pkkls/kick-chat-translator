@@ -72,7 +72,18 @@ const SHORT_WORD_LANG = new Map<string, string>([
   ['ptdr', 'fr'], ['quoi', 'fr'], ['alors', 'fr'], ['toujours', 'fr'], ['jamais', 'fr'],
   ['beaucoup', 'fr'], ['très', 'fr'], ['pourquoi', 'fr'], ['enfin', 'fr'],
 
-  ['obrigado', 'pt'], ['obrigada', 'pt'], ['valeu', 'pt'], ['mano', 'pt'], ['saudade', 'pt'],
+  // `mano` a ete retire de cette ligne. C'est du portugais bresilien courant et
+  // il mesurait propre quand il est entre, mais le crible le donne aujourd'hui a
+  // lt=10, es=2, it=2, pt=1 : le lituanien l'ecrit DIX FOIS PLUS que le
+  // portugais, `mano` y voulant dire "mon". Mesure de son retrait : zero ligne
+  // juste perdue, sur aucun des huit bancs, et DEUX erreurs en moins,
+  // `lt -> pt` et `es -> pt`. Le compteur d'erreurs du chemin sur passe de 15 a
+  // 13, et c'est la premiere fois qu'il bouge depuis la table des portes.
+  //
+  // La table des lettres exclusives, lue avant le lexique depuis `528c3af`,
+  // sauvait deja les lignes lituaniennes portant un `ė`. Celles qui n'en
+  // portent pas tombaient toujours.
+  ['obrigado', 'pt'], ['obrigada', 'pt'], ['valeu', 'pt'], ['saudade', 'pt'],
   ['você', 'pt'], ['voce', 'pt'], ['então', 'pt'], ['entao', 'pt'], ['muito', 'pt'],
   ['muita', 'pt'], ['beleza', 'pt'], ['caralho', 'pt'], ['porra', 'pt'], ['rapaz', 'pt'],
   ['também', 'pt'], ['tambem', 'pt'],

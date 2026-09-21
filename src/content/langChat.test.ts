@@ -156,6 +156,6 @@ describe('le contraste avec Tatoeba, sur les memes langues', () => {
     const t = runMatrix(confidentLanguage, memesLangues());
     expect(muet(t.total)).toBe(55);
     expect(muet(CHAT_SURE.total)).toBe(46);
-    expect(t.total.wrong).toBe(5);
+    expect(t.total.wrong).toBe(3);
   });
 });
