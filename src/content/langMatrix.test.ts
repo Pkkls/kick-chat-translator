@@ -28,7 +28,7 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on two lines in five and is almost never wrong.
   // The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 3163, silent: 1862, wrong: 15 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 3164, silent: 1861, wrong: 15 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
@@ -40,7 +40,7 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
   it('detectLanguage is wrong on a fifth of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 3810, silent: 516, wrong: 714 });
+    expect(plain(DETECT.total)).toEqual({ right: 3811, silent: 516, wrong: 713 });
   });
 
   it('detectLanguage is wrong on a quarter of short lines', () => {
@@ -392,6 +392,7 @@ describe('neither the corpus nor the matrix reaches the shipped extension', () =
           entry === 'langChatCorpus2.ts' ||
           entry === 'langChatCorpus3.ts' ||
           entry === 'langChatPaireCorpus.ts' ||
+          entry === 'langChatPaireReglageCorpus.ts' ||
           entry === 'langChatNonLatin.ts' ||
           entry === 'langMixedCorpus.ts'
         ) {

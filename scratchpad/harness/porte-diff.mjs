@@ -14,6 +14,8 @@ import { LANG_CHAT } from '../../src/content/langChatCorpus.ts';
 import { LANG_CHAT2 } from '../../src/content/langChatCorpus2.ts';
 import { LANG_CHAT3 } from '../../src/content/langChatCorpus3.ts';
 import { LANG_CHAT_NL } from '../../src/content/langChatNonLatin.ts';
+import { LANG_CHAT_PAIRE } from '../../src/content/langChatPaireCorpus.ts';
+import { LANG_CHAT_PAIRE_REGLAGE } from '../../src/content/langChatPaireReglageCorpus.ts';
 import { LANG_MIXED } from '../../src/content/langMixedCorpus.ts';
 import * as neuf from '../../src/content/langDetect.ts';
 import * as vieux from '../../src/content/langDetectV0.ts';
@@ -24,6 +26,11 @@ const BANCS = [
   ['chat2-AVEUGLE', LANG_CHAT2],
   ['chat3-reglage', LANG_CHAT3],
   ['non-latin', LANG_CHAT_NL],
+  // La paire malais-indonesien, en registre familier. Le premier MESURE, le
+  // second est celui sur lequel on a le droit de choisir. Les lire dans cet
+  // ordre : un gain sur le reglage seul ne prouve rien.
+  ['paire-AVEUGLE', LANG_CHAT_PAIRE],
+  ['paire-reglage', LANG_CHAT_PAIRE_REGLAGE],
 ];
 
 const n = (c) => c.right + c.silent + c.wrong;

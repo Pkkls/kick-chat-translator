@@ -29,9 +29,9 @@ describe('le corpus de reglage', () => {
     expect(SURE3.total.wrong).toBe(0);
   });
 
-  it('en nomme 99 sur 260', () => {
-    expect(plain(SURE3.total)).toEqual({ right: 99, silent: 161, wrong: 0 });
-    expect(plain(BRUT3.total)).toEqual({ right: 154, silent: 39, wrong: 67 });
+  it('en nomme 100 sur 260', () => {
+    expect(plain(SURE3.total)).toEqual({ right: 100, silent: 160, wrong: 0 });
+    expect(plain(BRUT3.total)).toEqual({ right: 155, silent: 39, wrong: 66 });
   });
 
   // CE QU'IL A ATTRAPE LE JOUR DE SA CREATION, et c'est la justification de son
@@ -80,7 +80,7 @@ describe('le corpus de reglage', () => {
   // dix-neuf lignes sur les memes cinq tours : un mecanisme qui transfere
   // rapporte au moins autant la ou personne n'a regle.
   it('ne bouge que par un mecanisme qui transfere, pas par le lexique', () => {
-    expect(SURE3.total.right).toBe(99);
+    expect(SURE3.total.right).toBe(100);
   });
 
   // Les trois corpus doivent rester distincts, sinon les roles se melangent.

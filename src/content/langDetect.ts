@@ -954,9 +954,9 @@ function estonienOuPortugais(text: string): string | undefined {
 // registre familier n'y sont pas, donc il ne peut pas les proposer. Voir
 // `langChatPaire.test.ts`.
 const MOTS_MALAIS_INDONESIENS =
-  /(^|[^\p{L}])(yang|tidak|dengan|untuk|saya|ini|itu|dari|pada|sudah|mereka|dalam|lebih|orang|apa|lagi)([^\p{L}]|$)/iu;
+  /(^|[^\p{L}])(yang|tidak|dengan|untuk|saya|ini|itu|dari|pada|sudah|mereka|dalam|lebih|orang|apa|lagi|tidur|siapa|baru)([^\p{L}]|$)/iu;
 const MOTS_INDONESIENS =
-  /(^|[^\p{L}])(bisa|uang|mobil|coba|karena|besok|kamar|kayak|nggak|gak|banget|gimana|udah|aja|nih|dong|sih)([^\p{L}]|$)/iu;
+  /(^|[^\p{L}])(bisa|uang|mobil|coba|karena|besok|kamar|kayak|nggak|gak|banget|gimana|udah|aja|nih|dong|sih|gue|kemarin)([^\p{L}]|$)/iu;
 const MOTS_MALAIS =
   /(^|[^\p{L}])(kerana|sahaja|cuba|esok|bilik|mahu|jom|awak|tengok|macam|betul|sikit|jugak|memang|nak|tiada|teruk|nampak|berlaku)([^\p{L}]|$)/iu;
 
