@@ -3,7 +3,7 @@
 État vivant de ce chantier, mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `7df1ed6`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
+Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `1e6e4c0`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
 
 ---
 
@@ -49,12 +49,12 @@ Ce qui a été découvert en cours de route et qui n'était pas dans le diagnost
 Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR, 120 lignes par langue.
 Trois issues, **jamais additionnées** : `right` la bonne langue, `silent` le détecteur a refusé de répondre ce qui est l'issue SÛRE, `wrong` une autre langue.
 
-| chemin | portée | départ `ec9e02d` | aujourd'hui `7df1ed6` |
+| chemin | portée | départ `ec9e02d` | aujourd'hui `1e6e4c0` |
 |---|---|---|---|
-| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3175 r / 1858 s / **7 w** |
-| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 915 / 758 / **7** |
-| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3819 / 515 / **706** |
-| `detectLanguage` | court | 837 / 364 / **479** | 1091 / 289 / **300** |
+| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3243 r / 1790 s / **7 w** |
+| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 939 / 734 / **7** |
+| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3847 / 508 / **685** |
+| `detectLanguage` | court | 837 / 364 / **479** | 1105 / 283 / **292** |
 
 Le chemin sûr **répond 2,5 fois plus souvent et se trompe 83 % moins**. C'est le seul mouvement qui compte vraiment : `wrong` sur ce chemin veut dire qu'on demande au moteur de traduire depuis une langue dans laquelle le texte n'est pas.
 
@@ -81,11 +81,11 @@ Les trois dernières du chemin brut, `et fi sl`, sont sorties par le lexique de 
 
 ```
 120  ar bn el he hi ja ko ta th     (écritures sans ambiguïté)
-119  vi   116 fa    112 yue   109 lv    105 zh-tw  101 uk    95 tr
-90   zh    89 ru     78 cs     77 sv     75 pl      74 bg    70 ro
-67   tl    64 nl     61 lt     56 et     53 pt      52 hu    48 fi
-45   de    45 fr     42 es     38 en     36 ca      36 it    29 sk
-29   sl    26 no     22 ms     21 da     15 id
+119  vi   116 fa    112 yue   109 lv    105 zh-tw  101 uk    98 pl
+95   tr    90 zh     89 ru     87 ro     79 sv      78 cs    74 bg
+67   tl    64 nl     62 pt     61 lt     56 et      52 hu    49 es
+48   fi    45 de     45 fr     38 en     36 ca      36 it    32 no
+29   sk    29 sl     25 da     22 ms     15 id
 ```
 
 **Plus aucune langue sous 13 sur 120**, contre vingt-six à zéro au départ. Ce tableau est celui de Tatoeba ; sur du chat le classement est différent, voir 2bis.
@@ -777,6 +777,48 @@ Chacune est une ligne dont le **script** est lu correctement et dont la langue d
 
 ---
 
+### 5.21 LES SÉQUENCES, et la question que le crible ne savait pas poser (`c77dd47`, `1de29f6`, `1e6e4c0`)
+
+**Le plus gros gain de la branche après le repli cyrillique : +58 lignes sur Tatoeba en trois tours, et +5 sur le corpus aveugle.**
+
+**La question était mal posée depuis le début.** La passe à séquences du crible cherchait ce que DEUX À QUATRE langues partagent, parce qu'elle avait été écrite pour trouver des portes. Deux questions manquaient :
+
+1. **Derrière une porte, le seuil n'est pas trois lignes, il est ZÉRO.** Deux langues seulement restent, donc une ligne de l'autre côté n'est pas du bruit, c'est une erreur. `porte-candidats.mjs es+pt` pose cette question.
+2. **Quelle séquence une seule langue écrit, avec un bruit STRICTEMENT nul ?** C'est l'analogue exact de « quelle lettre exclusive manque », et personne ne l'avait demandé.
+
+La deuxième a rendu que `ção` était dans la table depuis trois passes en ne voyant qu'un morceau de ce que `ão` voit.
+
+**CE QUI SÉPARE DEUX LANGUES PROCHES EST UNE LETTRE DANS UN MOT, pas un mot.** Le danois écrit `g` là où le norvégien écrit `k`, `øj` là où il écrit `øy` : `bøger`/`bøker`, `sprog`/`språk`, `rigtig`/`riktig`, `høj`/`høy`.
+
+> Le tour nordique a d'abord été écrit comme **onze mots** plus quatre séquences : +10 lignes. Sans les séquences : +3. Avec les séquences et sans les **neuf mots** qui ne rapportent rien seuls : **+10 encore**. Deux mots et quatre paires de lettres font tout.
+
+C'est la leçon de l'harmonie vocalique finnoise mesurée une deuxième fois, sur une autre famille : **une séquence porte sur n'importe quel mot, un mot ne porte que sur lui-même.**
+
+**LES SÉQUENCES ENTRÉES**, toutes à zéro ligne dans les quarante-deux autres langues :
+
+| | |
+|---|---|
+| nordique, tri interne | `øy` `øk` no, `øj` `øg` da |
+| ibérique | `ão` `cê` pt, `ía` es |
+| slave | `cz` `prz` `ał` `wy` pl, `jse` cs |
+| roumain | `să` `că` |
+| germanique | `ijn` nl, `för` sv |
+
+**TROIS SONT EN ASCII PUR** (`cz`, `prz`, `wy`), et ça vaut plus que leur compte : elles répondent encore quand un clavier pressé a mangé tous les diacritiques, là où **toutes** les règles à lettre du fichier se taisent.
+
+**DEUX ENTRÉES REMPLACÉES parce que les nouvelles sont PLUS LARGES**, et l'ablation les a données toutes les quatre à zéro, ce qui est à quoi ressemble une paire qui se couvre : `ijn` non borné remplace `ijn` en fin de mot ; `jse` remplace la porte à trois mots `že|jeho|dnes`. Même résultat, deux entrées de moins.
+
+**QUATRE ENTRÉES TUÉES AU PASSAGE**, troisième et quatrième fois : `ą` pl/lt valait une ligne aveugle jusqu'à ce que `cz` nomme le polonais avant elle, `ã` pt/vi est tuée par `ão`.
+
+**CE QUI EST REFUSÉ, tout à bruit mesuré nul :**
+
+- **`you`** en=33, et c'est le **banc des lignes mélangées** qui l'a attrapé, seul. Il nomme `grazie bro you are cracked` ANGLAISE. **L'anglais est la langue avec laquelle tout le monde mélange, donc un marqueur anglais propre reste un mauvais marqueur.**
+- `gio` it=16, mais le portugais écrit `relógio`. `oor` nl=15, mais l'anglais écrit `door`. `ân` et `în` ro, mais le français écrit `âne` et `chaîne`. `kj` `skj` `gj` norvégiens, qui prennent une à trois lignes danoises.
+
+**MOITIÉ TENUE À L'ÉCART**, protocole 4.1, sur le plus gros des trois tours : **+21 sur la moitié de réglage et +24 sur celle qui n'a jamais été regardée.** La moitié aveugle gagne PLUS, ce qui est le signal de généralisation le plus fort que ce protocole sache produire.
+
+---
+
 ## 6. État par phase
 
 | Phase | Contenu | État |
@@ -987,6 +1029,10 @@ Commits, du plus ancien au plus récent :
 | `3b7c45a` | Read Persian off six words when no Persian letter is there, and take the error count to ten |
 | `4b54fbb` | Read Jawi off three words as well, and close the Malay half of the Arabic-script block |
 | `7df1ed6` | Give Ukrainian three words, and leave nothing wrong outside the Arabic and Chinese scripts |
+| `728fbe2` | Record the four rounds that took the error count from fifteen to seven |
+| `c77dd47` | Sort Danish from Norwegian on four pairs of letters, and cut the nine words that were riding along |
+| `1de29f6` | Ask the screen which sequences one language writes and another never does, and gain forty-five lines |
+| `1e6e4c0` | Take a second harvest of sequences, and let two of them retire entries that were wider than they needed to be |
 
 ---
 
@@ -1041,7 +1087,7 @@ Ne pas trancher ça dans une passe de détection. **Et surtout : le faire seul n
 
 - Commits : sujet à l'impératif, corps expliquant la cause, le correctif, et **comment il a été constaté**. Terminer par `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`.
 - Gate : `npm run release:check`, jamais seulement `typecheck` et `test`. Il lance aussi `lint`.
-- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **95590 aujourd'hui** (`7df1ed6`), soit +3976 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-sept portes et 433 entrées de lexique. Le détail des neuf derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, **-51 pour +14**, **+13 pour +39**, +65 pour +8, -10 pour +2, +22 pour +5, et **-76 pour zéro** au dernier, qui ne fait que supprimer des entrées qui ne pouvaient plus se déclencher. Les deux meilleurs rapports de tout le chantier sont la porte nordique à mot, qui supprime plus de code qu'elle n'en ajoute, et les marqueurs tagalog, treize octets. Les six corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
+- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **95639 aujourd'hui** (`1e6e4c0`), soit +3976 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-sept portes et 433 entrées de lexique. Le détail des neuf derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, **-51 pour +14**, **+13 pour +39**, +65 pour +8, -10 pour +2, +22 pour +5, et **-76 pour zéro** au dernier, qui ne fait que supprimer des entrées qui ne pouvaient plus se déclencher. Les deux meilleurs rapports de tout le chantier sont la porte nordique à mot, qui supprime plus de code qu'elle n'en ajoute, et les marqueurs tagalog, treize octets. Les six corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
 - Pas de nom de streamer ou de chaîne en dur, nulle part.
 - Pas d'emoji dans le code.
 - Les données de test vivent **inline dans le fichier de test**, pas dans une fixture séparée.
