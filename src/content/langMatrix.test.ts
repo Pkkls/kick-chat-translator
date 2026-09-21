@@ -473,3 +473,58 @@ describe('aucune entree de lexique ne peut etre masquee par une lettre exclusive
     expect(ombragees).toEqual([]);
   });
 });
+
+describe('aucun declencheur de porte n est aussi un mot qui tranche derriere elle', () => {
+  // LE DEFAUT, paye deux fois, et il ne fait pas tomber un test tout seul.
+  //
+  // Une porte a deux etages : un declencheur qui dit "cette ligne appartient a
+  // l'une de ces deux langues", puis un jeu de mots par langue qui choisit
+  // dedans. Si un mot est dans le declencheur ET dans un des deux jeux, il fait
+  // les deux tout seul : il ouvre la porte sur une ligne de l'AUTRE langue, puis
+  // il decide en faveur de la sienne. Les deux indices censes etre independants
+  // n'en font qu'un.
+  //
+  // Premiere fois : `dz` comme porte pl/lv/sk, ou `bardzo` porte la sequence ET
+  // est le mot polonais du jeu. Trois lignes melangees nommees polonaises.
+  // Deuxieme fois : `hvor` ajoute au declencheur dano-norvegien alors qu'il est
+  // dans `MOTS_NORVEGIENS`. Deux lignes danoises parties au norvegien.
+  //
+  // Les deux ont ete attrapes par le diff a cinq bancs, donc apres coup. Ce
+  // garde-ci les attrape a l'ecriture, et il coute une lecture de la source.
+  it('ne partage aucun mot entre un declencheur et ses jeux', () => {
+    const src = readFileSync(resolve(process.cwd(), 'src/content/langDetect.ts'), 'utf8');
+    /**
+     * Les mots de l'alternance d'une constante nommee.
+     *
+     * La regex porte TROIS groupes, `(^|[^\p{L}])(les|mots|ici)([^\p{L}]|$)`,
+     * et c'est celui du milieu qu'on veut. On les prend tous et on garde le plus
+     * long en nombre d'alternatives : les deux bornes en ont deux, la liste en a
+     * une dizaine. Plus robuste que compter les parentheses.
+     */
+    const motsDe = (nom: string): string[] => {
+      const bloc = new RegExp(`const ${nom} =\\s*(/[^;]+/[a-z]*)`).exec(src);
+      if (!bloc) return [];
+      const groupes = [...bloc[1]!.matchAll(/\(([^()]*)\)/g)].map((g) => g[1]!.split('|'));
+      if (groupes.length === 0) return [];
+      const plusLong = groupes.reduce((a, b) => (b.length > a.length ? b : a));
+      return plusLong.filter((w) => w.length > 0 && !w.includes('^') && !w.includes('['));
+    };
+    const paires: ReadonlyArray<readonly [string, readonly string[]]> = [
+      ['MOTS_MALAIS_INDONESIENS', ['MOTS_MALAIS', 'MOTS_INDONESIENS']],
+      ['MOTS_DANO_NORVEGIENS', ['MOTS_NORVEGIENS', 'MOTS_DANOIS']],
+    ];
+    const fautes: string[] = [];
+    for (const [declencheur, jeux] of paires) {
+      const ouvre = new Set(motsDe(declencheur));
+      expect(ouvre.size, `${declencheur} introuvable ou vide`).toBeGreaterThan(0);
+      for (const jeu of jeux) {
+        const tranche = motsDe(jeu);
+        expect(tranche.length, `${jeu} introuvable ou vide`).toBeGreaterThan(0);
+        for (const mot of tranche) {
+          if (ouvre.has(mot)) fautes.push(`${mot} est dans ${declencheur} et dans ${jeu}`);
+        }
+      }
+    }
+    expect(fautes).toEqual([]);
+  });
+});
