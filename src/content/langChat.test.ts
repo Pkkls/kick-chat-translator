@@ -133,7 +133,7 @@ describe('le contraste avec Tatoeba, sur les memes langues', () => {
   // franc, et elle bouge dans le mauvais sens.
   it('montre que le registre coute a franc et pas au chemin sur', () => {
     const t = runMatrix(confidentLanguage, memesLangues());
-    expect(muet(t.total)).toBe(76);
+    expect(muet(t.total)).toBe(75);
     expect(muet(CHAT_SURE.total)).toBe(72);
     expect(t.total.wrong).toBe(5);
   });

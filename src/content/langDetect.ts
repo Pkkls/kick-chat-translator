@@ -197,6 +197,9 @@ const SHORT_WORD_LANG = new Map<string, string>([
   ['nosaltres', 'ca'], ['vosaltres', 'ca'], ['tothom', 'ca'], ['ningú', 'ca'], ['ningu', 'ca'], ['tambe', 'ca'], ['gaire', 'ca'],
 
   ['zelo', 'sl'], ['hvala', 'sl'], ['zakaj', 'sl'], ['spet', 'sl'], ['tukaj', 'sl'],
+  ['kaj', 'sl'], ['lahko', 'sl'], ['nekaj', 'sl'], ['ampak', 'sl'], ['nisem', 'sl'],
+  ['kdaj', 'sl'], ['prav', 'sl'], ['tudi', 'sl'], ['ker', 'sl'], ['zdaj', 'sl'],
+  ['saj', 'sl'], ['vse', 'sl'], ['sva', 'sl'], ['bova', 'sl'],
   ['vedno', 'sl'], ['danes', 'sl'],
 
   ['labai', 'lt'], ['aciu', 'lt'], ['ačiū', 'lt'], ['labas', 'lt'], ['kodel', 'lt'],
@@ -420,6 +423,41 @@ function danoisOuNorvegien(text: string): string | undefined {
   const dn = MOTS_DANO_NORVEGIENS.test(text);
   if (sv && !dn) return 'sv';
   if (dn && !sv) return norvegienOuDanois(text);
+  return undefined;
+}
+
+/**
+ * L'estonien et le portugais, que le o barre reunit et que tout le reste separe.
+ *
+ * `õ` est la seule lettre que l'estonien pourrait avoir en propre, et il la
+ * partage avec le portugais, qui l'ecrit dans põe, limões, corações. Elle etait
+ * donc DEHORS de la table des lettres exclusives, comme ø et æ avant la regle de
+ * paire. Mesure sur les deux corpus : 42 lignes estoniennes et UNE portugaise,
+ * et rien d'autre nulle part. C'est la porte la plus deseequilibree du fichier,
+ * et c'est ce qui la rend facile : les deux langues n'ont aucun mot commun.
+ *
+ * Meme forme que les trois autres portes, et c'est la quatrieme fois qu'elle
+ * sert : le nordique, le malais-indonesien, le scandinave a trois, celle-ci.
+ * Une lettre qui nomme un petit ensemble vaut mieux qu'une lettre qui ne nomme
+ * personne, et il suffit d'un second tour pour choisir dedans.
+ *
+ * Derriere la porte, `on`, `ei`, `ma`, `ta`, `ja` et `see` redeviennent
+ * utilisables alors qu'ils sont impossibles en plein air : `on` est anglais,
+ * `ja` est allemand, neerlandais et finnois, `ta` est une demi-douzaine de
+ * langues. C'est exactement ce que les trois autres portes offrent deja.
+ */
+const O_BARRE = /õ/iu;
+const MOTS_ESTONIENS =
+  /(^|[^\p{L}])(on|ei|ja|see|ta|ma|kõik|väga|miks|midagi|praegu|jälle|kas|aga|siis|nii|kui)([^\p{L}]|$)/iu;
+const MOTS_PORTUGAIS =
+  /(^|[^\p{L}])(que|não|nao|de|para|uma|com|isso|você|voce|mais|muito|está|esta)([^\p{L}]|$)/iu;
+
+function estonienOuPortugais(text: string): string | undefined {
+  if (!O_BARRE.test(text)) return undefined;
+  const et = MOTS_ESTONIENS.test(text);
+  const pt = MOTS_PORTUGAIS.test(text);
+  if (et && !pt) return 'et';
+  if (pt && !et) return 'pt';
   return undefined;
 }
 
@@ -1003,6 +1041,9 @@ function detectByLookup(trimmed: string): string | undefined {
   // portes ne peuvent pas s'ouvrir sur la meme ligne.
   const nusantara = malaisOuIndonesien(trimmed);
   if (nusantara) return nusantara;
+
+  const balte = estonienOuPortugais(trimmed);
+  if (balte) return balte;
 
   // Short Latin message: a known chat word beats franc, which guesses at this length.
   if (trimmed.length <= SHORT_TEXT_MAX) {
