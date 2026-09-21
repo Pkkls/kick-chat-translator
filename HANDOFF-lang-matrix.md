@@ -3,7 +3,7 @@
 État vivant de ce chantier. Mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-21, phases 0 et 1 partiellement livrées, phase 2 commencée. Commit le plus récent du chantier : `4dc5710`.
+Dernière mise à jour : 2026-09-21. Commit le plus récent du chantier : `8cd28e3`. Phase 2 en cours, 9 langues restantes.
 
 ---
 
@@ -90,6 +90,8 @@ Commits de ce chantier, sur `feat/lang-matrix`, du plus ancien au plus récent :
 | `ec9e02d` | Measure every language against every other one, and write down what it says |
 | `71e78c4` | Stop deleting messages on a guess |
 | `4dc5710` | Tell the two Chinese scripts apart, which nothing here could do |
+| `f40b9bf` | Bring the handoff up to the three commits that exist |
+| `8cd28e3` | Count Bengali and Tamil, which detectByScript never did |
 
 Commandes :
 
@@ -124,14 +126,16 @@ Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR. Trois issues, jamais add
 
 Lecture du point de départ : **presque un message court sur trois recevait une mauvaise langue** sur le chemin qui supprime des messages en silence et qui pilote le moteur par défaut de Chrome.
 
-### État courant (commit `4dc5710`)
+### État courant (commit `8cd28e3`)
 
 | chemin | portée | right | silent | wrong |
 |---|---|---:|---:|---:|
-| `confidentLanguage` | toutes | 1454 (29%) | 3494 (69%) | **92 (2%)** |
-| `confidentLanguage` | court | 470 (28%) | 1156 (69%) | **54 (3%)** |
-| `detectLanguage` | toutes | 3125 (62%) | 804 (16%) | **1111 (22%)** |
+| `confidentLanguage` | toutes | 1694 (34%) | 3255 (65%) | **91 (2%)** |
+| `confidentLanguage` | court | 550 (33%) | 1076 (64%) | **54 (3%)** |
+| `detectLanguage` | toutes | 3126 (62%) | 804 (16%) | **1110 (22%)** |
 | `detectLanguage` | court | 871 (52%) | 364 (22%) | **445 (26%)** |
+
+Le chemin sûr est passé de 25 % à 34 % de réponses sans que son taux d'erreur bouge (2 %). C'est le seul mouvement qui compte vraiment : il répond plus souvent, pas plus faux.
 
 Ces quatre chiffres sont **assertés** dans `src/content/langMatrix.test.ts`. Les bouger est normal, les bouger sans dire dans quel sens et pourquoi ne l'est pas. Quand ils changent : relancer `node --import tsx scratchpad/harness/lang-matrix.mjs`, lire le rapport, mettre à jour le test **et cette section**.
 
@@ -168,11 +172,11 @@ Le chinois traditionnel était répondu simplifié **sur 100 % des lignes**, dra
 
 **Piège à ne pas réintroduire** : le japonais a fait sa propre simplification et il est tombé d'accord avec la Chine sur certains caractères et avec Taïwan sur d'autres. `会 学 実 体 万 与 区 医 点 来 国` sont japonais ET simplifiés, ils sont donc DEHORS de la liste simplifiée. `結 議 龍` sont japonais ET traditionnels, ils sont dehors de la liste traditionnelle. Ne jamais les rajouter.
 
-### Les vingt-quatre langues que le chemin sûr ne peut jamais nommer
+### Les vingt-deux langues que le chemin sûr ne peut jamais nommer
 
-`bn ca cs da el es et fi fr hu id lt lv ms nl no pl ro sk sl sv ta tl vi`
+`ca cs da el es et fi fr hu id lt lv ms nl no pl ro sk sl sv tl vi`
 
-(`zh` et `zh-tw` en sont sortis au commit `4dc5710`.)
+(`zh` et `zh-tw` en sont sortis au commit `4dc5710`, `bn` et `ta` au commit `8cd28e3`.)
 
 C'est la raison pour laquelle la phase 1 ne peut pas se contenter de remplacer la réponse brute par la réponse sûre : la réponse sûre ne sait nommer que 16 langues sur 42.
 
@@ -235,7 +239,7 @@ Le résidu des 90 suppressions restantes est presque entièrement `bg -> ru` (50
 
 Reprendre ici. Chaque entrée est indépendante des autres, prendre celle qu'on veut.
 
-1. **`bn` et `ta` n'ont aucune plage dans `detectByScript`.** Le bengali et le tamoul sont deux écritures sans la moindre ambiguïté, et la boucle de comptage de `detectByScript` ne les compte pas. C'est exactement le trou que l'hébreu avait avant d'être corrigé, avec le précédent et le test qui vont avec. Deux plages Unicode (bengali U+0980-09FF, tamoul U+0B80-0BFF), deux branches à côté de `if (pct(thai))`. **C'est le moins cher du lot, commencer par là.** Attention, franc les nomme déjà par son regex d'écriture, donc le gain n'est pas sur `detectLanguage` mais sur `confidentLanguage`, qui est muet sur les deux.
+1. ~~`bn` et `ta` sans plage dans `detectByScript`~~ **FAIT au commit `8cd28e3`.** 120/120 sur les deux, sur les deux chemins. Le gain était bien sur `confidentLanguage` et non sur `detectLanguage`, exactement comme prévu.
 
 2. **Le cluster nordique, `no da sv`.** 48 lignes norvégiennes et 44 danoises partent en suédois, et ni `no` ni `da` ne marque un seul point. Protocole du cantonais : hold-out écrit avant la règle, lignes adversariales, zéro faux positif exigé sur le voisin. Les trois langues partagent presque tout, donc chercher des marqueurs orthographiques durs (`ø` et `æ` sont danois et norvégiens contre `ö` et `ä` suédois, ce qui sépare déjà sv du couple ; séparer no de da demande du lexique).
 
