@@ -54,6 +54,13 @@ const BANCS = [
   // une ablation qui s'arrete au-dessus conclut que `khong`, `loti` et `kapec`
   // sont morts, et elle casserait le seul cas pour lequel ils ont ete ecrits.
   ['chat1-SANS-DIACRITIQUES', nu(LANG_CHAT)],
+  // ET TATOEBA DEPOUILLE, parce que 390 lignes ne suffisaient pas. Le banc au-
+  // dessus sortait a zero erreur pendant que le meme depouillement sur 5040
+  // lignes en montrait TRENTE : `vi -> pt` neuf fois, `vi -> sv` trois, toutes
+  // des collisions de clavier invisibles a 390 lignes. Un banc trop petit ne
+  // rend pas zero, il rend une conclusion fausse, exactement comme un banc
+  // absent, protocole 4.8.
+  ['tatoeba-SANS-DIACRITIQUES', nu(LANG_CORPUS)],
 ];
 
 const n = (c) => c.right + c.silent + c.wrong;

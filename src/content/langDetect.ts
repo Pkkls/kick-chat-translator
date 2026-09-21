@@ -579,7 +579,21 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   // tue une entree ailleurs dans le fichier.
   [/(^|[^\p{L}])(ik|hij|mijn|het|een|heb|zijn)([^\p{L}]|$)/iu, 'nl'],
   [/(^|[^\p{L}])(ist|zu|habe|mir|und)([^\p{L}]|$)/iu, 'de'],
-  [/(^|[^\p{L}])(jag|att|ett|och|hon)([^\p{L}]|$)/iu, 'sv'],
+  // `hon` a ete retire de cette liste par l'audit de collisions de clavier.
+  // Il vaut 3 lignes suedoises sur du texte normal et coute DEUX erreurs sur du
+  // texte depouille : le vietnamien ecrit `hơn`, qui devient `hon`. Sur cette
+  // branche la colonne `wrong` coute plus cher que la colonne `right`, donc
+  // trois contre deux se tranche dans ce sens-la.
+  //
+  // LES QUATRE AUTRES COLLISIONS TROUVEES PAR LE MEME AUDIT SONT GARDEES, parce
+  // que leur rapport va dans l'autre sens :
+  //   het nl  rejoint par le hongrois `hét`  : -6 lignes, +0 erreur. Garde.
+  //   nang tl rejoint par le vietnamien      : -1 ligne,  +0 erreur. Garde.
+  //   niy tl  rejoint par le turc            : -2 lignes et -2 du corpus
+  //           AVEUGLE contre 1 erreur. Garde.
+  //   ist de  rejoint par deux lignes slovaques : -4 lignes contre 1 erreur.
+  //           Garde, et c'est le plus discutable des quatre.
+  [/(^|[^\p{L}])(jag|att|ett|och)([^\p{L}]|$)/iu, 'sv'],
   [/(^|[^\p{L}])(est|pour|ici|nous|cette|une|deux)([^\p{L}]|$)/iu, 'fr'],
   // DEUXIEME LOT DE MOTS OUTILS, quarante-huit candidats cribles d'un coup et
   // tous EXCLUSIFS avec zero ligne melangee. Dix sont refuses au critere (a) :
