@@ -28,11 +28,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on two lines in five and is almost never wrong.
   // The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 3169, silent: 1861, wrong: 10 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 3171, silent: 1861, wrong: 8 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
-    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 911, silent: 761, wrong: 8 });
+    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 912, silent: 761, wrong: 7 });
   });
 
   // The expensive one. This is the answer that deletes a message in silence when
@@ -40,11 +40,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
   it('detectLanguage is wrong on a fifth of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 3814, silent: 517, wrong: 709 });
+    expect(plain(DETECT.total)).toEqual({ right: 3816, silent: 517, wrong: 707 });
   });
 
   it('detectLanguage is wrong on a quarter of short lines', () => {
-    expect(plain(DETECT.shortOnly)).toEqual({ right: 1088, silent: 291, wrong: 301 });
+    expect(plain(DETECT.shortOnly)).toEqual({ right: 1089, silent: 291, wrong: 300 });
   });
 });
 
@@ -324,12 +324,14 @@ describe('the Cyrillic fallback, fixed 2026-09-21', () => {
   // is the part a letter cannot see.
   //
   // `fa->ar` was seven and is four: Persian words took three, and the four left
-  // carry neither a Persian letter nor a Persian function word. `yue->zh` twice
-  // is the known price of the Cantonese rule, `ms->ar` and `ms->fa` are Jawi.
-  it('is down to ten wrong answers, and they are these', () => {
+  // carry neither a Persian letter nor a Persian function word. `ms->ar` was
+  // two and `ms->fa` one; Jawi words took two of those three and the last is
+  // `هيدو اين.`, whose only usable word is `اين`, which Arabic also writes.
+  // `yue->zh` twice is the known price of the Cantonese rule.
+  it('is down to eight wrong answers, and they are these', () => {
     const rows = [...CONFIDENT.confusions.entries()].map(([p, n]) => `${p}=${n}`).sort();
     expect(rows).toEqual([
-      'fa->ar=4', 'ms->ar=2', 'ms->fa=1', 'uk->bg=1', 'yue->zh-tw=1', 'yue->zh=1',
+      'fa->ar=4', 'ms->ar=1', 'uk->bg=1', 'yue->zh-tw=1', 'yue->zh=1',
     ]);
   });
 

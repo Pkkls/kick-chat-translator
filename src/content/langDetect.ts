@@ -1124,11 +1124,37 @@ const LETTRES_JAWI = /[ڠڤڬڽݢۏ]/u;
  * L'ourdou passe AVANT et n'est pas concerne : il ecrit `ہے`, `سے`, `وہ`, `تھا`
  * et son `ہر` prend le he U+06C1, pas le U+0647 du persan.
  */
+/**
+ * LES MOTS DU JAWI, meme raisonnement que les mots persans juste en dessous, et
+ * meme limite : trois des six lignes jawi du banc ne portent aucune des six
+ * lettres jawi. Deux ressortaient arabes et une persane, parce qu'elle ecrit
+ * `مريک` avec le keheh que le persan revendique.
+ *
+ * CE QUI DECIDE ICI N'EST PAS LA MESURE. Le banc ne contient que six lignes en
+ * jawi, donc tout mot qui y apparait est "ecrit par ms seul" par construction,
+ * et le crible ne peut rien dire. Seul le critere (a) tient :
+ *
+ *   ساي    saya, "je". L'arabe ecrit `أنا`, le persan `من`.
+ *   تيدق   tidak, "ne pas". L'arabe ecrit `لا`, le persan `نه`.
+ *   كامو   kamu, "tu". L'arabe ecrit `أنت`, le persan `تو`.
+ *
+ * DEHORS : `اين` pour `ini`, parce que l'arabe ecrit `أين` "ou" et que sans la
+ * hamza c'est la meme chaine. `ايت` pour `itu`, meme probleme avec `آية`.
+ * `دان` pour `dan`, qui est un mot persan. Les trois mesurent propre sur le
+ * banc et les trois sont refuses, ce qui laisse une ligne jawi non couverte,
+ * `هيدو اين.`, et c'est le prix a payer.
+ *
+ * Teste APRES les lettres jawi et AVANT le persan : c'est le meme ordre que
+ * pour les lettres, et c'est lui qui recupere la ligne `ms -> fa`.
+ */
+const MOTS_JAWI = /(^|[^\p{L}])(ساي|تيدق|كامو)([^\p{L}]|$)/u;
+
 const MOTS_PERSANS = /(^|[^\p{L}])(است|را|از|او|بود|هر)([^\p{L}]|$)/u;
 
 function arabeOuPersan(text: string): string | undefined {
   if (LETTRES_OURDOUES.test(text)) return undefined;
   if (LETTRES_JAWI.test(text)) return 'ms';
+  if (MOTS_JAWI.test(text)) return 'ms';
   if (LETTRES_PERSANES.test(text)) return 'fa';
   if (MOTS_PERSANS.test(text)) return 'fa';
   return 'ar';

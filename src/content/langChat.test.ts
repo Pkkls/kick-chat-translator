@@ -156,6 +156,9 @@ describe('le contraste avec Tatoeba, sur les memes langues', () => {
     const t = runMatrix(confidentLanguage, memesLangues());
     expect(muet(t.total)).toBe(55);
     expect(muet(CHAT_SURE.total)).toBe(46);
-    expect(t.total.wrong).toBe(3);
+    // 5, puis 3 avec le retrait de `mano`, puis 1 avec les mots jawi : la seule
+    // erreur qui reste sur les 26 langues du chat est `ms -> ar`, une ligne
+    // jawi sans lettre ni mot utilisable.
+    expect(t.total.wrong).toBe(1);
   });
 });
