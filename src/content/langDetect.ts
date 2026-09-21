@@ -544,6 +544,9 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   // que `igjen` : troisieme fois qu'une sequence non bornee retire une entree
   // plus etroite sans rien perdre, apres `ijn` et `jse`.
   [/gje/iu, 'no'],
+  // `jø` est la meme alternance que `gje`, un cran plus loin : le norvegien
+  // ecrit `gjøre`, `kjøre`, `sjø`, le danois `gøre`, `køre`, `sø`, sans le j.
+  [/jø/iu, 'no'],
   [/æl/iu, 'da'],
   // SIXIEME ET DERNIERE RECOLTE, les paires des langues encore faibles.
   //   agy  hu=13, aucune autre. `nagy`, `agyon`. Le hongrois est a 52 sur 120.
@@ -860,7 +863,20 @@ const SEQUENCES_DANOISES = /øj|øg/iu;
  */
 const A_ROND_SCANDINAVE = /å/iu;
 const MOTS_SUEDOIS = /(^|[^\p{L}])(jag|och|inte|är|från)([^\p{L}]|$)/iu;
-const MOTS_DANO_NORVEGIENS = /(^|[^\p{L}])(jeg|ikke|til|vil)([^\p{L}]|$)/iu;
+// `hun` est venu du crible interroge sur la paire : le suedois ecrit `hon`,
+// donc il nomme bien le COUPLE et pas le trio. `dette` est arrive avec lui et
+// a ete coupe par l'ablation, zero sur les huit bancs.
+//
+// `hvor` a ete propose avec eux et RETIRE : il est deja dans `MOTS_NORVEGIENS`,
+// donc il ouvrait la porte sur une ligne danoise puis decidait norvegien tout
+// seul. Deux lignes Tatoeba et deux de chat sont parties au norvegien,
+// `Hvor gjorde han det?` et `hvor lang tid endnu`.
+//
+// C'est le meme defaut que les portes de sequence ASCII refusees plus haut, le
+// declencheur qui vit dans le mot qui tranche, sous une autre forme : ici il
+// EST le mot qui tranche. **Un declencheur ne doit appartenir a aucun des deux
+// jeux places derriere lui**, et c'est verifiable a l'oeil en trente secondes.
+const MOTS_DANO_NORVEGIENS = /(^|[^\p{L}])(jeg|ikke|til|vil|hun)([^\p{L}]|$)/iu;
 
 /** Le tri interieur, appele une fois le suedois ecarte d'une facon ou d'une autre. */
 function norvegienOuDanois(text: string): string | undefined {

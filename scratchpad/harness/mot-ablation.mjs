@@ -42,9 +42,7 @@ const original = readFileSync(SOURCE, 'utf8');
  * d'alternance des deux cotes, `|mot|` ou `|mot)`.
  */
 const MOTS = {
-  MOTS_DANO_NORVEGIENS: 'og vil skal'.split(' '),
-  MOTS_NORVEGIENS: 'veldig skjer jente'.split(' '),
-  MOTS_DANOIS: 'rigtig pige sådan bøger sprog'.split(' '),
+  MOTS_DANO_NORVEGIENS: 'hun dette'.split(' '),
 };
 
 /**

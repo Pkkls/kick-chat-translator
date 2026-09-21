@@ -28,7 +28,7 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on two lines in five and is almost never wrong.
   // The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 3396, silent: 1637, wrong: 7 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 3400, silent: 1633, wrong: 7 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
@@ -40,7 +40,7 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
   it('detectLanguage is wrong on a fifth of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 3925, silent: 466, wrong: 649 });
+    expect(plain(DETECT.total)).toEqual({ right: 3929, silent: 466, wrong: 645 });
   });
 
   it('detectLanguage is wrong on a quarter of short lines', () => {
@@ -124,9 +124,10 @@ describe('the languages the detector cannot name at all', () => {
     // letter at all and opened on `jeg` and `ikke`, which only these two write.
     // 41 and 39 down to 39 and 34, then to 38 and 32 when the inner sort got
     // the Danish g against the Norwegian k, `øj` against `øy`, then to 36 when
-    // `gje` and `æl` started naming the two languages outright.
-    expect(DETECT.confusions.get('no->sv')).toBe(36);
-    expect(DETECT.confusions.get('da->sv')).toBe(32);
+    // `gje` and `æl` started naming the two languages outright, then to 34 and
+    // 31 on `jø` and `hun`. Eight rounds, 41 and 39 down to 34 and 31.
+    expect(DETECT.confusions.get('no->sv')).toBe(34);
+    expect(DETECT.confusions.get('da->sv')).toBe(31);
     expect(DETECT.confusions.get('ca->es')).toBe(29);
   });
 });
