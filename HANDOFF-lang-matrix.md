@@ -3,7 +3,7 @@
 État vivant de ce chantier, mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `a87e7e5`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
+Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `34aff1e`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
 
 ---
 
@@ -49,16 +49,16 @@ Ce qui a été découvert en cours de route et qui n'était pas dans le diagnost
 Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR, 120 lignes par langue.
 Trois issues, **jamais additionnées** : `right` la bonne langue, `silent` le détecteur a refusé de répondre ce qui est l'issue SÛRE, `wrong` une autre langue.
 
-| chemin | portée | départ `ec9e02d` | aujourd'hui `a87e7e5` |
+| chemin | portée | départ `ec9e02d` | aujourd'hui `34aff1e` |
 |---|---|---|---|
-| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3061 r / 1964 s / **15 w** |
-| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 889 / 779 / **12** |
-| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3756 / 544 / **740** |
-| `detectLanguage` | court | 837 / 364 / **479** | 1072 / 296 / **312** |
+| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3099 r / 1926 s / **15 w** |
+| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 905 / 763 / **12** |
+| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3777 / 530 / **733** |
+| `detectLanguage` | court | 837 / 364 / **479** | 1083 / 290 / **307** |
 
-Le chemin sûr **répond 2,4 fois plus souvent et se trompe 83 % moins**. C'est le seul mouvement qui compte vraiment : `wrong` sur ce chemin veut dire qu'on demande au moteur de traduire depuis une langue dans laquelle le texte n'est pas.
+Le chemin sûr **répond 2,5 fois plus souvent et se trompe 83 % moins**. C'est le seul mouvement qui compte vraiment : `wrong` sur ce chemin veut dire qu'on demande au moteur de traduire depuis une langue dans laquelle le texte n'est pas.
 
-Le chemin brut a perdu 477 erreurs. Sa part reste haute parce qu'il inclut franc par construction.
+Le chemin brut a perdu 484 erreurs. Sa part reste haute parce qu'il inclut franc par construction.
 
 **Les 15 erreurs du chemin sûr, en entier**, parce qu'elles tiennent en huit lignes et que c'est ce qui reste à fermer : `fa->ar` 7, `ms->ar` 2, puis `es->pt`, `lt->pt`, `ms->fa`, `uk->bg`, `yue->zh-tw`, `yue->zh`, une chacune.
 
@@ -81,18 +81,18 @@ Les trois dernières du chemin brut, `et fi sl`, sont sorties par le lexique de 
 
 ```
 120  ar bn el he hi ja ko ta th     (écritures sans ambiguïté)
-113  fa   112 yue   108 lv   105 zh-tw   103 vi    97 uk    90 zh
-89   ru    88 tr     77 cs    77 sv       74 bg    71 pl    65 ro
-64   nl    60 lt     56 et    52 hu       52 pt    48 fi    45 de
-44   fr    40 es     38 en    37 ca       33 it    28 sk    28 tl
-23   sl    18 no     17 ms    15 da       14 id
+119  vi   113 fa    112 yue   108 lv    105 zh-tw   97 uk    95 tr
+90   zh    89 ru     77 cs     77 sv     74 bg      74 pl    69 ro
+64   nl    61 lt     56 et     52 hu     52 pt      48 fi    45 de
+44   fr    40 es     38 en     37 ca     33 it      29 sk    29 sl
+28   tl    18 no     17 ms     15 da     14 id
 ```
 
 **Plus aucune langue sous 13 sur 120**, contre vingt-six à zéro au départ. Ce tableau est celui de Tatoeba ; sur du chat le classement est différent, voir 2bis.
 
 Le bas du tableau n'est plus fait de langues sans règle mais de langues dont les règles sont rares : `ca` a le point volat et deux terminaisons, `en` a dix-sept mots, `da` et `no` ont la porte nordique. Ce qui les limite est le **plafond de 20 caractères** du lexique, pas l'absence de marqueur. Voir 2quater.
 
-**Ce que la table de portes a déplacé dans ce tableau**, et c'est net : `vi` 81 à 103, `cs` 75 à 77, `nl` 53 à 64, `lt` 53 à 60, `et` 36 à 56, `hu` 41 à 52, `pt` 30 à 52, `fi` 27 à 48, `de` 28 à 45, `fr` 30 à 44, `it` 25 à 33, `ca` 20 à 37, `sk` 16 à 28. Les langues qui n'écrivent pas de lettre accentuée ne bougent pas d'une ligne, ce qui est la forme attendue du mécanisme.
+**Ce que les trois tours de règles de lettres ont déplacé dans ce tableau**, et c'est net : `vi` 81 à **119**, `tr` 86 à 95, `cs` 75 à 77, `pl` 70 à 74, `nl` 53 à 64, `lt` 53 à 61, `et` 36 à 56, `hu` 41 à 52, `pt` 30 à 52, `fi` 27 à 48, `de` 28 à 45, `fr` 30 à 44, `it` 25 à 33, `ca` 20 à 37, `sk` 16 à 29, `sl` 18 à 29. Les langues qui n'écrivent pas de lettre accentuée ne bougent pas d'une ligne, ce qui est la forme attendue du mécanisme, et c'est ce qui laisse `da no id ms` en bas.
 
 ### Les paires qui volent le plus, chemin brut
 
@@ -104,6 +104,7 @@ Le bas du tableau n'est plus fait de langues sans règle mais de langues dont le
 | ms → id | 33 | |
 | da → nl | 30 | |
 | ca → es | 29 | 42 avant les portes, `l·l` n'apparaît que 2 fois sur 120 |
+| no → nl | 14 | |
 | ca → fr | 19 | 29 avant les portes |
 | sk → cs | 18 | 30 avant les lettres exclusives, 27 avant les portes |
 | da → de | 16 | |
@@ -147,10 +148,10 @@ Quatre choses qu'il dit et que Tatoeba ne pouvait pas dire :
 
 | | corpus 1, qui a construit le lexique | corpus 2, **AVEUGLE** |
 |---|---:|---:|
-| chemin sûr, justes | 196 / 390 | 90 / 260 |
-| rappel sûr | 50 % | 35 % |
+| chemin sûr, justes | 203 / 390 | 100 / 260 |
+| rappel sûr | 52 % | 38 % |
 | **erreurs** | **0** | **0** |
-| chemin brut, rappel | 64 % | 58 % |
+| chemin brut, rappel | 65 % | 60 % |
 
 **Les quinze points d'écart sont pour MOITIÉ un artefact de longueur, et il a fallu une seconde mesure pour le voir.** Le corpus 1 a été écrit en visant le chat court, 83 % de lignes sous vingt caractères et médiane 16 ; le corpus 2 a dérivé vers des phrases plus longues, 37 % et médiane 22. Or le lexique s'arrête à vingt caractères. Comparer les deux totaux comparait deux mélanges de longueurs autant que deux corpus.
 
@@ -158,14 +159,16 @@ Quatre choses qu'il dit et que Tatoeba ne pouvait pas dire :
 
 | bande | corpus 1 | corpus 2 aveugle | écart |
 |---|---:|---:|---:|
-| ≤ 20 car. | 52 % | 45 % | **7 points** |
-| > 20 car. | 40 % | 28 % | **12 points** |
+| ≤ 20 car. | 54 % | 47 % | **7 points** |
+| > 20 car. | 41 % | 33 % | **8 points** |
 
 Les sept points de la bande courte sont la mémorisation du lexique, et ils sont réels. Le reste du chiffre brut était de la longueur.
 
 **La bande longue est le résultat le plus instructif du chantier.** Elle n'est servie que par les lettres, les séquences, les portes et les terminaisons, jamais par le lexique. Son écart était de 3 points contre 8 à la première mesure ; il est monté à 15 et **ce n'était pas de la mémorisation**, mais deux sources dont aucune n'est ajustable sur un corpus : les terminaisons extraites de Tatoeba servent la prose et pas le chat, 76 lignes contre une, et les portes `ä` et `š` servent des langues dont le corpus 1 contient plus de lignes longues que le corpus 2.
 
-**La table de portes l'a fait REDESCENDRE de 15 à 12 points**, en ajoutant cinq lignes justes dans cette bande sur le corpus aveugle. C'est le sens dans lequel un mécanisme qui ne mémorise pas doit faire bouger cet écart, et c'est la meilleure preuve disponible que ces portes ne sont pas du réglage déguisé.
+**Les trois tours de règles de lettres l'ont fait REDESCENDRE de 15 à 8 points**, au niveau de la bande courte, en ajoutant des lignes justes dans une bande que le lexique ne touche pas. C'est le sens dans lequel un mécanisme qui ne mémorise pas doit faire bouger cet écart, et c'est la meilleure preuve disponible que ces règles ne sont pas du réglage déguisé.
+
+**Ne pas lire l'égalité des deux écarts comme une équivalence.** Les sept points de la bande courte mesurent une liste de mots choisie en regardant un corpus ; les huit de la bande longue mesurent l'écart entre deux corpus qui ne se ressemblent pas. Même nombre, causes différentes.
 
 **Mais « généralise » a une frontière, et elle a été mesurée.** Un groupe de terminaisons extrait de Tatoeba a rapporté **76 lignes sur Tatoeba et UNE seule sur le corpus aveugle de chat**. Une règle tirée de la prose trouve des formes fléchies ; le chat écrit des formes nues. Passer d'un corpus à l'autre n'est pas passer d'un registre à l'autre, et seul le premier a été fait.
 
@@ -549,7 +552,37 @@ mélangé        10 nommées / 60  -> 10 nommées / 60
 
 **Et une porte jetée pour zéro** : une porte `no`/`da` générique derrière `ø æ`, ajoutée en dernier recours sous les jeux génériques. Elle ne rapporte **rien** sur aucun des cinq bancs, parce que la fonction nordique dédiée en amont répond déjà à tout ce qu'elle pourrait répondre, et elle cassait la règle d'unanimité en nommant `no` sur une ligne qui porte les deux jeux. Sortie.
 
-**Portes non encore ouvertes** : `ć` et `ź` dans les slaves, `ğ ı ş` turcs derrière une porte plutôt qu'en lettres exclusives, `ø` seul hors du nordique. Et surtout : **relire la table des lettres accentuées en entier**, c'est ce qui a produit ce lot.
+**Portes non encore ouvertes** : voir 5.15, la liste écrite ici à l'œil était fausse sur trois entrées sur quatre.
+
+### 5.15 LE CRIBLE DE PORTES (`355d15a`, `34aff1e`)
+
+**La leçon d'abord, parce qu'elle se répète dans tout ce chantier.** La liste de candidats écrite juste au-dessus, à l'œil, proposait `ç` et `ó` comme portes à ouvrir alors qu'elles l'étaient déjà, et `ć` comme candidat alors que c'est une lettre exclusive polonaise. Trois sur quatre. **Une relecture de table faite à l'œil se trompe, y compris quand on vient d'écrire la table.**
+
+`scratchpad/harness/porte-candidats.mjs`. Il compte, sur les quatre corpus, quel caractère non-ASCII chaque langue latine écrit et sur combien de lignes, puis imprime ceux qu'écrivent quatre langues ou moins avec leur statut : exclusive, porte, rejetée, ou **libre**. Une langue sous trois lignes sur un caractère est du bruit, un nom propre, et elle est imprimée à part.
+
+**Ce qu'il a rendu, et personne ne l'avait vu :**
+
+| caractère | lignes | langues | suite |
+|---|---:|---|---|
+| `č` | 160 | sl=57 sk=48 cs=34 lt=21 | **porte**, la plus large encore libre |
+| `ă` | 110 | ro=103 vi=7 | porte |
+| `ą` | 61 | pl=36 lt=25 | porte |
+| `ę` | 57 | pl=50 lt=7 | porte |
+| `ū` | 38 | lv=25 lt=13 | porte |
+| 33 caractères | 437 | vi seul | **lettres exclusives** |
+| `ş` | 53 | tr seul | lettre exclusive |
+| `ł` | 57 | pl seul | **déjà rejeté**, voir 5.3 |
+| `õ` | 47 | et seul, pt sous le seuil | déjà une porte dédiée |
+
+Le `č` est plus large que le `š` à côté duquel il manquait, et les quatre langues qui l'écrivent avaient déjà leur jeu de mots : il a coûté **une ligne**.
+
+Le vietnamien empile un ton sur une voyelle déjà accentuée et Unicode précompose le résultat. La table en avait trois, il y en a trente-six. **Elles sont illisibles en liste, donc aucun lecteur n'allait jamais remarquer leur absence** : c'est précisément le trou qu'un crible bouche et qu'une relecture ne bouche pas. `vi` passe de 103 à **119 sur 120**. Dehors : `ù`, que l'italien écrit dans `più`, et c'est le seul des trente-quatre que le crible signale partagé.
+
+Le `ş` turc est U+015F ; le roumain écrit le sien avec la virgule souscrite U+0219, déjà dans la table, et le crible ne trouve **pas une** ligne roumaine portant la forme turque.
+
+**Le crible porte sa propre liste de REJETÉS** (`ł õ ù å ø æ`), sans laquelle il repropose les mêmes caractères à chaque passage : il voit les corpus, pas les décisions.
+
+**Ce qui distingue ce tour des deux tours de portes** : c'est la bande **COURTE** qui bouge le plus, +14 sur Tatoeba et +4, +2, +2 sur les trois corpus de chat. Une porte a besoin d'une phrase assez longue pour porter à la fois une lettre et un mot ; une lettre exclusive a besoin de six caractères. La bande courte est le régime réel du produit.
 
 ---
 
@@ -580,9 +613,9 @@ mélangé        10 nommées / 60  -> 10 nommées / 60
 Les chiffres sont en 2bis-bis, 2ter et 5.14.
 
 1. **Les PORTES restent le mécanisme le plus rentable, et c'est maintenant mesuré cinq fois.** Le dernier tour, la table de vingt portes en 5.14, a rapporté +83 lignes sur Tatoeba et +6 sur le corpus aveugle sans en voler une seule. **Ce qui reste à faire dessus, par ordre :**
-   - **Relire la table des lettres accentuées en entier**, une fois de plus. Les vingt portes existantes sont sorties de cet exercice, pas d'un effort d'invention. Candidats jamais examinés : `ć` et `ź` dans les slaves, `ğ ı ş` turcs, `ő ű` hongrois, `ą ę` polonais et lituanien.
-   - **Étoffer les jeux de mots des langues faibles derrière les portes existantes.** Le slovaque reste muet derrière `ä`, faute de jeu. Chaque mot ajouté à un jeu sert **toutes** les portes d'un coup, c'est le meilleur rapport du fichier.
-   - **Les portes de SÉQUENCE, jamais essayées.** Une porte n'a pas besoin d'être une lettre : `ij` néerlandais, `sz cz` polonais et hongrois, `gh` italien et roumain, `ll` espagnol et catalan nomment aussi des petits ensembles.
+   - **Le crible à lettre est ÉPUISÉ.** `porte-candidats.mjs` ne rend plus une seule porte libre ni une seule lettre exclusive manquante. Le relancer après tout changement de corpus, pas avant.
+   - **Étoffer les jeux de mots des langues faibles derrière les portes existantes.** Le slovaque reste muet derrière `ä`, faute de jeu. Chaque mot ajouté à un jeu sert **toutes** les vingt-six portes d'un coup, c'est le meilleur rapport du fichier et il n'a jamais été exploité systématiquement.
+   - **Les portes de SÉQUENCE, jamais essayées, et c'est maintenant le seul angle neuf.** Une porte n'a pas besoin d'être une lettre : `ij` néerlandais, `sz cz` polonais et hongrois, `gh` italien et roumain, `ll` espagnol et catalan nomment aussi des petits ensembles. Le crible ne les voit pas, il ne compte que des caractères isolés : **l'étendre aux bigrammes est le travail à faire avant d'écrire quoi que ce soit.**
 
 2. **Chercher ce qui MANQUE dans les tables.** `ñ`, `ß`, `œ`, `ā ē ī` étaient absents pendant trois passes de raffinage, et le grec manquait au compteur d'écritures après trois trous identiques déjà bouchés. Relire une table en entier vaut mieux qu'ajouter à sa fin. Ce point a produit le lot des portes et il n'est pas épuisé.
 
@@ -652,6 +685,7 @@ tl tgl   pt-br aucun (partage por)   zh-tw aucun (partage cmn)
 | `src/content/langDetect.dix.test.ts` | le banc de chat des 5 langues non latines | oui |
 | `scratchpad/harness/lang-screen.mjs` | **le crible**, trois corpus d'un coup, garde vérifié | oui |
 | `scratchpad/harness/porte-diff.mjs` | **le diff de protocole 4.2**, cinq bancs, carte de confusions clé par clé | oui |
+| `scratchpad/harness/porte-candidats.mjs` | **le crible de portes**, quelle lettre reste libre, avec sa liste de rejetés | oui |
 | `scratchpad/harness/lang-matrix.mjs` | écrit le rapport lisible | oui |
 | `scratchpad/harness/lang-matrix.md` | le rapport | non, régénérable |
 
@@ -727,6 +761,9 @@ Commits, du plus ancien au plus récent :
 | `a7ac4c2` | Open the two widest gates: the a-umlaut and the s-caron |
 | `c1b11a8` | Turn the shared-letter gates into a table, which makes four more of them free |
 | `a87e7e5` | Open fourteen more shared-letter gates, and throw out the two words that made them lie |
+| `1cb8a11` | Bring the handoff up to the gate table, and correct the four figures it was stating from before |
+| `355d15a` | Screen for the gates nobody had opened, and find the widest one still free |
+| `34aff1e` | Add the thirty-three letters only Vietnamese writes, and the s-cedilla only Turkish writes |
 
 ---
 
@@ -748,7 +785,7 @@ Commits, du plus ancien au plus récent :
 
 - Commits : sujet à l'impératif, corps expliquant la cause, le correctif, et **comment il a été constaté**. Terminer par `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`.
 - Gate : `npm run release:check`, jamais seulement `typecheck` et `test`. Il lance aussi `lint`.
-- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **95340 aujourd'hui** (`a87e7e5`), soit +3856 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt portes et environ 380 entrées de lexique. La table de portes seule coûte +322 octets pour +83 lignes justes. Les deux corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
+- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **95497 aujourd'hui** (`34aff1e`), soit +4013 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-six portes et environ 380 entrées de lexique. Le détail des trois derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23. Les deux corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
 - Pas de nom de streamer ou de chaîne en dur, nulle part.
 - Pas d'emoji dans le code.
 - Les données de test vivent **inline dans le fichier de test**, pas dans une fixture séparée.

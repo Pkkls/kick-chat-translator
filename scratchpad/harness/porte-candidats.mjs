@@ -3,11 +3,15 @@
  * de langues, et n'est ni deja une lettre exclusive ni deja une porte.
  *
  * File de travail point 2, "chercher ce qui MANQUE dans les tables". Ce script
- * existe parce que les vingt portes en place sont sorties d'une relecture de
- * table et pas d'un effort d'invention, et qu'une relecture faite a la main se
- * trompe : `c` cedille et `o` accent aigu avaient ete proposes comme candidats
- * alors qu'ils etaient deja des portes, et `c` accent aigu comme candidat alors
- * qu'il est deja une lettre exclusive polonaise.
+ * existe parce que les portes en place sont sorties d'une relecture de table et
+ * pas d'un effort d'invention, et qu'une relecture faite a la main se trompe :
+ * `c` cedille et `o` accent aigu avaient ete proposes comme candidats alors
+ * qu'ils etaient deja des portes, et `c` accent aigu comme candidat alors qu'il
+ * est deja une lettre exclusive polonaise. Trois erreurs sur quatre propositions.
+ *
+ * ETAT AU 2026-09-21 : les trois listes sortent VIDES. Le crible a lettre est
+ * epuise. Le relancer apres un changement de corpus, pas avant, et l'etendre
+ * aux bigrammes pour qu'il ait de nouveau quelque chose a dire.
  *
  *   node --import tsx scratchpad/harness/porte-candidats.mjs
  */
@@ -18,7 +22,11 @@ import { LANG_CHAT3 } from '../../src/content/langChatCorpus3.ts';
 
 // Deja pris. Recopie a la main depuis langDetect.ts, donc a reverifier si le
 // fichier bouge ; le script imprime les deux listes pour que ca se voie.
-const EXCLUSIVES = 'řěůľĺŕżźćśńőűėįųģķļņāēīığşșțơưđñßœû';
+const EXCLUSIVES =
+  'řěůľĺŕżźćśńőűėįųģķļņāēīığşșțñßœû' +
+  // Les trente-cinq du vietnamien : les trois d'origine, plus les trente-deux
+  // que ce crible a rendues au premier passage.
+  'ơưđạấốếờủảợậệớộắữởểịầừặũềựẽọứụỏửổẹằ';
 const PORTES = 'äšüóúçéíöďťňýèàôêâãîìòčăąęū';
 
 // MESURES ET REJETEES. Sans cette liste le crible les repropose a chaque
@@ -51,6 +59,16 @@ for (const corpus of corpora) {
       for (const c of new Set(ligne.toLowerCase())) {
         if (c.charCodeAt(0) < 128) continue;
         if (!/\p{L}/u.test(c)) continue;
+        // BORNE A L'ECRITURE LATINE, et sans elle le crible ment. Le corpus
+        // malais contient six lignes en jawi, donc en ecriture arabe. Comme
+        // `ar` et `fa` ne sont pas dans LATINES, leurs lettres ne sont comptees
+        // que pour `ms` et le crible les rend comme "lettres exclusives
+        // malaises manquantes" : alef, waw, ya, ra. Les ajouter a la table
+        // nommerait `ms` sur toute ligne arabe du monde.
+        //
+        // Le jawi a bien ses lettres a lui, ڠ ڤ ڬ ڽ ݢ ۏ, et elles sont deja
+        // lues par LETTRES_JAWI. Ce crible-ci ne parle que du latin.
+        if (!/\p{Script=Latin}/u.test(c)) continue;
         if (!vu.has(c)) vu.set(c, new Map());
         const m = vu.get(c);
         m.set(lang, (m.get(lang) ?? 0) + 1);
