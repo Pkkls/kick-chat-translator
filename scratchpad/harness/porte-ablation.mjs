@@ -26,11 +26,21 @@ const DIFF = 'scratchpad/harness/porte-diff.mjs';
 
 const original = readFileSync(SOURCE, 'utf8');
 
-/** Les lignes de la table qui sont une entree, une par porte. */
+/**
+ * Les lignes qui sont une entree de table, dans LES DEUX tables : une porte
+ * partagee, `[/x/iu, ['aa', 'bb']]`, et une lettre exclusive, `[/x/iu, 'aa']`.
+ *
+ * Il n'y a aucune raison de ne cribler que la premiere. La table des lettres
+ * exclusives est la plus ancienne du fichier, donc c'est elle qui a eu le plus
+ * d'occasions de se faire tuer par un ajout posterieur.
+ *
+ * Une entree ecrite sur plusieurs lignes est invisible a cette regex. Le
+ * compteur imprime en tete est la pour qu'on s'en apercoive.
+ */
 const entrees = original
   .split('\n')
   .map((ligne, i) => ({ ligne, i }))
-  .filter(({ ligne }) => /^\s*\[\/.*\/[a-z]*u?,\s*\[/.test(ligne));
+  .filter(({ ligne }) => /^\s*\[\/.*\/[a-z]*,\s*(\[|')/.test(ligne));
 
 function mesure() {
   const out = execFileSync('node', ['--import', 'tsx', DIFF], { encoding: 'utf8' });
@@ -57,6 +67,7 @@ try {
     `AVEC TOUT                                                  ` +
       `${base.tatoeba.r} ${base.chat1.r} ${base.chat2.r} ${base.chat3.r}  melange ${base.melange}\n`,
   );
+  console.log(`${entrees.length} entrees trouvees, une ligne chacune.\n`);
   console.log('entree retiree                                        ce qu elle rapporte');
   for (const { ligne, i } of entrees) {
     const lignes = original.split('\n');

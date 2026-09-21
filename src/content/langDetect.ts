@@ -391,6 +391,10 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/[ľĺŕ]/iu, 'sk'],
   [/[żźćśń]/iu, 'pl'],
   [/[őű]/iu, 'hu'],
+  // La plus protectrice du fichier, et c'est l'ablation qui l'a montre : la
+  // retirer coute 42 lignes justes sur Tatoeba ET ajoute une erreur, `lt -> pt`
+  // passe de 1 a 2 et `Ar ji mano draugė?` part au portugais. Une regle qui
+  // empeche une faute en plus d'en gagner quarante-deux.
   [/[ėįų]/iu, 'lt'],
   [/[ģķļņāēī]/iu, 'lv'],
   // Le s cedille U+015F est turc et rien d'autre dans les 43 : le roumain ecrit
@@ -494,6 +498,17 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/(iamo|simo|glio|tto|nno)([^\p{L}]|$)/iu, 'it'],
   [/(knya|nmu|anku)([^\p{L}]|$)/iu, 'id'],
   [/ným([^\p{L}]|$)/iu, 'sk'],
+  // SEULE ENTREE DU FICHIER QUI RAPPORTE NEGATIF QUELQUE PART, et l'ablation
+  // l'a trouvee : +8 lignes sur Tatoeba et +1 sur le corpus de reglage, mais
+  // **-1 sur le corpus AVEUGLE**. Sans elle, une ligne de plus y est juste.
+  //
+  // Ce n'est pas une erreur qu'elle cause, la colonne des fausses ne bouge pas :
+  // elle fait TAIRE cette ligne. Elle repond `nl` sur une ligne qui n'est pas
+  // neerlandaise, un autre signal dit autre chose, le vote n'est plus unanime et
+  // tout le monde se tait. C'est le mecanisme qui fonctionne comme prevu, le
+  // silence plutot que la mauvaise reponse, et ca coute du rappel.
+  //
+  // Gardee : +9 contre -1, et la ligne perdue est un silence, pas une faute.
   [/(tste|aat|aal)([^\p{L}]|$)/iu, 'nl'],
   [/lich([^\p{L}]|$)/iu, 'de'],
   [/lige([^\p{L}]|$)/iu, 'da'],
