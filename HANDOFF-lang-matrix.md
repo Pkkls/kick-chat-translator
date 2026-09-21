@@ -1202,12 +1202,16 @@ Le commentaire à côté le dit déjà en une phrase. Il a quand même fallu une
 
 La décision « ne pas basculer » a été prise sur **74 % de silence** sur du chat latin, avec la note « à rouvrir quand le silence sera descendu ». Il est descendu.
 
-| banc | silence au moment de la décision | aujourd'hui `b180b95` |
-|---|---:|---:|
-| chat 1, flatté | 74 % | **47 %** |
-| chat 2, AVEUGLE | 68 % | **60 %** |
+| banc | silence à la décision | après les portes `b180b95` | aujourd'hui `1a26688` |
+|---|---:|---:|---:|
+| chat 1, flatté | 74 % | 47 % | **45 %** |
+| chat 2, AVEUGLE | 68 % | 60 % | **52 %** |
 
-Le bon chiffre à lire est celui de l'aveugle, 60 %, et il reste haut : basculer enverrait encore trois lignes sur cinq au cloud. **La décision tient, mais plus pour la raison écrite**, et la marge s'est réduite de huit points en une session. À rouvrir pour de bon quand l'aveugle passera sous la moitié.
+Le bon chiffre à lire est celui de l'aveugle. Il était à 68 %, il est à **52 %**, et le seuil écrit pour rouvrir était « sous la moitié ». **On y est à deux points.**
+
+Ce que ça veut dire concrètement : basculer le moteur on-device sur la réponse sûre enverrait aujourd'hui **une ligne de chat sur deux** au cloud au lieu de trois sur quatre. Le coût en latence et en quota a été divisé par un tiers depuis que la décision a été prise, et il continue de baisser à chaque tour.
+
+**La décision tient encore, de justesse, et pour une raison qu'il faut dire honnêtement : personne n'a jamais mesuré ce que coûte une devinette du côté moteur.** On sait que le chemin brut se trompe sur 16 % du chat, on ne sait pas ce que produit une traduction faite depuis la mauvaise langue source par le moteur on-device, ni si l'utilisateur le remarque. Tant que ce chiffre-là n'existe pas, l'arbitrage se fait entre un coût mesuré, la latence, et un coût supposé, la mauvaise traduction. **Le prochain pas utile n'est pas un tour de détection, c'est cette mesure-là.**
 
 ### Le drapeau n'est ni cosmétique ni indépendant
 
