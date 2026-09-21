@@ -64,7 +64,7 @@ const BANC: Ligne[] = [
   ['dia main jelek banget', 'id', undefined, undefined],
   ['ada apa sih ini', 'id', 'id', 'id'],
   ['gila sih ini keren', 'id', 'id', 'id'],
-  ['joaca foarte prost azi', 'ro', 'fr', undefined],
+  ['joaca foarte prost azi', 'ro', 'ro', 'ro'],
   ['ce se intampla aici', 'ro', 'ro', undefined],
   ['han spelar riktigt daligt', 'sv', 'sv', undefined],
   ['vad hander har nu', 'sv', 'sv', undefined],
@@ -123,7 +123,11 @@ describe('les totaux du banc latin', () => {
   // rien sur cette ligne, le francais a `est`. La ligne est du francais et le
   // test attendait le SILENCE, donc il assertait le defaut et pas une propriete,
   // cas 4.7 du protocole. Quatrieme colonne encore, totaux inchanges.
-  it('sont 37 justes, 5 silences et 9 fausses avec assurance sur 51', () => {
+  // Huitieme passe, le lot de mots outils exclusifs : `joaca foarte prost azi`
+  // etait lue FRANCAISE par franc et elle est roumaine. `foarte` la nomme sur
+  // les deux chemins. C'est la DEUXIEME fausse que ce banc perd depuis qu'il
+  // existe, et la premiere l'avait ete par le meme mecanisme, un mot outil.
+  it('sont 38 justes, 5 silences et 8 fausses avec assurance sur 51', () => {
     let justes = 0;
     let silences = 0;
     let faux = 0;
@@ -133,9 +137,9 @@ describe('les totaux du banc latin', () => {
       else faux++;
     }
     expect({ justes, silences, faux, total: BANC.length }).toEqual({
-      justes: 37,
+      justes: 38,
       silences: 5,
-      faux: 9,
+      faux: 8,
       total: 51,
     });
   });

@@ -70,7 +70,7 @@ describe('le chemin sur, sur du chat', () => {
   // derniers points pendant que le lexique avait cesse de rapporter quoi que ce
   // soit. C'etait une prediction, pas une mesure, et elle s'est trompee.
   it('se tait sur trois lignes de chat sur quatre', () => {
-    expect(plain(CHAT_SURE.total)).toEqual({ right: 214, silent: 176, wrong: 0 });
+    expect(plain(CHAT_SURE.total)).toEqual({ right: 215, silent: 175, wrong: 0 });
     expect(muet(CHAT_SURE.total)).toBe(45);
   });
 
@@ -85,8 +85,8 @@ describe('le chemin sur, sur du chat', () => {
   // vingt-six portes a lettre sont muettes. Une ligne de plus ici, et c'est la
   // direction a retenir pour les langues que le clavier deshabille.
   it('perd un tiers de son rappel quand les diacritiques tombent', () => {
-    expect(plain(NU_SURE.total)).toEqual({ right: 141, silent: 249, wrong: 0 });
-    expect(muet(NU_SURE.total)).toBe(64);
+    expect(plain(NU_SURE.total)).toEqual({ right: 145, silent: 245, wrong: 0 });
+    expect(muet(NU_SURE.total)).toBe(63);
   });
 });
 
@@ -118,7 +118,7 @@ describe('le chemin brut, sur du chat', () => {
   });
 
   it('empire encore sans diacritiques', () => {
-    expect(plain(NU_BRUT.total)).toEqual({ right: 203, silent: 94, wrong: 93 });
+    expect(plain(NU_BRUT.total)).toEqual({ right: 205, silent: 93, wrong: 92 });
   });
 
   // Sept langues ne marquent pas un seul point sur le chemin BRUT, franc compris,
@@ -154,7 +154,7 @@ describe('le contraste avec Tatoeba, sur les memes langues', () => {
   // le chat en ecrit moins que la prose.
   it('montre que le registre coute a franc et pas au chemin sur', () => {
     const t = runMatrix(confidentLanguage, memesLangues());
-    expect(muet(t.total)).toBe(50);
+    expect(muet(t.total)).toBe(48);
     expect(muet(CHAT_SURE.total)).toBe(45);
     // 5, puis 3 avec le retrait de `mano`, puis 1 avec les mots jawi : la seule
     // erreur qui reste sur les 26 langues du chat est `ms -> ar`, une ligne

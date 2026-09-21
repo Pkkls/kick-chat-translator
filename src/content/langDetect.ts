@@ -492,7 +492,6 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   //   `jse` remplace la porte a trois mots `že|jeho|dnes` cs/sk, qui ne valait
   //         plus qu'une ligne et que ce trigramme prend en trois caracteres.
   // Meme resultat sur les huit bancs avec deux entrees de moins.
-  [/ijn/iu, 'nl'],
   [/jse/iu, 'cs'],
   [/för/iu, 'sv'],
   [/ał/iu, 'pl'],
@@ -575,10 +574,51 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   // table doit maigrir" : elle valait zero sur trois corpus et une ligne sur le
   // quatrieme. Elle vaut zero partout maintenant. Cinquieme fois qu'un ajout
   // tue une entree ailleurs dans le fichier.
-  [/(^|[^\p{L}])(ik|hij|mijn)([^\p{L}]|$)/iu, 'nl'],
-  [/(^|[^\p{L}])(ist|zu)([^\p{L}]|$)/iu, 'de'],
-  [/(^|[^\p{L}])(jag|att)([^\p{L}]|$)/iu, 'sv'],
-  [/(^|[^\p{L}])(est)([^\p{L}]|$)/iu, 'fr'],
+  [/(^|[^\p{L}])(ik|hij|mijn|het|een|heb|zijn)([^\p{L}]|$)/iu, 'nl'],
+  [/(^|[^\p{L}])(ist|zu|habe|mir|und)([^\p{L}]|$)/iu, 'de'],
+  [/(^|[^\p{L}])(jag|att|ett|och|hon)([^\p{L}]|$)/iu, 'sv'],
+  [/(^|[^\p{L}])(est|pour|ici|nous|cette|une|deux)([^\p{L}]|$)/iu, 'fr'],
+  // DEUXIEME LOT DE MOTS OUTILS, quarante-huit candidats cribles d'un coup et
+  // tous EXCLUSIFS avec zero ligne melangee. Dix sont refuses au critere (a) :
+  //   dat hat bin till  de l'anglais courant, `dat boi`, `a hat`, `a bin`.
+  //   asta   de l'espagnol et de l'italien, la hampe.
+  //   oma    du finnois autant que de l'estonien.
+  //   ele ela  du roumain, "elles".
+  //   mane   de l'anglais et de l'italien.  dito  de l'italien, le doigt.
+  // Tous les dix mesurent propre sur les 5490 lignes, et tous les dix sont
+  // refuses quand meme : c'est le critere (a) qui decide, la mesure qui veto.
+  //
+  // ET TROIS DE PLUS, refuses par le BANC DU CLAVIER et par lui seul. C'est une
+  // forme de collision que rien d'autre ne voit :
+  //   aqui  n'est portugais que parce que l'espagnol et le catalan ecrivent
+  //         `aquí`. Diacritiques tombees, c'est la MEME CHAINE, et il volait
+  //         `que esta pasando aqui` et `primer cop aqui`.
+  //   lai   n'est letton que parce que le vietnamien ecrit `lại`. Il volait
+  //         `lai nhu cu`.
+  //   aici  roumain, meme famille, retire par prudence avec les deux autres.
+  //
+  // REGLE A RETENIR : un mot qui n'est exclusif que GRACE A SON ACCENT n'est
+  // pas exclusif du tout, parce que la moitie du chat s'ecrit sans accents. Le
+  // banc `chat1-SANS-DIACRITIQUES` est le seul endroit ou ca se voit, et il
+  // n'existe que depuis `013a2ca`.
+  // SIX ENTREES SONT MORTES SOUS CE LOT, et c'est le plus gros nettoyage que
+  // l'ablation ait declenche :
+  //   ijn nl        tuee par `zijn`, qui la contient.
+  //   nav tev lv    et  minha pt    zero des leur arrivee, gardees une minute.
+  //   tas tik lv/lt tuee par `yra|jis`, qui nomment le lituanien avant la porte.
+  //   ce au ro/fr   et  î ro/fr     tuees par les mots roumains et francais.
+  // Les deux dernieres sont des PORTES : un lot de mots outils exclusifs rend
+  // inutile la porte qui servait a trier les deux memes langues. C'est le sens
+  // de la marche, une porte est un pis-aller quand aucune des deux langues n'a
+  // de marqueur propre.
+  //
+  // Les retirer toutes les six coute UNE ligne sur Tatoeba et une au clavier,
+  // pas zero : elles se couvrent entre elles quelque part. Six entrees contre
+  // une ligne, le retrait tient.
+  [/(^|[^\p{L}])(sunt|fost|foarte|poate|pentru)([^\p{L}]|$)/iu, 'ro'],
+  [/(^|[^\p{L}])(seda|siin|keegi|mida)([^\p{L}]|$)/iu, 'et'],
+  [/(^|[^\p{L}])(yra|jis)([^\p{L}]|$)/iu, 'lt'],
+  [/(^|[^\p{L}])(nang|ito|wala|alam|kung)([^\p{L}]|$)/iu, 'tl'],
   // LE TAGALOG, la derniere langue de la matrice sans un seul marqueur.
   //
   // Il s'ecrit en latin nu, sans un diacritique, donc aucune passe de lettres ne
@@ -949,8 +989,6 @@ const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [
   [/(^|[^\p{L}])(il)([^\p{L}]|$)/iu, ['fr', 'it']],
   [/(^|[^\p{L}])(para|por|está|vez)([^\p{L}]|$)/iu, ['es', 'pt']],
   [/(^|[^\p{L}])(co|jak)([^\p{L}]|$)/iu, ['cs', 'pl']],
-  [/(^|[^\p{L}])(tas|tik)([^\p{L}]|$)/iu, ['lv', 'lt']],
-  [/(^|[^\p{L}])(ce|au)([^\p{L}]|$)/iu, ['ro', 'fr']],
   // Descente du plancher du crible de huit lignes a quatre, deuxieme recolte.
   //
   // `že jeho dnes` vise `sk -> cs`, 18 lignes, et c'est la seule paire slave
@@ -1013,7 +1051,6 @@ const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [
   [/ý/iu, ['sk', 'cs', 'vi']],
   [/è/iu, ['it', 'ca', 'fr']],
   [/à/iu, ['fr', 'vi', 'ca', 'it']],
-  [/î/iu, ['ro', 'fr']],
   [/ì/iu, ['vi', 'it']],
 ];
 
