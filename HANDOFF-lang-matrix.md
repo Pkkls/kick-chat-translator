@@ -839,15 +839,48 @@ Commits, du plus ancien au plus récent :
 
 ## 10. Phase 1 en détail, ce qui reste
 
-`pipeline.ts` lit la langue une fois et s'en sert à trois endroits.
+`pipeline.ts` lit la langue une fois et s'en sert à **six** endroits, pas trois. Les numéros de ligne ci-dessous ont été revérifiés au commit `b180b95` ; ils bougent à chaque passe, la colonne sert à retrouver le site, pas à l'asserter.
 
 | Consommateur | Ligne | État | Pourquoi |
 |---|---|---|---|
-| `isSameLanguageAsTarget`, le verrou qui efface | `:183` | **basculé sur `confidentLanguage`** | 1217 lignes effacées à tort deviennent 18 aujourd'hui. Commit `71e78c4` |
+| `isSameLanguageAsTarget`, le verrou qui efface | `:212` | **basculé sur `confidentLanguage`** | 1217 lignes effacées à tort deviennent 15 aujourd'hui. Commit `71e78c4` |
 | `ignoreEnglish` | `:180` | **laissé sur la réponse brute** | La réponse sûre ne nomme qu'**1 ligne anglaise sur 120**, contre 78 pour franc. Revérifié après chaque passe : l'anglais n'a pas de lettre exclusive, ce chiffre n'a pas bougé. Seule la phase 0b le débloquera |
-| `shouldDropBySourceLang`, l'allowlist | `:184` | **laissé sur la réponse brute** | Il droppe sur `lang_unknown`. Un détecteur plus silencieux le ferait supprimer **davantage**. Ce n'est pas son entrée qu'il faut changer, c'est sa sémantique |
-| `localEngine.translate(detected, ...)` | `:255` | **TRANCHÉ : ne pas basculer** | Mesuré par le banc de chat : sur du chat latin la réponse sûre est muette 74 fois sur 100. Basculer enverrait les trois quarts de ce chat au cloud, avec sa latence et son quota, pour éviter des devinettes dont le coût réel n'est pas mesuré. À rouvrir quand le silence sera descendu, pas avant. Le repli cloud que ce correctif exigeait n'est donc pas à écrire non plus |
-| `detectedLang: detected`, le drapeau | `:256` | **à faire**, cosmétique | Indépendant du point ci-dessus : le drapeau peut prendre la réponse sûre et ne rien afficher quand elle est muette, sans changer le routage |
+| `shouldDropBySourceLang`, l'allowlist | `:215` | **laissé sur la réponse brute** | Il droppe sur `lang_unknown`. Un détecteur plus silencieux le ferait supprimer **davantage**. Ce n'est pas son entrée qu'il faut changer, c'est sa sémantique |
+| `localEngine.translate(detected, ...)` | `:286` | **TRANCHÉ, mais sur un chiffre PÉRIMÉ**, voir ci-dessous | |
+| `detectedLang: detected`, le drapeau | `:287` | **PAS cosmétique, pas indépendant**, voir ci-dessous | |
+| `requestCloud(..., confidentLanguage(real))` | `:340`, `:393` | **déjà sur la réponse sûre** | Ce consommateur ne figurait pas dans la table. C'est lui qui devient `source_lang` chez DeepL et `sl` chez Google, donc celui qui pouvait faire le plus de dégâts, et il est correct depuis qu'il est écrit |
+
+### Le piège de `translateAndApply(msg, real, detected)`
+
+Les lignes `:314` et `:320` passent la réponse **brute** à `translateAndApply`, et le paramètre s'appelle `sourceLang`. **Ce n'est pas le hint envoyé au moteur.** La fonction l'utilise uniquement pour `isContextCritical(sourceLang)`, qui choisit une fenêtre de contexte de deux ou de plusieurs lignes ; le hint réel est recalculé en `:340` avec `confidentLanguage`.
+
+Le commentaire à côté le dit déjà en une phrase. Il a quand même fallu une lecture ratée pour s'en apercevoir, donc c'est écrit ici aussi : **une devinette suffit à dimensionner une fenêtre, se tromper n'y coûte rien.** Basculer ces deux lignes sur la réponse sûre RÉTRÉCIRAIT la fenêtre des langues qui en ont le plus besoin, à chaque fois que le détecteur se tait. Ne pas le faire.
+
+### Le chiffre qui a bougé sous la décision du moteur on-device
+
+La décision « ne pas basculer » a été prise sur **74 % de silence** sur du chat latin, avec la note « à rouvrir quand le silence sera descendu ». Il est descendu.
+
+| banc | silence au moment de la décision | aujourd'hui `b180b95` |
+|---|---:|---:|
+| chat 1, flatté | 74 % | **47 %** |
+| chat 2, AVEUGLE | 68 % | **60 %** |
+
+Le bon chiffre à lire est celui de l'aveugle, 60 %, et il reste haut : basculer enverrait encore trois lignes sur cinq au cloud. **La décision tient, mais plus pour la raison écrite**, et la marge s'est réduite de huit points en une session. À rouvrir pour de bon quand l'aveugle passera sous la moitié.
+
+### Le drapeau n'est ni cosmétique ni indépendant
+
+C'était écrit comme un gain gratuit. Vérifié, ça ne l'est pas.
+
+Le drapeau ne prend la réponse brute que sur **un seul** chemin, `:287`, celui du moteur on-device. Or sur ce chemin `detected` est AUSSI la langue source qui vient d'être donnée au moteur, `:286`. Le drapeau est donc exact sur ce qui a été fait : il annonce « traduit depuis le portugais » quand le moteur a bien traduit depuis le portugais. C'est l'opération qui est fausse, pas l'affichage.
+
+Sur le chemin cloud, le drapeau ne vient pas d'ici du tout : c'est le fournisseur qui renvoie sa propre détection (`deepl.ts:118`, `google.ts:70`), et elle est meilleure que franc.
+
+Deux options, et **aucune mesure ne les départage**, donc c'est un choix de produit à laisser à kil :
+
+1. **Laisser.** Le drapeau dit la vérité sur l'opération. Un lecteur qui voit un drapeau faux voit aussi une traduction fausse, et les deux se corrigent ensemble.
+2. **Afficher le drapeau seulement quand la réponse sûre confirme.** Moins mensonger pour le lecteur, mais le drapeau cesse alors de décrire ce que le moteur a fait, et le diagnostic disparaît de l'écran.
+
+Ne pas trancher ça dans une passe de détection. **Et surtout : le faire seul ne répare rien**, puisque la traduction resterait faite depuis la mauvaise langue. Le vrai correctif est la ligne du dessus, `:286`, et elle attend le chiffre de silence.
 
 ---
 
