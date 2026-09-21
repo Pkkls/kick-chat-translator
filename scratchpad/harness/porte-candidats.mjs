@@ -196,6 +196,15 @@ for (const [s, m] of vuSeq) {
 }
 const parTotal = (a, b) => b.total - a.total;
 
+// Le bruit STRICTEMENT NUL d'abord : une sequence qu'une seule langue ecrit et
+// que pas une ligne d'aucune autre ne porte est un marqueur exclusif gratuit,
+// au meme titre qu'une lettre. C'est comme ca que `ão`, `cê` et `ía` sont
+// entres, alors que `ção` etait la depuis trois passes en n'en voyant qu'un bout.
+console.log(`\nSEQUENCES A BRUIT STRICTEMENT NUL, candidates exclusives :`);
+for (const x of seqExclusives.filter((y) => y.bruit === 0).sort(parTotal).slice(0, 40)) {
+  console.log(`  ${x.s.padEnd(5)} ${String(x.total).padStart(4)} ${x.fortes[0][0]}`);
+}
+
 console.log(`\nSEQUENCES QU'UNE SEULE LANGUE ECRIT (>= ${PLANCHER} lignes, bruit a part) :`);
 for (const { s, fortes, total, bruit, faibles } of seqExclusives.sort(parTotal).slice(0, 30)) {
   console.log(
@@ -276,6 +285,43 @@ for (const [mot, m] of vuMot) {
 // `ms+id`. Le corpus de la paire n'est PAS lu ici et ne doit pas l'etre : il
 // mesure ce qui sort d'ici, il ne sert pas a le choisir.
 const demandee = process.argv[2];
+
+/**
+ * LES SEQUENCES QUI TRIENT DEUX LANGUES, et c'est une question differente de
+ * celle que la passe a sequences pose plus haut.
+ *
+ * Derriere une porte il ne reste que deux langues, donc le seuil n'est plus
+ * trois lignes, il est ZERO : une ligne de l'autre cote n'est pas du bruit,
+ * c'est une erreur. Et ce qui separe deux langues proches est le plus souvent
+ * une LETTRE DANS UN MOT, pas un mot : le danois ecrit `g` la ou le norvegien
+ * ecrit `k`, `øj` la ou il ecrit `øy`. Quatre paires de lettres ont fait pour
+ * ce tri ce que onze mots ne faisaient pas.
+ *
+ * Sortie : les sequences qu'une des deux ecrit et que l'autre n'ecrit JAMAIS,
+ * les autres langues etant hors sujet puisque la porte les a deja ecartees.
+ */
+if (demandee && demandee.includes('+')) {
+  const [a, b] = demandee.split('+');
+  const tri = [];
+  for (const [s, m] of vuSeq) {
+    const na = m.get(a) ?? 0;
+    const nb = m.get(b) ?? 0;
+    if (na === 0 && nb === 0) continue;
+    if (na > 0 && nb > 0) continue;
+    const gagnante = na > 0 ? a : b;
+    const total = na > 0 ? na : nb;
+    if (total < 2) continue;
+    tri.push({ s, gagnante, total, ailleurs: [...m.entries()].filter(([l]) => l !== a && l !== b) });
+  }
+  console.log(`\n${demandee.toUpperCase()}, SEQUENCES QUE L'UNE ECRIT ET L'AUTRE JAMAIS :`);
+  for (const { s, gagnante, total, ailleurs } of tri.sort((x, y) => y.total - x.total).slice(0, 30)) {
+    console.log(
+      `  ${s.padEnd(5)} ${gagnante}=${String(total).padStart(3)}   ` +
+        `hors paire ${ailleurs.length ? ailleurs.map(([l, n]) => `${l}=${n}`).join(' ') : 'aucune'}`,
+    );
+  }
+}
+
 if (demandee) {
   const mots = [];
   for (const [mot, m] of vuMot) {

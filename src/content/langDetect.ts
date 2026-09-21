@@ -439,7 +439,41 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   // l'estonien en prennent une turque et une finnoise.
   [/(ssä|llä|ttä|vät|istä)([^\p{L}]|$)/iu, 'fi'],
   [/öö/iu, 'et'],
-  [/ção/iu, 'pt'],
+  // `ção` a ete elargi en `ão`, et `cê` et `ía` l'ont rejoint. Les trois sortent
+  // du crible a sequences interroge PAR PAIRE, `porte-candidats.mjs es+pt`, qui
+  // demande ce qu'une langue ecrit et que l'autre n'ecrit jamais.
+  //
+  // Mesure sur les quatre corpus, et le "aucune" est sur les QUARANTE-TROIS
+  // langues, pas seulement sur la paire :
+  //   ão   pt=31, aucune autre langue      (`ção` n'en voyait qu'une partie)
+  //   cê   pt=16, aucune autre             (`você`, `cê`)
+  //   ía   es=10, aucune autre             (l'imparfait et le conditionnel)
+  //
+  // DEHORS : `más` es=10 mais hu=2, `qué` es=14 mais fr=1, `él` es=10 mais
+  // fr=4 et hu=13. `nh` et `lh` portugais sont a vi=61 et sk=2.
+  [/ão/iu, 'pt'],
+  [/cê/iu, 'pt'],
+  [/ía/iu, 'es'],
+  // ET CINQ AUTRES du meme crible, dont TROIS EN ASCII PUR, ce qui est rare et
+  // precieux : elles repondent encore quand le clavier a mange les diacritiques,
+  // la ou toutes les regles a lettre se taisent.
+  //   cz   pl=38, aucune autre langue. Le tcheque ecrit `č`, pas `cz`.
+  //   prz  pl=20, aucune autre. Le prefixe polonais.
+  //   să   ro=30, aucune autre.   că  ro=29, aucune autre.
+  //
+  // DEHORS : `în` roumain, ro=29 et zero mesure, mais le francais l'ecrit dans
+  // `chaîne` et `traîne`. Le corpus n'en contient pas, ce qui ne prouve rien.
+  //
+  // DEHORS AUSSI, et c'est le banc des lignes melangees qui l'a attrape :
+  // `you` pour l'anglais, en=33 et bruit nul partout ailleurs. Il nomme
+  // `grazie bro you are cracked` et `mille grazie bro you are insane`
+  // ANGLAISES, alors que ce sont des lignes a deux langues dont la bonne
+  // reponse est le silence. Un marqueur anglais propre reste un mauvais
+  // marqueur : l'anglais est la langue avec laquelle tout le monde melange.
+  [/cz/iu, 'pl'],
+  [/prz/iu, 'pl'],
+  [/să/iu, 'ro'],
+  [/că/iu, 'ro'],
   // LE TAGALOG, la derniere langue de la matrice sans un seul marqueur.
   //
   // Il s'ecrit en latin nu, sans un diacritique, donc aucune passe de lettres ne
@@ -787,7 +821,10 @@ const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [
   // `ă` a 103 lignes contre 7, le polonais domine `ą` et `ę`, et `ū` est la
   // seule des cinq ou les deux langues sont du meme ordre.
   [/ă/iu, ['ro', 'vi']],
-  [/ą/iu, ['pl', 'lt']],
+  // `ą` a ete retiree ici : elle valait une ligne du corpus aveugle jusqu'a ce
+  // que `cz` et `prz` nomment le polonais avant qu'elle ne soit consultee. Meme
+  // chose pour `ã` pt/vi, tuee par `ão`. Troisieme et quatrieme fois qu'un ajout
+  // tue une entree ailleurs dans le fichier sans qu'aucun total ne le signale.
   [/ę/iu, ['pl', 'lt']],
   [/ū/iu, ['lv', 'lt']],
   // LES PORTES A MOT, troisieme passe du crible.
@@ -875,7 +912,6 @@ const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [
   [/ý/iu, ['sk', 'cs', 'vi']],
   [/è/iu, ['it', 'ca', 'fr']],
   [/à/iu, ['fr', 'vi', 'ca', 'it']],
-  [/ã/iu, ['pt', 'vi']],
   [/î/iu, ['ro', 'fr']],
   [/ì/iu, ['vi', 'it']],
 ];
