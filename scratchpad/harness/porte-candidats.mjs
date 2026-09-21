@@ -137,3 +137,77 @@ for (const { c, fortes } of lignes) {
   if (etat(c) !== 'exclusive' || fortes.length < 2) continue;
   console.log(`  ${c}  ${fortes.map(([l, n]) => `${l}=${n}`).join(' ')}`);
 }
+
+/**
+ * DEUXIEME PASSE : LES SEQUENCES.
+ *
+ * La passe a lettre est epuisee, et elle ne peut structurellement rien dire de
+ * plus : elle compte des caracteres isoles. Or la table contient deja quatre
+ * marqueurs de sequence, `yy` finnois, `öö` estonien, `ção` portugais et `l·l`
+ * catalan, chacun trouve a la main. Personne n'a jamais cherche les autres.
+ *
+ * Meme forme que la passe a lettre, et surtout MEME SEUIL DE BRUIT : une langue
+ * compte pour une sequence si elle l'ecrit sur trois lignes ou plus. Sans ce
+ * seuil, chaque bigramme du latin apparait dans les vingt-six langues une fois
+ * ou deux et rien ne ressort.
+ *
+ * Deux sorties, comme au-dessus : les sequences qu'UNE langue ecrit sont des
+ * marqueurs exclusifs candidats, celles que deux a quatre ecrivent sont des
+ * portes candidates.
+ */
+const TAILLES = [2, 3];
+const PLANCHER = 20; // lignes, tous corpus confondus
+
+const vuSeq = new Map();
+for (const corpus of corpora) {
+  for (const [lang, lgns] of Object.entries(corpus)) {
+    if (!LATINES.has(lang)) continue;
+    for (const ligne of lgns) {
+      const t = ligne.toLowerCase();
+      const seqs = new Set();
+      for (const taille of TAILLES) {
+        for (let i = 0; i + taille <= t.length; i += 1) {
+          const s = t.slice(i, i + taille);
+          // Que des lettres : une sequence qui enjambe un espace ou un emoji
+          // decrit la mise en page et pas la langue.
+          if (!/^\p{Script=Latin}+$/u.test(s)) continue;
+          seqs.add(s);
+        }
+      }
+      for (const s of seqs) {
+        if (!vuSeq.has(s)) vuSeq.set(s, new Map());
+        const m = vuSeq.get(s);
+        m.set(lang, (m.get(lang) ?? 0) + 1);
+      }
+    }
+  }
+}
+
+const seqExclusives = [];
+const seqPortes = [];
+for (const [s, m] of vuSeq) {
+  const fortes = [...m.entries()].filter(([, n]) => n >= SEUIL).sort((a, b) => b[1] - a[1]);
+  if (fortes.length === 0 || fortes.length > 4) continue;
+  const total = fortes.reduce((acc, [, n]) => acc + n, 0);
+  if (total < PLANCHER) continue;
+  const faibles = [...m.entries()].filter(([, n]) => n < SEUIL);
+  const bruit = faibles.reduce((acc, [, n]) => acc + n, 0);
+  (fortes.length === 1 ? seqExclusives : seqPortes).push({ s, fortes, total, bruit, faibles });
+}
+const parTotal = (a, b) => b.total - a.total;
+
+console.log(`\nSEQUENCES QU'UNE SEULE LANGUE ECRIT (>= ${PLANCHER} lignes, bruit a part) :`);
+for (const { s, fortes, total, bruit, faibles } of seqExclusives.sort(parTotal).slice(0, 30)) {
+  console.log(
+    `  ${s.padEnd(4)} ${String(total).padStart(4)} ${fortes[0][0]}` +
+      `${bruit ? `   bruit ${bruit} lignes dans ${faibles.length} langues [${faibles.map(([l]) => l).join(' ')}]` : '   bruit ZERO'}`,
+  );
+}
+
+console.log(`\nSEQUENCES QUE DEUX A QUATRE LANGUES ECRIVENT, portes candidates :`);
+for (const { s, fortes, total, bruit } of seqPortes.sort(parTotal).slice(0, 25)) {
+  console.log(
+    `  ${s.padEnd(4)} ${String(total).padStart(4)}  ${fortes.map(([l, n]) => `${l}=${n}`).join(' ')}` +
+      `${bruit ? `   bruit ${bruit}` : ''}`,
+  );
+}

@@ -618,12 +618,33 @@ function norvegienOuDanois(text: string): string | undefined {
   return undefined;
 }
 
+/**
+ * LA PORTE SANS LETTRE, et c'est ce que la paire scandinave attendait.
+ *
+ * Trois tours de regles de lettres n'ont pas bouge `no -> sv` ni `da -> sv`
+ * d'une seule ligne, et la raison est structurelle : ni le danois ni le
+ * norvegien n'ecrit une lettre que la table couvre, et leurs trois lettres a
+ * eux, `å ø æ`, ne sont pas sur toutes leurs lignes.
+ *
+ * Le crible a sequences, `porte-candidats.mjs`, a rendu le chemin : `jeg` sur
+ * 39 lignes norvegiennes et 35 danoises, `ikke` sur 28 et 25, et RIEN ailleurs.
+ * Un MOT peut nommer une paire exactement comme une lettre, et le suedois ecrit
+ * `jag` et `inte` a la place. Le bruit polonais de trois lignes que le crible
+ * signale sur `jeg` est `jego`, et la borne de mot l'ecarte deja.
+ *
+ * Donc : une ligne qui porte un mot dano-norvegien et aucun mot suedois va au
+ * tri interieur, qu'elle porte une lettre scandinave ou non. `å` reste le seul
+ * cas ou il faut ecarter le suedois avant, parce qu'il l'ecrit aussi.
+ */
 function danoisOuNorvegien(text: string): string | undefined {
   if (LETTRES_DANO_NORVEGIENNES.test(text)) return norvegienOuDanois(text);
-  if (!A_ROND_SCANDINAVE.test(text)) return undefined;
   const sv = MOTS_SUEDOIS.test(text);
   const dn = MOTS_DANO_NORVEGIENS.test(text);
-  if (sv && !dn) return 'sv';
+  if (A_ROND_SCANDINAVE.test(text)) {
+    if (sv && !dn) return 'sv';
+    if (dn && !sv) return norvegienOuDanois(text);
+    return undefined;
+  }
   if (dn && !sv) return norvegienOuDanois(text);
   return undefined;
 }
@@ -690,8 +711,6 @@ const JEUX_DE_PORTE: Readonly<Record<string, RegExp>> = {
   it: /(^|[^\p{L}])(allora|quindi|comunque|anche|adesso|perché|però|davvero|questo|sono|più|che|niente)([^\p{L}]|$)/iu,
   ro: /(^|[^\p{L}])(foarte|acum|nimic|când|care|pentru|sunt|cred|joacă|cineva)([^\p{L}]|$)/iu,
   nl: /(^|[^\p{L}])(niet|het|een|wat|voor|zijn|heeft|geen|hoe|nog|gewoon|maar)([^\p{L}]|$)/iu,
-  no: /(^|[^\p{L}])(ikke|jeg|meg|deg|seg|hva|mye|veldig|noen|igjen|lenge|tilbake)([^\p{L}]|$)/iu,
-  da: /(^|[^\p{L}])(ikke|jeg|mig|dig|sig|hvad|meget|noget|altid|endnu|tilbage)([^\p{L}]|$)/iu,
 };
 
 const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [
@@ -709,6 +728,25 @@ const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [
   [/ą/iu, ['pl', 'lt']],
   [/ę/iu, ['pl', 'lt']],
   [/ū/iu, ['lv', 'lt']],
+  // PAS DE SEQUENCE ASCII ICI, et c'est un resultat mesure, pas un oubli.
+  //
+  // Le deuxieme passage du crible a rendu `sz` hongrois-polonais et `dz`
+  // polonais-letton-slovaque, tous deux propres sur les quatre corpus. Le banc
+  // des lignes melangees les a refuses, et la raison vaut pour toute sequence
+  // ASCII : LE DECLENCHEUR PEUT VIVRE DANS LE MOT QUI TRANCHE. `bardzo` porte
+  // `dz` et il EST le mot polonais du jeu, donc la porte s'ouvre sur le mot
+  // qu'elle consulte ensuite. Les deux indices censes etre independants n'en
+  // font qu'un, et la porte degenere en une entree de lexique sans la borne de
+  // vingt caracteres qui tient le lexique. Mesure : trois lignes melangees
+  // nommees `pl` par `dz`, dont `he is cracked bardzo dobrze`.
+  //
+  // `sz` a le meme defaut, `nasz`, `jeszcze` et `wszystko` le portent, et il ne
+  // rapportait que deux lignes. Le corpus melange ne contient simplement aucune
+  // ligne qui l'expose, ce qui ne prouve rien : c'est la lecon du corpus 3.
+  //
+  // Une porte a lettre accentuee n'a pas ce probleme : `ä` ne vit pas dans
+  // `nicht`. Une porte de sequence demanderait de verifier que le declencheur
+  // tombe HORS du mot trouve, et ca n'a pas paru valoir deux lignes.
   [/ü/iu, ['tr', 'de', 'et', 'hu']],
   [/ó/iu, ['hu', 'pl', 'vi', 'es', 'pt', 'ca', 'sk']],
   [/ú/iu, ['sk', 'hu', 'vi', 'es', 'pt', 'ca', 'cs']],
