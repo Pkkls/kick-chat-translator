@@ -53,6 +53,29 @@ describe('le corpus de reglage', () => {
     expect(confidentLanguage('den emote er perfekt')).not.toBe('nl');
   });
 
+  // LE CRITERE D'ARRET DU LEXIQUE, mesure sur ce corpus et sur l'aveugle.
+  //
+  // Un tour de 43 mots a ete choisi ici, dans les regles : lecture des lignes
+  // muettes de CE corpus, criblage complet, veto linguistique, application. Il a
+  // rapporte SEPT lignes ici et ZERO sur le corpus aveugle. Pas une.
+  //
+  // Sept sur 260 fait 2,7 %, donc on attendait environ sept lignes sur les 260
+  // de l'autre corpus. En observer zero n'est pas du bruit. Le transfert de
+  // cette methode est tombe a rien.
+  //
+  // Le tour a ete ANNULE et n'est pas dans le fichier. Zero gain mesurable ne
+  // justifie pas 43 entrees et 250 octets, et les livrer aurait gonfle le
+  // chiffre de ce corpus-ci sans rien donner a personne.
+  //
+  // Ce qui reste utile, et c'est le critere a reprendre : un tour de lexique se
+  // juge sur le corpus AVEUGLE, jamais sur celui ou les mots ont ete choisis. Si
+  // l'aveugle ne bouge pas, le tour ne sert a rien, quelle que soit la beaute du
+  // chiffre local. Les premiers tours de lexique transferaient a quatre
+  // cinquiemes ; celui-ci a zero. La methode a un fond et il est atteint.
+  it('reste a 78 nommees, le tour de lexique suivant ayant ete annule', () => {
+    expect(SURE3.total.right).toBe(78);
+  });
+
   // Les trois corpus doivent rester distincts, sinon les roles se melangent.
   it('ne partage aucune ligne avec les deux autres', () => {
     const autres = new Set([...Object.values(LANG_CHAT).flat(), ...Object.values(LANG_CHAT2).flat()]);
