@@ -1208,6 +1208,21 @@ function arabeOuPersan(text: string): string | undefined {
 const LETTRES_MONGOLES = /[өү]/iu;
 const MOTS_MONGOLS = /(^|[^\p{L}])(байна|байгаа|юм|вэ|бэ|сайхан|байлаа)([^\p{L}]|$)/iu;
 const LETTRES_UKRAINIENNES = /[іїєґ]/iu;
+// LES MOTS UKRAINIENS, pour les lignes qui n'ecrivent aucune des quatre lettres.
+//
+// `Я це дуже добре знаю.` est ukrainienne, ne porte ni `і` ni `ї` ni `є` ni `ґ`,
+// et tombait donc au test bulgare. C'etait la seule erreur cyrillique restante
+// du chemin sur.
+//
+// Les trois entrent par le critere (a) autant que par le crible :
+//   це    "ceci". Le russe ecrit `это`, le bulgare `това`. 12 lignes, 0 ailleurs.
+//   дуже  "tres". Le russe ecrit `очень`, le bulgare `много`. 2 lignes, 0 ailleurs.
+//   щоб   "pour que". Le russe ecrit `чтобы`, le bulgare `за да`. 3 lignes, 0 ailleurs.
+//
+// DEHORS : `треба`, qui est du serbe, et `добре` que le bulgare ecrit aussi,
+// deux lignes bulgares contre une ukrainienne, ce qui est le mauvais sens.
+// `знаю` est russe autant qu'ukrainien.
+const MOTS_UKRAINIENS = /(^|[^\p{L}])(це|дуже|щоб)([^\p{L}]|$)/iu;
 const LETTRES_RUSSES = /[ыэё]/iu;
 const ER_BULGARE = /ъ/iu;
 /** L'article defini suffixe, que ni le russe ni l'ukrainien n'ont. */
@@ -1314,7 +1329,7 @@ const MOTS_BULGARES =
  */
 function cyrilliqueQuelleLangue(text: string): string | undefined {
   if (LETTRES_MONGOLES.test(text) || MOTS_MONGOLS.test(text)) return undefined;
-  if (LETTRES_UKRAINIENNES.test(text)) return 'uk';
+  if (LETTRES_UKRAINIENNES.test(text) || MOTS_UKRAINIENS.test(text)) return 'uk';
   if (
     !LETTRES_RUSSES.test(text) &&
     (ER_BULGARE.test(text) || MOTS_BULGARES.test(text) || ARTICLE_BULGARE.test(text))
