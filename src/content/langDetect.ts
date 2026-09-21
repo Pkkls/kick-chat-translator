@@ -156,8 +156,8 @@ function detectByShortWords(text: string): string | undefined {
  * recherche et non une statistique : sa place est donc sur le chemin sur.
  *
  * S'applique a toute longueur, contrairement au lexique de mots courts borne a
- * 20 caracteres, et passe APRES lui : un mot de chat connu est un signal plus
- * fort qu'un diacritique isole.
+ * 20 caracteres, et passe AVANT lui. L'ordre est mesure et non suppose, le
+ * detail est sur l'appel dans `detectByLookup`.
  *
  * CE QUI EST DEHORS, et c'est la moitie du travail. Une lettre partagee par deux
  * langues de la liste ne prouve rien :
@@ -522,16 +522,24 @@ function detectByLookup(trimmed: string): string | undefined {
     }
   }
 
+  // Une lettre propre a une seule langue, a toute longueur, et AVANT le lexique.
+  //
+  // L'ordre inverse avait ete ecrit d'abord, au motif qu'un mot de chat connu
+  // serait le signal le plus fort. Mesure : c'est faux, et d'une ligne. Une
+  // lettre qu'une seule langue ecrit ne peut pas apparaitre dans le mot d'une
+  // autre, alors qu'un mot de chat s'ecrit avec les lettres que tout le monde
+  // partage et peut donc exister ailleurs. `Ar ji mano draugė?` est lituanien,
+  // porte un ė qui ne laisse aucun doute, et le lexique y lisait `mano` et
+  // repondait portugais. Les deux chemins gagnent cette ligne et n'en perdent
+  // aucune ; `lt->pt` est la seule confusion qui bouge dans tout le banc.
+  const byLetter = detectByExclusiveLetter(trimmed);
+  if (byLetter) return byLetter;
+
   // Short Latin message: a known chat word beats franc, which guesses at this length.
   if (trimmed.length <= SHORT_TEXT_MAX) {
     const byWord = detectByShortWords(trimmed);
     if (byWord) return byWord;
   }
-
-  // Une lettre propre a une seule langue, a toute longueur. Avant le
-  // pre-controle d'ecriture, qui ne lit que les alphabets entiers.
-  const byLetter = detectByExclusiveLetter(trimmed);
-  if (byLetter) return byLetter;
 
   // Unicode script pre-check: more reliable than franc on short texts.
   // CJK, Arabic, Cyrillic etc. are unambiguous from their script alone.

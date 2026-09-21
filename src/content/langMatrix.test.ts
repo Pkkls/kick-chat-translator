@@ -28,11 +28,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on two lines in five and is almost never wrong.
   // The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 2179, silent: 2770, wrong: 91 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 2180, silent: 2770, wrong: 90 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
-    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 667, silent: 959, wrong: 54 });
+    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 668, silent: 959, wrong: 53 });
   });
 
   // The expensive one. This is the answer that deletes a message in silence when
@@ -40,11 +40,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
   it('detectLanguage is wrong on a fifth of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 3324, silent: 691, wrong: 1025 });
+    expect(plain(DETECT.total)).toEqual({ right: 3325, silent: 691, wrong: 1024 });
   });
 
   it('detectLanguage is wrong on a quarter of short lines', () => {
-    expect(plain(DETECT.shortOnly)).toEqual({ right: 935, silent: 332, wrong: 413 });
+    expect(plain(DETECT.shortOnly)).toEqual({ right: 936, silent: 332, wrong: 412 });
   });
 });
 
@@ -74,9 +74,9 @@ describe('the languages the detector cannot name at all', () => {
   // both directions. Tatoeba is written sentences, and the short-word lexicon
   // that feeds `confidentLanguage` is a chat vocabulary: hola, merci, danke,
   // selam. A Spanish Tatoeba sentence contains none of them, so `es` scores zero
-  // here while it would score on a real chat line. The 26 are therefore an upper
-  // bound on the gap, not a measurement of it. The chat corpus in phase 0b is
-  // what settles it.
+  // here while it would score on a real chat line. The thirteen are therefore an
+  // upper bound on the gap, not a measurement of it. The chat corpus in phase 0b
+  // is what settles it.
   it('names the thirteen the confident path can never name on this corpus', () => {
     expect(zeroRight(CONFIDENT)).toEqual([
       'da', 'el', 'es', 'et', 'fi', 'fr', 'id', 'ms', 'nl', 'no', 'sl', 'sv', 'tl',
@@ -112,8 +112,9 @@ describe('a letter only one of the forty-three writes, added 2026-09-21', () => 
   // offered language writes is a lookup, not a guess, so it is the same kind of
   // fact as a whole script. The measurement that had to come back clean is this
   // one: the rule hands the engine ten more source languages and takes nothing
-  // from the other thirty-two. Both wrong counts above are unchanged from the
-  // run before it, 91 and 54.
+  // from the other thirty-two. The two wrong counts above did not rise, 91 and
+  // 54 before it; they are 90 and 53 because reading a letter ahead of the
+  // lexicon also took back a Lithuanian line, which is the test at the bottom.
   const NAMED = ['ca', 'cs', 'hu', 'lt', 'lv', 'pl', 'ro', 'sk', 'tr', 'vi'];
 
   it('never takes a line from a language that is not its own', () => {
@@ -144,6 +145,26 @@ describe('a letter only one of the forty-three writes, added 2026-09-21', () => 
   // one keystroke apart and a future edit merging them would be silent.
   it('keeps the Polish nasals out, which Lithuanian also writes', () => {
     expect(confidentLanguage('Ar tu eini į parduotuvę šiandien vakare?')).not.toBe('pl');
+  });
+
+  // The rule reads before the short-word lexicon, and that order is measured
+  // rather than assumed: this line is the whole of the difference on 5040 lines.
+  // It is Lithuanian, its ė settles it, and the lexicon used to see `mano` and
+  // answer Portuguese. Putting the lexicon back in front costs exactly this.
+  it('lets a letter beat a chat word that is a word in two languages', () => {
+    expect(confidentLanguage('Ar ji mano draugė?')).toBe('lt');
+  });
+
+  // CONSTRUCTED, not measured, and the distinction matters enough to write down:
+  // no line of the corpus carries two exclusive sets at once, so the bench says
+  // nothing at all about this branch. It is kept because the register the corpus
+  // does not have is the one that mixes languages in a single line, quoting a
+  // name or a pseudonym, and that is what phase 0b is for. Until then this is a
+  // guard with a hand-written check rather than a measurement.
+  it('declines when two exclusive sets meet, which is a quote or a nickname', () => {
+    expect(confidentLanguage('řeka')).toBe('cs');
+    expect(confidentLanguage('ľad')).toBe('sk');
+    expect(confidentLanguage('řeka ľad')).toBeUndefined();
   });
 });
 
