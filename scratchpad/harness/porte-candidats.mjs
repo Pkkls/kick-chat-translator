@@ -156,7 +156,15 @@ for (const { c, fortes } of lignes) {
  * portes candidates.
  */
 const TAILLES = [2, 3];
-const PLANCHER = 20; // lignes, tous corpus confondus
+const PLANCHER = 8; // lignes, tous corpus confondus
+
+// Les sequences DEJA dans la table, pour que le crible cesse de les reproposer,
+// exactement comme REJETES le fait pour les lettres. A tenir a jour avec
+// `LETTRES_EXCLUSIVES` : le crible ne lit pas le fichier, il lit les corpus.
+const SEQ_PRISES = new Set([
+  'yy', 'oo', 'ão', 'cê', 'ía', 'cz', 'prz', 'să', 'că', 'ção', 'öö',
+  'øy', 'øk', 'øj', 'øg',
+]);
 
 const vuSeq = new Map();
 for (const corpus of corpora) {
@@ -201,8 +209,14 @@ const parTotal = (a, b) => b.total - a.total;
 // au meme titre qu'une lettre. C'est comme ca que `ão`, `cê` et `ía` sont
 // entres, alors que `ção` etait la depuis trois passes en n'en voyant qu'un bout.
 console.log(`\nSEQUENCES A BRUIT STRICTEMENT NUL, candidates exclusives :`);
-for (const x of seqExclusives.filter((y) => y.bruit === 0).sort(parTotal).slice(0, 40)) {
-  console.log(`  ${x.s.padEnd(5)} ${String(x.total).padStart(4)} ${x.fortes[0][0]}`);
+for (const x of seqExclusives
+  .filter((y) => y.bruit === 0 && !SEQ_PRISES.has(y.s))
+  .sort(parTotal)
+  .slice(0, 60)) {
+  // Une sequence dont un caractere est deja une lettre exclusive de la MEME
+  // langue est redondante par construction : la lettre repond avant.
+  const redondante = [...x.s].some((c) => EXCLUSIVES.includes(c));
+  console.log(`  ${x.s.padEnd(5)} ${String(x.total).padStart(4)} ${x.fortes[0][0]}${redondante ? '   (lettre deja exclusive)' : ''}`);
 }
 
 console.log(`\nSEQUENCES QU'UNE SEULE LANGUE ECRIT (>= ${PLANCHER} lignes, bruit a part) :`);

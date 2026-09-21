@@ -28,11 +28,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on two lines in five and is almost never wrong.
   // The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 3230, silent: 1803, wrong: 7 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 3243, silent: 1790, wrong: 7 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
-    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 934, silent: 739, wrong: 7 });
+    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 939, silent: 734, wrong: 7 });
   });
 
   // The expensive one. This is the answer that deletes a message in silence when
@@ -40,11 +40,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
   it('detectLanguage is wrong on a fifth of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 3842, silent: 512, wrong: 686 });
+    expect(plain(DETECT.total)).toEqual({ right: 3847, silent: 508, wrong: 685 });
   });
 
   it('detectLanguage is wrong on a quarter of short lines', () => {
-    expect(plain(DETECT.shortOnly)).toEqual({ right: 1102, silent: 286, wrong: 292 });
+    expect(plain(DETECT.shortOnly)).toEqual({ right: 1105, silent: 283, wrong: 292 });
   });
 });
 

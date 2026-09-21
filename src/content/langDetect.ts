@@ -474,6 +474,29 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/prz/iu, 'pl'],
   [/să/iu, 'ro'],
   [/că/iu, 'ro'],
+  // DEUXIEME RECOLTE du meme crible, plancher descendu de 20 lignes a 8.
+  //   ijn  nl=19, aucune autre.  `mijn`, `zijn`.
+  //   jse  cs=15, aucune autre.  `jsem`, `jsou`.
+  //   för  sv=19, aucune autre.  Le danois et le norvegien ecrivent `for`.
+  //   ał   pl=18, aucune autre.  Le passe polonais. `ł` seul est rejete parce
+  //        qu'il voyage dans les noms propres ; `ał` n'y voyage pas.
+  //   wy   pl=16, aucune autre.
+  //
+  // DEHORS, tous a bruit mesure nul et tous refuses au critere (a) :
+  //   gio  it=16, mais le portugais ecrit `relógio` et `colégio`.
+  //   oor  nl=15, mais l'anglais ecrit `door`, `floor`, `poor`.
+  //   ân   ro=17, mais le francais ecrit `âne`.
+  // Ces deux-la ont REMPLACE une entree plus etroite, et l'ablation l'a montre
+  // en les donnant toutes les quatre a zero : deux paires qui se couvrent.
+  //   `ijn` non borne remplace `ijn([^\p{L}]|$)`, qui ne voyait que la fin de mot.
+  //   `jse` remplace la porte a trois mots `že|jeho|dnes` cs/sk, qui ne valait
+  //         plus qu'une ligne et que ce trigramme prend en trois caracteres.
+  // Meme resultat sur les huit bancs avec deux entrees de moins.
+  [/ijn/iu, 'nl'],
+  [/jse/iu, 'cs'],
+  [/för/iu, 'sv'],
+  [/ał/iu, 'pl'],
+  [/wy/iu, 'pl'],
   // LE TAGALOG, la derniere langue de la matrice sans un seul marqueur.
   //
   // Il s'ecrit en latin nu, sans un diacritique, donc aucune passe de lettres ne
@@ -604,7 +627,6 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   //   -ämä -eveel  finnois et neerlandais.
   // DEHORS : -indo est `lindo` en espagnol, -seen est de l'anglais, -tic est
   // anglais et francais, -hora -utti -jtra -gain sont des queues de mots.
-  [/ijn([^\p{L}]|$)/iu, 'nl'],
   [/eveel([^\p{L}]|$)/iu, 'nl'],
   [/(ght|ople)([^\p{L}]|$)/iu, 'en'],
   [/tou([^\p{L}]|$)/iu, 'pt'],
@@ -868,7 +890,6 @@ const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [
   // lv/lt rapportent ZERO sur les quatre corpus, alors que le lot ou ils se
   // trouvaient rapportait +4. Un total de lot ne dit pas qui l'a gagne, et ces
   // deux-la seraient partis en production comme poids mort.
-  [/(^|[^\p{L}])(že|jeho|dnes)([^\p{L}]|$)/iu, ['cs', 'sk']],
   [/(^|[^\p{L}])(per)([^\p{L}]|$)/iu, ['ca', 'it']],
   // PAS DE SEQUENCE ASCII ICI, et c'est un resultat mesure, pas un oubli.
   //

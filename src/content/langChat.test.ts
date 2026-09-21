@@ -85,7 +85,7 @@ describe('le chemin sur, sur du chat', () => {
   // vingt-six portes a lettre sont muettes. Une ligne de plus ici, et c'est la
   // direction a retenir pour les langues que le clavier deshabille.
   it('perd un tiers de son rappel quand les diacritiques tombent', () => {
-    expect(plain(NU_SURE.total)).toEqual({ right: 136, silent: 254, wrong: 0 });
+    expect(plain(NU_SURE.total)).toEqual({ right: 137, silent: 253, wrong: 0 });
     expect(muet(NU_SURE.total)).toBe(65);
   });
 });
@@ -118,7 +118,7 @@ describe('le chemin brut, sur du chat', () => {
   });
 
   it('empire encore sans diacritiques', () => {
-    expect(plain(NU_BRUT.total)).toEqual({ right: 201, silent: 95, wrong: 94 });
+    expect(plain(NU_BRUT.total)).toEqual({ right: 202, silent: 94, wrong: 94 });
   });
 
   // Sept langues ne marquent pas un seul point sur le chemin BRUT, franc compris,
