@@ -318,6 +318,22 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/ñ/iu, 'es'],
   [/ß/iu, 'de'],
   [/[œû]/iu, 'fr'],
+  // Trois SEQUENCES et non des lettres, comme le point volat catalan plus haut.
+  // Elles servent les langues qui n'ont aucune lettre a elles : le finnois
+  // double son y la ou l'estonien n'en a pas du tout, l'estonien double son o
+  // barre la ou le finnois ecrit yö, et la terminaison portugaise -ção n'existe
+  // nulle part ailleurs dans les 43.
+  [/yy/iu, 'fi'],
+  // L'harmonie vocalique finnoise : le finnois met un ä dans ses terminaisons la
+  // ou l'estonien ne le fait pas, et aucune autre des 43 n'a ces suites en fin
+  // de mot. C'est de la morphologie et non du lexique, donc ca porte sur
+  // n'importe quelle phrase et pas seulement sur celles qui emploient un mot
+  // connu, ce qui est exactement ce qui manque a une langue agglutinante.
+  // DEHORS : -ään prend une ligne estonienne, -nud et -maks proposes pour
+  // l'estonien en prennent une turque et une finnoise.
+  [/(ssä|llä|ttä|vät|istä)([^\p{L}]|$)/iu, 'fi'],
+  [/öö/iu, 'et'],
+  [/ção/iu, 'pt'],
 ];
 
 /**
