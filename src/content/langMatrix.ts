@@ -88,6 +88,26 @@ export function runMatrix(detector: (t: string) => string | undefined): Run {
 export const confidentRun = (): Run => runMatrix(confidentLanguage);
 export const detectRun = (): Run => runMatrix(detectLanguage);
 
+/**
+ * Messages a reader would never see, per reading language.
+ *
+ * `pipeline.ts:183` drops a line without a word when the detector says it is
+ * already in the reader's language. So every wrong answer naming language T is
+ * a line deleted from the screen of every reader whose target is T. This counts
+ * them: for each T, how many lines that are NOT in T were answered T.
+ *
+ * It is the same confusion data read from the other end. The matrix asks "where
+ * do this language's lines go"; this asks "what lands on this reader".
+ */
+export function silentlyDeleted(run: Run): Map<string, number> {
+  const perTarget = new Map<string, number>();
+  for (const [pair, n] of run.confusions) {
+    const to = pair.split('->')[1]!;
+    perTarget.set(to, (perTarget.get(to) ?? 0) + n);
+  }
+  return perTarget;
+}
+
 const pct = (n: number, d: number) => (d === 0 ? '0' : ((n / d) * 100).toFixed(0));
 const sum = (c: Cell) => c.right + c.silent + c.wrong;
 

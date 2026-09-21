@@ -180,7 +180,38 @@ export class TranslationPipeline {
     if (this.settings.ignoreEnglish && this.effTarget === 'en' && detected === 'en') {
       return localised('skipEnglish', 'it looks like English and you asked to skip English');
     }
-    if (isSameLanguageAsTarget(detected, this.effTarget)) return localised('skipSameLang', 'it is already in your language');
+    // This one deletes the line. It gets the looked-up answer, never the guessed
+    // one, and that is the whole difference between a message the reader skips
+    // and a message the reader never knew existed.
+    //
+    // What it used to get: `detected`, franc included. Measured against 5040
+    // Tatoeba sentences in 42 languages (src/content/langMatrix.test.ts), franc
+    // included is wrong on 24 percent of all lines and 29 percent of the short
+    // ones a chat is made of. Every one of those wrong answers naming language T
+    // is a line deleted from the screen of every reader reading in T: 133 lines
+    // for a Spanish reader, 110 for a French one, 126 for a Swedish one, 1217 in
+    // total. On the looked-up answer the same count is 90, a 93 percent drop,
+    // and what is left is almost all Bulgarian and Ukrainian read as Russian by
+    // the Cyrillic rule, which is a rule to sharpen rather than a guess to stop
+    // trusting.
+    //
+    // The cost is the other direction and it is small: a line genuinely in the
+    // reader's language that only franc recognised now goes to the engine and
+    // comes back identical, caught by the `tt === real` check after the call. A
+    // wasted request against a message restored.
+    //
+    // The two neighbours above and below deliberately keep `detected`:
+    //   ignoreEnglish, because measured on the same corpus the safe answer names
+    //   only 1 English line in 120 against 78 for franc, so switching it would
+    //   send two thirds of a genuinely English chat to the engine to save the 48
+    //   foreign lines franc miscalls English. Bad trade, and revisit it when the
+    //   short-word table covers more than six languages.
+    //   shouldDropBySourceLang, because it drops on `lang_unknown`, so feeding it
+    //   a quieter detector makes it delete MORE for anyone who set an allowlist.
+    //   That one needs its semantics rethought, not its input swapped.
+    if (isSameLanguageAsTarget(confidentLanguage(realText), this.effTarget)) {
+      return localised('skipSameLang', 'it is already in your language');
+    }
     const byLang = shouldDropBySourceLang(detected, this.settings);
     if (byLang) return DROP_REASON[byLang] ?? byLang;
 
