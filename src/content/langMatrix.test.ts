@@ -28,11 +28,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on two lines in five and is almost never wrong.
   // The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 3166, silent: 1861, wrong: 13 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 3169, silent: 1861, wrong: 10 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
-    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 909, silent: 761, wrong: 10 });
+    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 911, silent: 761, wrong: 8 });
   });
 
   // The expensive one. This is the answer that deletes a message in silence when
@@ -40,11 +40,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
   it('detectLanguage is wrong on a fifth of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 3811, silent: 517, wrong: 712 });
+    expect(plain(DETECT.total)).toEqual({ right: 3814, silent: 517, wrong: 709 });
   });
 
   it('detectLanguage is wrong on a quarter of short lines', () => {
-    expect(plain(DETECT.shortOnly)).toEqual({ right: 1086, silent: 291, wrong: 303 });
+    expect(plain(DETECT.shortOnly)).toEqual({ right: 1088, silent: 291, wrong: 301 });
   });
 });
 
@@ -288,12 +288,17 @@ describe('Malay written in the Arabic script, added 2026-09-21', () => {
   // Persian because it uses چ, which is in the Persian set. Testing it after
   // would leave a Jawi line carrying a cheh reading as Persian, which is exactly
   // the ms->fa error that remains on the line that carries no Jawi letter.
+  //
+  // 113 to 116 since the Persian WORDS were added after the Persian letters,
+  // for the lines written entirely with the Arabic set. The order is the same
+  // argument one step further: Urdu, then Jawi, then a Persian letter, then a
+  // Persian word, each one a weaker claim than the one above it.
   it('does not take Persian lines, which share the cheh', () => {
     const intoMalay = [...CONFIDENT.confusions.keys()].filter((p) => p.endsWith('->ms'));
     expect(intoMalay).toEqual([]);
     expect(CONFIDENT.byLang.get('fa')!.short.right
       + CONFIDENT.byLang.get('fa')!.medium.right
-      + CONFIDENT.byLang.get('fa')!.long.right).toBe(113);
+      + CONFIDENT.byLang.get('fa')!.long.right).toBe(116);
   });
 });
 
@@ -310,21 +315,21 @@ describe('the Cyrillic fallback, fixed 2026-09-21', () => {
     expect(CONFIDENT.confusions.get('uk->ru')).toBeUndefined();
   });
 
-  // What is left, in full, because thirteen is small enough to name and naming
-  // it is what stops the next session from re-deriving it.
+  // What is left, in full, because ten is small enough to name and naming it is
+  // what stops the next session from re-deriving it.
   //
-  // TEN OF THE THIRTEEN ARE NOW ARABIC OR CHINESE SCRIPT, and that is the whole
-  // shape of what remains: `fa->ar` and `ms->ar` are lines the script check
-  // reads correctly, with the language behind the script being the part nothing
-  // here can see. `yue->zh` twice is the known price of the Cantonese rule.
+  // NOT ONE LATIN CONFUSION LEFT, which is where forty-two of the forty-three
+  // languages live. `mano` took the last two out. Everything remaining is a
+  // line whose SCRIPT is read correctly and whose language behind that script
+  // is the part a letter cannot see.
   //
-  // The two Latin ones left with the lexicon: `es->pt` and `lt->pt` both came
-  // from the single entry `mano`, and both are gone. What is left has no Latin
-  // confusion at all.
-  it('is down to thirteen wrong answers, and they are these', () => {
+  // `fa->ar` was seven and is four: Persian words took three, and the four left
+  // carry neither a Persian letter nor a Persian function word. `yue->zh` twice
+  // is the known price of the Cantonese rule, `ms->ar` and `ms->fa` are Jawi.
+  it('is down to ten wrong answers, and they are these', () => {
     const rows = [...CONFIDENT.confusions.entries()].map(([p, n]) => `${p}=${n}`).sort();
     expect(rows).toEqual([
-      'fa->ar=7', 'ms->ar=2', 'ms->fa=1', 'uk->bg=1', 'yue->zh-tw=1', 'yue->zh=1',
+      'fa->ar=4', 'ms->ar=2', 'ms->fa=1', 'uk->bg=1', 'yue->zh-tw=1', 'yue->zh=1',
     ]);
   });
 

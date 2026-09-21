@@ -1095,10 +1095,42 @@ const LETTRES_JAWI = /[ڠڤڬڽݢۏ]/u;
  * une devinette. Rendre `undefined` ici ferait tomber l'arabe de 120 lignes a
  * presque rien sans corriger quoi que ce soit.
  */
+/**
+ * LES MOTS PERSANS, pour les lignes qui n'ont aucune lettre persane.
+ *
+ * Sept lignes persanes du banc s'ecrivent entierement avec le jeu arabe, donc
+ * la classe de lettres ci-dessus ne peut rien pour elles et elles ressortaient
+ * arabes. C'etait le plus gros bloc d'erreurs restant du chemin sur, sept sur
+ * treize, et la lettre avait fait tout ce qu'elle pouvait.
+ *
+ * `arabe-candidats.mjs` est la passe a mots du crible, portee a l'ecriture
+ * arabe. Ces six-la sont ecrits par le persan seul sur les 240 lignes arabes et
+ * persanes du banc, bruit ZERO, et surtout on sait dire ce que l'arabe ecrit a
+ * la place, ce qui est le critere (a) :
+ *
+ *   است   la copule. L'arabe n'en a pas, ou ecrit `يكون`.
+ *   را    la marque d'objet. L'arabe n'a pas de particule equivalente.
+ *   از    "de, depuis". L'arabe ecrit `من`.
+ *   او    "il, elle". L'arabe ecrit `هو` ou `هي`.
+ *   بود   "etait". L'arabe ecrit `كان`.
+ *   هر    "chaque". L'arabe ecrit `كل`.
+ *
+ * CE QUI EST DEHORS malgre un bruit mesure a zero : `به` et `در`, parce que
+ * l'arabe les ecrit bel et bien, `بِهِ` "avec lui" et `دُرّ` "perle", et que sans
+ * voyelles ce sont les memes chaines. Le corpus n'en contient aucune, ce qui ne
+ * prouve rien. `ام` est a deux lettres et l'arabe ecrit `أم` sans hamza assez
+ * souvent pour que ce soit le meme token.
+ *
+ * L'ourdou passe AVANT et n'est pas concerne : il ecrit `ہے`, `سے`, `وہ`, `تھا`
+ * et son `ہر` prend le he U+06C1, pas le U+0647 du persan.
+ */
+const MOTS_PERSANS = /(^|[^\p{L}])(است|را|از|او|بود|هر)([^\p{L}]|$)/u;
+
 function arabeOuPersan(text: string): string | undefined {
   if (LETTRES_OURDOUES.test(text)) return undefined;
   if (LETTRES_JAWI.test(text)) return 'ms';
   if (LETTRES_PERSANES.test(text)) return 'fa';
+  if (MOTS_PERSANS.test(text)) return 'fa';
   return 'ar';
 }
 
