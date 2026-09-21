@@ -60,13 +60,16 @@ export interface Run {
   shortOnly: Cell;
 }
 
-export function runMatrix(detector: (t: string) => string | undefined): Run {
+export function runMatrix(
+  detector: (t: string) => string | undefined,
+  corpus: Readonly<Record<string, readonly string[]>> = LANG_CORPUS,
+): Run {
   const byLang = new Map<string, Record<Band, Cell>>();
   const confusions = new Map<string, number>();
   const total = emptyCell();
   const shortOnly = emptyCell();
 
-  for (const [lang, lines] of Object.entries(LANG_CORPUS)) {
+  for (const [lang, lines] of Object.entries(corpus)) {
     const bands: Record<Band, Cell> = { short: emptyCell(), medium: emptyCell(), long: emptyCell() };
     for (const line of lines) {
       const answer = detector(line);
