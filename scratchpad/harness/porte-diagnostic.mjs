@@ -15,6 +15,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { LANG_CHAT_PAIRE_REGLAGE } from '../../src/content/langChatPaireReglageCorpus.ts';
+import { LANG_CORPUS } from '../../src/content/langCorpus.ts';
 import { confidentLanguage } from '../../src/content/langDetect.ts';
 
 const SOURCE = readFileSync('src/content/langDetect.ts', 'utf8');
@@ -59,5 +60,51 @@ for (const [lang, lignes] of Object.entries(LANG_CHAT_PAIRE_REGLAGE)) {
   console.log(
     `  -> nommees ${nommee}, porte fermee ${ferme}, ouverte sans mot ${ouverteSansMot}, ` +
       `ouverte avec les deux ${ouverteDeuxMots}`,
+  );
+}
+
+/**
+ * LE NORDIQUE, meme question sur une porte de forme differente.
+ *
+ * Trois declencheurs au lieu d'un, `ø æ`, `å`, et les mots dano-norvegiens, et
+ * deux jeux qui tranchent. La question reste la meme : si une ligne danoise est
+ * muette, est-ce qu'aucun declencheur n'a pris, ou est-ce que le jeu danois n'a
+ * rien a dire derriere ?
+ */
+const LETTRES_DN = depuisLaSource('LETTRES_DANO_NORVEGIENNES');
+const A_ROND = depuisLaSource('A_ROND_SCANDINAVE');
+const MOTS_DN = depuisLaSource('MOTS_DANO_NORVEGIENS');
+const MOTS_NO = depuisLaSource('MOTS_NORVEGIENS');
+const MOTS_DA = depuisLaSource('MOTS_DANOIS');
+
+for (const lang of ['no', 'da']) {
+  const jeu = lang === 'no' ? MOTS_NO : MOTS_DA;
+  const autre = lang === 'no' ? MOTS_DA : MOTS_NO;
+  let nommee = 0;
+  let ferme = 0;
+  let sansMot = 0;
+  let lesDeux = 0;
+  const exemples = [];
+  for (const t of LANG_CORPUS[lang] ?? []) {
+    if (confidentLanguage(t) === lang) {
+      nommee += 1;
+      continue;
+    }
+    if (!LETTRES_DN.test(t) && !A_ROND.test(t) && !MOTS_DN.test(t)) {
+      ferme += 1;
+      if (exemples.length < 4) exemples.push(`FERMEE     ${t}`);
+      continue;
+    }
+    if (jeu.test(t) && autre.test(t)) lesDeux += 1;
+    else if (!jeu.test(t)) {
+      sansMot += 1;
+      if (exemples.length < 8) exemples.push(`SANS MOT   ${t}`);
+    }
+  }
+  console.log(`\n=== ${lang} (Tatoeba) ===`);
+  exemples.forEach((e) => console.log(`  ${e}`));
+  console.log(
+    `  -> nommees ${nommee}, aucun declencheur ${ferme}, ouverte sans mot ${sansMot}, ` +
+      `ouverte avec les deux ${lesDeux}`,
   );
 }

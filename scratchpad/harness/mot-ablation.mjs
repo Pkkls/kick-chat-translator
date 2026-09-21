@@ -42,11 +42,9 @@ const original = readFileSync(SOURCE, 'utf8');
  * d'alternance des deux cotes, `|mot|` ou `|mot)`.
  */
 const MOTS = {
-  MOTS_MALAIS_INDONESIENS:
-    'menang kalah kucing lagu ulang bulan demam panjang baju anjing kampung belajar bangun minggu depan hari rindu makan sini sekarang berapa kamu tahu'.split(
-      ' ',
-    ),
-  MOTS_MALAIS: 'dah tak ni tu je lah weh korang'.split(' '),
+  MOTS_DANO_NORVEGIENS: 'og vil skal'.split(' '),
+  MOTS_NORVEGIENS: 'veldig skjer jente'.split(' '),
+  MOTS_DANOIS: 'rigtig pige sådan bøger sprog'.split(' '),
 };
 
 /**

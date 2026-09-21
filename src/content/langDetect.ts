@@ -616,8 +616,32 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
  * a 41 et `da -> sv` de 44 a 42, ce qui est un progres et pas une fermeture.
  */
 const LETTRES_DANO_NORVEGIENNES = /[øæ]/iu;
-const MOTS_NORVEGIENS = /(^|[^\p{L}])(meg|deg|seg|hva|hvem|hvor|noe|noen|etter|av|ikkje)([^\p{L}]|$)/iu;
+const MOTS_NORVEGIENS = /(^|[^\p{L}])(meg|deg|seg|hva|hvem|hvor|noe|noen|etter|av|ikkje|veldig)([^\p{L}]|$)/iu;
 const MOTS_DANOIS = /(^|[^\p{L}])(mig|dig|sig|hvad|noget|nogen|efter|af|meget)([^\p{L}]|$)/iu;
+// LES SEQUENCES, et elles valent SEPT des DIX lignes de ce tour a elles seules.
+//
+// Ce qui separe ces deux langues est le plus souvent une LETTRE dans un mot et
+// pas un mot entier : le danois ecrit `g` la ou le norvegien ecrit `k`, et `øj`
+// la ou le norvegien ecrit `øy`. `bøger` contre `bøker`, `sprog` contre
+// `språk`, `rigtig` contre `riktig`, `høj` contre `høy`.
+//
+// LA MESURE QUI COMPTE, et c'est la lecon : le tour a d'abord ete ecrit comme
+// une liste de onze MOTS, `veldig skjer jente rigtig pige sådan bøger sprog og
+// vil skal`, plus ces quatre sequences. Onze mots et quatre sequences valent
+// +10 lignes. Sans les sequences, +3. En retirant les NEUF mots qui ne
+// rapportent rien seuls, +10 encore : deux mots et quatre paires de lettres
+// font tout.
+//
+// Une sequence porte sur n'importe quel mot, un mot ne porte que sur lui-meme.
+// C'est exactement ce que la terminaison finnoise apporte au finnois, mesure
+// ici une deuxieme fois sur une autre famille.
+//
+// DEHORS : `kj` et `skj`, proposes comme norvegiens, prennent chacun une ligne
+// danoise, et `gj` en prend trois. Le seuil est ZERO ici, pas trois : le tri se
+// fait entre DEUX langues, donc une ligne de l'autre cote n'est pas du bruit,
+// c'est une erreur.
+const SEQUENCES_NORVEGIENNES = /øy|øk/iu;
+const SEQUENCES_DANOISES = /øj|øg/iu;
 
 /**
  * Le meme mecanisme a un cran de plus : une lettre qui nomme un TRIO.
@@ -645,12 +669,12 @@ const MOTS_DANOIS = /(^|[^\p{L}])(mig|dig|sig|hvad|noget|nogen|efter|af|meget)([
  */
 const A_ROND_SCANDINAVE = /å/iu;
 const MOTS_SUEDOIS = /(^|[^\p{L}])(jag|och|inte|är|från)([^\p{L}]|$)/iu;
-const MOTS_DANO_NORVEGIENS = /(^|[^\p{L}])(jeg|ikke|til)([^\p{L}]|$)/iu;
+const MOTS_DANO_NORVEGIENS = /(^|[^\p{L}])(jeg|ikke|til|vil)([^\p{L}]|$)/iu;
 
 /** Le tri interieur, appele une fois le suedois ecarte d'une facon ou d'une autre. */
 function norvegienOuDanois(text: string): string | undefined {
-  const no = MOTS_NORVEGIENS.test(text);
-  const da = MOTS_DANOIS.test(text);
+  const no = MOTS_NORVEGIENS.test(text) || SEQUENCES_NORVEGIENNES.test(text);
+  const da = MOTS_DANOIS.test(text) || SEQUENCES_DANOISES.test(text);
   if (no && !da) return 'no';
   if (da && !no) return 'da';
   return undefined;
