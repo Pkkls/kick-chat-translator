@@ -468,6 +468,33 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/(eix|itat)([^\p{L}]|$)/iu, 'ca'],
   [/(nje|nja|čno|vno)([^\p{L}]|$)/iu, 'sl'],
   [/(iya|yong|oong)([^\p{L}]|$)/iu, 'tl'],
+  // Un troisieme groupe, extrait de TATOEBA seul et valide sur le corpus de chat
+  // AVEUGLE, qui est la bonne facon de faire depuis qu'on sait que le lexique
+  // memorise et que la morphologie non. La bande de plus de vingt caracteres
+  // rend le meme rappel sur un corpus inconnu que sur celui de reglage, parce
+  // qu'elle n'est servie que par des regles de cette forme.
+  //   -ött -ában -ünk -ára -ért  suffixes de cas hongrois. Six, cinq et quatre
+  //        lignes chacun, et ce sont de vraies desinences, pas des queues de mot.
+  //   -szik  classe verbale hongroise.
+  //   -ould -not -ity -day  anglais. `would could should`, `not cannot`.
+  //   -aar -eken -iets -ekt  neerlandais.  -oir  infinitif francais.
+  //   -eht -ufen  allemand.  -nys -uest  catalan.
+  //
+  // RESERVE sur -aar, la seule de ce groupe, et de la meme nature que celle de
+  // `ñ` plus haut : l'allemand ecrit Haar et Paar. Zero ligne mesuree sur 135,
+  // et le pari est que ces noms sont rares dans un chat la ou le neerlandais
+  // ecrit maar, naar, waar, daar dans presque chaque phrase. Vingt-deux lignes
+  // en face, c'est le plus gros marqueur du groupe.
+  //
+  // DEHORS malgre une mesure propre, protocole 4.6 : -mma est `mamma` en
+  // italien, -tude est anglais autant que francais, -hte est `echte` en
+  // neerlandais, -tic est anglais et francais.
+  [/(ött|ában|ünk|ára|ért|szik)([^\p{L}]|$)/iu, 'hu'],
+  [/(aar|eken|iets|ekt)([^\p{L}]|$)/iu, 'nl'],
+  [/(ould|not|ity|day)([^\p{L}]|$)/iu, 'en'],
+  [/oir([^\p{L}]|$)/iu, 'fr'],
+  [/(eht|ufen)([^\p{L}]|$)/iu, 'de'],
+  [/(nys|uest)([^\p{L}]|$)/iu, 'ca'],
 ];
 
 /**

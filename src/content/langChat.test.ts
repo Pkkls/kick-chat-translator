@@ -65,8 +65,8 @@ describe('le chemin sur, sur du chat', () => {
   // et c'est le lexique de mots courts qui le fera baisser, pas une regle de
   // lettres de plus.
   it('se tait sur trois lignes de chat sur quatre', () => {
-    expect(plain(CHAT_SURE.total)).toEqual({ right: 181, silent: 209, wrong: 0 });
-    expect(muet(CHAT_SURE.total)).toBe(54);
+    expect(plain(CHAT_SURE.total)).toEqual({ right: 185, silent: 205, wrong: 0 });
+    expect(muet(CHAT_SURE.total)).toBe(53);
   });
 
   // Ce que coute le clavier, et c'est la fragilite de toute l'approche par
@@ -74,8 +74,8 @@ describe('le chemin sur, sur du chat', () => {
   // deux tiers. Une regle qui lit ř ou ų ne lit plus rien des que l'utilisateur
   // tape vite, et c'est le cas majoritaire dans un chat sur telephone.
   it('perd un tiers de son rappel quand les diacritiques tombent', () => {
-    expect(plain(NU_SURE.total)).toEqual({ right: 128, silent: 262, wrong: 0 });
-    expect(muet(NU_SURE.total)).toBe(67);
+    expect(plain(NU_SURE.total)).toEqual({ right: 131, silent: 259, wrong: 0 });
+    expect(muet(NU_SURE.total)).toBe(66);
   });
 });
 
@@ -99,7 +99,7 @@ describe('le chemin brut, sur du chat', () => {
   // n'est pas comble, il est court-circuite, et il reapparaitra entier des que
   // le lexique manquera un mot.
   it('se trompe sur plus d une ligne de chat sur quatre', () => {
-    expect(plain(CHAT_BRUT.total)).toEqual({ right: 238, silent: 73, wrong: 79 });
+    expect(plain(CHAT_BRUT.total)).toEqual({ right: 240, silent: 71, wrong: 79 });
     const tatoeba = runMatrix(detectLanguage, memesLangues());
     const partChat = CHAT_BRUT.total.wrong / 390;
     const partTatoeba = tatoeba.total.wrong / (26 * 120);
@@ -107,7 +107,7 @@ describe('le chemin brut, sur du chat', () => {
   });
 
   it('empire encore sans diacritiques', () => {
-    expect(plain(NU_BRUT.total)).toEqual({ right: 197, silent: 99, wrong: 94 });
+    expect(plain(NU_BRUT.total)).toEqual({ right: 199, silent: 97, wrong: 94 });
   });
 
   // Sept langues ne marquent pas un seul point sur le chemin BRUT, franc compris,
@@ -137,8 +137,8 @@ describe('le contraste avec Tatoeba, sur les memes langues', () => {
   // franc, et elle bouge dans le mauvais sens.
   it('montre que le registre coute a franc et pas au chemin sur', () => {
     const t = runMatrix(confidentLanguage, memesLangues());
-    expect(muet(t.total)).toBe(68);
-    expect(muet(CHAT_SURE.total)).toBe(54);
+    expect(muet(t.total)).toBe(66);
+    expect(muet(CHAT_SURE.total)).toBe(53);
     expect(t.total.wrong).toBe(5);
   });
 });

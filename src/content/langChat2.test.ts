@@ -49,8 +49,8 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
   //
   // A longueur egale, l'ecart se separe proprement, et c'est le test suivant.
   it('rappelle un tiers de moins en brut, mais la longueur en explique la moitie', () => {
-    expect(plain(SURE2.total)).toEqual({ right: 77, silent: 183, wrong: 0 });
-    expect(rappel(SURE1.total)).toBe(46);
+    expect(plain(SURE2.total)).toEqual({ right: 78, silent: 182, wrong: 0 });
+    expect(rappel(SURE1.total)).toBe(47);
     expect(rappel(SURE2.total)).toBe(30);
     // Le facteur confondant, mesure : les deux corpus ne sont pas comparables tels quels.
     const lignes = (c: Record<string, readonly string[]>): string[] => Object.values(c).flat();
@@ -63,17 +63,24 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
   // LA MESURE HONNETE, bande par bande.
   //
   //   <= 20 car : 52 % sur le corpus de reglage, 44 % a l'aveugle -> 8 points
-  //   >  20 car : 21 % des deux cotes            -> ZERO
+  //   >  20 car : 25 % contre 22 %                  -> 3 points
   //
   // Les huit points de la bande courte sont la memorisation du lexique, et ils
   // sont reels. Les huit autres du chiffre brut sont de la longueur.
   //
-  // La bande longue est le resultat le plus instructif du fichier : elle est
-  // servie par les lettres, les sequences et les terminaisons, jamais par le
-  // lexique, et elle donne EXACTEMENT le meme rappel sur un corpus inconnu.
-  // Une regle morphologique generalise, une liste de mots choisis a la main non.
-  // C'est la reponse a la question de savoir ou investir ensuite.
-  it('ne memorise rien du tout au-dela de la borne du lexique', () => {
+  // La bande longue est le resultat le plus instructif du fichier : elle n'est
+  // servie que par les lettres, les sequences et les terminaisons, jamais par le
+  // lexique, et son ecart entre corpus connu et corpus inconnu est de trois
+  // points contre huit. Une regle morphologique generalise trois fois mieux
+  // qu'une liste de mots choisis a la main.
+  //
+  // Les trois points ne sont pas zero, et ils sont apparus quand un groupe de
+  // terminaisons a ete extrait de Tatoeba : il a rapporte 76 lignes sur Tatoeba
+  // et UNE seule ici. Une regle tiree de la prose sert la prose. Generaliser
+  // d'un corpus a l'autre DANS un registre n'est pas franchir le fosse entre
+  // deux registres, et c'est une limite a garder en tete avant d'en extraire
+  // d'autres.
+  it('memorise trois fois moins au-dela de la borne du lexique', () => {
     const bande = (
       corp: Record<string, readonly string[]>,
       garde: (t: string) => boolean,
@@ -83,16 +90,16 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
     const long = (t: string): boolean => t.length > 20;
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, court)).total)).toBe(52);
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, court)).total)).toBe(44);
-    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, long)).total)).toBe(21);
-    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, long)).total)).toBe(21);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, long)).total)).toBe(25);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, long)).total)).toBe(22);
   });
 
   // Le chemin brut perd moins parce qu'il ne depend pas du lexique : franc lit
   // des trigrammes, pas des mots choisis a la main. Sa perte, 61 % a 55 %, est
   // du bruit d'echantillonnage plutot que de la memorisation.
   it('montre que seul le chemin qui depend du lexique perd au changement de corpus', () => {
-    expect(plain(BRUT2.total)).toEqual({ right: 144, silent: 51, wrong: 65 });
-    expect(rappel(BRUT2.total)).toBe(55);
+    expect(plain(BRUT2.total)).toEqual({ right: 145, silent: 50, wrong: 65 });
+    expect(rappel(BRUT2.total)).toBe(56);
   });
 
   // La regle qui garde ce banc utilisable, et elle est fragile : il suffit d'une

@@ -71,7 +71,7 @@ const BANC: Ligne[] = [
   ['hraje fakt spatne dneska', 'cs', 'cs', undefined],
   ['co se to tu deje', 'cs', 'pt', undefined],
   ['no choi qua te hom nay', 'vi', 'pt', undefined],
-  ['he is playing so bad today', 'en', 'en', undefined],
+  ['he is playing so bad today', 'en', 'en', 'en'],
   ['anyone know what happened', 'en', 'en', undefined],
   ['that was actually insane', 'en', 'en', undefined],
   ['chat is going crazy rn', 'en', 'tl', undefined],
@@ -106,6 +106,11 @@ describe('les totaux du banc latin', () => {
   // partita` et `wat` nomme `wat gebeurt er nu`, qui etait lue ALLEMANDE. Une
   // fausse devient juste, ce qui est le premier mouvement de ce compteur-la
   // depuis que le banc existe, et le chemin sur nomme les deux.
+  //
+  // Cinquieme passe : la terminaison -day nomme `he is playing so bad today` sur
+  // le chemin SUR, la ou il se taisait. Ces trois totaux ne bougent pas, ils ne
+  // comptent que la colonne `detectLanguage` ; c'est la quatrieme colonne qui
+  // change, et c'est elle qui decide de ce qui part au moteur.
   it('sont 37 justes, 5 silences et 9 fausses avec assurance sur 51', () => {
     let justes = 0;
     let silences = 0;
