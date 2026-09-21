@@ -1148,11 +1148,49 @@ Commits, du plus ancien au plus récent :
 | Consommateur | Ligne | État | Pourquoi |
 |---|---|---|---|
 | `isSameLanguageAsTarget`, le verrou qui efface | `:212` | **basculé sur `confidentLanguage`** | 1217 lignes effacées à tort deviennent 15 aujourd'hui. Commit `71e78c4` |
-| `ignoreEnglish` | `:180` | **laissé sur la réponse brute** | La réponse sûre ne nomme qu'**1 ligne anglaise sur 120**, contre 78 pour franc. Revérifié après chaque passe : l'anglais n'a pas de lettre exclusive, ce chiffre n'a pas bougé. Seule la phase 0b le débloquera |
+| `ignoreEnglish` | `:180` | **laissé sur la réponse brute, mais le chiffre a bougé** | 1 ligne anglaise sur 120 quand la décision a été prise, **38 aujourd'hui**. La note « revérifié après chaque passe » était fausse depuis plusieurs passes. Mesure complète et arbitrage ci-dessous |
 | `shouldDropBySourceLang`, l'allowlist | `:215` | **laissé sur la réponse brute** | Il droppe sur `lang_unknown`. Un détecteur plus silencieux le ferait supprimer **davantage**. Ce n'est pas son entrée qu'il faut changer, c'est sa sémantique |
 | `localEngine.translate(detected, ...)` | `:286` | **TRANCHÉ, mais sur un chiffre PÉRIMÉ**, voir ci-dessous | |
 | `detectedLang: detected`, le drapeau | `:287` | **PAS cosmétique, pas indépendant**, voir ci-dessous | |
 | `requestCloud(..., confidentLanguage(real))` | `:340`, `:393` | **déjà sur la réponse sûre** | Ce consommateur ne figurait pas dans la table. C'est lui qui devient `source_lang` chez DeepL et `sl` chez Google, donc celui qui pouvait faire le plus de dégâts, et il est correct depuis qu'il est écrit |
+
+### `ignoreEnglish` : le chiffre qui justifiait la décision a changé d'un facteur trente-huit
+
+La ligne du tableau disait : « la réponse sûre ne nomme qu'**1 ligne anglaise sur 120**, contre 78 pour franc. Revérifié après chaque passe : l'anglais n'a pas de lettre exclusive, ce chiffre n'a pas bougé. »
+
+**Il a bougé.** Les terminaisons anglaises puis les mots outils exclusifs l'ont porté de 1 à **38 sur 120**. La phrase « revérifié après chaque passe » n'était plus vraie depuis plusieurs passes.
+
+Mesure complète, `2026-09-21`, les quatre corpus :
+
+| corpus | chemin | anglaises nommées | lignes NON anglaises appelées `en` |
+|---|---|---:|---:|
+| Tatoeba | brut | 95 / 120 | **29** |
+| Tatoeba | sûr | 38 / 120 | **0** |
+| chat 1 | brut | 12 / 15 | **5** |
+| chat 1 | sûr | 7 / 15 | **0** |
+| chat 2 AVEUGLE | brut | 7 / 10 | **2** |
+| chat 2 AVEUGLE | sûr | 3 / 10 | **0** |
+| mélangé | brut | — | **13 / 60** |
+
+**CE QUE CHAQUE COLONNE COÛTE, et les deux coûts ne sont pas de même nature.**
+
+Une ligne **non anglaise appelée `en`** est un message que le lecteur anglophone **ne voit jamais** : `ignoreEnglish` l'efface sans le traduire. Une ligne anglaise **non nommée** part au moteur, revient identique, et le test `tt === real` la jette après coup : une requête gaspillée, rien de visible.
+
+Donc : **une erreur sur quatre de ce que `ignoreEnglish` efface aujourd'hui n'est pas de l'anglais** (95 justes contre 29 fausses, 77 % de précision ; 71 % sur du chat). Et sur les lignes à deux langues, **13 sur 60 sont effacées**, toutes à tort.
+
+Basculer coûterait 57 requêtes gaspillées sur 120 lignes anglaises de Tatoeba, 5 sur 15 lignes de chat, 4 sur 10 du corpus aveugle. Pour un lecteur anglophone dans un chat anglophone, c'est-à-dire le cas courant, c'est la majorité des messages qui feraient l'aller-retour.
+
+**LA TROISIÈME VOIE A ÉTÉ MESURÉE ET ELLE VAUT ZÉRO.** L'idée était de garder la devinette mais de ne la suivre que si la réponse sûre ne la **contredit** pas : effacer si `detected === 'en'` et que `confidentLanguage` dit `en` ou se tait, refuser si elle dit autre chose. Gain : **zéro ligne sauvée sur les quatre corpus.** La raison est structurelle et vaut d'être retenue :
+
+> Les lignes que franc appelle anglaises à tort sont **exactement** celles qui ne portent aucun marqueur. C'est pour ça que franc tombe sur l'anglais, et c'est pour ça que le chemin sûr s'y tait. Les deux échouent sur le même ensemble, donc l'un ne peut pas corriger l'autre.
+
+**L'arbitrage reste donc binaire, et c'est un choix de produit à laisser à kil :**
+
+1. **Laisser sur la devinette.** Rapide et gratuit sur la majorité des messages, au prix d'un message effacé sur quatre qui n'est pas de l'anglais.
+2. **Basculer sur la réponse sûre.** Plus un seul message effacé à tort, au prix d'un aller-retour au moteur sur les deux tiers du chat anglophone.
+
+Ne pas trancher ça dans une passe de détection. Ce qui a changé et qui justifie de rouvrir : l'option 2 coûtait 119 lignes sur 120 quand la décision a été prise, elle en coûte 82 aujourd'hui, et elle continuera de baisser à chaque tour qui nomme l'anglais.
+
 
 ### Le piège de `translateAndApply(msg, real, detected)`
 
