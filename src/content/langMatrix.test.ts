@@ -363,7 +363,14 @@ describe('neither the corpus nor the matrix reaches the shipped extension', () =
           continue;
         }
         if (!/\.tsx?$/.test(entry) || /\.test\.tsx?$/.test(entry)) continue;
-        if (entry === 'langMatrix.ts' || entry === 'langCorpus.ts' || entry === 'langChatCorpus.ts') continue;
+        if (
+          entry === 'langMatrix.ts' ||
+          entry === 'langCorpus.ts' ||
+          entry === 'langChatCorpus.ts' ||
+          entry === 'langMixedCorpus.ts'
+        ) {
+          continue;
+        }
         if (/from '\.{0,2}[^']*lang(\w*Corpus|Matrix)'/.test(readFileSync(full, 'utf8'))) {
           offenders.push(full.slice(src.length + 1));
         }
