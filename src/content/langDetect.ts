@@ -271,6 +271,24 @@ const SHORT_WORD_LANG = new Map<string, string>([
 
   ['ang', 'tl'], ['naman', 'tl'], ['mga', 'tl'], ['siya', 'tl'], ['talaga', 'tl'], ['salamat', 'tl'], ['grabe', 'tl'],
   ['sobrang', 'tl'], ['yan', 'tl'], ['wala', 'tl'],
+
+  // Quatrieme couche, meme methode, meme crible. Les rejets de ce tour :
+  // `igen` est suedois sur quatre lignes, `ingenting` aussi, `taas` est
+  // estonien, `zvuk` est tcheque autant que slovaque. `happened` et `crazy`
+  // mesurent propres sur les deux corpus et apparaissent sur le banc MELANGE.
+  // Les mots proprement malais, `tiada teruk nampak berlaku`, ne sont PAS ici :
+  // ils vont dans la porte malais-indonesien, ou ils ne risquent pas de voler
+  // une ligne indonesienne, parce que l'indonesien emploie certains d'entre eux.
+  ['niekto', 'sk'], ['práve', 'sk'], ['prave', 'sk'], ['výborne', 'sk'], ['vyborne', 'sk'],
+  ['hrá', 'sk'], ['hra', 'sk'],
+  ['endnu', 'da'], ['elendigt', 'da'],
+  ['believe', 'en'], ['anyone', 'en'], ['today', 'en'],
+  ['noch', 'de'], ['wieder', 'de'], ['keine', 'de'], ['gerade', 'de'],
+  ['hoe', 'nl'], ['nog', 'nl'], ['geen', 'nl'], ['zijn', 'nl'], ['heeft', 'nl'],
+  ['keer', 'nl'], ['vandaag', 'nl'],
+  ['tänään', 'fi'], ['tanaan', 'fi'], ['hyvin', 'fi'], ['mikä', 'fi'], ['mika', 'fi'],
+  ['mitään', 'fi'], ['mitaan', 'fi'],
+  ['igjen', 'no'], ['lenge', 'no'], ['sjanse', 'no'],
 ]);
 
 /**
@@ -627,7 +645,7 @@ const MOTS_MALAIS_INDONESIENS =
 const MOTS_INDONESIENS =
   /(^|[^\p{L}])(bisa|uang|mobil|coba|karena|besok|kamar|kayak|nggak|gak|banget|gimana|udah|aja|nih|dong|sih)([^\p{L}]|$)/iu;
 const MOTS_MALAIS =
-  /(^|[^\p{L}])(kerana|sahaja|cuba|esok|bilik|mahu|jom|awak|tengok|macam|betul|sikit|jugak|memang|nak)([^\p{L}]|$)/iu;
+  /(^|[^\p{L}])(kerana|sahaja|cuba|esok|bilik|mahu|jom|awak|tengok|macam|betul|sikit|jugak|memang|nak|tiada|teruk|nampak|berlaku)([^\p{L}]|$)/iu;
 
 function malaisOuIndonesien(text: string): string | undefined {
   if (!MOTS_MALAIS_INDONESIENS.test(text)) return undefined;
