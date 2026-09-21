@@ -198,6 +198,55 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/[ơưđ]/iu, 'vi'],
 ];
 
+/**
+ * Quand la lettre ne nomme pas une langue mais une PAIRE, un mot tranche dedans.
+ *
+ * ø et æ sont la ou s'arretait la table du dessus : elles appartiennent au
+ * danois ET au norvegien, donc elles ne nomment personne et elles etaient
+ * ecartees pour ca. Mesure sur le corpus entier : elles ne touchent aucune des
+ * quarante autres langues, 55 lignes danoises et 34 norvegiennes et rien
+ * d'autre. Ce n'est donc pas un signal faible, c'est un signal FORT sur un
+ * ensemble de deux, et il suffit d'un second tour pour choisir dedans.
+ *
+ * C'est la forme de `cantonaisOuChinois` et de `cyrilliqueQuelleLangue` : une
+ * porte, puis une decision a l'interieur.
+ *
+ * CE QUE LA PORTE OFFRE GRATUITEMENT, et c'est ce qui rend la regle possible :
+ * elle a deja exclu le suedois. mig, dig, sig et av sont inutilisables en
+ * general parce que le suedois les ecrit aussi, neuf et trois lignes suedoises
+ * du banc ; derriere la porte ils redeviennent des marqueurs propres. Un mot
+ * ambigu dans les 43 peut etre net dans une paire.
+ *
+ * Les paires retenues opposent deux orthographes du meme mot, ce qui est plus
+ * sur qu'un mot present d'un cote et absent de l'autre :
+ *   meg deg seg  contre  mig dig sig       hva contre hvad
+ *   av contre af         etter contre efter    noe noen contre noget nogen
+ *
+ * CE QUI EST DEHORS : `ikke` et `jeg` s'ecrivent pareil des deux cotes, 6 et 11
+ * lignes danoises contre 11 et 13 norvegiennes, et ils sont ici comme temoins de
+ * ce que les deux langues partagent vraiment. `fordi` et `bare` sont communs
+ * aussi. Les deux jeux dans la meme ligne, ou aucun, rendent `undefined` : meme
+ * vote unanime que partout ailleurs dans ce fichier.
+ *
+ * CE QUE CA NE FAIT PAS. La porte ne voit que 26 lignes danoises sur 60 et 18
+ * norvegiennes sur 60, donc la regle laisse passer la majorite des deux langues.
+ * Sortir de la liste a zero et fermer la paire sont deux choses differentes, et
+ * c'est la meme lecon que le catalan une passe plus tot : `no -> sv` tombe de 48
+ * a 41 et `da -> sv` de 44 a 42, ce qui est un progres et pas une fermeture.
+ */
+const LETTRES_DANO_NORVEGIENNES = /[øæ]/iu;
+const MOTS_NORVEGIENS = /(^|[^\p{L}])(meg|deg|seg|hva|hvem|hvor|noe|noen|etter|av|ikkje)([^\p{L}]|$)/iu;
+const MOTS_DANOIS = /(^|[^\p{L}])(mig|dig|sig|hvad|noget|nogen|efter|af|meget)([^\p{L}]|$)/iu;
+
+function danoisOuNorvegien(text: string): string | undefined {
+  if (!LETTRES_DANO_NORVEGIENNES.test(text)) return undefined;
+  const no = MOTS_NORVEGIENS.test(text);
+  const da = MOTS_DANOIS.test(text);
+  if (no && !da) return 'no';
+  if (da && !no) return 'da';
+  return undefined;
+}
+
 /** Unanimous vote again: two exclusive sets in one line is a quote or a nickname. */
 function detectByExclusiveLetter(text: string): string | undefined {
   let vote: string | undefined;
@@ -646,6 +695,12 @@ function detectByLookup(trimmed: string): string | undefined {
   // aucune ; `lt->pt` est la seule confusion qui bouge dans tout le banc.
   const byLetter = detectByExclusiveLetter(trimmed);
   if (byLetter) return byLetter;
+
+  // Meme idee, mais la lettre nomme une paire au lieu d'une langue et un mot
+  // choisit dedans. Apres la table, parce qu'une lettre qui nomme une seule
+  // langue est un signal plus fort qu'une lettre qui en nomme deux.
+  const nordique = danoisOuNorvegien(trimmed);
+  if (nordique) return nordique;
 
   // Short Latin message: a known chat word beats franc, which guesses at this length.
   if (trimmed.length <= SHORT_TEXT_MAX) {

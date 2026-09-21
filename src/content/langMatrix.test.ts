@@ -28,11 +28,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on two lines in five and is almost never wrong.
   // The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 2153, silent: 2869, wrong: 18 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 2176, silent: 2846, wrong: 18 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
-    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 652, silent: 1016, wrong: 12 });
+    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 655, silent: 1013, wrong: 12 });
   });
 
   // The expensive one. This is the answer that deletes a message in silence when
@@ -40,11 +40,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
   it('detectLanguage is wrong on a fifth of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 3336, silent: 730, wrong: 974 });
+    expect(plain(DETECT.total)).toEqual({ right: 3359, silent: 726, wrong: 955 });
   });
 
   it('detectLanguage is wrong on a quarter of short lines', () => {
-    expect(plain(DETECT.shortOnly)).toEqual({ right: 939, silent: 357, wrong: 384 });
+    expect(plain(DETECT.shortOnly)).toEqual({ right: 942, silent: 355, wrong: 383 });
   });
 });
 
@@ -55,31 +55,33 @@ const zeroRight = (run: typeof DETECT): string[] =>
     .sort();
 
 describe('the languages the detector cannot name at all', () => {
-  // Five of forty-two score zero. Not "often wrong": never right, on any line,
+  // Three of forty-two score zero. Not "often wrong": never right, on any line,
   // at any length. Listed rather than summarised because this is the work queue
   // for phase 2, and a language leaving this list is the phase's definition of
-  // progress. Nine at the start of the phase; `ca lt lv sk` left it on the
-  // exclusive-letter rule, and the five that remain are exactly the five with no
-  // letter of their own. They need a lexicon, which is phase 0b.
-  it('names the five that never score a single line', () => {
-    expect(zeroRight(DETECT)).toEqual(['da', 'et', 'fi', 'no', 'sl']);
+  // progress. Nine at the start of the phase: `ca lt lv sk` left on the
+  // exclusive-letter table, `da no` on the pair rule that reads ø and æ and then
+  // picks with a word. The three that remain share every letter they use with a
+  // neighbour and have no pair marker either, so they are waiting on a lexicon,
+  // which is phase 0b.
+  it('names the three that never score a single line', () => {
+    expect(zeroRight(DETECT)).toEqual(['et', 'fi', 'sl']);
   });
 
   // The other half of the same problem, and the reason phase 1 cannot simply
-  // swap the raw guess for the safe one: the safe one can only name twenty-nine
+  // swap the raw guess for the safe one: the safe one can only name thirty-one
   // languages out of forty-two on this corpus. Sixteen before the exclusive
-  // letters.
+  // letters, twenty-nine after them.
   //
   // Read this one with a caveat, because it flatters nothing and misleads in
   // both directions. Tatoeba is written sentences, and the short-word lexicon
   // that feeds `confidentLanguage` is a chat vocabulary: hola, merci, danke,
   // selam. A Spanish Tatoeba sentence contains none of them, so `es` scores zero
-  // here while it would score on a real chat line. The thirteen are therefore an
+  // here while it would score on a real chat line. The eleven are therefore an
   // upper bound on the gap, not a measurement of it. The chat corpus in phase 0b
   // is what settles it.
-  it('names the thirteen the confident path can never name on this corpus', () => {
+  it('names the eleven the confident path can never name on this corpus', () => {
     expect(zeroRight(CONFIDENT)).toEqual([
-      'da', 'el', 'es', 'et', 'fi', 'fr', 'id', 'ms', 'nl', 'no', 'sl', 'sv', 'tl',
+      'el', 'es', 'et', 'fi', 'fr', 'id', 'ms', 'nl', 'sl', 'sv', 'tl',
     ]);
   });
 
@@ -100,9 +102,13 @@ describe('the languages the detector cannot name at all', () => {
   // a bigger neighbour franc does model. Catalan used to sit here too and is
   // down by one line, which is the honest size of `l·l`: the middle dot is a
   // certainty when it appears and it appears twice in 120 lines.
-  it('hands the Nordic languages to Swedish and most of Catalan to Spanish', () => {
-    expect(DETECT.confusions.get('no->sv')).toBe(48);
-    expect(DETECT.confusions.get('da->sv')).toBe(44);
+  it('still hands most of the Nordic languages to Swedish, and Catalan to Spanish', () => {
+    // 48 and 44 before the pair rule. It scores both languages without closing
+    // either pair, which is the same shape as Catalan below it: leaving the
+    // zero list and fixing the confusion are two different things, and only the
+    // first has happened.
+    expect(DETECT.confusions.get('no->sv')).toBe(41);
+    expect(DETECT.confusions.get('da->sv')).toBe(42);
     expect(DETECT.confusions.get('ca->es')).toBe(42);
   });
 });
@@ -202,6 +208,42 @@ describe('the two Chinese scripts, fixed 2026-09-21', () => {
   it('costs two Cantonese lines on the path that reaches the engine', () => {
     const leak = [...CONFIDENT.confusions.entries()].filter(([p]) => /->zh(-tw)?$/.test(p));
     expect(leak.reduce((s, [, n]) => s + n, 0)).toBe(2);
+  });
+});
+
+describe('when a letter names a pair instead of a language, added 2026-09-21', () => {
+  // The case the exclusive-letter table had to leave out. ø and æ belong to
+  // Danish AND Norwegian, so they name nobody; but measured across all 5040
+  // lines they touch those two languages and nothing else, 55 Danish lines and
+  // 34 Norwegian. That is a strong signal on a set of two, and one more round
+  // picks inside it.
+  it('reads the pair marker on nothing but Danish and Norwegian', () => {
+    const carriers = Object.entries(LANG_CORPUS)
+      .filter(([, lines]) => lines.some((t) => /[øæ]/iu.test(t)))
+      .map(([l]) => l)
+      .sort();
+    expect(carriers).toEqual(['da', 'no']);
+  });
+
+  // What the gate hands over for free, and the reason the rule works at all:
+  // Swedish is already excluded, so mig/dig/sig and av become clean markers
+  // behind it although they are unusable in the open. A word that is ambiguous
+  // among forty-three can be decisive inside a pair of two.
+  it('picks inside the pair on words that are ambiguous outside it', () => {
+    expect(confidentLanguage('Han tog sit tøj af.')).toBe('da');
+    expect(confidentLanguage('Kalven lærer av kua.')).toBe('no');
+  });
+
+  // Both sets or neither declines, same unanimous vote as everywhere else here.
+  it('declines when the line carries both sets', () => {
+    expect(confidentLanguage('Han tog sit tøj af, og han ville se meg.')).toBeUndefined();
+  });
+
+  // Nothing taken from the other forty, which is the protocol this repo applies
+  // to any addition on the confident path.
+  it('takes no line from any other language', () => {
+    const into = [...CONFIDENT.confusions.keys()].filter((p) => /->(da|no)$/.test(p));
+    expect(into).toEqual([]);
   });
 });
 
