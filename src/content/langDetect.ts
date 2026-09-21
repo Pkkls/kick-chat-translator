@@ -710,7 +710,16 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   // La recherche a aussi propose -nha, -chi, -aat, -lich et -lige, que
   // l'exposition complete a rejetes : deux lignes vietnamiennes, quatre
   // francaises, quatre finnoises, deux neerlandaises, sept langues.
-  [/(nho|nha|eiro|eira|dade)([^\p{L}]|$)/iu, 'pt'],
+  // `nho|nha` a ete RESSERRE en `inho|inha`, le diminutif. Le vietnamien ecrit
+  // `nhà` et `nhớ` ; diacritiques tombees ce sont `nha` et `nho`, et le banc
+  // Tatoeba depouille montrait `vi -> pt` NEUF fois, le plus gros bloc d'erreurs
+  // qu'il restait dessus.
+  //
+  // Mesure des deux formes : supprimer `nho|nha` coute 6 lignes et une du corpus
+  // aveugle pour les memes 9 erreurs. Les resserrer en `inho|inha` en coute
+  // DEUX et rien ailleurs. **Resserrer plutot que supprimer**, quand la
+  // collision vient de la forme courte et que la longue est sans ambiguite.
+  [/(inho|inha|eiro|eira|dade)([^\p{L}]|$)/iu, 'pt'],
   [/(iamo|simo|glio|tto|nno)([^\p{L}]|$)/iu, 'it'],
   [/(knya|nmu|anku)([^\p{L}]|$)/iu, 'id'],
   [/ným([^\p{L}]|$)/iu, 'sk'],
