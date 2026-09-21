@@ -46,7 +46,7 @@ const BANC: Ligne[] = [
   ['non ci posso credere', 'it', 'it', undefined],
   ['sta giocando malissimo', 'it', 'it', 'it'],
   ['qualcuno ha visto cosa e successo', 'it', 'it', undefined],
-  ['che bella partita', 'it', 'it', undefined],
+  ['che bella partita', 'it', 'it', 'it'],
   ['der spielt richtig schlecht', 'de', 'de', undefined],
   ['was ist denn hier los', 'de', 'de', undefined],
   ['hat jemand gesehen was passiert ist', 'de', 'de', undefined],
@@ -56,7 +56,7 @@ const BANC: Ligne[] = [
   ['inanamiyorum ya', 'tr', 'id', undefined],
   ['goren var mi ne oldu', 'tr', 'tr', undefined],
   ['hij speelt echt slecht', 'nl', 'nl', undefined],
-  ['wat gebeurt er nu', 'nl', 'de', undefined],
+  ['wat gebeurt er nu', 'nl', 'nl', 'nl'],
   ['dat was echt goed man', 'nl', 'de', undefined],
   ['on gra naprawde slabo', 'pl', undefined, undefined],
   ['co tu sie dzieje', 'pl', 'pl', undefined],
@@ -101,7 +101,12 @@ describe('les totaux du banc latin', () => {
   // Troisieme passe : la terminaison -issimo, ajoutee a la table sans borne,
   // nomme `sta giocando malissimo` sur les deux chemins. Un silence de plus
   // devient juste.
-  it('sont 36 justes, 5 silences et 10 fausses avec assurance sur 51', () => {
+  //
+  // Quatrieme passe, celle des mots outils frequents : `che` nomme `che bella
+  // partita` et `wat` nomme `wat gebeurt er nu`, qui etait lue ALLEMANDE. Une
+  // fausse devient juste, ce qui est le premier mouvement de ce compteur-la
+  // depuis que le banc existe, et le chemin sur nomme les deux.
+  it('sont 37 justes, 5 silences et 9 fausses avec assurance sur 51', () => {
     let justes = 0;
     let silences = 0;
     let faux = 0;
@@ -111,9 +116,9 @@ describe('les totaux du banc latin', () => {
       else faux++;
     }
     expect({ justes, silences, faux, total: BANC.length }).toEqual({
-      justes: 36,
+      justes: 37,
       silences: 5,
-      faux: 10,
+      faux: 9,
       total: 51,
     });
   });

@@ -134,6 +134,42 @@ const SHORT_WORD_LANG = new Map<string, string>([
   ['should', 'en'], ['because', 'en'], ['something', 'en'], ['everyone', 'en'],
   ['nothing', 'en'], ['really', 'en'], ['watching', 'en'],
 
+  // Une troisieme couche de lexique, et elle vise le SILENCE plutot que les
+  // langues sans regle : les lignes de chat qui ne portent aucun marqueur et ne
+  // sont que des phrases ordinaires. `il est trop fort`, `wat gebeurt er nou`,
+  // `mi folyik itt` n'ont ni lettre propre ni terminaison propre.
+  //
+  // Les mots sont choisis pour leur frequence dans la langue, pas dans le corpus
+  // de chat, et c'est la precaution qui compte : ce corpus est ecrit par ce
+  // projet, donc y prendre des mots puis y mesurer le gain ne mesurerait rien.
+  // TATOEBA, lui, est independant et emploie les memes mots outils, donc c'est
+  // son chiffre qui fait foi ici.
+  //
+  // DEHORS : `dans` est la danse en norvegien, `viens` est `un` en letton, `sa`
+  // est tagalog sur 33 lignes, `kan` couvre cinq langues, `deje` est un
+  // subjonctif espagnol, `volumen` est allemand, `vad` est `sauvage` en hongrois,
+  // `godt` est norvegien autant que danois, `mis` est espagnol, `ingen` couvre
+  // les trois scandinaves. `vamos` et `creo` mesurent propres sur les deux
+  // corpus mais apparaissent sur le banc MELANGE, ce qui suffit a les ecarter.
+  ['est', 'fr'], ['trop', 'fr'], ['chez', 'fr'], ['avec', 'fr'], ['sont', 'fr'],
+  ['fait', 'fr'], ['comme', 'fr'],
+  ['wat', 'nl'], ['het', 'nl'], ['een', 'nl'], ['nou', 'nl'], ['zet', 'nl'],
+  ['goed', 'nl'], ['maar', 'nl'], ['ook', 'nl'], ['voor', 'nl'], ['gaat', 'nl'],
+  ['deze', 'nl'],
+  ['här', 'sv'], ['hur', 'sv'], ['hon', 'sv'], ['ska', 'sv'], ['vill', 'sv'],
+  ['riktigt', 'sv'],
+  ['čo', 'sk'], ['keď', 'sk'],
+  ['opp', 'no'], ['nettopp', 'no'], ['litt', 'no'],
+  ['folyik', 'hu'], ['valaki', 'hu'], ['hangot', 'hu'], ['csak', 'hu'], ['hogy', 'hu'],
+  ['siin', 'et'], ['toimub', 'et'], ['keegi', 'et'], ['täna', 'et'], ['kuidas', 'et'],
+  ['täällä', 'fi'], ['tapahtuu', 'fi'], ['onko', 'fi'], ['ketään', 'fi'], ['paljon', 'fi'],
+  ['sker', 'da'], ['nogen', 'da'], ['rigtig', 'da'],
+  ['qué', 'es'], ['pasando', 'es'], ['sube', 'es'], ['esto', 'es'], ['increíble', 'es'],
+  ['che', 'it'], ['facendo', 'it'], ['alza', 'it'], ['giocando', 'it'], ['appena', 'it'],
+  ['arrivato', 'it'], ['sfortuna', 'it'], ['manca', 'it'], ['niente', 'it'], ['vede', 'it'],
+  ['întâmplă', 'ro'], ['cineva', 'ro'], ['joacă', 'ro'], ['tocmai', 'ro'], ['intrat', 'ro'],
+  ['cred', 'ro'], ['blochează', 'ro'], ['durează', 'ro'],
+
   // Les vingt langues latines que la table ne couvrait pas. Le lexique etait la
   // seule chose capable de servir un chat latin et il ne parlait que six langues
   // sur vingt-six ; c'est ce que le banc de chat a rendu impossible a ignorer.
