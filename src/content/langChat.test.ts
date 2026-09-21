@@ -70,8 +70,8 @@ describe('le chemin sur, sur du chat', () => {
   // derniers points pendant que le lexique avait cesse de rapporter quoi que ce
   // soit. C'etait une prediction, pas une mesure, et elle s'est trompee.
   it('se tait sur trois lignes de chat sur quatre', () => {
-    expect(plain(CHAT_SURE.total)).toEqual({ right: 204, silent: 186, wrong: 0 });
-    expect(muet(CHAT_SURE.total)).toBe(48);
+    expect(plain(CHAT_SURE.total)).toEqual({ right: 206, silent: 184, wrong: 0 });
+    expect(muet(CHAT_SURE.total)).toBe(47);
   });
 
   // Ce que coute le clavier, et c'est la fragilite de toute l'approche par
@@ -85,7 +85,7 @@ describe('le chemin sur, sur du chat', () => {
   // vingt-six portes a lettre sont muettes. Une ligne de plus ici, et c'est la
   // direction a retenir pour les langues que le clavier deshabille.
   it('perd un tiers de son rappel quand les diacritiques tombent', () => {
-    expect(plain(NU_SURE.total)).toEqual({ right: 132, silent: 258, wrong: 0 });
+    expect(plain(NU_SURE.total)).toEqual({ right: 134, silent: 256, wrong: 0 });
     expect(muet(NU_SURE.total)).toBe(66);
   });
 });
@@ -147,15 +147,15 @@ describe('le contraste avec Tatoeba, sur les memes langues', () => {
   // couvre que six langues sur vingt-six. Ce qui bouge vraiment est l'erreur de
   // franc, et elle bouge dans le mauvais sens.
   //
-  // Le silence Tatoeba descend de 61 a 56 avec les portes partagees, les
-  // lettres vietnamiennes et la porte nordique sans lettre, celui du chat de 50
-  // a 48. Les deux bougent moins que
+  // Le silence Tatoeba descend de 61 a 55 avec les portes partagees, les
+  // lettres vietnamiennes, la porte nordique sans lettre et les marqueurs
+  // tagalog, celui du chat de 50 a 47. Les deux bougent moins que
   // le rappel parce qu'une regle de lettre a besoin d'une lettre accentuee, et
   // le chat en ecrit moins que la prose.
   it('montre que le registre coute a franc et pas au chemin sur', () => {
     const t = runMatrix(confidentLanguage, memesLangues());
-    expect(muet(t.total)).toBe(56);
-    expect(muet(CHAT_SURE.total)).toBe(48);
+    expect(muet(t.total)).toBe(55);
+    expect(muet(CHAT_SURE.total)).toBe(47);
     expect(t.total.wrong).toBe(5);
   });
 });

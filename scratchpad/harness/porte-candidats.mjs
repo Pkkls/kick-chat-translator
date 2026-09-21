@@ -211,3 +211,84 @@ for (const { s, fortes, total, bruit } of seqPortes.sort(parTotal).slice(0, 25))
       `${bruit ? `   bruit ${bruit}` : ''}`,
   );
 }
+
+/**
+ * TROISIEME PASSE : LES MOTS.
+ *
+ * C'est celle qui compte depuis `c3f2942`. Une porte declenchee par un MOT a
+ * fait pour la paire scandinave ce que trois tours de lettres n'avaient pas
+ * fait, et elle survit au clavier sans diacritiques, ce qu'aucune regle de
+ * lettre ne fait.
+ *
+ * Elle remplace aussi la passe a sequence pour tout ce qui est ASCII : une
+ * sequence ASCII se declenche a l'interieur du mot qui la tranche, mesure et
+ * rejete, alors qu'un TOKEN entier ne peut pas se confondre avec un autre token.
+ *
+ * Le decoupage est celui de `SHORT_WORD_LANG` : sur les non-lettres. Un
+ * candidat qui contient un espace ne peut correspondre a rien, piege documente
+ * au protocole 4.6.
+ *
+ * Deux usages, et c'est pour ca que la sortie est groupee par PAIRE :
+ *   - un mot que deux langues seules ecrivent est un DECLENCHEUR de porte ;
+ *   - une fois la porte ouverte, un mot propre a l'une des deux TRANCHE.
+ * La deuxieme moitie se crible avec `lang-screen.mjs`, qui existe pour ca.
+ */
+const PLANCHER_MOT = 8;
+const vuMot = new Map();
+for (const corpus of corpora) {
+  for (const [lang, lgns] of Object.entries(corpus)) {
+    if (!LATINES.has(lang)) continue;
+    for (const ligne of lgns) {
+      for (const mot of new Set(ligne.toLowerCase().split(/[^\p{L}]+/u))) {
+        if (mot.length < 2) continue;
+        if (!/^\p{Script=Latin}+$/u.test(mot)) continue;
+        if (!vuMot.has(mot)) vuMot.set(mot, new Map());
+        const m = vuMot.get(mot);
+        m.set(lang, (m.get(lang) ?? 0) + 1);
+      }
+    }
+  }
+}
+
+/** paire "a+b" -> mots que ces deux langues seules ecrivent */
+const paires = new Map();
+const motsSolo = [];
+for (const [mot, m] of vuMot) {
+  const fortes = [...m.entries()].filter(([, n]) => n >= SEUIL).sort((a, b) => b[1] - a[1]);
+  const total = fortes.reduce((acc, [, n]) => acc + n, 0);
+  if (total < PLANCHER_MOT) continue;
+  const bruit = [...m.entries()].filter(([, n]) => n < SEUIL).reduce((acc, [, n]) => acc + n, 0);
+  if (fortes.length === 1) {
+    motsSolo.push({ mot, lang: fortes[0][0], total, bruit });
+  } else if (fortes.length === 2) {
+    const cle = fortes.map(([l]) => l).sort().join('+');
+    if (!paires.has(cle)) paires.set(cle, []);
+    paires.get(cle).push({ mot, fortes, total, bruit });
+  }
+}
+
+console.log(`\nMOTS QUE DEUX LANGUES SEULES ECRIVENT, declencheurs de porte (>= ${PLANCHER_MOT} lignes) :`);
+const parPoids = [...paires.entries()]
+  .map(([cle, mots]) => [cle, mots.sort(parTotal), mots.reduce((s, m) => s + m.total, 0)])
+  .sort((a, b) => b[2] - a[2])
+  .slice(0, 14);
+for (const [cle, mots, poids] of parPoids) {
+  console.log(`  ${cle.padEnd(8)} ${String(poids).padStart(4)} lignes`);
+  for (const { mot, fortes, bruit } of mots.slice(0, 6)) {
+    console.log(
+      `      ${mot.padEnd(12)} ${fortes.map(([l, n]) => `${l}=${n}`).join(' ').padEnd(18)}` +
+        `${bruit ? ` bruit ${bruit}` : ' bruit ZERO'}`,
+    );
+  }
+}
+
+console.log(`\nMOTS QU'UNE SEULE LANGUE ECRIT, sans bruit du tout (>= ${PLANCHER_MOT} lignes) :`);
+const solo = motsSolo.filter((m) => m.bruit === 0).sort(parTotal);
+const parLang = new Map();
+for (const m of solo) {
+  if (!parLang.has(m.lang)) parLang.set(m.lang, []);
+  parLang.get(m.lang).push(m);
+}
+for (const [l, ms] of [...parLang.entries()].sort((a, b) => b[1].length - a[1].length).slice(0, 12)) {
+  console.log(`  ${l.padEnd(4)} ${ms.map(({ mot, total }) => `${mot}=${total}`).join(' ')}`);
+}

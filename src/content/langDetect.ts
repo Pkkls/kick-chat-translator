@@ -431,6 +431,24 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/(ssä|llä|ttä|vät|istä)([^\p{L}]|$)/iu, 'fi'],
   [/öö/iu, 'et'],
   [/ção/iu, 'pt'],
+  // LE TAGALOG, la derniere langue de la matrice sans un seul marqueur.
+  //
+  // Il s'ecrit en latin nu, sans un diacritique, donc aucune passe de lettres ne
+  // pouvait l'atteindre et il est reste a 28 lignes sur 120 pendant tout le
+  // chantier. C'est la passe a MOTS du crible qui l'a rendu, et le chiffre etait
+  // la depuis le debut : `ang` sur 56 lignes des quatre corpus et ZERO ailleurs.
+  //
+  // Ce sont des marqueurs grammaticaux et non du vocabulaire, ce qui est ce
+  // qu'on veut : `ang` marque le sujet, `ng` le complement, `mga` le pluriel.
+  // Une phrase tagalog en porte un presque toujours, quel que soit le sujet dont
+  // elle parle. C'est la meme nature que la terminaison finnoise au-dessus, pas
+  // celle d'une entree de lexique.
+  //
+  // CE QUI EST DEHORS, et le crible les donnait a bruit zero : `may`, que
+  // l'anglais ecrit, `mo`, que l'italien familier ecrit, et `hindi`, qui est le
+  // nom d'une langue dans une phrase anglaise. Le critere (a) les refuse tous
+  // les trois malgre une mesure propre, exactement comme `тут` et `echt`.
+  [/(^|[^\p{L}])(ang|ng|mga|siya|niya)([^\p{L}]|$)/iu, 'tl'],
   // La ponctuation inversee, qui n'est pas une lettre du tout et qui est le
   // marqueur le plus large de cette table : 27 lignes espagnoles et zero
   // ailleurs. L'espagnol etait a zero sur ce chemin il y a deux passes.
