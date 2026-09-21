@@ -650,6 +650,11 @@ function detectByScript(text: string): string | undefined {
   // jamais leur langue source alors qu'elle se lit a coup sur.
   let bengali = 0;
   let tamil = 0;
+  // Le grec manquait, et c'est le meme trou que l'hebreu puis le bengali et le
+  // tamoul avant lui : une ecriture sans la moindre ambiguite, une des 43 langues
+  // du produit, et rien ici pour la compter. Onzieme ecriture ajoutee au meme
+  // endroit pour la meme raison.
+  let greek = 0;
   for (const ch of text) {
     const c = ch.codePointAt(0)!;
     if (c <= 0x7f || /\s/.test(ch)) continue;
@@ -671,6 +676,12 @@ function detectByScript(text: string): string | undefined {
     // L'ecriture tamoule ne sert que le tamoul.
     else if (c >= 0x0980 && c <= 0x09ff) bengali++;
     else if (c >= 0x0b80 && c <= 0x0bff) tamil++;
+    // Bloc grec, plus le grec etendu que le polytonique emploie. Le risque
+    // connu est la lettre grecque isolee dans une ligne latine, alpha, delta,
+    // sigma en notation scientifique ; le plancher de deux caracteres et la
+    // majorite stricte plus bas s'en chargent, exactement comme pour
+    // l'homoglyphe cyrillique.
+    else if ((c >= 0x0370 && c <= 0x03ff) || (c >= 0x1f00 && c <= 0x1fff)) greek++;
   }
   // Le denominateur ne compte QUE les caracteres qui portent une ecriture
   // connue. Il comptait tout le non-ASCII, emoji compris, et un emoji ne
@@ -682,7 +693,8 @@ function detectByScript(text: string): string | undefined {
   // donc pas de majorite stricte, donc `undefined` ; "رائع" plus quatre emoji
   // tombait pareil et franc reprenait la main pour repondre PERSAN sur de
   // l'arabe. Un chat sans emoji n'existe pas, donc ce n'etait pas un cas limite.
-  const total = kana + han + hangul + arabic + hebrew + cyrillic + thai + devanagari + bengali + tamil;
+  const total =
+    kana + han + hangul + arabic + hebrew + cyrillic + thai + devanagari + bengali + tamil + greek;
   // Le plancher reste a deux, et c'est lui qui empeche un seul caractere
   // etranger de voler une ligne latine : un homoglyphe cyrillique dans un mot
   // anglais compte 1, et a un plancher de 1 la ligne entiere devient russe.
@@ -697,6 +709,7 @@ function detectByScript(text: string): string | undefined {
   if (pct(han)) return cantonaisOuChinois(text);
   if (pct(arabic)) return arabeOuPersan(text);
   if (pct(hebrew)) return 'he';
+  if (pct(greek)) return 'el';
   if (pct(cyrillic)) return cyrilliqueQuelleLangue(text);
   if (pct(thai)) return 'th';
   if (pct(devanagari)) return 'hi';

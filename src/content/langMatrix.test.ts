@@ -28,11 +28,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on two lines in five and is almost never wrong.
   // The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 2179, silent: 2846, wrong: 15 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 2299, silent: 2726, wrong: 15 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
-    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 655, silent: 1013, wrong: 12 });
+    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 695, silent: 973, wrong: 12 });
   });
 
   // The expensive one. This is the answer that deletes a message in silence when
@@ -68,7 +68,7 @@ describe('the languages the detector cannot name at all', () => {
   });
 
   // The other half of the same problem, and the reason phase 1 cannot simply
-  // swap the raw guess for the safe one: the safe one can only name thirty-two
+  // swap the raw guess for the safe one: the safe one can only name thirty-three
   // languages out of forty-two on this corpus. Sixteen before the exclusive
   // letters, twenty-nine after them.
   //
@@ -76,12 +76,12 @@ describe('the languages the detector cannot name at all', () => {
   // both directions. Tatoeba is written sentences, and the short-word lexicon
   // that feeds `confidentLanguage` is a chat vocabulary: hola, merci, danke,
   // selam. A Spanish Tatoeba sentence contains none of them, so `es` scores zero
-  // here while it would score on a real chat line. The ten are therefore an
+  // here while it would score on a real chat line. The nine are therefore an
   // upper bound on the gap, not a measurement of it. The chat corpus in phase 0b
   // is what settles it.
-  it('names the ten the confident path can never name on this corpus', () => {
+  it('names the nine the confident path can never name on this corpus', () => {
     expect(zeroRight(CONFIDENT)).toEqual([
-      'el', 'es', 'et', 'fi', 'fr', 'id', 'nl', 'sl', 'sv', 'tl',
+      'es', 'et', 'fi', 'fr', 'id', 'nl', 'sl', 'sv', 'tl',
     ]);
   });
 
@@ -89,8 +89,14 @@ describe('the languages the detector cannot name at all', () => {
   // every length, on both paths: 120 of 120. The gain is on the confident path,
   // which was mute on both and now hands the engine a source language it can
   // read straight off the alphabet.
-  it('reads Bengali and Tamil off their alphabets, which nothing did before', () => {
-    for (const lang of ['bn', 'ta']) {
+  it('reads Bengali, Tamil and Greek off their alphabets', () => {
+    // Greek was the same hole again, found two passes later: eleven scripts are
+    // counted now and it was the eleventh. franc already named it, so the raw
+    // path never moved and nothing looked broken; the confident path was mute,
+    // so the engine was never told the source language of a Greek line although
+    // the alphabet says it with no ambiguity at all. 0 to 120 on the confident
+    // path, and the raw path is byte for byte what it was.
+    for (const lang of ['bn', 'ta', 'el']) {
       for (const run of [DETECT, CONFIDENT]) {
         const b = run.byLang.get(lang)!;
         expect(b.short.right + b.medium.right + b.long.right, lang).toBe(120);
