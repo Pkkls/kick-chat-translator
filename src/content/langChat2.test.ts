@@ -68,8 +68,8 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
 
   // LA MESURE HONNETE, bande par bande.
   //
-  //   <= 20 car : 52 % sur le corpus de reglage, 44 % a l'aveugle -> 8 points
-  //   >  20 car : 40 % contre 25 %                  -> 15 points
+  //   <= 20 car : 52 % sur le corpus de reglage, 45 % a l'aveugle -> 7 points
+  //   >  20 car : 40 % contre 28 %                  -> 12 points
   //
   // Les huit points de la bande courte sont la memorisation du lexique, et ils
   // sont reels. Les huit autres du chiffre brut sont de la longueur.
@@ -94,7 +94,9 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
   //
   // Le tour suivant, la table de portes partagees, l'a confirme une deuxieme
   // fois et plus nettement : +6 lignes ici, dont CINQ dans la bande longue,
-  // celle que le lexique ne touche pas du tout.
+  // celle que le lexique ne touche pas du tout. L'ecart de la bande longue
+  // REDESCEND de quinze points a douze, ce qui est le sens dans lequel un
+  // mecanisme qui ne memorise pas doit le faire bouger.
   it('memorise trois fois moins au-dela de la borne du lexique', () => {
     const bande = (
       corp: Record<string, readonly string[]>,
