@@ -666,12 +666,17 @@ const JEUX_DE_PORTE: Readonly<Record<string, RegExp>> = {
   lv: /(^|[^\p{L}])(ļoti|viņš|viņa|kāds|paldies|tagad|arī|nav)([^\p{L}]|$)/iu,
   hu: /(^|[^\p{L}])(hogy|nem|egy|csak|mint|nagyon|mindig|megint|semmi|miért)([^\p{L}]|$)/iu,
   pl: /(^|[^\p{L}])(jest|się|nasz|bardzo|jeszcze|wszystko|dlaczego|który)([^\p{L}]|$)/iu,
-  vi: /(^|[^\p{L}])(với|của|là|một|không|được|rồi|quá|này|tôi)([^\p{L}]|$)/iu,
+  vi: /(^|[^\p{L}])(với|của|một|không|được|rồi|quá|này|tôi)([^\p{L}]|$)/iu,
   es: /(^|[^\p{L}])(pero|muy|con|los|las|una|esto|esa|siempre)([^\p{L}]|$)/iu,
   pt: /(^|[^\p{L}])(uma|não|você|muito|isso|essa|também)([^\p{L}]|$)/iu,
-  ca: /(^|[^\p{L}])(amb|això|què|molt|aquest|aquesta|també|més|són)([^\p{L}]|$)/iu,
+  ca: /(^|[^\p{L}])(amb|això|què|molt|aquest|aquesta|també|més|són|una|vam)([^\p{L}]|$)/iu,
   fr: /(^|[^\p{L}])(est|avec|pour|dans|tout|comme|très|sont|fait)([^\p{L}]|$)/iu,
   tr: /(^|[^\p{L}])(bir|için|değil|çok|var|bu|şey|daha)([^\p{L}]|$)/iu,
+  it: /(^|[^\p{L}])(allora|quindi|comunque|anche|adesso|perché|però|davvero|questo|sono|più|che|niente)([^\p{L}]|$)/iu,
+  ro: /(^|[^\p{L}])(foarte|acum|nimic|când|care|pentru|sunt|cred|joacă|cineva)([^\p{L}]|$)/iu,
+  nl: /(^|[^\p{L}])(niet|het|een|wat|voor|zijn|heeft|geen|hoe|nog|gewoon|maar)([^\p{L}]|$)/iu,
+  no: /(^|[^\p{L}])(ikke|jeg|meg|deg|seg|hva|mye|veldig|noen|igjen|lenge|tilbake)([^\p{L}]|$)/iu,
+  da: /(^|[^\p{L}])(ikke|jeg|mig|dig|sig|hvad|meget|noget|altid|endnu|tilbage)([^\p{L}]|$)/iu,
 };
 
 const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [
@@ -681,6 +686,24 @@ const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [
   [/ó/iu, ['hu', 'pl', 'vi', 'es', 'pt', 'ca', 'sk']],
   [/ú/iu, ['sk', 'hu', 'vi', 'es', 'pt', 'ca', 'cs']],
   [/ç/iu, ['tr', 'pt', 'fr', 'ca']],
+  // La plus grosse de toutes : dix langues ecrivent le e accent aigu, et il y a
+  // 145 lignes muettes derriere. Dix, c'est beaucoup pour une porte, mais les
+  // jeux de mots ne se croisent pas et une porte qui ne tranche pas ne coute
+  // rien : elle passe la main a la suivante.
+  [/é/iu, ['fr', 'hu', 'ca', 'es', 'pt', 'cs', 'sk', 'it', 'nl', 'vi']],
+  [/í/iu, ['sk', 'cs', 'es', 'hu', 'ca', 'pt', 'vi']],
+  [/ö/iu, ['sv', 'hu', 'tr', 'de', 'fi']],
+  [/[ďťň]/iu, ['sk', 'cs']],
+  [/ý/iu, ['sk', 'cs', 'vi']],
+  [/è/iu, ['it', 'ca', 'fr']],
+  [/à/iu, ['fr', 'vi', 'ca', 'it']],
+  [/ô/iu, ['vi', 'sk', 'fr']],
+  [/ê/iu, ['pt', 'vi', 'fr']],
+  [/â/iu, ['ro', 'vi', 'fr', 'pt']],
+  [/ã/iu, ['pt', 'vi']],
+  [/î/iu, ['ro', 'fr']],
+  [/ì/iu, ['vi', 'it']],
+  [/ò/iu, ['it', 'vi', 'ca']],
 ];
 
 function porteQuelleLangue(text: string): string | undefined {

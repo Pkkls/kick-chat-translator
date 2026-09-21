@@ -131,13 +131,17 @@ function memesLangues(): Record<string, readonly string[]> {
 }
 
 describe('le contraste avec Tatoeba, sur les memes langues', () => {
-  // Le silence bouge peu, 82 a 85, et c'est contre-intuitif : on attendait que
-  // le lexique de chat fasse mieux sur du chat. Il ne le fait pas parce qu'il ne
+  // Le silence bouge peu, et c'est contre-intuitif : on attendait que le
+  // lexique de chat fasse mieux sur du chat. Il ne le fait pas parce qu'il ne
   // couvre que six langues sur vingt-six. Ce qui bouge vraiment est l'erreur de
   // franc, et elle bouge dans le mauvais sens.
+  //
+  // Le silence Tatoeba descend de 61 a 58 avec les portes partagees, celui du
+  // chat ne bouge pas : une porte a besoin d'une lettre accentuee, et le chat
+  // en ecrit moins que la prose.
   it('montre que le registre coute a franc et pas au chemin sur', () => {
     const t = runMatrix(confidentLanguage, memesLangues());
-    expect(muet(t.total)).toBe(61);
+    expect(muet(t.total)).toBe(58);
     expect(muet(CHAT_SURE.total)).toBe(50);
     expect(t.total.wrong).toBe(5);
   });

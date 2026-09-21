@@ -48,10 +48,16 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
   // totaux compare donc deux melanges de longueurs autant que deux corpus.
   //
   // A longueur egale, l'ecart se separe proprement, et c'est le test suivant.
+  //
+  // Les portes partagees ont referme trois points de cet ecart, 32 a 35, et
+  // elles l'ont fait du BON cote : le corpus aveugle gagne six lignes pendant
+  // que le corpus flatte n'en gagne aucune. Un mecanisme qui ne rapporte que la
+  // ou il n'a pas ete regle est exactement ce que le lexique n'arrivait plus a
+  // faire.
   it('rappelle un tiers de moins en brut, mais la longueur en explique la moitie', () => {
-    expect(plain(SURE2.total)).toEqual({ right: 84, silent: 176, wrong: 0 });
+    expect(plain(SURE2.total)).toEqual({ right: 90, silent: 170, wrong: 0 });
     expect(rappel(SURE1.total)).toBe(50);
-    expect(rappel(SURE2.total)).toBe(32);
+    expect(rappel(SURE2.total)).toBe(35);
     // Le facteur confondant, mesure : les deux corpus ne sont pas comparables tels quels.
     const lignes = (c: Record<string, readonly string[]>): string[] => Object.values(c).flat();
     const part = (c: Record<string, readonly string[]>): number =>
@@ -85,6 +91,10 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
   // lettres et des portes et ne memorise pas. Le dernier tour de portes l'a
   // confirme directement, +4 sur ce corpus-ci la ou un tour de lexique faisait
   // zero.
+  //
+  // Le tour suivant, la table de portes partagees, l'a confirme une deuxieme
+  // fois et plus nettement : +6 lignes ici, dont CINQ dans la bande longue,
+  // celle que le lexique ne touche pas du tout.
   it('memorise trois fois moins au-dela de la borne du lexique', () => {
     const bande = (
       corp: Record<string, readonly string[]>,
@@ -94,17 +104,17 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
     const court = (t: string): boolean => t.length <= 20;
     const long = (t: string): boolean => t.length > 20;
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, court)).total)).toBe(52);
-    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, court)).total)).toBe(44);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, court)).total)).toBe(45);
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, long)).total)).toBe(40);
-    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, long)).total)).toBe(25);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, long)).total)).toBe(28);
   });
 
   // Le chemin brut perd moins parce qu'il ne depend pas du lexique : franc lit
   // des trigrammes, pas des mots choisis a la main. Sa perte, 61 % a 55 %, est
   // du bruit d'echantillonnage plutot que de la memorisation.
   it('montre que seul le chemin qui depend du lexique perd au changement de corpus', () => {
-    expect(plain(BRUT2.total)).toEqual({ right: 149, silent: 48, wrong: 63 });
-    expect(rappel(BRUT2.total)).toBe(57);
+    expect(plain(BRUT2.total)).toEqual({ right: 150, silent: 47, wrong: 63 });
+    expect(rappel(BRUT2.total)).toBe(58);
   });
 
   // La regle qui garde ce banc utilisable, et elle est fragile : il suffit d'une
