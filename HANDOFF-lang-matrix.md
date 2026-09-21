@@ -3,7 +3,7 @@
 État vivant de ce chantier, mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `34aff1e`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
+Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `c3f2942`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
 
 ---
 
@@ -49,16 +49,16 @@ Ce qui a été découvert en cours de route et qui n'était pas dans le diagnost
 Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR, 120 lignes par langue.
 Trois issues, **jamais additionnées** : `right` la bonne langue, `silent` le détecteur a refusé de répondre ce qui est l'issue SÛRE, `wrong` une autre langue.
 
-| chemin | portée | départ `ec9e02d` | aujourd'hui `34aff1e` |
+| chemin | portée | départ `ec9e02d` | aujourd'hui `c3f2942` |
 |---|---|---|---|
-| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3099 r / 1926 s / **15 w** |
-| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 905 / 763 / **12** |
-| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3777 / 530 / **733** |
-| `detectLanguage` | court | 837 / 364 / **479** | 1083 / 290 / **307** |
+| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3113 r / 1912 s / **15 w** |
+| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 906 / 762 / **12** |
+| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3791 / 530 / **719** |
+| `detectLanguage` | court | 837 / 364 / **479** | 1084 / 290 / **306** |
 
 Le chemin sûr **répond 2,5 fois plus souvent et se trompe 83 % moins**. C'est le seul mouvement qui compte vraiment : `wrong` sur ce chemin veut dire qu'on demande au moteur de traduire depuis une langue dans laquelle le texte n'est pas.
 
-Le chemin brut a perdu 484 erreurs. Sa part reste haute parce qu'il inclut franc par construction.
+Le chemin brut a perdu 498 erreurs. Sa part reste haute parce qu'il inclut franc par construction.
 
 **Les 15 erreurs du chemin sûr, en entier**, parce qu'elles tiennent en huit lignes et que c'est ce qui reste à fermer : `fa->ar` 7, `ms->ar` 2, puis `es->pt`, `lt->pt`, `ms->fa`, `uk->bg`, `yue->zh-tw`, `yue->zh`, une chacune.
 
@@ -85,12 +85,12 @@ Les trois dernières du chemin brut, `et fi sl`, sont sorties par le lexique de 
 90   zh    89 ru     77 cs     77 sv     74 bg      74 pl    69 ro
 64   nl    61 lt     56 et     52 hu     52 pt      48 fi    45 de
 44   fr    40 es     38 en     37 ca     33 it      29 sk    29 sl
-28   tl    18 no     17 ms     15 da     14 id
+28   tl    26 no     21 da     17 ms     14 id
 ```
 
 **Plus aucune langue sous 13 sur 120**, contre vingt-six à zéro au départ. Ce tableau est celui de Tatoeba ; sur du chat le classement est différent, voir 2bis.
 
-Le bas du tableau n'est plus fait de langues sans règle mais de langues dont les règles sont rares : `ca` a le point volat et deux terminaisons, `en` a dix-sept mots, `da` et `no` ont la porte nordique. Ce qui les limite est le **plafond de 20 caractères** du lexique, pas l'absence de marqueur. Voir 2quater.
+Le bas du tableau n'est plus fait de langues sans règle mais de langues dont les règles sont rares : `ca` a le point volat et deux terminaisons, `en` a dix-sept mots, `da` et `no` ont la porte nordique, qui s'ouvre maintenant sur un mot et plus seulement sur une lettre. Ce qui les limite est le **plafond de 20 caractères** du lexique, pas l'absence de marqueur. Voir 2quater.
 
 **Ce que les trois tours de règles de lettres ont déplacé dans ce tableau**, et c'est net : `vi` 81 à **119**, `tr` 86 à 95, `cs` 75 à 77, `pl` 70 à 74, `nl` 53 à 64, `lt` 53 à 61, `et` 36 à 56, `hu` 41 à 52, `pt` 30 à 52, `fi` 27 à 48, `de` 28 à 45, `fr` 30 à 44, `it` 25 à 33, `ca` 20 à 37, `sk` 16 à 29, `sl` 18 à 29. Les langues qui n'écrivent pas de lettre accentuée ne bougent pas d'une ligne, ce qui est la forme attendue du mécanisme, et c'est ce qui laisse `da no id ms` en bas.
 
@@ -98,18 +98,18 @@ Le bas du tableau n'est plus fait de langues sans règle mais de langues dont le
 
 | de → vers | lignes | note |
 |---|---:|---|
-| id → ms | 45 | jamais traitée, le cluster le plus dur |
-| no → sv | 41 | 48 avant la règle de paire |
-| da → sv | 39 | 44 avant |
+| id → ms | 45 | jamais traitée, **le plus gros bloc restant et de loin** |
+| no → sv | 39 | 48 avant la règle de paire, 41 avant la porte à mot |
+| da → sv | 34 | 44, puis 39 |
 | ms → id | 33 | |
 | da → nl | 30 | |
 | ca → es | 29 | 42 avant les portes, `l·l` n'apparaît que 2 fois sur 120 |
-| no → nl | 14 | |
 | ca → fr | 19 | 29 avant les portes |
 | sk → cs | 18 | 30 avant les lettres exclusives, 27 avant les portes |
-| da → de | 16 | |
+| da → de | 15 | |
 | pt → es | 15 | |
 | zh-tw → zh | 15 | 120 sur 120 au départ |
+| no → nl | 14 | |
 | es → pt | 12 | |
 
 **`bg → ru` (50) et `uk → ru` (22) ont disparu de ce tableau.** Elles en étaient le sommet et elles ne sont plus nulle part.
@@ -148,7 +148,7 @@ Quatre choses qu'il dit et que Tatoeba ne pouvait pas dire :
 
 | | corpus 1, qui a construit le lexique | corpus 2, **AVEUGLE** |
 |---|---:|---:|
-| chemin sûr, justes | 203 / 390 | 100 / 260 |
+| chemin sûr, justes | 204 / 390 | 100 / 260 |
 | rappel sûr | 52 % | 38 % |
 | **erreurs** | **0** | **0** |
 | chemin brut, rappel | 65 % | 60 % |
@@ -160,7 +160,7 @@ Quatre choses qu'il dit et que Tatoeba ne pouvait pas dire :
 | bande | corpus 1 | corpus 2 aveugle | écart |
 |---|---:|---:|---:|
 | ≤ 20 car. | 54 % | 47 % | **7 points** |
-| > 20 car. | 41 % | 33 % | **8 points** |
+| > 20 car. | 43 % | 33 % | **10 points** |
 
 Les sept points de la bande courte sont la mémorisation du lexique, et ils sont réels. Le reste du chiffre brut était de la longueur.
 
@@ -586,6 +586,39 @@ Le `ş` turc est U+015F ; le roumain écrit le sien avec la virgule souscrite U+
 
 ---
 
+### 5.16 LA PORTE SANS LETTRE, et le rejet des séquences ASCII (`c3f2942`)
+
+**Le problème que ça résout.** Trois tours de règles de lettres n'ont pas bougé `no -> sv` ni `da -> sv` d'une seule ligne, et ce n'était pas un hasard : ni le danois ni le norvégien n'écrit une lettre que la table couvre, et leurs trois lettres à eux, `å ø æ`, ne sont pas sur la plupart de leurs lignes. La file les avait marquées comme demandant autre chose.
+
+**Ce que le crible étendu aux séquences a rendu**, et la réponse n'est pas une séquence du tout, c'est un MOT :
+
+```
+jeg    no=39 da=35   bruit 3 lignes, toutes du `jego` polonais, que la borne de mot écarte
+ikke   no=28 da=25   bruit 2 lignes
+det    sv=31 da=29 no=28
+```
+
+`jeg` et `ikke` nomment la paire exactement comme `ø`, et le suédois écrit `jag` et `inte` à la place : le critère (a) est rempli sans corpus. Les deux mots étaient DÉJÀ dans `MOTS_DANO_NORVEGIENS` ; la fonction ne les consultait que derrière `å`. Maintenant une ligne qui porte un mot dano-norvégien et aucun mot suédois va au tri intérieur, lettre scandinave ou pas.
+
+```
+tatoeba  sur   3099r/1926s/15w -> 3113r/1912s/15w   carte IDENTIQUE
+tatoeba  brut  3777r/530s/733w -> 3791r/530s/719w
+no->sv 41 -> 39,  da->sv 39 -> 34,  da->de 16 -> 15
+no 18 -> 26 lignes sur le chemin sûr, da 15 -> 21
+```
+
+**ET ELLE SURVIT AU CLAVIER.** Sur le banc à diacritiques retirées, tout le reste du fichier se tait et cette porte répond encore, parce que `jeg` et `ikke` s'écrivent en ASCII. **C'est la direction pour toutes les langues que le clavier déshabille, et aucune règle de lettre ne peut y aller.**
+
+**DEUX PORTES DE SÉQUENCE REJETÉES, et la raison vaut pour toutes.** `sz` (hu/pl) et `dz` (pl/lv/sk) criblaient propre sur les quatre corpus. Le banc des lignes mélangées a refusé `dz` : trois lignes nommées `pl`, dont `he is cracked bardzo dobrze`.
+
+> `bardzo` porte `dz` **et** il EST le mot polonais du jeu. Le déclencheur vit dans le mot qui tranche, les deux indices censés être indépendants n'en font qu'un, et la porte dégénère en entrée de lexique **sans la borne de vingt caractères** qui tient le lexique.
+
+`sz` a le même défaut par `nasz`, `jeszcze`, `wszystko`. Il valait deux lignes, et le corpus mélangé ne contient simplement aucune ligne qui l'expose, ce qui ne prouve rien : c'est la leçon du corpus 3. Les deux sont dehors, et retirer `dz` n'a coûté aucune des +16 lignes.
+
+Une porte à lettre accentuée ne peut pas avoir ce défaut, `ä` ne vit pas dans `nicht`. **Une porte de séquence demanderait de vérifier que le déclencheur tombe HORS du mot trouvé**, et c'est le travail à faire si on veut rouvrir cette piste.
+
+---
+
 ## 6. État par phase
 
 | Phase | Contenu | État |
@@ -615,7 +648,8 @@ Les chiffres sont en 2bis-bis, 2ter et 5.14.
 1. **Les PORTES restent le mécanisme le plus rentable, et c'est maintenant mesuré cinq fois.** Le dernier tour, la table de vingt portes en 5.14, a rapporté +83 lignes sur Tatoeba et +6 sur le corpus aveugle sans en voler une seule. **Ce qui reste à faire dessus, par ordre :**
    - **Le crible à lettre est ÉPUISÉ.** `porte-candidats.mjs` ne rend plus une seule porte libre ni une seule lettre exclusive manquante. Le relancer après tout changement de corpus, pas avant.
    - **Étoffer les jeux de mots des langues faibles derrière les portes existantes.** Le slovaque reste muet derrière `ä`, faute de jeu. Chaque mot ajouté à un jeu sert **toutes** les vingt-six portes d'un coup, c'est le meilleur rapport du fichier et il n'a jamais été exploité systématiquement.
-   - **Les portes de SÉQUENCE, jamais essayées, et c'est maintenant le seul angle neuf.** Une porte n'a pas besoin d'être une lettre : `ij` néerlandais, `sz cz` polonais et hongrois, `gh` italien et roumain, `ll` espagnol et catalan nomment aussi des petits ensembles. Le crible ne les voit pas, il ne compte que des caractères isolés : **l'étendre aux bigrammes est le travail à faire avant d'écrire quoi que ce soit.**
+   - **LES PORTES À MOT, et c'est le filon ouvert.** Section 5.16 : `jeg` et `ikke` ont fait pour la paire scandinave ce que trois tours de lettres n'avaient pas fait, et en ASCII, donc la règle survit au clavier. Le crible à séquences les trouve, il est déjà écrit. Les candidats qu'il a rendus et que personne n'a exploités : `aya` ms=39 id=14, `nya` id=30 ms=20, `apa` id=18 ms=18, `say` ms=34 id=11, soit **la paire `id`/`ms`, le plus gros bloc de confusion restant**. Et `iy` tl=33 tr=15, pour une langue qui n'a aucun marqueur.
+   - **Les portes de séquence ASCII sont MESURÉES ET REJETÉES**, section 5.16. Ne pas les rouvrir sans écrire d'abord la vérification de disjonction déclencheur/mot.
 
 2. **Chercher ce qui MANQUE dans les tables.** `ñ`, `ß`, `œ`, `ā ē ī` étaient absents pendant trois passes de raffinage, et le grec manquait au compteur d'écritures après trois trous identiques déjà bouchés. Relire une table en entier vaut mieux qu'ajouter à sa fin. Ce point a produit le lot des portes et il n'est pas épuisé.
 
@@ -637,6 +671,8 @@ Les chiffres sont en 2bis-bis, 2ter et 5.14.
 - **Basculer le moteur on-device sur `confidentLanguage`.** Section 10, tranché sur le chiffre de silence.
 - **Remettre une porte `no`/`da` générique derrière `ø æ`.** Mesurée, section 5.14 : zéro ligne sur les cinq bancs, et elle casse l'unanimité. La fonction nordique dédiée en amont répond déjà à tout.
 - **Mettre `là` dans un jeu de porte vietnamien.** C'est le `là` français au caractère près, il a volé trois lignes.
+- **Une porte de séquence ASCII** (`sz`, `dz`). Mesurée, section 5.16 : le déclencheur vit dans le mot qui tranche, et le banc des lignes mélangées l'attrape.
+- **Ajouter une lettre arabe à la table des exclusives pour le malais.** Le crible les proposait par un défaut de filtre, corrigé en `0e14a6a`. Le jawi a ses six lettres à lui et elles sont déjà lues.
 
 ---
 
@@ -764,6 +800,8 @@ Commits, du plus ancien au plus récent :
 | `1cb8a11` | Bring the handoff up to the gate table, and correct the four figures it was stating from before |
 | `355d15a` | Screen for the gates nobody had opened, and find the widest one still free |
 | `34aff1e` | Add the thirty-three letters only Vietnamese writes, and the s-cedilla only Turkish writes |
+| `0e14a6a` | Stop the screen from proposing Arabic letters as Malay, and record that it is now empty |
+| `c3f2942` | Open the Nordic pair on a word instead of a letter, which is what it was waiting for |
 
 ---
 
@@ -785,7 +823,7 @@ Commits, du plus ancien au plus récent :
 
 - Commits : sujet à l'impératif, corps expliquant la cause, le correctif, et **comment il a été constaté**. Terminer par `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`.
 - Gate : `npm run release:check`, jamais seulement `typecheck` et `test`. Il lance aussi `lint`.
-- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **95497 aujourd'hui** (`34aff1e`), soit +4013 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-six portes et environ 380 entrées de lexique. Le détail des trois derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23. Les deux corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
+- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **95446 aujourd'hui** (`c3f2942`), soit +3962 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-six portes et environ 380 entrées de lexique. Le détail des quatre derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, et **-51 pour +14** au dernier, qui supprime plus de code qu'il n'en ajoute. Les deux corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
 - Pas de nom de streamer ou de chaîne en dur, nulle part.
 - Pas d'emoji dans le code.
 - Les données de test vivent **inline dans le fichier de test**, pas dans une fixture séparée.
