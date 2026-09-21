@@ -64,36 +64,46 @@ describe('le chemin sur, sur du chat', () => {
   // latence et son quota. La reponse est non tant que ce chiffre n'a pas baisse,
   // et c'est le lexique de mots courts qui le fera baisser, pas une regle de
   // lettres de plus.
-  it('se tait sur cinq lignes de chat sur six', () => {
-    expect(plain(CHAT_SURE.total)).toEqual({ right: 59, silent: 331, wrong: 0 });
-    expect(muet(CHAT_SURE.total)).toBe(85);
+  it('se tait sur trois lignes de chat sur quatre', () => {
+    expect(plain(CHAT_SURE.total)).toEqual({ right: 101, silent: 289, wrong: 0 });
+    expect(muet(CHAT_SURE.total)).toBe(74);
   });
 
   // Ce que coute le clavier, et c'est la fragilite de toute l'approche par
   // lettre exclusive mise en chiffre : sans diacritiques le rappel tombe des
   // deux tiers. Une regle qui lit ř ou ų ne lit plus rien des que l'utilisateur
   // tape vite, et c'est le cas majoritaire dans un chat sur telephone.
-  it('perd les deux tiers de son rappel quand les diacritiques tombent', () => {
-    expect(plain(NU_SURE.total)).toEqual({ right: 18, silent: 372, wrong: 0 });
-    expect(muet(NU_SURE.total)).toBe(95);
+  it('perd un tiers de son rappel quand les diacritiques tombent', () => {
+    expect(plain(NU_SURE.total)).toEqual({ right: 63, silent: 327, wrong: 0 });
+    expect(muet(NU_SURE.total)).toBe(84);
   });
 });
 
 describe('le chemin brut, sur du chat', () => {
-  // franc est nettement PIRE sur du chat que sur de la prose, et l'ecart est
-  // dans le sens qui coute : 33 lignes fausses sur 100 contre 23 sur les memes
-  // 26 langues de Tatoeba. Une ligne de cinq mots ne porte pas assez de
-  // trigrammes pour lui, et c'est exactement le format du produit.
-  it('se trompe sur une ligne de chat sur trois', () => {
-    expect(plain(CHAT_BRUT.total)).toEqual({ right: 148, silent: 114, wrong: 128 });
+  // Ce chiffre a CHANGE DE SENS pendant que le lexique s'etendait, et l'ancienne
+  // version de ce test est plus instructive que la nouvelle.
+  //
+  // Avant l'extension du lexique aux vingt langues qui manquaient, le chemin
+  // brut se trompait sur 33 lignes de chat sur 100 contre 23 sur les memes 26
+  // langues de Tatoeba : franc etait nettement pire sur du chat, parce qu'une
+  // ligne de cinq mots ne porte pas assez de trigrammes pour lui.
+  //
+  // Les deux taux sont maintenant a egalite, 28 contre 28, et le chat est meme
+  // devant d'un demi-point. Ce n'est pas franc qui s'est ameliore : c'est que
+  // `detectLanguage` consulte le lexique AVANT lui, donc chaque ligne que le
+  // lexique nomme est une ligne que franc ne voit plus. L'ecart de registre
+  // n'est pas comble, il est court-circuite, et il reapparaitra entier des que
+  // le lexique manquera un mot.
+  it('se trompe sur plus d une ligne de chat sur quatre', () => {
+    expect(plain(CHAT_BRUT.total)).toEqual({ right: 182, silent: 99, wrong: 109 });
     const tatoeba = runMatrix(detectLanguage, memesLangues());
     const partChat = CHAT_BRUT.total.wrong / 390;
     const partTatoeba = tatoeba.total.wrong / (26 * 120);
-    expect(partChat).toBeGreaterThan(partTatoeba);
+    expect(Math.abs(partChat - partTatoeba)).toBeLessThan(0.02);
   });
 
   it('empire encore sans diacritiques', () => {
-    expect(plain(NU_BRUT.total)).toEqual({ right: 118, silent: 133, wrong: 139 });
+    expect(plain(NU_BRUT.total)).toEqual({ right: 154, silent: 118, wrong: 118 });
   });
 
   // Sept langues ne marquent pas un seul point sur le chemin BRUT, franc compris,
@@ -101,8 +111,8 @@ describe('le chemin brut, sur du chat', () => {
   // passage au registre court : elles avaient des points sur des phrases
   // completes et n'en ont plus aucun sur cinq mots. C'est la file de travail
   // reelle, et elle n'est pas celle que Tatoeba dessinait.
-  it('nomme les sept langues qu il ne trouve jamais sur du chat', () => {
-    expect(zeroRight(CHAT_BRUT)).toEqual(['ca', 'da', 'et', 'fi', 'no', 'sk', 'sl']);
+  it('ne laisse plus aucune langue a zero sur du chat', () => {
+    expect(zeroRight(CHAT_BRUT)).toEqual([]);
   });
 });
 
@@ -123,8 +133,8 @@ describe('le contraste avec Tatoeba, sur les memes langues', () => {
   // franc, et elle bouge dans le mauvais sens.
   it('montre que le registre coute a franc et pas au chemin sur', () => {
     const t = runMatrix(confidentLanguage, memesLangues());
-    expect(muet(t.total)).toBe(82);
-    expect(muet(CHAT_SURE.total)).toBe(85);
+    expect(muet(t.total)).toBe(81);
+    expect(muet(CHAT_SURE.total)).toBe(74);
     expect(t.total.wrong).toBe(5);
   });
 });

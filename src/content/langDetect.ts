@@ -108,6 +108,101 @@ const SHORT_WORD_LANG = new Map<string, string>([
 
   ['burada', 'tr'], ['oluyor', 'tr'], ['bir', 'tr'], ['için', 'tr'], ['icin', 'tr'],
   ['değil', 'tr'], ['degil', 'tr'],
+
+  // Les vingt langues latines que la table ne couvrait pas. Le lexique etait la
+  // seule chose capable de servir un chat latin et il ne parlait que six langues
+  // sur vingt-six ; c'est ce que le banc de chat a rendu impossible a ignorer.
+  //
+  // Meme regle que ci-dessus et meme discipline que MOTS_RUSSES : chaque entree
+  // est la parce que les langues concurrentes ecrivent AUTRE CHOSE, et la mesure
+  // ne fait qu'opposer un veto. Criblees contre les 5040 lignes de Tatoeba ET
+  // les 390 lignes de chat, 5430 au total, zero occurrence ailleurs exigee.
+  //
+  // Les variantes sans diacritiques sont la exprès. Un chat sur telephone ecrit
+  // `czesc`, `vielä` devient `viela`, `mulțumesc` devient `multumesc` ; sans
+  // elles la table ne sert que la moitie des gens qui ecrivent ces langues.
+  //
+  // CE QUE LE CRIBLE A REJETE, et il a bien travaille :
+  //   mig dig sig  proposes pour le danois, ce sont des mots SUEDOIS, 9, 2 et 7
+  //                lignes. Ils ne servent que derriere la porte ø/æ, qui a deja
+  //                exclu le suedois, et c'est exactement pourquoi la regle de
+  //                paire existe.
+  //   meg   propose pour le norvegien : NEUF lignes hongroises.
+  //   som   propose pour le slovaque : danois, norvegien et suedois.
+  //   ako   propose pour le tagalog : slovaque, 5 lignes.  aqui : portugais.
+  //   tak   danois, mais aussi tcheque, polonais et malais.  moi : francais.
+  //   este  roumain, mais aussi espagnol et portugais.  nic : tcheque.
+  //
+  // CE QUE LA MESURE A LAISSE PASSER ET QUI SORT QUAND MEME, protocole 4.6 du
+  // handoff : 120 lignes ne prouvent pas une absence.
+  //   echt  mesure propre, c'est de l'allemand courant.
+  //   heel  mesure propre, c'est de l'anglais.   tots  pareil.
+  //   nem   mesure propre pour le hongrois, c'est du portugais courant.
+  //   qua   mesure propre pour le vietnamien, c'est de l'italien.
+  //   roi   idem, c'est du francais.   chao : espagnol.   dito : italien.
+  //   kdo   propose pour le slovene, c'est du tcheque.
+  //   sveiki  propose pour le letton, c'est aussi du lituanien.
+  //   vel   propose pour le lituanien, c'est du danois et du norvegien.
+  //   deg seg  propres a la mesure, ce sont des mots suedois. Ils restent dans
+  //            la regle de paire et n'entrent pas ici.
+  //   hvorfor  danois ET norvegien, donc il ne nomme ni l'un ni l'autre.
+  //   cam on   deux mots : cette table est indexee par TOKEN, une entree a
+  //            espace ne peut jamais correspondre. Piege a ne pas reintroduire.
+  ['niet', 'nl'], ['gewoon', 'nl'], ['niks', 'nl'], ['altijd', 'nl'], ['iemand', 'nl'],
+  ['waarom', 'nl'], ['zie', 'nl'], ['wel', 'nl'],
+
+  ['och', 'sv'], ['inte', 'sv'], ['mycket', 'sv'], ['tack', 'sv'], ['varfor', 'sv'],
+  ['varför', 'sv'], ['nagon', 'sv'], ['någon', 'sv'], ['aldrig', 'sv'],
+
+  ['hvad', 'da'], ['meget', 'da'], ['altid', 'da'], ['noget', 'da'],
+
+  ['hva', 'no'], ['mye', 'no'], ['veldig', 'no'], ['takk', 'no'], ['noen', 'no'],
+
+  ['kiitos', 'fi'], ['tosi', 'fi'], ['viela', 'fi'], ['vielä', 'fi'], ['miksi', 'fi'],
+  ['kaikki', 'fi'], ['mutta', 'fi'], ['mita', 'fi'], ['mitä', 'fi'],
+
+  ['aitah', 'et'], ['aitäh', 'et'], ['väga', 'et'], ['tere', 'et'], ['miks', 'et'],
+  ['jalle', 'et'], ['jälle', 'et'], ['praegu', 'et'], ['midagi', 'et'],
+
+  ['bardzo', 'pl'], ['dzieki', 'pl'], ['dzięki', 'pl'], ['czesc', 'pl'], ['cześć', 'pl'],
+  ['jeszcze', 'pl'], ['wszystko', 'pl'], ['dlaczego', 'pl'], ['ktos', 'pl'], ['ktoś', 'pl'],
+
+  ['jsem', 'cs'], ['neni', 'cs'], ['není', 'cs'], ['dekuju', 'cs'], ['děkuju', 'cs'],
+  ['jeste', 'cs'], ['ještě', 'cs'], ['vzdycky', 'cs'], ['vždycky', 'cs'], ['proc', 'cs'],
+  ['proč', 'cs'],
+
+  ['dakujem', 'sk'], ['ďakujem', 'sk'], ['veľmi', 'sk'], ['ešte', 'sk'], ['preco', 'sk'],
+  ['prečo', 'sk'], ['vzdy', 'sk'], ['vždy', 'sk'],
+
+  ['foarte', 'ro'], ['multumesc', 'ro'], ['mulțumesc', 'ro'], ['acum', 'ro'], ['nimic', 'ro'],
+  ['cand', 'ro'], ['când', 'ro'], ['iarasi', 'ro'], ['bine', 'ro'],
+
+  ['khong', 'vi'], ['không', 'vi'], ['duoc', 'vi'], ['được', 'vi'], ['rồi', 'vi'],
+  ['quá', 'vi'],
+
+  ['banget', 'id'], ['gak', 'id'], ['nggak', 'id'], ['gimana', 'id'], ['udah', 'id'],
+  ['aja', 'id'], ['nih', 'id'], ['dong', 'id'], ['sih', 'id'],
+
+  ['macam', 'ms'], ['betul', 'ms'], ['sikit', 'ms'], ['tengok', 'ms'], ['awak', 'ms'],
+  ['jugak', 'ms'], ['nak', 'ms'], ['memang', 'ms'],
+
+  ['nagyon', 'hu'], ['koszi', 'hu'], ['köszi', 'hu'], ['szia', 'hu'], ['miert', 'hu'],
+  ['miért', 'hu'], ['mindig', 'hu'], ['megint', 'hu'], ['semmi', 'hu'],
+
+  ['molt', 'ca'], ['aixo', 'ca'], ['això', 'ca'], ['perque', 'ca'], ['perquè', 'ca'],
+  ['amb', 'ca'], ['gracies', 'ca'], ['gràcies', 'ca'],
+
+  ['zelo', 'sl'], ['hvala', 'sl'], ['zakaj', 'sl'], ['spet', 'sl'], ['tukaj', 'sl'],
+  ['vedno', 'sl'], ['danes', 'sl'],
+
+  ['labai', 'lt'], ['aciu', 'lt'], ['ačiū', 'lt'], ['labas', 'lt'], ['kodel', 'lt'],
+  ['kodėl', 'lt'], ['nieko', 'lt'], ['dabar', 'lt'], ['visada', 'lt'],
+
+  ['loti', 'lv'], ['ļoti', 'lv'], ['paldies', 'lv'], ['kapec', 'lv'], ['kāpēc', 'lv'],
+  ['tagad', 'lv'], ['vienmer', 'lv'], ['vienmēr', 'lv'], ['atkal', 'lv'],
+
+  ['ang', 'tl'], ['naman', 'tl'], ['talaga', 'tl'], ['salamat', 'tl'], ['grabe', 'tl'],
+  ['sobrang', 'tl'], ['yan', 'tl'], ['wala', 'tl'],
 ]);
 
 /**

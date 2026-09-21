@@ -62,8 +62,8 @@ const BANC: Ligne[] = [
   ['co tu sie dzieje', 'pl', 'pl', undefined],
   ['nie moge w to uwierzyc', 'pl', 'pl', undefined],
   ['dia main jelek banget', 'id', undefined, undefined],
-  ['ada apa sih ini', 'id', 'ms', undefined],
-  ['gila sih ini keren', 'id', undefined, undefined],
+  ['ada apa sih ini', 'id', 'id', 'id'],
+  ['gila sih ini keren', 'id', 'id', 'id'],
   ['joaca foarte prost azi', 'ro', 'fr', undefined],
   ['ce se intampla aici', 'ro', 'ro', undefined],
   ['han spelar riktigt daligt', 'sv', 'sv', undefined],
@@ -87,11 +87,17 @@ describe('le banc latin, ligne par ligne', () => {
 describe('les totaux du banc latin', () => {
   // Ces trois nombres sont ce que la passe a publie. Ils sont ici pour qu'un
   // changement du detecteur les fasse bouger sous les yeux de la revue plutot
-  // que dans un journal que personne ne rouvre. Le banc a deja servi : il etait
-  // a 28 justes, 10 silences et 13 fausses, et l'ajout des mots de structure
-  // dans `SHORT_WORD_LANG` a fait rougir exactement six lignes, toutes dans le
-  // bon sens, dont deux qui passaient de FAUSSES a justes.
-  it('sont 33 justes, 7 silences et 11 fausses avec assurance sur 51', () => {
+  // que dans un journal que personne ne rouvre.
+  //
+  // Le banc a deja servi deux fois. Il etait a 28 justes, 10 silences et 13
+  // fausses, et l'ajout des mots de structure dans `SHORT_WORD_LANG` l'a porte
+  // a 33 / 7 / 11 en faisant rougir six lignes, toutes dans le bon sens. La
+  // seconde passe est l'extension du meme lexique aux vingt langues latines
+  // qu'il ignorait : `sih` nomme l'indonesien, donc `ada apa sih ini` cesse
+  // d'etre lu malais et `gila sih ini keren` cesse d'etre muet. Une FAUSSE et un
+  // silence deviennent justes, et le chemin SUR les nomme toutes les deux, la
+  // ou il se taisait. Rien d'autre ne bouge.
+  it('sont 35 justes, 6 silences et 10 fausses avec assurance sur 51', () => {
     let justes = 0;
     let silences = 0;
     let faux = 0;
@@ -101,9 +107,9 @@ describe('les totaux du banc latin', () => {
       else faux++;
     }
     expect({ justes, silences, faux, total: BANC.length }).toEqual({
-      justes: 33,
-      silences: 7,
-      faux: 11,
+      justes: 35,
+      silences: 6,
+      faux: 10,
       total: 51,
     });
   });
