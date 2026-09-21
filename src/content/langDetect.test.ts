@@ -213,11 +213,22 @@ describe('l ecriture cyrillique se partage entre plusieurs langues', () => {
     expect(detectLanguage('сколько времени')).toBe('ru');
   });
 
-  // La limite, mesuree sur des lignes ecrites APRES la regle : 7 sur 12. Une
-  // premiere version donnait 20 sur 20 sur le banc qui avait servi a l'ecrire,
-  // et ce chiffre ne mesurait que l'ajustement.
-  it('et laisse passer du bulgare sans marqueur, ce qui est la limite', () => {
-    expect(detectLanguage('падна ми мивката')).toBe('ru');
+  // Cette ligne-la a change de camp, et c'est un progres. Elle etait ici comme
+  // LIMITE : du bulgare sans marqueur, rendu russe faute de mieux. L'article
+  // defini suffixe la prend maintenant, мивката porte -ата, que ni le russe ni
+  // l'ukrainien n'ont. La mesure d'origine, 7 sur 12, ne portait que sur `ъ` et
+  // la liste de mots.
+  it('lit du bulgare sur son article defini suffixe', () => {
+    expect(detectLanguage('падна ми мивката')).toBe('bg');
+  });
+
+  // La limite est maintenant ici, et elle est d'une autre nature : une ligne
+  // cyrillique qui ne porte AUCUN marqueur des trois langues n'est plus rendue
+  // russe par defaut, elle est rendue undefined. C'est le correctif principal de
+  // cette passe : le repli `ru` etait une devinette posee sur le chemin sans
+  // devinette, et il coutait 72 des 90 erreurs de ce chemin.
+  it('se tait sur une ligne cyrillique sans aucun marqueur', () => {
+    expect(confidentLanguage('падна ми')).toBeUndefined();
   });
 });
 
@@ -263,8 +274,13 @@ describe('un emoji ne dilue pas l ecriture d une ligne', () => {
   // de majorite stricte, donc undefined ; "رائع" plus quatre emoji tombait pareil
   // et franc reprenait la main pour repondre PERSAN sur de l'arabe. Rendre son
   // ancien denominateur a `detectByScript` rend ces deux lignes rouges.
+  // L'echantillon russe etait `да`, et il a ete change pour `это`. `да` n'est pas
+  // du russe : c'est aussi du bulgare, sur vingt-neuf des cent vingt lignes
+  // bulgares du banc, et du serbe, et le reste. Il ne rendait `ru` que parce que
+  // tout le cyrillique rendait `ru`, donc il testait le defaut plutot que
+  // l'emoji. `это` est russe seul et garde le point de ce test intact.
   it('lit une ligne courte noyee sous les emoji', () => {
-    expect(detectLanguage('да 😂😂')).toBe('ru');
+    expect(detectLanguage('это 😂😂')).toBe('ru');
     expect(detectLanguage('やばい 😂😂😂😂')).toBe('ja');
     expect(detectLanguage('대박 😂😂😂😂')).toBe('ko');
     expect(detectLanguage('رائع 😂😂😂😂')).toBe('ar');

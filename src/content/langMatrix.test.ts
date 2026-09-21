@@ -28,11 +28,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on two lines in five and is almost never wrong.
   // The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 2180, silent: 2770, wrong: 90 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 2153, silent: 2869, wrong: 18 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
-    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 668, silent: 959, wrong: 53 });
+    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 652, silent: 1016, wrong: 12 });
   });
 
   // The expensive one. This is the answer that deletes a message in silence when
@@ -40,11 +40,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
   it('detectLanguage is wrong on a fifth of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 3325, silent: 691, wrong: 1024 });
+    expect(plain(DETECT.total)).toEqual({ right: 3336, silent: 730, wrong: 974 });
   });
 
   it('detectLanguage is wrong on a quarter of short lines', () => {
-    expect(plain(DETECT.shortOnly)).toEqual({ right: 936, silent: 332, wrong: 412 });
+    expect(plain(DETECT.shortOnly)).toEqual({ right: 939, silent: 357, wrong: 384 });
   });
 });
 
@@ -112,9 +112,10 @@ describe('a letter only one of the forty-three writes, added 2026-09-21', () => 
   // offered language writes is a lookup, not a guess, so it is the same kind of
   // fact as a whole script. The measurement that had to come back clean is this
   // one: the rule hands the engine ten more source languages and takes nothing
-  // from the other thirty-two. The two wrong counts above did not rise, 91 and
-  // 54 before it; they are 90 and 53 because reading a letter ahead of the
-  // lexicon also took back a Lithuanian line, which is the test at the bottom.
+  // from the other thirty-two. It did not raise either wrong count: 91 and 54
+  // before it, 90 and 53 after, the extra line coming from reading a letter
+  // ahead of the lexicon. The counts are lower again now for a reason that has
+  // nothing to do with this rule, and it is the block below.
   const NAMED = ['ca', 'cs', 'hu', 'lt', 'lv', 'pl', 'ro', 'sk', 'tr', 'vi'];
 
   it('never takes a line from a language that is not its own', () => {
@@ -201,6 +202,60 @@ describe('the two Chinese scripts, fixed 2026-09-21', () => {
   it('costs two Cantonese lines on the path that reaches the engine', () => {
     const leak = [...CONFIDENT.confusions.entries()].filter(([p]) => /->zh(-tw)?$/.test(p));
     expect(leak.reduce((s, [, n]) => s + n, 0)).toBe(2);
+  });
+});
+
+describe('the Cyrillic fallback, fixed 2026-09-21', () => {
+  // The biggest single defect the matrix ever found, and it was not a missing
+  // rule: it was a guess wearing a lookup's clothes. `cyrilliqueQuelleLangue`
+  // answered `ru` for any Cyrillic line it could not name, and it lives inside
+  // `detectByScript`, so `confidentLanguage` took that guess for a reading and
+  // handed it to the engine as a source language. 50 Bulgarian lines and 22
+  // Ukrainian ones were called Russian: four fifths of the whole error budget of
+  // the path that reaches the engine.
+  it('no longer calls Bulgarian and Ukrainian lines Russian on the safe path', () => {
+    expect(CONFIDENT.confusions.get('bg->ru')).toBeUndefined();
+    expect(CONFIDENT.confusions.get('uk->ru')).toBeUndefined();
+  });
+
+  // What is left, in full, because eighteen is small enough to name and naming
+  // it is what stops the next session from re-deriving it. Six of the eighteen
+  // are Malay written in Jawi, which is Arabic script, so the script check is
+  // reading the script correctly and the language behind it is the part nothing
+  // here can see. Two are the known price of the Cantonese rule.
+  it('is down to eighteen wrong answers, and they are these', () => {
+    const rows = [...CONFIDENT.confusions.entries()].map(([p, n]) => `${p}=${n}`).sort();
+    expect(rows).toEqual([
+      'es->pt=1', 'fa->ar=7', 'lt->pt=1', 'ms->ar=5', 'ms->fa=1',
+      'uk->bg=1', 'yue->zh-tw=1', 'yue->zh=1',
+    ]);
+  });
+
+  // The half of the result that was not the point and matters more than the
+  // point. Removing the fallback was expected to buy silence with recall; it
+  // bought recall too, because franc models rus, ukr and bul and separates them
+  // better than a hardcoded constant did. A rule that answers instead of a
+  // better-informed component is worse than no rule.
+  it('made the raw path better on both axes at once, not just quieter', () => {
+    expect(DETECT.total.right).toBeGreaterThan(3325);
+    expect(DETECT.total.wrong).toBeLessThan(1024);
+  });
+
+  // The fragile part, written down because it is invisible: the Russian
+  // infinitive marker -ть also ends eleven Ukrainian lines of this corpus, and
+  // it is harmless only because the Ukrainian test runs before it. Moving that
+  // test below this one turns those eleven into Russian.
+  it('keeps Ukrainian lines that end in the Russian infinitive marker', () => {
+    for (const line of ['Дні стають довшими.', 'Птахи літають.', 'Я візьму участь.']) {
+      expect(confidentLanguage(line), line).toBe('uk');
+    }
+  });
+
+  // The Bulgarian article suffix, which neither Russian nor Ukrainian has. The
+  // candidates that did not survive full exposure are named in langDetect.ts,
+  // and -ите is the one to remember: it is the Russian plural imperative.
+  it('reads Bulgarian off its suffixed definite article', () => {
+    expect(confidentLanguage('Крушката изгоря.')).toBe('bg');
   });
 });
 

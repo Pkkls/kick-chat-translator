@@ -296,14 +296,126 @@ const MOTS_MONGOLS = /(^|[^\p{L}])(байна|байгаа|юм|вэ|бэ|сай
 const LETTRES_UKRAINIENNES = /[іїєґ]/iu;
 const LETTRES_RUSSES = /[ыэё]/iu;
 const ER_BULGARE = /ъ/iu;
+/** L'article defini suffixe, que ni le russe ni l'ukrainien n'ont. */
+const ARTICLE_BULGARE = /(ът|ата|ята)([^\p{L}]|$)/iu;
+/** L'infinitif russe. Le bulgare n'en a pas, celui de l'ukrainien est -ти. */
+const INFINITIF_RUSSE = /ть([^\p{L}]|$)/iu;
+
+/**
+ * Les mots russes, symetriques de MOTS_BULGARES, et choisis par CONTRASTE.
+ *
+ * Aucun n'est ici parce qu'il est frequent en russe : chacun est ici parce que
+ * le bulgare et l'ukrainien disent autre chose. spasibo contre blagodarya et
+ * dyakuyu, eto contre tova et tse, ochen contre mnogo et duzhe, gde contre kade
+ * et de. Zero faux positif sur les 240 lignes bulgares et ukrainiennes du banc.
+ *
+ * CE QUI EST DEHORS, en deux familles, parce qu'elles ne se rejettent pas pour
+ * la meme raison et qu'un futur lecteur voudra savoir laquelle il rouvre.
+ *
+ * Rejetes par la MESURE, sur les 120 lignes de chaque langue :
+ *   да     vingt-neuf lignes bulgares. C'est le mot que tout le monde dit.
+ *   ли     dix lignes bulgares.   все  deux.   просто, как, него  une chacun.
+ *   что    une ligne ukrainienne. C'etait pourtant le candidat le plus evident
+ *          du lot, et il est dehors pour une seule ligne, ce qui est la regle.
+ *   знаю   deux ukrainiennes.     думаю  une.
+ *
+ * Rejetes malgre une mesure PROPRE, et c'est le garde-fou qui compte : cent
+ * vingt lignes ne prouvent pas une absence, donc un mot qui mesure zero mais qui
+ * existe vraiment ailleurs reste dehors.
+ *   тут    zero ligne ici, et c'est de l'ukrainien courant.
+ *   уже    zero ici, et l'ukrainien l'ecrit a cote de вже.
+ *   из     zero ici, et le bulgare l'emploie au sens de "a travers".
+ *   наш    zero ici, et il est commun aux trois.
+ *
+ * AVERTISSEMENT DE METHODE, paye une fois. Un premier ecran de ces candidats a
+ * ete fait avec un regex ou la classe des lettres avait perdu sa barre oblique,
+ * donc `[^p{L}]` au lieu de la borne de mot : elle ne bornait plus rien et le
+ * test devenait une recherche de sous-chaine. `кто` ressortait alors
+ * "contamine" par deux lignes bulgares qui etaient докторе et директорите.
+ * Quatre mots ont ete rejetes a tort et sont rentres apres verification. Tout
+ * ecran de ce genre doit imprimer la source de son regex et echouer si elle ne
+ * contient pas ce qu'elle doit contenir.
+ */
+const MOTS_RUSSES =
+  /(^|[^\p{L}])(кто|нет|они|его|можно|это|очень|сейчас|только|когда|хорошо|меня|тебя|ничего|нужно|давай|сколько|пока|больше|спасибо|привет|тоже|где|почему|здесь|сегодня|какой|вообще|лучше|понятно|молодец|смотрю|смотреть|происходит|отлично|отличная|вы|мы|всё|себя)([^\p{L}]|$)/iu;
+
+/**
+ * La terminaison d'adjectif masculin russe. L'ukrainien ecrit -ий et le bulgare
+ * n'a pas de declinaison du tout. Mesure : 6 lignes russes, zero des deux
+ * autres. Son jumeau -ий est DEHORS, il prend vingt lignes ukrainiennes.
+ */
+const ADJECTIF_RUSSE = /ый([^\p{L}]|$)/iu;
 const MOTS_BULGARES =
   /(^|[^\p{L}])(съм|си|сме|сте|са|какво|кой|кога|къде|защо|много|добре|това|няма|ще|аз|мога|гледа|гледам|искам|този|започва|благодаря|страхотен|поздрави|дошли)([^\p{L}]|$)/iu;
 
+/**
+ * Le repli `ru` etait une DEVINETTE posee sur le chemin sans devinette.
+ *
+ * Cette fonction rendait `ru` pour toute ligne cyrillique qu'elle n'avait pas su
+ * nommer autrement. Elle vit dans `detectByScript`, donc `confidentLanguage` la
+ * prenait pour une lecture et l'envoyait au moteur comme langue source. C'etait
+ * la source de 72 des 90 erreurs du chemin sur : 50 bulgares et 22 ukrainiennes
+ * declarees russes, a elles seules les quatre cinquiemes du budget d'erreur.
+ *
+ * Ce que le banc a dit, et il a dit plus que corriger une erreur : le repli
+ * `ru` etait AUSSI mauvais pour franc. En le retirant, `detectLanguage` gagne
+ * sur les deux axes a la fois, 3325 a 3331 justes et 1024 a 975 faux. franc
+ * modele rus, ukr et bul et il les separe mieux qu'une constante en dur. La
+ * regle ne se taisait pas trop peu, elle parlait a la place de quelqu'un de
+ * mieux renseigne.
+ *
+ * Le repli est donc `undefined`, et c'est l'idiome deja pose deux lignes plus
+ * haut par le mongol : cyrillique sans marqueur reconnaissable, on se tait,
+ * franc reprend la main.
+ *
+ * DEUX SIGNAUX POSITIFS rattrapent une partie du rappel perdu, et ils sont
+ * choisis par exposition complete et non par commodite. Mesure sur la moitie de
+ * reglage, 60 lignes par langue :
+ *
+ *   -ата -ят -ята   bulgare, l'article defini suffixe, que ni le russe ni
+ *                   l'ukrainien n'ont. 0 faux positif.
+ *   -ть             l'infinitif russe. Le bulgare n'a pas d'infinitif du tout
+ *                   et celui de l'ukrainien est -ти. 0 ligne bulgare.
+ *
+ * CE QUI EST DEHORS, et c'est encore la moitie du travail. Chaque candidat a
+ * ete mesure deux fois, sur la zone ambigue puis sur TOUTES les lignes, et les
+ * deux mesures ne disent pas la meme chose :
+ *   -ите   l'imperatif pluriel russe. La zone ambigue n'en montrait qu'une
+ *          ligne russe, l'exposition complete en montre quatre. C'est le
+ *          candidat qui aurait passe une mesure etroite.
+ *   -ото   trois lignes russes.  -ого/-его  bulgare autant que russe, six
+ *          lignes bulgares contre une russe, l'inverse de l'intuition.
+ *   -та -то  presentes partout, dix a vingt-deux lignes de chaque langue.
+ *   -ти    propose comme marqueur ukrainien, six lignes bulgares.
+ *
+ * Le `ть` russe touche six lignes ukrainiennes en exposition complete et n'en
+ * touche aucune une fois le test ukrainien passe avant lui. Il DEPEND donc de
+ * l'ordre des tests dans cette fonction, ce qui est vrai mais fragile : deplacer
+ * le test ukrainien apres lui rendrait six lignes ukrainiennes russes.
+ *
+ * Moitie tenue a l'ecart, jamais lue avant que la regle soit ecrite : 32 erreurs
+ * sur 180 lignes deviennent ZERO, et le rappel passe de 148 a 127 sur 180. Le
+ * corpus entier dit la meme chose dans le meme sens, donc ce n'est pas un
+ * reglage sur les donnees de reglage.
+ */
 function cyrilliqueQuelleLangue(text: string): string | undefined {
   if (LETTRES_MONGOLES.test(text) || MOTS_MONGOLS.test(text)) return undefined;
   if (LETTRES_UKRAINIENNES.test(text)) return 'uk';
-  if (!LETTRES_RUSSES.test(text) && (ER_BULGARE.test(text) || MOTS_BULGARES.test(text))) return 'bg';
-  return 'ru';
+  if (
+    !LETTRES_RUSSES.test(text) &&
+    (ER_BULGARE.test(text) || MOTS_BULGARES.test(text) || ARTICLE_BULGARE.test(text))
+  ) {
+    return 'bg';
+  }
+  if (
+    LETTRES_RUSSES.test(text) ||
+    INFINITIF_RUSSE.test(text) ||
+    ADJECTIF_RUSSE.test(text) ||
+    MOTS_RUSSES.test(text)
+  ) {
+    return 'ru';
+  }
+  return undefined;
 }
 
 /**
