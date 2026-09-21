@@ -265,3 +265,34 @@ Reprendre ici. Chaque entrée est indépendante des autres, prendre celle qu'on 
 - Pas de nom de streamer ou de chaîne en dur, nulle part.
 - Pas d'emoji dans le code.
 - Les données de test vivent **inline dans le fichier de test**, pas dans une fixture séparée.
+
+---
+
+## 8. Travail conçu mais NON mesuré, à reprendre tel quel
+
+Écrit en fin de session et **annulé de l'arbre avant commit** parce qu'il n'avait pas été passé au banc. Rien de cassé, l'arbre est propre au commit `8cd28e3`. Le raisonnement est ici en entier pour que la reprise coûte quinze minutes et non une heure.
+
+**Idée.** Le pré-contrôle d'écriture ne sert que les alphabets entiers, donc 27 langues latines n'ont pour tout recours que franc. Mais une **lettre** qu'une seule des 43 langues écrit identifie cette langue aussi sûrement qu'une écriture entière. C'est une recherche, pas une statistique, donc elle a sa place dans `confidentLanguage`.
+
+**Où.** Dans `detectByLookup`, une fonction `detectByExclusiveLetter(trimmed)` appelée **après** le lexique de mots courts et **avant** `detectByScript`. Elle s'applique à toute longueur, contrairement au lexique borné à 20 caractères.
+
+**La table proposée**, une lettre appartenant à une seule des 43 :
+
+```
+[/[řěů]/iu, 'cs']   [/[ľĺŕ]/iu, 'sk']   [/ł/iu, 'pl']    [/[őű]/iu, 'hu']
+[/[ėįų]/iu, 'lt']   [/[ģķļņ]/iu, 'lv']  [/[ığ]/u, 'tr']  [/[șț]/iu, 'ro']
+[/l·l/iu, 'ca']     [/[ơưđ]/iu, 'vi']
+```
+
+Vote unanime : deux jeux exclusifs dans la même ligne, c'est une citation ou un pseudo, donc `undefined`. Même règle que le lexique de mots courts.
+
+**Ce qui est DEHORS et pourquoi, c'est la moitié du travail :**
+`ä` allemand, suédois, finnois, estonien, slovaque. `ô` français autant que slovaque. `õ` portugais autant qu'estonien. `ą ę` polonais autant que lituanien. `ø æ` danois ET norvégien, donc ils séparent du suédois sans séparer les deux l'un de l'autre, il leur faut du lexique. `č š ž` tchèque, slovaque, slovène, croate. `ö ü` une demi-douzaine de langues.
+
+Le turc `ı` est le i sans point U+0131, pas le i ordinaire. Le catalan s'identifie par le point volat `l·l`, une séquence et non une lettre.
+
+`fi et da no sl` n'ont aucune lettre exclusive et ne sont donc pas dans la table : ils attendent du lexique.
+
+**Gain attendu, à vérifier et non à croire** : couvre 5 des 9 langues à zéro (`sk lt lv ca` plus `ro tr hu pl cs vi` déjà partiellement servis). Ne couvre pas `da fi no sl et`.
+
+**Protocole obligatoire avant de committer** : c'est un ajout au chemin SÛR, donc discipline du cantonais. Lancer `node --import tsx scratchpad/harness/lang-matrix.mjs`, exiger **zéro nouvelle ligne volée** aux 42 autres langues, et retirer toute lettre qui en vole une, quel que soit son gain en rappel. Puis mettre à jour les quatre chiffres assertés dans `langMatrix.test.ts` ET la section 4bis de ce document.
