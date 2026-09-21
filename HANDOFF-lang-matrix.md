@@ -3,7 +3,7 @@
 État vivant de ce chantier, mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `6888e3c`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
+Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `7df1ed6`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
 
 ---
 
@@ -49,12 +49,12 @@ Ce qui a été découvert en cours de route et qui n'était pas dans le diagnost
 Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR, 120 lignes par langue.
 Trois issues, **jamais additionnées** : `right` la bonne langue, `silent` le détecteur a refusé de répondre ce qui est l'issue SÛRE, `wrong` une autre langue.
 
-| chemin | portée | départ `ec9e02d` | aujourd'hui `6888e3c` |
+| chemin | portée | départ `ec9e02d` | aujourd'hui `7df1ed6` |
 |---|---|---|---|
-| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3166 r / 1859 s / **15 w** |
-| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 909 / 759 / **12** |
-| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3811 / 516 / **713** |
-| `detectLanguage` | court | 837 / 364 / **479** | 1086 / 290 / **304** |
+| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3175 r / 1858 s / **7 w** |
+| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 915 / 758 / **7** |
+| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3819 / 515 / **706** |
+| `detectLanguage` | court | 837 / 364 / **479** | 1091 / 289 / **300** |
 
 Le chemin sûr **répond 2,5 fois plus souvent et se trompe 83 % moins**. C'est le seul mouvement qui compte vraiment : `wrong` sur ce chemin veut dire qu'on demande au moteur de traduire depuis une langue dans laquelle le texte n'est pas.
 
@@ -81,11 +81,11 @@ Les trois dernières du chemin brut, `et fi sl`, sont sorties par le lexique de 
 
 ```
 120  ar bn el he hi ja ko ta th     (écritures sans ambiguïté)
-119  vi   113 fa    112 yue   109 lv    105 zh-tw   97 uk    95 tr
+119  vi   116 fa    112 yue   109 lv    105 zh-tw  101 uk    95 tr
 90   zh    89 ru     78 cs     77 sv     75 pl      74 bg    70 ro
 67   tl    64 nl     61 lt     56 et     53 pt      52 hu    48 fi
 45   de    45 fr     42 es     38 en     36 ca      36 it    29 sk
-29   sl    26 no     21 da     18 ms     15 id
+29   sl    26 no     22 ms     21 da     15 id
 ```
 
 **Plus aucune langue sous 13 sur 120**, contre vingt-six à zéro au départ. Ce tableau est celui de Tatoeba ; sur du chat le classement est différent, voir 2bis.
@@ -740,6 +740,43 @@ DEHORS : `kau`, que l'indonésien écrit aussi, mesuré sur `Kenapa kau tidak me
 
 ---
 
+### 5.20 LE MOT QUAND LA LETTRE NE PEUT PLUS RIEN (`a23e337`, `3b7c45a`, `4b54fbb`, `7df1ed6`)
+
+**Quatre tours, un seul mouvement : le compteur d'erreurs du chemin sûr passe de 15 à 7.** Il n'avait pas bougé d'une ligne depuis la table des portes, vingt commits plus tôt : chaque tour achetait du rappel et tenait les erreurs plates. Ceux-ci achètent des erreurs.
+
+**Le mécanisme est le même quatre fois de suite, et il vaut d'être nommé** : quand une classe de lettres ne peut pas atteindre une ligne, un MOT OUTIL le peut, et le crible le trouve. Ce qui l'admet n'est pas la mesure mais le critère (a), savoir dire ce que la langue concurrente écrit à la place.
+
+| tour | ce qui manquait | ce qui l'a pris |
+|---|---|---|
+| `mano` retiré | rien : une entrée qui **coûtait** deux erreurs | `lt -> pt` et `es -> pt` à zéro |
+| mots persans | 7 lignes persanes sans une seule lettre persane | `است را از او بود هر`, `fa -> ar` 7 → 4 |
+| mots jawi | 3 lignes jawi sans une seule lettre jawi | `ساي تيدق كامو`, `ms -> ar` 2 → 1, `ms -> fa` 1 → 0 |
+| mots ukrainiens | 1 ligne ukrainienne sans `і ї є ґ` | `це дуже щоб`, `uk -> bg` 1 → 0 |
+
+**`mano` mérite sa ligne à part.** C'est une entrée de lexique portugaise, du brésilien courant, propre quand elle est entrée. Le crible la donne aujourd'hui à `lt=10 es=2 it=2 pt=1` : le lituanien l'écrit dix fois plus que le portugais, où elle veut dire « mon ». La retirer coûte **zéro ligne juste** sur les huit bancs et retire **deux erreurs**.
+
+**IL N'Y A PLUS AUCUNE ERREUR EN ÉCRITURE LATINE NI CYRILLIQUE**, soit quarante et une des quarante-trois langues. Les sept qui restent :
+
+```
+fa->ar 4    ms->ar 1    yue->zh-tw 1    yue->zh 1
+```
+
+Chacune est une ligne dont le **script** est lu correctement et dont la langue derrière ce script est ce qu'aucune lettre ne voit. Quatre lignes persanes s'écrivent entièrement avec le jeu arabe et ne portent aucun mot outil persan ; l'une est `اعتراض!`, un mot seul que l'arabe écrit à l'identique. Une ligne jawi, `هيدو اين.`, dont le seul mot utilisable est écrit aussi par l'arabe. Deux sont le prix connu de la règle cantonaise.
+
+**LE CRIBLE ARABE, et pourquoi personne ne l'avait écrit.** `porte-candidats.mjs` est borné à l'écriture latine, et ce n'est pas un oubli : sans cette borne il rendait les lettres arabes des lignes jawi comme des marqueurs malais, corrigé en `0e14a6a`. Mais du coup personne n'avait cherché de ce côté, pendant que **dix des treize erreurs y étaient**. `arabe-candidats.mjs` est la même passe portée à `ar fa ms ur`.
+
+**CE QUI EST REFUSÉ MALGRÉ UN BRUIT MESURÉ À ZÉRO**, et c'est la moitié du travail à chaque fois :
+
+- `به` et `در` pour le persan. L'arabe écrit bel et bien `بِهِ` « avec lui » et `دُرّ` « perle », et sans voyelles ce sont les mêmes chaînes. Le corpus n'en contient aucune, ce qui ne prouve rien.
+- `ام` pour le persan, deux lettres, et l'arabe écrit `أم` sans hamza assez souvent.
+- `اين` et `ايت` pour le jawi, contre `أين` « où » et `آية ». Ils laissent `هيدو اين.` non couverte, et c'est le prix.
+- `دان` pour le jawi, qui est un mot persan.
+- `треба` pour l'ukrainien, qui est du serbe. `добре` que le bulgare écrit **plus** que l'ukrainien.
+
+**Le banc jawi ne contient que six lignes**, donc tout mot qui y apparaît est « écrit par `ms` seul » par construction et le crible ne peut rien dire. Ce tour-là s'est décidé **entièrement** au critère (a), la mesure ne servant que de veto.
+
+---
+
 ## 6. État par phase
 
 | Phase | Contenu | État |
@@ -850,6 +887,7 @@ tl tgl   pt-br aucun (partage por)   zh-tw aucun (partage cmn)
 | `scratchpad/harness/mot-ablation.mjs` | ce que chaque MOT d'une alternance rapporte seul | oui |
 | `scratchpad/harness/lexique-ablation.mjs` | le lexique, par langue puis par entree | oui |
 | `scratchpad/harness/porte-diagnostic.mjs` | porte fermee ou porte ouverte sans mot, la question qui dit ou corriger | oui |
+| `scratchpad/harness/arabe-candidats.mjs` | le crible a mots porte a l'ecriture arabe, ar fa ms ur | oui |
 | `scratchpad/harness/porte-candidats.mjs` | **le crible de portes**, quelle lettre reste libre, avec sa liste de rejetés | oui |
 | `scratchpad/harness/lang-matrix.mjs` | écrit le rapport lisible | oui |
 | `scratchpad/harness/lang-matrix.md` | le rapport | non, régénérable |
@@ -944,6 +982,11 @@ Commits, du plus ancien au plus récent :
 | `013a2ca` | Measure the whole lexicon, delete the fourteen entries a letter had quietly shadowed, and guard the class |
 | `cc3227d` | Bring the handoff up to the pair corpora and the ablation, and rewrite the queue around what they found |
 | `6888e3c` | Open the Malay side on its own particles, and fix the ablation bug that had been reporting the wrong words |
+| `4f53a64` | Promote the ablation to the protocol, with the two ways it lies |
+| `a23e337` | Delete one lexicon entry, and watch the error count move for the first time in twenty commits |
+| `3b7c45a` | Read Persian off six words when no Persian letter is there, and take the error count to ten |
+| `4b54fbb` | Read Jawi off three words as well, and close the Malay half of the Arabic-script block |
+| `7df1ed6` | Give Ukrainian three words, and leave nothing wrong outside the Arabic and Chinese scripts |
 
 ---
 
@@ -998,7 +1041,7 @@ Ne pas trancher ça dans une passe de détection. **Et surtout : le faire seul n
 
 - Commits : sujet à l'impératif, corps expliquant la cause, le correctif, et **comment il a été constaté**. Terminer par `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`.
 - Gate : `npm run release:check`, jamais seulement `typecheck` et `test`. Il lance aussi `lint`.
-- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **95482 aujourd'hui** (`6888e3c`), soit +3976 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-sept portes et 433 entrées de lexique. Le détail des neuf derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, **-51 pour +14**, **+13 pour +39**, +65 pour +8, -10 pour +2, +22 pour +5, et **-76 pour zéro** au dernier, qui ne fait que supprimer des entrées qui ne pouvaient plus se déclencher. Les deux meilleurs rapports de tout le chantier sont la porte nordique à mot, qui supprime plus de code qu'elle n'en ajoute, et les marqueurs tagalog, treize octets. Les six corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
+- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **95590 aujourd'hui** (`7df1ed6`), soit +3976 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-sept portes et 433 entrées de lexique. Le détail des neuf derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, **-51 pour +14**, **+13 pour +39**, +65 pour +8, -10 pour +2, +22 pour +5, et **-76 pour zéro** au dernier, qui ne fait que supprimer des entrées qui ne pouvaient plus se déclencher. Les deux meilleurs rapports de tout le chantier sont la porte nordique à mot, qui supprime plus de code qu'elle n'en ajoute, et les marqueurs tagalog, treize octets. Les six corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
 - Pas de nom de streamer ou de chaîne en dur, nulle part.
 - Pas d'emoji dans le code.
 - Les données de test vivent **inline dans le fichier de test**, pas dans une fixture séparée.
