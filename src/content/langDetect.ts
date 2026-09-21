@@ -746,6 +746,28 @@ const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [
   [/ą/iu, ['pl', 'lt']],
   [/ę/iu, ['pl', 'lt']],
   [/ū/iu, ['lv', 'lt']],
+  // LES PORTES A MOT, troisieme passe du crible.
+  //
+  // Un TOKEN entier n'a pas le defaut des sequences ASCII juste en dessous : il
+  // ne peut pas se declencher a l'interieur du mot qui tranche, parce que le
+  // decoupage est le meme des deux cotes. C'est ce qui les rend utilisables la
+  // ou `sz` et `dz` ne l'etaient pas.
+  //
+  // Mesure du crible, sur les quatre corpus :
+  //   il            fr=37 it=21   bruit ZERO
+  //   para por está es/pt          bruit 1
+  //   co jak        cs/pl          bruit ZERO
+  //   tas tik       lv/lt          bruit ZERO
+  //   ce au         ro/fr          bruit ZERO
+  //
+  // DEHORS : `bet`, que le crible donne a bruit zero pour le lituanien et le
+  // letton. C'est de l'anglais de chat courant, et le corpus n'en contient
+  // simplement pas. Critere (a), comme `may` pour le tagalog.
+  [/(^|[^\p{L}])(il)([^\p{L}]|$)/iu, ['fr', 'it']],
+  [/(^|[^\p{L}])(para|por|está)([^\p{L}]|$)/iu, ['es', 'pt']],
+  [/(^|[^\p{L}])(co|jak)([^\p{L}]|$)/iu, ['cs', 'pl']],
+  [/(^|[^\p{L}])(tas|tik)([^\p{L}]|$)/iu, ['lv', 'lt']],
+  [/(^|[^\p{L}])(ce|au)([^\p{L}]|$)/iu, ['ro', 'fr']],
   // PAS DE SEQUENCE ASCII ICI, et c'est un resultat mesure, pas un oubli.
   //
   // Le deuxieme passage du crible a rendu `sz` hongrois-polonais et `dz`

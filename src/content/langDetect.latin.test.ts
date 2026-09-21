@@ -39,7 +39,7 @@ const BANC: Ligne[] = [
   ['que isso mano kkkk', 'pt', 'pt', 'pt'],
   ['vamos ganhar essa', 'pt', 'pt', 'pt'],
   ['il joue vraiment mal la', 'fr', 'fr', undefined],
-  ['quelqu un a vu ce qui s est passe', 'fr', 'fr', undefined],
+  ['quelqu un a vu ce qui s est passe', 'fr', 'fr', 'fr'],
   ['trop fort le mec', 'fr', 'fr', 'fr'],
   ['je comprends rien du tout', 'fr', 'fr', undefined],
   ['ca part en cacahuete', 'fr', 'es', undefined],
@@ -111,6 +111,12 @@ describe('les totaux du banc latin', () => {
   // le chemin SUR, la ou il se taisait. Ces trois totaux ne bougent pas, ils ne
   // comptent que la colonne `detectLanguage` ; c'est la quatrieme colonne qui
   // change, et c'est elle qui decide de ce qui part au moteur.
+  //
+  // Sixieme passe, les portes a mot : `quelqu un a vu ce qui s est passe` passe
+  // de muet a `fr` sur le chemin sur. `ce` ouvre la porte ro/fr, le roumain n'a
+  // rien sur cette ligne, le francais a `est`. La ligne est du francais et le
+  // test attendait le SILENCE, donc il assertait le defaut et pas une propriete,
+  // cas 4.7 du protocole. Quatrieme colonne encore, totaux inchanges.
   it('sont 37 justes, 5 silences et 9 fausses avec assurance sur 51', () => {
     let justes = 0;
     let silences = 0;

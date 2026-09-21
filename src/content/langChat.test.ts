@@ -70,7 +70,7 @@ describe('le chemin sur, sur du chat', () => {
   // derniers points pendant que le lexique avait cesse de rapporter quoi que ce
   // soit. C'etait une prediction, pas une mesure, et elle s'est trompee.
   it('se tait sur trois lignes de chat sur quatre', () => {
-    expect(plain(CHAT_SURE.total)).toEqual({ right: 206, silent: 184, wrong: 0 });
+    expect(plain(CHAT_SURE.total)).toEqual({ right: 207, silent: 183, wrong: 0 });
     expect(muet(CHAT_SURE.total)).toBe(47);
   });
 
