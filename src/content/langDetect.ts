@@ -740,7 +740,10 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/ait([^\p{L}]|$)/iu, 'fr'],
   [/(eix|itat)([^\p{L}]|$)/iu, 'ca'],
   [/(nje|nja|čno|vno)([^\p{L}]|$)/iu, 'sl'],
-  [/(iya|yong|oong)([^\p{L}]|$)/iu, 'tl'],
+  // `iya` a ete retire de cette liste : le turc ecrit `tatlıya`, et le i sans
+  // point depouille donne `tatliya`, qui se termine par `iya`. Retirer `iya`
+  // coute ZERO ligne sur les neuf bancs et retire une erreur. Gratuit.
+  [/(yong|oong)([^\p{L}]|$)/iu, 'tl'],
   // Un troisieme groupe, extrait de TATOEBA seul et valide sur le corpus de chat
   // AVEUGLE, qui est la bonne facon de faire depuis qu'on sait que le lexique
   // memorise et que la morphologie non. La bande de plus de vingt caracteres
@@ -772,7 +775,15 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   // ne prouve toujours rien, et c'est exactement ce que le protocole 4.6 dit.
   [/(ött|ában|ünk|ára|ért|szik)([^\p{L}]|$)/iu, 'hu'],
   [/(aar|eken|iets)([^\p{L}]|$)/iu, 'nl'],
-  [/(ould|not|ity|day)([^\p{L}]|$)/iu, 'en'],
+  // `day` exige maintenant une LETTRE devant lui. Le vietnamien ecrit `dạy`,
+  // `đây` et `dây` ; depouilles ce sont trois fois `day`, en mot isole, et le
+  // banc Tatoeba nu montrait `vi -> en` trois fois.
+  //
+  // Les deux formes ont ete mesurees : retirer `day` coute 4 lignes et UNE du
+  // corpus aveugle, le resserrer en coute 3 et rien du chat. `today`,
+  // `birthday`, `someday` passent toujours, le `day` nu ne passe plus, et c'est
+  // lui seul que le vietnamien produit.
+  [/(ould|not|ity|\p{L}day)([^\p{L}]|$)/iu, 'en'],
   [/(eht|ufen)([^\p{L}]|$)/iu, 'de'],
   [/(nys|uest)([^\p{L}]|$)/iu, 'ca'],
   // Quatrieme groupe, et la difference avec le troisieme est la SOURCE : ces
