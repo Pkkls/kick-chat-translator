@@ -109,6 +109,31 @@ const SHORT_WORD_LANG = new Map<string, string>([
   ['burada', 'tr'], ['oluyor', 'tr'], ['bir', 'tr'], ['için', 'tr'], ['icin', 'tr'],
   ['değil', 'tr'], ['degil', 'tr'],
 
+  // L'ANGLAIS, et il est entre en dernier parce qu'il est le cas particulier.
+  //
+  // Ajouter l'anglais a cette table ne change pas seulement une detection, ca
+  // change ce que `ignoreEnglish` EFFACE : une ligne nommee `en` pour un lecteur
+  // anglophone disparait. C'est correct quand la ligne est vraiment anglaise, et
+  // c'est pour ca que chaque entree est un mot que l'anglais seul ecrit, mesure
+  // sur les 5490 lignes des trois corpus.
+  //
+  // Le vote unanime fait ici un travail qu'il ne fait nulle part ailleurs. Vingt
+  // -neuf des soixante lignes melangees portent `that`, et elles ne deviennent
+  // pas anglaises pour autant : leur moitie etrangere vote pour sa langue, les
+  // deux votes se contredisent et la ligne rend `undefined`. Mesure : les lignes
+  // melangees nommees restent a dix, exactement les memes. Donner une voix a
+  // l'anglais rend le detecteur PLUS silencieux sur le melange, pas moins.
+  //
+  // DEHORS : `what` prend une ligne slovaque, `have` trois danoises, `was` huit
+  // allemandes et trois neerlandaises, `like` trois norvegiennes, `just` quatre
+  // langues, `been` une allemande, `which` une japonaise. `stream` et `chat`
+  // sont dans toutes les langues du corpus de chat, ce qui est exactement ce
+  // qu'on attend d'un mot de jargon de plateforme.
+  ['you', 'en'], ['that', 'en'], ['this', 'en'], ['with', 'en'], ['they', 'en'],
+  ['about', 'en'], ['there', 'en'], ['were', 'en'], ['would', 'en'], ['could', 'en'],
+  ['should', 'en'], ['because', 'en'], ['something', 'en'], ['everyone', 'en'],
+  ['nothing', 'en'], ['really', 'en'], ['watching', 'en'],
+
   // Les vingt langues latines que la table ne couvrait pas. Le lexique etait la
   // seule chose capable de servir un chat latin et il ne parlait que six langues
   // sur vingt-six ; c'est ce que le banc de chat a rendu impossible a ignorer.

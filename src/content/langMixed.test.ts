@@ -121,6 +121,18 @@ describe('les lignes qui changent de langue', () => {
   // aussi et l'idee est fausse : une vraie ligne melangee porte des mots de
   // structure dans sa moitie etrangere, `niet te geloven`, `bardzo dobrze`,
   // `vraiment dommage`. Elle faisait passer les melangees de 10 a 22.
+  // L'anglais a une voix dans le lexique depuis, et ce banc est ce qui a permis
+  // de le decider. Vingt-neuf des soixante lignes d'ici portent `that`, donc la
+  // crainte etait qu'elles deviennent anglaises ; c'est l'inverse qui se passe.
+  // Leur moitie etrangere vote pour sa langue, l'anglais vote pour la sienne,
+  // les deux se contredisent et la ligne rend `undefined`. Le compte est reste a
+  // dix, et ce sont exactement les memes dix.
+  it('ne devient pas anglais quand l anglais entre dans le lexique', () => {
+    expect(confidentLanguage('merci bro that was insane')).toBeUndefined();
+    expect(confidentLanguage('gracias man that was sick')).toBeUndefined();
+    expect(confidentLanguage('that was actually insane muito bom')).toBeUndefined();
+  });
+
   it('reste muet sur deux mots etrangers suivis d anglais', () => {
     expect(confidentLanguage('tamam kanka good game')).toBeUndefined();
     expect(confidentLanguage('muchas gracias that was great')).toBeUndefined();
