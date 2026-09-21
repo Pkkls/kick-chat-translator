@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { confidentRun, detectRun, type Cell } from './langMatrix';
+import { confidentLanguage } from './langDetect';
 import { LANG_CORPUS } from './langCorpus';
 import { LANGUAGES } from '~/shared/languages';
 
@@ -24,14 +25,14 @@ const DETECT = detectRun();
 const plain = (c: Cell) => ({ right: c.right, silent: c.silent, wrong: c.wrong });
 
 describe('baseline, 2026-09-21, Tatoeba corpus', () => {
-  // Doing its job: it answers on a quarter of the lines and is almost never
-  // wrong. The engine detects the rest itself, which is the safe outcome.
+  // Doing its job: it answers on two lines in five and is almost never wrong.
+  // The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 1694, silent: 3255, wrong: 91 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 2179, silent: 2770, wrong: 91 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
-    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 550, silent: 1076, wrong: 54 });
+    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 667, silent: 959, wrong: 54 });
   });
 
   // The expensive one. This is the answer that deletes a message in silence when
@@ -39,11 +40,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
   it('detectLanguage is wrong on a fifth of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 3126, silent: 804, wrong: 1110 });
+    expect(plain(DETECT.total)).toEqual({ right: 3324, silent: 691, wrong: 1025 });
   });
 
   it('detectLanguage is wrong on a quarter of short lines', () => {
-    expect(plain(DETECT.shortOnly)).toEqual({ right: 871, silent: 364, wrong: 445 });
+    expect(plain(DETECT.shortOnly)).toEqual({ right: 935, silent: 332, wrong: 413 });
   });
 });
 
@@ -54,17 +55,20 @@ const zeroRight = (run: typeof DETECT): string[] =>
     .sort();
 
 describe('the languages the detector cannot name at all', () => {
-  // Ten of forty-two score zero. Not "often wrong": never right, on any line, at
-  // any length. Listed rather than summarised because this is the work queue for
-  // phase 2, and a language leaving this list is the phase's definition of
-  // progress.
-  it('names the nine that never score a single line', () => {
-    expect(zeroRight(DETECT)).toEqual(['ca', 'da', 'et', 'fi', 'lt', 'lv', 'no', 'sk', 'sl']);
+  // Five of forty-two score zero. Not "often wrong": never right, on any line,
+  // at any length. Listed rather than summarised because this is the work queue
+  // for phase 2, and a language leaving this list is the phase's definition of
+  // progress. Nine at the start of the phase; `ca lt lv sk` left it on the
+  // exclusive-letter rule, and the five that remain are exactly the five with no
+  // letter of their own. They need a lexicon, which is phase 0b.
+  it('names the five that never score a single line', () => {
+    expect(zeroRight(DETECT)).toEqual(['da', 'et', 'fi', 'no', 'sl']);
   });
 
   // The other half of the same problem, and the reason phase 1 cannot simply
-  // swap the raw guess for the safe one: the safe one can only name sixteen
-  // languages out of forty-two on this corpus.
+  // swap the raw guess for the safe one: the safe one can only name twenty-nine
+  // languages out of forty-two on this corpus. Sixteen before the exclusive
+  // letters.
   //
   // Read this one with a caveat, because it flatters nothing and misleads in
   // both directions. Tatoeba is written sentences, and the short-word lexicon
@@ -73,10 +77,9 @@ describe('the languages the detector cannot name at all', () => {
   // here while it would score on a real chat line. The 26 are therefore an upper
   // bound on the gap, not a measurement of it. The chat corpus in phase 0b is
   // what settles it.
-  it('names the twenty-two the confident path can never name on this corpus', () => {
+  it('names the thirteen the confident path can never name on this corpus', () => {
     expect(zeroRight(CONFIDENT)).toEqual([
-      'ca', 'cs', 'da', 'el', 'es', 'et', 'fi', 'fr', 'hu', 'id', 'lt', 'lv',
-      'ms', 'nl', 'no', 'pl', 'ro', 'sk', 'sl', 'sv', 'tl', 'vi',
+      'da', 'el', 'es', 'et', 'fi', 'fr', 'id', 'ms', 'nl', 'no', 'sl', 'sv', 'tl',
     ]);
   });
 
@@ -93,12 +96,54 @@ describe('the languages the detector cannot name at all', () => {
     }
   });
 
-  // The Scandinavian and Catalan cases are the same shape: a real language with
-  // no rule of its own, absorbed by a bigger neighbour franc does model.
-  it('hands the Nordic languages to Swedish and Catalan to Spanish', () => {
+  // The Scandinavian case: a real language with no rule of its own, absorbed by
+  // a bigger neighbour franc does model. Catalan used to sit here too and is
+  // down by one line, which is the honest size of `l·l`: the middle dot is a
+  // certainty when it appears and it appears twice in 120 lines.
+  it('hands the Nordic languages to Swedish and most of Catalan to Spanish', () => {
     expect(DETECT.confusions.get('no->sv')).toBe(48);
     expect(DETECT.confusions.get('da->sv')).toBe(44);
-    expect(DETECT.confusions.get('ca->es')).toBe(43);
+    expect(DETECT.confusions.get('ca->es')).toBe(42);
+  });
+});
+
+describe('a letter only one of the forty-three writes, added 2026-09-21', () => {
+  // The whole case for putting this on the confident path: a letter no other
+  // offered language writes is a lookup, not a guess, so it is the same kind of
+  // fact as a whole script. The measurement that had to come back clean is this
+  // one: the rule hands the engine ten more source languages and takes nothing
+  // from the other thirty-two. Both wrong counts above are unchanged from the
+  // run before it, 91 and 54.
+  const NAMED = ['ca', 'cs', 'hu', 'lt', 'lv', 'pl', 'ro', 'sk', 'tr', 'vi'];
+
+  it('never takes a line from a language that is not its own', () => {
+    const into = [...CONFIDENT.confusions.keys()].filter((p) => NAMED.includes(p.split('->')[1]!));
+    expect(into).toEqual([]);
+  });
+
+  it('names ten languages the confident path was mute on', () => {
+    for (const lang of NAMED) {
+      const b = CONFIDENT.byLang.get(lang)!;
+      expect(b.short.right + b.medium.right + b.long.right, lang).toBeGreaterThan(0);
+    }
+  });
+
+  // The one correction the bench forced on the table as designed. Polish was
+  // meant to be found by ł, which no other offered language writes; but a letter
+  // being exclusive to a language is not the same as a line carrying it being in
+  // that language. This Slovak sentence is about the children of Łazarz and
+  // holds no exclusive Slovak letter, so the unanimous vote does not save it.
+  // żźćśń replaces ł and is strictly better: 70 Polish lines instead of 48, and
+  // nothing taken. Putting ł back costs this line.
+  it('does not read a Polish name in a Slovak sentence as Polish', () => {
+    const line = 'Łazarzove deti si myslia, že ich mama Felicja je najkrajšia žena na svete.';
+    expect(confidentLanguage(line)).not.toBe('pl');
+  });
+
+  // The pair the design flagged as the trap, kept here because the two sets are
+  // one keystroke apart and a future edit merging them would be silent.
+  it('keeps the Polish nasals out, which Lithuanian also writes', () => {
+    expect(confidentLanguage('Ar tu eini į parduotuvę šiandien vakare?')).not.toBe('pl');
   });
 });
 

@@ -147,6 +147,69 @@ function detectByShortWords(text: string): string | undefined {
 }
 
 /**
+ * Une lettre qu'une seule des 43 ecrit vaut une ecriture entiere.
+ *
+ * Le pre-controle d'ecriture ne sert que les alphabets complets, donc les 27
+ * langues latines n'avaient pour tout recours que franc, dont `confidentLanguage`
+ * refuse la reponse. Mais une LETTRE qu'une seule langue de la liste emploie
+ * identifie cette langue aussi surement qu'une ecriture entiere, et c'est une
+ * recherche et non une statistique : sa place est donc sur le chemin sur.
+ *
+ * S'applique a toute longueur, contrairement au lexique de mots courts borne a
+ * 20 caracteres, et passe APRES lui : un mot de chat connu est un signal plus
+ * fort qu'un diacritique isole.
+ *
+ * CE QUI EST DEHORS, et c'est la moitie du travail. Une lettre partagee par deux
+ * langues de la liste ne prouve rien :
+ *   ä    allemand, suedois, finnois, estonien, slovaque.
+ *   ô    francais autant que slovaque.  õ  portugais autant qu'estonien.
+ *   ą ę  polonais autant que lituanien : MESURE, 20 et 6 lignes lituaniennes.
+ *   ø æ  danois ET norvegien, donc ils separent du suedois sans separer les deux
+ *        l'un de l'autre. Il leur faut du lexique.
+ *   c s z a carons  tcheque, slovaque, slovene, croate.  ö ü  une demi-douzaine.
+ *
+ * Le polonais ne prend PAS ł, et c'est la seule correction que le banc a imposee
+ * a la table telle qu'elle avait ete concue. La lettre est bien polonaise seule,
+ * mais elle voyage dans les noms propres : une ligne slovaque du corpus parle
+ * des enfants de Łazarz, ne porte aucune lettre slovaque exclusive, et le vote
+ * ci-dessous ne la sauve donc pas. Un nom propre n'est pas un fait sur la langue
+ * de la phrase. Le remplacement mesure fait mieux des deux cotes : żźćśń prend
+ * 70 lignes polonaises contre 48 pour ł, et zero ailleurs.
+ *
+ * Le turc `ı` est le i sans point U+0131 et non le i ordinaire ; verifie, `/ı/iu`
+ * ne rend vrai ni sur `I` ni sur `i`, donc le drapeau `i` est sans danger ici et
+ * il rattrape `Ğ`. Le roumain s'ecrit ici avec la virgule souscrite U+0219 et
+ * U+021B, distincte de la cedille turque, donc les deux jeux ne se croisent pas.
+ * Le catalan s'identifie par le point volat `l·l`, une sequence et non une lettre.
+ *
+ * `da fi no sl et` n'ont aucune lettre exclusive et ne sont pas dans la table :
+ * ils attendent du lexique.
+ */
+const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
+  [/[řěů]/iu, 'cs'],
+  [/[ľĺŕ]/iu, 'sk'],
+  [/[żźćśń]/iu, 'pl'],
+  [/[őű]/iu, 'hu'],
+  [/[ėįų]/iu, 'lt'],
+  [/[ģķļņ]/iu, 'lv'],
+  [/[ığ]/iu, 'tr'],
+  [/[șț]/iu, 'ro'],
+  [/l·l/iu, 'ca'],
+  [/[ơưđ]/iu, 'vi'],
+];
+
+/** Unanimous vote again: two exclusive sets in one line is a quote or a nickname. */
+function detectByExclusiveLetter(text: string): string | undefined {
+  let vote: string | undefined;
+  for (const [lettres, lang] of LETTRES_EXCLUSIVES) {
+    if (!lettres.test(text)) continue;
+    if (vote) return undefined;
+    vote = lang;
+  }
+  return vote;
+}
+
+/**
  * L'ecriture arabe n'est pas une langue.
  *
  * Le pre-controle rendait `ar` pour tout ce qui s'ecrit dans le bloc arabe, et
@@ -464,6 +527,11 @@ function detectByLookup(trimmed: string): string | undefined {
     const byWord = detectByShortWords(trimmed);
     if (byWord) return byWord;
   }
+
+  // Une lettre propre a une seule langue, a toute longueur. Avant le
+  // pre-controle d'ecriture, qui ne lit que les alphabets entiers.
+  const byLetter = detectByExclusiveLetter(trimmed);
+  if (byLetter) return byLetter;
 
   // Unicode script pre-check: more reliable than franc on short texts.
   // CJK, Arabic, Cyrillic etc. are unambiguous from their script alone.
