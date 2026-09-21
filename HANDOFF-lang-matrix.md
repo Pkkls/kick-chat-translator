@@ -3,7 +3,7 @@
 État vivant de ce chantier, mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `f2ed62f`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
+Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `e9684c4`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
 
 ---
 
@@ -21,7 +21,7 @@ skill     .claude/skills/add-language/SKILL.md   (la checklist, lire en premier)
 cd "C:/Users/kil/Downloads/kick-chat-translator"
 git checkout feat/lang-matrix
 npm ci                 # seulement si node_modules absent
-npm run release:check  # 70 fichiers, 1139 tests, doit sortir en 0
+npm run release:check  # 70 fichiers, 1140 tests, doit sortir en 0
 ```
 
 **Avertissement sur l'arbre de travail.** Il contient un WIP de kil sans rapport avec ce chantier, un redesign d'UI de chat : `src/content/inject.css`, `src/content/langMenu.ts`, `src/options/styles.css`, `src/popup/styles.css`, `tailwind.config.ts`, `src/content/chatStyles.test.ts`, `src/content/injector.test.ts`, `scratchpad/audit_da.py`, plus trois fichiers non suivis `src/shared/theme.css`, `src/shared/theme.test.ts`, `src/content/langPanelGeometry.test.ts`.
@@ -49,12 +49,12 @@ Ce qui a été découvert en cours de route et qui n'était pas dans le diagnost
 Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR, 120 lignes par langue.
 Trois issues, **jamais additionnées** : `right` la bonne langue, `silent` le détecteur a refusé de répondre ce qui est l'issue SÛRE, `wrong` une autre langue.
 
-| chemin | portée | départ `ec9e02d` | aujourd'hui `f2ed62f` |
+| chemin | portée | départ `ec9e02d` | aujourd'hui `36496f3` |
 |---|---|---|---|
-| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 2503 r / 2522 s / **15 w** |
-| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 769 / 899 / **12** |
-| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3510 / 661 / **869** |
-| `detectLanguage` | court | 837 / 364 / **479** | 1002 / 326 / **352** |
+| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 2713 r / 2312 s / **15 w** |
+| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 824 / 844 / **12** |
+| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3619 / 605 / **816** |
+| `detectLanguage` | court | 837 / 364 / **479** | 1040 / 307 / **333** |
 
 Le chemin sûr **répond deux fois plus souvent et se trompe 83 % moins**. C'est le seul mouvement qui compte vraiment : `wrong` sur ce chemin veut dire qu'on demande au moteur de traduire depuis une langue dans laquelle le texte n'est pas.
 
@@ -119,16 +119,16 @@ Mesuré **deux fois**, tel quel et diacritiques retirées, parce qu'un chat cont
 
 | | right | silent | wrong | muet |
 |---|---:|---:|---:|---:|
-| chemin sûr, tel quel | 110 | 280 | **0** | 72 % |
-| chemin sûr, sans diacritiques | 65 | 325 | **0** | 83 % |
-| chemin brut, tel quel | 191 | 92 | 107 | 24 % |
-| chemin brut, sans diacritiques | 156 | 117 | 117 | 30 % |
+| chemin sûr, tel quel | 123 | 267 | **0** | 68 % |
+| chemin sûr, sans diacritiques | 78 | 312 | **0** | 80 % |
+| chemin brut, tel quel | 199 | 87 | 104 | 22 % |
+| chemin brut, sans diacritiques | 164 | 112 | 114 | 29 % |
 
 Quatre choses qu'il dit et que Tatoeba ne pouvait pas dire :
 
 1. **Le chemin sûr se trompe ZÉRO fois sur 390, dans les deux régimes.** Les règles écrites contre de la prose ne se mettent pas à mentir quand le registre change, elles se taisent. C'est l'invariant qui compte et il est asserté.
-2. **Il répond à la question de la phase 1, et la réponse est non.** Sur du chat latin le chemin sûr est muet 72 fois sur 100, donc donner sa réponse au moteur on-device enverrait les trois quarts de ce chat au cloud, avec sa latence et son quota. Le chiffre à faire baisser d'abord est le silence.
-3. **Les diacritiques valent 40 % du rappel**, 110 contre 65. C'est la fragilité de toute l'approche par lettre exclusive en un chiffre : une règle qui lit `ř` ou `ų` ne lit plus rien dès que l'utilisateur tape vite, ce qui est le cas majoritaire sur téléphone.
+2. **Il répond à la question de la phase 1, et la réponse est non.** Sur du chat latin le chemin sûr est muet 68 fois sur 100, donc donner sa réponse au moteur on-device enverrait les trois quarts de ce chat au cloud, avec sa latence et son quota. Le chiffre à faire baisser d'abord est le silence.
+3. **Les diacritiques valent un tiers du rappel**, 123 contre 78. C'est la fragilité de toute l'approche par lettre exclusive en un chiffre : une règle qui lit `ř` ou `ų` ne lit plus rien dès que l'utilisateur tape vite, ce qui est le cas majoritaire sur téléphone.
 4. **83 % des lignes de chat font ≤20 caractères**, médiane 16, contre 33 % chez Tatoeba. Le lexique de mots courts, borné à 20, a donc une portée bien plus grande sur le régime réel que sur le corpus qui sert à le mesurer.
 
 ---
@@ -207,17 +207,26 @@ Un candidat testé sur les seules lignes qui atteignent la règle paraît plus p
 
 ### 4.5 Faire échouer l'instrument avant de lui faire confiance
 
-Deux contrôles à prix nul, tous deux payés au prix fort une fois chacun :
+**NE PLUS RETAPER LE CRIBLE. Il est committé :**
 
-- **Un banc de permutation doit reproduire une différence connue.** Le banc d'ordre des étages a été validé en lui demandant de retrouver une mesure déjà faite. S'il ne l'avait pas retrouvée, tous ses résultats négatifs auraient été du bruit.
-- **Un regex de screening doit imprimer sa propre source et échouer si elle est fausse.**
-
-```js
-const WORD = (m) => new RegExp('(^|[^\\p{L}])' + m + '([^\\p{L}]|$)', 'iu');
-if (!WORD('x').source.includes('\\p{L}')) throw new Error('REGEX CASSE, mesure invalide');
+```bash
+node --import tsx scratchpad/harness/lang-screen.mjs mot  merci mig ako
+node --import tsx scratchpad/harness/lang-screen.mjs fin  ção eux lijk
+node --import tsx scratchpad/harness/lang-screen.mjs brut "[¿¡]" "l·l"
 ```
 
-Sans cette ligne : un `\` perdu dans un heredoc a transformé `[^\p{L}]` en `[^p{L}]`, la borne de mot a cessé de borner, et le screening est devenu une recherche de sous-chaîne. Le mot russe `кто` en est ressorti "contaminé" par deux lignes bulgares qui étaient **докторе** et **директорите**. Quatre mots rejetés à tort.
+Il crible contre les **trois** corpus d'un coup et sort la colonne MELANGE à part, qui doit rester à zéro. Il existe parce qu'il a été retapé cinq fois dans une seule passe et s'est cassé deux fois de la même façon.
+
+Deux contrôles à prix nul, tous deux payés au prix fort :
+
+- **Un banc de permutation doit reproduire une différence connue.** Le banc d'ordre des étages a été validé en lui demandant de retrouver une mesure déjà faite. S'il ne l'avait pas retrouvée, tous ses résultats négatifs auraient été du bruit.
+- **Un regex de crible doit vérifier sa propre source COMPILÉE, pas une chaîne.**
+
+Écrit dans un heredoc, la classe des lettres perd sa barre oblique et devient quatre caractères littéraux. La borne de mot cesse de borner, chaque test devient une recherche de sous-chaîne, et le crible invente des occurrences étrangères. Le mot russe `кто` en est ressorti « contaminé » par deux lignes bulgares qui étaient **докторе** et **директорите**.
+
+**Et le garde censé l'attraper s'est cassé pareil.** Il testait que la source contienne la classe, en la cherchant sous forme de chaîne littérale ; JavaScript réinterprète cette chaîne et la source cassée la contient. *Un contrôle écrit dans le langage qu'il contrôle tombe dans le même piège que ce qu'il contrôle.* Le garde correct est une expression régulière sur la source compilée, et le script sort en erreur plutôt que d'imprimer un tableau faux.
+
+Conséquence mesurée du bug, et elle est contre-intuitive : **aucun rejet par la mesure n'était faux.** Tous revérifiés, `mig` est bien suédois sur 9 lignes, `meg` bien hongrois sur 9, `ako` bien slovaque. En revanche il avait caché dix motifs valables, récupérés au commit `36496f3`. Un crible trop permissif ne laisse pas passer de mauvais candidats, il en recale de bons : l'erreur est silencieuse et coûte du **rappel**, pas de la justesse. C'est le genre de bug qu'on ne voit jamais dans les chiffres qu'on regarde.
 
 ### 4.6 La mesure est un VETO, pas un critère de sélection
 
@@ -472,6 +481,7 @@ tl tgl   pt-br aucun (partage por)   zh-tw aucun (partage cmn)
 | `src/content/langMixedCorpus.ts` | **écrit à la main**, 60 lignes qui changent de langue | oui |
 | `src/content/langMixed.test.ts` | le banc qui garde la borne de 20 caractères | oui |
 | `src/content/langDetect.dix.test.ts` | le banc de chat des 5 langues non latines | oui |
+| `scratchpad/harness/lang-screen.mjs` | **le crible**, trois corpus d'un coup, garde vérifié | oui |
 | `scratchpad/harness/lang-matrix.mjs` | écrit le rapport lisible | oui |
 | `scratchpad/harness/lang-matrix.md` | le rapport | non, régénérable |
 
@@ -516,6 +526,13 @@ Commits, du plus ancien au plus récent :
 | `aaf077e` | Add the four exclusive letters the table had walked past |
 | `a3f9332` | Let the ring above the a name the Scandinavian trio, not just the pair |
 | `f2ed62f` | Read Finnish off its vowel harmony, and three more exclusive sequences |
+| `84a3a55` | Bring the handoff up to a branch where nothing scores zero any more |
+| `9741e9a` | Let the crossed o name Estonian, and give Slovene the words it has |
+| `7e12dd7` | Read Spanish off its inverted punctuation, and four languages off their endings |
+| `8cb1183` | Give English a vote, which makes the detector quieter on mixed lines, not louder |
+| `f5de950` | Find endings by searching instead of by knowing, and fix the vote it exposed |
+| `36496f3` | Rerun the ending search with a working regex, and correct what the broken one said |
+| `e9684c4` | Commit the screening tool instead of retyping it every time |
 
 ---
 
