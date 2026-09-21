@@ -619,6 +619,22 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/(^|[^\p{L}])(seda|siin|keegi|mida)([^\p{L}]|$)/iu, 'et'],
   [/(^|[^\p{L}])(yra|jis)([^\p{L}]|$)/iu, 'lt'],
   [/(^|[^\p{L}])(nang|ito|wala|alam|kung)([^\p{L}]|$)/iu, 'tl'],
+  // TROISIEME LOT, et il PROMEUT des mots qui ne servaient que derriere une
+  // porte. `sono` est dans le jeu italien et `lahko zelo zakaj nekaj ampak`
+  // dans le jeu slovene, donc ils ne se declenchaient que si une lettre
+  // partagee avait d'abord ouvert. Le crible les donne exclusifs sur les
+  // quarante-trois, donc ils n'ont pas besoin de la porte.
+  //
+  // C'est l'inverse du mouvement habituel : d'habitude un mot impossible en
+  // plein air devient propre DERRIERE une porte. Ceux-ci etaient deja propres
+  // en plein air et personne ne l'avait verifie.
+  //
+  // DEHORS : `molto` italien, it=4, refuse par la colonne MELANGE du crible,
+  // une ligne. `ako` slovaque, qui est du tagalog sur treize lignes contre six.
+  // `bol` slovaque, sk=3 et bruit nul, mais ZERO sur les huit bancs : ses trois
+  // lignes sont deja prises par `ľ` ou par la porte `š`.
+  [/(^|[^\p{L}])(sono|quello|allora)([^\p{L}]|$)/iu, 'it'],
+  [/(^|[^\p{L}])(lahko|zelo|zakaj|nekaj|ampak)([^\p{L}]|$)/iu, 'sl'],
   // LE TAGALOG, la derniere langue de la matrice sans un seul marqueur.
   //
   // Il s'ecrit en latin nu, sans un diacritique, donc aucune passe de lettres ne
@@ -731,7 +747,6 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/(ött|ában|ünk|ára|ért|szik)([^\p{L}]|$)/iu, 'hu'],
   [/(aar|eken|iets)([^\p{L}]|$)/iu, 'nl'],
   [/(ould|not|ity|day)([^\p{L}]|$)/iu, 'en'],
-  [/oir([^\p{L}]|$)/iu, 'fr'],
   [/(eht|ufen)([^\p{L}]|$)/iu, 'de'],
   [/(nys|uest)([^\p{L}]|$)/iu, 'ca'],
   // Quatrieme groupe, et la difference avec le troisieme est la SOURCE : ces
