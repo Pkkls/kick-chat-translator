@@ -191,6 +191,10 @@ const SHORT_WORD_LANG = new Map<string, string>([
 
   ['molt', 'ca'], ['aixo', 'ca'], ['això', 'ca'], ['perque', 'ca'], ['perquè', 'ca'],
   ['amb', 'ca'], ['gracies', 'ca'], ['gràcies', 'ca'],
+  ['són', 'ca'], ['què', 'ca'], ['més', 'ca'], ['també', 'ca'],
+  ['aquest', 'ca'], ['aquesta', 'ca'], ['aquests', 'ca'], ['dels', 'ca'], ['avui', 'ca'],
+  ['ahir', 'ca'], ['demà', 'ca'], ['seva', 'ca'], ['meva', 'ca'],
+  ['nosaltres', 'ca'], ['vosaltres', 'ca'], ['tothom', 'ca'], ['ningú', 'ca'], ['ningu', 'ca'], ['tambe', 'ca'], ['gaire', 'ca'],
 
   ['zelo', 'sl'], ['hvala', 'sl'], ['zakaj', 'sl'], ['spet', 'sl'], ['tukaj', 'sl'],
   ['vedno', 'sl'], ['danes', 'sl'],
