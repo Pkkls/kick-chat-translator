@@ -948,11 +948,37 @@ function estonienOuPortugais(text: string): string | undefined {
 // registre familier n'y sont pas, donc il ne peut pas les proposer. Voir
 // `langChatPaire.test.ts`.
 const MOTS_MALAIS_INDONESIENS =
-  /(^|[^\p{L}])(yang|tidak|dengan|untuk|saya|ini|itu|dari|pada|sudah|mereka|dalam|lebih|orang|apa|lagi|tidur|siapa|baru)([^\p{L}]|$)/iu;
+  /(^|[^\p{L}])(yang|tidak|dengan|untuk|saya|ini|itu|dari|pada|sudah|mereka|dalam|lebih|orang|apa|lagi|tidur|siapa|baru|makan|sini)([^\p{L}]|$)/iu;
 const MOTS_INDONESIENS =
   /(^|[^\p{L}])(bisa|uang|mobil|coba|karena|besok|kamar|kayak|nggak|gak|banget|gimana|udah|aja|nih|dong|sih|gue|kemarin)([^\p{L}]|$)/iu;
+// LES PARTICULES MALAISES, et c'est la porte qui les rend possibles.
+//
+// `tak`, `dah`, `je`, `weh` sont ce que le chat malaisien ecrit tout le temps et
+// ils sont TOUS impossibles en plein air : `tak` est tcheque, polonais, anglais
+// et cinq autres, `je` est francais, tcheque et slovene, `dah` vit dans le turc
+// `daha`. Le fichier les avait ecartes pour cette raison.
+//
+// Derriere la porte malais-indonesien il n'y a plus ni tcheque ni francais ni
+// slovene : il ne reste que deux langues, et l'indonesien ecrit `gak`, `udah`,
+// `aja` a la place. Les memes mots redeviennent propres. C'est exactement ce que
+// les portes a lettre font depuis `a7ac4c2`, applique a des particules.
+//
+// CE QUI A BLOQUE JUSQU'ICI, et c'est une limite de l'ablation mot a mot : le
+// declencheur et le mot qui tranche sont COUPLES. Ajouter `kalah` au declencheur
+// ouvre la porte sur une ligne malaise, mais si le jeu malais n'a rien derriere,
+// la ligne reste muette et `kalah` mesure zero. Ajouter `tak` au jeu ne sert a
+// rien tant que la porte reste fermee. Mesures separement, les deux moities
+// rendent zero ; ensemble elles rendent six lignes du corpus aveugle.
+//
+// Le diagnostic qui l'a montre est `porte-diagnostic.mjs` : il separe "porte
+// fermee" de "porte ouverte, aucun mot ne tranche". Vingt-quatre des vingt-huit
+// lignes malaises muettes avaient la porte FERMEE.
+//
+// DEHORS : `kau`, que l'indonesien ecrit aussi, mesure sur
+// `Kenapa kau tidak mempercayaiku?` qui partait au malais. `lah`, `tu`, `ni`,
+// `korang` sont corrects et rapportent zero hors du corpus ou ils ont ete lus.
 const MOTS_MALAIS =
-  /(^|[^\p{L}])(kerana|sahaja|cuba|esok|bilik|mahu|jom|awak|tengok|macam|betul|sikit|jugak|memang|nak|tiada|teruk|nampak|berlaku)([^\p{L}]|$)/iu;
+  /(^|[^\p{L}])(kerana|sahaja|cuba|esok|bilik|mahu|jom|awak|tengok|macam|betul|sikit|jugak|memang|nak|tiada|teruk|nampak|berlaku|dah|tak|je|weh)([^\p{L}]|$)/iu;
 
 function malaisOuIndonesien(text: string): string | undefined {
   if (!MOTS_MALAIS_INDONESIENS.test(text)) return undefined;

@@ -61,15 +61,15 @@ describe('le corpus de la paire', () => {
   // regle ecrite pour lui. Il bougera ; le bouger sans dire dans quel sens et
   // pourquoi est ce que ce fichier existe pour empecher.
   it('mesure les deux chemins sur du registre familier', () => {
-    expect(plain(SURE.total)).toEqual({ right: 16, silent: 44, wrong: 0 });
-    expect(plain(BRUT.total)).toEqual({ right: 23, silent: 21, wrong: 16 });
+    expect(plain(SURE.total)).toEqual({ right: 22, silent: 38, wrong: 0 });
+    expect(plain(BRUT.total)).toEqual({ right: 25, silent: 20, wrong: 15 });
   });
 
   // LA MESURE QUI JUSTIFIE LE CORPUS, et la reponse n'est pas celle qu'on
   // attendait. La file de travail demandait : est-ce que le registre familier
   // separe ces deux langues la ou la prose ne le fait pas ?
   //
-  // NON, il les rend plus MUETTES. 16 lignes nommees sur 60, soit 27 %, contre
+  // NON, il les rend plus MUETTES. 22 lignes nommees sur 60, soit 37 %, contre
   // 40 % sur le corpus aveugle parallele. La porte malais-indonesien s'ouvre sur
   // des mots outils, `yang tidak dengan untuk saya ini itu`, et le chat familier
   // ne les ecrit pas : il ecrit `gue`, `lo`, `gak`, `aku`, `kau`, `tak`. Le
@@ -87,21 +87,21 @@ describe('le corpus de la paire', () => {
         wrong: b.short.wrong + b.medium.wrong + b.long.wrong,
       };
     };
-    expect(plain(par('ms'))).toEqual({ right: 4, silent: 26, wrong: 0 });
+    expect(plain(par('ms'))).toEqual({ right: 10, silent: 20, wrong: 0 });
     expect(plain(par('id'))).toEqual({ right: 12, silent: 18, wrong: 0 });
   });
 
   // Le chemin brut sur le meme corpus, celui qui pilote le moteur on-device et
-  // qui alimente le drapeau. Il repond 39 fois sur 60 et se trompe sur 16. Dix-huit lignes qui partent au moteur avec une
+  // qui alimente le drapeau. Il repond 40 fois sur 60 et se trompe sur 15. Dix-huit lignes qui partent au moteur avec une
   // langue source fausse, sur un corpus de soixante.
   //
-  // ET TROIS D'ENTRE ELLES NE VONT PAS DANS LA PAIRE, sur seize. `internet aku slow gila`
+  // ET TROIS D'ENTRE ELLES NE VONT PAS DANS LA PAIRE, sur quinze. `internet aku slow gila`
   // ressort FRANCAISE. La confusion `id`/`ms` de la matrice cachait donc une
   // deuxieme chose : sur du registre familier, franc ne se contente pas de
   // confondre les deux entre elles, il sort parfois de la famille entierement.
   it('confond les deux entre elles, et sort parfois de la paire', () => {
     expect(BRUT.confusions.get('id->ms')).toBe(6);
-    expect(BRUT.confusions.get('ms->id')).toBe(7);
+    expect(BRUT.confusions.get('ms->id')).toBe(6);
     // Le reste part ailleurs, et c'est la moitie d'une erreur sur six.
     expect(BRUT.confusions.get('id->fr')).toBe(2);
     expect(BRUT.confusions.get('ms->fr')).toBe(1);

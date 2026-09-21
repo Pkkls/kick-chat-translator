@@ -22,12 +22,47 @@ const SOURCE = 'src/content/langDetect.ts';
 const DIFF = 'scratchpad/harness/porte-diff.mjs';
 const original = readFileSync(SOURCE, 'utf8');
 
-/** Les mots ajoutes au tour qu'on mesure, un par jeu. */
+/**
+ * Les mots a mesurer, group\u00e9s par la CONSTANTE qui les porte.
+ *
+ * Le nom de la constante n'est pas decoratif, il est la correction d'un bug qui
+ * a fausse une passe entiere. La premiere version faisait
+ * `source.replace('|' + mot, '')` sur tout le fichier, donc elle retirait la
+ * PREMIERE occurrence de cette chaine ou qu'elle soit :
+ *
+ *   `|ni`  a mange le `ni` de `niya` dans la table tagalog
+ *   `|je`  a mange le `je` de `ještě` dans le jeu tcheque
+ *   `|dah` a mange le `dah` de `daha` dans le jeu turc
+ *   `|lah` aurait mange le `lah` de `lahko` dans le jeu slovene
+ *
+ * Les chiffres qui en sortaient mesuraient la destruction d'une autre langue.
+ * `lah` ressortait a +5 lignes Tatoeba, ce qui etait le slovene qui tombait.
+ *
+ * Le retrait est donc borne a la constante nommee, et il exige une frontiere
+ * d'alternance des deux cotes, `|mot|` ou `|mot)`.
+ */
 const MOTS = {
-  declencheur: 'menang kalah kucing lagu ulang bulan demam panjang baju anjing tidur kampung belajar bangun minggu depan hari siapa baru rindu agak'.split(' '),
-  indonesien: 'gue temen dateng telat abis kangen nongkrong nyokap hape lucu semalem kemarin seru berisik'.split(' '),
-  malais: 'dah korang lepak jiran sejuk comel bising'.split(' '),
+  MOTS_MALAIS_INDONESIENS:
+    'menang kalah kucing lagu ulang bulan demam panjang baju anjing kampung belajar bangun minggu depan hari rindu makan sini sekarang berapa kamu tahu'.split(
+      ' ',
+    ),
+  MOTS_MALAIS: 'dah tak ni tu je lah weh korang'.split(' '),
 };
+
+/**
+ * Retire `mot` de l'alternance de `constante`, et de nulle part ailleurs.
+ * Rend `null` si le mot n'y est pas, pour que l'appelant le signale au lieu de
+ * mesurer un fichier inchange et de conclure "zero".
+ */
+function sans(source, constante, mot) {
+  const bloc = new RegExp(`(const ${constante} =\\s*/[^;]*;)`);
+  const m = bloc.exec(source);
+  if (!m) return null;
+  const avant = m[1];
+  const apres = avant.replace(new RegExp(`\\|${mot}(?=[|)])`), '');
+  if (apres === avant) return null;
+  return source.replace(avant, apres);
+}
 
 function mesure() {
   const out = execFileSync('node', ['--import', 'tsx', DIFF], { encoding: 'utf8' });
@@ -54,26 +89,25 @@ try {
   );
   console.log('mot            reglage   ailleurs (tatoeba chat1 chat2 chat3 AVEUGLE)');
   const morts = [];
-  for (const [jeu, mots] of Object.entries(MOTS)) {
-    console.log(`  -- ${jeu} --`);
+  for (const [constante, mots] of Object.entries(MOTS)) {
+    console.log(`  -- ${constante} --`);
     for (const mot of mots) {
-      // Retire le mot de son alternance, avec sa barre, sans toucher au reste.
-      const sansMot = original.replace(`|${mot}`, '');
-      if (sansMot === original) {
-        console.log(`  ${mot.padEnd(12)} INTROUVABLE dans le fichier`);
+      const sansMot = sans(original, constante, mot);
+      if (sansMot === null) {
+        console.log(`  ${mot.padEnd(12)} INTROUVABLE dans ${constante}`);
         continue;
       }
       writeFileSync(SOURCE, sansMot, 'utf8');
-      const sans = mesure();
+      const sansLui = mesure();
       const d = (a, b) => a - b;
       const ailleurs = [
-        d(base.tatoeba.r, sans.tatoeba.r),
-        d(base.chat1.r, sans.chat1.r),
-        d(base.chat2.r, sans.chat2.r),
-        d(base.chat3.r, sans.chat3.r),
-        d(base.aveugle.r, sans.aveugle.r),
+        d(base.tatoeba.r, sansLui.tatoeba.r),
+        d(base.chat1.r, sansLui.chat1.r),
+        d(base.chat2.r, sansLui.chat2.r),
+        d(base.chat3.r, sansLui.chat3.r),
+        d(base.aveugle.r, sansLui.aveugle.r),
       ];
-      const gainReglage = d(base.reglage.r, sans.reglage.r);
+      const gainReglage = d(base.reglage.r, sansLui.reglage.r);
       const transfere = ailleurs.some((n) => n !== 0);
       if (!transfere) morts.push(mot);
       console.log(
