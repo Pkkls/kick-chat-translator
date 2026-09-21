@@ -524,6 +524,28 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   // n'est pas automatiquement un marqueur utile.
   [/wir/iu, 'de'],
   [/gov/iu, 'sl'],
+  // CINQUIEME RECOLTE, et c'est la paire scandinave interrogee directement, ce
+  // qui n'avait jamais ete fait : `porte-candidats.mjs da+no`. Le diagnostic
+  // disait que 70 lignes danoises avaient la porte OUVERTE sans mot pour
+  // trancher, donc le manque etait la.
+  //   gje  no=9, aucune autre langue. `gjerne`, `gjøre`, `gjennom`. Le danois
+  //        ecrit `gøre`, sans le j.
+  //   æl   da=5, aucune autre. `æble`, `ældre`. Le norvegien ecrit `eple` et
+  //        `eldre` : c'est le `æ` danois contre le `e` norvegien, la meme
+  //        alternance que le `g` contre le `k` deja prise par `øj` et `øg`.
+  //
+  // Elles entrent comme EXCLUSIVES et non comme mots de tri : aucune autre des
+  // quarante-trois ne les ecrit, donc elles n'ont pas besoin que la porte
+  // nordique se soit ouverte d'abord.
+  //
+  // DEHORS : `noe` no=8 et bruit nul mesure, mais le neerlandais ecrit
+  // `noemen`. `igj` no=6 est contenu dans `gjerne`... non, dans `igjen`, qui
+  // porte deja `gje`. `igt` da=8 prend onze lignes suedoises.
+  // `gje` remplace `gjen([^\p{L}]|$)`, qui ne voyait que la fin de mot et donc
+  // que `igjen` : troisieme fois qu'une sequence non bornee retire une entree
+  // plus etroite sans rien perdre, apres `ijn` et `jse`.
+  [/gje/iu, 'no'],
+  [/æl/iu, 'da'],
   // LE TAGALOG, la derniere langue de la matrice sans un seul marqueur.
   //
   // Il s'ecrit en latin nu, sans un diacritique, donc aucune passe de lettres ne
@@ -657,7 +679,6 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/eveel([^\p{L}]|$)/iu, 'nl'],
   [/(ght|ople)([^\p{L}]|$)/iu, 'en'],
   [/tou([^\p{L}]|$)/iu, 'pt'],
-  [/gjen([^\p{L}]|$)/iu, 'no'],
   [/stà([^\p{L}]|$)/iu, 'ca'],
   [/ämä([^\p{L}]|$)/iu, 'fi'],
 ];

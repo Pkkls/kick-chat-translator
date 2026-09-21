@@ -167,6 +167,7 @@ const SEQ_PRISES = new Set([
   // Subsumees par une entree plus large deja en table, donc inutile de les
   // reproposer : `ção nã não voc ocê` par `ão` et `cê`, `czy się` par `cz`.
   'ção', 'nã', 'não', 'voc', 'ocê', 'czy', 'się',
+  'tää', 'llä', 'õi', 'wir', 'gov',
 ]);
 
 // REJETEES au critere (a) malgre un bruit mesure nul. Meme role que REJETES
@@ -178,7 +179,12 @@ const SEQ_PRISES = new Set([
 //   oor  l'anglais ecrit `door`, `floor`, `poor`.
 //   ân   le francais ecrit `âne`.   în  le francais ecrit `chaîne`.
 //   kj skj gj  proposees norvegiennes, une a trois lignes danoises chacune.
-const SEQ_REJETEES = new Set(['you', 'gio', 'oor', 'ân', 'în', 'kj', 'skj', 'gj']);
+const SEQ_REJETEES = new Set([
+  'you', 'gio', 'oor', 'ân', 'în', 'kj', 'skj', 'gj',
+  // Rejetees par l'ABLATION et non par le critere (a) : propres, non ambigues,
+  // et zero sur les huit bancs parce qu'une autre regle prend deja leurs lignes.
+  'més', 'hän', 'sä', 'taa', 'nud',
+]);
 
 const vuSeq = new Map();
 for (const corpus of corpora) {
