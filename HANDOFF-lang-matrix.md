@@ -3,7 +3,7 @@
 État vivant de ce chantier, mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `e9684c4`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
+Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `0235ee5`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
 
 ---
 
@@ -49,12 +49,12 @@ Ce qui a été découvert en cours de route et qui n'était pas dans le diagnost
 Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR, 120 lignes par langue.
 Trois issues, **jamais additionnées** : `right` la bonne langue, `silent` le détecteur a refusé de répondre ce qui est l'issue SÛRE, `wrong` une autre langue.
 
-| chemin | portée | départ `ec9e02d` | aujourd'hui `36496f3` |
+| chemin | portée | départ `ec9e02d` | aujourd'hui `0235ee5` |
 |---|---|---|---|
-| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 2713 r / 2312 s / **15 w** |
-| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 824 / 844 / **12** |
-| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3619 / 605 / **816** |
-| `detectLanguage` | court | 837 / 364 / **479** | 1040 / 307 / **333** |
+| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 2737 r / 2288 s / **15 w** |
+| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 845 / 823 / **12** |
+| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3635 / 600 / **805** |
+| `detectLanguage` | court | 837 / 364 / **479** | 1054 / 302 / **324** |
 
 Le chemin sûr **répond deux fois plus souvent et se trompe 83 % moins**. C'est le seul mouvement qui compte vraiment : `wrong` sur ce chemin veut dire qu'on demande au moteur de traduire depuis une langue dans laquelle le texte n'est pas.
 
@@ -81,14 +81,14 @@ Les trois dernières du chemin brut, `et fi sl`, sont sorties par le lexique de 
 120  ar bn el he hi ja ko ta th     (écritures sans ambiguïté)
 113  fa    112 yue   108 lv    105 zh-tw   97 uk   89 ru   87 zh
 86   tr     81 vi     75 cs     74 bg      70 pl   61 ro   53 lt
-34   sv     27 fi     25 hu     20 de      16 no   13 ms   12 da
-12   sk     11 pt      6 ca      6 es       6 et    6 tl    5 fr
-4    id      4 nl      3 it      1 en       1 sl
+37   sv     36 et     35 es     30 nl      30 pt   29 fr   28 tl
+27   fi     25 hu     25 it     21 de      18 sl   17 ms   17 no
+16   sk     15 da     14 id     13 ca      13 en
 ```
 
-**Ne pas lire `ca=6` ou `et=6` comme des langues réglées.** Elles sont sorties de la liste à zéro et c'est tout. Ce tableau est celui de Tatoeba ; sur du chat le classement est différent, voir 2bis.
+**Plus aucune langue sous 13 sur 120**, contre vingt-six à zéro au départ. Ce tableau est celui de Tatoeba ; sur du chat le classement est différent, voir 2bis.
 
-Les deux vraiment bloquées sont **`sl` à 1 et `en` à 1**, et pour des raisons opposées : le slovène partage `č š ž` avec quatre voisins et n'a ni lettre ni séquence à lui ; l'anglais n'a rien parce qu'il est le fond sur lequel tout le reste se détache, et c'est la ligne `ignoreEnglish` de la section 10.
+Le bas du tableau n'est plus fait de langues sans règle mais de langues dont les règles sont rares : `ca` a le point volat et deux terminaisons, `en` a dix-sept mots, `da` et `no` ont la porte nordique. Ce qui les limite est le **plafond de 20 caractères** du lexique, pas l'absence de marqueur. Voir 2ter.
 
 ### Les paires qui volent le plus, chemin brut
 
@@ -119,16 +119,16 @@ Mesuré **deux fois**, tel quel et diacritiques retirées, parce qu'un chat cont
 
 | | right | silent | wrong | muet |
 |---|---:|---:|---:|---:|
-| chemin sûr, tel quel | 123 | 267 | **0** | 68 % |
-| chemin sûr, sans diacritiques | 78 | 312 | **0** | 80 % |
-| chemin brut, tel quel | 199 | 87 | 104 | 22 % |
-| chemin brut, sans diacritiques | 164 | 112 | 114 | 29 % |
+| chemin sûr, tel quel | 181 | 209 | **0** | 54 % |
+| chemin sûr, sans diacritiques | 128 | 262 | **0** | 67 % |
+| chemin brut, tel quel | 238 | 73 | 79 | 19 % |
+| chemin brut, sans diacritiques | 197 | 99 | 94 | 25 % |
 
 Quatre choses qu'il dit et que Tatoeba ne pouvait pas dire :
 
 1. **Le chemin sûr se trompe ZÉRO fois sur 390, dans les deux régimes.** Les règles écrites contre de la prose ne se mettent pas à mentir quand le registre change, elles se taisent. C'est l'invariant qui compte et il est asserté.
-2. **Il répond à la question de la phase 1, et la réponse est non.** Sur du chat latin le chemin sûr est muet 68 fois sur 100, donc donner sa réponse au moteur on-device enverrait les trois quarts de ce chat au cloud, avec sa latence et son quota. Le chiffre à faire baisser d'abord est le silence.
-3. **Les diacritiques valent un tiers du rappel**, 123 contre 78. C'est la fragilité de toute l'approche par lettre exclusive en un chiffre : une règle qui lit `ř` ou `ų` ne lit plus rien dès que l'utilisateur tape vite, ce qui est le cas majoritaire sur téléphone.
+2. **Il répond à la question de la phase 1, et la réponse est encore non, mais de moins en moins.** Le silence était de **85 %** quand ce banc a été construit, il est à **54 %**. Sur du chat latin le chemin sûr est muet 54 fois sur 100, donc donner sa réponse au moteur on-device enverrait les trois quarts de ce chat au cloud, avec sa latence et son quota. Le chiffre à faire baisser d'abord est le silence.
+3. **Les diacritiques valent 30 % du rappel**, 181 contre 128. L'écart s'est réduit à mesure que le lexique grossissait : les mots de structure fréquents ne portent pas d'accent, les lettres exclusives oui. C'est la fragilité de toute l'approche par lettre exclusive en un chiffre : une règle qui lit `ř` ou `ų` ne lit plus rien dès que l'utilisateur tape vite, ce qui est le cas majoritaire sur téléphone.
 4. **83 % des lignes de chat font ≤20 caractères**, médiane 16, contre 33 % chez Tatoeba. Le lexique de mots courts, borné à 20, a donc une portée bien plus grande sur le régime réel que sur le corpus qui sert à le mesurer.
 
 ---
@@ -421,19 +421,26 @@ Les étages sont **disjoints** sauf lettres-contre-lexique, qui se croisent sur 
 
 ## 7. La file de travail, par valeur décroissante
 
-**Le paysage a changé.** Les deux listes de langues à zéro sont vides, la phase 2 est fermée, et le chemin sûr est à 15 erreurs sur 5040 et **zéro sur 390 lignes de chat**. Ce qui reste n'est plus "des langues sans règle" mais du rappel, et le rappel se heurte à une borne.
+**Le paysage a encore changé.** Toutes les langues ont une règle, aucune n'est à zéro, le chemin sûr est à 15 erreurs sur 5040 et **zéro sur 390 lignes de chat**. Le silence du chat est passé de 85 % à 54 %. Ce qui reste est du rappel, et le rappel se heurte à une borne.
 
-1. **La morphologie, pour les langues que le lexique n'atteint pas.** C'est la piste la plus prometteuse et elle vient d'être validée sur le finnois : `-ssä -llä -ttä -vät` l'ont fait passer de 1 à 27 lignes, là où un lexique de mots aurait rendu une poignée. **Une terminaison atteint n'importe quelle phrase, un mot n'atteint que les phrases qui l'emploient.** Candidats immédiats : le slovène, qui est à 1 sur 120 et partage toutes ses lettres, et l'estonien à 6. Chercher des suites de fin de mot, pas des mots.
+1. **Continuer le lexique, en visant le SILENCE du chat.** C'est le levier qui marche : deux tours de 70 et 33 entrées ont fait 85 % -> 60 % -> 54 %, sans une seule erreur nouvelle sur aucun des trois bancs. Méthode, dans l'ordre :
+   - lire les lignes encore muettes du banc de chat, langue par langue ;
+   - choisir les mots pour leur **fréquence dans la langue**, jamais parce qu'ils sont dans le corpus ;
+   - cribler avec `scratchpad/harness/lang-screen.mjs mot ...` ;
+   - appliquer 4.6b et sortir ce qui est un mot ailleurs ;
+   - vérifier que **Tatoeba**, qui est indépendant, bouge dans le même sens.
+   
+   **Contrôle de circularité obligatoire** : couper le corpus de chat en deux et comparer le gain. Au dernier tour, réglage +9,6 %, écart +7,7 %, soit un transfert de quatre cinquièmes. Si l'écart se creuse, le lexique est en train d'apprendre le corpus.
 
-2. **Baisser le silence du chat, 72 % aujourd'hui.** C'est le seul chiffre qui rouvrirait la phase 1. Plafond mesuré à 83 %, la part des lignes de chat qui font ≤20 caractères. **Attention à la circularité** : ajouter des mots pris dans le corpus de chat gonfle le chiffre sans rien améliorer. Régler sur les indices pairs, valider sur les impairs, exiger que l'écart entre les deux moitiés reste nul.
+2. **Un mot inutilisable en plein air est souvent utilisable derrière une porte.** Trois fois la réponse sur cette branche : `mig dig sig` derrière `ø æ`, `on ei ma ta` derrière `õ`, `tiada teruk nampak` derrière la porte malais-indonésien. Avant de rejeter un mot, se demander s'il existe une porte qui a déjà écarté ses concurrents.
 
-3. **Les paires qui restent, par taille** : `id -> ms` 48, `ca -> es` 42, `da -> sv` 41, `no -> sv` 41, `ms -> id` 35, `da -> nl` 31, `ca -> fr` 28, `sk -> cs` 27. Toutes ont désormais une règle qui les nomme sans les fermer. Les fermer demande d'atteindre les lignes qui ne portent AUCUN marqueur, ce que seule la morphologie peut faire.
+3. **La morphologie pour ce que le lexique n'atteint pas.** Une terminaison porte sur n'importe quelle phrase, un mot seulement sur celles qui l'emploient, et la borne de 20 caractères ne s'applique pas aux terminaisons. C'est ce qui a fait passer le finnois de 1 à 27. Méthode et garde-fous en 5.13.
 
-4. **Les 15 erreurs restantes du chemin sûr**, et elles sont toutes de la même nature : une ligne écrite entièrement avec ce que l'extension partage avec sa base. `fa -> ar` 7, les trois lignes jawi sans lettre jawi, `yue -> zh` 2. Fermer ça demande de sortir du niveau du caractère.
+4. **Les paires qui restent** : `id -> ms` 45, `ca -> es` 39, `da -> sv` 39, `no -> sv` 41, `ms -> id` 35, `da -> nl` 31, `sk -> cs` 27. Toutes ont une règle qui les nomme sans les fermer ; les fermer demande d'atteindre les lignes sans aucun marqueur.
 
-5. **`sl` et `en`, les deux dernières à 1 sur 120**, et pour des raisons opposées. Le slovène n'a rien à lui, c'est le point 1. L'anglais n'a rien parce qu'il est le fond : voir section 10, ligne `ignoreEnglish`.
+5. **Les 15 erreurs restantes du chemin sûr**, toutes de la même nature : une ligne écrite entièrement avec ce que l'extension partage avec sa base. `fa -> ar` 7, trois lignes jawi sans lettre jawi, `yue -> zh` 2.
 
-6. **`mano` coûte deux lignes** (`es->pt` et `lt->pt`) et c'est un vrai mot espagnol et lituanien. Mesurable maintenant : ajouter des lignes brésiliennes qui l'emploient au corpus de chat et comparer.
+6. **`mano` coûte deux lignes** et c'est un vrai mot espagnol et lituanien. Mesurable maintenant : ajouter des lignes brésiliennes qui l'emploient au corpus de chat et comparer.
 
 ### Ce qu'il ne faut PAS refaire
 
@@ -533,6 +540,9 @@ Commits, du plus ancien au plus récent :
 | `f5de950` | Find endings by searching instead of by knowing, and fix the vote it exposed |
 | `36496f3` | Rerun the ending search with a working regex, and correct what the broken one said |
 | `e9684c4` | Commit the screening tool instead of retyping it every time |
+| `550221a` | Record the broken-guard lesson and point the protocol at the committed screen |
+| `9e18889` | Aim the lexicon at the silence instead of at the languages without a rule |
+| `0235ee5` | Take the chat silence from sixty percent to fifty-four |
 
 ---
 
