@@ -3,7 +3,7 @@
 État vivant de ce chantier, mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `c23c0c9`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
+Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `3962609`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
 
 ---
 
@@ -21,7 +21,7 @@ skill     .claude/skills/add-language/SKILL.md   (la checklist, lire en premier)
 cd "C:/Users/kil/Downloads/kick-chat-translator"
 git checkout feat/lang-matrix
 npm ci                 # seulement si node_modules absent
-npm run release:check  # 74 fichiers, 1163 tests, doit sortir en 0
+npm run release:check  # 74 fichiers, 1164 tests, doit sortir en 0
 ```
 
 **Avertissement sur l'arbre de travail.** Il contient un WIP de kil sans rapport avec ce chantier, un redesign d'UI de chat : `src/content/inject.css`, `src/content/langMenu.ts`, `src/options/styles.css`, `src/popup/styles.css`, `tailwind.config.ts`, `src/content/chatStyles.test.ts`, `src/content/injector.test.ts`, `scratchpad/audit_da.py`, plus trois fichiers non suivis `src/shared/theme.css`, `src/shared/theme.test.ts`, `src/content/langPanelGeometry.test.ts`.
@@ -49,11 +49,11 @@ Ce qui a été découvert en cours de route et qui n'était pas dans le diagnost
 Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR, 120 lignes par langue.
 Trois issues, **jamais additionnées** : `right` la bonne langue, `silent` le détecteur a refusé de répondre ce qui est l'issue SÛRE, `wrong` une autre langue.
 
-| chemin | portée | départ `ec9e02d` | aujourd'hui `1a26688` |
+| chemin | portée | départ `ec9e02d` | aujourd'hui `3962609` |
 |---|---|---|---|
-| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3396 r / 1637 s / **7 w** |
+| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3400 r / 1633 s / **7 w** |
 | `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 973 / 700 / **7** |
-| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3925 / 466 / **649** |
+| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3929 / 466 / **645** |
 | `detectLanguage` | court | 837 / 364 / **479** | 1133 / 266 / **281** |
 
 Le chemin sûr **répond 2,5 fois plus souvent et se trompe 83 % moins**. C'est le seul mouvement qui compte vraiment : `wrong` sur ce chemin veut dire qu'on demande au moteur de traduire depuis une langue dans laquelle le texte n'est pas.
@@ -398,6 +398,30 @@ Les chiffres mesuraient donc **la destruction d'une autre langue**. `lah` ressor
 **Ce que ça a coûté ailleurs** : au tour précédent, `dah` avait été jugé à zéro et coupé alors qu'il n'avait jamais été retiré. Il transfère, il est rentré. Vérification faite sur les quarante-huit mots de tous les tours : seuls `je` et `dah` étaient dans ce cas.
 
 Le retrait est maintenant borné à la constante nommée et exige une frontière d'alternance des deux côtés, `|mot|` ou `|mot)`. **Un outil qui modifie la source par recherche de chaîne doit dire DANS QUOI il cherche**, sinon il finit par trouver ailleurs. Même famille que le crible cassé de 4.5 : l'outil ne tombait pas en panne, il répondait faux.
+
+---
+
+### 4.10 UN DÉCLENCHEUR NE DOIT APPARTENIR À AUCUN DES DEUX JEUX DERRIÈRE LUI
+
+Une porte a deux étages : un **déclencheur** qui dit « cette ligne appartient à l'une de ces deux langues », puis un **jeu de mots par langue** qui choisit dedans. Un mot présent dans les deux fait les deux tout seul : il ouvre la porte sur une ligne de l'**autre** langue, puis décide en faveur de la sienne. Les deux indices censés être indépendants n'en font qu'un.
+
+**Payé deux fois, sous deux formes :**
+
+| | |
+|---|---|
+| `dz` porte pl/lv/sk | `bardzo` porte la séquence **et** est le mot polonais du jeu. Trois lignes mélangées nommées polonaises |
+| `hvor` déclencheur da/no | il est déjà dans `MOTS_NORVEGIENS`. Deux lignes danoises parties au norvégien |
+
+La deuxième est la forme pure : le déclencheur **est** le mot qui tranche. La première est la forme cachée : il vit *dedans*.
+
+**Les deux ont été attrapées par le diff à cinq bancs, donc après coup, et aucune ne fait tomber un test toute seule** : elles bougent du rappel et des confusions, pas une assertion nommée.
+
+**Un garde statique dans `langMatrix.test.ts` les attrape maintenant à l'écriture.** Il lit la source, extrait l'alternance de chaque constante et croise déclencheurs et jeux. Il a été **fait échouer avant d'être cru**, protocole 4.5 : réintroduire `hvor` lui fait signaler exactement une faute, le retirer le rend vert.
+
+**Deux pièges d'implémentation, tous deux payés en l'écrivant :**
+
+- La regex d'une constante porte TROIS groupes, `(^|[^\p{L}])(les|mots)([^\p{L}]|$)`, et c'est celui du milieu qu'on veut. Le garde prend le groupe qui a le plus d'alternatives plutôt que de compter les parenthèses : les deux bornes en ont deux, une liste de mots en a dix.
+- **Un antislash dans un template literal n'est pas un antislash.** `` `\s` `` entre backticks vaut la lettre `s`, donc le motif exige `\\s`. La première version ne trouvait aucune constante et disait « introuvable ». C'est exactement le mode d'échec contre lequel 4.5 existe, et il s'est produit dans le garde écrit pour 4.10.
 
 ---
 
@@ -1148,6 +1172,9 @@ Commits, du plus ancien au plus récent :
 | `1711b0a` | Try naming English by counting markers instead of finding a better one, and record why it is not shipped |
 | `eee3fce` | Put the English counting result in the do-not-redo list, with its reopening condition |
 | `c23c0c9` | Retire the last two gates the exclusive words replaced, and leave the table with nothing dead in it |
+| `da1de5e` | Bring the commit list and the bundle figure up to the close-out |
+| `b297cd2` | Add two more Nordic markers, and lose two lines to a trigger that was already a decider |
+| `3962609` | Guard the trigger-is-also-a-decider defect, which has cost lines twice and fails no test on its own |
 
 ---
 
@@ -1244,7 +1271,7 @@ Ne pas trancher ça dans une passe de détection. **Et surtout : le faire seul n
 
 - Commits : sujet à l'impératif, corps expliquant la cause, le correctif, et **comment il a été constaté**. Terminer par `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`.
 - Gate : `npm run release:check`, jamais seulement `typecheck` et `test`. Il lance aussi `lint`.
-- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **95772 aujourd'hui** (`c23c0c9`), soit +3976 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-sept portes et 433 entrées de lexique. Le détail des neuf derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, **-51 pour +14**, **+13 pour +39**, +65 pour +8, -10 pour +2, +22 pour +5, et **-76 pour zéro** au dernier, qui ne fait que supprimer des entrées qui ne pouvaient plus se déclencher. Les deux meilleurs rapports de tout le chantier sont la porte nordique à mot, qui supprime plus de code qu'elle n'en ajoute, et les marqueurs tagalog, treize octets. Les six corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
+- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **95779 aujourd'hui** (`3962609`), soit +3976 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-sept portes et 433 entrées de lexique. Le détail des neuf derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, **-51 pour +14**, **+13 pour +39**, +65 pour +8, -10 pour +2, +22 pour +5, et **-76 pour zéro** au dernier, qui ne fait que supprimer des entrées qui ne pouvaient plus se déclencher. Les deux meilleurs rapports de tout le chantier sont la porte nordique à mot, qui supprime plus de code qu'elle n'en ajoute, et les marqueurs tagalog, treize octets. Les six corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
 - Pas de nom de streamer ou de chaîne en dur, nulle part.
 - Pas d'emoji dans le code.
 - Les données de test vivent **inline dans le fichier de test**, pas dans une fixture séparée.
