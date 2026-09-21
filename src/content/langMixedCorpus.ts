@@ -92,6 +92,23 @@ export const LANG_MIXED: readonly string[] = [
   'someone said tamam and left',
   'he keeps saying vamos every round',
 
+  // DEUX mots etrangers et le reste en anglais. Cette famille est la plus
+  // dangereuse et elle a ete ajoutee apres coup, parce qu'une regle qui
+  // demandait deux mots du lexique pour se passer de la borne de longueur les
+  // nommait toutes. Un chat produit `tamam kanka` ou `muchas gracias` aussi
+  // naturellement qu'un mot seul, donc compter les mots ne remplace pas la
+  // borne. Voir le resultat negatif dans `langMixed.test.ts`.
+  'tamam kanka good game',
+  'muchas gracias that was great',
+  'merci beaucoup that was clean',
+  'vielen dank that was huge',
+  'muito obrigado man that was sick',
+  'grazie mille that was unreal',
+  'bardzo dziekuje that was crazy',
+  'tack sa mycket that was clean',
+  'heel erg bedankt that was great',
+  'mille grazie bro you are insane',
+
   // Lignes courtes melangees, sous la borne actuelle de 20.
   'merci bro',
   'danke man',

@@ -24,6 +24,11 @@ import { confidentLanguage } from './langDetect';
  *      40 |      34 / 50      |    69 %   |     121     |      2455 / 17
  *     999 |      34 / 50      |    69 %   |     121     |      2587 / 24
  *
+ * (Le corpus comptait 50 lignes a cette mesure et en compte 60 depuis, la
+ * derniere famille ayant ete ajoutee par le resultat negatif ci-dessous. Les
+ * dix ajoutees sont nommees a chaque cran de ce tableau, donc les ecarts ne
+ * bougent pas et le classement encore moins.)
+ *
  * CE QUE LA TABLE DIT, et c'est la reponse a une question qui trainait depuis
  * trois passes.
  *
@@ -50,7 +55,7 @@ const nommees = LANG_MIXED.filter((t) => confidentLanguage(t) !== undefined);
 
 describe('les lignes qui changent de langue', () => {
   // Le chiffre de reference. Il doit BAISSER, jamais monter.
-  it('en nomme dix sur cinquante, et c est le cout accepte du lexique', () => {
+  it('en nomme dix sur soixante, et c est le cout accepte du lexique', () => {
     expect(nommees.length).toBe(10);
   });
 
@@ -92,5 +97,33 @@ describe('les lignes qui changent de langue', () => {
   it('se tait quand la langue etrangere arrive en fin de ligne', () => {
     expect(confidentLanguage('he is cracked bardzo dobrze')).toBeUndefined();
     expect(confidentLanguage('chat is going crazy que risa')).toBeUndefined();
+  });
+
+  // RESULTAT NEGATIF, ecrit ici pour que la meme idee ne soit pas retentee.
+  //
+  // La borne de longueur remplace de la CONFIANCE, donc une regle qui exige DEUX
+  // mots du lexique s'accordant sur la meme langue devrait pouvoir s'en passer :
+  // `merci bro that was insane` n'a qu'un mot francais, une vraie phrase
+  // francaise en a plusieurs. Mesuree, elle donnait Tatoeba 2348 a 2382 justes
+  // avec ses 15 erreurs inchangees, le chat 103 a 107, le chemin brut 932 a 925
+  // erreurs, et seulement une ligne melangee de plus sur les cinquante d'alors.
+  // Ces chiffres-la disaient oui.
+  //
+  // Elle a ete ECARTEE parce qu'un test qui existait deja disait non, et il
+  // avait raison : `tamam kanka good game` porte DEUX mots turcs et deux mots
+  // anglais. Un chat ecrit `tamam kanka`, `muchas gracias` et `vielen dank`
+  // aussi naturellement qu'un mot seul, donc compter les mots ne separe pas une
+  // phrase etrangere d'un fragment etrangier. Les dix lignes de cette famille
+  // ont ete ajoutees au corpus apres coup : la regle les nommait toutes les dix.
+  //
+  // Une variante qui ecartait d'abord les mots "sociaux", salutations et
+  // remerciements, sur l'idee qu'eux seuls se font code-switcher, a ete mesuree
+  // aussi et l'idee est fausse : une vraie ligne melangee porte des mots de
+  // structure dans sa moitie etrangere, `niet te geloven`, `bardzo dobrze`,
+  // `vraiment dommage`. Elle faisait passer les melangees de 10 a 22.
+  it('reste muet sur deux mots etrangers suivis d anglais', () => {
+    expect(confidentLanguage('tamam kanka good game')).toBeUndefined();
+    expect(confidentLanguage('muchas gracias that was great')).toBeUndefined();
+    expect(confidentLanguage('vielen dank that was huge')).toBeUndefined();
   });
 });
