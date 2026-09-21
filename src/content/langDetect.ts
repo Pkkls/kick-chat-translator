@@ -380,6 +380,34 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/eux([^\p{L}]|$)/iu, 'fr'],
   [/(lijk|heid|sje)([^\p{L}]|$)/iu, 'nl'],
   [/(zione|issimo|cchi|glia)([^\p{L}]|$)/iu, 'it'],
+  // Un second groupe de terminaisons, et il n'a pas le meme STATUT que le
+  // premier, ce qui vaut d'etre dit plutot que noye.
+  //
+  // Les entrees ci-dessus ont ete choisies en sachant ce que la langue ecrit, et
+  // la mesure n'a fait que les valider. Celles-ci ont ete TROUVEES par une
+  // recherche : extraire les n-grammes de fin de mot des lignes encore muettes
+  // d'une langue, garder ceux qui n'apparaissent dans aucune autre. C'est une
+  // selection PAR la mesure, ce que le protocole interdit d'habitude, parce
+  // qu'une absence sur 5490 lignes ne prouve pas une absence.
+  //
+  // Deux garde-fous ont ete appliques et ils sont la raison pour laquelle ce
+  // groupe existe quand meme. D'abord l'extraction s'est faite sur la seule
+  // moitie de reglage et la couverture a ete verifiee sur l'autre : elle
+  // transfere a 75-80 %, donc ce sont des regularites et non des lignes apprises
+  // par coeur. Ensuite, sur les motifs que la recherche a proposes, n'ont ete
+  // gardes que ceux qu'on peut NOMMER : -nho diminutif, -eiro agentif, -dade
+  // nominalisateur, -iamo premiere personne du pluriel, -simo superlatif, -ným
+  // instrumental, -tste superlatif, -knya -nmu -anku possessifs. Tout ce qui
+  // n'etait qu'une queue de mot est sorti, -mio, -gitu, -kde, -woon, -não.
+  //
+  // La recherche a aussi propose -nha, -chi, -aat, -lich et -lige, que
+  // l'exposition complete a rejetes : deux lignes vietnamiennes, quatre
+  // francaises, quatre finnoises, deux neerlandaises, sept langues.
+  [/(nho|eiro|dade)([^\p{L}]|$)/iu, 'pt'],
+  [/(iamo|simo|glio)([^\p{L}]|$)/iu, 'it'],
+  [/(knya|nmu|anku)([^\p{L}]|$)/iu, 'id'],
+  [/ným([^\p{L}]|$)/iu, 'sk'],
+  [/tste([^\p{L}]|$)/iu, 'nl'],
 ];
 
 /**
@@ -568,12 +596,23 @@ function malaisOuIndonesien(text: string): string | undefined {
   return undefined;
 }
 
-/** Unanimous vote again: two exclusive sets in one line is a quote or a nickname. */
+/**
+ * Vote unanime, comme pour le lexique : deux jeux exclusifs de langues
+ * DIFFERENTES dans la meme ligne, c'est une citation ou un pseudo, donc rien.
+ *
+ * La comparaison porte bien sur la langue et pas sur le nombre de
+ * correspondances, et ca n'a pas toujours ete le cas. La version d'origine
+ * rendait `undefined` des la DEUXIEME entree touchee, quelle qu'elle soit, ce
+ * qui etait sans effet tant qu'une langue n'avait qu'une entree. Des que
+ * l'italien en a eu deux, `-issimo` et `-simo`, une ligne portant les deux est
+ * devenue muette alors que les deux disaient italien. Le test du banc latin sur
+ * `sta giocando malissimo` l'a attrape.
+ */
 function detectByExclusiveLetter(text: string): string | undefined {
   let vote: string | undefined;
   for (const [lettres, lang] of LETTRES_EXCLUSIVES) {
     if (!lettres.test(text)) continue;
-    if (vote) return undefined;
+    if (vote && vote !== lang) return undefined;
     vote = lang;
   }
   return vote;
