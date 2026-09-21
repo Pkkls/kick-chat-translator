@@ -726,7 +726,7 @@ const JEUX_DE_PORTE: Readonly<Record<string, RegExp>> = {
   ca: /(^|[^\p{L}])(amb|això|què|molt|aquest|aquesta|també|més|són|una|vam)([^\p{L}]|$)/iu,
   fr: /(^|[^\p{L}])(est|avec|pour|dans|tout|comme|très|sont|fait)([^\p{L}]|$)/iu,
   tr: /(^|[^\p{L}])(bir|için|değil|çok|var|bu|şey|daha)([^\p{L}]|$)/iu,
-  it: /(^|[^\p{L}])(allora|quindi|comunque|anche|adesso|perché|però|davvero|questo|sono|più|che|niente)([^\p{L}]|$)/iu,
+  it: /(^|[^\p{L}])(allora|quindi|comunque|anche|adesso|perché|però|davvero|questo|sono|più|che|niente|una)([^\p{L}]|$)/iu,
   ro: /(^|[^\p{L}])(foarte|acum|nimic|când|care|pentru|sunt|cred|joacă|cineva)([^\p{L}]|$)/iu,
   nl: /(^|[^\p{L}])(niet|het|een|wat|voor|zijn|heeft|geen|hoe|nog|gewoon|maar)([^\p{L}]|$)/iu,
 };
@@ -764,10 +764,31 @@ const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [
   // letton. C'est de l'anglais de chat courant, et le corpus n'en contient
   // simplement pas. Critere (a), comme `may` pour le tagalog.
   [/(^|[^\p{L}])(il)([^\p{L}]|$)/iu, ['fr', 'it']],
-  [/(^|[^\p{L}])(para|por|está)([^\p{L}]|$)/iu, ['es', 'pt']],
+  [/(^|[^\p{L}])(para|por|está|vez)([^\p{L}]|$)/iu, ['es', 'pt']],
   [/(^|[^\p{L}])(co|jak)([^\p{L}]|$)/iu, ['cs', 'pl']],
   [/(^|[^\p{L}])(tas|tik)([^\p{L}]|$)/iu, ['lv', 'lt']],
   [/(^|[^\p{L}])(ce|au)([^\p{L}]|$)/iu, ['ro', 'fr']],
+  // Descente du plancher du crible de huit lignes a quatre, deuxieme recolte.
+  //
+  // `že jeho dnes` vise `sk -> cs`, 18 lignes, et c'est la seule paire slave
+  // encore ouverte. `oli` vise le couple finno-estonien, que rien ne separait en
+  // plein air. `per` est catalan et italien, l'espagnol ecrit `por` et le
+  // francais `par`.
+  //
+  // DEHORS PAR LE CRITERE (a), et c'est le meme filtre a chaque fois :
+  //   cosa    donne a bruit zero pour ca/it, mais l'espagnol l'ecrit.
+  //   die     de=18 nl=3, mais `die` EST dans le jeu allemand. Circulaire.
+  //   ole     fi=8 et=3, mais `ole` EST dans le jeu finnois. Circulaire.
+  //   mig sig sv/da, mais tous deux sont des mots qui TRANCHENT au nord.
+  //   bet ar  lituanien et letton, mais `bet` est de l'anglais de chat.
+  //
+  // DEHORS PAR L'ABLATION, et c'est nouveau : `porte-ablation.mjs` mesure ce que
+  // CHAQUE entree rapporte seule, en la retirant. `oli` pour fi/et et `jau` pour
+  // lv/lt rapportent ZERO sur les quatre corpus, alors que le lot ou ils se
+  // trouvaient rapportait +4. Un total de lot ne dit pas qui l'a gagne, et ces
+  // deux-la seraient partis en production comme poids mort.
+  [/(^|[^\p{L}])(že|jeho|dnes)([^\p{L}]|$)/iu, ['cs', 'sk']],
+  [/(^|[^\p{L}])(per)([^\p{L}]|$)/iu, ['ca', 'it']],
   // PAS DE SEQUENCE ASCII ICI, et c'est un resultat mesure, pas un oubli.
   //
   // Le deuxieme passage du crible a rendu `sz` hongrois-polonais et `dz`
@@ -798,17 +819,21 @@ const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [
   [/é/iu, ['fr', 'hu', 'ca', 'es', 'pt', 'cs', 'sk', 'it', 'nl', 'vi']],
   [/í/iu, ['sk', 'cs', 'es', 'hu', 'ca', 'pt', 'vi']],
   [/ö/iu, ['sv', 'hu', 'tr', 'de', 'fi']],
-  [/[ďťň]/iu, ['sk', 'cs']],
+  // CINQ PORTES RETIREES PAR L'ABLATION, et c'est le resultat le plus utile
+  // qu'elle ait donne : `[ďťň]` sk/cs, `ô` vi/sk/fr, `ê` pt/vi/fr, `â`
+  // ro/vi/fr/pt et `ò` it/vi/ca rapportaient chacune ZERO sur les quatre
+  // corpus. Trois d'entre elles etaient vivantes quand elles sont entrees et
+  // sont mortes deux commits plus tard, quand les trente-cinq lettres
+  // vietnamiennes ont nomme `vi` avant que la porte ne soit consultee.
+  //
+  // Un ajout peut donc TUER une entree existante ailleurs dans le fichier, et
+  // rien dans les totaux ne le signale. Relancer l'ablation apres chaque lot.
   [/ý/iu, ['sk', 'cs', 'vi']],
   [/è/iu, ['it', 'ca', 'fr']],
   [/à/iu, ['fr', 'vi', 'ca', 'it']],
-  [/ô/iu, ['vi', 'sk', 'fr']],
-  [/ê/iu, ['pt', 'vi', 'fr']],
-  [/â/iu, ['ro', 'vi', 'fr', 'pt']],
   [/ã/iu, ['pt', 'vi']],
   [/î/iu, ['ro', 'fr']],
   [/ì/iu, ['vi', 'it']],
-  [/ò/iu, ['it', 'vi', 'ca']],
 ];
 
 function porteQuelleLangue(text: string): string | undefined {

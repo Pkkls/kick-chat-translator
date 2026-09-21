@@ -233,7 +233,7 @@ for (const { s, fortes, total, bruit } of seqPortes.sort(parTotal).slice(0, 25))
  *   - une fois la porte ouverte, un mot propre a l'une des deux TRANCHE.
  * La deuxieme moitie se crible avec `lang-screen.mjs`, qui existe pour ca.
  */
-const PLANCHER_MOT = 8;
+const PLANCHER_MOT = 4;
 const vuMot = new Map();
 for (const corpus of corpora) {
   for (const [lang, lgns] of Object.entries(corpus)) {
