@@ -968,6 +968,8 @@ Les chiffres sont en 2bis-bis, 2ter, 5.14 à 5.19.
 - **Mettre `là` dans un jeu de porte vietnamien.** C'est le `là` français au caractère près, il a volé trois lignes.
 - **Une porte de séquence ASCII** (`sz`, `dz`). Mesurée, section 5.16 : le déclencheur vit dans le mot qui tranche.
 - **Ajouter une lettre arabe à la table des exclusives pour le malais.** Le crible les proposait par un défaut de filtre, corrigé en `0e14a6a`.
+- **Nommer l'anglais avec un seul marqueur.** Mesuré, `anglais-essai.mjs` : `the`, `you`, `inte` sont propres sur les quarante-deux autres langues et tous les trois nommés par le banc des lignes mélangées. **L'anglais est la langue avec laquelle tout le monde mélange.**
+- **Nommer l'anglais en comptant DEUX marqueurs plus l'absence de toute autre langue.** Mesuré aussi, et c'est un résultat à moitié positif qu'il faut lire en entier : dès deux marqueurs le vol tombe à **zéro** sur les quatre corpus, donc la forme de la règle était bien le problème. Mais le banc mélangé en nomme deux à ce seuil, et au seuil admissible de trois le gain tombe à onze lignes. Le prototype est committé avec ses chiffres et sa condition de réouverture.
 - **Supprimer les entrées de lexique turques et hongroises** parce qu'elles mesurent zéro. Section 5.19 : les corpus ne portent jamais `selam` ou `kanka` sur une ligne sans autre lettre turque, ce qui est le seul cas pour lequel elles existent.
 - **Basculer `translateAndApply(msg, real, detected)` sur la réponse sûre.** Section 10 : ce paramètre ne sert qu'à dimensionner la fenêtre de contexte, et la basculer la rétrécirait.
 
@@ -1026,6 +1028,7 @@ tl tgl   pt-br aucun (partage por)   zh-tw aucun (partage cmn)
 | `scratchpad/harness/lexique-ablation.mjs` | le lexique, par langue puis par entree | oui |
 | `scratchpad/harness/porte-diagnostic.mjs` | porte fermee ou porte ouverte sans mot, la question qui dit ou corriger | oui |
 | `scratchpad/harness/arabe-candidats.mjs` | le crible a mots porte a l'ecriture arabe, ar fa ms ur | oui |
+| `scratchpad/harness/anglais-essai.mjs` | **prototype non livre**, l'anglais par comptage. Resultat negatif en tete | oui |
 | `scratchpad/harness/porte-candidats.mjs` | **le crible de portes**, quelle lettre reste libre, avec sa liste de rejetés | oui |
 | `scratchpad/harness/lang-matrix.mjs` | écrit le rapport lisible | oui |
 | `scratchpad/harness/lang-matrix.md` | le rapport | non, régénérable |
