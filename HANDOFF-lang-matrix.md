@@ -3,7 +3,7 @@
 État vivant de ce chantier. Mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-21. Dernier commit de **code** du chantier : `0bd3699` (les commits qui suivent et ne touchent que ce fichier sont des mises à jour de ce document). Phase 2 en cours, **5 langues restantes** et ce sont les cinq sans lettre propre, donc la phase 2 ne peut plus avancer sans lexique.
+Dernière mise à jour : 2026-09-21. Dernier commit de **code** du chantier : `528c3af` (les commits qui suivent et ne touchent que ce fichier sont des mises à jour de ce document). Phase 2 en cours, **5 langues restantes** et ce sont les cinq sans lettre propre, donc la phase 2 ne peut plus avancer sans lexique.
 
 ---
 
@@ -93,6 +93,7 @@ Commits de ce chantier, sur `feat/lang-matrix`, du plus ancien au plus récent :
 | `f40b9bf` | Bring the handoff up to the three commits that exist |
 | `8cd28e3` | Count Bengali and Tamil, which detectByScript never did |
 | `0bd3699` | Name ten languages by a letter only they write |
+| `528c3af` | Read an exclusive letter before the chat lexicon, not after |
 
 Commandes :
 
@@ -127,18 +128,20 @@ Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR. Trois issues, jamais add
 
 Lecture du point de départ : **presque un message court sur trois recevait une mauvaise langue** sur le chemin qui supprime des messages en silence et qui pilote le moteur par défaut de Chrome.
 
-### État courant (commit `0bd3699`)
+### État courant (commit `528c3af`)
 
 | chemin | portée | right | silent | wrong |
 |---|---|---:|---:|---:|
-| `confidentLanguage` | toutes | 2179 (43%) | 2770 (55%) | **91 (2%)** |
-| `confidentLanguage` | court | 667 (40%) | 959 (57%) | **54 (3%)** |
-| `detectLanguage` | toutes | 3324 (66%) | 691 (14%) | **1025 (20%)** |
-| `detectLanguage` | court | 935 (56%) | 332 (20%) | **413 (25%)** |
+| `confidentLanguage` | toutes | 2180 (43%) | 2770 (55%) | **90 (2%)** |
+| `confidentLanguage` | court | 668 (40%) | 959 (57%) | **53 (3%)** |
+| `detectLanguage` | toutes | 3325 (66%) | 691 (14%) | **1024 (20%)** |
+| `detectLanguage` | court | 936 (56%) | 332 (20%) | **412 (25%)** |
 
-Le chemin sûr est passé de 25 % à 43 % de réponses **sans qu'un seul de ses deux compteurs d'erreur bouge**, 91 et 54 depuis le point de départ. C'est le seul mouvement qui compte vraiment : il répond plus souvent, pas plus faux. La règle des lettres exclusives a fait à elle seule 34 % -> 43 %.
+Le chemin sûr est passé de 25 % à 43 % de réponses **pendant que son compteur d'erreurs faisait du surplace**. Trajectoire exacte, parce qu'elle vaut mieux qu'un arrondi : 90 au départ, 91 au commit `8cd28e3`, 91 au commit `0bd3699`, 90 aujourd'hui ; en bande courte 52, 54, 54, 53. C'est le seul mouvement qui compte vraiment : il répond presque deux fois plus souvent pour le même nombre d'erreurs en valeur absolue, donc son taux d'erreur par réponse a été divisé par deux. La règle des lettres exclusives a fait à elle seule 34 % -> 43 %.
 
-Le chemin brut a perdu 85 erreurs d'un coup, pour la même raison : une lettre lue bat une devinette de franc sur la même ligne.
+Le chemin brut a perdu 86 erreurs, pour la même raison : une lettre lue bat une devinette de franc sur la même ligne.
+
+**Ne pas lire "90 et 90" comme une immobilité.** Le chiffre est stable parce que deux mouvements opposés se compensent et il faut les connaître séparément : `bn ta` en ont ajouté une, et lire la lettre avant le lexique en a repris une. Les 90 d'aujourd'hui ne sont pas les 90 du départ.
 
 Ces quatre chiffres sont **assertés** dans `src/content/langMatrix.test.ts`. Les bouger est normal, les bouger sans dire dans quel sens et pourquoi ne l'est pas. Quand ils changent : relancer `node --import tsx scratchpad/harness/lang-matrix.mjs`, lire le rapport, mettre à jour le test **et cette section**.
 
@@ -250,7 +253,9 @@ Reprendre ici. Chaque entrée est indépendante des autres, prendre celle qu'on 
 
 1. ~~`bn` et `ta` sans plage dans `detectByScript`~~ **FAIT au commit `8cd28e3`.** 120/120 sur les deux, sur les deux chemins. Le gain était bien sur `confidentLanguage` et non sur `detectLanguage`, exactement comme prévu.
 
-1bis. ~~La règle des lettres exclusives, section 8~~ **FAIT au commit `0bd3699`.** Mesurée, zéro ligne volée sur les deux chemins, 9 langues à zéro ramenées à 5. Le détail de ce que le banc a corrigé dans la table conçue est en section 8, qui est maintenant un compte rendu et non une proposition.
+1bis. ~~La règle des lettres exclusives, section 8~~ **FAIT aux commits `0bd3699` et `528c3af`.** Mesurée, zéro ligne volée sur les deux chemins, 9 langues à zéro ramenées à 5. Le détail de ce que le banc a corrigé dans la table conçue est en section 8, qui est maintenant un compte rendu et non une proposition.
+
+1ter. **Les trois autres frontières de `detectByLookup` n'ont jamais été mesurées.** Sortie du commit `528c3af` : l'ordre de deux règles dans cette fonction est une décision mesurable, et en la mesurant une fois on a trouvé qu'elle était fausse. Quatre règles s'y suivent, `COMMON_SHORT_TOKENS` puis les lettres exclusives puis le lexique puis `detectByScript`, et une seule des trois frontières a été passée au banc. Les deux qui touchent `COMMON_SHORT_TOKENS` sont les plus suspectes : c'est le bloc qui rend `en` sur tout ce qui est ASCII et court, et il passe avant tout le monde. Dix minutes par frontière, méthode en section 8.
 
 2. **Le cluster nordique, `no da sv`.** 48 lignes norvégiennes et 44 danoises partent en suédois, et ni `no` ni `da` ne marque un seul point. Protocole du cantonais : hold-out écrit avant la règle, lignes adversariales, zéro faux positif exigé sur le voisin. Les trois langues partagent presque tout, donc chercher des marqueurs orthographiques durs (`ø` et `æ` sont danois et norvégiens contre `ö` et `ä` suédois, ce qui sépare déjà sv du couple ; séparer no de da demande du lexique).
 
@@ -279,7 +284,7 @@ Reprendre ici. Chaque entrée est indépendante des autres, prendre celle qu'on 
 
 ---
 
-## 8. La règle des lettres exclusives : MESURÉE ET COMMITTÉE (`0bd3699`)
+## 8. La règle des lettres exclusives : MESURÉE ET COMMITTÉE (`0bd3699`, `528c3af`)
 
 Conçue en fin de session précédente et annulée de l'arbre avant commit faute de mesure. Reprise, mesurée, corrigée sur un point, committée. **Ce qui suit est le compte rendu ; la proposition d'origine est conservée telle quelle pour que l'écart entre ce qui était prévu et ce qui a été mesuré reste lisible.**
 
@@ -288,15 +293,31 @@ Conçue en fin de session précédente et annulée de l'arbre avant commit faute
 | chemin | right | silent | wrong |
 |---|---:|---:|---:|
 | `confidentLanguage` avant (`8cd28e3`) | 1694 | 3255 | 91 |
-| `confidentLanguage` après (`0bd3699`) | **2179** | 2770 | **91, inchangé** |
+| `confidentLanguage` après (`528c3af`) | **2180** | 2770 | **90** |
 | `detectLanguage` avant | 3126 | 804 | 1110 |
-| `detectLanguage` après | **3324** | 691 | **1025** |
+| `detectLanguage` après | **3325** | 691 | **1024** |
 
-**Zéro ligne volée**, exigence du protocole, et vérifiée de la seule façon qui prouve quelque chose : en diffant la **carte de confusions entière** contre `HEAD`, et non en regardant les totaux. Un total d'erreurs stable peut cacher une erreur échangée contre une autre. Résultat du diff : sur le chemin sûr aucune confusion ne bouge, ni en hausse ni en baisse ; sur `detectLanguage` 85 disparaissent et **aucune n'apparaît**.
+**Zéro ligne volée**, exigence du protocole, et vérifiée de la seule façon qui prouve quelque chose : en diffant la **carte de confusions entière** contre `HEAD`, et non en regardant les totaux. Un total d'erreurs stable peut cacher une erreur échangée contre une autre. Résultat du diff : sur le chemin sûr aucune confusion ne bouge, ni en hausse ni en baisse ; sur `detectLanguage` 85 disparaissent et **aucune n'apparaît**. Le commit `528c3af` en a retiré une 86e, `lt->pt`.
 
 Langues à zéro : 9 -> 5. Sorties : `ca lt lv sk`. Chemin sûr : nomme 29 langues sur 42 contre 16.
 
-Poids du bundle content : 91484 -> 91654 octets gzippés, soit **+170**, les deux bouts mesurés ici en `gzip -9`. Note pour la prochaine session : ce chiffre ne se raccorde pas aux 91747 du commit `8cd28e3`, dont la méthode de mesure n'est pas écrite. Mesurer les deux bouts soi-même, ne pas comparer au journal.
+### L'ordre d'appel, corrigé au commit `528c3af`
+
+La conception plaçait la règle **après** le lexique de mots courts, au motif qu'un mot de chat connu serait le signal le plus fort. Motif écrit, jamais mesuré, et faux.
+
+Une lettre qu'une seule des 43 écrit ne peut pas se trouver dans le mot d'une autre. Un mot de chat s'écrit avec les lettres que tout le monde partage, donc il peut être un mot ailleurs. La lettre est le signal le plus fort, pas l'inverse.
+
+Une seule ligne du corpus sépare les deux ordres, et elle suffit : `Ar ji mano draugė?` est lituanien, son `ė` ne laisse aucun doute, et le lexique y lisait `mano` et répondait portugais. Permuter les deux blocs reprend cette ligne sur les deux chemins et n'en coûte aucune ailleurs. `lt->pt` est la seule confusion qui bouge dans tout le banc.
+
+**Leçon transférable, et c'est la vraie sortie de ce commit** : l'ordre de deux règles dans `detectByLookup` est une décision mesurable au même titre que le contenu d'une règle. Il y en a quatre en file dans cette fonction et aucune des trois autres frontières n'a jamais été mesurée. Coût de la mesure : copier `git show HEAD:src/content/langDetect.ts` en variante, permuter, comparer avec `runMatrix`. Dix minutes.
+
+### La branche que le banc ne peut pas voir
+
+Le vote unanime de `detectByExclusiveLetter` n'est atteint par **aucune des 5040 lignes** du corpus. Vérifié, pas supposé. Le banc n'est donc pas favorable à cette branche, il est muet sur elle.
+
+Elle reste, parce que le registre que Tatoeba n'a pas est précisément celui qui mêle deux langues dans une ligne en citant un nom ou un pseudo, et que c'est le cas que `Łazarz` a déjà démontré. Elle a maintenant un test écrit à la main, **marqué dans le fichier comme construit et non mesuré**, pour que la prochaine session ne le prenne pas pour un résultat de banc. La phase 0b est ce qui le remplacera par une mesure.
+
+Poids du bundle content : 91484 -> 91651 octets gzippés, soit **+167**, les deux bouts mesurés ici en `gzip -9`. Note pour la prochaine session : ce chiffre ne se raccorde pas aux 91747 du commit `8cd28e3`, dont la méthode de mesure n'est pas écrite. Mesurer les deux bouts soi-même, ne pas comparer au journal.
 
 ### La seule correction que le banc a imposée à la table conçue
 
