@@ -65,7 +65,7 @@ describe('le chemin sur, sur du chat', () => {
   // et c'est le lexique de mots courts qui le fera baisser, pas une regle de
   // lettres de plus.
   it('se tait sur trois lignes de chat sur quatre', () => {
-    expect(plain(CHAT_SURE.total)).toEqual({ right: 101, silent: 289, wrong: 0 });
+    expect(plain(CHAT_SURE.total)).toEqual({ right: 102, silent: 288, wrong: 0 });
     expect(muet(CHAT_SURE.total)).toBe(74);
   });
 
@@ -74,7 +74,7 @@ describe('le chemin sur, sur du chat', () => {
   // deux tiers. Une regle qui lit ř ou ų ne lit plus rien des que l'utilisateur
   // tape vite, et c'est le cas majoritaire dans un chat sur telephone.
   it('perd un tiers de son rappel quand les diacritiques tombent', () => {
-    expect(plain(NU_SURE.total)).toEqual({ right: 63, silent: 327, wrong: 0 });
+    expect(plain(NU_SURE.total)).toEqual({ right: 64, silent: 326, wrong: 0 });
     expect(muet(NU_SURE.total)).toBe(84);
   });
 });
@@ -95,7 +95,7 @@ describe('le chemin brut, sur du chat', () => {
   // n'est pas comble, il est court-circuite, et il reapparaitra entier des que
   // le lexique manquera un mot.
   it('se trompe sur plus d une ligne de chat sur quatre', () => {
-    expect(plain(CHAT_BRUT.total)).toEqual({ right: 182, silent: 99, wrong: 109 });
+    expect(plain(CHAT_BRUT.total)).toEqual({ right: 183, silent: 98, wrong: 109 });
     const tatoeba = runMatrix(detectLanguage, memesLangues());
     const partChat = CHAT_BRUT.total.wrong / 390;
     const partTatoeba = tatoeba.total.wrong / (26 * 120);
@@ -103,7 +103,7 @@ describe('le chemin brut, sur du chat', () => {
   });
 
   it('empire encore sans diacritiques', () => {
-    expect(plain(NU_BRUT.total)).toEqual({ right: 154, silent: 118, wrong: 118 });
+    expect(plain(NU_BRUT.total)).toEqual({ right: 155, silent: 117, wrong: 118 });
   });
 
   // Sept langues ne marquent pas un seul point sur le chemin BRUT, franc compris,

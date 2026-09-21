@@ -342,6 +342,70 @@ function danoisOuNorvegien(text: string): string | undefined {
   return undefined;
 }
 
+/**
+ * Le malais et l'indonesien, la derniere paire de la matrice a n'avoir rien.
+ *
+ * `id -> ms` et `ms -> id` valent 49 et 38 lignes, le plus gros bloc restant, et
+ * aucune des deux langues n'etait traitee nulle part. Elles ne se separent pas
+ * par une lettre : elles s'ecrivent avec le meme alphabet latin nu, sans un seul
+ * diacritique. Il ne reste que le lexique.
+ *
+ * Meme forme que le danois et le norvegien, et pour la meme raison : ce qui les
+ * nomme d'abord, c'est la PAIRE. Une quinzaine de mots outils leur sont communs
+ * et n'existent dans aucune des quarante autres langues, yang, tidak, dengan,
+ * untuk, saya, ini, itu. Une ligne qui en porte un est malaise ou indonesienne,
+ * point, et un second tour choisit dedans.
+ *
+ * CE QUE LA PORTE OFFRE, et c'est la meme chose qu'au nord : elle rend
+ * utilisables des mots qui ne le seraient pas en plein air. `uang` touche une
+ * ligne vietnamienne du banc et `mobil` une ligne italienne, donc aucun des deux
+ * ne pourrait entrer dans `SHORT_WORD_LANG` ; derriere une porte qui exige deja
+ * un mot outil malais-indonesien, ils ne coutent rien, et la mesure de bout en
+ * bout le confirme, aucune confusion n'apparait nulle part.
+ *
+ * LES PAIRES qui tranchent opposent deux formes du meme mot, ce qui est plus sur
+ * qu'une presence contre une absence :
+ *   bisa contre boleh      coba contre cuba       karena contre kerana
+ *   besok contre esok      kamar contre bilik     mau contre mahu
+ *   saja contre sahaja     kamu contre awak       kayak contre macam
+ *
+ * CE QUI EST DEHORS :
+ *   akan   mot outil des deux, mais c'est aussi du turc.
+ *   anda   c'est de l'espagnol.   ada  c'est du turc, une ile.
+ *   tak    dix lignes malaises, mais aussi tcheque, polonais, anglais et cinq
+ *          autres. C'est le mot le plus frequent du malais familier et il est
+ *          inutilisable.
+ *   boleh  propose pour le malais, l'indonesien l'ecrit aussi, 2 contre 6.
+ *   saja   propose pour l'indonesien, une ligne malaise le porte.
+ *   kereta c'est bien la voiture en malais, mais l'indonesien dit kereta api
+ *          pour le train. Mesure propre, sorti quand meme.
+ *   lu gue  pronoms de l'indonesien de Jakarta, et `lu` touche vingt-trois
+ *          autres langues. Le mot le plus typique du registre vise est le plus
+ *          impossible a employer.
+ *
+ * CE QUE CA NE FAIT PAS, et le chiffre est petit exprès pour qu'on ne le
+ * survende pas : la paire ne se ferme pas. `id -> ms` passe de 49 a 48. La prose
+ * de Tatoeba dans ces deux langues est ecrite presque entierement avec ce
+ * qu'elles partagent, et ce qui les separe vit dans le registre familier, que ce
+ * corpus n'a pas. Le gain reel est ailleurs : treize lignes que le chemin sur ne
+ * savait pas nommer, et qu'il nomme sans se tromper une seule fois.
+ */
+const MOTS_MALAIS_INDONESIENS =
+  /(^|[^\p{L}])(yang|tidak|dengan|untuk|saya|ini|itu|dari|pada|sudah|mereka|dalam|lebih|orang|apa)([^\p{L}]|$)/iu;
+const MOTS_INDONESIENS =
+  /(^|[^\p{L}])(bisa|uang|mobil|coba|karena|besok|kamar|kayak|nggak|gak|banget|gimana|udah|aja|nih|dong|sih)([^\p{L}]|$)/iu;
+const MOTS_MALAIS =
+  /(^|[^\p{L}])(kerana|sahaja|cuba|esok|bilik|mahu|jom|awak|tengok|macam|betul|sikit|jugak|memang|nak)([^\p{L}]|$)/iu;
+
+function malaisOuIndonesien(text: string): string | undefined {
+  if (!MOTS_MALAIS_INDONESIENS.test(text)) return undefined;
+  const id = MOTS_INDONESIENS.test(text);
+  const ms = MOTS_MALAIS.test(text);
+  if (id && !ms) return 'id';
+  if (ms && !id) return 'ms';
+  return undefined;
+}
+
 /** Unanimous vote again: two exclusive sets in one line is a quote or a nickname. */
 function detectByExclusiveLetter(text: string): string | undefined {
   let vote: string | undefined;
@@ -852,6 +916,12 @@ function detectByLookup(trimmed: string): string | undefined {
   // langue est un signal plus fort qu'une lettre qui en nomme deux.
   const nordique = danoisOuNorvegien(trimmed);
   if (nordique) return nordique;
+
+  // Meme forme encore, et la derniere paire de la matrice a n'avoir eu aucune
+  // regle. Apres le nordique, l'ordre entre les deux etant sans effet : les deux
+  // portes ne peuvent pas s'ouvrir sur la meme ligne.
+  const nusantara = malaisOuIndonesien(trimmed);
+  if (nusantara) return nusantara;
 
   // Short Latin message: a known chat word beats franc, which guesses at this length.
   if (trimmed.length <= SHORT_TEXT_MAX) {
