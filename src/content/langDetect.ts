@@ -614,6 +614,97 @@ function danoisOuNorvegien(text: string): string | undefined {
 }
 
 /**
+ * La porte slave et balte : le s hacek.
+ *
+ * `š` est ecrit par six des 43, tcheque, slovaque, slovene, lituanien, letton et
+ * estonien, donc il ne nomme personne et il etait dehors de la table depuis le
+ * debut. La porte contient 99 lignes muettes, le deuxieme gisement apres celle
+ * du trema.
+ *
+ * Ce qui tranche dedans est la meme forme du meme mot ecrite trois fois : `jsem`
+ * en tcheque, `som` en slovaque, `sem` en slovene, pour la meme premiere
+ * personne. Idem `jsou` contre `sú`, `byl` contre `bol`, `ještě` contre `ešte`.
+ * Deux langues proches se separent mieux par leurs orthographes divergentes du
+ * meme mot que par du vocabulaire distinct.
+ *
+ * Le bonus habituel de la porte : `som` est danois, norvegien et suedois en
+ * plein air, mesure sur onze lignes, et il est ici sans risque puisque aucune
+ * des trois n'ecrit `š`. `ako` est slovaque et tagalog, meme chose.
+ *
+ * CE QUI EST DEHORS : `je`, `to` et `na` sont communs a trois ou quatre des six,
+ * `ir` est lituanien ET letton, `kad` et `bet` aussi, `ta` est tcheque et
+ * slovene. L'estonien n'a qu'une ligne dans cette porte et pas de jeu.
+ */
+const S_CARON = /š/iu;
+const MOTS_TCHEQUES_CARON =
+  /(^|[^\p{L}])(jsem|jsou|není|ještě|vždycky|proč|byl|jako|dobře)([^\p{L}]|$)/iu;
+const MOTS_SLOVAQUES_CARON =
+  /(^|[^\p{L}])(som|sú|veľmi|ešte|prečo|vždy|bol|ako|dobre)([^\p{L}]|$)/iu;
+const MOTS_SLOVENES_CARON =
+  /(^|[^\p{L}])(sem|lahko|nekaj|ampak|kaj|tudi|ker|zdaj|zelo|zakaj)([^\p{L}]|$)/iu;
+const MOTS_LITUANIENS_CARON =
+  /(^|[^\p{L}])(yra|labai|kaip|tai|jis|ką|dabar|nieko|taip)([^\p{L}]|$)/iu;
+const MOTS_LETTONS_CARON =
+  /(^|[^\p{L}])(ļoti|viņš|viņa|kāds|paldies|tagad|arī|nav)([^\p{L}]|$)/iu;
+
+function caronQuelleLangue(text: string): string | undefined {
+  if (!S_CARON.test(text)) return undefined;
+  const vus: string[] = [];
+  if (MOTS_TCHEQUES_CARON.test(text)) vus.push('cs');
+  if (MOTS_SLOVAQUES_CARON.test(text)) vus.push('sk');
+  if (MOTS_SLOVENES_CARON.test(text)) vus.push('sl');
+  if (MOTS_LITUANIENS_CARON.test(text)) vus.push('lt');
+  if (MOTS_LETTONS_CARON.test(text)) vus.push('lv');
+  return vus.length === 1 ? vus[0] : undefined;
+}
+
+/**
+ * La porte la plus large du fichier : le trema sur le a.
+ *
+ * `ä` est ecrit par cinq des 43, le finnois, le suedois, l'estonien, l'allemand
+ * et le slovaque. Cinq, c'est trop pour nommer quoi que ce soit, et c'est
+ * pourquoi cette lettre etait DEHORS de la table des lettres exclusives depuis
+ * le debut. Mais cinq, c'est aussi assez peu pour qu'un second tour tranche, et
+ * la porte contient 160 lignes que le detecteur ne savait pas nommer, de loin
+ * le plus gros gisement restant.
+ *
+ * Ce que la porte offre, et c'est la quatrieme fois que la meme phrase s'ecrit :
+ * elle rend propres des mots impossibles en plein air. `der`, `die`, `das`,
+ * `ich`, `ist`, `und` sont inutilisables tels quels, le neerlandais et d'autres
+ * les ecrivent ; derriere `ä` il n'y a plus de neerlandais. Pareil pour `att`,
+ * `det`, `som`, `har`, `med` en suedois, que le danois et le norvegien ecrivent
+ * aussi et qui sont nets ici puisqu'aucun des deux n'ecrit `ä`.
+ *
+ * Mesure derriere la porte, sur les corpus de reglage : 15 lignes allemandes, 53
+ * estoniennes, 102 finnoises, 3 slovaques, 77 suedoises. Les quatre jeux de mots
+ * ne se croisent jamais.
+ *
+ * CE QUI EST DEHORS : `ja` et `oli` sont finnois ET estoniens, `on` et `ei`
+ * aussi. Le slovaque n'a pas de jeu, ses trois lignes restent muettes ; il n'y a
+ * pas assez de matiere pour en ecrire un et une porte qui ne tranche pas rend
+ * `undefined`, ce qui est le comportement d'avant.
+ */
+const A_TREMA = /ä/iu;
+const MOTS_FINNOIS_TREMA =
+  /(^|[^\p{L}])(että|mutta|niin|kun|myös|vain|hän|ole|olen|täällä|tänään|mikä|mitä|kaikki|miksi)([^\p{L}]|$)/iu;
+const MOTS_SUEDOIS_TREMA =
+  /(^|[^\p{L}])(och|inte|är|jag|att|det|som|för|har|med|den|till|hur|här|hon|vill)([^\p{L}]|$)/iu;
+const MOTS_ESTONIENS_TREMA =
+  /(^|[^\p{L}])(see|ta|ma|kas|aga|siis|väga|miks|midagi|praegu|kõik)([^\p{L}]|$)/iu;
+const MOTS_ALLEMANDS_TREMA =
+  /(^|[^\p{L}])(nicht|der|die|das|ich|ist|und|mit|für|auf|ein|eine|sich|nur|aber|noch|wieder)([^\p{L}]|$)/iu;
+
+function tremaQuelleLangue(text: string): string | undefined {
+  if (!A_TREMA.test(text)) return undefined;
+  const vus: string[] = [];
+  if (MOTS_FINNOIS_TREMA.test(text)) vus.push('fi');
+  if (MOTS_SUEDOIS_TREMA.test(text)) vus.push('sv');
+  if (MOTS_ESTONIENS_TREMA.test(text)) vus.push('et');
+  if (MOTS_ALLEMANDS_TREMA.test(text)) vus.push('de');
+  return vus.length === 1 ? vus[0] : undefined;
+}
+
+/**
  * L'estonien et le portugais, que le o barre reunit et que tout le reste separe.
  *
  * `õ` est la seule lettre que l'estonien pourrait avoir en propre, et il la
@@ -1243,6 +1334,12 @@ function detectByLookup(trimmed: string): string | undefined {
 
   const balte = estonienOuPortugais(trimmed);
   if (balte) return balte;
+
+  const trema = tremaQuelleLangue(trimmed);
+  if (trema) return trema;
+
+  const caron = caronQuelleLangue(trimmed);
+  if (caron) return caron;
 
   // Short Latin message: a known chat word beats franc, which guesses at this length.
   if (trimmed.length <= SHORT_TEXT_MAX) {

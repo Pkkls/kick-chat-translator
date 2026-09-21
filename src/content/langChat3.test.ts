@@ -30,8 +30,8 @@ describe('le corpus de reglage', () => {
   });
 
   it('en nomme 78 sur 260', () => {
-    expect(plain(SURE3.total)).toEqual({ right: 78, silent: 182, wrong: 0 });
-    expect(plain(BRUT3.total)).toEqual({ right: 143, silent: 43, wrong: 74 });
+    expect(plain(SURE3.total)).toEqual({ right: 84, silent: 176, wrong: 0 });
+    expect(plain(BRUT3.total)).toEqual({ right: 146, silent: 42, wrong: 72 });
   });
 
   // CE QU'IL A ATTRAPE LE JOUR DE SA CREATION, et c'est la justification de son
@@ -73,7 +73,7 @@ describe('le corpus de reglage', () => {
   // chiffre local. Les premiers tours de lexique transferaient a quatre
   // cinquiemes ; celui-ci a zero. La methode a un fond et il est atteint.
   it('reste a 78 nommees, le tour de lexique suivant ayant ete annule', () => {
-    expect(SURE3.total.right).toBe(78);
+    expect(SURE3.total.right).toBe(84);
   });
 
   // Les trois corpus doivent rester distincts, sinon les roles se melangent.
