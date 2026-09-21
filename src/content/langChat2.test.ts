@@ -49,15 +49,15 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
   //
   // A longueur egale, l'ecart se separe proprement, et c'est le test suivant.
   //
-  // Les portes partagees ont referme cinq points de cet ecart, 32 a 37, en deux
-  // tours, et elles l'ont fait du BON cote : le corpus aveugle a gagne six puis
-  // sept lignes pendant que le corpus flatte en gagnait zero puis trois. Un
-  // mecanisme qui rapporte PLUS la ou il n'a pas ete regle que la ou il l'a ete
-  // est exactement ce que le lexique n'arrivait plus a faire.
+  // Les regles de lettres ont referme six points de cet ecart, 32 a 38, en trois
+  // tours, et elles l'ont fait du BON cote : le corpus aveugle a gagne six, sept
+  // puis trois lignes pendant que le corpus flatte en gagnait zero, trois puis
+  // quatre. Un mecanisme qui rapporte autant la ou il n'a pas ete regle que la
+  // ou il l'a ete est exactement ce que le lexique n'arrivait plus a faire.
   it('rappelle un tiers de moins en brut, mais la longueur en explique la moitie', () => {
-    expect(plain(SURE2.total)).toEqual({ right: 97, silent: 163, wrong: 0 });
-    expect(rappel(SURE1.total)).toBe(51);
-    expect(rappel(SURE2.total)).toBe(37);
+    expect(plain(SURE2.total)).toEqual({ right: 100, silent: 160, wrong: 0 });
+    expect(rappel(SURE1.total)).toBe(52);
+    expect(rappel(SURE2.total)).toBe(38);
     // Le facteur confondant, mesure : les deux corpus ne sont pas comparables tels quels.
     const lignes = (c: Record<string, readonly string[]>): string[] => Object.values(c).flat();
     const part = (c: Record<string, readonly string[]>): number =>
@@ -68,10 +68,10 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
 
   // LA MESURE HONNETE, bande par bande.
   //
-  //   <= 20 car : 53 % sur le corpus de reglage, 45 % a l'aveugle -> 8 points
+  //   <= 20 car : 54 % sur le corpus de reglage, 47 % a l'aveugle -> 7 points
   //   >  20 car : 41 % contre 33 %                  ->  8 points
   //
-  // Les huit points de la bande courte sont la memorisation du lexique, et ils
+  // Les sept points de la bande courte sont la memorisation du lexique, et ils
   // sont reels : c'est une liste de mots choisie en lisant un corpus.
   //
   // LA BANDE LONGUE EST LE RESULTAT LE PLUS INSTRUCTIF DU FICHIER, et son
@@ -101,8 +101,8 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
       Object.fromEntries(Object.entries(corp).map(([l, v]) => [l, v.filter(garde)]));
     const court = (t: string): boolean => t.length <= 20;
     const long = (t: string): boolean => t.length > 20;
-    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, court)).total)).toBe(53);
-    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, court)).total)).toBe(45);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, court)).total)).toBe(54);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, court)).total)).toBe(47);
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, long)).total)).toBe(41);
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, long)).total)).toBe(33);
   });
@@ -111,7 +111,7 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
   // des trigrammes, pas des mots choisis a la main. Sa perte, 61 % a 55 %, est
   // du bruit d'echantillonnage plutot que de la memorisation.
   it('montre que seul le chemin qui depend du lexique perd au changement de corpus', () => {
-    expect(plain(BRUT2.total)).toEqual({ right: 155, silent: 44, wrong: 61 });
+    expect(plain(BRUT2.total)).toEqual({ right: 156, silent: 44, wrong: 60 });
     expect(rappel(BRUT2.total)).toBe(60);
   });
 

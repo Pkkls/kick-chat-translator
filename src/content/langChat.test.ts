@@ -70,8 +70,8 @@ describe('le chemin sur, sur du chat', () => {
   // derniers points pendant que le lexique avait cesse de rapporter quoi que ce
   // soit. C'etait une prediction, pas une mesure, et elle s'est trompee.
   it('se tait sur trois lignes de chat sur quatre', () => {
-    expect(plain(CHAT_SURE.total)).toEqual({ right: 199, silent: 191, wrong: 0 });
-    expect(muet(CHAT_SURE.total)).toBe(49);
+    expect(plain(CHAT_SURE.total)).toEqual({ right: 203, silent: 187, wrong: 0 });
+    expect(muet(CHAT_SURE.total)).toBe(48);
   });
 
   // Ce que coute le clavier, et c'est la fragilite de toute l'approche par
@@ -104,7 +104,7 @@ describe('le chemin brut, sur du chat', () => {
   // n'est pas comble, il est court-circuite, et il reapparaitra entier des que
   // le lexique manquera un mot.
   it('se trompe sur plus d une ligne de chat sur quatre', () => {
-    expect(plain(CHAT_BRUT.total)).toEqual({ right: 250, silent: 66, wrong: 74 });
+    expect(plain(CHAT_BRUT.total)).toEqual({ right: 253, silent: 64, wrong: 73 });
     const tatoeba = runMatrix(detectLanguage, memesLangues());
     const partChat = CHAT_BRUT.total.wrong / 390;
     const partTatoeba = tatoeba.total.wrong / (26 * 120);
@@ -141,13 +141,14 @@ describe('le contraste avec Tatoeba, sur les memes langues', () => {
   // couvre que six langues sur vingt-six. Ce qui bouge vraiment est l'erreur de
   // franc, et elle bouge dans le mauvais sens.
   //
-  // Le silence Tatoeba descend de 61 a 58 avec les portes partagees, celui du
-  // chat d'un seul point, 50 a 49 : une porte a besoin d'une lettre accentuee,
-  // et le chat en ecrit moins que la prose.
+  // Le silence Tatoeba descend de 61 a 57 avec les portes partagees et les
+  // lettres vietnamiennes, celui du chat de 50 a 48. Les deux bougent moins que
+  // le rappel parce qu'une regle de lettre a besoin d'une lettre accentuee, et
+  // le chat en ecrit moins que la prose.
   it('montre que le registre coute a franc et pas au chemin sur', () => {
     const t = runMatrix(confidentLanguage, memesLangues());
-    expect(muet(t.total)).toBe(58);
-    expect(muet(CHAT_SURE.total)).toBe(49);
+    expect(muet(t.total)).toBe(57);
+    expect(muet(CHAT_SURE.total)).toBe(48);
     expect(t.total.wrong).toBe(5);
   });
 });

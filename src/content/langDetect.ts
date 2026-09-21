@@ -393,10 +393,25 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/[őű]/iu, 'hu'],
   [/[ėįų]/iu, 'lt'],
   [/[ģķļņāēī]/iu, 'lv'],
-  [/[ığ]/iu, 'tr'],
+  // Le s cedille U+015F est turc et rien d'autre dans les 43 : le roumain ecrit
+  // sa propre lettre avec la virgule souscrite U+0219, juste en dessous, et le
+  // crible ne trouve pas UNE ligne roumaine qui porte la forme turque. 53 lignes
+  // gratuites qui attendaient dans la table depuis le debut.
+  [/[ığş]/iu, 'tr'],
   [/[șț]/iu, 'ro'],
   [/l·l/iu, 'ca'],
-  [/[ơưđ]/iu, 'vi'],
+  // Le vietnamien empile un ton sur une voyelle qui porte deja un accent, et
+  // Unicode precompose le resultat. Aucune des 42 autres n'ecrit ces caracteres,
+  // et la table n'en avait que trois. Le crible en a rendu trente-deux de plus,
+  // sur 437 lignes des quatre corpus.
+  //
+  // DEHORS : `ù`, que l'italien ecrit dans `piu`. C'est le seul de la liste que
+  // le crible signale partage, et c'est exactement le genre de caractere qu'une
+  // relecture a l'oeil aurait laisse entrer.
+  [
+    /[ơưđạấốếờủảợậệớộắữởểịầừặũềựẽọứụỏửổẹằ]/iu,
+    'vi',
+  ],
   [/ñ/iu, 'es'],
   [/ß/iu, 'de'],
   [/[œû]/iu, 'fr'],

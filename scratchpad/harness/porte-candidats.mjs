@@ -18,8 +18,20 @@ import { LANG_CHAT3 } from '../../src/content/langChatCorpus3.ts';
 
 // Deja pris. Recopie a la main depuis langDetect.ts, donc a reverifier si le
 // fichier bouge ; le script imprime les deux listes pour que ca se voie.
-const EXCLUSIVES = 'řěůľĺŕżźćśńőűėįųģķļņāēīığșțơưđñßœû';
-const PORTES = 'äšüóúçéíöďťňýèàôêâãîìò';
+const EXCLUSIVES = 'řěůľĺŕżźćśńőűėįųģķļņāēīığşșțơưđñßœû';
+const PORTES = 'äšüóúçéíöďťňýèàôêâãîìòčăąęū';
+
+// MESURES ET REJETEES. Sans cette liste le crible les repropose a chaque
+// passage, parce qu'il ne voit que les corpus et pas les decisions.
+//
+//   ł   polonais seul, mais il voyage dans les noms propres. Une ligne slovaque
+//       du corpus parle des enfants de Łazarz et ne porte aucune lettre slovaque.
+//       `żźćśń` prend 70 lignes polonaises contre 48 pour ł, et zero ailleurs.
+//   õ   partage avec le portugais a une ligne, donc il est une PORTE dediee
+//       (`estonienOuPortugais`) et non une lettre exclusive.
+//   ù   italien autant que vietnamien, `piu` l'ecrit.
+//   å ø æ  scandinaves, deja pris par les fonctions dediees en amont.
+const REJETES = 'łõùåøæ';
 
 // Les seules langues qui peuvent tirer d'une porte a lettre : les latines. Une
 // ligne en cyrillique ou en arabe est deja nommee par le pre-controle.
@@ -48,7 +60,13 @@ for (const corpus of corpora) {
 }
 
 const etat = (c) =>
-  EXCLUSIVES.includes(c) ? 'exclusive' : PORTES.includes(c) ? 'PORTE' : 'libre';
+  EXCLUSIVES.includes(c)
+    ? 'exclusive'
+    : PORTES.includes(c)
+      ? 'PORTE'
+      : REJETES.includes(c)
+        ? 'rejete'
+        : 'libre';
 
 // Une langue qui n'ecrit le caractere qu'une ou deux fois sur des milliers de
 // lignes est du bruit : un nom propre, une citation. Le seuil coupe a trois,
@@ -77,6 +95,23 @@ console.log('\nLES CANDIDATS, portes libres a deux langues fortes ou plus :');
 for (const { c, fortes, total } of lignes) {
   if (etat(c) !== 'libre' || fortes.length < 2) continue;
   console.log(`  ${c}  ${total} lignes  ${fortes.map(([l, n]) => `${l}=${n}`).join(' ')}`);
+}
+
+// L'autre moitie du crible, et c'est le point 2 de la file : un caractere
+// qu'UNE seule langue ecrit et qui n'est pas dans la table des lettres
+// exclusives est un marqueur gratuit qu'on a simplement oublie. C'est comme ca
+// que `ñ`, `ß`, `œ` et le grec sont entres, trois passes trop tard.
+console.log('\nLES LETTRES EXCLUSIVES QUI MANQUENT, une seule langue et hors table :');
+const parLangue = new Map();
+for (const { c, fortes, total } of lignes) {
+  if (etat(c) !== 'libre' || fortes.length !== 1) continue;
+  const l = fortes[0][0];
+  if (!parLangue.has(l)) parLangue.set(l, []);
+  parLangue.get(l).push([c, total]);
+}
+for (const [l, cs] of [...parLangue.entries()].sort((a, b) => b[1].length - a[1].length)) {
+  const tot = cs.reduce((s, [, n]) => s + n, 0);
+  console.log(`  ${l}  ${cs.length} caracteres, ${tot} lignes  ${cs.map(([c, n]) => `${c}=${n}`).join(' ')}`);
 }
 
 console.log('\nLES EXCLUSIVES QUE LA MESURE CONTREDIT, si la table a derive :');
