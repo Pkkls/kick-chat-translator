@@ -614,94 +614,82 @@ function danoisOuNorvegien(text: string): string | undefined {
 }
 
 /**
- * La porte slave et balte : le s hacek.
+ * LES PORTES PARTAGEES, en table plutot qu'une fonction par lettre.
  *
- * `š` est ecrit par six des 43, tcheque, slovaque, slovene, lituanien, letton et
- * estonien, donc il ne nomme personne et il etait dehors de la table depuis le
- * debut. La porte contient 99 lignes muettes, le deuxieme gisement apres celle
- * du trema.
+ * Une lettre ecrite par deux ou trois langues nomme une PAIRE et pas une langue,
+ * et il suffit d'un second tour pour choisir dedans. Le fichier en a quatre
+ * ecrites a la main plus haut, le nordique, le malais-indonesien, le scandinave
+ * a trois et l'estonien-portugais, chacune avec sa logique propre.
  *
- * Ce qui tranche dedans est la meme forme du meme mot ecrite trois fois : `jsem`
- * en tcheque, `som` en slovaque, `sem` en slovene, pour la meme premiere
- * personne. Idem `jsou` contre `sú`, `byl` contre `bol`, `ještě` contre `ešte`.
- * Deux langues proches se separent mieux par leurs orthographes divergentes du
- * meme mot que par du vocabulaire distinct.
+ * Celles-ci sont toutes de la meme forme, donc elles sont des DONNEES : une
+ * lettre, la liste des langues qui l'ecrivent, et un jeu de mots par langue. Le
+ * jeu de mots est partage entre les portes, donc ajouter une porte ne coute
+ * qu'une ligne.
  *
- * Le bonus habituel de la porte : `som` est danois, norvegien et suedois en
- * plein air, mesure sur onze lignes, et il est ici sans risque puisque aucune
- * des trois n'ecrit `š`. `ako` est slovaque et tagalog, meme chose.
+ * CE QUE LA PORTE OFFRE, et c'est la raison d'etre de tout le mecanisme : elle
+ * rend propres des mots impossibles en plein air. `der`, `die`, `das`, `ich`,
+ * `ist` sont ecrits par le neerlandais et d'autres ; derriere `ä` il n'y a plus
+ * de neerlandais. `att`, `det`, `som`, `har`, `med` sont danois et norvegiens ;
+ * ni l'un ni l'autre n'ecrit `ä`. `som` seul touche onze lignes scandinaves en
+ * plein air et aucune derriere `š`. `tak` est tcheque, polonais et malais, et
+ * derriere `ó` il ne reste que le polonais.
  *
- * CE QUI EST DEHORS : `je`, `to` et `na` sont communs a trois ou quatre des six,
- * `ir` est lituanien ET letton, `kad` et `bet` aussi, `ta` est tcheque et
- * slovene. L'estonien n'a qu'une ligne dans cette porte et pas de jeu.
+ * LE VOTE : une porte qui ne designe pas exactement une langue ne tranche pas,
+ * et l'on passe a la porte suivante. Une ligne qui porte `ä` et `š` est donc
+ * examinee deux fois, ce qui est correct : ce sont deux indices independants.
+ *
+ * MESURE derriere les deux plus grosses portes, sur les corpus de reglage :
+ *   ä  fi=102 sv=77 et=53 de=15 sk=3, 160 lignes muettes avant la regle
+ *   š  lt=57 lv=44 cs=38 sl=36 sk=31 et=1, 99 muettes
+ *
+ * Ce qui tranche le mieux entre deux langues proches est la MEME forme du meme
+ * mot ecrite deux fois : `jsem` contre `som` contre `sem`, `jsou` contre `sú`,
+ * `byl` contre `bol`, `ještě` contre `ešte`, `una` contre `uma`, `també` contre
+ * `também`. Mieux qu'un vocabulaire distinct, qui a plus de chances d'exister
+ * des deux cotes.
+ *
+ * CE QUI EST DEHORS : `je`, `to`, `na` sont communs a plusieurs slaves ; `ir`,
+ * `kad`, `bet` sont lituaniens ET lettons ; `ja` et `oli` finnois ET estoniens ;
+ * `que` francais, portugais ET catalan ; `para` et `está` espagnols ET
+ * portugais. Le slovaque n'a pas de jeu derriere `ä`, ses trois lignes y restent
+ * muettes, et c'est le comportement attendu d'une porte qui ne peut pas trancher.
  */
-const S_CARON = /š/iu;
-const MOTS_TCHEQUES_CARON =
-  /(^|[^\p{L}])(jsem|jsou|není|ještě|vždycky|proč|byl|jako|dobře)([^\p{L}]|$)/iu;
-const MOTS_SLOVAQUES_CARON =
-  /(^|[^\p{L}])(som|sú|veľmi|ešte|prečo|vždy|bol|ako|dobre)([^\p{L}]|$)/iu;
-const MOTS_SLOVENES_CARON =
-  /(^|[^\p{L}])(sem|lahko|nekaj|ampak|kaj|tudi|ker|zdaj|zelo|zakaj)([^\p{L}]|$)/iu;
-const MOTS_LITUANIENS_CARON =
-  /(^|[^\p{L}])(yra|labai|kaip|tai|jis|ką|dabar|nieko|taip)([^\p{L}]|$)/iu;
-const MOTS_LETTONS_CARON =
-  /(^|[^\p{L}])(ļoti|viņš|viņa|kāds|paldies|tagad|arī|nav)([^\p{L}]|$)/iu;
+const JEUX_DE_PORTE: Readonly<Record<string, RegExp>> = {
+  fi: /(^|[^\p{L}])(että|mutta|niin|kun|myös|vain|hän|ole|olen|täällä|tänään|mikä|mitä|kaikki|miksi)([^\p{L}]|$)/iu,
+  sv: /(^|[^\p{L}])(och|inte|är|jag|att|det|som|för|har|med|den|till|hur|här|hon|vill)([^\p{L}]|$)/iu,
+  et: /(^|[^\p{L}])(see|ta|ma|kas|aga|siis|väga|miks|midagi|praegu|kõik)([^\p{L}]|$)/iu,
+  de: /(^|[^\p{L}])(nicht|der|die|das|ich|ist|und|mit|für|auf|ein|eine|sich|nur|aber|noch|wieder)([^\p{L}]|$)/iu,
+  cs: /(^|[^\p{L}])(jsem|jsou|není|ještě|vždycky|proč|byl|jako|dobře)([^\p{L}]|$)/iu,
+  sk: /(^|[^\p{L}])(som|sú|veľmi|ešte|prečo|vždy|bol|ako|dobre)([^\p{L}]|$)/iu,
+  sl: /(^|[^\p{L}])(sem|lahko|nekaj|ampak|kaj|tudi|ker|zdaj|zelo|zakaj)([^\p{L}]|$)/iu,
+  lt: /(^|[^\p{L}])(yra|labai|kaip|tai|jis|ką|dabar|nieko|taip)([^\p{L}]|$)/iu,
+  lv: /(^|[^\p{L}])(ļoti|viņš|viņa|kāds|paldies|tagad|arī|nav)([^\p{L}]|$)/iu,
+  hu: /(^|[^\p{L}])(hogy|nem|egy|csak|mint|nagyon|mindig|megint|semmi|miért)([^\p{L}]|$)/iu,
+  pl: /(^|[^\p{L}])(jest|się|nasz|bardzo|jeszcze|wszystko|dlaczego|który)([^\p{L}]|$)/iu,
+  vi: /(^|[^\p{L}])(với|của|là|một|không|được|rồi|quá|này|tôi)([^\p{L}]|$)/iu,
+  es: /(^|[^\p{L}])(pero|muy|con|los|las|una|esto|esa|siempre)([^\p{L}]|$)/iu,
+  pt: /(^|[^\p{L}])(uma|não|você|muito|isso|essa|também)([^\p{L}]|$)/iu,
+  ca: /(^|[^\p{L}])(amb|això|què|molt|aquest|aquesta|també|més|són)([^\p{L}]|$)/iu,
+  fr: /(^|[^\p{L}])(est|avec|pour|dans|tout|comme|très|sont|fait)([^\p{L}]|$)/iu,
+  tr: /(^|[^\p{L}])(bir|için|değil|çok|var|bu|şey|daha)([^\p{L}]|$)/iu,
+};
 
-function caronQuelleLangue(text: string): string | undefined {
-  if (!S_CARON.test(text)) return undefined;
-  const vus: string[] = [];
-  if (MOTS_TCHEQUES_CARON.test(text)) vus.push('cs');
-  if (MOTS_SLOVAQUES_CARON.test(text)) vus.push('sk');
-  if (MOTS_SLOVENES_CARON.test(text)) vus.push('sl');
-  if (MOTS_LITUANIENS_CARON.test(text)) vus.push('lt');
-  if (MOTS_LETTONS_CARON.test(text)) vus.push('lv');
-  return vus.length === 1 ? vus[0] : undefined;
-}
+const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [
+  [/ä/iu, ['fi', 'sv', 'et', 'de']],
+  [/š/iu, ['cs', 'sk', 'sl', 'lt', 'lv']],
+  [/ü/iu, ['tr', 'de', 'et', 'hu']],
+  [/ó/iu, ['hu', 'pl', 'vi', 'es', 'pt', 'ca', 'sk']],
+  [/ú/iu, ['sk', 'hu', 'vi', 'es', 'pt', 'ca', 'cs']],
+  [/ç/iu, ['tr', 'pt', 'fr', 'ca']],
+];
 
-/**
- * La porte la plus large du fichier : le trema sur le a.
- *
- * `ä` est ecrit par cinq des 43, le finnois, le suedois, l'estonien, l'allemand
- * et le slovaque. Cinq, c'est trop pour nommer quoi que ce soit, et c'est
- * pourquoi cette lettre etait DEHORS de la table des lettres exclusives depuis
- * le debut. Mais cinq, c'est aussi assez peu pour qu'un second tour tranche, et
- * la porte contient 160 lignes que le detecteur ne savait pas nommer, de loin
- * le plus gros gisement restant.
- *
- * Ce que la porte offre, et c'est la quatrieme fois que la meme phrase s'ecrit :
- * elle rend propres des mots impossibles en plein air. `der`, `die`, `das`,
- * `ich`, `ist`, `und` sont inutilisables tels quels, le neerlandais et d'autres
- * les ecrivent ; derriere `ä` il n'y a plus de neerlandais. Pareil pour `att`,
- * `det`, `som`, `har`, `med` en suedois, que le danois et le norvegien ecrivent
- * aussi et qui sont nets ici puisqu'aucun des deux n'ecrit `ä`.
- *
- * Mesure derriere la porte, sur les corpus de reglage : 15 lignes allemandes, 53
- * estoniennes, 102 finnoises, 3 slovaques, 77 suedoises. Les quatre jeux de mots
- * ne se croisent jamais.
- *
- * CE QUI EST DEHORS : `ja` et `oli` sont finnois ET estoniens, `on` et `ei`
- * aussi. Le slovaque n'a pas de jeu, ses trois lignes restent muettes ; il n'y a
- * pas assez de matiere pour en ecrire un et une porte qui ne tranche pas rend
- * `undefined`, ce qui est le comportement d'avant.
- */
-const A_TREMA = /ä/iu;
-const MOTS_FINNOIS_TREMA =
-  /(^|[^\p{L}])(että|mutta|niin|kun|myös|vain|hän|ole|olen|täällä|tänään|mikä|mitä|kaikki|miksi)([^\p{L}]|$)/iu;
-const MOTS_SUEDOIS_TREMA =
-  /(^|[^\p{L}])(och|inte|är|jag|att|det|som|för|har|med|den|till|hur|här|hon|vill)([^\p{L}]|$)/iu;
-const MOTS_ESTONIENS_TREMA =
-  /(^|[^\p{L}])(see|ta|ma|kas|aga|siis|väga|miks|midagi|praegu|kõik)([^\p{L}]|$)/iu;
-const MOTS_ALLEMANDS_TREMA =
-  /(^|[^\p{L}])(nicht|der|die|das|ich|ist|und|mit|für|auf|ein|eine|sich|nur|aber|noch|wieder)([^\p{L}]|$)/iu;
-
-function tremaQuelleLangue(text: string): string | undefined {
-  if (!A_TREMA.test(text)) return undefined;
-  const vus: string[] = [];
-  if (MOTS_FINNOIS_TREMA.test(text)) vus.push('fi');
-  if (MOTS_SUEDOIS_TREMA.test(text)) vus.push('sv');
-  if (MOTS_ESTONIENS_TREMA.test(text)) vus.push('et');
-  if (MOTS_ALLEMANDS_TREMA.test(text)) vus.push('de');
-  return vus.length === 1 ? vus[0] : undefined;
+function porteQuelleLangue(text: string): string | undefined {
+  for (const [porte, langues] of PORTES_PARTAGEES) {
+    if (!porte.test(text)) continue;
+    const vus = langues.filter((l) => JEUX_DE_PORTE[l]!.test(text));
+    if (vus.length === 1) return vus[0];
+  }
+  return undefined;
 }
 
 /**
@@ -1335,11 +1323,8 @@ function detectByLookup(trimmed: string): string | undefined {
   const balte = estonienOuPortugais(trimmed);
   if (balte) return balte;
 
-  const trema = tremaQuelleLangue(trimmed);
-  if (trema) return trema;
-
-  const caron = caronQuelleLangue(trimmed);
-  if (caron) return caron;
+  const porte = porteQuelleLangue(trimmed);
+  if (porte) return porte;
 
   // Short Latin message: a known chat word beats franc, which guesses at this length.
   if (trimmed.length <= SHORT_TEXT_MAX) {

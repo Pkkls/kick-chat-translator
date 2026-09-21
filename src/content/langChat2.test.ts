@@ -49,8 +49,8 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
   //
   // A longueur egale, l'ecart se separe proprement, et c'est le test suivant.
   it('rappelle un tiers de moins en brut, mais la longueur en explique la moitie', () => {
-    expect(plain(SURE2.total)).toEqual({ right: 83, silent: 177, wrong: 0 });
-    expect(rappel(SURE1.total)).toBe(49);
+    expect(plain(SURE2.total)).toEqual({ right: 84, silent: 176, wrong: 0 });
+    expect(rappel(SURE1.total)).toBe(50);
     expect(rappel(SURE2.total)).toBe(32);
     // Le facteur confondant, mesure : les deux corpus ne sont pas comparables tels quels.
     const lignes = (c: Record<string, readonly string[]>): string[] => Object.values(c).flat();
@@ -63,7 +63,7 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
   // LA MESURE HONNETE, bande par bande.
   //
   //   <= 20 car : 52 % sur le corpus de reglage, 44 % a l'aveugle -> 8 points
-  //   >  20 car : 35 % contre 25 %                  -> 10 points
+  //   >  20 car : 40 % contre 25 %                  -> 15 points
   //
   // Les huit points de la bande courte sont la memorisation du lexique, et ils
   // sont reels. Les huit autres du chiffre brut sont de la longueur.
@@ -95,7 +95,7 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
     const long = (t: string): boolean => t.length > 20;
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, court)).total)).toBe(52);
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, court)).total)).toBe(44);
-    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, long)).total)).toBe(35);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, long)).total)).toBe(40);
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, long)).total)).toBe(25);
   });
 
