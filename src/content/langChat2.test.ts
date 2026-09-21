@@ -49,15 +49,15 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
   //
   // A longueur egale, l'ecart se separe proprement, et c'est le test suivant.
   //
-  // Les portes partagees ont referme trois points de cet ecart, 32 a 35, et
-  // elles l'ont fait du BON cote : le corpus aveugle gagne six lignes pendant
-  // que le corpus flatte n'en gagne aucune. Un mecanisme qui ne rapporte que la
-  // ou il n'a pas ete regle est exactement ce que le lexique n'arrivait plus a
-  // faire.
+  // Les portes partagees ont referme cinq points de cet ecart, 32 a 37, en deux
+  // tours, et elles l'ont fait du BON cote : le corpus aveugle a gagne six puis
+  // sept lignes pendant que le corpus flatte en gagnait zero puis trois. Un
+  // mecanisme qui rapporte PLUS la ou il n'a pas ete regle que la ou il l'a ete
+  // est exactement ce que le lexique n'arrivait plus a faire.
   it('rappelle un tiers de moins en brut, mais la longueur en explique la moitie', () => {
-    expect(plain(SURE2.total)).toEqual({ right: 90, silent: 170, wrong: 0 });
-    expect(rappel(SURE1.total)).toBe(50);
-    expect(rappel(SURE2.total)).toBe(35);
+    expect(plain(SURE2.total)).toEqual({ right: 97, silent: 163, wrong: 0 });
+    expect(rappel(SURE1.total)).toBe(51);
+    expect(rappel(SURE2.total)).toBe(37);
     // Le facteur confondant, mesure : les deux corpus ne sont pas comparables tels quels.
     const lignes = (c: Record<string, readonly string[]>): string[] => Object.values(c).flat();
     const part = (c: Record<string, readonly string[]>): number =>
@@ -68,35 +68,31 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
 
   // LA MESURE HONNETE, bande par bande.
   //
-  //   <= 20 car : 52 % sur le corpus de reglage, 45 % a l'aveugle -> 7 points
-  //   >  20 car : 40 % contre 28 %                  -> 12 points
+  //   <= 20 car : 53 % sur le corpus de reglage, 45 % a l'aveugle -> 8 points
+  //   >  20 car : 41 % contre 33 %                  ->  8 points
   //
   // Les huit points de la bande courte sont la memorisation du lexique, et ils
-  // sont reels. Les huit autres du chiffre brut sont de la longueur.
+  // sont reels : c'est une liste de mots choisie en lisant un corpus.
   //
-  // La bande longue est le resultat le plus instructif du fichier : elle n'est
-  // servie que par les lettres, les sequences et les terminaisons, jamais par le
-  // lexique, et son ecart entre corpus connu et corpus inconnu est de trois
-  // points contre huit. Une regle morphologique generalise trois fois mieux
-  // qu'une liste de mots choisis a la main.
+  // LA BANDE LONGUE EST LE RESULTAT LE PLUS INSTRUCTIF DU FICHIER, et son
+  // histoire vaut plus que sa valeur du jour. Elle n'est servie que par les
+  // ecritures, les lettres, les portes et les terminaisons, jamais par le
+  // lexique. Son ecart etait de trois points, il est monte a quinze, il est
+  // redescendu a huit, et AUCUN de ces trois mouvements n'est de la memorisation.
   //
-  // L'ecart de la bande longue a monte a dix points et ce n'est PAS de la
-  // memorisation : il vient de deux sources dont aucune n'est ajustable sur un
-  // corpus. Les terminaisons extraites de Tatoeba servent la prose et pas le
-  // chat, 76 lignes contre une. Et les deux portes `ä` et `š` servent des
-  // langues dont le corpus 1 contient plus de lignes longues que le corpus 2.
+  // La montee : les terminaisons extraites de Tatoeba servent la prose et pas le
+  // chat, 76 lignes contre une, et les portes `ä` et `š` servent des langues
+  // dont le corpus 1 contient plus de lignes longues que le corpus 2. Deux
+  // sources de registre et de composition, pas de reglage.
   //
-  // Ce que ces deux chiffres continuent de dire ensemble : la bande courte
-  // depend du lexique et memorise, la bande longue depend des ecritures, des
-  // lettres et des portes et ne memorise pas. Le dernier tour de portes l'a
-  // confirme directement, +4 sur ce corpus-ci la ou un tour de lexique faisait
-  // zero.
+  // La descente : les deux tours de portes partagees, +6 puis +7 lignes ici,
+  // dont l'essentiel dans cette bande. Une porte ne peut pas memoriser un corpus
+  // qu'elle n'a jamais vu, donc ces points sont du transfert au sens strict.
   //
-  // Le tour suivant, la table de portes partagees, l'a confirme une deuxieme
-  // fois et plus nettement : +6 lignes ici, dont CINQ dans la bande longue,
-  // celle que le lexique ne touche pas du tout. L'ecart de la bande longue
-  // REDESCEND de quinze points a douze, ce qui est le sens dans lequel un
-  // mecanisme qui ne memorise pas doit le faire bouger.
+  // Les deux bandes sont maintenant a huit points d'ecart chacune, et elles n'y
+  // sont pas pour la meme raison : la courte a mesure une liste de mots choisie
+  // en regardant, la longue a mesure l'ecart entre deux corpus qui ne se
+  // ressemblent pas. Ne pas lire cette egalite comme une equivalence.
   it('memorise trois fois moins au-dela de la borne du lexique', () => {
     const bande = (
       corp: Record<string, readonly string[]>,
@@ -105,18 +101,18 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
       Object.fromEntries(Object.entries(corp).map(([l, v]) => [l, v.filter(garde)]));
     const court = (t: string): boolean => t.length <= 20;
     const long = (t: string): boolean => t.length > 20;
-    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, court)).total)).toBe(52);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, court)).total)).toBe(53);
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, court)).total)).toBe(45);
-    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, long)).total)).toBe(40);
-    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, long)).total)).toBe(28);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, long)).total)).toBe(41);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, long)).total)).toBe(33);
   });
 
   // Le chemin brut perd moins parce qu'il ne depend pas du lexique : franc lit
   // des trigrammes, pas des mots choisis a la main. Sa perte, 61 % a 55 %, est
   // du bruit d'echantillonnage plutot que de la memorisation.
   it('montre que seul le chemin qui depend du lexique perd au changement de corpus', () => {
-    expect(plain(BRUT2.total)).toEqual({ right: 150, silent: 47, wrong: 63 });
-    expect(rappel(BRUT2.total)).toBe(58);
+    expect(plain(BRUT2.total)).toEqual({ right: 155, silent: 44, wrong: 61 });
+    expect(rappel(BRUT2.total)).toBe(60);
   });
 
   // La regle qui garde ce banc utilisable, et elle est fragile : il suffit d'une

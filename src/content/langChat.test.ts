@@ -59,14 +59,19 @@ describe('le chemin sur, sur du chat', () => {
 
   // Et voici le prix, qui est le vrai chiffre de ce fichier. Il repond a la
   // question de la phase 1 : peut-on donner au moteur on-device la reponse sure
-  // au lieu de la devinette ? Sur du chat latin la reponse sure est muette 85
-  // fois sur 100, donc basculer enverrait presque tout ce chat au cloud, avec sa
-  // latence et son quota. La reponse est non tant que ce chiffre n'a pas baisse,
-  // et c'est le lexique de mots courts qui le fera baisser, pas une regle de
-  // lettres de plus.
+  // au lieu de la devinette ? Le silence etait de 85 lignes sur 100 quand cette
+  // question a ete posee, il est de 49, et basculer enverrait toujours la moitie
+  // de ce chat au cloud avec sa latence et son quota. La reponse reste non, mais
+  // elle n'est plus hors de portee.
+  //
+  // CE QUI A ETE DIT ICI ET QUI ETAIT FAUX : que seul le lexique de mots courts
+  // ferait baisser ce chiffre, et pas une regle de lettres de plus. Les portes
+  // partagees sont exactement une regle de lettres, et elles ont pris les trois
+  // derniers points pendant que le lexique avait cesse de rapporter quoi que ce
+  // soit. C'etait une prediction, pas une mesure, et elle s'est trompee.
   it('se tait sur trois lignes de chat sur quatre', () => {
-    expect(plain(CHAT_SURE.total)).toEqual({ right: 196, silent: 194, wrong: 0 });
-    expect(muet(CHAT_SURE.total)).toBe(50);
+    expect(plain(CHAT_SURE.total)).toEqual({ right: 199, silent: 191, wrong: 0 });
+    expect(muet(CHAT_SURE.total)).toBe(49);
   });
 
   // Ce que coute le clavier, et c'est la fragilite de toute l'approche par
@@ -99,7 +104,7 @@ describe('le chemin brut, sur du chat', () => {
   // n'est pas comble, il est court-circuite, et il reapparaitra entier des que
   // le lexique manquera un mot.
   it('se trompe sur plus d une ligne de chat sur quatre', () => {
-    expect(plain(CHAT_BRUT.total)).toEqual({ right: 249, silent: 67, wrong: 74 });
+    expect(plain(CHAT_BRUT.total)).toEqual({ right: 250, silent: 66, wrong: 74 });
     const tatoeba = runMatrix(detectLanguage, memesLangues());
     const partChat = CHAT_BRUT.total.wrong / 390;
     const partTatoeba = tatoeba.total.wrong / (26 * 120);
@@ -137,12 +142,12 @@ describe('le contraste avec Tatoeba, sur les memes langues', () => {
   // franc, et elle bouge dans le mauvais sens.
   //
   // Le silence Tatoeba descend de 61 a 58 avec les portes partagees, celui du
-  // chat ne bouge pas : une porte a besoin d'une lettre accentuee, et le chat
-  // en ecrit moins que la prose.
+  // chat d'un seul point, 50 a 49 : une porte a besoin d'une lettre accentuee,
+  // et le chat en ecrit moins que la prose.
   it('montre que le registre coute a franc et pas au chemin sur', () => {
     const t = runMatrix(confidentLanguage, memesLangues());
     expect(muet(t.total)).toBe(58);
-    expect(muet(CHAT_SURE.total)).toBe(50);
+    expect(muet(CHAT_SURE.total)).toBe(49);
     expect(t.total.wrong).toBe(5);
   });
 });

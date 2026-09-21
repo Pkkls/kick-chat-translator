@@ -29,9 +29,9 @@ describe('le corpus de reglage', () => {
     expect(SURE3.total.wrong).toBe(0);
   });
 
-  it('en nomme 89 sur 260', () => {
-    expect(plain(SURE3.total)).toEqual({ right: 89, silent: 171, wrong: 0 });
-    expect(plain(BRUT3.total)).toEqual({ right: 150, silent: 40, wrong: 70 });
+  it('en nomme 90 sur 260', () => {
+    expect(plain(SURE3.total)).toEqual({ right: 90, silent: 170, wrong: 0 });
+    expect(plain(BRUT3.total)).toEqual({ right: 151, silent: 40, wrong: 69 });
   });
 
   // CE QU'IL A ATTRAPE LE JOUR DE SA CREATION, et c'est la justification de son
@@ -73,11 +73,13 @@ describe('le corpus de reglage', () => {
   // chiffre local. Les premiers tours de lexique transferaient a quatre
   // cinquiemes ; celui-ci a zero. La methode a un fond et il est atteint.
   //
-  // Le chiffre a bouge depuis, de 87 a 89, et pas par du lexique : deux lignes
-  // de plus sont lues derriere une porte partagee. C'est la distinction que ce
-  // test garde, et elle tient toujours.
+  // Le chiffre a bouge depuis, de 87 a 90, et pas par du lexique : trois lignes
+  // de plus sont lues derriere une porte partagee, en deux tours. C'est la
+  // distinction que ce test garde, et elle tient toujours. A comparer au corpus
+  // aveugle, qui a pris treize lignes sur les memes deux tours : un mecanisme
+  // qui transfere rapporte davantage la ou personne n'a regle.
   it('ne bouge que par un mecanisme qui transfere, pas par le lexique', () => {
-    expect(SURE3.total.right).toBe(89);
+    expect(SURE3.total.right).toBe(90);
   });
 
   // Les trois corpus doivent rester distincts, sinon les roles se melangent.

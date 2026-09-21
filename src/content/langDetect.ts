@@ -680,8 +680,20 @@ const JEUX_DE_PORTE: Readonly<Record<string, RegExp>> = {
 };
 
 const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [
+  // Sortie du crible `porte-candidats.mjs` et non d'une relecture a l'oeil : la
+  // plus large porte libre du fichier, 160 lignes sur les quatre corpus, et les
+  // quatre langues qui l'ecrivent avaient deja leur jeu de mots. Meme famille
+  // que `š` juste en dessous, a ceci pres que le letton ne l'ecrit pas.
+  [/č/iu, ['sl', 'sk', 'cs', 'lt']],
   [/ä/iu, ['fi', 'sv', 'et', 'de']],
   [/š/iu, ['cs', 'sk', 'sl', 'lt', 'lv']],
+  // Les quatre autres portes libres que le crible a rendues. Le roumain domine
+  // `ă` a 103 lignes contre 7, le polonais domine `ą` et `ę`, et `ū` est la
+  // seule des cinq ou les deux langues sont du meme ordre.
+  [/ă/iu, ['ro', 'vi']],
+  [/ą/iu, ['pl', 'lt']],
+  [/ę/iu, ['pl', 'lt']],
+  [/ū/iu, ['lv', 'lt']],
   [/ü/iu, ['tr', 'de', 'et', 'hu']],
   [/ó/iu, ['hu', 'pl', 'vi', 'es', 'pt', 'ca', 'sk']],
   [/ú/iu, ['sk', 'hu', 'vi', 'es', 'pt', 'ca', 'cs']],
