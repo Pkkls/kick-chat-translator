@@ -3,7 +3,7 @@
 État vivant de ce chantier, mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `e7736d0`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
+Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `fe8574c`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
 
 ---
 
@@ -21,7 +21,7 @@ skill     .claude/skills/add-language/SKILL.md   (la checklist, lire en premier)
 cd "C:/Users/kil/Downloads/kick-chat-translator"
 git checkout feat/lang-matrix
 npm ci                 # seulement si node_modules absent
-npm run release:check  # 71 fichiers, 1144 tests, doit sortir en 0
+npm run release:check  # 71 fichiers, 1145 tests, doit sortir en 0
 ```
 
 **Avertissement sur l'arbre de travail.** Il contient un WIP de kil sans rapport avec ce chantier, un redesign d'UI de chat : `src/content/inject.css`, `src/content/langMenu.ts`, `src/options/styles.css`, `src/popup/styles.css`, `tailwind.config.ts`, `src/content/chatStyles.test.ts`, `src/content/injector.test.ts`, `scratchpad/audit_da.py`, plus trois fichiers non suivis `src/shared/theme.css`, `src/shared/theme.test.ts`, `src/content/langPanelGeometry.test.ts`.
@@ -49,12 +49,12 @@ Ce qui a été découvert en cours de route et qui n'était pas dans le diagnost
 Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR, 120 lignes par langue.
 Trois issues, **jamais additionnées** : `right` la bonne langue, `silent` le détecteur a refusé de répondre ce qui est l'issue SÛRE, `wrong` une autre langue.
 
-| chemin | portée | départ `ec9e02d` | aujourd'hui `0235ee5` |
+| chemin | portée | départ `ec9e02d` | aujourd'hui `fe8574c` |
 |---|---|---|---|
-| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 2737 r / 2288 s / **15 w** |
-| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 845 / 823 / **12** |
-| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3635 / 600 / **805** |
-| `detectLanguage` | court | 837 / 364 / **479** | 1054 / 302 / **324** |
+| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 2813 r / 2212 s / **15 w** |
+| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 852 / 816 / **12** |
+| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3652 / 596 / **792** |
+| `detectLanguage` | court | 837 / 364 / **479** | 1057 / 301 / **322** |
 
 Le chemin sûr **répond deux fois plus souvent et se trompe 83 % moins**. C'est le seul mouvement qui compte vraiment : `wrong` sur ce chemin veut dire qu'on demande au moteur de traduire depuis une langue dans laquelle le texte n'est pas.
 
@@ -81,9 +81,9 @@ Les trois dernières du chemin brut, `et fi sl`, sont sorties par le lexique de 
 120  ar bn el he hi ja ko ta th     (écritures sans ambiguïté)
 113  fa    112 yue   108 lv    105 zh-tw   97 uk   89 ru   87 zh
 86   tr     81 vi     75 cs     74 bg      70 pl   61 ro   53 lt
-37   sv     36 et     35 es     30 nl      30 pt   29 fr   28 tl
-27   fi     25 hu     25 it     21 de      18 sl   17 ms   17 no
-16   sk     15 da     14 id     13 ca      13 en
+53   nl     41 hu     37 sv     36 et      35 en   35 es   30 fr
+30   pt     28 de     28 tl     27 fi      25 it   20 ca   18 sl
+17   ms     17 no     16 sk     15 da      14 id
 ```
 
 **Plus aucune langue sous 13 sur 120**, contre vingt-six à zéro au départ. Ce tableau est celui de Tatoeba ; sur du chat le classement est différent, voir 2bis.
@@ -119,10 +119,10 @@ Mesuré **deux fois**, tel quel et diacritiques retirées, parce qu'un chat cont
 
 | | right | silent | wrong | muet |
 |---|---:|---:|---:|---:|
-| chemin sûr, tel quel | 181 | 209 | **0** | 54 % |
-| chemin sûr, sans diacritiques | 128 | 262 | **0** | 67 % |
-| chemin brut, tel quel | 238 | 73 | 79 | 19 % |
-| chemin brut, sans diacritiques | 197 | 99 | 94 | 25 % |
+| chemin sûr, tel quel | 185 | 205 | **0** | 53 % |
+| chemin sûr, sans diacritiques | 131 | 259 | **0** | 66 % |
+| chemin brut, tel quel | 240 | 71 | 79 | 18 % |
+| chemin brut, sans diacritiques | 199 | 97 | 94 | 25 % |
 
 Quatre choses qu'il dit et que Tatoeba ne pouvait pas dire :
 
@@ -141,10 +141,10 @@ Quatre choses qu'il dit et que Tatoeba ne pouvait pas dire :
 
 | | corpus 1, qui a construit le lexique | corpus 2, **AVEUGLE** |
 |---|---:|---:|
-| chemin sûr, justes | 181 / 390 | 77 / 260 |
-| rappel brut | 46 % | 30 % |
+| chemin sûr, justes | 185 / 390 | 78 / 260 |
+| rappel brut | 47 % | 30 % |
 | **erreurs** | **0** | **0** |
-| chemin brut, rappel | 61 % | 55 % |
+| chemin brut, rappel | 62 % | 56 % |
 
 **Les seize points d'écart sont pour MOITIÉ un artefact de longueur, et il a fallu une seconde mesure pour le voir.** Le corpus 1 a été écrit en visant le chat court, 83 % de lignes sous vingt caractères et médiane 16 ; le corpus 2 a dérivé vers des phrases plus longues, 37 % et médiane 22. Or le lexique s'arrête à vingt caractères. Comparer les deux totaux comparait deux mélanges de longueurs autant que deux corpus.
 
@@ -153,11 +153,13 @@ Quatre choses qu'il dit et que Tatoeba ne pouvait pas dire :
 | bande | corpus 1 | corpus 2 aveugle | écart |
 |---|---:|---:|---:|
 | ≤ 20 car. | 52 % | 44 % | **8 points** |
-| > 20 car. | 21 % | 21 % | **ZÉRO** |
+| > 20 car. | 25 % | 22 % | **3 points** |
 
 Les huit points de la bande courte sont la mémorisation du lexique, et ils sont réels. Les huit autres étaient de la longueur.
 
-**La bande longue est le résultat le plus instructif du chantier.** Elle n'est servie que par les lettres, les séquences et les terminaisons, jamais par le lexique, et elle donne **exactement le même rappel sur un corpus inconnu**. *Une règle morphologique généralise, une liste de mots choisis à la main non.* C'est la réponse à la question de savoir où investir.
+**La bande longue est le résultat le plus instructif du chantier.** Elle n'est servie que par les lettres, les séquences et les terminaisons, jamais par le lexique, et son écart entre corpus connu et corpus inconnu est de **3 points contre 8**. *Une règle morphologique mémorise trois fois moins qu'une liste de mots choisis à la main.*
+
+**Mais « généralise » a une frontière, et elle a été mesurée.** Un groupe de terminaisons extrait de Tatoeba a rapporté **76 lignes sur Tatoeba et UNE seule sur le corpus aveugle de chat**. Une règle tirée de la prose trouve des formes fléchies ; le chat écrit des formes nues. Passer d'un corpus à l'autre n'est pas passer d'un registre à l'autre, et seul le premier a été fait.
 
 **Ce qui a généralisé parfaitement est la moitié qui compte** : zéro erreur sur 260 lignes neuves, après plus de deux cents entrées de lexique choisies contre un autre corpus. La sûreté ne se mémorise pas, parce que chaque entrée a été criblée contre 5490 lignes avant d'entrer. *Le rappel a été ajusté, la justesse a été gagnée.*
 
@@ -468,26 +470,31 @@ Les étages sont **disjoints** sauf lettres-contre-lexique, qui se croisent sur 
 
 ## 7. La file de travail, par valeur décroissante
 
-**Le paysage a encore changé.** Toutes les langues ont une règle, aucune n'est à zéro, le chemin sûr est à 15 erreurs sur 5040 et **zéro sur 390 lignes de chat**. Le silence du chat est passé de 85 % à 54 %. Ce qui reste est du rappel, et le rappel se heurte à une borne.
+**Ce qui a été appris sur OÙ investir, et c'est plus utile que la file elle-même.**
 
-1. **Continuer le lexique, en visant le SILENCE du chat.** C'est le levier qui marche : deux tours de 70 et 33 entrées ont fait 85 % -> 60 % -> 54 %, sans une seule erreur nouvelle sur aucun des trois bancs. Méthode, dans l'ordre :
-   - lire les lignes encore muettes du banc de chat, langue par langue ;
-   - choisir les mots pour leur **fréquence dans la langue**, jamais parce qu'ils sont dans le corpus ;
-   - cribler avec `scratchpad/harness/lang-screen.mjs mot ...` ;
-   - appliquer 4.6b et sortir ce qui est un mot ailleurs ;
-   - vérifier que **Tatoeba**, qui est indépendant, bouge dans le même sens.
-   
-   **Contrôle de circularité obligatoire** : couper le corpus de chat en deux et comparer le gain. Au dernier tour, réglage +9,6 %, écart +7,7 %, soit un transfert de quatre cinquièmes. Si l'écart se creuse, le lexique est en train d'apprendre le corpus.
+Trois mécanismes servent le chemin sûr, et ils ne se valent pas :
 
-2. **Un mot inutilisable en plein air est souvent utilisable derrière une porte.** Trois fois la réponse sur cette branche : `mig dig sig` derrière `ø æ`, `on ei ma ta` derrière `õ`, `tiada teruk nampak` derrière la porte malais-indonésien. Avant de rejeter un mot, se demander s'il existe une porte qui a déjà écarté ses concurrents.
+| mécanisme | portée | mémorise ? | traverse le registre ? |
+|---|---|---|---|
+| écriture, lettre, séquence | toute longueur | non | oui |
+| terminaison | toute longueur | peu, 3 points | **non**, mesuré |
+| lexique de mots | ≤ 20 car. | oui, 8 points | par construction |
 
-3. **La morphologie pour ce que le lexique n'atteint pas.** Une terminaison porte sur n'importe quelle phrase, un mot seulement sur celles qui l'emploient, et la borne de 20 caractères ne s'applique pas aux terminaisons. C'est ce qui a fait passer le finnois de 1 à 27. Méthode et garde-fous en 5.13.
+Les deux chiffres sont en 2bis-bis. La conséquence pratique : **une terminaison extraite de la prose ne sert que la prose**, une liste de mots choisie sur un corpus de chat ne sert que ce corpus-là, et seules les écritures et lettres sont gratuites.
 
-4. **Les paires qui restent** : `id -> ms` 45, `ca -> es` 39, `da -> sv` 39, `no -> sv` 41, `ms -> id` 35, `da -> nl` 31, `sk -> cs` 27. Toutes ont une règle qui les nomme sans les fermer ; les fermer demande d'atteindre les lignes sans aucun marqueur.
+1. **Écrire un TROISIÈME corpus de chat, pour régler.** C'est le déblocage, pas un détour. Le corpus 1 est grillé comme mesure, le corpus 2 doit rester aveugle, donc il n'existe aucun corpus de chat sur lequel on ait le droit de choisir des mots. Sans lui, tout nouveau travail de lexique est aveugle ou tricheur. Compter 10 lignes par langue, écrites d'un bloc, avec la même discipline que les deux autres.
 
-5. **Les 15 erreurs restantes du chemin sûr**, toutes de la même nature : une ligne écrite entièrement avec ce que l'extension partage avec sa base. `fa -> ar` 7, trois lignes jawi sans lettre jawi, `yue -> zh` 2.
+2. **Extraire de la morphologie depuis le registre CHAT, pas depuis Tatoeba.** La passe `fe8574c` a rapporté 76 lignes sur Tatoeba et une seule à l'aveugle parce qu'elle lisait des formes fléchies dans de la prose. Refaire le même travail sur des lignes de chat donnera d'autres motifs, courts et non fléchis.
 
-6. **`mano` coûte deux lignes** et c'est un vrai mot espagnol et lituanien. Mesurable maintenant : ajouter des lignes brésiliennes qui l'emploient au corpus de chat et comparer.
+3. **Un mot inutilisable en plein air est souvent utilisable derrière une porte.** Quatre fois la réponse sur cette branche : `mig dig sig` derrière `ø æ`, `on ei ma ta` derrière `õ`, `tiada teruk` derrière la porte malais-indonésien, `jag och inte` derrière `å`. Avant de rejeter un mot, chercher la porte qui a déjà écarté ses concurrents.
+
+4. **Chercher ce qui MANQUE plutôt que raffiner ce qui est là.** `ñ`, `ß`, `œ`, `ā ē ī` étaient absents de la table pendant trois passes de raffinage. Le grec manquait à `detectByScript` après trois trous identiques déjà bouchés. Relire les tables en entier vaut mieux qu'ajouter à leur fin.
+
+5. **Les paires qui restent** : `id -> ms` 45, `no -> sv` 41, `da -> sv` 39, `ca -> es` 37, `ms -> id` 35, `da -> nl` 31, `sk -> cs` 27. Toutes ont une règle qui les nomme sans les fermer.
+
+6. **Les 15 erreurs restantes du chemin sûr**, toutes de la même nature : une ligne écrite entièrement avec ce que l'extension partage avec sa base. `fa -> ar` 7, trois lignes jawi sans lettre jawi, `yue -> zh` 2.
+
+7. **`mano` coûte deux lignes** et c'est un vrai mot espagnol et lituanien. Mesurable dès qu'un troisième corpus existe.
 
 ### Ce qu'il ne faut PAS refaire
 
@@ -594,6 +601,9 @@ Commits, du plus ancien au plus récent :
 | `0235ee5` | Take the chat silence from sixty percent to fifty-four |
 | `048bfce` | Rewrite the queue around the lever that is working |
 | `e7736d0` | Measure the lexicon on chat it has never seen, and find a third of the recall gone |
+| `c716010` | Correct every chat figure the handoff was overstating, and say why |
+| `3ca422a` | Split the blind-corpus gap into memorisation and line length |
+| `fe8574c` | Extract endings from prose, and find out they serve prose |
 
 ---
 
@@ -615,7 +625,7 @@ Commits, du plus ancien au plus récent :
 
 - Commits : sujet à l'impératif, corps expliquant la cause, le correctif, et **comment il a été constaté**. Terminer par `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`.
 - Gate : `npm run release:check`, jamais seulement `typecheck` et `test`. Il lance aussi `lint`.
-- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` : 91484 avant les lettres exclusives, **93196 aujourd'hui**, soit +1712 octets pour l'ensemble des règles et 175 entrées de lexique. Les deux corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
+- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` : 91484 avant les lettres exclusives, **94212 aujourd'hui**, soit +2728 octets, 3 % du bundle, pour l'ensemble des règles et environ 380 entrées de lexique. Les deux corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
 - Pas de nom de streamer ou de chaîne en dur, nulle part.
 - Pas d'emoji dans le code.
 - Les données de test vivent **inline dans le fichier de test**, pas dans une fixture séparée.
