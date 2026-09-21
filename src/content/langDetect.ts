@@ -208,7 +208,7 @@ const SHORT_WORD_LANG = new Map<string, string>([
   ['loti', 'lv'], ['ļoti', 'lv'], ['paldies', 'lv'], ['kapec', 'lv'], ['kāpēc', 'lv'],
   ['tagad', 'lv'], ['vienmer', 'lv'], ['vienmēr', 'lv'], ['atkal', 'lv'],
 
-  ['ang', 'tl'], ['naman', 'tl'], ['talaga', 'tl'], ['salamat', 'tl'], ['grabe', 'tl'],
+  ['ang', 'tl'], ['naman', 'tl'], ['mga', 'tl'], ['siya', 'tl'], ['talaga', 'tl'], ['salamat', 'tl'], ['grabe', 'tl'],
   ['sobrang', 'tl'], ['yan', 'tl'], ['wala', 'tl'],
 ]);
 
@@ -337,6 +337,24 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/(ssä|llä|ttä|vät|istä)([^\p{L}]|$)/iu, 'fi'],
   [/öö/iu, 'et'],
   [/ção/iu, 'pt'],
+  // La ponctuation inversee, qui n'est pas une lettre du tout et qui est le
+  // marqueur le plus large de cette table : 27 lignes espagnoles et zero
+  // ailleurs. L'espagnol etait a zero sur ce chemin il y a deux passes.
+  [/[¿¡]/u, 'es'],
+  // Terminaisons. Elles portent sur n'importe quelle phrase, contrairement a un
+  // mot de lexique qui ne porte que sur celles qui l'emploient, et c'est ce qui
+  // les rend interessantes pour les langues sans lettre propre.
+  //   -ción  espagnol, contre -ção portugais et -zione italien : les trois
+  //          langues ecrivent le meme suffixe latin de trois facons.
+  //   -eux   francais, onze lignes, la plus grosse de ce groupe.
+  //   -lijk -heid  neerlandais.  -cchi -zione -issimo  italien.
+  // DEHORS : -cion sans accent est aussi portugais et catalan, -mente est
+  // italien autant qu'espagnol et portugais, -ndo aussi, -gli prend trois lignes
+  // lettones, -ait trois estoniennes, -ez et -ons une douzaine de langues.
+  [/ción([^\p{L}]|$)/iu, 'es'],
+  [/eux([^\p{L}]|$)/iu, 'fr'],
+  [/(lijk|heid|sje)([^\p{L}]|$)/iu, 'nl'],
+  [/(zione|issimo|cchi|glia)([^\p{L}]|$)/iu, 'it'],
 ];
 
 /**

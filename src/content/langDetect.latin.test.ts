@@ -44,7 +44,7 @@ const BANC: Ligne[] = [
   ['je comprends rien du tout', 'fr', 'fr', undefined],
   ['ca part en cacahuete', 'fr', 'es', undefined],
   ['non ci posso credere', 'it', 'it', undefined],
-  ['sta giocando malissimo', 'it', undefined, undefined],
+  ['sta giocando malissimo', 'it', 'it', 'it'],
   ['qualcuno ha visto cosa e successo', 'it', 'it', undefined],
   ['che bella partita', 'it', 'it', undefined],
   ['der spielt richtig schlecht', 'de', 'de', undefined],
@@ -96,8 +96,12 @@ describe('les totaux du banc latin', () => {
   // qu'il ignorait : `sih` nomme l'indonesien, donc `ada apa sih ini` cesse
   // d'etre lu malais et `gila sih ini keren` cesse d'etre muet. Une FAUSSE et un
   // silence deviennent justes, et le chemin SUR les nomme toutes les deux, la
-  // ou il se taisait. Rien d'autre ne bouge.
-  it('sont 35 justes, 6 silences et 10 fausses avec assurance sur 51', () => {
+  // ou il se taisait.
+  //
+  // Troisieme passe : la terminaison -issimo, ajoutee a la table sans borne,
+  // nomme `sta giocando malissimo` sur les deux chemins. Un silence de plus
+  // devient juste.
+  it('sont 36 justes, 5 silences et 10 fausses avec assurance sur 51', () => {
     let justes = 0;
     let silences = 0;
     let faux = 0;
@@ -107,8 +111,8 @@ describe('les totaux du banc latin', () => {
       else faux++;
     }
     expect({ justes, silences, faux, total: BANC.length }).toEqual({
-      justes: 35,
-      silences: 6,
+      justes: 36,
+      silences: 5,
       faux: 10,
       total: 51,
     });

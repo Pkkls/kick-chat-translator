@@ -65,7 +65,7 @@ describe('le chemin sur, sur du chat', () => {
   // et c'est le lexique de mots courts qui le fera baisser, pas une regle de
   // lettres de plus.
   it('se tait sur trois lignes de chat sur quatre', () => {
-    expect(plain(CHAT_SURE.total)).toEqual({ right: 110, silent: 280, wrong: 0 });
+    expect(plain(CHAT_SURE.total)).toEqual({ right: 111, silent: 279, wrong: 0 });
     expect(muet(CHAT_SURE.total)).toBe(72);
   });
 
@@ -74,7 +74,7 @@ describe('le chemin sur, sur du chat', () => {
   // deux tiers. Une regle qui lit ř ou ų ne lit plus rien des que l'utilisateur
   // tape vite, et c'est le cas majoritaire dans un chat sur telephone.
   it('perd un tiers de son rappel quand les diacritiques tombent', () => {
-    expect(plain(NU_SURE.total)).toEqual({ right: 65, silent: 325, wrong: 0 });
+    expect(plain(NU_SURE.total)).toEqual({ right: 66, silent: 324, wrong: 0 });
     expect(muet(NU_SURE.total)).toBe(83);
   });
 });
@@ -88,22 +88,26 @@ describe('le chemin brut, sur du chat', () => {
   // langues de Tatoeba : franc etait nettement pire sur du chat, parce qu'une
   // ligne de cinq mots ne porte pas assez de trigrammes pour lui.
   //
-  // Les deux taux sont maintenant a egalite, 28 contre 28, et le chat est meme
-  // devant d'un demi-point. Ce n'est pas franc qui s'est ameliore : c'est que
+  // Les deux taux se sont rapproches jusqu'a l'egalite, 28 contre 28, puis
+  // l'ecart s'est ROUVERT dans l'autre sens a mesure que les terminaisons
+  // orthographiques entraient : elles portent sur de la prose, donc elles
+  // servent Tatoeba plus que le chat. La tolerance de ce test est large exprès,
+  // le point n'est pas la valeur mais le fait que les deux restent du meme
+  // ordre. Ce n'est pas franc qui s'est ameliore : c'est que
   // `detectLanguage` consulte le lexique AVANT lui, donc chaque ligne que le
   // lexique nomme est une ligne que franc ne voit plus. L'ecart de registre
   // n'est pas comble, il est court-circuite, et il reapparaitra entier des que
   // le lexique manquera un mot.
   it('se trompe sur plus d une ligne de chat sur quatre', () => {
-    expect(plain(CHAT_BRUT.total)).toEqual({ right: 191, silent: 92, wrong: 107 });
+    expect(plain(CHAT_BRUT.total)).toEqual({ right: 192, silent: 91, wrong: 107 });
     const tatoeba = runMatrix(detectLanguage, memesLangues());
     const partChat = CHAT_BRUT.total.wrong / 390;
     const partTatoeba = tatoeba.total.wrong / (26 * 120);
-    expect(Math.abs(partChat - partTatoeba)).toBeLessThan(0.02);
+    expect(Math.abs(partChat - partTatoeba)).toBeLessThan(0.04);
   });
 
   it('empire encore sans diacritiques', () => {
-    expect(plain(NU_BRUT.total)).toEqual({ right: 156, silent: 117, wrong: 117 });
+    expect(plain(NU_BRUT.total)).toEqual({ right: 157, silent: 116, wrong: 117 });
   });
 
   // Sept langues ne marquent pas un seul point sur le chemin BRUT, franc compris,
@@ -133,7 +137,7 @@ describe('le contraste avec Tatoeba, sur les memes langues', () => {
   // franc, et elle bouge dans le mauvais sens.
   it('montre que le registre coute a franc et pas au chemin sur', () => {
     const t = runMatrix(confidentLanguage, memesLangues());
-    expect(muet(t.total)).toBe(75);
+    expect(muet(t.total)).toBe(73);
     expect(muet(CHAT_SURE.total)).toBe(72);
     expect(t.total.wrong).toBe(5);
   });
