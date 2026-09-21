@@ -70,7 +70,7 @@ describe('le chemin sur, sur du chat', () => {
   // derniers points pendant que le lexique avait cesse de rapporter quoi que ce
   // soit. C'etait une prediction, pas une mesure, et elle s'est trompee.
   it('se tait sur trois lignes de chat sur quatre', () => {
-    expect(plain(CHAT_SURE.total)).toEqual({ right: 210, silent: 180, wrong: 0 });
+    expect(plain(CHAT_SURE.total)).toEqual({ right: 211, silent: 179, wrong: 0 });
     expect(muet(CHAT_SURE.total)).toBe(46);
   });
 
@@ -110,7 +110,7 @@ describe('le chemin brut, sur du chat', () => {
   // n'est pas comble, il est court-circuite, et il reapparaitra entier des que
   // le lexique manquera un mot.
   it('se trompe sur plus d une ligne de chat sur quatre', () => {
-    expect(plain(CHAT_BRUT.total)).toEqual({ right: 255, silent: 62, wrong: 73 });
+    expect(plain(CHAT_BRUT.total)).toEqual({ right: 256, silent: 61, wrong: 73 });
     const tatoeba = runMatrix(detectLanguage, memesLangues());
     const partChat = CHAT_BRUT.total.wrong / 390;
     const partTatoeba = tatoeba.total.wrong / (26 * 120);

@@ -497,6 +497,19 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/för/iu, 'sv'],
   [/ał/iu, 'pl'],
   [/wy/iu, 'pl'],
+  // TROISIEME RECOLTE, la paire finno-estonienne interrogee directement.
+  //   tää  fi=21, aucune autre. C'est la terminaison verbale `-tää`, `tietää`,
+  //        `ymmärtää`, `näyttää` : de la morphologie, pas un mot.
+  //   llä  fi=14, aucune autre. La table avait deja `llä` en FIN DE MOT dans
+  //        les terminaisons ; non bornee elle voit aussi `llähän`, `llämme`.
+  //   õi   et=15, aucune autre. Le portugais, seule autre langue a ecrire `õ`,
+  //        ecrit `õe` et `ões`, jamais `õi`.
+  //
+  // DEHORS : `hän` fi=20 mais de=1 et sv=2. `sä` fi=14, de=1 sv=4. `taa` fi=14,
+  // nl=4. `nud` estonien etait deja dans la liste des rejets, une ligne turque.
+  [/tää/iu, 'fi'],
+  [/llä/iu, 'fi'],
+  [/õi/iu, 'et'],
   // LE TAGALOG, la derniere langue de la matrice sans un seul marqueur.
   //
   // Il s'ecrit en latin nu, sans un diacritique, donc aucune passe de lettres ne

@@ -162,9 +162,23 @@ const PLANCHER = 8; // lignes, tous corpus confondus
 // exactement comme REJETES le fait pour les lettres. A tenir a jour avec
 // `LETTRES_EXCLUSIVES` : le crible ne lit pas le fichier, il lit les corpus.
 const SEQ_PRISES = new Set([
-  'yy', 'oo', 'ão', 'cê', 'ía', 'cz', 'prz', 'să', 'că', 'ção', 'öö',
-  'øy', 'øk', 'øj', 'øg',
+  'yy', 'öö', 'ão', 'cê', 'ía', 'cz', 'prz', 'să', 'că',
+  'øy', 'øk', 'øj', 'øg', 'ijn', 'jse', 'för', 'ał', 'wy',
+  // Subsumees par une entree plus large deja en table, donc inutile de les
+  // reproposer : `ção nã não voc ocê` par `ão` et `cê`, `czy się` par `cz`.
+  'ção', 'nã', 'não', 'voc', 'ocê', 'czy', 'się',
 ]);
+
+// REJETEES au critere (a) malgre un bruit mesure nul. Meme role que REJETES
+// pour les lettres : sans cette liste le crible les repropose a chaque passage.
+//
+//   you  l'anglais est la langue avec laquelle tout le monde melange, et le
+//        banc des lignes melangees l'a attrape sur deux lignes italiennes.
+//   gio  le portugais ecrit `relógio` et `colégio`.
+//   oor  l'anglais ecrit `door`, `floor`, `poor`.
+//   ân   le francais ecrit `âne`.   în  le francais ecrit `chaîne`.
+//   kj skj gj  proposees norvegiennes, une a trois lignes danoises chacune.
+const SEQ_REJETEES = new Set(['you', 'gio', 'oor', 'ân', 'în', 'kj', 'skj', 'gj']);
 
 const vuSeq = new Map();
 for (const corpus of corpora) {
@@ -210,7 +224,7 @@ const parTotal = (a, b) => b.total - a.total;
 // entres, alors que `ção` etait la depuis trois passes en n'en voyant qu'un bout.
 console.log(`\nSEQUENCES A BRUIT STRICTEMENT NUL, candidates exclusives :`);
 for (const x of seqExclusives
-  .filter((y) => y.bruit === 0 && !SEQ_PRISES.has(y.s))
+  .filter((y) => y.bruit === 0 && !SEQ_PRISES.has(y.s) && !SEQ_REJETEES.has(y.s))
   .sort(parTotal)
   .slice(0, 60)) {
   // Une sequence dont un caractere est deja une lettre exclusive de la MEME
