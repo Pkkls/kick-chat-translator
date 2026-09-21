@@ -510,6 +510,20 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/tää/iu, 'fi'],
   [/llä/iu, 'fi'],
   [/õi/iu, 'et'],
+  // QUATRIEME RECOLTE, les paires restantes interrogees une par une. Presque
+  // tout ce qu'elles rendent est deja couvert par une lettre exclusive : `ře`
+  // et `ěl` tcheques portent `ř` et `ě`, `iņ` et `kā` lettons portent `ņ` et
+  // `ā`. Trois seulement sont libres, et ce sont trois langues faibles.
+  //   wir  de=12, aucune autre, et en ASCII. Le neerlandais ecrit `wij`.
+  //   gov  sl=13, aucune autre, ASCII aussi. `govori`. Le tcheque et le
+  //        slovaque ecrivent `hovor`.
+  //
+  // DEHORS PAR L'ABLATION : `més` catalan, ca=9 et bruit nul, mais ZERO sur les
+  // huit bancs. Les lignes catalanes qui le portent sont deja prises par le
+  // point volat ou par la porte `é`. Un marqueur propre sur une langue faible
+  // n'est pas automatiquement un marqueur utile.
+  [/wir/iu, 'de'],
+  [/gov/iu, 'sl'],
   // LE TAGALOG, la derniere langue de la matrice sans un seul marqueur.
   //
   // Il s'ecrit en latin nu, sans un diacritique, donc aucune passe de lettres ne
