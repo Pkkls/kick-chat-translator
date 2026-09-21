@@ -28,11 +28,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on two lines in five and is almost never wrong.
   // The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 2439, silent: 2586, wrong: 15 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 2470, silent: 2555, wrong: 15 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
-    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 759, silent: 909, wrong: 12 });
+    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 762, silent: 906, wrong: 12 });
   });
 
   // The expensive one. This is the answer that deletes a message in silence when
@@ -40,11 +40,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
   it('detectLanguage is wrong on a fifth of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 3473, silent: 683, wrong: 884 });
+    expect(plain(DETECT.total)).toEqual({ right: 3479, silent: 681, wrong: 880 });
   });
 
   it('detectLanguage is wrong on a quarter of short lines', () => {
-    expect(plain(DETECT.shortOnly)).toEqual({ right: 994, silent: 331, wrong: 355 });
+    expect(plain(DETECT.shortOnly)).toEqual({ right: 995, silent: 331, wrong: 354 });
   });
 });
 
@@ -114,7 +114,7 @@ describe('the languages the detector cannot name at all', () => {
     // zero list and fixing the confusion are two different things, and only the
     // first has happened.
     expect(DETECT.confusions.get('no->sv')).toBe(41);
-    expect(DETECT.confusions.get('da->sv')).toBe(42);
+    expect(DETECT.confusions.get('da->sv')).toBe(41);
     expect(DETECT.confusions.get('ca->es')).toBe(42);
   });
 });
@@ -238,6 +238,18 @@ describe('when a letter names a pair instead of a language, added 2026-09-21', (
   it('picks inside the pair on words that are ambiguous outside it', () => {
     expect(confidentLanguage('Han tog sit tøj af.')).toBe('da');
     expect(confidentLanguage('Kalven lærer av kua.')).toBe('no');
+  });
+
+  // Un cran de plus : `å` est ecrit par les TROIS langues, donc il nomme le trio
+  // et il faut sortir le suedois avant de se servir de mots qui lui sont
+  // ambigus. C'est ce qui a fait passer le suedois de 3 a 20 lignes sur la
+  // moitie tenue a l'ecart.
+  it('sort le suedois quand la lettre ne nomme que le trio', () => {
+    expect(confidentLanguage('Jag är bra på spel.')).toBe('sv');
+    expect(confidentLanguage('Jeg ser du står på, men ikke overanstreng deg.')).toBe('no');
+    // Et le cas qui rend l'ordre necessaire : une ligne suedoise avec å seul,
+    // sur laquelle mig, dig et sig ne seraient pas surs si on les consultait.
+    expect(confidentLanguage('Snart är det vår.')).toBe('sv');
   });
 
   // Both sets or neither declines, same unanimous vote as everywhere else here.

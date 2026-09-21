@@ -360,12 +360,50 @@ const LETTRES_DANO_NORVEGIENNES = /[øæ]/iu;
 const MOTS_NORVEGIENS = /(^|[^\p{L}])(meg|deg|seg|hva|hvem|hvor|noe|noen|etter|av|ikkje)([^\p{L}]|$)/iu;
 const MOTS_DANOIS = /(^|[^\p{L}])(mig|dig|sig|hvad|noget|nogen|efter|af|meget)([^\p{L}]|$)/iu;
 
-function danoisOuNorvegien(text: string): string | undefined {
-  if (!LETTRES_DANO_NORVEGIENNES.test(text)) return undefined;
+/**
+ * Le meme mecanisme a un cran de plus : une lettre qui nomme un TRIO.
+ *
+ * `ø` et `æ` nomment la paire danois-norvegien parce que le suedois ne les
+ * ecrit pas. `å`, lui, est ecrit par les trois, donc il nomme le trio. Mesure
+ * sur les deux corpus : les trois et personne d'autre, 28 lignes danoises, 40
+ * norvegiennes et 48 suedoises.
+ *
+ * Deux etages, et l'ordre compte. Une ligne qui porte ø ou æ n'est pas suedoise
+ * quoi qu'elle porte d'autre, donc elle va directement au tri danois-norvegien
+ * ou mig, dig et sig sont surs. Une ligne qui n'a que å peut etre suedoise, donc
+ * il faut d'abord sortir le suedois, et seulement apres se servir de mots qui
+ * lui seraient ambigus.
+ *
+ * Ce qui separe le suedois de ses deux voisins est une orthographe differente du
+ * meme mot, la forme la plus sure : jag contre jeg, inte contre ikke, och contre
+ * og, är contre er, från contre fra. Mesure derriere la porte : jag 8 lignes
+ * suedoises et zero des deux autres, inte 13 et zero, och 7 et zero, är 13 et
+ * zero ; jeg 35 danoises et norvegiennes et zero suedoise, ikke 17 et zero.
+ *
+ * CE QUI EST DEHORS : `og` prend une ligne suedoise sur les cinquante, et `er`
+ * en prend dix-neuf, parce que le suedois l'ecrit aussi. `till` prend une ligne
+ * norvegienne. Aucun des trois n'entre, pour une ligne comme pour dix-neuf.
+ */
+const A_ROND_SCANDINAVE = /å/iu;
+const MOTS_SUEDOIS = /(^|[^\p{L}])(jag|och|inte|är|från)([^\p{L}]|$)/iu;
+const MOTS_DANO_NORVEGIENS = /(^|[^\p{L}])(jeg|ikke|til)([^\p{L}]|$)/iu;
+
+/** Le tri interieur, appele une fois le suedois ecarte d'une facon ou d'une autre. */
+function norvegienOuDanois(text: string): string | undefined {
   const no = MOTS_NORVEGIENS.test(text);
   const da = MOTS_DANOIS.test(text);
   if (no && !da) return 'no';
   if (da && !no) return 'da';
+  return undefined;
+}
+
+function danoisOuNorvegien(text: string): string | undefined {
+  if (LETTRES_DANO_NORVEGIENNES.test(text)) return norvegienOuDanois(text);
+  if (!A_ROND_SCANDINAVE.test(text)) return undefined;
+  const sv = MOTS_SUEDOIS.test(text);
+  const dn = MOTS_DANO_NORVEGIENS.test(text);
+  if (sv && !dn) return 'sv';
+  if (dn && !sv) return norvegienOuDanois(text);
   return undefined;
 }
 
