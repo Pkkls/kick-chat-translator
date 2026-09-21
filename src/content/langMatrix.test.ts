@@ -28,7 +28,7 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on two lines in five and is almost never wrong.
   // The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 2176, silent: 2846, wrong: 18 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 2179, silent: 2846, wrong: 15 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
@@ -40,7 +40,7 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
   it('detectLanguage is wrong on a fifth of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 3359, silent: 726, wrong: 955 });
+    expect(plain(DETECT.total)).toEqual({ right: 3362, silent: 726, wrong: 952 });
   });
 
   it('detectLanguage is wrong on a quarter of short lines', () => {
@@ -68,7 +68,7 @@ describe('the languages the detector cannot name at all', () => {
   });
 
   // The other half of the same problem, and the reason phase 1 cannot simply
-  // swap the raw guess for the safe one: the safe one can only name thirty-one
+  // swap the raw guess for the safe one: the safe one can only name thirty-two
   // languages out of forty-two on this corpus. Sixteen before the exclusive
   // letters, twenty-nine after them.
   //
@@ -76,12 +76,12 @@ describe('the languages the detector cannot name at all', () => {
   // both directions. Tatoeba is written sentences, and the short-word lexicon
   // that feeds `confidentLanguage` is a chat vocabulary: hola, merci, danke,
   // selam. A Spanish Tatoeba sentence contains none of them, so `es` scores zero
-  // here while it would score on a real chat line. The eleven are therefore an
+  // here while it would score on a real chat line. The ten are therefore an
   // upper bound on the gap, not a measurement of it. The chat corpus in phase 0b
   // is what settles it.
-  it('names the eleven the confident path can never name on this corpus', () => {
+  it('names the ten the confident path can never name on this corpus', () => {
     expect(zeroRight(CONFIDENT)).toEqual([
-      'el', 'es', 'et', 'fi', 'fr', 'id', 'ms', 'nl', 'sl', 'sv', 'tl',
+      'el', 'es', 'et', 'fi', 'fr', 'id', 'nl', 'sl', 'sv', 'tl',
     ]);
   });
 
@@ -247,6 +247,28 @@ describe('when a letter names a pair instead of a language, added 2026-09-21', (
   });
 });
 
+describe('Malay written in the Arabic script, added 2026-09-21', () => {
+  // Six of the 120 Malay lines are in Jawi, which is Arabic script, and the
+  // script check read them correctly and concluded Arabic. Same shape as Persian
+  // right above it: Jawi adds letters to the Arabic set, so those letters name
+  // it. Three of the six carry one and are now read as Malay.
+  it('reads Jawi letters as Malay rather than Arabic', () => {
+    expect(confidentLanguage('دي سدڠ بلاجر بهاس ايڠڬريس.')).toBe('ms');
+  });
+
+  // The order inside the rule is what makes it work: Jawi is tested before
+  // Persian because it uses چ, which is in the Persian set. Testing it after
+  // would leave a Jawi line carrying a cheh reading as Persian, which is exactly
+  // the ms->fa error that remains on the line that carries no Jawi letter.
+  it('does not take Persian lines, which share the cheh', () => {
+    const intoMalay = [...CONFIDENT.confusions.keys()].filter((p) => p.endsWith('->ms'));
+    expect(intoMalay).toEqual([]);
+    expect(CONFIDENT.byLang.get('fa')!.short.right
+      + CONFIDENT.byLang.get('fa')!.medium.right
+      + CONFIDENT.byLang.get('fa')!.long.right).toBe(113);
+  });
+});
+
 describe('the Cyrillic fallback, fixed 2026-09-21', () => {
   // The biggest single defect the matrix ever found, and it was not a missing
   // rule: it was a guess wearing a lookup's clothes. `cyrilliqueQuelleLangue`
@@ -265,10 +287,10 @@ describe('the Cyrillic fallback, fixed 2026-09-21', () => {
   // are Malay written in Jawi, which is Arabic script, so the script check is
   // reading the script correctly and the language behind it is the part nothing
   // here can see. Two are the known price of the Cantonese rule.
-  it('is down to eighteen wrong answers, and they are these', () => {
+  it('is down to fifteen wrong answers, and they are these', () => {
     const rows = [...CONFIDENT.confusions.entries()].map(([p, n]) => `${p}=${n}`).sort();
     expect(rows).toEqual([
-      'es->pt=1', 'fa->ar=7', 'lt->pt=1', 'ms->ar=5', 'ms->fa=1',
+      'es->pt=1', 'fa->ar=7', 'lt->pt=1', 'ms->ar=2', 'ms->fa=1',
       'uk->bg=1', 'yue->zh-tw=1', 'yue->zh=1',
     ]);
   });

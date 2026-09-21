@@ -288,9 +288,52 @@ function detectByExclusiveLetter(text: string): string | undefined {
  */
 const LETTRES_PERSANES = /[پچژگکی]/u;
 const LETTRES_OURDOUES = /[ٹڈڑںھےہ]/u;
+/**
+ * Le malais ecrit en jawi, qui est de l'ecriture arabe.
+ *
+ * Six des 120 lignes malaises du corpus ne sont pas en alphabet latin : Tatoeba
+ * publie du `zsm` en jawi, et le pre-controle lisait leur ecriture correctement
+ * pour en conclure `ar`. Cinq erreurs `ms -> ar` et une `ms -> fa`, soit six des
+ * dix-huit erreurs restantes du chemin sur, sur une langue que le produit offre.
+ *
+ * Meme raisonnement que le persan juste au-dessus, meme forme : le jawi ajoute
+ * des lettres au jeu arabe, donc ces lettres le nomment. nga, pa, ga et nya sont
+ * mesurees sur les 5040 lignes et ne touchent que le malais, trois, deux, trois
+ * et une ligne. ݢ et ۏ n'apparaissent nulle part dans le corpus mais sont jawi
+ * seules et entrent au meme titre : une mesure a zero ne prouve pas une absence,
+ * elle ne contredit rien.
+ *
+ * Le jawi se teste AVANT le persan et pas apres, parce qu'il emploie چ qui est
+ * dans le jeu persan. Sans cet ordre, une ligne jawi portant un cheh ressort
+ * persane, ce qui est exactement l'erreur `ms -> fa` mesuree.
+ *
+ * CE QUI EST DEHORS : چ, justement. Il est jawi ET persan, vingt-cinq lignes
+ * persanes du banc contre une malaise, donc il est du mauvais cote du rapport.
+ *
+ * LA LIMITE, chiffree : trois des six lignes jawi ne portent aucune de ces
+ * lettres et restent lues arabes. Le jawi partage l'essentiel de son jeu avec
+ * l'arabe, exactement comme le chinois traditionnel partage l'essentiel du sien
+ * avec le simplifie, et la meme phrase s'applique : ce qui reste demande de
+ * sortir du niveau de la lettre.
+ */
+const LETTRES_JAWI = /[ڠڤڬڽݢۏ]/u;
 
+/**
+ * Le repli `ar` est une ELIMINATION et non une devinette, contrairement au repli
+ * `ru` du cyrillique qui a ete retire. La difference est structurelle et vaut
+ * d'etre ecrite, parce que les deux fonctions se ressemblent assez pour qu'on
+ * veuille leur appliquer le meme correctif.
+ *
+ * Le persan, l'ourdou et le jawi sont l'arabe PLUS des lettres. L'arabe n'a donc
+ * aucun marqueur positif a lui : il est ce qui reste quand aucune extension ne
+ * se manifeste, et c'est une lecture. Le russe, lui, n'etait pas la base du
+ * cyrillique, il en etait un membre parmi trois, et le nommer par defaut etait
+ * une devinette. Rendre `undefined` ici ferait tomber l'arabe de 120 lignes a
+ * presque rien sans corriger quoi que ce soit.
+ */
 function arabeOuPersan(text: string): string | undefined {
   if (LETTRES_OURDOUES.test(text)) return undefined;
+  if (LETTRES_JAWI.test(text)) return 'ms';
   if (LETTRES_PERSANES.test(text)) return 'fa';
   return 'ar';
 }
