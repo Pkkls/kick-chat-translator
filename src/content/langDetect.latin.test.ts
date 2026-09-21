@@ -48,14 +48,14 @@ const BANC: Ligne[] = [
   ['qualcuno ha visto cosa e successo', 'it', 'it', undefined],
   ['che bella partita', 'it', 'it', 'it'],
   ['der spielt richtig schlecht', 'de', 'de', undefined],
-  ['was ist denn hier los', 'de', 'de', undefined],
-  ['hat jemand gesehen was passiert ist', 'de', 'de', undefined],
+  ['was ist denn hier los', 'de', 'de', 'de'],
+  ['hat jemand gesehen was passiert ist', 'de', 'de', 'de'],
   ['das war echt stark', 'de', 'de', undefined],
   ['bu adam cok iyi oynuyor', 'tr', undefined, undefined],
   ['ne oluyor burada', 'tr', 'tr', 'tr'],
   ['inanamiyorum ya', 'tr', 'id', undefined],
   ['goren var mi ne oldu', 'tr', 'tr', undefined],
-  ['hij speelt echt slecht', 'nl', 'nl', undefined],
+  ['hij speelt echt slecht', 'nl', 'nl', 'nl'],
   ['wat gebeurt er nu', 'nl', 'nl', 'nl'],
   ['dat was echt goed man', 'nl', 'de', undefined],
   ['on gra naprawde slabo', 'pl', undefined, undefined],
@@ -111,6 +111,12 @@ describe('les totaux du banc latin', () => {
   // le chemin SUR, la ou il se taisait. Ces trois totaux ne bougent pas, ils ne
   // comptent que la colonne `detectLanguage` ; c'est la quatrieme colonne qui
   // change, et c'est elle qui decide de ce qui part au moteur.
+  //
+  // Septieme passe, les mots outils exclusifs : trois lignes de plus passent de
+  // muettes a nommees sur le chemin sur, et elles sont toutes les trois dans la
+  // bonne langue. `ist` nomme les deux allemandes, `hij` la neerlandaise. Les
+  // trois assertaient le SILENCE, donc le defaut et pas une propriete : c'est
+  // la troisieme fois que le cas 4.7 se presente sur ce banc.
   //
   // Sixieme passe, les portes a mot : `quelqu un a vu ce qui s est passe` passe
   // de muet a `fr` sur le chemin sur. `ce` ouvre la porte ro/fr, le roumain n'a

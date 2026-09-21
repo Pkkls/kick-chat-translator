@@ -552,6 +552,33 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   //        `niya` en MOT ; non bornee la sequence voit aussi les formes flechies.
   [/agy/iu, 'hu'],
   [/niy/iu, 'tl'],
+  // LES MOTS OUTILS EXCLUSIFS, et c'est une passe que personne n'avait faite.
+  //
+  // Le lexique `SHORT_WORD_LANG` est un vocabulaire de CHAT et il est borne a
+  // vingt caracteres. Ces mots-ci sont des mots grammaticaux a tres haute
+  // frequence qu'UNE SEULE des quarante-trois ecrit, donc ils n'ont besoin ni
+  // de la borne ni d'une porte : ils sont de la meme nature qu'une lettre
+  // exclusive, et c'est pour ca qu'ils entrent dans cette table-ci.
+  //
+  //   ik hij mijn  nl=32, 14, 8. L'allemand ecrit `ich`, l'anglais `I`.
+  //   ist zu       de=22, 14.    Le neerlandais ecrit `is`.
+  //   jag att      sv=22, 24.    Le danois et le norvegien ecrivent `jeg`, `at`.
+  //   est          fr=26.        L'italien ecrit `è`, l'espagnol `es`, le
+  //                              roumain `este`.
+  //
+  // DEHORS, et c'est la COLONNE MELANGE du crible qui les a attrapes, seule :
+  // `inte` suedois sur 21 lignes et `the` anglais sur 38, tous deux a bruit nul
+  // dans les quarante-deux autres langues, touchent chacun une ligne melangee.
+  // Deuxieme fois que ce banc refuse un marqueur parfait, apres `you`.
+  // Celle-ci a tue `(lijk|heid|sje)`, la terminaison neerlandaise, qui avait
+  // ete signalee une passe plus tot comme "le prochain candidat au retrait si la
+  // table doit maigrir" : elle valait zero sur trois corpus et une ligne sur le
+  // quatrieme. Elle vaut zero partout maintenant. Cinquieme fois qu'un ajout
+  // tue une entree ailleurs dans le fichier.
+  [/(^|[^\p{L}])(ik|hij|mijn)([^\p{L}]|$)/iu, 'nl'],
+  [/(^|[^\p{L}])(ist|zu)([^\p{L}]|$)/iu, 'de'],
+  [/(^|[^\p{L}])(jag|att)([^\p{L}]|$)/iu, 'sv'],
+  [/(^|[^\p{L}])(est)([^\p{L}]|$)/iu, 'fr'],
   // LE TAGALOG, la derniere langue de la matrice sans un seul marqueur.
   //
   // Il s'ecrit en latin nu, sans un diacritique, donc aucune passe de lettres ne
@@ -586,7 +613,6 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   // lettones, -ait trois estoniennes, -ez et -ons une douzaine de langues.
   [/ción([^\p{L}]|$)/iu, 'es'],
   [/eux([^\p{L}]|$)/iu, 'fr'],
-  [/(lijk|heid|sje)([^\p{L}]|$)/iu, 'nl'],
   [/(zione|issimo|cchi|glia)([^\p{L}]|$)/iu, 'it'],
   // Un second groupe de terminaisons, et il n'a pas le meme STATUT que le
   // premier, ce qui vaut d'etre dit plutot que noye.
