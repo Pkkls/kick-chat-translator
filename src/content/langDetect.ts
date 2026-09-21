@@ -403,11 +403,17 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   // La recherche a aussi propose -nha, -chi, -aat, -lich et -lige, que
   // l'exposition complete a rejetes : deux lignes vietnamiennes, quatre
   // francaises, quatre finnoises, deux neerlandaises, sept langues.
-  [/(nho|eiro|dade)([^\p{L}]|$)/iu, 'pt'],
-  [/(iamo|simo|glio)([^\p{L}]|$)/iu, 'it'],
+  [/(nho|nha|eiro|eira|dade)([^\p{L}]|$)/iu, 'pt'],
+  [/(iamo|simo|glio|tto|nno)([^\p{L}]|$)/iu, 'it'],
   [/(knya|nmu|anku)([^\p{L}]|$)/iu, 'id'],
   [/ným([^\p{L}]|$)/iu, 'sk'],
-  [/tste([^\p{L}]|$)/iu, 'nl'],
+  [/(tste|aat|aal)([^\p{L}]|$)/iu, 'nl'],
+  [/lich([^\p{L}]|$)/iu, 'de'],
+  [/lige([^\p{L}]|$)/iu, 'da'],
+  [/ait([^\p{L}]|$)/iu, 'fr'],
+  [/(eix|itat)([^\p{L}]|$)/iu, 'ca'],
+  [/(nje|nja|čno|vno)([^\p{L}]|$)/iu, 'sl'],
+  [/(iya|yong|oong)([^\p{L}]|$)/iu, 'tl'],
 ];
 
 /**
