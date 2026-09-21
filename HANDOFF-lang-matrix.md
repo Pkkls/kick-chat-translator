@@ -3,7 +3,7 @@
 État vivant de ce chantier, mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `7850d7f`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
+Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `26d4af3`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
 
 ---
 
@@ -21,7 +21,7 @@ skill     .claude/skills/add-language/SKILL.md   (la checklist, lire en premier)
 cd "C:/Users/kil/Downloads/kick-chat-translator"
 git checkout feat/lang-matrix
 npm ci                 # seulement si node_modules absent
-npm run release:check  # 72 fichiers, 1150 tests, doit sortir en 0
+npm run release:check  # 73 fichiers, 1155 tests, doit sortir en 0
 ```
 
 **Avertissement sur l'arbre de travail.** Il contient un WIP de kil sans rapport avec ce chantier, un redesign d'UI de chat : `src/content/inject.css`, `src/content/langMenu.ts`, `src/options/styles.css`, `src/popup/styles.css`, `tailwind.config.ts`, `src/content/chatStyles.test.ts`, `src/content/injector.test.ts`, `scratchpad/audit_da.py`, plus trois fichiers non suivis `src/shared/theme.css`, `src/shared/theme.test.ts`, `src/content/langPanelGeometry.test.ts`.
@@ -49,10 +49,10 @@ Ce qui a été découvert en cours de route et qui n'était pas dans le diagnost
 Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR, 120 lignes par langue.
 Trois issues, **jamais additionnées** : `right` la bonne langue, `silent` le détecteur a refusé de répondre ce qui est l'issue SÛRE, `wrong` une autre langue.
 
-| chemin | portée | départ `ec9e02d` | aujourd'hui `7850d7f` |
+| chemin | portée | départ `ec9e02d` | aujourd'hui `26d4af3` |
 |---|---|---|---|
-| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 2836 r / 2189 s / **15 w** |
-| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 857 / 811 / **12** |
+| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 2839 r / 2186 s / **15 w** |
+| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 859 / 809 / **12** |
 | `detectLanguage` | toutes | 3019 / 804 / **1217** | 3664 / 592 / **784** |
 | `detectLanguage` | court | 837 / 364 / **479** | 1062 / 300 / **318** |
 
@@ -195,6 +195,28 @@ Un tour de 43 mots a été choisi sur le corpus 3 dans les règles. Résultat : 
 
 ---
 
+## 2ter-bis. Les écritures non latines sur du chat
+
+`src/content/langChatNonLatin.ts`. 110 lignes, 10 pour chacune des **onze écritures que personne n'avait mesurées sur du chat** : `he hi th bn ta el fa yue zh-tw uk bg`. `langDetect.dix.test.ts` couvrait les cinq autres.
+
+| résultat | |
+|---|---|
+| chemin sûr | **97 justes / 11 muettes / 2 fausses** sur 110 |
+| `he hi th bn ta el` | **10 sur 10 chacune** |
+| les 2 erreurs | `fa -> ar`, la limite connue : une ligne persane sans lettre persane |
+
+**L'hypothèse tenait** : une règle d'écriture ne dépend ni du lexique ni de la longueur, donc le changement de registre ne lui coûte rien. C'est l'inverse exact du lexique latin, qui perd la moitié de son rappel.
+
+### Ce que ce corpus a trouvé
+
+**Le chinois traditionnel tombait à 4 sur 10 en registre chat**, contre 105 sur 120 chez Tatoeba. Une phrase écrite finit par porter un caractère qui sépare les deux écritures ; une ligne de chat de six caractères peut n'en porter aucun.
+
+Cinq des six lignes muettes portaient un caractère traditionnel **simplement absent de la table** : `氣 灣 嗎 還 運`. Trois sont entrés, `還` et `運` restent dehors parce que le japonais les écrit à l'identique. 4 sur 10 devient 6 sur 10, et la liste simplifiée bouge d'autant.
+
+**Troisième fois que « chercher ce qui manque » paie**, après `ñ` et le grec.
+
+---
+
 ## 2quater. Le banc des lignes mélangées, et la borne de 20 caractères
 
 `src/content/langMixedCorpus.ts` et `src/content/langMixed.test.ts`. 60 lignes qui changent de langue en cours de route, ce qu'un chat produit constamment et qu'**aucun des deux autres corpus ne contient**.
@@ -275,6 +297,7 @@ Un candidat testé sur les seules lignes qui atteignent la règle paraît plus p
 | `langChat3.test.ts` | chat de **réglage**, 260 lignes | on a le droit d'y choisir |
 | `langMixed.test.ts` | 60 lignes à deux langues | **à l'envers** : nommées = mauvais |
 | `langDetect.dix.test.ts` | chat, 5 langues non latines | plancher 25 sur 25 |
+| `langChatNonLatin.test.ts` | chat, **11 autres écritures**, 110 lignes | mesure, ne pas y régler |
 
 ### 4.4bis Un banc qu'on a regardé cesse d'être un banc
 
@@ -572,6 +595,8 @@ tl tgl   pt-br aucun (partage por)   zh-tw aucun (partage cmn)
 | `src/content/langChat2.test.ts` | la mesure aveugle, section 2bis-bis | oui |
 | `src/content/langChatCorpus3.ts` | le corpus de **réglage**, 260 lignes | oui |
 | `src/content/langChat3.test.ts` | le corpus de réglage et le critère d'arrêt | oui |
+| `src/content/langChatNonLatin.ts` | chat des **11 écritures non latines**, 110 lignes | oui |
+| `src/content/langChatNonLatin.test.ts` | la mesure des écritures sur du chat | oui |
 | `src/content/langMixedCorpus.ts` | **écrit à la main**, 60 lignes qui changent de langue | oui |
 | `src/content/langMixed.test.ts` | le banc qui garde la borne de 20 caractères | oui |
 | `src/content/langDetect.dix.test.ts` | le banc de chat des 5 langues non latines | oui |
@@ -638,6 +663,8 @@ Commits, du plus ancien au plus récent :
 | `3133362` | Rewrite the queue around where effort pays, with the numbers that say so |
 | `7850d7f` | Write a corpus that may be tuned on, and watch it kill a rule in four lines |
 | `2d57026` | Stop the lexicon: forty-three words, seven lines here, zero on the blind corpus |
+| `eb4edff` | Add the three-corpus rule and retire the lexicon from the top of the queue |
+| `26d4af3` | Measure the eleven non-Latin languages on chat, which nobody had done |
 
 ---
 
