@@ -190,8 +190,24 @@ describe('le chinois passe par franc, pas par la table', () => {
     expect(CHINOIS.filter((t) => detectLanguage(t) !== 'zh')).toEqual([]);
   });
 
-  it('mais ne devient jamais une langue source sure', () => {
-    expect(CHINOIS.filter((t) => confidentLanguage(t) !== undefined)).toEqual([]);
+  // Ce test disait "jamais une langue source sure", et ce n'est plus vrai
+  // depuis que la regle d'ecriture separe simplifie et traditionnel. Le
+  // changement est voulu : franc ne portait aucun modele pour le han, il rendait
+  // `cmn` sur tout, et les 120 lignes traditionnelles du banc partaient en `zh`,
+  // drapeau de la Chine compris, cent pour cent d'entre elles.
+  //
+  // Ce qui reste vrai et qui compte : une ligne n'est nommee que quand son
+  // ecriture la nomme. 7 de ces 24 portent un caractere que seule l'ecriture
+  // simplifiee emploie, les 17 autres sont ecrites avec ce que les deux
+  // ecritures partagent et restent sans reponse.
+  //
+  // Le prix a ete mesure au moteur reel avant d'etre accepte : sur quatre lignes
+  // dont trois que la regle nomme maintenant, `sl=zh-TW` et `sl=auto` rendent
+  // exactement la meme traduction. Annoncer l'ecriture ne coute rien.
+  it('ne nomme que ce que son ecriture nomme', () => {
+    const nommees = CHINOIS.filter((t) => confidentLanguage(t) !== undefined);
+    expect(nommees).toHaveLength(7);
+    expect([...new Set(CHINOIS.map((t) => confidentLanguage(t)))]).toEqual(['zh', undefined]);
   });
 
   // Le prix du renvoi a franc : sous trois caracteres han, plus personne ne

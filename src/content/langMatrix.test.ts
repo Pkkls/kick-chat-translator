@@ -27,23 +27,23 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on a quarter of the lines and is almost never
   // wrong. The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 1262, silent: 3688, wrong: 90 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 1454, silent: 3494, wrong: 92 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
-    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 415, silent: 1213, wrong: 52 });
+    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 470, silent: 1156, wrong: 54 });
   });
 
   // The expensive one. This is the answer that deletes a message in silence when
   // it believes the line is already in the reader's language, and that is handed
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
-  it('detectLanguage is wrong on a quarter of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 3019, silent: 804, wrong: 1217 });
+  it('detectLanguage is wrong on a fifth of all lines', () => {
+    expect(plain(DETECT.total)).toEqual({ right: 3125, silent: 804, wrong: 1111 });
   });
 
-  it('detectLanguage is wrong on nearly a third of short lines', () => {
-    expect(plain(DETECT.shortOnly)).toEqual({ right: 837, silent: 364, wrong: 479 });
+  it('detectLanguage is wrong on a quarter of short lines', () => {
+    expect(plain(DETECT.shortOnly)).toEqual({ right: 871, silent: 364, wrong: 445 });
   });
 });
 
@@ -58,8 +58,8 @@ describe('the languages the detector cannot name at all', () => {
   // any length. Listed rather than summarised because this is the work queue for
   // phase 2, and a language leaving this list is the phase's definition of
   // progress.
-  it('names the ten that never score a single line', () => {
-    expect(zeroRight(DETECT)).toEqual(['ca', 'da', 'et', 'fi', 'lt', 'lv', 'no', 'sk', 'sl', 'zh-tw']);
+  it('names the nine that never score a single line', () => {
+    expect(zeroRight(DETECT)).toEqual(['ca', 'da', 'et', 'fi', 'lt', 'lv', 'no', 'sk', 'sl']);
   });
 
   // The other half of the same problem, and the reason phase 1 cannot simply
@@ -73,21 +73,11 @@ describe('the languages the detector cannot name at all', () => {
   // here while it would score on a real chat line. The 26 are therefore an upper
   // bound on the gap, not a measurement of it. The chat corpus in phase 0b is
   // what settles it.
-  it('names the twenty-six the confident path can never name on this corpus', () => {
+  it('names the twenty-four the confident path can never name on this corpus', () => {
     expect(zeroRight(CONFIDENT)).toEqual([
       'bn', 'ca', 'cs', 'da', 'el', 'es', 'et', 'fi', 'fr', 'hu', 'id', 'lt', 'lv',
-      'ms', 'nl', 'no', 'pl', 'ro', 'sk', 'sl', 'sv', 'ta', 'tl', 'vi', 'zh', 'zh-tw',
+      'ms', 'nl', 'no', 'pl', 'ro', 'sk', 'sl', 'sv', 'ta', 'tl', 'vi',
     ]);
-  });
-
-  // Every traditional Chinese line, without exception, is answered as
-  // simplified, flag of China included. franc has no trigram model for Han at
-  // all: it resolves the whole script to `cmn`, and FRANC_MAP sends both `cmn`
-  // and `zho` to `zh`. There is no rule to fix, there is a rule missing.
-  it('answers every single traditional Chinese line as simplified', () => {
-    const b = DETECT.byLang.get('zh-tw')!;
-    expect(plain(b.short)).toEqual({ right: 0, silent: 0, wrong: 40 });
-    expect(DETECT.confusions.get('zh-tw->zh')).toBe(120);
   });
 
   // The Scandinavian and Catalan cases are the same shape: a real language with
@@ -96,6 +86,42 @@ describe('the languages the detector cannot name at all', () => {
     expect(DETECT.confusions.get('no->sv')).toBe(48);
     expect(DETECT.confusions.get('da->sv')).toBe(44);
     expect(DETECT.confusions.get('ca->es')).toBe(43);
+  });
+});
+
+describe('the two Chinese scripts, fixed 2026-09-21', () => {
+  // Before the rule: 120 of 120 traditional lines answered `zh`, flag of China
+  // included. Read the recall with its caveat, spelled out in langDetect.ts: the
+  // corpus is split from Tatoeba's single `cmn` export by character set and the
+  // rule reads the same character set, so recall here is one statement said
+  // twice. The distinction IS a character set, so there is nothing else to read.
+  it('no longer answers every traditional line as simplified', () => {
+    // 120 of 120 before, 15 now, and those 15 are not a rule failure: they carry
+    // no marker from either script, so the rule declines, and franc then answers
+    // the way it always has, `cmn` for the whole of Han, which FRANC_MAP sends
+    // to `zh`. Closing those needs franc out of this path, not a longer list.
+    expect(DETECT.confusions.get('zh-tw->zh')).toBe(15);
+    expect(zeroRight(DETECT)).not.toContain('zh-tw');
+  });
+
+  // This is the half that is a measurement rather than a definition, and the
+  // half that could have gone wrong: nothing outside Chinese trips the rule.
+  it('never leaks into a language that is not Chinese', () => {
+    const intoChinese = [...DETECT.confusions.entries()]
+      .filter(([pair]) => /->zh(-tw)?$/.test(pair))
+      .map(([pair, n]) => `${pair}=${n}`)
+      .sort();
+    // yue is expected and is the price of the rule: Cantonese is written in
+    // traditional characters, so a yue line with every Cantonese word gone can
+    // only be read by its script. zh-tw->zh is the franc fallback above.
+    expect(intoChinese).toEqual(['yue->zh-tw=1', 'yue->zh=7', 'zh-tw->zh=15']);
+  });
+
+  // The confident path is the one that matters for this trade, because it is
+  // what reaches the engine. There, the same leak is two lines out of 120.
+  it('costs two Cantonese lines on the path that reaches the engine', () => {
+    const leak = [...CONFIDENT.confusions.entries()].filter(([p]) => /->zh(-tw)?$/.test(p));
+    expect(leak.reduce((s, [, n]) => s + n, 0)).toBe(2);
   });
 });
 

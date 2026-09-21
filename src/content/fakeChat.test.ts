@@ -106,11 +106,13 @@ describe('the synthetic Cantonese chat', () => {
       if (label === 'yue' || label === 'mix') {
         expect(got, `${label} line should read as Cantonese: ${text}`).toBe('yue');
       } else {
-        // 'zh-tw' controls and 'miss' lines both have to come back unnamed: the
-        // first because naming them would be a regression, the second because
-        // nothing in the text says Cantonese and guessing is what
-        // confidentLanguage exists to refuse.
-        expect(got, `${label} line should stay unnamed: ${text}`).toBeUndefined();
+        // Neither the controls nor the misses may come back as Cantonese. They
+        // are allowed to come back named by their SCRIPT: since the traditional
+        // and simplified rule landed, a line written in traditional characters
+        // is answered zh-tw whether it is Hong Kong Cantonese stripped of its
+        // markers or Taiwanese standard Chinese, because that is all the text
+        // says. What must never happen is calling it Cantonese on no evidence.
+        expect(got, `${label} line must not be read as Cantonese: ${text}`).not.toBe('yue');
       }
     }
   });

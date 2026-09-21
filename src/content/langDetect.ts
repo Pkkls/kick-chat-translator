@@ -304,12 +304,57 @@ function cyrilliqueQuelleLangue(text: string): string | undefined {
 const CARACTERES_CANTONAIS = /[唔嘅喺咗哋佢啲嘢冇嗰嚟㗎乜攰嘥噉喎嘞咁睇諗嗮畀冚]|(?<!咩)咩(?!咩)|\u{282E2}/u;
 const MOTS_CANTONAIS = /點解|點樣|邊個|邊度|得閒|屋企|傾偈|靚仔|靚女|呢個|呢度/u;
 
+/**
+ * Simplifie ou traditionnel, et pourquoi c'est une question d'ECRITURE.
+ *
+ * franc n'a aucun modele trigramme pour le han. Il resout l'ecriture entiere en
+ * `cmn`, et `FRANC_MAP` envoie `cmn` comme `zho` sur `zh`. Consequence mesuree
+ * sur les 120 lignes traditionnelles du banc : 120 sur 120 repondues `zh`, cent
+ * pour cent, drapeau de la Chine compris. Ce n'etait pas une regle a corriger,
+ * c'etait une regle absente.
+ *
+ * CE QUE CE CHIFFRE VAUT, ET IL FAUT LE DIRE AVANT DE LE LIRE. Le corpus
+ * traditionnel est decoupe du corpus `cmn` de Tatoeba par jeu de caracteres,
+ * parce que Tatoeba n'a pas d'export traditionnel separe. La regle ci-dessous
+ * lit le meme jeu de caracteres. Le rappel sur ce banc-la est donc la meme
+ * phrase dite deux fois, pas une capacite mesuree, et c'est acceptable parce que
+ * la distinction EST un jeu de caracteres : il n'y a rien d'autre a lire.
+ *
+ * Ce qui se mesure vraiment est l'autre cote, et il est propre : zero
+ * croisement, aucune des 120 lignes traditionnelles ne porte un marqueur
+ * simplifie et aucune des 120 simplifiees ne porte un marqueur traditionnel ;
+ * aucune des 40 autres langues du banc ne declenche quoi que ce soit ; et 15
+ * lignes traditionnelles et 33 simplifiees ne portent aucun marqueur du tout et
+ * restent sans reponse, ce qui est correct.
+ *
+ * LE JAPONAIS est le seul vrai piege et il vient du fait que le japonais a fait
+ * sa propre simplification. 会, 学, 実, 体, 万, 与, 区, 医, 点, 来, 国 s'ecrivent
+ * en japonais comme en chinois simplifie, donc ils sont DEHORS de la liste
+ * simplifiee ; 結, 議 et 龍 s'ecrivent en japonais comme en traditionnel, donc
+ * ils sont dehors de la liste traditionnelle. Mesure : sur 120 lignes japonaises
+ * du banc, quatre portaient un marqueur traditionnel avant ce tri, et les quatre
+ * portaient des kana, donc `kana > 0` les avait deja prises plus haut. Le tri
+ * est la ceinture, le kana est la bretelle.
+ *
+ * Le cantonais passe AVANT, et ce n'est pas un detail : le cantonais s'ecrit en
+ * caracteres traditionnels, 81 de ses 120 lignes declenchent la liste
+ * traditionnelle. Inverser les deux tests rendrait `zh-tw` sur du cantonais.
+ */
+const CARACTERES_TRADITIONNELS =
+  /[這們麼說來對樣學實發應經覺讀體萬與樂區醫點關會單賣輕轉邊團圖廣壓國兩驗歲聲總濟開聽權]/u;
+const CARACTERES_SIMPLIFIES = /[这们么说对样实发应经觉读乐卖轻转边团图广压两验岁声总济开关听权]/u;
+
 function cantonaisOuChinois(text: string): string | undefined {
   if (CARACTERES_CANTONAIS.test(text) || MOTS_CANTONAIS.test(text)) return 'yue';
-  // Le chinois standard reste ambigu entre ses deux ecritures et le japonais sans
-  // kana : inchange, franc reprend la main et `confidentLanguage` refusera sa
-  // reponse. Une ligne cantonaise sans marqueur retombe ici, et c'est correct :
-  // "笑死我" est la meme phrase dans les deux langues.
+  const traditionnel = CARACTERES_TRADITIONNELS.test(text);
+  const simplifie = CARACTERES_SIMPLIFIES.test(text);
+  // Les deux ensemble, c'est du texte mixte ou une citation, et on ne tranche
+  // pas. Ni l'un ni l'autre, c'est une ligne ecrite avec les caracteres que les
+  // deux ecritures partagent, et il n'y a rien dans le texte qui permette de
+  // choisir. Dans les deux cas franc reprend la main et `confidentLanguage`
+  // refusera sa reponse, ce qui est le comportement d'avant.
+  if (traditionnel && !simplifie) return 'zh-tw';
+  if (simplifie && !traditionnel) return 'zh';
   return undefined;
 }
 

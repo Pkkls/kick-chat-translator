@@ -42,17 +42,34 @@ describe('Cantonese detection', () => {
   });
 });
 
-describe('standard Chinese is left exactly as it was', () => {
-  it('stays unnamed in traditional characters', () => {
-    for (const line of ['這個位置真的很好', '他們去哪裡了', '我現在真的很累', '笑死我了']) {
-      expect(confidentLanguage(line), line).toBeUndefined();
+describe('standard Chinese is read by its script, not mistaken for Cantonese', () => {
+  // These used to come back undefined and franc then called every one of them
+  // `zh`, traditional included. The script rule answers them now.
+  it('names traditional characters as traditional', () => {
+    for (const line of ['這個位置真的很好', '他們去哪裡了', '我學會了開車']) {
+      expect(confidentLanguage(line), line).toBe('zh-tw');
     }
   });
 
-  it('stays unnamed in simplified characters', () => {
+  it('names simplified characters as simplified', () => {
     for (const line of ['这个位置真的很好', '他们去哪里了', '为什么不开枪']) {
-      expect(confidentLanguage(line), line).toBeUndefined();
+      expect(confidentLanguage(line), line).toBe('zh');
     }
+  });
+
+  // Written entirely in characters the two scripts share. Nothing in the text
+  // picks a side, so nothing is said.
+  it('declines a line that carries no marker from either script', () => {
+    expect(confidentLanguage('笑死我了')).toBeUndefined();
+    expect(confidentLanguage('我現在真的很累')).toBeUndefined();
+  });
+
+  // Japanese simplified its own kanji, and some of its forms match traditional
+  // Chinese while others match simplified. Both lists exclude the overlaps, and
+  // kana catches the line before either list is reached anyway.
+  it('does not read Japanese as one of the Chinese scripts', () => {
+    expect(confidentLanguage('ここ、結構パスタがいけるのよ。')).toBe('ja');
+    expect(confidentLanguage('彼らは政治的に団結しつつある。')).toBe('ja');
   });
 
   // Chinese has no spaces, so a two-character marker can be straddled by two
@@ -81,9 +98,18 @@ describe('what the rule deliberately does not catch', () => {
   // A Cantonese line made only of characters standard Chinese also uses is not
   // distinguishable from standard Chinese by looking at it. Naming it would be a
   // guess, and `confidentLanguage` exists to refuse guesses.
-  it('says nothing about a line with no marker', () => {
+  it('says nothing about a line with no marker in either alphabet', () => {
     expect(confidentLanguage('收皮啦你')).toBeUndefined();
-    expect(confidentLanguage('幾時再開台')).toBeUndefined();
+  });
+
+  // A Cantonese line with no Cantonese marker left in it is, by what is written,
+  // standard Chinese in traditional characters, and the script rule now names it
+  // that. Measured against the real engine before accepting the trade: on this
+  // line and three others, sl=zh-TW and sl=auto return the identical
+  // translation, so naming the script costs nothing and the 120 traditional
+  // lines it fixes are pure gain.
+  it('falls back to the script when the Cantonese markers are all gone', () => {
+    expect(confidentLanguage('幾時再開台')).toBe('zh-tw');
   });
 
   // The two-character floor in detectByScript predates this and still applies: a
