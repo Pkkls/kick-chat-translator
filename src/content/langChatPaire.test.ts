@@ -61,15 +61,15 @@ describe('le corpus de la paire', () => {
   // regle ecrite pour lui. Il bougera ; le bouger sans dire dans quel sens et
   // pourquoi est ce que ce fichier existe pour empecher.
   it('mesure les deux chemins sur du registre familier', () => {
-    expect(plain(SURE.total)).toEqual({ right: 12, silent: 48, wrong: 0 });
-    expect(plain(BRUT.total)).toEqual({ right: 19, silent: 23, wrong: 18 });
+    expect(plain(SURE.total)).toEqual({ right: 13, silent: 47, wrong: 0 });
+    expect(plain(BRUT.total)).toEqual({ right: 20, silent: 22, wrong: 18 });
   });
 
   // LA MESURE QUI JUSTIFIE LE CORPUS, et la reponse n'est pas celle qu'on
   // attendait. La file de travail demandait : est-ce que le registre familier
   // separe ces deux langues la ou la prose ne le fait pas ?
   //
-  // NON, il les rend plus MUETTES. 12 lignes nommees sur 60, soit 20 %, contre
+  // NON, il les rend plus MUETTES. 13 lignes nommees sur 60, soit 22 %, contre
   // 40 % sur le corpus aveugle parallele. La porte malais-indonesien s'ouvre sur
   // des mots outils, `yang tidak dengan untuk saya ini itu`, et le chat familier
   // ne les ecrit pas : il ecrit `gue`, `lo`, `gak`, `aku`, `kau`, `tak`. Le
@@ -88,12 +88,11 @@ describe('le corpus de la paire', () => {
       };
     };
     expect(plain(par('ms'))).toEqual({ right: 4, silent: 26, wrong: 0 });
-    expect(plain(par('id'))).toEqual({ right: 8, silent: 22, wrong: 0 });
+    expect(plain(par('id'))).toEqual({ right: 9, silent: 21, wrong: 0 });
   });
 
   // Le chemin brut sur le meme corpus, celui qui pilote le moteur on-device et
-  // qui alimente le drapeau. Il repond presque toujours, 37 fois sur
-  // 60, et se trompe sur 18. Dix-huit lignes qui partent au moteur avec une
+  // qui alimente le drapeau. Il repond 38 fois sur 60 et se trompe sur 18. Dix-huit lignes qui partent au moteur avec une
   // langue source fausse, sur un corpus de soixante.
   //
   // ET TROIS D'ENTRE ELLES NE VONT PAS DANS LA PAIRE. `internet aku slow gila`

@@ -943,8 +943,18 @@ function estonienOuPortugais(text: string): string | undefined {
  * corpus n'a pas. Le gain reel est ailleurs : treize lignes que le chemin sur ne
  * savait pas nommer, et qu'il nomme sans se tromper une seule fois.
  */
+// `lagi` est entre au tour du corpus de paire, et c'est le SEUL des neuf mots
+// partages que le crible rendait a en valoir la peine : les huit autres,
+// `kamu sini makan sedang tahu bahasa berapa sekarang`, sont propres, partages,
+// et rapportent ZERO ligne sur les cinq corpus. Mesure par ablation, mot a mot.
+//
+// Ce que ce zero dit vraiment, et c'est le resultat du tour : le declencheur
+// n'est PAS ce qui bloque la paire. Les mots que ce crible peut rendre viennent
+// des corpus paralleles, qui sont en registre neutre ; les mots partages du
+// registre familier n'y sont pas, donc il ne peut pas les proposer. Voir
+// `langChatPaire.test.ts`.
 const MOTS_MALAIS_INDONESIENS =
-  /(^|[^\p{L}])(yang|tidak|dengan|untuk|saya|ini|itu|dari|pada|sudah|mereka|dalam|lebih|orang|apa)([^\p{L}]|$)/iu;
+  /(^|[^\p{L}])(yang|tidak|dengan|untuk|saya|ini|itu|dari|pada|sudah|mereka|dalam|lebih|orang|apa|lagi)([^\p{L}]|$)/iu;
 const MOTS_INDONESIENS =
   /(^|[^\p{L}])(bisa|uang|mobil|coba|karena|besok|kamar|kayak|nggak|gak|banget|gimana|udah|aja|nih|dong|sih)([^\p{L}]|$)/iu;
 const MOTS_MALAIS =

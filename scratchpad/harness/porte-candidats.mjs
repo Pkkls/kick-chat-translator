@@ -267,6 +267,33 @@ for (const [mot, m] of vuMot) {
   }
 }
 
+// Une paire nommee en argument sort EN ENTIER et sans plancher, pour qu'on
+// puisse travailler un declencheur precis sans relire tout le tableau :
+//
+//   node --import tsx scratchpad/harness/porte-candidats.mjs id+ms
+//
+// Les langues sont triees alphabetiquement dans la cle, donc `id+ms` et pas
+// `ms+id`. Le corpus de la paire n'est PAS lu ici et ne doit pas l'etre : il
+// mesure ce qui sort d'ici, il ne sert pas a le choisir.
+const demandee = process.argv[2];
+if (demandee) {
+  const mots = [];
+  for (const [mot, m] of vuMot) {
+    const fortes = [...m.entries()].filter(([, n]) => n >= SEUIL).sort((a, b) => b[1] - a[1]);
+    if (fortes.length !== 2) continue;
+    if (fortes.map(([l]) => l).sort().join('+') !== demandee) continue;
+    const bruit = [...m.entries()].filter(([, n]) => n < SEUIL);
+    mots.push({ mot, fortes, total: fortes.reduce((s, [, n]) => s + n, 0), bruit });
+  }
+  console.log(`\n${demandee.toUpperCase()}, TOUS LES MOTS PARTAGES, sans plancher :`);
+  for (const { mot, fortes, total, bruit } of mots.sort((a, b) => b.total - a.total)) {
+    console.log(
+      `  ${mot.padEnd(14)} ${String(total).padStart(3)}  ${fortes.map(([l, n]) => `${l}=${n}`).join(' ').padEnd(16)}` +
+        `${bruit.length ? ` bruit ${bruit.map(([l, n]) => `${l}=${n}`).join(' ')}` : ' bruit ZERO'}`,
+    );
+  }
+}
+
 console.log(`\nMOTS QUE DEUX LANGUES SEULES ECRIVENT, declencheurs de porte (>= ${PLANCHER_MOT} lignes) :`);
 const parPoids = [...paires.entries()]
   .map(([cle, mots]) => [cle, mots.sort(parTotal), mots.reduce((s, m) => s + m.total, 0)])
