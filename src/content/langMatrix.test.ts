@@ -28,11 +28,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on two lines in five and is almost never wrong.
   // The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 2836, silent: 2189, wrong: 15 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 2839, silent: 2186, wrong: 15 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
-    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 857, silent: 811, wrong: 12 });
+    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 859, silent: 809, wrong: 12 });
   });
 
   // The expensive one. This is the answer that deletes a message in silence when
@@ -381,6 +381,7 @@ describe('neither the corpus nor the matrix reaches the shipped extension', () =
           entry === 'langChatCorpus.ts' ||
           entry === 'langChatCorpus2.ts' ||
           entry === 'langChatCorpus3.ts' ||
+          entry === 'langChatNonLatin.ts' ||
           entry === 'langMixedCorpus.ts'
         ) {
           continue;

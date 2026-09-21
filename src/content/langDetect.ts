@@ -1084,8 +1084,9 @@ const MOTS_CANTONAIS = /點解|點樣|邊個|邊度|得閒|屋企|傾偈|靚仔|
  * traditionnelle. Inverser les deux tests rendrait `zh-tw` sur du cantonais.
  */
 const CARACTERES_TRADITIONNELS =
-  /[這們麼說來對樣學實發應經覺讀體萬與樂區醫點關會單賣輕轉邊團圖廣壓國兩驗歲聲總濟開聽權]/u;
-const CARACTERES_SIMPLIFIES = /[这们么说对样实发应经觉读乐卖轻转边团图广压两验岁声总济开关听权]/u;
+  /[這們麼說來對樣學實發應經覺讀體萬與樂區醫點關會單賣輕轉邊團圖廣壓國兩驗歲聲總濟開聽權氣灣嗎]/u;
+const CARACTERES_SIMPLIFIES =
+  /[这们么说对样实发应经觉读乐卖轻转边团图广压两验岁声总济开关听权气湾吗]/u;
 
 function cantonaisOuChinois(text: string): string | undefined {
   if (CARACTERES_CANTONAIS.test(text) || MOTS_CANTONAIS.test(text)) return 'yue';
