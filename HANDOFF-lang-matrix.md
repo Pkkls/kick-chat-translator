@@ -3,7 +3,7 @@
 État vivant de ce chantier, mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `eace823`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
+Dernière mise à jour : 2026-09-21. Dernier commit de **code** : `013a2ca`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
 
 ---
 
@@ -21,7 +21,7 @@ skill     .claude/skills/add-language/SKILL.md   (la checklist, lire en premier)
 cd "C:/Users/kil/Downloads/kick-chat-translator"
 git checkout feat/lang-matrix
 npm ci                 # seulement si node_modules absent
-npm run release:check  # 73 fichiers, 1155 tests, doit sortir en 0
+npm run release:check  # 74 fichiers, 1163 tests, doit sortir en 0
 ```
 
 **Avertissement sur l'arbre de travail.** Il contient un WIP de kil sans rapport avec ce chantier, un redesign d'UI de chat : `src/content/inject.css`, `src/content/langMenu.ts`, `src/options/styles.css`, `src/popup/styles.css`, `tailwind.config.ts`, `src/content/chatStyles.test.ts`, `src/content/injector.test.ts`, `scratchpad/audit_da.py`, plus trois fichiers non suivis `src/shared/theme.css`, `src/shared/theme.test.ts`, `src/content/langPanelGeometry.test.ts`.
@@ -49,16 +49,16 @@ Ce qui a été découvert en cours de route et qui n'était pas dans le diagnost
 Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR, 120 lignes par langue.
 Trois issues, **jamais additionnées** : `right` la bonne langue, `silent` le détecteur a refusé de répondre ce qui est l'issue SÛRE, `wrong` une autre langue.
 
-| chemin | portée | départ `ec9e02d` | aujourd'hui `eace823` |
+| chemin | portée | départ `ec9e02d` | aujourd'hui `013a2ca` |
 |---|---|---|---|
-| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3160 r / 1865 s / **15 w** |
-| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 909 / 759 / **12** |
-| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3809 / 516 / **715** |
-| `detectLanguage` | court | 837 / 364 / **479** | 1087 / 289 / **304** |
+| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3164 r / 1861 s / **15 w** |
+| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 908 / 760 / **12** |
+| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3811 / 516 / **713** |
+| `detectLanguage` | court | 837 / 364 / **479** | 1086 / 290 / **304** |
 
 Le chemin sûr **répond 2,5 fois plus souvent et se trompe 83 % moins**. C'est le seul mouvement qui compte vraiment : `wrong` sur ce chemin veut dire qu'on demande au moteur de traduire depuis une langue dans laquelle le texte n'est pas.
 
-Le chemin brut a perdu 502 erreurs. Sa part reste haute parce qu'il inclut franc par construction.
+Le chemin brut a perdu 504 erreurs. Sa part reste haute parce qu'il inclut franc par construction.
 
 **Les 15 erreurs du chemin sûr, en entier**, parce qu'elles tiennent en huit lignes et que c'est ce qui reste à fermer : `fa->ar` 7, `ms->ar` 2, puis `es->pt`, `lt->pt`, `ms->fa`, `uk->bg`, `yue->zh-tw`, `yue->zh`, une chacune.
 
@@ -82,10 +82,10 @@ Les trois dernières du chemin brut, `et fi sl`, sont sorties par le lexique de 
 ```
 120  ar bn el he hi ja ko ta th     (écritures sans ambiguïté)
 119  vi   113 fa    112 yue   109 lv    105 zh-tw   97 uk    95 tr
-90   zh    89 ru     77 cs     77 sv     75 pl      74 bg    70 ro
+90   zh    89 ru     78 cs     77 sv     75 pl      74 bg    70 ro
 67   tl    64 nl     61 lt     56 et     53 pt      52 hu    48 fi
-45   de    45 fr     42 es     38 en     37 ca      34 it    29 sk
-29   sl    26 no     21 da     17 ms     14 id
+45   de    45 fr     42 es     38 en     36 ca      36 it    29 sk
+29   sl    26 no     21 da     18 ms     15 id
 ```
 
 **Plus aucune langue sous 13 sur 120**, contre vingt-six à zéro au départ. Ce tableau est celui de Tatoeba ; sur du chat le classement est différent, voir 2bis.
@@ -150,7 +150,7 @@ Quatre choses qu'il dit et que Tatoeba ne pouvait pas dire :
 
 | | corpus 1, qui a construit le lexique | corpus 2, **AVEUGLE** |
 |---|---:|---:|
-| chemin sûr, justes | 207 / 390 | 103 / 260 |
+| chemin sûr, justes | 208 / 390 | 104 / 260 |
 | rappel sûr | 53 % | 40 % |
 | **erreurs** | **0** | **0** |
 | chemin brut, rappel | 65 % | 61 % |
@@ -161,7 +161,7 @@ Quatre choses qu'il dit et que Tatoeba ne pouvait pas dire :
 
 | bande | corpus 1 | corpus 2 aveugle | écart |
 |---|---:|---:|---:|
-| ≤ 20 car. | 54 % | 47 % | **7 points** |
+| ≤ 20 car. | 55 % | 48 % | **7 points** |
 | > 20 car. | 47 % | 35 % | **12 points** |
 
 Les sept points de la bande courte sont la mémorisation du lexique, et ils sont réels. Le reste du chiffre brut était de la longueur.
@@ -648,6 +648,57 @@ C'est l'inverse du tour de lexique annulé, où sept lignes sur 260 prédisaient
 
 ---
 
+### 5.18 LA PAIRE MALAIS-INDONÉSIEN, ses deux corpus, et le mur (`3c73390`, `71af869`, `fe6bfa5`)
+
+**Pourquoi les trois corpus de chat ne pouvaient PAS la mesurer, et c'est structurel.** Ils sont des traductions **parallèles** : dix phrases, vingt-six langues. Donc dix lignes malaises et dix indonésiennes, qui sont les mêmes dix phrases traduites. Deux langues proches traduisent une phrase neutre de la même façon, donc un corpus parallèle ne peut pas les séparer, par construction. Les corpus avaient l'air de devoir marcher et ne le pouvaient pas.
+
+**Deux corpus NON parallèles, trente lignes chacun, chacun son rôle :**
+
+| fichier | rôle |
+|---|---|
+| `langChatPaireCorpus.ts` | **MESURE.** Totaux seulement, ne jamais lire ses lignes |
+| `langChatPaireReglageCorpus.ts` | **RÉGLAGE.** On y lit, on y choisit |
+
+Même rapport que le corpus 3 face au corpus 2, et pour la même raison : le second a été écrit le jour où le premier ne pouvait plus être lu.
+
+**CE QUE LE REGISTRE FAMILIER FAIT, et ce n'est pas ce qu'on attendait.** La question était : sépare-t-il ces deux langues là où la prose ne le fait pas ? **Non. Il les rend plus MUETTES.** 13 lignes nommées sur 60 à la création, contre 40 % sur le corpus aveugle parallèle. La porte s'ouvre sur des mots outils formels, `yang tidak dengan untuk saya ini itu`, et le chat familier écrit `gue`, `lo`, `gak`, `aku`, `kau`, `tak`.
+
+**Et la matrice cachait une deuxième chose** : trois des erreurs brutes de ce corpus ne restent pas dans la paire. `internet aku slow gila` ressort **française**. La case `id`/`ms` faisait croire à une confusion propre, à deux sens.
+
+**LE MUR, et c'est le résultat de la passe.** Quarante-deux mots ont été choisis sur le corpus de réglage, tous criblés, tous propres. En lot ils valaient +22 lignes de réglage et +4 d'aveugle. Mesurés **un par un**, **trente-sept sur quarante-deux ne bougent que le corpus où ils ont été lus.** Cinq transfèrent : `tidur`, `siapa`, `baru` au déclencheur, `gue` et `kemarin` côté indonésien.
+
+Les trente-sept coupés sont du bon malais et du bon indonésien : `dah`, `korang`, `lepak`, `jiran`, `sejuk`, `comel`, `bising`, `temen`, `nyokap`, `hape`. Ils sont corrects, sans ambiguïté, et ils ne gagnent rien hors des lignes dont ils ont été tirés. **Quelqu'un voudra les remettre ; la mesure est ici pour qu'il n'ait pas à la refaire.**
+
+Cinq mots contre quarante-deux : +3 sur l'aveugle au lieu de +4, +8 sur le réglage au lieu de +22. Trente-sept mots achetaient **une** ligne aveugle et quatorze mémorisées.
+
+**Ce qui reste ouvert ici** : le côté **malais** ne gagne rien, 4 lignes sur 30, parce que les sept mots malais proposés ont tous été coupés. C'est la seule langue de la paire encore à sec.
+
+---
+
+### 5.19 L'ABLATION, et ce qu'elle a trouvé dans du code déjà livré
+
+**Le principe en une phrase : un total de lot ne dit pas qui l'a gagné.** Trois outils, même forme, tous dans `scratchpad/harness/` :
+
+| outil | grain | ce qu'il a trouvé |
+|---|---|---|
+| `porte-ablation.mjs` | une ligne de table | **5 portes mortes** sur 32, et 2 entrées aux effets invisibles |
+| `mot-ablation.mjs` | un mot dans une alternance | **37 mots sur 42** qui ne bougent que leur propre corpus |
+| `lexique-ablation.mjs` | une entrée de `SHORT_WORD_LANG` | le lexique n'est pas mort, et **14 entrées inatteignables** |
+
+**UN AJOUT PEUT TUER UNE ENTRÉE AILLEURS DANS LE FICHIER.** Les portes `ô`, `ê` et `â` étaient vivantes en entrant et sont mortes deux commits plus tard, quand les trente-cinq lettres vietnamiennes ont nommé `vi` avant qu'elles ne soient consultées. Rien dans les totaux ne le signale, parce que les lignes qu'elles gagnaient sont toujours gagnées. **Relancer l'ablation après chaque lot.**
+
+**LA CLASSE PROUVABLE, qui ne demande aucun corpus.** `detectByLookup` lit les lettres exclusives AVANT le lexique (`528c3af`). Donc une entrée de lexique dont l'orthographe porte une lettre exclusive de sa propre langue ne peut **jamais** se déclencher. Quatorze étaient dans ce cas, et elles n'y sont pas arrivées seules : les formes turques de `teşekkür` et `kardeşim` sont mortes **dans cette passe-ci**, le jour où le s cédille est entré dans la table. Un garde statique tient la classe fermée dans `langMatrix.test.ts`.
+
+**LE PIÈGE DE L'OUTIL, et il a failli coûter cher.** La première ablation du lexique déclarait morts `khong`, `loti`, `kapec`, `vienmer`, `jeste` : les moitiés **nues** d'entrées qui existent aussi accentuées. Elles n'existent que pour du texte tapé vite, et **aucun banc de `porte-diff.mjs` ne contenait une seule ligne sans diacritiques**. L'outil ne pouvait pas voir le seul cas pour lequel elles sont écrites. Le banc `chat1-SANS-DIACRITIQUES` est le huitième depuis, et l'image s'inverse : ce sont les formes accentuées qui sont mortes.
+
+> **Un banc absent ne rend pas zéro, il rend une conclusion fausse.** Même leçon que le crible cassé de 4.5, sous une autre forme.
+
+**CE QUI N'A PAS ÉTÉ SUPPRIMÉ malgré un zéro partout** : les dix-neuf entrées turques, et la plupart des hongroises. Ce sont `selam`, `merhaba`, `tamam`, `kanka`, `evet`, les mots les plus courants du chat turc qui existent. Les corpus ne portent simplement jamais l'un d'eux sur une ligne sans autre lettre turque, ce qui est le seul cas pour lequel ils sont écrits. **Une absence sur un corpus ne prouve rien**, et cette règle-là protège aussi contre l'ablation.
+
+**Le lexique n'est pas mort** : 21 groupes de langue sur 26 bougent un corpus qu'ils n'ont jamais vu. Le néerlandais vaut +15 lignes Tatoeba à lui seul, l'allemand +12, l'anglais +11. Le « fond atteint » de 2ter parle du **tour marginal**, pas de ce qui est déjà là, et il se lisait comme un verdict sur les deux.
+
+---
+
 ## 6. État par phase
 
 | Phase | Contenu | État |
@@ -663,45 +714,46 @@ C'est l'inverse du tour de lexique annulé, où sept lignes sur 260 prédisaient
 
 ## 7. La file de travail, par valeur décroissante
 
-**Où investir, mesuré plutôt que supposé.** Trois mécanismes servent le chemin sûr et ils ne se valent pas :
+**Où investir, mesuré plutôt que supposé.** Quatre mécanismes servent le chemin sûr et ils ne se valent pas :
 
 | mécanisme | portée | mémorise ? | transfère à l'aveugle ? |
 |---|---|---|---|
 | écriture, lettre, séquence | toute longueur | non | **oui** |
-| porte, puis mot derrière elle | toute longueur | non | **oui, 5 fois sur 5**, +6 au dernier tour |
+| porte à LETTRE, puis mot derrière | toute longueur | non | oui, 5 fois sur 5 |
+| porte à MOT, déclenchée par un token | toute longueur | non | **oui, et elle survit au clavier** |
 | terminaison | toute longueur | peu, 4 points | oui, mais **pas d'un registre à l'autre** |
-| lexique de mots | ≤ 20 car. | oui, 8 points | **plus du tout**, mesuré à zéro |
+| lexique de mots | ≤ 20 car. | oui | **21 groupes sur 26 transfèrent**, mais le tour MARGINAL ne transfère plus |
 
-Les chiffres sont en 2bis-bis, 2ter et 5.14.
+Les chiffres sont en 2bis-bis, 2ter, 5.14 à 5.19.
 
-1. **Les PORTES restent le mécanisme le plus rentable, et c'est maintenant mesuré cinq fois.** Le dernier tour, la table de vingt portes en 5.14, a rapporté +83 lignes sur Tatoeba et +6 sur le corpus aveugle sans en voler une seule. **Ce qui reste à faire dessus, par ordre :**
-   - **Le crible à lettre est ÉPUISÉ.** `porte-candidats.mjs` ne rend plus une seule porte libre ni une seule lettre exclusive manquante. Le relancer après tout changement de corpus, pas avant.
-   - **Étoffer les jeux de mots des langues faibles derrière les portes existantes.** Le slovaque reste muet derrière `ä`, faute de jeu. Chaque mot ajouté à un jeu sert **toutes** les vingt-six portes d'un coup, c'est le meilleur rapport du fichier et il n'a jamais été exploité systématiquement.
-   - **LES PORTES À MOT, le filon ouvert, et il est maintenant largement exploité.** Sections 5.16 et 5.17. Ce qui reste de la passe à mots : elle ne sort plus de déclencheur de paire inutilisé au-dessus de huit lignes. **Baisser `PLANCHER_MOT` dans le crible est le prochain geste**, il est à 8 et rien n'a été regardé en dessous.
-   - **Les portes de séquence ASCII sont MESURÉES ET REJETÉES**, section 5.16. Ne pas les rouvrir sans écrire d'abord la vérification de disjonction déclencheur/mot.
+**AVANT TOUT AJOUT, ET C'EST NOUVEAU** : relancer `porte-ablation.mjs`. Un lot qui entre peut tuer une entrée ailleurs dans le fichier sans qu'aucun total ne bouge, mesuré trois fois maintenant. Section 5.19.
 
-2. **Chercher ce qui MANQUE dans les tables.** `ñ`, `ß`, `œ`, `ā ē ī` étaient absents pendant trois passes de raffinage, et le grec manquait au compteur d'écritures après trois trous identiques déjà bouchés. Relire une table en entier vaut mieux qu'ajouter à sa fin. Ce point a produit le lot des portes et il n'est pas épuisé.
+1. **Le côté MALAIS de la paire est la seule langue encore à sec**, 4 lignes sur 30 en registre familier. Les sept mots malais proposés par le corpus de réglage ont tous été coupés par l'ablation : corrects, mais ils ne transfèrent pas. Ce qu'il faudrait est un mécanisme qui ne soit pas du lexique, et le malais n'écrit aucune lettre que la table couvre. **C'est le même mur que la paire scandinave avant la porte à mot**, et c'est ce qui rend l'angle intéressant.
 
-3. ~~**Écrire un corpus de chat NON LATIN.**~~ **FAIT**, `26d4af3` et `fe1faea`. `langChatNonLatin.ts`, 110 lignes, 11 écritures. Section 2ter-bis. Il ne se règle pas dessus, il mesure.
+2. **Les portes à MOT sont le filon le plus récent**, sections 5.16 et 5.17. Elles ont fait pour la paire scandinave ce que trois tours de lettres n'avaient pas fait, elles survivent aux diacritiques tombées, et le crible les trouve tout seul. Ce qu'il reste : `porte-candidats.mjs` ne rend plus de déclencheur de paire inutilisé au-dessus de quatre lignes. Descendre encore ne donnera que du bruit, il faut un corpus de plus.
 
-4. **`id`/`ms` EST LE BLOC RESTANT, et de loin** : 45 + 33 = 78 lignes, contre 39 + 34 pour les deux scandinaves, qui ont enfin bougé. La passe à mots a confirmé que le déclencheur de cette paire contient déjà tout ce que les corpus offrent : **ce qui les sépare vit dans le registre familier, que ni Tatoeba ni les 25 lignes de chat qu'elles ont ne contiennent.** Le geste qui débloquerait ça n'est pas une règle, c'est **écrire 30 lignes de chat malais et indonésien**, ce qui est le seul point de la file qui demande d'écrire un corpus plutôt que du code.
+3. **Le crible à LETTRE est épuisé** et le dit : ses trois listes sortent vides. Le relancer après un changement de corpus, pas avant.
 
-5. **Les 15 erreurs restantes du chemin sûr**, listées en entier en section 2, toutes de la même nature : une ligne écrite entièrement avec ce que l'extension partage avec sa base. `fa -> ar` 7 et `ms -> ar` 2 en font neuf à elles seules, soit **les deux tiers du total dans l'écriture arabe**.
+4. **Les paires qui restent, chemin brut** : `id -> ms` 44, `no -> sv` 39, `da -> sv` 34, `ms -> id` 33, `da -> nl` 30, `ca -> es` 29, `ca -> fr` 19, `sk -> cs` 18.
 
-6. **`mano` coûte deux lignes** et c'est un vrai mot espagnol et lituanien. Mesurable sur le corpus 3.
+5. **Les 15 erreurs restantes du chemin sûr**, listées en entier en section 2. `fa -> ar` 7 et `ms -> ar` 2 en font neuf, soit **les deux tiers dans l'écriture arabe**, et c'est le seul bloc d'erreurs qui reste groupé.
+
+6. **`mano` coûte deux lignes** et c'est un vrai mot espagnol et lituanien. Jamais mesuré, et le corpus 3 le permet.
 
 ### Ce qu'il ne faut PAS refaire
 
-- **Un tour de lexique choisi à la main.** Mesuré, section 2ter : sept lignes sur le corpus de réglage, **zéro** sur l'aveugle. Le fond de la méthode est atteint.
+- **Un tour de lexique choisi à la main.** Mesuré deux fois : sept lignes sur le corpus de réglage et **zéro** sur l'aveugle en 2ter, puis trente-sept mots sur quarante-deux qui ne bougent que leur propre corpus en 5.18. Le fond de la méthode est atteint pour le tour MARGINAL. Le lexique déjà en place, lui, transfère toujours.
 
 - **Lever `SHORT_TEXT_MAX`.** Mesuré trois fois, section 2quater. 30 → 40 est une perte sèche.
 - **Compter les mots du lexique pour se passer de la borne.** Mesuré, section 5.13, cassé par `tamam kanka good game`.
-- **Trier les mots en "sociaux" et "structurels".** Mesuré, l'idée est fausse.
-- **Basculer le moteur on-device sur `confidentLanguage`.** Section 10, tranché sur le chiffre de silence.
-- **Remettre une porte `no`/`da` générique derrière `ø æ`.** Mesurée, section 5.14 : zéro ligne sur les cinq bancs, et elle casse l'unanimité. La fonction nordique dédiée en amont répond déjà à tout.
+- **Trier les mots en « sociaux » et « structurels ».** Mesuré, l'idée est fausse.
+- **Basculer le moteur on-device sur `confidentLanguage`.** Section 10, et le chiffre a bougé : à rouvrir quand l'aveugle passera sous la moitié.
+- **Remettre une porte `no`/`da` générique derrière `ø æ`.** Mesurée, section 5.14 : zéro ligne sur les cinq bancs, et elle casse l'unanimité.
 - **Mettre `là` dans un jeu de porte vietnamien.** C'est le `là` français au caractère près, il a volé trois lignes.
-- **Une porte de séquence ASCII** (`sz`, `dz`). Mesurée, section 5.16 : le déclencheur vit dans le mot qui tranche, et le banc des lignes mélangées l'attrape.
-- **Ajouter une lettre arabe à la table des exclusives pour le malais.** Le crible les proposait par un défaut de filtre, corrigé en `0e14a6a`. Le jawi a ses six lettres à lui et elles sont déjà lues.
+- **Une porte de séquence ASCII** (`sz`, `dz`). Mesurée, section 5.16 : le déclencheur vit dans le mot qui tranche.
+- **Ajouter une lettre arabe à la table des exclusives pour le malais.** Le crible les proposait par un défaut de filtre, corrigé en `0e14a6a`.
+- **Supprimer les entrées de lexique turques et hongroises** parce qu'elles mesurent zéro. Section 5.19 : les corpus ne portent jamais `selam` ou `kanka` sur une ligne sans autre lettre turque, ce qui est le seul cas pour lequel elles existent.
+- **Basculer `translateAndApply(msg, real, detected)` sur la réponse sûre.** Section 10 : ce paramètre ne sert qu'à dimensionner la fenêtre de contexte, et la basculer la rétrécirait.
 
 ---
 
@@ -750,6 +802,12 @@ tl tgl   pt-br aucun (partage por)   zh-tw aucun (partage cmn)
 | `src/content/langDetect.dix.test.ts` | le banc de chat des 5 langues non latines | oui |
 | `scratchpad/harness/lang-screen.mjs` | **le crible**, trois corpus d'un coup, garde vérifié | oui |
 | `scratchpad/harness/porte-diff.mjs` | **le diff de protocole 4.2**, cinq bancs, carte de confusions clé par clé | oui |
+| `src/content/langChatPaireCorpus.ts` | **la paire, MESURE**, 30 lignes ms + 30 id, non paralleles | oui |
+| `src/content/langChatPaire.test.ts` | le banc de la paire | oui |
+| `src/content/langChatPaireReglageCorpus.ts` | **la paire, REGLAGE**. On y lit, on y choisit | oui |
+| `scratchpad/harness/porte-ablation.mjs` | ce que chaque LIGNE de table rapporte seule | oui |
+| `scratchpad/harness/mot-ablation.mjs` | ce que chaque MOT d'une alternance rapporte seul | oui |
+| `scratchpad/harness/lexique-ablation.mjs` | le lexique, par langue puis par entree | oui |
 | `scratchpad/harness/porte-candidats.mjs` | **le crible de portes**, quelle lettre reste libre, avec sa liste de rejetés | oui |
 | `scratchpad/harness/lang-matrix.mjs` | écrit le rapport lisible | oui |
 | `scratchpad/harness/lang-matrix.md` | le rapport | non, régénérable |
@@ -834,6 +892,14 @@ Commits, du plus ancien au plus récent :
 | `380c60b` | Record the word gate, the sequence rejection, and where the queue points now |
 | `eb3b2cf` | Give Tagalog the three grammar words that name it, which nothing here could reach |
 | `eace823` | Open five more pairs on a word, and say why the blind corpus cannot judge this round |
+| `f9fbd11` | Record the word pass, Tagalog, and the one queue item that needs a corpus and not code |
+| `35aea2e` | Measure what each table entry is worth on its own, and delete the seven that are worth nothing |
+| `b180b95` | Run the ablation over the exclusive-letter table too, and write down the two entries it exposed |
+| `95ce686` | Correct phase 1: six consumers not three, and the last one is not the free win it was written as |
+| `3c73390` | Write the corpus the Malay/Indonesian pair was waiting for, and find out the register makes it quieter |
+| `71af869` | Try to widen the pair trigger on the screen's own words, and find out the trigger is not what blocks it |
+| `fe6bfa5` | Write the tuning twin for the pair, tune on it, and throw out thirty-seven of the forty-two words it gave |
+| `013a2ca` | Measure the whole lexicon, delete the fourteen entries a letter had quietly shadowed, and guard the class |
 
 ---
 
@@ -888,7 +954,7 @@ Ne pas trancher ça dans une passe de détection. **Et surtout : le faire seul n
 
 - Commits : sujet à l'impératif, corps expliquant la cause, le correctif, et **comment il a été constaté**. Terminer par `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`.
 - Gate : `npm run release:check`, jamais seulement `typecheck` et `test`. Il lance aussi `lint`.
-- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **95524 aujourd'hui** (`eace823`), soit +4040 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, trente et une portes et environ 380 entrées de lexique. Le détail des six derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, **-51 pour +14**, **+13 pour +39**, +65 pour +8. Les deux meilleurs rapports de tout le chantier sont la porte nordique à mot, qui supprime plus de code qu'elle n'en ajoute, et les marqueurs tagalog, treize octets. Les deux corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
+- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **95460 aujourd'hui** (`013a2ca`), soit +3976 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-sept portes et 433 entrées de lexique. Le détail des neuf derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, **-51 pour +14**, **+13 pour +39**, +65 pour +8, -10 pour +2, +22 pour +5, et **-76 pour zéro** au dernier, qui ne fait que supprimer des entrées qui ne pouvaient plus se déclencher. Les deux meilleurs rapports de tout le chantier sont la porte nordique à mot, qui supprime plus de code qu'elle n'en ajoute, et les marqueurs tagalog, treize octets. Les six corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
 - Pas de nom de streamer ou de chaîne en dur, nulle part.
 - Pas d'emoji dans le code.
 - Les données de test vivent **inline dans le fichier de test**, pas dans une fixture séparée.
