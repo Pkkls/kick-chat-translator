@@ -27,11 +27,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on a quarter of the lines and is almost never
   // wrong. The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 1454, silent: 3494, wrong: 92 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 1694, silent: 3255, wrong: 91 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
-    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 470, silent: 1156, wrong: 54 });
+    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 550, silent: 1076, wrong: 54 });
   });
 
   // The expensive one. This is the answer that deletes a message in silence when
@@ -39,7 +39,7 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
   it('detectLanguage is wrong on a fifth of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 3125, silent: 804, wrong: 1111 });
+    expect(plain(DETECT.total)).toEqual({ right: 3126, silent: 804, wrong: 1110 });
   });
 
   it('detectLanguage is wrong on a quarter of short lines', () => {
@@ -73,11 +73,24 @@ describe('the languages the detector cannot name at all', () => {
   // here while it would score on a real chat line. The 26 are therefore an upper
   // bound on the gap, not a measurement of it. The chat corpus in phase 0b is
   // what settles it.
-  it('names the twenty-four the confident path can never name on this corpus', () => {
+  it('names the twenty-two the confident path can never name on this corpus', () => {
     expect(zeroRight(CONFIDENT)).toEqual([
-      'bn', 'ca', 'cs', 'da', 'el', 'es', 'et', 'fi', 'fr', 'hu', 'id', 'lt', 'lv',
-      'ms', 'nl', 'no', 'pl', 'ro', 'sk', 'sl', 'sv', 'ta', 'tl', 'vi',
+      'ca', 'cs', 'da', 'el', 'es', 'et', 'fi', 'fr', 'hu', 'id', 'lt', 'lv',
+      'ms', 'nl', 'no', 'pl', 'ro', 'sk', 'sl', 'sv', 'tl', 'vi',
     ]);
+  });
+
+  // Two scripts that were simply not counted. Every Bengali and Tamil line, at
+  // every length, on both paths: 120 of 120. The gain is on the confident path,
+  // which was mute on both and now hands the engine a source language it can
+  // read straight off the alphabet.
+  it('reads Bengali and Tamil off their alphabets, which nothing did before', () => {
+    for (const lang of ['bn', 'ta']) {
+      for (const run of [DETECT, CONFIDENT]) {
+        const b = run.byLang.get(lang)!;
+        expect(b.short.right + b.medium.right + b.long.right, lang).toBe(120);
+      }
+    }
   });
 
   // The Scandinavian and Catalan cases are the same shape: a real language with
