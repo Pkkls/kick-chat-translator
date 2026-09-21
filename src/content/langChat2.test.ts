@@ -35,18 +35,56 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
     expect(SURE2.total.wrong).toBe(0);
   });
 
-  // LE PRIX, et c'est le chiffre a citer quand on parle du produit.
+  // LE PRIX, et il a fallu deux mesures pour l'obtenir honnetement.
   //
-  // 46 % de rappel sur le corpus qui a servi a construire le lexique, 30 % sur
-  // celui-ci. Seize points d'ecart, et ces seize points sont de la memorisation :
-  // des mots choisis pour couvrir des lignes precises, qui couvrent ces lignes
-  // et pas leurs voisines. Le vrai rappel du chemin sur sur du chat latin
-  // inconnu est 30 %, pas 46, et c'est celui-la qu'il faut ecrire dans un
-  // compte rendu.
-  it('rappelle un tiers de moins que sur le corpus qui l a construit', () => {
+  // Brut : 46 % de rappel sur le corpus qui a construit le lexique, 30 % ici.
+  // Seize points. La premiere lecture etait que ces seize points sont de la
+  // memorisation, et elle etait FAUSSE de moitie.
+  //
+  // Les deux corpus n'ont pas la meme longueur de ligne. Le premier a ete ecrit
+  // en visant le chat court et fait 83 % de lignes sous vingt caracteres,
+  // mediane 16 ; le second a derive vers des phrases plus longues, 37 % et
+  // mediane 22. Or le lexique s'arrete a vingt caracteres. Comparer les deux
+  // totaux compare donc deux melanges de longueurs autant que deux corpus.
+  //
+  // A longueur egale, l'ecart se separe proprement, et c'est le test suivant.
+  it('rappelle un tiers de moins en brut, mais la longueur en explique la moitie', () => {
     expect(plain(SURE2.total)).toEqual({ right: 77, silent: 183, wrong: 0 });
     expect(rappel(SURE1.total)).toBe(46);
     expect(rappel(SURE2.total)).toBe(30);
+    // Le facteur confondant, mesure : les deux corpus ne sont pas comparables tels quels.
+    const lignes = (c: Record<string, readonly string[]>): string[] => Object.values(c).flat();
+    const part = (c: Record<string, readonly string[]>): number =>
+      Math.round((100 * lignes(c).filter((t) => t.length <= 20).length) / lignes(c).length);
+    expect(part(LANG_CHAT)).toBe(83);
+    expect(part(LANG_CHAT2)).toBe(37);
+  });
+
+  // LA MESURE HONNETE, bande par bande.
+  //
+  //   <= 20 car : 52 % sur le corpus de reglage, 44 % a l'aveugle -> 8 points
+  //   >  20 car : 21 % des deux cotes            -> ZERO
+  //
+  // Les huit points de la bande courte sont la memorisation du lexique, et ils
+  // sont reels. Les huit autres du chiffre brut sont de la longueur.
+  //
+  // La bande longue est le resultat le plus instructif du fichier : elle est
+  // servie par les lettres, les sequences et les terminaisons, jamais par le
+  // lexique, et elle donne EXACTEMENT le meme rappel sur un corpus inconnu.
+  // Une regle morphologique generalise, une liste de mots choisis a la main non.
+  // C'est la reponse a la question de savoir ou investir ensuite.
+  it('ne memorise rien du tout au-dela de la borne du lexique', () => {
+    const bande = (
+      corp: Record<string, readonly string[]>,
+      garde: (t: string) => boolean,
+    ): Record<string, readonly string[]> =>
+      Object.fromEntries(Object.entries(corp).map(([l, v]) => [l, v.filter(garde)]));
+    const court = (t: string): boolean => t.length <= 20;
+    const long = (t: string): boolean => t.length > 20;
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, court)).total)).toBe(52);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, court)).total)).toBe(44);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, long)).total)).toBe(21);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, long)).total)).toBe(21);
   });
 
   // Le chemin brut perd moins parce qu'il ne depend pas du lexique : franc lit

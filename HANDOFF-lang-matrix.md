@@ -127,7 +127,7 @@ Mesuré **deux fois**, tel quel et diacritiques retirées, parce qu'un chat cont
 Quatre choses qu'il dit et que Tatoeba ne pouvait pas dire :
 
 1. **Le chemin sûr se trompe ZÉRO fois sur 390, dans les deux régimes.** Les règles écrites contre de la prose ne se mettent pas à mentir quand le registre change, elles se taisent. C'est l'invariant qui compte et il est asserté.
-2. **Il répond à la question de la phase 1, et la réponse est non.** Le silence mesuré ici est de 54 %, mais **c'est le chiffre flatté** : sur le corpus aveugle il est de **70 %**. Donner sa réponse au moteur on-device enverrait donc plus des deux tiers du chat latin au cloud, avec sa latence et son quota. Voir 2bis-bis avant de citer un chiffre de cette section.
+2. **Il répond à la question de la phase 1, et la réponse est non.** Le silence mesuré ici est de 54 %, et il est flatté de deux façons : la mémorisation du lexique et la brièveté des lignes. Sur le corpus aveugle le silence brut est de 70 %, dont la moitié de l'écart est de la longueur. À longueur comparable, compter sur **56 % de silence sur du chat court inconnu**. Donner sa réponse au moteur on-device enverrait donc plus des deux tiers du chat latin au cloud, avec sa latence et son quota. Voir 2bis-bis avant de citer un chiffre de cette section.
 3. **Les diacritiques valent 30 % du rappel**, 181 contre 128. L'écart s'est réduit à mesure que le lexique grossissait : les mots de structure fréquents ne portent pas d'accent, les lettres exclusives oui. C'est la fragilité de toute l'approche par lettre exclusive en un chiffre : une règle qui lit `ř` ou `ų` ne lit plus rien dès que l'utilisateur tape vite, ce qui est le cas majoritaire sur téléphone.
 4. **83 % des lignes de chat font ≤20 caractères**, médiane 16, contre 33 % chez Tatoeba. Le lexique de mots courts, borné à 20, a donc une portée bien plus grande sur le régime réel que sur le corpus qui sert à le mesurer.
 
@@ -142,16 +142,24 @@ Quatre choses qu'il dit et que Tatoeba ne pouvait pas dire :
 | | corpus 1, qui a construit le lexique | corpus 2, **AVEUGLE** |
 |---|---:|---:|
 | chemin sûr, justes | 181 / 390 | 77 / 260 |
-| **rappel** | **46 %** | **30 %** |
+| rappel brut | 46 % | 30 % |
 | **erreurs** | **0** | **0** |
 | chemin brut, rappel | 61 % | 55 % |
-| chemin brut, erreurs | 79 | 65 |
 
-**Seize points d'écart, et c'est la mémorisation, chiffrée.** Le nombre à citer quand on parle du produit est **30 %**, pas 46.
+**Les seize points d'écart sont pour MOITIÉ un artefact de longueur, et il a fallu une seconde mesure pour le voir.** Le corpus 1 a été écrit en visant le chat court, 83 % de lignes sous vingt caractères et médiane 16 ; le corpus 2 a dérivé vers des phrases plus longues, 37 % et médiane 22. Or le lexique s'arrête à vingt caractères. Comparer les deux totaux comparait deux mélanges de longueurs autant que deux corpus.
 
-**Ce qui a généralisé est la moitié qui compte** : zéro erreur sur 260 lignes neuves, après plus de deux cents entrées de lexique choisies contre un autre corpus. La sûreté ne se mémorise pas, parce que chaque entrée a été criblée contre 5490 lignes avant d'entrer. *Le rappel a été ajusté, la justesse a été gagnée.*
+**À longueur égale**, l'écart se sépare proprement :
 
-Le chemin brut ne perd que six points parce qu'il ne dépend pas du lexique : franc lit des trigrammes, pas des mots choisis à la main. C'est la preuve la plus nette que les seize points sont réels et spécifiques au lexique.
+| bande | corpus 1 | corpus 2 aveugle | écart |
+|---|---:|---:|---:|
+| ≤ 20 car. | 52 % | 44 % | **8 points** |
+| > 20 car. | 21 % | 21 % | **ZÉRO** |
+
+Les huit points de la bande courte sont la mémorisation du lexique, et ils sont réels. Les huit autres étaient de la longueur.
+
+**La bande longue est le résultat le plus instructif du chantier.** Elle n'est servie que par les lettres, les séquences et les terminaisons, jamais par le lexique, et elle donne **exactement le même rappel sur un corpus inconnu**. *Une règle morphologique généralise, une liste de mots choisis à la main non.* C'est la réponse à la question de savoir où investir.
+
+**Ce qui a généralisé parfaitement est la moitié qui compte** : zéro erreur sur 260 lignes neuves, après plus de deux cents entrées de lexique choisies contre un autre corpus. La sûreté ne se mémorise pas, parce que chaque entrée a été criblée contre 5490 lignes avant d'entrer. *Le rappel a été ajusté, la justesse a été gagnée.*
 
 **RÈGLE À NE JAMAIS ENFREINDRE** : ne jamais prendre un mot dans ce corpus pour l'ajouter au lexique. Le jour où ça arrive, il devient le premier corpus et il en faut un troisième. Une propriété d'aveuglement ne se reconstruit pas.
 
