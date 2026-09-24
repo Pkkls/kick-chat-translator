@@ -100,7 +100,16 @@ describe('injector artifacts', () => {
       for (const m of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
         // Comments sit in front of the selector and carry commas of their own,
         // so they have to go before the list is split.
-        const head = m[1]!.replace(/\/\*[\s\S]*?\*\//g, '').trim();
+        // An at-rule STATEMENT (`@import ...;`) sits in front of the first
+        // selector in the file and is part of the same match, so skipping any
+        // head that starts with `@` skipped the first rule entirely. Drop the
+        // statement and keep what follows it; a head that still starts with `@`
+        // after that is a block at-rule (@media, @keyframes) and has no
+        // selector of its own.
+        const head = m[1]!
+          .replace(/\/\*[\s\S]*?\*\//g, '')
+          .replace(/^[\s\S]*;/, '')
+          .trim();
         if (head.startsWith('@')) continue;
         if (
           head
@@ -113,10 +122,22 @@ describe('injector artifacts', () => {
       return '';
     };
 
+    // The wash used to be written out as `rgba(83, 252, 24, …)` in each rule and
+    // this asserted that literal. It comes from one token now, so what has to
+    // hold is that all of them draw from the same one rather than that they each
+    // happen to spell the same colour.
     it.each(pillClasses)('%s has the green background', (cls) => {
       // The class must own the rule, not merely appear in a shared selector
       // list such as the copy-cursor one.
-      expect(soleRule(injectCss, `.${cls}`)).toMatch(/background:\s*rgba\(83, 252, 24/);
+      expect(soleRule(injectCss, `.${cls}`)).toMatch(/background:\s*rgb\(var\(--kt-green-rgb\)/);
+    });
+
+    // ...and that the token is still Kick's own green, read from the art
+    // direction the repository states rather than from this stylesheet.
+    it('builds that wash from the green the art direction names', () => {
+      const theme = readFileSync('src/shared/theme.css', 'utf8');
+      expect(theme).toMatch(/--kt-green-rgb:\s*83 252 24/);
+      expect(readFileSync('.agent/PROMPT.md', 'utf8')).toContain('#53FC18');
     });
 
     // Control on the rule above. `replace` must own no pill rule at all: it

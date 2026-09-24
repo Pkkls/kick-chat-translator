@@ -433,6 +433,111 @@ export function focusLangMenu(menu: HTMLElement): void {
 }
 
 /**
+ * The box the panel has to stay inside: the chat column, not the window.
+ *
+ * Walks out to the first ancestor that clips, which on kick.com is the chat
+ * column itself, and falls back to the anchor when nothing clips (the harness
+ * stages, and any layout that changes under us).
+ *
+ * This exists because the panel was bounded by the viewport and by nothing
+ * else. Measured on the repository's own bar-panel stage: a 408px panel inside
+ * a 340px chat column, hanging 68px past its edges, which is most of why
+ * opening it read as the chat having been replaced rather than covered.
+ */
+function columnBox(anchor: HTMLElement): { width: number; height: number } {
+  for (let p = anchor.parentElement; p && p !== document.body; p = p.parentElement) {
+    const s = getComputedStyle(p);
+    if (!/hidden|clip|auto|scroll/.test(`${s.overflow} ${s.overflowX} ${s.overflowY}`)) continue;
+    const r = p.getBoundingClientRect();
+    if (r.width > 0 && r.height > 0) return { width: r.width, height: r.height };
+  }
+  const r = anchor.getBoundingClientRect();
+  return { width: r.width, height: r.height };
+}
+
+/** Gap between the panel and the control it hangs from. */
+const GAP = 6;
+/** Smallest margin the panel keeps against any edge it is clamped to. */
+const MARGIN = 8;
+/**
+ * Widest the panel is ever drawn, and narrowest.
+ *
+ * 408 is the readable width for three columns of language names. 280 is the
+ * floor: below it the three columns stop being readable at all, and a panel
+ * that narrow is worse than one slightly wider than its column.
+ */
+export const PANEL_MAX_W = 408;
+export const PANEL_MIN_W = 280;
+/**
+ * Most of the chat column the panel may cover.
+ *
+ * This is the number that answers the report. The panel used to be bounded by
+ * the window and by nothing else, so on a tall window it took whatever it
+ * wanted and on a short one it took everything. Leaving 40% of the column
+ * showing is what tells a reader that this is a menu over their chat and not a
+ * screen that replaced it.
+ */
+export const PANEL_COLUMN_SHARE = 0.6;
+
+export interface PanelGeometryInput {
+  /** The control the panel hangs from, in viewport coordinates. */
+  anchor: { top: number; bottom: number; right: number };
+  /** The chat column the panel must stay inside. Zero height means unknown. */
+  column: { width: number; height: number };
+  viewport: { width: number; height: number };
+  /** What the panel would be at its preferred width, unconstrained. */
+  content: { width: number; height: number };
+  prefer: 'above' | 'below';
+}
+
+export interface PanelGeometry {
+  left: number;
+  top: number;
+  width: number;
+  maxHeight: number;
+  above: boolean;
+}
+
+/**
+ * Where the panel goes, as arithmetic.
+ *
+ * Split out from the DOM so the bounds can be tested at real numbers instead of
+ * only looked at. jsdom and happy-dom resolve no layout, so a test that drove
+ * placeLangMenu directly would measure zeros and pass on anything.
+ *
+ * Two bounds, from two different reports:
+ *  - width, from the chat column rather than the window. Measured on this
+ *    repository's own bar-panel stage: 408px of panel inside a 340px column,
+ *    68px of it hanging past both edges.
+ *  - height, capped at a share of that column, so some chat always shows.
+ */
+export function panelGeometry(i: PanelGeometryInput): PanelGeometry {
+  const capW = Math.max(PANEL_MIN_W, Math.min(PANEL_MAX_W, i.column.width - MARGIN * 2));
+  const width = Math.min(i.content.width || capW, capW);
+
+  const roomAbove = i.anchor.top - GAP - MARGIN;
+  const roomBelow = i.viewport.height - i.anchor.bottom - GAP - MARGIN;
+  const share = i.column.height > 0 ? i.column.height * PANEL_COLUMN_SHARE : Infinity;
+  const wanted = Math.min(i.content.height, i.prefer === 'above' ? roomBelow : roomAbove);
+  const above =
+    i.prefer === 'above'
+      ? roomAbove >= wanted || roomAbove > roomBelow
+      : roomBelow < wanted && roomAbove > roomBelow;
+  const room = Math.max(80, above ? roomAbove : roomBelow);
+  const maxHeight = Math.max(80, Math.min(i.content.height, room, share));
+
+  return {
+    width,
+    maxHeight,
+    above,
+    left: Math.max(MARGIN, Math.min(i.anchor.right - width, i.viewport.width - width - MARGIN)),
+    top: above
+      ? Math.max(MARGIN, i.anchor.top - GAP - maxHeight)
+      : Math.min(i.anchor.bottom + GAP, i.viewport.height - maxHeight - MARGIN),
+  };
+}
+
+/**
  * Anchor the panel. Normally it rides with what opened it; inside a clipping
  * ancestor it switches to viewport coordinates so it stays whole. Flips to the
  * other side of the anchor when there is not enough room on the preferred one.
@@ -460,28 +565,25 @@ export function placeLangMenu(
   // en haut a gauche de la page. isClipped reste exporte et teste, le rognage
   // qu'il detecte est toujours reel, il n'est simplement plus la seule raison
   // de placer a la main.
-
-  // Seen live on kick.com: this ran off the left of the chat column and over
-  // the video player, and off the top of the window, because the only bound it
-  // respected was the RIGHT edge. Every edge is clamped now, and the height is
-  // whatever actually fits, not a fixed number the window may not have.
-  const GAP = 6;
-  const MARGIN = 8;
-  const W = menu.offsetWidth || 236;
   const r = anchor.getBoundingClientRect();
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
+  const column = columnBox(anchor);
 
-  const roomAbove = r.top - GAP - MARGIN;
-  const roomBelow = vh - r.bottom - GAP - MARGIN;
-  const wanted = Math.min(menu.scrollHeight, prefer === 'above' ? roomBelow : roomAbove);
-  const above =
-    prefer === 'above' ? roomAbove >= wanted || roomAbove > roomBelow : roomBelow < wanted && roomAbove > roomBelow;
-  const room = Math.max(80, above ? roomAbove : roomBelow);
-  const h = Math.min(menu.scrollHeight, room);
+  // The width cap goes on before anything is measured: a narrower panel is a
+  // taller one, so reading the content height first would size it for a width
+  // it is not going to get.
+  const capW = Math.max(PANEL_MIN_W, Math.min(PANEL_MAX_W, column.width - MARGIN * 2));
+  menu.style.setProperty('--kt-lp-max-w', `${capW}px`);
+
+  const g = panelGeometry({
+    anchor: { top: r.top, bottom: r.bottom, right: r.right },
+    column,
+    viewport: { width: window.innerWidth, height: window.innerHeight },
+    content: { width: menu.offsetWidth, height: menu.scrollHeight },
+    prefer,
+  });
 
   menu.classList.add('kt-lang-panel-fixed');
-  menu.style.maxHeight = `${h}px`;
-  menu.style.left = `${Math.max(MARGIN, Math.min(r.right - W, vw - W - MARGIN))}px`;
-  menu.style.top = `${above ? Math.max(MARGIN, r.top - GAP - h) : Math.min(r.bottom + GAP, vh - h - MARGIN)}px`;
+  menu.style.maxHeight = `${g.maxHeight}px`;
+  menu.style.left = `${g.left}px`;
+  menu.style.top = `${g.top}px`;
 }

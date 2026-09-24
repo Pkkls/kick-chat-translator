@@ -58,6 +58,23 @@ def flag_exception(selector: str, prop: str) -> bool:
     return '.kt-flag' in selector and prop in ('box-shadow', 'border-radius')
 
 
+# The one DROP shadow in the sheet, and the reason the ban does not reach it.
+#
+# The direction bans it because Kick draws none, and every surface that rule was
+# written about sits in the flow. The language panel does not: it is a layer,
+# and it covers the chat. Measured on the repository's own bar-panel stage, the
+# panel was 408px wide inside a 340px chat column, opaque, with a hairline and
+# no elevation, over a near-black chat. Reported from a real session as the chat
+# having disappeared, which is what an opaque layer that does not say it is a
+# layer looks like. The width is fixed too; the elevation is what carries the
+# rest.
+#
+# Narrow, like the one above: this selector, this property, nothing else. If a
+# second overlay ever wants one, it argues for itself here.
+def overlay_exception(selector: str, prop: str) -> bool:
+    return '.kt-lang-panel' in selector and prop == 'box-shadow'
+
+
 for rule in re.finditer(r'([^{}]+)\{([^{}]*)\}', clean):
     selector = ' '.join(rule.group(1).split())
     body = rule.group(2)
@@ -66,7 +83,12 @@ for rule in re.finditer(r'([^{}]+)\{([^{}]*)\}', clean):
         prop, value = decl.group(1), ' '.join(decl.group(2).split())
         line = line_of(base + decl.start())
 
-        if prop == 'box-shadow' and value != 'none' and not flag_exception(selector, prop):
+        if (
+            prop == 'box-shadow'
+            and value != 'none'
+            and not flag_exception(selector, prop)
+            and not overlay_exception(selector, prop)
+        ):
             findings['ombre'].append((line, value))
 
         if prop == 'border-radius' and not flag_exception(selector, prop):
