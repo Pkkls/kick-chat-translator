@@ -3,7 +3,7 @@
 État vivant de ce chantier, mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-24. Dernier commit de **code** : `e353d62`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
+Dernière mise à jour : 2026-09-24. Dernier commit de **code** : `c1a2d69`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
 
 ---
 
@@ -49,12 +49,12 @@ Ce qui a été découvert en cours de route et qui n'était pas dans le diagnost
 Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR, 120 lignes par langue.
 Trois issues, **jamais additionnées** : `right` la bonne langue, `silent` le détecteur a refusé de répondre ce qui est l'issue SÛRE, `wrong` une autre langue.
 
-| chemin | portée | départ `ec9e02d` | aujourd'hui `e353d62` |
+| chemin | portée | départ `ec9e02d` | aujourd'hui `c1a2d69` |
 |---|---|---|---|
-| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3579 r / 1458 s / **3 w** |
-| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 1021 / 656 / **3** |
-| `detectLanguage` | toutes | 3019 / 804 / **1217** | 4065 / 429 / **546** |
-| `detectLanguage` | court | 837 / 364 / **479** | 1175 / 254 / **251** |
+| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3595 r / 1442 s / **3 w** |
+| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 1022 / 655 / **3** |
+| `detectLanguage` | toutes | 3019 / 804 / **1217** | 4076 / 430 / **534** |
+| `detectLanguage` | court | 837 / 364 / **479** | 1176 / 255 / **249** |
 
 Le chemin sûr **répond 2,5 fois plus souvent et se trompe 83 % moins**. C'est le seul mouvement qui compte vraiment : `wrong` sur ce chemin veut dire qu'on demande au moteur de traduire depuis une langue dans laquelle le texte n'est pas.
 
@@ -86,8 +86,8 @@ Les trois dernières du chemin brut, `et fi sl`, sont sorties par le lexique de 
 119  ar vi   116 fa   114 yue   108 lv   105 zh-tw  101 nl uk
 98   pl    95 tr     93 ro     90 zh     89 ru      85 sv    80 cs
 79   de    78 pt     74 bg     73 tl     72 hu      69 es    68 fr lt
-67   et    66 sl     65 ca     60 fi     51 da      50 it    49 no
-44   sk    35 en     23 ms     15 id
+67   et    66 sl     65 ca     60 fi     55 da      51 no    50 it
+44   sk    35 en     33 ms     15 id
 ```
 
 **Plus aucune langue sous 13 sur 120**, contre vingt-six à zéro au départ. Ce tableau est celui de Tatoeba ; sur du chat le classement est différent, voir 2bis.
@@ -101,10 +101,10 @@ Le bas du tableau n'est plus fait de langues sans règle mais de langues dont le
 | de → vers | lignes | note |
 |---|---:|---|
 | id → ms | 44 | **structurellement bloqué sur Tatoeba**, voir 5.27 |
-| ms → id | 33 | même raison : cette prose n'écrit pas ce qui les sépare |
-| no → sv | 28 | 48, puis 41, puis 34 avant le tri intérieur (5.28) |
-| da → sv | 24 | 44, puis 39, puis 31 |
-| da → nl | 22 | 28 avant le tri intérieur, tombé sans être visé |
+| ms → id | 28 | 33 avant les mots en plein air (5.33) |
+| no → sv | 26 | 48, 41, 34, puis 28 avant le déclencheur (5.34) |
+| da → sv | 22 | 44, 39, 31, puis 24 |
+| da → nl | 20 | 28 avant le tri intérieur, tombé sans être visé |
 | ca → es | 17 | 42, puis 29 avant les mots en plein air (5.30) |
 | sk → cs | 14 | 30 avant les lettres exclusives, 18 avant `iť` et `sť` |
 | ca → fr | 11 | 29 avant les portes, 19 avant les mots en plein air |
@@ -1199,6 +1199,42 @@ pt  ele ela            fr  joue
 
 ---
 
+### 5.33 LA PAIRE MALAISE EN PLEIN AIR, de 48 à 65 % (`ef359f6`, `c1a2d69`)
+
+Le corpus aveugle de la paire bouge plus dans ce tour que dans tous les précédents réunis, et c'est la promotion du catalan appliquée à la langue la plus basse du tableau.
+
+`gue`, `banget`, `udah` et `awak` vivaient derrière la porte ms/id, où il faut qu'un mot PARTAGÉ se déclenche d'abord. **Le chat familier de Jakarta n'écrit pas les mots partagés.** Il écrit `gue`, et `gue` seul suffit : quatorze des lignes muettes du corpus de paire le portent et rien d'autre.
+
+```
+paire AVEUGLE  sur  29r/31s/0w -> 39r/21s/0w     rappel 48 -> 65 %
+paire AVEUGLE  brut 33r/15s/12w -> 43r/11s/6w    erreurs divisees par deux
+id 15 -> 24 sur 30 de ce corpus, ms 14 -> 15
+```
+
+**La règle qui trie les deux listes est la seule qui compte ici** : un mot que LES DEUX écrivent va au déclencheur, un mot qu'une seule écrit va en plein air. `awak` contre `kamu`, `petang` contre `sore`, `bahawa` contre `bahwa`.
+
+**Onze mots partagés sur quatorze sont morts**, et les retirer ENSEMBLE donne exactement les mêmes chiffres sur les dix bancs : ce ne sont pas onze couplages cachés, c'est onze fois le même mot déjà couvert sur sa ligne.
+
+**Le bloc `id -> ms` de la matrice ne bouge pas et il faut le dire ainsi : ce n'est pas une règle qui manque, c'est un corpus.** Les deux langues se séparent dans le registre familier, que Tatoeba ne contient pas. `paire-sequences.mjs ms id` ne rend que des mots que les deux écrivent et que le corpus rend exclusifs par absence.
+
+---
+
+### 5.34 LE DÉCLENCHEUR NORDIQUE, et un mot faux depuis le premier jour (`5cd4742`)
+
+Quatre mots que le danois et le norvégien écrivent tous les deux et que le suédois non : `bare` contre `bara`, `selv` contre `själv`, `mange` contre `många`, `hvem` contre `vem`.
+
+**`hvem` ET `hvor` ÉTAIENT DANS LE JEU NORVÉGIEN ET LE DANOIS LES ÉCRIT.** Ils y étaient faux depuis le jour où ils ont été écrits et n'avaient jamais rien coûté, parce que la porte ne s'ouvrait pas sur les lignes où ça se voit. `mange` la fait s'ouvrir, et `hvor mange er her nu`, qui est du danois, est parti au norvégien.
+
+**ÉLARGIR UN DÉCLENCHEUR REND RÉTROACTIVEMENT FAUX CE QUI EST DERRIÈRE.** Troisième fois sur la branche. Les deux interrogatifs passent au déclencheur, où ils sont justes : ils nomment la PAIRE, pas une des deux langues.
+
+```
+no->sv 28 -> 26, da->sv 24 -> 22, no 49 -> 51 sur 120, da 51 -> 55
+```
+
+**LE TRI INTÉRIEUR no/da EST ÉPUISÉ**, résultat négatif à ne pas refaire : le crible ne rend plus que des séquences que le danois écrit et que le corpus ne montre pas, `vel` dans `ja vel`, `sn` dans `snakke`, `unn` dans `kunne`, `oen` dans `skoen`, `ært` dans `lært`. Le relancer après un corpus neuf, pas avant.
+
+---
+
 ## 6. État par phase
 
 | Phase | Contenu | État |
@@ -1472,6 +1508,9 @@ Commits, du plus ancien au plus récent :
 | `819f421` | Ask the shared gates the diagnostic question, and take Catalan from 36 to 65 |
 | `35b42fe` | Reopen the gate word sets, which nobody had touched since the day they were written |
 | `e353d62` | Give five more languages the open-air words Catalan got, and retire two entries they killed |
+| `ef359f6` | Take the Malay pair from 48 to 65 per cent by letting four words out of the gate |
+| `5cd4742` | Widen the Nordic trigger, and find a word that has been wrong since the first day |
+| `c1a2d69` | Ship two of four spelling differences in the Malay pair, and say what the block really needs |
 
 ---
 
@@ -1568,7 +1607,7 @@ Ne pas trancher ça dans une passe de détection. **Et surtout : le faire seul n
 
 - Commits : sujet à l'impératif, corps expliquant la cause, le correctif, et **comment il a été constaté**. Terminer par `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`.
 - Gate : `npm run release:check`, jamais seulement `typecheck` et `test`. Il lance aussi `lint`.
-- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **96315 aujourd'hui** (`e353d62`), soit +4512 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-sept portes et 433 entrées de lexique. Le détail des neuf derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, **-51 pour +14**, **+13 pour +39**, +65 pour +8, -10 pour +2, +22 pour +5, **-76 pour zéro**, qui ne fait que supprimer des entrées qui ne pouvaient plus se déclencher, **+5 pour +1** ligne aveugle en resserrant `aat`, **+94 pour +2**, le seul tour du chantier à payer un prix pareil parce qu'il achète douze caractères cantonais dont aucun ne gagne de ligne sur les bancs d'aujourd'hui, **+73 pour quatre erreurs fermées** avec la preuve arabe, et **+10 pour +7 lignes aveugles** au dernier, qui est le meilleur rapport de tout le chantier après la porte nordique. Les deux meilleurs rapports de tout le chantier sont la porte nordique à mot, qui supprime plus de code qu'elle n'en ajoute, et les marqueurs tagalog, treize octets. Les six corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
+- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **96376 aujourd'hui** (`c1a2d69`), soit +4573 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-sept portes et 433 entrées de lexique. Le détail des neuf derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, **-51 pour +14**, **+13 pour +39**, +65 pour +8, -10 pour +2, +22 pour +5, **-76 pour zéro**, qui ne fait que supprimer des entrées qui ne pouvaient plus se déclencher, **+5 pour +1** ligne aveugle en resserrant `aat`, **+94 pour +2**, le seul tour du chantier à payer un prix pareil parce qu'il achète douze caractères cantonais dont aucun ne gagne de ligne sur les bancs d'aujourd'hui, **+73 pour quatre erreurs fermées** avec la preuve arabe, et **+10 pour +7 lignes aveugles** au dernier, qui est le meilleur rapport de tout le chantier après la porte nordique. Les deux meilleurs rapports de tout le chantier sont la porte nordique à mot, qui supprime plus de code qu'elle n'en ajoute, et les marqueurs tagalog, treize octets. Les six corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
 - Pas de nom de streamer ou de chaîne en dur, nulle part.
 - Pas d'emoji dans le code.
 - Les données de test vivent **inline dans le fichier de test**, pas dans une fixture séparée.
