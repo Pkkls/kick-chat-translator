@@ -7,6 +7,78 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.11.0] - 2026-09-24
+
+The store is still on 2.9.2, so this release carries 2.10.0 as well.
+
+Everything below is one thing: the language the extension tells the engine a
+message is written in. That answer decides whether a line is translated, what
+it is translated from, and whether it is dropped as "already in your language"
+without the reader ever seeing it. It was wrong more often than it looked.
+
+The numbers come from a 5040-line bench, 42 languages, 120 sentences each, from
+Tatoeba, plus six hand-written chat corpora because prose and chat are not the
+same register. Three outcomes are counted and never added together: right, the
+language the line is in; SILENT, which hands the line to the engine with no
+source language and is the safe outcome; and wrong.
+
+### Added
+
+- **Cantonese, the 43rd language.** It is `yue` and not `zh-hk`: Cantonese and
+  Mandarin are different languages sharing a script, and a Hong Kong viewer
+  reading `zh-tw` gets a register they do not speak. No language library carries
+  it, so it is read off a table of characters standard Chinese does not write,
+  唔 嘅 喺 咗 哋 佢, plus words like 點解 and 鍾意. 114 of its 120 bench lines, and
+  91 % on a separate hand-written chat bench that was written before the rule
+  existed. The six it misses carry no Cantonese word at all.
+- **Roughly 450 new detection rules**, each one measured on ten benches before
+  it shipped and removed again if it gained nothing. Letters one language writes
+  and no other, sequences inside words, word endings, function words, and gates:
+  a letter that names a small set of languages, and a word behind it that picks
+  one. They are written to generalise rather than to memorise the bench, which
+  is why the numbers move on corpora the rules never saw.
+
+### Changed
+
+- **The source language sent to the engine is right 2.9 times more often and
+  wrong 97 % less.** On the same 5040 lines: 1262 right and 90 wrong before,
+  3698 right and THREE wrong now. Wrong there means asking the engine to
+  translate from a language the text is not in, which is the expensive mistake.
+- **No language scores zero any more, against twenty-six before.** Catalan went
+  from 20 lines of 120 to 65, Slovak from 16 to 52, Hungarian to 79, Bulgarian
+  to 94, Danish from 30 to 56, Vietnamese from 81 to 119.
+- **On chat it never saw, the detector now names 55 % of lines against 48 %**,
+  and on Malay/Indonesian chat 65 % against 48 %. Those two are the product's
+  real register, which is why they are measured separately.
+- The raw detector, which is what decides whether a line is dropped as already
+  in your language, is wrong on 500 lines instead of 1217.
+
+### Fixed
+
+- **Any Cyrillic line the detector could not name was called Russian.** It was a
+  guess sitting on the path that is supposed to contain no guesses, and it cost
+  72 of the 90 wrong answers on that path. Bulgarian and Ukrainian lines went to
+  the engine as Russian; `bg -> ru` alone was 50 lines. Both pairs are gone from
+  the confusion table.
+- **Any Arabic-script line it could not name was called Arabic**, the same defect
+  one script over. Persian lines written without a Persian letter went to the
+  engine as Arabic. Arabic now has to name itself, and when nothing does, the
+  line stays silent.
+- **Traditional Chinese was read as simplified on 120 lines out of 120**, flag
+  included. It is a character set and there was no rule for it.
+- **Cantonese shipped without its flag.** The language panel drew an empty square
+  where Hong Kong should be, since the Cantonese release. A static check now
+  fails on any flag code handed out without a rule behind it.
+- Persian, Jawi Malay, Hebrew, Bengali, Tamil, Greek and Ukrainian are read
+  correctly where they were being handed to a neighbour.
+
+### Weight
+
+The injected script grows by 14.9 KB raw and 5.2 KB gzipped, which is 5 % of the
+content bundle. The gate that watches it is updated in the same commit with the
+split measured rather than guessed: 14 472 bytes are the detection rules and 510
+are the Cantonese integration outside the detector.
+
 ## [2.10.0] - 2026-08-31
 
 Two versions were tagged and never published, 2.9.3 and 2.9.4. Everything they
