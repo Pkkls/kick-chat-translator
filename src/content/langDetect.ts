@@ -824,6 +824,37 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/(ould|not|ity|\p{L}day)([^\p{L}]|$)/iu, 'en'],
   [/(eht|ufen)([^\p{L}]|$)/iu, 'de'],
   [/(nys|uest)([^\p{L}]|$)/iu, 'ca'],
+  // LE CATALAN EN PLEIN AIR, et le diagnostic qui a dit ou chercher.
+  //
+  // `porte-partagee-diagnostic.mjs` pose aux portes partagees la question que
+  // `porte-diagnostic.mjs` posait deja aux deux portes ecrites a la main, et il
+  // y a une cause de silence de plus parce qu'une porte partagee nomme plus de
+  // deux langues : aucune porte ne s ouvre, une porte s ouvre sans que le jeu
+  // reponde, ou le jeu repond en meme temps que celui d un rival.
+  //
+  // Sur le catalan, 155 lignes : 48 nommees, **63 sans aucune porte**, 42 porte
+  // ouverte sans mot, 2 avec un rival. **La moitie du probleme catalan n est pas
+  // derriere une porte du tout.** `Bon dia!`, `Tinc dues filles.`, `No vull
+  // tornar.` ne portent aucune lettre accentuee, donc aucun jeu de porte, si gros
+  // soit-il, ne peut les atteindre. C est ici qu'elles se prennent.
+  //
+  // Les dix mots sont tous mesures EXCLUSIFS sur les 5430 lignes etiquetees.
+  // `estic` contre `estoy`, `seva` contre `suya`, `dues` contre `dos`, `els`
+  // contre `los`, `tinc` et `vaig` contre `tengo` et `voy`.
+  //
+  // CINQ VENAIENT DU JEU DE PORTE ET SONT PROMUS, `amb aquest aquesta molt`, plus
+  // `vam` qui est sorti en route. Ils y etaient inutiles par construction : le jeu
+  // de porte ne se consulte que si la ligne porte une lettre accentuee, et une
+  // ligne catalane qui en porte une est deja servie. Ils sont retires du jeu en
+  // meme temps, sinon la table exclusive, qui passe avant, en fait du code mort.
+  //
+  // `vam` EST DEHORS et seul le banc clavier le refuse : le slovaque `vám` prive
+  // de son accent donne `vam`, et deux lignes partaient au catalan. Il valait deux
+  // lignes Tatoeba, il en coutait deux fausses ailleurs.
+  //
+  // `gaire` est dehors aussi, pour la raison inverse : correct, exclusif, et zero
+  // ligne sur les dix bancs.
+  [/(^|[^\p{L}])(estic|seva|dues|els|tinc|vaig|volem|amb|aquesta|molt)([^\p{L}]|$)/iu, 'ca'],
   // Quatrieme groupe, et la difference avec le troisieme est la SOURCE : ces
   // motifs-la ont ete extraits du registre chat et non de la prose. Le groupe
   // precedent avait rapporte 76 lignes sur Tatoeba et une seule a l'aveugle,
@@ -1090,12 +1121,12 @@ const JEUX_DE_PORTE: Readonly<Record<string, RegExp>> = {
   sl: /(^|[^\p{L}])(sem|lahko|nekaj|ampak|kaj|tudi|ker|zdaj|zelo|zakaj)([^\p{L}]|$)/iu,
   lt: /(^|[^\p{L}])(yra|labai|kaip|tai|jis|ką|dabar|nieko|taip)([^\p{L}]|$)/iu,
   lv: /(^|[^\p{L}])(ļoti|viņš|viņa|kāds|paldies|tagad|arī|nav)([^\p{L}]|$)/iu,
-  hu: /(^|[^\p{L}])(hogy|nem|egy|csak|mint|nagyon|mindig|megint|semmi|miért)([^\p{L}]|$)/iu,
+  hu: /(^|[^\p{L}])(hogy|nem|egy|csak|mint|nagyon|mindig|megint|semmi|miért|jó)([^\p{L}]|$)/iu,
   pl: /(^|[^\p{L}])(jest|się|nasz|bardzo|jeszcze|wszystko|dlaczego|który)([^\p{L}]|$)/iu,
   vi: /(^|[^\p{L}])(với|của|một|không|được|rồi|quá|này|tôi)([^\p{L}]|$)/iu,
   es: /(^|[^\p{L}])(pero|muy|con|los|las|una|esto|esa|siempre)([^\p{L}]|$)/iu,
   pt: /(^|[^\p{L}])(uma|não|você|muito|isso|essa|também)([^\p{L}]|$)/iu,
-  ca: /(^|[^\p{L}])(amb|això|què|molt|aquest|aquesta|també|més|són|una|vam)([^\p{L}]|$)/iu,
+  ca: /(^|[^\p{L}])(això|què|també|més|són|una|és|sóc|després|ací)([^\p{L}]|$)/iu,
   fr: /(^|[^\p{L}])(est|avec|pour|dans|tout|comme|très|sont|fait)([^\p{L}]|$)/iu,
   tr: /(^|[^\p{L}])(bir|için|değil|çok|var|bu|şey|daha)([^\p{L}]|$)/iu,
   it: /(^|[^\p{L}])(allora|quindi|comunque|anche|adesso|perché|però|davvero|questo|sono|più|che|niente|una)([^\p{L}]|$)/iu,

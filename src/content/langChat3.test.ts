@@ -30,8 +30,8 @@ describe('le corpus de reglage', () => {
   });
 
   it('en nomme 117 sur 260', () => {
-    expect(plain(SURE3.total)).toEqual({ right: 117, silent: 143, wrong: 0 });
-    expect(plain(BRUT3.total)).toEqual({ right: 159, silent: 37, wrong: 64 });
+    expect(plain(SURE3.total)).toEqual({ right: 119, silent: 141, wrong: 0 });
+    expect(plain(BRUT3.total)).toEqual({ right: 161, silent: 37, wrong: 62 });
   });
 
   // CE QU'IL A ATTRAPE LE JOUR DE SA CREATION, et c'est la justification de son
@@ -73,14 +73,18 @@ describe('le corpus de reglage', () => {
   // chiffre local. Les premiers tours de lexique transferaient a quatre
   // cinquiemes ; celui-ci a zero. La methode a un fond et il est atteint.
   //
-  // Le chiffre a bouge depuis, de 87 a 97, et pas par du lexique : dix lignes
-  // de plus sont lues derriere une porte partagee, une lettre exclusive ou un
-  // marqueur grammatical, en cinq tours. C'est la distinction que ce test
-  // garde, et elle tient toujours. A comparer au corpus aveugle, qui a pris
-  // dix-neuf lignes sur les memes cinq tours : un mecanisme qui transfere
-  // rapporte au moins autant la ou personne n'a regle.
+  // Le chiffre a bouge depuis, de 87 a 119, et pas par du lexique : chaque ligne
+  // de plus est lue derriere une porte partagee, une lettre exclusive, une
+  // sequence ou un marqueur grammatical. C'est la distinction que ce test garde,
+  // et elle tient toujours.
+  //
+  // Les deux dernieres sont catalanes et elles valent la peine d'etre nommees :
+  // elles ne portent aucune lettre accentuee, donc aucune porte ne pouvait les
+  // servir, et ce sont des mots outils exclusifs en plein air qui les prennent.
+  // Un corpus de reglage qui bouge sur un mecanisme pareil ne mesure pas du
+  // reglage, il mesure du transfert.
   it('ne bouge que par un mecanisme qui transfere, pas par le lexique', () => {
-    expect(SURE3.total.right).toBe(117);
+    expect(SURE3.total.right).toBe(119);
   });
 
   // Les trois corpus doivent rester distincts, sinon les roles se melangent.

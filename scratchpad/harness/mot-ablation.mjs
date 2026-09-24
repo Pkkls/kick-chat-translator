@@ -42,8 +42,7 @@ const original = readFileSync(SOURCE, 'utf8');
  * d'alternance des deux cotes, `|mot|` ou `|mot)`.
  */
 const MOTS = {
-  SEQUENCES_NORVEGIENNES: 'ei itt inn kje het ike'.split(' '),
-  SEQUENCES_DANOISES: 'ej igt bliv æb øb kø uge dst hed igen'.split(' '),
+  LETTRES_EXCLUSIVES: 'estic seva dues els tinc vaig volem amb gaire aquesta molt'.split(' '),
 };
 
 /**
@@ -52,11 +51,24 @@ const MOTS = {
  * mesurer un fichier inchange et de conclure "zero".
  */
 function sans(source, constante, mot) {
-  const bloc = new RegExp(`(const ${constante} =\\s*/[^;]*;)`);
-  const m = bloc.exec(source);
+  // Deux formes de porteur, et il a fallu les deux : une constante qui est UNE
+  // regex, `const X = /.../;`, et une TABLE dont chaque ligne en est une,
+  // `const X = [ [/.../, 'aa'], ... ];`. La deuxieme ne rentrait pas dans la
+  // premiere regex, et le script repondait INTROUVABLE sur onze mots d'affilee
+  // au lieu de les mesurer, ce qui se voit mais ne casse rien et pourrait donc
+  // passer pour un resultat.
+  const table = new RegExp(`(const ${constante}[^=]*=[\\s\\S]*?\\n\\];)`);
+  const simple = new RegExp(`(const ${constante} =\\s*/[^;]*;)`);
+  const m = table.exec(source) ?? simple.exec(source);
   if (!m) return null;
   const avant = m[1];
-  const apres = avant.replace(new RegExp(`\\|${mot}(?=[|)])`), '');
+  // Deux positions possibles dans une alternance, et la deuxieme manquait : un
+  // mot au MILIEU ou a la FIN s'ecrit `|mot` suivi de `|` ou de `)`, mais le
+  // PREMIER s'ecrit `(mot|` et n'a pas de barre devant. Le script rendait
+  // INTROUVABLE sur lui, ce qui ressemble a une erreur de saisie et se laisse
+  // ignorer, alors que c'est une mesure qui manque.
+  let apres = avant.replace(new RegExp(`\\|${mot}(?=[|)])`), '');
+  if (apres === avant) apres = avant.replace(new RegExp(`\\(${mot}\\|`), '(');
   if (apres === avant) return null;
   return source.replace(avant, apres);
 }
@@ -70,11 +82,26 @@ function mesure() {
   };
   return {
     tatoeba: lire('tatoeba'),
-    chat1: lire('chat1'),
+    chat1: lire('chat1-flatte'),
     chat2: lire('chat2'),
     chat3: lire('chat3'),
     aveugle: lire('paire-AVEUGLE'),
     reglage: lire('paire-reglage'),
+    // LES TROIS QUI MANQUAIENT, et leur absence a failli couter trois entrees.
+    //
+    // Un mot sans accent peut ne rien gagner sur Tatoeba et gagner sur le banc
+    // clavier, ou l'accent des AUTRES langues est tombe et ou la concurrence
+    // n'est donc plus la meme. `gaire`, `aquesta` et `molt` mesuraient zero
+    // partout ailleurs et valent deux lignes la-bas.
+    //
+    // C'est la troisieme facon dont l'ablation ment, apres les deux ecrites en
+    // 4.8 : elle ne ment pas sur ce qu'elle mesure, elle ment par ce qu'elle
+    // ne regarde pas. Les bancs de `mesure()` doivent etre ceux de
+    // `porte-diff.mjs`, tous, sans quoi un banc est absent pour l'ablation
+    // seule et personne ne s'en apercoit.
+    dix: lire('chat-dix'),
+    clavier1: lire('chat1-SANS-DIACRITIQUES'),
+    clavierT: lire('tatoeba-SANS-DIACRITIQUES'),
   };
 }
 
@@ -84,7 +111,9 @@ try {
     `AVEC TOUT   tatoeba ${base.tatoeba.r}  chat1 ${base.chat1.r}  chat2 ${base.chat2.r}  ` +
       `chat3 ${base.chat3.r}  paire-AVEUGLE ${base.aveugle.r}  paire-reglage ${base.reglage.r}\n`,
   );
-  console.log('mot            reglage   ailleurs (tatoeba chat1 chat2 chat3 AVEUGLE)');
+  console.log(
+    'mot            reglage   ailleurs (tatoeba chat1 chat2 chat3 AVEUGLE dix clav1 clavT)',
+  );
   const morts = [];
   for (const [constante, mots] of Object.entries(MOTS)) {
     console.log(`  -- ${constante} --`);
@@ -103,6 +132,9 @@ try {
         d(base.chat2.r, sansLui.chat2.r),
         d(base.chat3.r, sansLui.chat3.r),
         d(base.aveugle.r, sansLui.aveugle.r),
+        d(base.dix.r, sansLui.dix.r),
+        d(base.clavier1.r, sansLui.clavier1.r),
+        d(base.clavierT.r, sansLui.clavierT.r),
       ];
       const gainReglage = d(base.reglage.r, sansLui.reglage.r);
       const transfere = ailleurs.some((n) => n !== 0);
