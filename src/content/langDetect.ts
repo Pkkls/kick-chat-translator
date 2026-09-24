@@ -723,18 +723,26 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/(iamo|simo|glio|tto|nno)([^\p{L}]|$)/iu, 'it'],
   [/(knya|nmu|anku)([^\p{L}]|$)/iu, 'id'],
   [/ným([^\p{L}]|$)/iu, 'sk'],
-  // SEULE ENTREE DU FICHIER QUI RAPPORTE NEGATIF QUELQUE PART, et l'ablation
-  // l'a trouvee : +8 lignes sur Tatoeba et +1 sur le corpus de reglage, mais
-  // **-1 sur le corpus AVEUGLE**. Sans elle, une ligne de plus y est juste.
+  // LA SEULE ENTREE DU FICHIER QUI AIT JAMAIS RAPPORTE NEGATIF QUELQUE PART.
+  // L'ablation l'avait trouvee sans pouvoir la nommer : +8 lignes sur Tatoeba,
+  // +1 sur le corpus de reglage, et **-1 sur le corpus AVEUGLE**.
   //
-  // Ce n'est pas une erreur qu'elle cause, la colonne des fausses ne bouge pas :
-  // elle fait TAIRE cette ligne. Elle repond `nl` sur une ligne qui n'est pas
-  // neerlandaise, un autre signal dit autre chose, le vote n'est plus unanime et
-  // tout le monde se tait. C'est le mecanisme qui fonctionne comme prevu, le
-  // silence plutot que la mauvaise reponse, et ca coute du rappel.
+  // Ce n'etait pas une erreur, la colonne des fausses ne bougeait pas : elle
+  // faisait TAIRE une ligne. Elle repondait `nl`, un autre signal disait autre
+  // chose, le vote n'etait plus unanime et tout le monde se taisait.
   //
-  // Gardee : +9 contre -1, et la ligne perdue est un silence, pas une faute.
-  [/(tste|aat|aal)([^\p{L}]|$)/iu, 'nl'],
+  // `unanimite.mjs` a nomme le desaccord, parce qu'il compte les lignes ou deux
+  // entrees votent different au lieu d'en retirer une a la fois : la paire est
+  // `nl x tr`, et le mot est `saat`, l'heure en turc. C'est la seule facon
+  // d'ecrire `aat` que le turc produise et le neerlandais jamais.
+  //
+  // Exiger une lettre avant, et pas un `s`, rend la ligne aveugle sans rien
+  // couter : `gaat`, `staat`, `laat`, `praat` gardent leurs neuf lignes,
+  // Tatoeba ne bouge pas d'une ligne, et les neuf bancs sont identiques sauf
+  // celui qui gagne. Supprimer `aat` tout court avait ete mesure aussi et
+  // coutait deux lignes Tatoeba pour le meme gain : RESSERRER PLUTOT QUE
+  // SUPPRIMER, quand la collision vient de la forme la plus courte.
+  [/(tste|[^s]aat|aal)([^\p{L}]|$)/iu, 'nl'],
   [/lich([^\p{L}]|$)/iu, 'de'],
   [/lige([^\p{L}]|$)/iu, 'da'],
   [/ait([^\p{L}]|$)/iu, 'fr'],

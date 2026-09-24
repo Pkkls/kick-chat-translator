@@ -55,7 +55,7 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
   // quatre. Un mecanisme qui rapporte autant la ou il n'a pas ete regle que la
   // ou il l'a ete est exactement ce que le lexique n'arrivait plus a faire.
   it('rappelle un tiers de moins en brut, mais la longueur en explique la moitie', () => {
-    expect(plain(SURE2.total)).toEqual({ right: 124, silent: 136, wrong: 0 });
+    expect(plain(SURE2.total)).toEqual({ right: 125, silent: 135, wrong: 0 });
     expect(rappel(SURE1.total)).toBe(55);
     expect(rappel(SURE2.total)).toBe(48);
     // Le facteur confondant, mesure : les deux corpus ne sont pas comparables tels quels.
@@ -68,11 +68,14 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
 
   // LA MESURE HONNETE, bande par bande.
   //
-  //   <= 20 car : 55 % sur le corpus de reglage, 51 % a l'aveugle -> 4 points
+  //   <= 20 car : 55 % sur le corpus de reglage, 52 % a l'aveugle -> 3 points
   //   >  20 car : 56 % contre 46 %                  -> 10 points
   //
-  // Les sept points de la bande courte sont la memorisation du lexique, et ils
-  // sont reels : c'est une liste de mots choisie en lisant un corpus.
+  // Les trois points de la bande courte sont la memorisation du lexique, et ils
+  // sont reels : c'est une liste de mots choisie en lisant un corpus. Ils ont
+  // valu jusqu'a huit points ; ce qui les a reduits n'est pas le lexique qui
+  // s'ameliore mais tout le reste qui rattrape, lettres, portes, sequences et
+  // mots outils, sur un corpus que rien de tout cela n'a jamais vu.
   //
   // LA BANDE LONGUE EST LE RESULTAT LE PLUS INSTRUCTIF DU FICHIER, et son
   // histoire vaut plus que sa valeur du jour. Elle n'est servie que par les
@@ -89,10 +92,12 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
   // dont l'essentiel dans cette bande. Une porte ne peut pas memoriser un corpus
   // qu'elle n'a jamais vu, donc ces points sont du transfert au sens strict.
   //
-  // Les deux bandes sont maintenant a huit points d'ecart chacune, et elles n'y
-  // sont pas pour la meme raison : la courte a mesure une liste de mots choisie
-  // en regardant, la longue a mesure l'ecart entre deux corpus qui ne se
-  // ressemblent pas. Ne pas lire cette egalite comme une equivalence.
+  // Les deux bandes ne sont plus au meme ecart, trois points contre dix, et le
+  // sens de l'inegalite est contre-intuitif : c'est la bande que le lexique NE
+  // sert PAS qui transfere le moins bien. La cause n'est pas de la memorisation,
+  // c'est que les deux corpus n'ont pas les memes langues aux memes longueurs.
+  // Ne pas lire l'ecart d'une bande comme une mesure de reglage sans avoir
+  // d'abord regarde de quoi cette bande est faite.
   it('memorise trois fois moins au-dela de la borne du lexique', () => {
     const bande = (
       corp: Record<string, readonly string[]>,
@@ -102,7 +107,7 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
     const court = (t: string): boolean => t.length <= 20;
     const long = (t: string): boolean => t.length > 20;
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, court)).total)).toBe(55);
-    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, court)).total)).toBe(51);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, court)).total)).toBe(52);
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, long)).total)).toBe(56);
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, long)).total)).toBe(46);
   });
@@ -111,7 +116,7 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
   // des trigrammes, pas des mots choisis a la main. Sa perte, 61 % a 55 %, est
   // du bruit d'echantillonnage plutot que de la memorisation.
   it('montre que seul le chemin qui depend du lexique perd au changement de corpus', () => {
-    expect(plain(BRUT2.total)).toEqual({ right: 168, silent: 35, wrong: 57 });
+    expect(plain(BRUT2.total)).toEqual({ right: 169, silent: 34, wrong: 57 });
     expect(rappel(BRUT2.total)).toBe(65);
   });
 
