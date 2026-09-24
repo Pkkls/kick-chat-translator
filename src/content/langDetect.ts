@@ -1512,7 +1512,7 @@ function estonienOuPortugais(text: string): string | undefined {
 const MOTS_MALAIS_INDONESIENS =
   /(^|[^\p{L}])(yang|tidak|dengan|untuk|saya|ini|itu|dari|pada|sudah|mereka|dalam|lebih|orang|apa|lagi|tidur|siapa|baru|makan|sini|aku|pagi|pergi|habis|kena|sampai|bukan)([^\p{L}]|$)/iu;
 const MOTS_INDONESIENS =
-  /(^|[^\p{L}])(bisa|uang|mobil|coba|karena|besok|kamar|kayak|nggak|gak|gimana|aja|nih|dong|sih|kemarin|sore)([^\p{L}]|$)/iu;
+  /(^|[^\p{L}])(bisa|uang|mobil|coba|karena|besok|kamar|kayak|nggak|gak|gimana|aja|nih|dong|sih|kemarin|sore|gitu)([^\p{L}]|$)/iu;
 // LES PARTICULES MALAISES, et c'est la porte qui les rend possibles.
 //
 // `tak`, `dah`, `je`, `weh` sont ce que le chat malaisien ecrit tout le temps et
@@ -1558,8 +1558,25 @@ const MOTS_INDONESIENS =
 // le meme chiffre sur le corpus AVEUGLE que de le supprimer, et une ligne de
 // plus sur le corpus de reglage, qui ne prouve rien. A resultat egal la forme
 // simple gagne, donc il est simplement supprime.
+// TROISIEME TOUR DU TRI, et il rend deux mots pour quatre mesures. Le crible de
+// sequences porte a la paire, `paire-sequences.mjs ms id`, ne trouve presque
+// rien : la prose de Tatoeba dans ces deux langues est ecrite avec ce qu'elles
+// partagent, et les sequences propres du corpus sont des mots que les deux
+// ecrivent, `perlu`, `burung`, `anak`, `cara`. Le corpus les rend exclusifs par
+// absence, pas par la langue.
+//
+// Ce qui passe est une difference orthographique attestee : `lelaki` contre
+// `laki-laki`, et `gitu` que l'indonesien familier ecrit et que le malais non.
+// `rosak` contre `rusak` et `wang` contre `uang` sont corrects aussi et sortent
+// a l'ablation, chacun deja couvert sur ses propres lignes.
+//
+// Le bloc `id -> ms` de la matrice reste donc ouvert et il faut le dire ainsi :
+// ce n'est pas une regle qui manque, c'est un corpus. Les deux langues se
+// separent dans le registre familier, que Tatoeba ne contient pas, et les deux
+// corpus de paire le montrent en passant de 48 a 65 % pendant que la matrice ne
+// bouge pas.
 const MOTS_MALAIS =
-  /(^|[^\p{L}])(kerana|sahaja|cuba|esok|bilik|mahu|jom|tengok|macam|betul|sikit|jugak|memang|nak|tiada|teruk|nampak|berlaku|dah|tak|weh)([^\p{L}]|$)/iu;
+  /(^|[^\p{L}])(kerana|sahaja|cuba|esok|bilik|mahu|jom|tengok|macam|betul|sikit|jugak|memang|nak|tiada|teruk|nampak|berlaku|dah|tak|weh|lelaki)([^\p{L}]|$)/iu;
 
 function malaisOuIndonesien(text: string): string | undefined {
   if (!MOTS_MALAIS_INDONESIENS.test(text)) return undefined;
