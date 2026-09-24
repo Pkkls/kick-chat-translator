@@ -3,7 +3,7 @@
 État vivant de ce chantier, mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-24. Dernier commit de **code** : `1e2a4e4`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
+Dernière mise à jour : 2026-09-24. Dernier commit de **code** : `1f1f32e`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
 
 ---
 
@@ -49,18 +49,18 @@ Ce qui a été découvert en cours de route et qui n'était pas dans le diagnost
 Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR, 120 lignes par langue.
 Trois issues, **jamais additionnées** : `right` la bonne langue, `silent` le détecteur a refusé de répondre ce qui est l'issue SÛRE, `wrong` une autre langue.
 
-| chemin | portée | départ `ec9e02d` | aujourd'hui `1e2a4e4` |
+| chemin | portée | départ `ec9e02d` | aujourd'hui `1f1f32e` |
 |---|---|---|---|
-| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3394 r / 1639 s / **7 w** |
-| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 973 / 700 / **7** |
-| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3928 / 466 / **646** |
-| `detectLanguage` | court | 837 / 364 / **479** | 1133 / 266 / **281** |
+| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3394 r / 1643 s / **3 w** |
+| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 972 / 705 / **3** |
+| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3931 / 466 / **643** |
+| `detectLanguage` | court | 837 / 364 / **479** | 1135 / 267 / **278** |
 
 Le chemin sûr **répond 2,5 fois plus souvent et se trompe 83 % moins**. C'est le seul mouvement qui compte vraiment : `wrong` sur ce chemin veut dire qu'on demande au moteur de traduire depuis une langue dans laquelle le texte n'est pas.
 
 Le chemin brut a perdu 504 erreurs. Sa part reste haute parce qu'il inclut franc par construction.
 
-**Les 7 erreurs du chemin sûr, en entier**, parce qu'elles tiennent en quatre lignes et que c'est tout ce qui reste : `fa->ar` 4, `ms->ar` 1, `yue->zh-tw` 1, `yue->zh` 1.
+**Les 3 erreurs du chemin sûr, en entier** : `ms->ar` 1, `yue->zh-tw` 1, `yue->zh` 1. Le bloc arabe est FERMÉ, voir 5.26. **Aucune des trois n'est réparable par une règle** : la première est la ligne jawi dont le seul mot utilisable est celui que l'arabe écrit aussi, les deux autres sont du chinois standard sous étiquette `yue` dans Tatoeba, dont une en caractères simplifiés.
 
 Les deux dernières ne sont pas des erreurs de règle : ce sont deux lignes de chinois standard sous étiquette `yue` dans Tatoeba, dont une écrite en caractères simplifiés. Aucun marqueur ne peut les atteindre, et les fermer voudrait dire corriger le corpus, pas le détecteur. **Le bloc arabe est donc le seul qui reste vraiment ouvert**, cinq lignes sur sept.
 
@@ -82,12 +82,12 @@ Les trois dernières du chemin brut, `et fi sl`, sont sorties par le lexique de 
 ### Rappel du chemin sûr, par langue
 
 ```
-120  ar bn el he hi ja ko ta th     (écritures sans ambiguïté)
-119  vi   116 fa    114 yue   108 lv    105 zh-tw  101 uk    99 nl
+120  bn el he hi ja ko ta th        (écritures sans ambiguïté)
+119  ar vi   116 fa   114 yue   108 lv   105 zh-tw  101 uk   99 nl
 98   pl    95 tr     93 ro     90 zh     89 ru      85 sv    79 de
 78   cs    74 bg     73 tl     68 lt     67 et      60 pt    58 fr
 55   hu    51 fi     49 es     46 sl     39 it      37 no    36 ca
-35   en    31 da     29 sk     22 ms     15 id
+35   en    31 da     29 sk     23 ms     15 id
 ```
 
 **Plus aucune langue sous 13 sur 120**, contre vingt-six à zéro au départ. Ce tableau est celui de Tatoeba ; sur du chat le classement est différent, voir 2bis.
@@ -1009,6 +1009,78 @@ canto-bench inchangé, les deux moitiés, toujours zéro faux positif
 
 ---
 
+### 5.26 L'ARABE DOIT SE NOMMER LUI AUSSI, et le DIXIEME banc (`9ad2dea`)
+
+`arabeOuPersan` tranchait par elimination : rien en ourdou, rien en jawi, rien en persan, donc `ar`. **Un defaut, pas une lecture**, et il portait tout le bloc arabe restant du chemin sur.
+
+Le crible a mots avait ete pousse a bout de ce cote et le disait lui-meme : des quatre lignes persanes encore rendues arabes, deux ne portent aucun mot candidat et les deux autres n'ont que des mots deja refuses parce que l'arabe les ecrit aussi. Un septieme mot persan n'allait jamais les atteindre.
+
+La correction est de l'autre cote. `LETTRES_ARABES` est la symetrie exacte de `LETTRES_PERSANES` : les lettres que l'orthographe arabe ecrit la ou le persan en ecrit une autre.
+
+```
+ة  teh marbuta,   le persan ecrit ه
+ى  alef maksura,  le persan ecrit ی
+ي  yeh U+064A,    le persan ecrit ی U+06CC
+ك  kaf U+0643,    le persan ecrit ک U+06A9
+```
+
+`scratchpad/harness/arabe-preuve.mjs` a mesure chaque jeu candidat. Les quatre lettres seules couvrent **110 des 120 lignes arabes et ZERO des 130 persanes**. Sept mots outils qui ne portent aucune de ces lettres montent a 117, toujours a zero de bruit. Les formes a hamza et l'article defini ont ete mesures separement et gagnent leur place sur les lignes de CHAT, ou vivent les interjections courtes.
+
+**`من` est dehors et c'etait le piege du tour.** C'est "de, depuis" et "qui" en arabe, et le pronom "je" en persan, au caractere pres. A lui seul il portait dix-sept des dix-neuf lignes de bruit du premier essai.
+
+```
+tatoeba   sur  3394r/1639s/7w -> 3393r/1644s/3w    fa->ar 4 -> 0
+non latin sur  97r/11s/2w     -> 97r/13s/0w        fa->ar 2 -> 0
+```
+
+UNE ligne arabe sur 120 devient muette, `غادروا بالفعل.`, dont le seul article est colle a une preposition. Quatre fausses disparaissent. **Le banc non latin est donc le sixieme corpus de chat a zero erreur**, et tous les corpus de chat du depot sont propres sur le chemin sur.
+
+**Le chemin BRUT gagne aussi**, et c'est la lecon du repli cyrillique une deuxieme fois : une reponse codee en dur qui remplace un composant mieux informe est pire que pas de reponse. `سلام به همه` etait dans les tests comme limite documentee, assertee a `ar`. Plus rien ne repond dessus, franc reprend la main, et franc la lit juste.
+
+#### LE DIXIEME BANC, et pourquoi il manquait
+
+La premiere version de ce changement faisait taire **trois lignes arabes** de `langDetect.dix.test.ts` pendant que le diff des neuf bancs affichait AUCUNE confusion nouvelle. Ces cent lignes vivaient en dur dans un fichier de test, la ou l'outil de mesure ne les voyait pas.
+
+**Un banc que l'outil ne voit pas est un banc absent**, exactement comme un banc trop petit. Elles sont maintenant dans `src/content/langChatDixCorpus.ts`, le test les importe, le garde statique du bundle couvre le nouveau fichier, et `porte-diff.mjs` les lance. Verifie en le faisant echouer expres : le jeu de lettres etroit y coute deux lignes, et le diff le dit.
+
+---
+
+### 5.27 LA PORTE MALAIS-INDONESIEN, ouverte sur le mot que les deux ecrivent (`1f1f32e`)
+
+Le fichier portait le mauvais diagnostic, ecrit noir sur blanc : *le declencheur n'est PAS ce qui bloque la paire*. Il venait d'un crible qui tire ses candidats des corpus paralleles, lesquels sont en registre neutre. Le registre familier n'y est pas, donc le crible ne pouvait pas proposer les mots qui comptent et rendait zero.
+
+`porte-diagnostic.mjs` compte la seule chose qui tranche : sur les trente lignes malaises du corpus de reglage, **VINGT-QUATRE avaient la porte FERMEE**. Le jeu malais derriere n'etait jamais consulte. Le declencheur etait bien ce qui bloquait.
+
+`scratchpad/harness/paire-declencheur.mjs` pose la question dans le bon registre : quel token des lignes fermees ouvrirait la porte, et quelle autre langue l'ecrit.
+
+```
+aku   ouvre 14 des 36 lignes fermees, et touche ZERO des 5850 lignes
+      etiquetees des quarante et une autres langues
+```
+
+`aku`, c'est "je". Les deux langues l'ecrivent. Il etait sous les yeux, et le test de la paire le cite en exemple de ce que le chat familier ecrit, deux paragraphes au-dessus de la liste ou il ne figurait pas.
+
+**TRENTE-QUATRE MOTS MESURES, CINQ LIVRES.** L'ablation mot a mot est sans appel : `aku` `pagi` `pergi` `habis` `sore` bougent un corpus qu'ils n'ont pas servi a choisir, les vingt-neuf autres ne bougent QUE le corpus de reglage. Et la version a trente-quatre mots donne **exactement le meme chiffre sur les neuf autres bancs, aveugle compris**. Les vingt-neuf mots en trop achetaient seize lignes du corpus ou on les avait lus, et rien ailleurs.
+
+```
+paire AVEUGLE  sur  22r/38s/0w  -> 29r/31s/0w     rappel 37 -> 48 %
+paire AVEUGLE  brut 25r/20s/15w -> 33r/15s/12w    ms->id 6 -> 4
+chat1          sur  216r/174s/0w -> 217r/173s/0w
++10 octets de bundle pour sept lignes aveugles
+```
+
+**Tatoeba ne bouge pas d'une ligne sur `id->ms` (44) ni sur `ms->id` (33)**, et c'est attendu : cette prose est ecrite presque entierement avec ce que les deux langues partagent. Le bloc de la matrice ne se ferme pas par ce chemin-la ; ce qui se ferme est le registre reel du produit.
+
+#### `je` EST SORTI, ET UNE REGLE EN SORT AVEC LUI
+
+`je` etait correct quand il a ete ecrit et rien dans le fichier ne le rendait faux. **C'est l'elargissement du DECLENCHEUR qui l'a rendu faux** : `aku` ouvre la porte sur `To je ta najhlupejsia vec, aku som kedy povedal.`, une ligne slovaque privee de ses diacritiques ou `akú` donne `aku`, et derriere cette porte `je` a nomme le malais.
+
+**ELARGIR UN DECLENCHEUR REND RETROACTIVEMENT MOINS SURS TOUS LES MOTS DERRIERE LUI.** Le fichier disait deja que les deux moities sont couplees pour le GAIN ; elles le sont aussi pour le RISQUE, et c'est ce sens-la qui coute des lignes. Relire les deux jeux a chaque fois que la porte bouge.
+
+La borne de surete est maintenant ecrite a cote des jeux : sur les 5850 lignes etiquetees hors de la paire, **UNE SEULE** ouvre cette porte. Tant que ce chiffre reste a un, les deux jeux peuvent contenir des mots courts ; des qu'il monte, chacun devient un piege.
+
+---
+
 ## 6. État par phase
 
 | Phase | Contenu | État |
@@ -1017,7 +1089,7 @@ canto-bench inchangé, les deux moitiés, toujours zéro faux positif
 | 0b | corpus chat pour le rappel en registre court | **FAIT**, 390 lignes, 26 langues, section 2bis |
 | 1 | plomberie : `confidentLanguage` là où la réponse brute sert | **1 des 3 faits**, et le 2e est TRANCHÉ NON par 0b, voir section 10 |
 | 2 | combler les langues sans règle | **FAIT sur les DEUX chemins** : plus aucune langue à zéro |
-| 3 | clusters de confusion, classés par la matrice | **commencée** : cyrillique fermé ; catalan divisé par trois par les portes ; nordique et `id`/`ms` nommés mais pas fermés |
+| 3 | clusters de confusion, classés par la matrice | **cyrillique et ARABE fermés** ; catalan divisé par trois ; `id`/`ms` ouvert sur le registre réel du produit (5.27) mais intact sur Tatoeba ; nordique nommé, pas fermé |
 | 4 | barrière anti-régression en CI | **FAIT** : les TROIS bancs tournent dans `vitest run` |
 
 ---
@@ -1038,7 +1110,9 @@ Les chiffres sont en 2bis-bis, 2ter, 5.14 à 5.19.
 
 **AVANT TOUT AJOUT, ET C'EST NOUVEAU** : relancer `porte-ablation.mjs`. Un lot qui entre peut tuer une entrée ailleurs dans le fichier sans qu'aucun total ne bouge, mesuré trois fois maintenant. Section 5.19.
 
-1. **Le côté MALAIS de la paire est la seule langue encore à sec**, 4 lignes sur 30 en registre familier. Les sept mots malais proposés par le corpus de réglage ont tous été coupés par l'ablation : corrects, mais ils ne transfèrent pas. Ce qu'il faudrait est un mécanisme qui ne soit pas du lexique, et le malais n'écrit aucune lettre que la table couvre. **C'est le même mur que la paire scandinave avant la porte à mot**, et c'est ce qui rend l'angle intéressant.
+1. ~~Le côté MALAIS de la paire est la seule langue encore à sec~~ **FAIT, section 5.27.** Le malais passe de 10 à 14 lignes sur 30 sur le corpus aveugle de la paire, et la paire entière de 37 % à 48 % de rappel. Ce qui restait à trouver n'était pas un mécanisme nouveau mais `aku`, et ce qui l'a trouvé est un crible posé dans le bon registre.
+
+   **Ce qui reste ouvert de ce côté** : les lignes qui ouvrent la porte sans qu'aucun mot ne tranche, 17 sur 30 côté malais avant ce tour et moins maintenant. Elles demandent des mots de départage, donc du lexique, donc le critère d'arrêt de 5.27 s'applique : mesurer chaque mot par ablation et ne garder que ce qui bouge un corpus qu'il n'a pas servi à choisir. **Le taux observé est de cinq sur trente-quatre.**
 
 2. **Les portes à MOT sont le filon le plus récent**, sections 5.16 et 5.17. Elles ont fait pour la paire scandinave ce que trois tours de lettres n'avaient pas fait, elles survivent aux diacritiques tombées, et le crible les trouve tout seul. Ce qu'il reste : `porte-candidats.mjs` ne rend plus de déclencheur de paire inutilisé au-dessus de quatre lignes. Descendre encore ne donnera que du bruit, il faut un corpus de plus.
 
@@ -1046,7 +1120,7 @@ Les chiffres sont en 2bis-bis, 2ter, 5.14 à 5.19.
 
 4. **Les paires qui restent, chemin brut** : `id -> ms` 44, `no -> sv` 34, `ms -> id` 33, `da -> sv` 31, `ca -> es` 29, `da -> nl` 28, `ca -> fr` 19, `sk -> cs` 18.
 
-5. **Les 7 erreurs restantes du chemin sûr**, listées en entier en section 2. `fa -> ar` 4 et `ms -> ar` 1 en font cinq, soit **cinq sur sept dans l'écriture arabe**, et c'est le seul bloc qui reste. Les deux autres sont du chinois standard sous étiquette `yue` dans Tatoeba et aucune règle ne peut les atteindre.
+5. ~~Les 7 erreurs restantes du chemin sûr~~ **IL EN RESTE TROIS ET AUCUNE N'EST RÉPARABLE**, section 5.26. Ne pas rouvrir ce point sans un corpus neuf : deux des trois sont un défaut d'étiquetage de Tatoeba, pas un défaut du détecteur, et la troisième demande un mot que l'arabe écrit aussi.
 
 7. **Le cantonais est la langue la mieux servie du produit après les écritures sans ambiguïté**, 114 sur 120, et son banc propre est à 91 % sur la moitié tenue à l'écart. Ce qui lui manque n'est pas une règle mais **un corpus récolté** : Kick n'a presque pas de chaîne hongkongaise, les deux moitiés du banc sont écrites à la main, et `kick-fake-chat.js` existe précisément pour voir le chemin complet tourner sans en attendre une. Section 5.25.
 
@@ -1067,6 +1141,11 @@ Les chiffres sont en 2bis-bis, 2ter, 5.14 à 5.19.
 - **Appliquer le critère de l'ablation à la table cantonaise** et supprimer ce qui rapporte zéro. Section 5.25 : neuf de ses marqueurs n'apparaissent nulle part et c'est normal, une règle de PRÉSENCE ne se choisit pas sur le gain mesuré.
 - **Ajouter `嘈`, `郁`, `掂`, `慳`, `氹` au cantonais.** Mesurés ou argumentés en 5.25, tous les cinq ont un sens en chinois standard.
 - **Ajouter `收皮`, `好耐`, `細路`, `多過`.** Le chinois s'écrit sans espaces et fabrique les quatre par-dessus une frontière de mot, exactement comme 而家.
+- **Chercher un septième mot persan** pour les lignes que la table rend arabes. Mesuré, 5.26 : le crible à mots est épuisé de ce côté, deux des quatre lignes ne portent aucun candidat. Ce qui les a fermées est l'autre côté, la preuve arabe.
+- **Mettre `من` dans la preuve arabe.** C'est le pronom `je` du persan au caractère près, et il portait dix-sept des dix-neuf lignes de bruit du premier essai.
+- **Un déclencheur de paire tiré des corpus PARALLÈLES.** Mesuré deux fois, 5.27 : ils sont en registre neutre, les mots qui comptent n'y sont pas, et le crible rend zéro en concluant à tort que le déclencheur n'est pas le problème. Le crible se pose dans le registre visé.
+- **Une porte morphologique pour la paire** (`-nya`, `-kan`, `-lah`, `ber-`, `meng-`, `ter-`, `se-`). Mesurés tous les neuf, 5.27 : un affixe de trois lettres en écriture latine appartient à tout le monde. Le seul propre, `-lah`, n'ouvre aucune ligne.
+- **Ajouter des mots à la paire sans passer par `mot-ablation.mjs`.** Mesuré, 5.27 : cinq sur trente-quatre transfèrent, et la version complète donne le MÊME chiffre que la version réduite sur les neuf autres bancs.
 - **Ajouter une lettre arabe à la table des exclusives pour le malais.** Le crible les proposait par un défaut de filtre, corrigé en `0e14a6a`.
 - **Nommer l'anglais avec un seul marqueur.** Mesuré, `anglais-essai.mjs` : `the`, `you`, `inte` sont propres sur les quarante-deux autres langues et tous les trois nommés par le banc des lignes mélangées. **L'anglais est la langue avec laquelle tout le monde mélange.**
 - **Nommer l'anglais en comptant DEUX marqueurs plus l'absence de toute autre langue.** Mesuré aussi, et c'est un résultat à moitié positif qu'il faut lire en entier : dès deux marqueurs le vol tombe à **zéro** sur les quatre corpus, donc la forme de la règle était bien le problème. Mais le banc mélangé en nomme deux à ce seuil, et au seuil admissible de trois le gain tombe à onze lignes. Le prototype est committé avec ses chiffres et sa condition de réouverture.
@@ -1134,6 +1213,9 @@ tl tgl   pt-br aucun (partage por)   zh-tw aucun (partage cmn)
 | `scratchpad/harness/variante.mjs` | **mesurer une variante sans la committer**, neuf bancs, restaure dans un `finally` | oui |
 | `scratchpad/harness/canto-candidats.mjs` | **le crible cantonais**, le candidat apparaît-il en zh, zh-tw, ja | oui |
 | `scratchpad/harness/canto-bench.mjs` | le banc cantonais, moitié réglage et moitié tenue à l'écart | oui |
+| `scratchpad/harness/arabe-preuve.mjs` | **quelle preuve l'arabe porte lui-même**, jeu par jeu | oui |
+| `scratchpad/harness/paire-declencheur.mjs` | **le crible du déclencheur de la paire**, dans le bon registre | oui |
+| `src/content/langChatDixCorpus.ts` | **le DIXIÈME banc**, 100 lignes, ar ja ko ru | oui |
 | `scratchpad/harness/lang-matrix.mjs` | écrit le rapport lisible | oui |
 | `scratchpad/harness/lang-matrix.md` | le rapport | non, régénérable |
 
@@ -1261,6 +1343,8 @@ Commits, du plus ancien au plus récent :
 | `4ced044` | Take the undiacriticked errors from nineteen to fifteen, one free and one measured both ways |
 | `6ad28ae` | Count what the unanimity rule costs, and clear the one line it was costing |
 | `1e2a4e4` | Open the Cantonese rule a second time, after finding out what it was built on |
+| `9ad2dea` | Make Arabic name itself instead of being the answer when nobody speaks |
+| `1f1f32e` | Open the Malay gate on the word both languages write, and ship five of thirty-four |
 
 ---
 
@@ -1357,7 +1441,7 @@ Ne pas trancher ça dans une passe de détection. **Et surtout : le faire seul n
 
 - Commits : sujet à l'impératif, corps expliquant la cause, le correctif, et **comment il a été constaté**. Terminer par `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`.
 - Gate : `npm run release:check`, jamais seulement `typecheck` et `test`. Il lance aussi `lint`.
-- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **95876 aujourd'hui** (`1e2a4e4`), soit +4073 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-sept portes et 433 entrées de lexique. Le détail des neuf derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, **-51 pour +14**, **+13 pour +39**, +65 pour +8, -10 pour +2, +22 pour +5, **-76 pour zéro**, qui ne fait que supprimer des entrées qui ne pouvaient plus se déclencher, **+5 pour +1** ligne aveugle en resserrant `aat`, et **+94 pour +2** au dernier, qui est le seul tour du chantier à payer un prix pareil parce qu'il achète douze caractères cantonais dont aucun ne gagne de ligne sur les bancs d'aujourd'hui. Les deux meilleurs rapports de tout le chantier sont la porte nordique à mot, qui supprime plus de code qu'elle n'en ajoute, et les marqueurs tagalog, treize octets. Les six corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
+- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **95959 aujourd'hui** (`1f1f32e`), soit +4156 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-sept portes et 433 entrées de lexique. Le détail des neuf derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, **-51 pour +14**, **+13 pour +39**, +65 pour +8, -10 pour +2, +22 pour +5, **-76 pour zéro**, qui ne fait que supprimer des entrées qui ne pouvaient plus se déclencher, **+5 pour +1** ligne aveugle en resserrant `aat`, **+94 pour +2**, le seul tour du chantier à payer un prix pareil parce qu'il achète douze caractères cantonais dont aucun ne gagne de ligne sur les bancs d'aujourd'hui, **+73 pour quatre erreurs fermées** avec la preuve arabe, et **+10 pour +7 lignes aveugles** au dernier, qui est le meilleur rapport de tout le chantier après la porte nordique. Les deux meilleurs rapports de tout le chantier sont la porte nordique à mot, qui supprime plus de code qu'elle n'en ajoute, et les marqueurs tagalog, treize octets. Les six corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
 - Pas de nom de streamer ou de chaîne en dur, nulle part.
 - Pas d'emoji dans le code.
 - Les données de test vivent **inline dans le fichier de test**, pas dans une fixture séparée.
