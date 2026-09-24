@@ -3,7 +3,7 @@
 État vivant de ce chantier, mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-24. Dernier commit de **code** : `be65c1d`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
+Dernière mise à jour : 2026-09-24. Dernier commit de **code** : `e353d62`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
 
 ---
 
@@ -49,12 +49,12 @@ Ce qui a été découvert en cours de route et qui n'était pas dans le diagnost
 Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR, 120 lignes par langue.
 Trois issues, **jamais additionnées** : `right` la bonne langue, `silent` le détecteur a refusé de répondre ce qui est l'issue SÛRE, `wrong` une autre langue.
 
-| chemin | portée | départ `ec9e02d` | aujourd'hui `be65c1d` |
+| chemin | portée | départ `ec9e02d` | aujourd'hui `e353d62` |
 |---|---|---|---|
-| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3443 r / 1594 s / **3 w** |
-| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 982 / 695 / **3** |
-| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3974 / 458 / **608** |
-| `detectLanguage` | court | 837 / 364 / **479** | 1145 / 263 / **272** |
+| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3579 r / 1458 s / **3 w** |
+| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 1021 / 656 / **3** |
+| `detectLanguage` | toutes | 3019 / 804 / **1217** | 4065 / 429 / **546** |
+| `detectLanguage` | court | 837 / 364 / **479** | 1175 / 254 / **251** |
 
 Le chemin sûr **répond 2,5 fois plus souvent et se trompe 83 % moins**. C'est le seul mouvement qui compte vraiment : `wrong` sur ce chemin veut dire qu'on demande au moteur de traduire depuis une langue dans laquelle le texte n'est pas.
 
@@ -85,9 +85,9 @@ Les trois dernières du chemin brut, `et fi sl`, sont sorties par le lexique de 
 120  bn el he hi ja ko ta th        (écritures sans ambiguïté)
 119  ar vi   116 fa   114 yue   108 lv   105 zh-tw  101 nl uk
 98   pl    95 tr     93 ro     90 zh     89 ru      85 sv    80 cs
-79   de    74 bg     73 tl     68 lt     67 et      60 pt    58 fr
-55   hu    53 es     51 da fi  49 no     46 sl      39 it    38 sk
-36   ca    35 en     23 ms     15 id
+79   de    78 pt     74 bg     73 tl     72 hu      69 es    68 fr lt
+67   et    66 sl     65 ca     60 fi     51 da      50 it    49 no
+44   sk    35 en     23 ms     15 id
 ```
 
 **Plus aucune langue sous 13 sur 120**, contre vingt-six à zéro au départ. Ce tableau est celui de Tatoeba ; sur du chat le classement est différent, voir 2bis.
@@ -102,12 +102,12 @@ Le bas du tableau n'est plus fait de langues sans règle mais de langues dont le
 |---|---:|---|
 | id → ms | 44 | **structurellement bloqué sur Tatoeba**, voir 5.27 |
 | ms → id | 33 | même raison : cette prose n'écrit pas ce qui les sépare |
-| ca → es | 29 | 42 avant les portes, `l·l` n'apparaît que 2 fois sur 120 |
 | no → sv | 28 | 48, puis 41, puis 34 avant le tri intérieur (5.28) |
 | da → sv | 24 | 44, puis 39, puis 31 |
 | da → nl | 22 | 28 avant le tri intérieur, tombé sans être visé |
-| ca → fr | 19 | 29 avant les portes, **le plus gros bloc encore vraiment ouvert** |
-| sk → cs | 15 | 30 avant les lettres exclusives, 18 avant `iť` et `sť` |
+| ca → es | 17 | 42, puis 29 avant les mots en plein air (5.30) |
+| sk → cs | 14 | 30 avant les lettres exclusives, 18 avant `iť` et `sť` |
+| ca → fr | 11 | 29 avant les portes, 19 avant les mots en plein air |
 | zh-tw → zh | 15 | 120 sur 120 au départ |
 | pt → es | 14 | |
 | da → de | 9 | 15 avant le tri intérieur |
@@ -1139,6 +1139,66 @@ Un test a ete **repare et pas renumerote** : `composeHint.test.ts` opposait les 
 
 ---
 
+### 5.30 LE DIAGNOSTIC PORTÉ AUX PORTES PARTAGÉES, et le catalan (`819f421`)
+
+`porte-diagnostic.mjs` n'avait jamais été braqué que sur les deux portes écrites à la main, et il a payé les deux fois. Les dix-neuf portes partagées n'avaient jamais eu droit à la question, et une porte partagée a une cause de silence de plus qu'une porte à deux langues.
+
+```
+ca, 155 lignes : 48 nommées, 63 SANS AUCUNE PORTE, 42 porte ouverte sans mot, 2 avec rival
+```
+
+**La moitié du problème catalan n'était pas derrière une porte.** `Bon dia!`, `Tinc dues filles.`, `No vull tornar.` ne portent aucune lettre accentuée : aucun jeu de porte, si gros soit-il, ne peut les atteindre. Un jeu de porte plus gros était le geste évident et il aurait travaillé la moitié la plus petite.
+
+`scratchpad/harness/langue-candidats.mjs` sert l'autre moitié : pour UNE langue contre les quarante et une autres, quel token, séquence ou fin de mot de ses lignes MUETTES personne d'autre n'écrit. Dix mots outils sortent propres, **cinq venaient du jeu de porte où ils ne pouvaient jamais se déclencher** et sont promus en même temps qu'ils en sortent.
+
+```
+ca 36 -> 65 sur 120, ca->es 29 -> 17, ca->fr 19 -> 11
+```
+
+**`té` est dehors et c'est la décision la plus propre du tour** : il vaut trois lignes catalanes, une ligne tchèque les lui refuse, et neutraliser cette ligne demanderait un mot tchèque choisi pour elle, ce qui est de la mémorisation. **`vam` est dehors et seul le banc clavier l'a refusé** : le slovaque `vám` sans son accent est `vam`.
+
+**L'ABLATION MENT UNE TROISIÈME FAÇON**, et ce tour l'a attrapée. `mot-ablation.mjs` lisait six bancs quand `porte-diff.mjs` en lance dix : `gaire`, `aquesta` et `molt` rendaient zéro partout et ont failli être supprimés. Ils valent deux lignes sur le banc clavier, où ce sont les AUTRES langues qui ont perdu leurs accents et où la concurrence n'est plus la même. **Elle ne ment pas sur ce qu'elle mesure, elle ment par ce qu'elle ne regarde pas.** Deux autres défauts sont sortis avec : elle ne savait pas lire un mot dans une TABLE, seulement dans une regex isolée, ni retirer le PREMIER mot d'une alternance, faute de barre devant. Onze mots d'affilée répondaient INTROUVABLE, ce qui ressemble à une faute de frappe et se lit comme un résultat.
+
+---
+
+### 5.31 LES JEUX DE PORTE ROUVERTS, soixante-treize lignes (`35b42fe`)
+
+**Le plus gros tour de la branche, et il n'y avait rien à inventer.** Les dix-neuf jeux de mots avaient été écrits à la main en même temps que la table des portes et personne ne les avait rouverts. Le diagnostic dit combien de lignes attendent derrière chaque porte :
+
+```
+sk 64   hu 52   sl 46   fi 41   es 38   fr 36   pt 30   it 19
+```
+
+`scratchpad/harness/porte-mots-candidats.mjs` les propose, et **son seuil est tout l'intérêt** : il n'exige PAS qu'un mot soit exclusif sur quarante-deux langues, seulement que les autres langues DE CETTE PORTE-LÀ ne l'écrivent pas. C'est ce que le fichier dit depuis la première porte, où `on`, `ei`, `ma`, `ta` et `ja` redeviennent utilisables derrière `õ`. Aucun crible ne savait poser cette question.
+
+**Trente-neuf mots sur quarante transfèrent**, le meilleur rapport du chantier, et il s'explique : ce sont des mots OUTILS. `az` `én` `még` `most` pour le hongrois, `moj` `kdo` `so` pour le slovène, `ça` `été` `fois` pour le français, `ele` `tudo` `só` `foi` pour le portugais, `čo` `niečo` pour le slovaque. **Un mot outil ne mémorise pas un corpus, il décrit une langue.**
+
+Le seul mort est `tienes`, et il se lit : deuxième personne, donc plus rare que l'infinitif ou la troisième, quand `yo`, `qué` et `ese` à côté rapportent chacun. **La fréquence d'une FORME compte autant que l'exclusivité du mot.**
+
+```
+tatoeba sur  3473r -> 3546r        chat2 AVEUGLE sur 127r -> 136r, 49 -> 52 %
+hu 55->72, pt 60->70, fr 58->66, es 53->61, fi 51->60, sl 46->59, sk 38->44
+```
+
+---
+
+### 5.32 LES MOTS EN PLEIN AIR, cinq langues de plus (`e353d62`)
+
+Même crible que pour le catalan, porté aux langues dont le diagnostic dit qu'elles ont beaucoup de lignes sans porte : it 82, sl 52, es 50, pt 48, fr 45.
+
+```
+it  che tutti mia      sl  iz ima      es  tengo tiempo mismo
+pt  ele ela            fr  joue
+```
+
+**Huit des dix rapportent PLUS sur le banc clavier que sur Tatoeba** : `che` +7 et +8, `ele` +5 et +8, `ela` +3 et +5. Un mot outil sans accent vaut davantage là où les autres langues ont perdu les leurs, et c'est le régime réel du produit.
+
+**`non` est celui qui s'échappe**, seize lignes italiennes, et c'est le mot français à la lettre près. Le mettre dans les deux jeux ne le sauve pas : les deux voteraient sur chaque ligne et l'unanimité tomberait, ce qui est du silence acheté au prix du bruit.
+
+**Le lot a tué deux entrées ailleurs dans le fichier**, quatrième occurrence de 5.19 : `cê` pour le portugais, que `ele` et `ela` couvrent, et la porte `ì` entre vietnamien et italien, que `che`, `tutti` et `mia` atteignent avant. Les deux sortent et leur retrait ne coûte rien sur les dix bancs.
+
+---
+
 ## 6. État par phase
 
 | Phase | Contenu | État |
@@ -1274,6 +1334,9 @@ tl tgl   pt-br aucun (partage por)   zh-tw aucun (partage cmn)
 | `scratchpad/harness/arabe-preuve.mjs` | **quelle preuve l'arabe porte lui-même**, jeu par jeu | oui |
 | `scratchpad/harness/paire-declencheur.mjs` | **le crible du déclencheur de la paire**, dans le bon registre | oui |
 | `scratchpad/harness/paire-sequences.mjs` | **le crible du TRI INTÉRIEUR**, deux codes de langue en argument | oui |
+| `scratchpad/harness/porte-partagee-diagnostic.mjs` | le diagnostic porté aux **portes partagées**, trois causes de silence | oui |
+| `scratchpad/harness/langue-candidats.mjs` | **une langue contre les 41 autres**, mots, séquences et fins de mot | oui |
+| `scratchpad/harness/porte-mots-candidats.mjs` | **quel mot mettre dans un jeu de porte**, seuil sur les rivaux seuls | oui |
 | `src/content/langChatDixCorpus.ts` | **le DIXIÈME banc**, 100 lignes, ar ja ko ru | oui |
 | `scratchpad/harness/lang-matrix.mjs` | écrit le rapport lisible | oui |
 | `scratchpad/harness/lang-matrix.md` | le rapport | non, régénérable |
@@ -1406,6 +1469,9 @@ Commits, du plus ancien au plus récent :
 | `1f1f32e` | Open the Malay gate on the word both languages write, and ship five of thirty-four |
 | `3eb7479` | Sort Danish from Norwegian on fourteen spelling rules, and gain thirty-two lines |
 | `be65c1d` | Run the pair screen on three more close pairs, and take seventeen more lines |
+| `819f421` | Ask the shared gates the diagnostic question, and take Catalan from 36 to 65 |
+| `35b42fe` | Reopen the gate word sets, which nobody had touched since the day they were written |
+| `e353d62` | Give five more languages the open-air words Catalan got, and retire two entries they killed |
 
 ---
 
@@ -1502,7 +1568,7 @@ Ne pas trancher ça dans une passe de détection. **Et surtout : le faire seul n
 
 - Commits : sujet à l'impératif, corps expliquant la cause, le correctif, et **comment il a été constaté**. Terminer par `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`.
 - Gate : `npm run release:check`, jamais seulement `typecheck` et `test`. Il lance aussi `lint`.
-- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **96013 aujourd'hui** (`be65c1d`), soit +4210 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-sept portes et 433 entrées de lexique. Le détail des neuf derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, **-51 pour +14**, **+13 pour +39**, +65 pour +8, -10 pour +2, +22 pour +5, **-76 pour zéro**, qui ne fait que supprimer des entrées qui ne pouvaient plus se déclencher, **+5 pour +1** ligne aveugle en resserrant `aat`, **+94 pour +2**, le seul tour du chantier à payer un prix pareil parce qu'il achète douze caractères cantonais dont aucun ne gagne de ligne sur les bancs d'aujourd'hui, **+73 pour quatre erreurs fermées** avec la preuve arabe, et **+10 pour +7 lignes aveugles** au dernier, qui est le meilleur rapport de tout le chantier après la porte nordique. Les deux meilleurs rapports de tout le chantier sont la porte nordique à mot, qui supprime plus de code qu'elle n'en ajoute, et les marqueurs tagalog, treize octets. Les six corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
+- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **96315 aujourd'hui** (`e353d62`), soit +4512 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-sept portes et 433 entrées de lexique. Le détail des neuf derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, **-51 pour +14**, **+13 pour +39**, +65 pour +8, -10 pour +2, +22 pour +5, **-76 pour zéro**, qui ne fait que supprimer des entrées qui ne pouvaient plus se déclencher, **+5 pour +1** ligne aveugle en resserrant `aat`, **+94 pour +2**, le seul tour du chantier à payer un prix pareil parce qu'il achète douze caractères cantonais dont aucun ne gagne de ligne sur les bancs d'aujourd'hui, **+73 pour quatre erreurs fermées** avec la preuve arabe, et **+10 pour +7 lignes aveugles** au dernier, qui est le meilleur rapport de tout le chantier après la porte nordique. Les deux meilleurs rapports de tout le chantier sont la porte nordique à mot, qui supprime plus de code qu'elle n'en ajoute, et les marqueurs tagalog, treize octets. Les six corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
 - Pas de nom de streamer ou de chaîne en dur, nulle part.
 - Pas d'emoji dans le code.
 - Les données de test vivent **inline dans le fichier de test**, pas dans une fixture séparée.
