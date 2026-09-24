@@ -42,8 +42,8 @@ const original = readFileSync(SOURCE, 'utf8');
  * d'alternance des deux cotes, `|mot|` ou `|mot)`.
  */
 const MOTS = {
-  MOTS_BULGARES: ['се','го','има','нещо','тя','той','моля'],
-  LETTRES_EXCLUSIVES: ['kui','selle','mulle','tavo','reikia','patinka','iyon','mong','maraming'],
+  LETTRES_EXCLUSIVES: ['nem','egy','mindent','vsi','dober','svojo','kdor','tady','velmi','líbí','taas','sinne'],
+  MOTS_RUSSES: ['он','она','вчера'],
 };
 
 /**

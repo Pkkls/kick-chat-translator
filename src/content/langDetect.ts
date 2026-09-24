@@ -942,6 +942,17 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/(^|[^\p{L}])(kui|selle|mulle)([^\p{L}]|$)/iu, 'et'],
   [/(^|[^\p{L}])(tavo|reikia|patinka)([^\p{L}]|$)/iu, 'lt'],
   [/(^|[^\p{L}])(iyon|mong|maraming)([^\p{L}]|$)/iu, 'tl'],
+  // Quatre langues de plus. `nem` et `egy` sortent du jeu de porte hongrois, ou
+  // ils ne servaient qu'une ligne accentuee sur deux ; ce sont les deux mots
+  // les plus frequents de la langue et ils valent quatorze et sept lignes en
+  // plein air.
+  //
+  // DEHORS : `volt` est un volt partout, `imam` est un imam, `bi` et `ez` sont
+  // trop courts, `bila` est le malais pour "quand".
+  [/(^|[^\p{L}])(nem|egy|mindent)([^\p{L}]|$)/iu, 'hu'],
+  [/(^|[^\p{L}])(vsi|dober|svojo|kdor)([^\p{L}]|$)/iu, 'sl'],
+  [/(^|[^\p{L}])(tady|velmi|líbí)([^\p{L}]|$)/iu, 'cs'],
+  [/(^|[^\p{L}])(taas|sinne)([^\p{L}]|$)/iu, 'fi'],
   // Quatrieme groupe, et la difference avec le troisieme est la SOURCE : ces
   // motifs-la ont ete extraits du registre chat et non de la prose. Le groupe
   // precedent avait rapporte 76 lignes sur Tatoeba et une seule a l'aveugle,
@@ -1307,7 +1318,7 @@ const JEUX_DE_PORTE: Readonly<Record<string, RegExp>> = {
   sl: /(^|[^\p{L}])(sem|lahko|nekaj|ampak|kaj|tudi|ker|zdaj|zelo|zakaj|moj|moja|kdo|hočem|so)([^\p{L}]|$)/iu,
   lt: /(^|[^\p{L}])(yra|labai|kaip|tai|jis|ką|dabar|nieko|taip|aš|čia|prieš)([^\p{L}]|$)/iu,
   lv: /(^|[^\p{L}])(ļoti|viņš|viņa|kāds|paldies|tagad|arī|nav)([^\p{L}]|$)/iu,
-  hu: /(^|[^\p{L}])(hogy|nem|egy|csak|mint|nagyon|mindig|megint|semmi|miért|jó|az|már|én|ön|még|most|ezt|engem|tényleg)([^\p{L}]|$)/iu,
+  hu: /(^|[^\p{L}])(hogy|csak|mint|nagyon|mindig|megint|semmi|miért|jó|az|már|én|ön|még|most|ezt|engem|tényleg)([^\p{L}]|$)/iu,
   pl: /(^|[^\p{L}])(jest|się|nasz|bardzo|jeszcze|wszystko|dlaczego|który)([^\p{L}]|$)/iu,
   vi: /(^|[^\p{L}])(với|của|một|không|được|rồi|quá|này|tôi)([^\p{L}]|$)/iu,
   es: /(^|[^\p{L}])(pero|muy|con|los|las|una|esto|esa|siempre|qué|yo|ese|ayer)([^\p{L}]|$)/iu,
@@ -1967,7 +1978,7 @@ const INFINITIF_RUSSE = /ть([^\p{L}]|$)/iu;
  * contient pas ce qu'elle doit contenir.
  */
 const MOTS_RUSSES =
-  /(^|[^\p{L}])(кто|нет|они|его|можно|это|очень|сейчас|только|когда|хорошо|меня|тебя|ничего|нужно|давай|сколько|пока|больше|спасибо|привет|тоже|где|почему|здесь|сегодня|какой|вообще|лучше|понятно|молодец|смотрю|смотреть|происходит|отлично|отличная|вы|мы|всё|себя)([^\p{L}]|$)/iu;
+  /(^|[^\p{L}])(кто|нет|они|его|он|она|вчера|можно|это|очень|сейчас|только|когда|хорошо|меня|тебя|ничего|нужно|давай|сколько|пока|больше|спасибо|привет|тоже|где|почему|здесь|сегодня|какой|вообще|лучше|понятно|молодец|смотрю|смотреть|происходит|отлично|отличная|вы|мы|всё|себя)([^\p{L}]|$)/iu;
 
 /**
  * La terminaison d'adjectif masculin russe. L'ukrainien ecrit -ий et le bulgare
