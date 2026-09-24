@@ -71,9 +71,18 @@ if (!jeux[CIBLE]) {
   process.exit(1);
 }
 
+/**
+ * LES CORPUS QU'ON A LE DROIT DE LIRE. `langChatCorpus2.ts` est AVEUGLE : il
+ * sert a compter le bruit, jamais a proposer un candidat. Lui demander si un
+ * mot y apparait ne l expose pas ; y chercher des mots, si. Protocole 4.4bis.
+ */
 const corpus = {};
-for (const c of [LANG_CORPUS, LANG_CHAT, LANG_CHAT2, LANG_CHAT3, LANG_CHAT_DIX]) {
+for (const c of [LANG_CORPUS, LANG_CHAT, LANG_CHAT3, LANG_CHAT_DIX]) {
   for (const [l, v] of Object.entries(c)) corpus[l] = [...(corpus[l] ?? []), ...v];
+}
+const bruit = {};
+for (const c of [LANG_CORPUS, LANG_CHAT, LANG_CHAT2, LANG_CHAT3, LANG_CHAT_DIX]) {
+  for (const [l, v] of Object.entries(c)) bruit[l] = [...(bruit[l] ?? []), ...v];
 }
 
 /** Les lignes ou une porte s'ouvre et ou le jeu de la cible ne dit rien. */
@@ -105,7 +114,7 @@ for (const [mot, n] of compte) {
   const re = new RegExp(`(^|[^\\p{L}])${mot}([^\\p{L}]|$)`, 'iu');
   const rivaux = [];
   const ailleurs = [];
-  for (const [l, v] of Object.entries(corpus)) {
+  for (const [l, v] of Object.entries(bruit)) {
     if (l === CIBLE) continue;
     const k = v.filter((t) => re.test(t)).length;
     if (!k) continue;

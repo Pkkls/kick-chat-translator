@@ -54,17 +54,30 @@ import { confidentLanguage } from '../../src/content/langDetect.ts';
 const [A, B] = [process.argv[2] ?? 'no', process.argv[3] ?? 'da'];
 const SEUIL = Number(process.argv[4] ?? 3);
 
+/**
+ * LES CORPUS QU'ON A LE DROIT DE LIRE, et c'est la moitie de ce script.
+ *
+ * Un crible propose des candidats en REGARDANT des lignes. Si ces lignes
+ * viennent d'un corpus tenu a l'ecart, le corpus cesse d'etre tenu a l'ecart et
+ * le chiffre qu'il rend cesse de mesurer quoi que ce soit. Protocole 4.4bis : un
+ * banc qu'on a regarde cesse d'etre un banc.
+ *
+ * Les deux corpus AVEUGLES, `langChatCorpus2.ts` et `langChatPaireCorpus.ts`,
+ * servent donc au BRUIT, jamais aux candidats. Le bruit ne les expose pas : on
+ * leur demande si un mot y apparait, pas ce qu'ils contiennent.
+ */
+const OU_LIRE = [LANG_CORPUS, LANG_CHAT, LANG_CHAT3, LANG_CHAT_DIX, LANG_CHAT_PAIRE_REGLAGE];
+const OU_COMPTER_LE_BRUIT = [...OU_LIRE, LANG_CHAT2, LANG_CHAT_PAIRE];
+
 const corpus = {};
-for (const c of [
-  LANG_CORPUS,
-  LANG_CHAT,
-  LANG_CHAT2,
-  LANG_CHAT3,
-  LANG_CHAT_DIX,
-  LANG_CHAT_PAIRE,
-  LANG_CHAT_PAIRE_REGLAGE,
-]) {
+for (const c of OU_LIRE) {
   for (const [l, v] of Object.entries(c)) corpus[l] = [...(corpus[l] ?? []), ...v];
+}
+
+/** Le bruit se compte partout, y compris sur les aveugles : compter n'expose rien. */
+const bruit = {};
+for (const c of OU_COMPTER_LE_BRUIT) {
+  for (const [l, v] of Object.entries(c)) bruit[l] = [...(bruit[l] ?? []), ...v];
 }
 if (!corpus[A] || !corpus[B]) {
   console.error(`langue inconnue : ${A} ou ${B}`);
@@ -96,17 +109,21 @@ function sequences(lignes) {
 const vu = {};
 for (const l of Object.keys(corpus)) vu[l] = sequences(corpus[l]);
 
+/** Le bruit se compte sur tout, aveugles compris : compter n'expose rien. */
+const vuBruit = {};
+for (const l of Object.keys(bruit)) vuBruit[l] = sequences(bruit[l]);
+
 function propose(cible, autre) {
   const mutes = muettes(cible).map((t) => t.toLowerCase());
   const out = [];
   for (const [bout, n] of vu[cible]) {
     if (n < SEUIL) continue;
-    if (vu[autre].get(bout)) continue;
+    if (vuBruit[autre].get(bout)) continue;
     const ferme = mutes.filter((t) => t.includes(bout)).length;
     if (!ferme) continue;
-    const ailleurs = Object.keys(corpus)
-      .filter((l) => l !== cible && l !== autre && vu[l].get(bout))
-      .map((l) => `${l}=${vu[l].get(bout)}`);
+    const ailleurs = Object.keys(bruit)
+      .filter((l) => l !== cible && l !== autre && vuBruit[l].get(bout))
+      .map((l) => `${l}=${vuBruit[l].get(bout)}`);
     out.push([bout, n, ferme, ailleurs]);
   }
   // Une sequence dont une plus courte, elle aussi retenue, fait deja le travail

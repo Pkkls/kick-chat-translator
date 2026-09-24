@@ -48,17 +48,30 @@ if (!/\[\^\\{1,2}p\{L\}\]/.test(source)) {
 const CIBLE = process.argv[2] ?? 'ca';
 const SEUIL = Number(process.argv[3] ?? 3);
 
+/**
+ * LES CORPUS QU'ON A LE DROIT DE LIRE, et c'est la moitie de ce script.
+ *
+ * Un crible propose des candidats en REGARDANT des lignes. Si ces lignes
+ * viennent d'un corpus tenu a l'ecart, le corpus cesse d'etre tenu a l'ecart et
+ * le chiffre qu'il rend cesse de mesurer quoi que ce soit. Protocole 4.4bis : un
+ * banc qu'on a regarde cesse d'etre un banc.
+ *
+ * Les deux corpus AVEUGLES, `langChatCorpus2.ts` et `langChatPaireCorpus.ts`,
+ * servent donc au BRUIT, jamais aux candidats. Le bruit ne les expose pas : on
+ * leur demande si un mot y apparait, pas ce qu'ils contiennent.
+ */
+const OU_LIRE = [LANG_CORPUS, LANG_CHAT, LANG_CHAT3, LANG_CHAT_DIX, LANG_CHAT_PAIRE_REGLAGE];
+const OU_COMPTER_LE_BRUIT = [...OU_LIRE, LANG_CHAT2, LANG_CHAT_PAIRE];
+
 const corpus = {};
-for (const c of [
-  LANG_CORPUS,
-  LANG_CHAT,
-  LANG_CHAT2,
-  LANG_CHAT3,
-  LANG_CHAT_DIX,
-  LANG_CHAT_PAIRE,
-  LANG_CHAT_PAIRE_REGLAGE,
-]) {
+for (const c of OU_COMPTER_LE_BRUIT) {
   for (const [l, v] of Object.entries(c)) corpus[l] = [...(corpus[l] ?? []), ...v];
+}
+
+/** La source des candidats, aveugles exclus. */
+const lisible = {};
+for (const c of OU_LIRE) {
+  for (const [l, v] of Object.entries(c)) lisible[l] = [...(lisible[l] ?? []), ...v];
 }
 if (!corpus[CIBLE]) {
   console.error(`langue inconnue : ${CIBLE}`);
@@ -74,7 +87,7 @@ for (const [l, v] of Object.entries(corpus)) {
   for (const t of v) ailleurs.push([l, t]);
 }
 
-const muettes = corpus[CIBLE].filter((t) => confidentLanguage(t) === undefined);
+const muettes = (lisible[CIBLE] ?? []).filter((t) => confidentLanguage(t) === undefined);
 console.log(
   `${CIBLE} : ${corpus[CIBLE].length} lignes, ${muettes.length} muettes. ` +
     `${ailleurs.length} lignes ailleurs, ${melangees.length} melangees. Seuil ${SEUIL}.`,
