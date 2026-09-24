@@ -965,8 +965,10 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
  * a 41 et `da -> sv` de 44 a 42, ce qui est un progres et pas une fermeture.
  */
 const LETTRES_DANO_NORVEGIENNES = /[øæ]/iu;
-const MOTS_NORVEGIENS = /(^|[^\p{L}])(meg|deg|seg|hva|hvem|hvor|noe|noen|etter|av|ikkje|veldig)([^\p{L}]|$)/iu;
-const MOTS_DANOIS = /(^|[^\p{L}])(mig|dig|sig|hvad|noget|nogen|efter|af|meget)([^\p{L}]|$)/iu;
+const MOTS_NORVEGIENS =
+  /(^|[^\p{L}])(meg|deg|seg|hva|noe|noen|etter|av|ikkje|veldig|vært)([^\p{L}]|$)/iu;
+const MOTS_DANOIS =
+  /(^|[^\p{L}])(mig|dig|sig|hvad|noget|nogen|efter|af|meget|hende|været)([^\p{L}]|$)/iu;
 // LES SEQUENCES, et elles valent SEPT des DIX lignes de ce tour a elles seules.
 //
 // Ce qui separe ces deux langues est le plus souvent une LETTRE dans un mot et
@@ -1080,7 +1082,37 @@ const MOTS_SUEDOIS = /(^|[^\p{L}])(jag|och|inte|är|från)([^\p{L}]|$)/iu;
 // declencheur qui vit dans le mot qui tranche, sous une autre forme : ici il
 // EST le mot qui tranche. **Un declencheur ne doit appartenir a aucun des deux
 // jeux places derriere lui**, et c'est verifiable a l'oeil en trente secondes.
-const MOTS_DANO_NORVEGIENS = /(^|[^\p{L}])(jeg|ikke|til|vil|hun)([^\p{L}]|$)/iu;
+// DEUXIEME TOUR DU DECLENCHEUR, et il a coute un mot qui etait la depuis le
+// debut.
+//
+// `porte-diagnostic.mjs` comptait encore 22 lignes norvegiennes sans aucun
+// declencheur apres le tour de sequences. Quatre mots que les deux ecrivent et
+// que le suedois non entrent ici : `bare` contre `bara`, `selv` contre `själv`,
+// `mange` contre `många`, `hvem` contre `vem`.
+//
+// `hvem` ET `hvor` ETAIENT DANS LE JEU NORVEGIEN ET LE DANOIS LES ECRIT. Ils y
+// etaient faux depuis le premier jour et ils n'avaient jamais rien coute, parce
+// que la porte ne s'ouvrait pas sur les lignes ou ca se voyait. `mange` la fait
+// s'ouvrir, et `hvor mange er her nu`, qui est du danois, est parti au
+// norvegien.
+//
+// **ELARGIR UN DECLENCHEUR REND RETROACTIVEMENT FAUX CE QUI EST DERRIERE.**
+// Troisieme fois sur cette branche, apres `hvor` lui-meme au tour precedent et
+// `je` du cote malais. Les deux interrogatifs passent au declencheur, ou ils
+// sont justes : ils nomment la PAIRE et pas une des deux langues.
+//
+// ONZE MOTS SUR DIX-HUIT SONT MORTS et sortent : `skal`, `også`, `hvordan`,
+// `ham`, `hvorfor`, `fordi`, `hvis`, `nok`, `hvor`, `aldri`, `sådan`. Les
+// retirer ensemble donne exactement les memes chiffres sur les dix bancs.
+//
+// LE TRI INTERIEUR, LUI, EST EPUISE, et c'est un resultat negatif a ne pas
+// refaire : `paire-sequences.mjs` ne rend plus que des sequences que le danois
+// ecrit et que le corpus ne montre pas. `vel` vit dans `ja vel`, `sn` dans
+// `snakke`, `unn` dans `kunne`, `oen` dans `skoen`, `ært` dans `lært`, et les
+// cinq mesurent zero du cote danois. Le relancer apres un corpus neuf, pas
+// avant.
+const MOTS_DANO_NORVEGIENS =
+  /(^|[^\p{L}])(jeg|ikke|til|vil|hun|bare|selv|mange|hvem)([^\p{L}]|$)/iu;
 
 /** Le tri interieur, appele une fois le suedois ecarte d'une facon ou d'une autre. */
 function norvegienOuDanois(text: string): string | undefined {

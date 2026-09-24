@@ -28,11 +28,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on two lines in five and is almost never wrong.
   // The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 3588, silent: 1449, wrong: 3 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 3594, silent: 1443, wrong: 3 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
-    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 1021, silent: 656, wrong: 3 });
+    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 1022, silent: 655, wrong: 3 });
   });
 
   // The expensive one. This is the answer that deletes a message in silence when
@@ -40,11 +40,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
   it('detectLanguage is wrong on a fifth of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 4069, silent: 429, wrong: 542 });
+    expect(plain(DETECT.total)).toEqual({ right: 4075, silent: 430, wrong: 535 });
   });
 
   it('detectLanguage is wrong on a quarter of short lines', () => {
-    expect(plain(DETECT.shortOnly)).toEqual({ right: 1175, silent: 254, wrong: 251 });
+    expect(plain(DETECT.shortOnly)).toEqual({ right: 1176, silent: 255, wrong: 249 });
   });
 });
 
@@ -138,8 +138,13 @@ describe('the languages the detector cannot name at all', () => {
     // sequences later, `no` is 49 of 120 and `da` is 51, from 37 and 31, and
     // the two pairs are 28 and 24. `da->nl` fell from 28 to 22 with them,
     // which nothing in this round was aiming at.
-    expect(DETECT.confusions.get('no->sv')).toBe(28);
-    expect(DETECT.confusions.get('da->sv')).toBe(24);
+    //
+    // TENTH ROUND, the trigger side: four words both write and Swedish does not,
+    // `bare` against `bara`, `selv` against `själv`, `mange` against `många`,
+    // `hvem` against `vem`. 28 and 24 to 26 and 22, and `no` 49 of 120 to 51,
+    // `da` 51 to 55.
+    expect(DETECT.confusions.get('no->sv')).toBe(26);
+    expect(DETECT.confusions.get('da->sv')).toBe(22);
     expect(DETECT.confusions.get('ca->es')).toBe(17);
   });
 });
