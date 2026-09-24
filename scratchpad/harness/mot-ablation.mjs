@@ -42,14 +42,8 @@ const original = readFileSync(SOURCE, 'utf8');
  * d'alternance des deux cotes, `|mot|` ou `|mot)`.
  */
 const MOTS = {
-  'JEUX_DE_PORTE.hu': 'az már én ön még most ezt engem tényleg'.split(' '),
-  'JEUX_DE_PORTE.sl': 'moj moja kdo hočem so'.split(' '),
-  'JEUX_DE_PORTE.fi': 'hänen meitä tämän koskaan'.split(' '),
-  'JEUX_DE_PORTE.es': 'qué yo ese ayer tienes'.split(' '),
-  'JEUX_DE_PORTE.fr': 'ça été étais fois mois'.split(' '),
-  'JEUX_DE_PORTE.pt': 'ele tudo só foi ainda esse um'.split(' '),
-  'JEUX_DE_PORTE.it': 'molto mio'.split(' '),
-  'JEUX_DE_PORTE.sk': 'čo niečo chcem'.split(' '),
+  MOTS_MALAIS: 'rosak lelaki wang'.split(' '),
+  MOTS_INDONESIENS: 'gitu'.split(' '),
 };
 
 /**
