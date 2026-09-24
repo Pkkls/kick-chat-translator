@@ -70,8 +70,8 @@ describe('le chemin sur, sur du chat', () => {
   // derniers points pendant que le lexique avait cesse de rapporter quoi que ce
   // soit. C'etait une prediction, pas une mesure, et elle s'est trompee.
   it('se tait sur trois lignes de chat sur quatre', () => {
-    expect(plain(CHAT_SURE.total)).toEqual({ right: 234, silent: 156, wrong: 0 });
-    expect(muet(CHAT_SURE.total)).toBe(40);
+    expect(plain(CHAT_SURE.total)).toEqual({ right: 237, silent: 153, wrong: 0 });
+    expect(muet(CHAT_SURE.total)).toBe(39);
   });
 
   // Ce que coute le clavier, et c'est la fragilite de toute l'approche par
@@ -85,8 +85,8 @@ describe('le chemin sur, sur du chat', () => {
   // vingt-six portes a lettre sont muettes. Une ligne de plus ici, et c'est la
   // direction a retenir pour les langues que le clavier deshabille.
   it('perd un tiers de son rappel quand les diacritiques tombent', () => {
-    expect(plain(NU_SURE.total)).toEqual({ right: 156, silent: 234, wrong: 0 });
-    expect(muet(NU_SURE.total)).toBe(60);
+    expect(plain(NU_SURE.total)).toEqual({ right: 159, silent: 231, wrong: 0 });
+    expect(muet(NU_SURE.total)).toBe(59);
   });
 });
 
@@ -110,7 +110,7 @@ describe('le chemin brut, sur du chat', () => {
   // n'est pas comble, il est court-circuite, et il reapparaitra entier des que
   // le lexique manquera un mot.
   it('se trompe sur plus d une ligne de chat sur quatre', () => {
-    expect(plain(CHAT_BRUT.total)).toEqual({ right: 273, silent: 50, wrong: 67 });
+    expect(plain(CHAT_BRUT.total)).toEqual({ right: 275, silent: 49, wrong: 66 });
     const tatoeba = runMatrix(detectLanguage, memesLangues());
     const partChat = CHAT_BRUT.total.wrong / 390;
     const partTatoeba = tatoeba.total.wrong / (26 * 120);
@@ -118,7 +118,7 @@ describe('le chemin brut, sur du chat', () => {
   });
 
   it('empire encore sans diacritiques', () => {
-    expect(plain(NU_BRUT.total)).toEqual({ right: 214, silent: 87, wrong: 89 });
+    expect(plain(NU_BRUT.total)).toEqual({ right: 216, silent: 86, wrong: 88 });
   });
 
   // Sept langues ne marquent pas un seul point sur le chemin BRUT, franc compris,
@@ -154,8 +154,8 @@ describe('le contraste avec Tatoeba, sur les memes langues', () => {
   // le chat en ecrit moins que la prose.
   it('montre que le registre coute a franc et pas au chemin sur', () => {
     const t = runMatrix(confidentLanguage, memesLangues());
-    expect(muet(t.total)).toBe(39);
-    expect(muet(CHAT_SURE.total)).toBe(40);
+    expect(muet(t.total)).toBe(38);
+    expect(muet(CHAT_SURE.total)).toBe(39);
     // 5, puis 3 avec le retrait de `mano`, puis 1 avec les mots jawi : la seule
     // erreur qui reste sur les 26 langues du chat est `ms -> ar`, une ligne
     // jawi sans lettre ni mot utilisable.

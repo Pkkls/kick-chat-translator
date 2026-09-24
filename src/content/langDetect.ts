@@ -953,6 +953,25 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/(^|[^\p{L}])(vsi|dober|svojo|kdor)([^\p{L}]|$)/iu, 'sl'],
   [/(^|[^\p{L}])(tady|velmi|líbí)([^\p{L}]|$)/iu, 'cs'],
   [/(^|[^\p{L}])(taas|sinne)([^\p{L}]|$)/iu, 'fi'],
+  // LES SIX DERNIERES LANGUES QUE LE CRIBLE EN PLEIN AIR N AVAIT PAS VUES, et
+  // ce sont les plus hautes du tableau, ce qui explique pourquoi elles etaient
+  // passees apres : on cherche d'abord la ou il manque le plus.
+  //
+  // La moitie vient des jeux de porte, ou elle ne servait quune ligne accentuee
+  // sur deux : `nicht` et `auf`, `jag` et `och`, `jest`, `heeft`. Ce sont les
+  // mots les plus frequents de leurs langues et ils valent sept, six, vingt-deux,
+  // huit, treize et cinq lignes en plein air.
+  //
+  // `ich` EST DEHORS malgre trente-cinq lignes allemandes : une ligne slovaque
+  // le porte, et sur ce chemin une fausse coute plus cher que trente justes.
+  // `inte` est dehors aussi, et pour une raison que seul le banc des lignes
+  // MELANGEES voit : il repond sur une ligne a deux langues, ce qui est
+  // exactement ce que le chemin sur ne doit pas faire.
+  [/(^|[^\p{L}])(nicht|auf|auch|jetzt|nach|wann)([^\p{L}]|$)/iu, 'de'],
+  [/(^|[^\p{L}])(jest|jestem|tego)([^\p{L}]|$)/iu, 'pl'],
+  [/(^|[^\p{L}])(dat|aan|heeft|weer)([^\p{L}]|$)/iu, 'nl'],
+  [/(^|[^\p{L}])(acest|vrei)([^\p{L}]|$)/iu, 'ro'],
+  [/(^|[^\p{L}])kadar([^\p{L}]|$)/iu, 'tr'],
   // Quatrieme groupe, et la difference avec le troisieme est la SOURCE : ces
   // motifs-la ont ete extraits du registre chat et non de la prose. Le groupe
   // precedent avait rapporte 76 lignes sur Tatoeba et une seule a l'aveugle,
@@ -1312,14 +1331,14 @@ const JEUX_DE_PORTE: Readonly<Record<string, RegExp>> = {
   fi: /(^|[^\p{L}])(että|mutta|niin|kun|myös|vain|hän|ole|olen|täällä|tänään|mikä|mitä|kaikki|miksi|hänen|meitä|tämän|koskaan)([^\p{L}]|$)/iu,
   sv: /(^|[^\p{L}])(och|inte|är|jag|att|det|som|för|har|med|den|till|hur|här|hon|vill)([^\p{L}]|$)/iu,
   et: /(^|[^\p{L}])(see|ta|ma|kas|aga|siis|väga|miks|midagi|praegu|kõik|ära|välja)([^\p{L}]|$)/iu,
-  de: /(^|[^\p{L}])(nicht|der|die|das|ich|ist|und|mit|für|auf|ein|eine|sich|nur|aber|noch|wieder)([^\p{L}]|$)/iu,
+  de: /(^|[^\p{L}])(der|die|das|ich|ist|und|mit|für|ein|eine|sich|nur|aber|noch|wieder)([^\p{L}]|$)/iu,
   cs: /(^|[^\p{L}])(jsem|jsou|není|ještě|vždycky|proč|byl|jako|dobře)([^\p{L}]|$)/iu,
   sk: /(^|[^\p{L}])(som|sú|veľmi|ešte|prečo|vždy|bol|ako|dobre|čo|niečo|chcem)([^\p{L}]|$)/iu,
   sl: /(^|[^\p{L}])(sem|lahko|nekaj|ampak|kaj|tudi|ker|zdaj|zelo|zakaj|moj|moja|kdo|hočem|so)([^\p{L}]|$)/iu,
   lt: /(^|[^\p{L}])(yra|labai|kaip|tai|jis|ką|dabar|nieko|taip|aš|čia|prieš)([^\p{L}]|$)/iu,
   lv: /(^|[^\p{L}])(ļoti|viņš|viņa|kāds|paldies|tagad|arī|nav)([^\p{L}]|$)/iu,
   hu: /(^|[^\p{L}])(hogy|csak|mint|nagyon|mindig|megint|semmi|miért|jó|az|már|én|ön|még|most|ezt|engem|tényleg)([^\p{L}]|$)/iu,
-  pl: /(^|[^\p{L}])(jest|się|nasz|bardzo|jeszcze|wszystko|dlaczego|który)([^\p{L}]|$)/iu,
+  pl: /(^|[^\p{L}])(się|nasz|bardzo|jeszcze|wszystko|dlaczego|który)([^\p{L}]|$)/iu,
   vi: /(^|[^\p{L}])(với|của|một|không|được|rồi|quá|này|tôi)([^\p{L}]|$)/iu,
   es: /(^|[^\p{L}])(pero|muy|con|los|las|una|esto|esa|siempre|qué|yo|ese|ayer)([^\p{L}]|$)/iu,
   pt: /(^|[^\p{L}])(uma|não|você|muito|isso|essa|também|tudo|só|foi|ainda|esse|um)([^\p{L}]|$)/iu,
@@ -1328,7 +1347,7 @@ const JEUX_DE_PORTE: Readonly<Record<string, RegExp>> = {
   tr: /(^|[^\p{L}])(bir|için|değil|çok|var|bu|şey|daha)([^\p{L}]|$)/iu,
   it: /(^|[^\p{L}])(allora|quindi|comunque|anche|adesso|perché|però|davvero|questo|sono|più|niente|una|molto|mio)([^\p{L}]|$)/iu,
   ro: /(^|[^\p{L}])(foarte|acum|nimic|când|care|pentru|sunt|cred|joacă|cineva|în|cu|aici)([^\p{L}]|$)/iu,
-  nl: /(^|[^\p{L}])(niet|het|een|wat|voor|zijn|heeft|geen|hoe|nog|gewoon|maar)([^\p{L}]|$)/iu,
+  nl: /(^|[^\p{L}])(niet|het|een|wat|voor|zijn|geen|hoe|nog|gewoon|maar)([^\p{L}]|$)/iu,
 };
 
 const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [

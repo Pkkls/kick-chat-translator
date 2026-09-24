@@ -57,7 +57,7 @@ const BANC: Ligne[] = [
   ['goren var mi ne oldu', 'tr', 'tr', undefined],
   ['hij speelt echt slecht', 'nl', 'nl', 'nl'],
   ['wat gebeurt er nu', 'nl', 'nl', 'nl'],
-  ['dat was echt goed man', 'nl', 'de', undefined],
+  ['dat was echt goed man', 'nl', 'nl', 'nl'],
   ['on gra naprawde slabo', 'pl', undefined, undefined],
   ['co tu sie dzieje', 'pl', 'pl', undefined],
   ['nie moge w to uwierzyc', 'pl', 'pl', undefined],
@@ -139,7 +139,12 @@ describe('les totaux du banc latin', () => {
   // cette ligne n en porte aucun. C est le premier silence que la colonne
   // `detectLanguage` perd depuis six passes, donc les totaux bougent : 38 justes
   // et 5 silences deviennent 39 et 4.
-  it('sont 39 justes, 4 silences et 8 fausses avec assurance sur 51', () => {
+  // Onzieme passe, les mots outils des six dernieres langues : `dat was echt
+  // goed man` etait lue ALLEMANDE par franc et elle est neerlandaise. `dat` la
+  // nomme sur les deux chemins. C est la TROISIEME fausse que ce banc perd
+  // depuis qu il existe, et les trois l ont ete par le meme mecanisme, un mot
+  // outil rendu au plein air.
+  it('sont 40 justes, 4 silences et 7 fausses avec assurance sur 51', () => {
     let justes = 0;
     let silences = 0;
     let faux = 0;
@@ -149,9 +154,9 @@ describe('les totaux du banc latin', () => {
       else faux++;
     }
     expect({ justes, silences, faux, total: BANC.length }).toEqual({
-      justes: 39,
+      justes: 40,
       silences: 4,
-      faux: 8,
+      faux: 7,
       total: 51,
     });
   });
