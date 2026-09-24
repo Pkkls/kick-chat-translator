@@ -1273,16 +1273,28 @@ function danoisOuNorvegien(text: string): string | undefined {
  * fr it sl), `on` et `ei` (et, derriere `ä`), `para` et `está` (es et pt),
  * `me`, `no`, `el` (ca es pt fr), `il` (it et fr), `van` (nl et hu), `non` qui
  * est italien ET francais et que seule l'absence du corpus rendait propre.
+ *
+ * TROISIEME TOUR, huit mots pour dix-neuf lignes, et le crible les a rendus en
+ * un seul passage sur les dix langues qui restaient. Le lituanien `aš` "je",
+ * `čia` "ici" et `prieš` "avant" ; le roumain `în`, `cu` et `aici` ; l estonien
+ * `ära`, la particule de defense, et `välja` "dehors".
+ *
+ * Les dix autres langues ne rendent que des mots pleins a une ou deux lignes,
+ * `häivy`, `isäni`, `čaj`, `tisoč`, `genellikle`, ou des mots qu'un rival de la
+ * meme porte ecrit : `on` et `oli` entre finnois et estonien, `je` et `se` entre
+ * slovene et tcheque, `du` entre suedois et allemand, `på` et `om` entre suedois
+ * et nordique. **Le crible de portes est proche de son fond**, et ce qui reste
+ * derriere les portes est ce que deux voisines ecrivent pareil.
  */
 const JEUX_DE_PORTE: Readonly<Record<string, RegExp>> = {
   fi: /(^|[^\p{L}])(että|mutta|niin|kun|myös|vain|hän|ole|olen|täällä|tänään|mikä|mitä|kaikki|miksi|hänen|meitä|tämän|koskaan)([^\p{L}]|$)/iu,
   sv: /(^|[^\p{L}])(och|inte|är|jag|att|det|som|för|har|med|den|till|hur|här|hon|vill)([^\p{L}]|$)/iu,
-  et: /(^|[^\p{L}])(see|ta|ma|kas|aga|siis|väga|miks|midagi|praegu|kõik)([^\p{L}]|$)/iu,
+  et: /(^|[^\p{L}])(see|ta|ma|kas|aga|siis|väga|miks|midagi|praegu|kõik|ära|välja)([^\p{L}]|$)/iu,
   de: /(^|[^\p{L}])(nicht|der|die|das|ich|ist|und|mit|für|auf|ein|eine|sich|nur|aber|noch|wieder)([^\p{L}]|$)/iu,
   cs: /(^|[^\p{L}])(jsem|jsou|není|ještě|vždycky|proč|byl|jako|dobře)([^\p{L}]|$)/iu,
   sk: /(^|[^\p{L}])(som|sú|veľmi|ešte|prečo|vždy|bol|ako|dobre|čo|niečo|chcem)([^\p{L}]|$)/iu,
   sl: /(^|[^\p{L}])(sem|lahko|nekaj|ampak|kaj|tudi|ker|zdaj|zelo|zakaj|moj|moja|kdo|hočem|so)([^\p{L}]|$)/iu,
-  lt: /(^|[^\p{L}])(yra|labai|kaip|tai|jis|ką|dabar|nieko|taip)([^\p{L}]|$)/iu,
+  lt: /(^|[^\p{L}])(yra|labai|kaip|tai|jis|ką|dabar|nieko|taip|aš|čia|prieš)([^\p{L}]|$)/iu,
   lv: /(^|[^\p{L}])(ļoti|viņš|viņa|kāds|paldies|tagad|arī|nav)([^\p{L}]|$)/iu,
   hu: /(^|[^\p{L}])(hogy|nem|egy|csak|mint|nagyon|mindig|megint|semmi|miért|jó|az|már|én|ön|még|most|ezt|engem|tényleg)([^\p{L}]|$)/iu,
   pl: /(^|[^\p{L}])(jest|się|nasz|bardzo|jeszcze|wszystko|dlaczego|który)([^\p{L}]|$)/iu,
@@ -1293,7 +1305,7 @@ const JEUX_DE_PORTE: Readonly<Record<string, RegExp>> = {
   fr: /(^|[^\p{L}])(est|avec|pour|dans|tout|comme|très|sont|fait|ça|été|étais|fois|mois)([^\p{L}]|$)/iu,
   tr: /(^|[^\p{L}])(bir|için|değil|çok|var|bu|şey|daha)([^\p{L}]|$)/iu,
   it: /(^|[^\p{L}])(allora|quindi|comunque|anche|adesso|perché|però|davvero|questo|sono|più|niente|una|molto|mio)([^\p{L}]|$)/iu,
-  ro: /(^|[^\p{L}])(foarte|acum|nimic|când|care|pentru|sunt|cred|joacă|cineva)([^\p{L}]|$)/iu,
+  ro: /(^|[^\p{L}])(foarte|acum|nimic|când|care|pentru|sunt|cred|joacă|cineva|în|cu|aici)([^\p{L}]|$)/iu,
   nl: /(^|[^\p{L}])(niet|het|een|wat|voor|zijn|heeft|geen|hoe|nog|gewoon|maar)([^\p{L}]|$)/iu,
 };
 
