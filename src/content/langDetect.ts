@@ -1431,13 +1431,57 @@ const MOTS_JAWI = /(^|[^\p{L}])(ساي|تيدق|كامو)([^\p{L}]|$)/u;
 
 const MOTS_PERSANS = /(^|[^\p{L}])(است|را|از|او|بود|هر)([^\p{L}]|$)/u;
 
+/**
+ * L'ARABE DOIT SE NOMMER LUI AUSSI, et c'est ce qui manquait ici.
+ *
+ * Cette fonction tranchait par elimination : si rien ne disait ourdou, jawi ni
+ * persan, la reponse etait `ar`. Un defaut, pas une lecture. Il coutait les
+ * QUATRE dernieres erreurs persanes du chemin sur, et elles ne sont pas
+ * refermables par un mot persan de plus : `arabe-candidats.mjs` le dit
+ * lui-meme, deux de ces lignes ne portent aucun mot candidat et les deux
+ * autres n'ont que des mots deja refuses parce que l'arabe les ecrit aussi.
+ *
+ * Les quatre lettres sont la SYMETRIE EXACTE de LETTRES_PERSANES : ce sont
+ * celles que l'orthographe arabe ecrit et que l'orthographe persane remplace.
+ *
+ *   ة  teh marbuta, le persan ecrit ه
+ *   ى  alef maksura, le persan ecrit ی
+ *   ي  yeh arabe U+064A, le persan ecrit ی U+06CC
+ *   ك  kaf arabe U+0643, le persan ecrit ک U+06A9
+ *
+ * Mesure, `arabe-preuve.mjs` : les quatre lettres couvrent 110 des 120 lignes
+ * arabes du banc et ZERO des 130 persanes. Les sept mots outils montent la
+ * couverture a 117 sans ajouter une ligne de bruit. L'article defini `ال` a
+ * ete mesure aussi : il n'ajoute AUCUNE couverture par-dessus les deux autres
+ * et ramene trois lignes persanes, parce que `الهام` et `الامکان` sont des
+ * mots persans qui commencent par ces deux lettres. Il est dehors.
+ *
+ * `من` EST DEHORS ET C'EST LE PIEGE DE CETTE PASSE. C'est "de, depuis" et
+ * "qui" en arabe, et c'est le pronom "je" en persan, au caractere pres. Il
+ * portait a lui seul dix-sept des dix-neuf lignes de bruit du premier essai.
+ *
+ * CE QUE LE CHANGEMENT COUTE, et il faut le lire dans ce sens : trois lignes
+ * arabes ne portent aucune des deux preuves et deviennent MUETTES, c'est-a-dire
+ * sures. Quatre lignes persanes cessent de sortir arabes. Sur ce chemin la
+ * colonne fausse coute plus cher que la colonne juste, donc trois contre quatre
+ * se tranche dans ce sens, comme `hon` pour le suedois deux campagnes plus tot.
+ *
+ * La ligne jawi `هيدو اين.` reste fausse : elle porte un ي, donc la preuve
+ * arabe la nomme. C'est le meme prix qu'avant et il est deja ecrit plus haut.
+ */
+const LETTRES_ARABES = /[ةىيكإأؤئ]/u;
+const MOTS_ARABES = /(^|[^\p{L}])(أن|لا|هل|هذه|هذا|عن|لم)([^\p{L}]|$)/u;
+const ARTICLE_ARABE = /(^|[^\p{L}])ال\p{L}/u;
+
 function arabeOuPersan(text: string): string | undefined {
   if (LETTRES_OURDOUES.test(text)) return undefined;
   if (LETTRES_JAWI.test(text)) return 'ms';
   if (MOTS_JAWI.test(text)) return 'ms';
   if (LETTRES_PERSANES.test(text)) return 'fa';
   if (MOTS_PERSANS.test(text)) return 'fa';
-  return 'ar';
+  if (LETTRES_ARABES.test(text) || MOTS_ARABES.test(text) || ARTICLE_ARABE.test(text))
+    return 'ar';
+  return undefined;
 }
 
 /**

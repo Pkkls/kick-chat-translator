@@ -28,11 +28,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on two lines in five and is almost never wrong.
   // The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 3394, silent: 1639, wrong: 7 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 3393, silent: 1644, wrong: 3 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
-    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 973, silent: 700, wrong: 7 });
+    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 972, silent: 705, wrong: 3 });
   });
 
   // The expensive one. This is the answer that deletes a message in silence when
@@ -40,11 +40,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
   it('detectLanguage is wrong on a fifth of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 3928, silent: 466, wrong: 646 });
+    expect(plain(DETECT.total)).toEqual({ right: 3930, silent: 467, wrong: 643 });
   });
 
   it('detectLanguage is wrong on a quarter of short lines', () => {
-    expect(plain(DETECT.shortOnly)).toEqual({ right: 1133, silent: 266, wrong: 281 });
+    expect(plain(DETECT.shortOnly)).toEqual({ right: 1135, silent: 267, wrong: 278 });
   });
 });
 
@@ -326,18 +326,22 @@ describe('the Cyrillic fallback, fixed 2026-09-21', () => {
   // line whose SCRIPT is read correctly and whose language behind that script
   // is the part a letter cannot see.
   //
-  // `fa->ar` was seven and is four: Persian words took three, and the four left
-  // carry neither a Persian letter nor a Persian function word. `ms->ar` was
-  // two and `ms->fa` one; Jawi words took two of those three and the last is
-  // `هيدو اين.`, whose only usable word is `اين`, which Arabic also writes.
-  // `yue->zh` twice is the known price of the Cantonese rule.
-  // `uk->bg` is gone too: three Ukrainian words for the lines that write none
-  // of the four Ukrainian letters. NOTHING IN A LATIN OR CYRILLIC SCRIPT IS
-  // WRONG ANY MORE. All seven are Arabic or Chinese, and every one is a line
-  // whose script is read correctly.
-  it('is down to seven wrong answers, and they are these', () => {
+  // `fa->ar` WAS SEVEN, THEN FOUR, AND IS NOW ZERO. Persian words took three;
+  // the last four carried neither a Persian letter nor a Persian function
+  // word, and no seventh word was going to reach them. What closed them is
+  // that Arabic now has to name itself instead of being the default answer
+  // when nothing else speaks up.
+  //
+  // `ms->ar` is the one line left in the Arabic script, `هيدو اين.`, whose
+  // only usable word is `اين`, which Arabic also writes. `yue->zh` twice is
+  // two Tatoeba lines that are standard Chinese under a yue label, one of them
+  // in simplified characters, so no marker can reach them either.
+  //
+  // NOTHING IN A LATIN OR CYRILLIC SCRIPT IS WRONG ANY MORE, and of the three
+  // that are left, two are a corpus defect rather than a detector defect.
+  it('is down to three wrong answers, and they are these', () => {
     const rows = [...CONFIDENT.confusions.entries()].map(([p, n]) => `${p}=${n}`).sort();
-    expect(rows).toEqual(['fa->ar=4', 'ms->ar=1', 'yue->zh-tw=1', 'yue->zh=1']);
+    expect(rows).toEqual(['ms->ar=1', 'yue->zh-tw=1', 'yue->zh=1']);
   });
 
   // The half of the result that was not the point and matters more than the
@@ -411,6 +415,7 @@ describe('neither the corpus nor the matrix reaches the shipped extension', () =
           entry === 'langChatPaireCorpus.ts' ||
           entry === 'langChatPaireReglageCorpus.ts' ||
           entry === 'langChatNonLatin.ts' ||
+          entry === 'langChatDixCorpus.ts' ||
           entry === 'langMixedCorpus.ts'
         ) {
           continue;

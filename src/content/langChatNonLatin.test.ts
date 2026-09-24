@@ -29,17 +29,21 @@ describe('les ecritures non latines, sur du chat', () => {
     }
   });
 
-  it('se trompe deux fois sur cent dix', () => {
-    expect(plain(SURE.total)).toEqual({ right: 97, silent: 11, wrong: 2 });
+  it('ne se trompe plus une seule fois sur cent dix', () => {
+    expect(plain(SURE.total)).toEqual({ right: 97, silent: 13, wrong: 0 });
   });
 
-  // Les deux erreurs sont les memes que sur Tatoeba et de la meme nature : une
-  // ligne persane ecrite entierement avec le jeu arabe. `تازه اومدم` ne contient
-  // aucune des six lettres que le persan ajoute. Rien dans le texte ne permet de
-  // la distinguer, et c'est ecrit comme limite dans `langDetect.ts`.
-  it('ne se trompe que sur du persan sans lettre persane', () => {
+  // LES DEUX ERREURS ETAIENT DU PERSAN ECRIT ENTIEREMENT AVEC LE JEU ARABE,
+  // `تازه اومدم` par exemple, qui ne porte aucune des six lettres que le persan
+  // ajoute. Elles ne sont plus la, et ce n'est pas une regle persane de plus qui
+  // les a prises : c'est que l'arabe doit maintenant se nommer lui-meme. Quand
+  // personne ne parle, la reponse est le silence et plus `ar` par defaut.
+  //
+  // Ce banc est donc le SIXIEME corpus de chat a zero erreur, et c'est
+  // l'assertion : une confusion qui reapparait ici est une regression.
+  it('ne se trompe plus du tout, et c est ce qui est asserte', () => {
     const rows = [...SURE.confusions.entries()].map(([p, n]) => `${p}=${n}`);
-    expect(rows).toEqual(['fa->ar=2']);
+    expect(rows).toEqual([]);
   });
 
   // LE RESULTAT QUI A SERVI A QUELQUE CHOSE.

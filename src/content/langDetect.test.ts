@@ -259,10 +259,21 @@ describe('l ecriture arabe se partage entre plusieurs langues', () => {
     expect(detectLanguage('بہت اچھا کھیل')).not.toBe('ar');
   });
 
-  // La limite, ecrite plutot que cachee : une ligne persane qui n'emploie que
-  // des lettres du jeu arabe reste indiscernable. Une sur douze a la mesure.
-  it('rend arabe une ligne persane sans lettre persane, et c est la limite', () => {
-    expect(detectLanguage('سلام به همه')).toBe('ar');
+  // CETTE LIGNE A CHANGE DE CAMP, et c'est la meme histoire que le repli
+  // cyrillique juste au-dessus. Elle etait ici comme LIMITE : du persan ecrit
+  // entierement avec le jeu arabe, rendu `ar` faute de mieux, et rendu comme
+  // langue source SURE.
+  //
+  // Depuis que l'arabe doit se nommer lui-meme, plus rien ne repond sur cette
+  // ligne, donc franc reprend la main et il la lit correctement. Le repli
+  // codeen dur repondait A LA PLACE d'un composant mieux informe, exactement
+  // comme le `ru` cyrillique, et il se trompait pour la meme raison.
+  //
+  // Le chemin sur, lui, se tait, ce qui est l'issue correcte : rien dans le
+  // texte ne permet de trancher, donc rien n'est impose au moteur.
+  it('laisse franc lire une ligne persane sans lettre persane, au lieu de repondre arabe', () => {
+    expect(detectLanguage('سلام به همه')).toBe('fa');
+    expect(confidentLanguage('سلام به همه')).toBeUndefined();
   });
 });
 

@@ -14,6 +14,7 @@ import { LANG_CHAT } from '../../src/content/langChatCorpus.ts';
 import { LANG_CHAT2 } from '../../src/content/langChatCorpus2.ts';
 import { LANG_CHAT3 } from '../../src/content/langChatCorpus3.ts';
 import { LANG_CHAT_NL } from '../../src/content/langChatNonLatin.ts';
+import { LANG_CHAT_DIX } from '../../src/content/langChatDixCorpus.ts';
 import { LANG_CHAT_PAIRE } from '../../src/content/langChatPaireCorpus.ts';
 import { LANG_CHAT_PAIRE_REGLAGE } from '../../src/content/langChatPaireReglageCorpus.ts';
 import { LANG_MIXED } from '../../src/content/langMixedCorpus.ts';
@@ -43,6 +44,11 @@ const BANCS = [
   ['chat2-AVEUGLE', LANG_CHAT2],
   ['chat3-reglage', LANG_CHAT3],
   ['non-latin', LANG_CHAT_NL],
+  // Les quatre langues non latines dont le produit PARLE la langue, cent lignes
+  // de chat. Elles vivaient en dur dans langDetect.dix.test.ts, donc ce diff ne
+  // les voyait pas : un lot a fait taire trois lignes arabes d'ici pendant que
+  // les neuf autres bancs disaient AUCUNE confusion nouvelle.
+  ['chat-dix', LANG_CHAT_DIX],
   // La paire malais-indonesien, en registre familier. Le premier MESURE, le
   // second est celui sur lequel on a le droit de choisir. Les lire dans cet
   // ordre : un gain sur le reglage seul ne prouve rien.
