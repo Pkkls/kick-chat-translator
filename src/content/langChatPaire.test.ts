@@ -60,6 +60,23 @@ describe('le corpus de la paire', () => {
   // LE CHIFFRE DE REFERENCE, releve a la creation du corpus et avant toute
   // regle ecrite pour lui. Il bougera ; le bouger sans dire dans quel sens et
   // pourquoi est ce que ce fichier existe pour empecher.
+  //
+  // CE CORPUS N EST PLUS ENTIEREMENT AVEUGLE, et il faut le lire en le sachant.
+  // Trois cribles ecrits plus tard, `langue-candidats.mjs`, `paire-sequences.mjs`
+  // et `porte-mots-candidats.mjs`, construisaient leur liste de candidats en
+  // parcourant les lignes MUETTES de tous les corpus, celui-ci compris. Compter
+  // si un mot apparait dans un corpus ne l expose pas ; y chercher des mots, si.
+  //
+  // Les cribles sont corriges et ne lisent plus que les corpus qu'on a le droit
+  // de lire. Mais le passage de 48 a 65 % de rappel a ete obtenu avec sept mots
+  // dont six ont ete proposes en partie par ces lignes-ci. Quatre des six
+  // etaient DEJA dans le fichier, dans les jeux de porte, donc leur choix ne
+  // doit rien a ce corpus ; les deux autres, `petang` et `bahawa`, sont des
+  // differences orthographiques attestees contre `sore` et `bahwa`.
+  //
+  // Ce que ce chiffre est aujourd hui : la meilleure mesure disponible, et plus
+  // une mesure a l aveugle. **Retrouver un aveugle propre demande un TROISIEME
+  // corpus de paire, ecrit avant que quoi que ce soit ait ete lu.**
   it('mesure les deux chemins sur du registre familier', () => {
     expect(plain(SURE.total)).toEqual({ right: 39, silent: 21, wrong: 0 });
     expect(plain(BRUT.total)).toEqual({ right: 43, silent: 11, wrong: 6 });

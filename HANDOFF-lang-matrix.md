@@ -1235,6 +1235,22 @@ no->sv 28 -> 26, da->sv 24 -> 22, no 49 -> 51 sur 120, da 51 -> 55
 
 ---
 
+### 5.35 LES TROIS CRIBLES LISAIENT LES CORPUS AVEUGLES (`4c7b90f`)
+
+**Le défaut le plus coûteux de la journée, et il ne fait bouger aucun chiffre.** Les trois cribles écrits dans ces tours construisaient leur liste de candidats en parcourant les lignes MUETTES de tous les corpus, `langChatCorpus2.ts` et `langChatPaireCorpus.ts` compris. Un crible qui propose un mot en regardant une ligne a lu cette ligne, et 4.4bis est explicite.
+
+**Compter n'est pas lire**, donc la correction est une séparation et pas un retrait : les aveugles répondent toujours à « ce mot apparaît-il chez toi », ce dont la colonne de bruit a besoin et qui n'expose rien. Ils ne répondent plus à « que contiennent tes lignes muettes ».
+
+**CE QUE ÇA A COÛTÉ**, mesuré en relançant les cribles corrigés : `gue`, `banget` et `udah` ne sont plus proposés pour `id`, `petang`, `bahawa` et `bolehkah` ne le sont plus pour `ms`. Ces six-là venaient de lignes partiellement aveugles.
+
+**Quatre des six étaient DÉJÀ dans le fichier**, dans les jeux de porte, mis là par un tour antérieur. Le crible a reproposé des mots que le fichier connaissait, donc leur sélection ne doit rien au corpus aveugle même si leur promotion a été décidée en le regardant. Les deux autres, `petang` et `bahawa`, sont des différences orthographiques attestées contre `sore` et `bahwa`, et ils tiennent sur ce terrain-là.
+
+**CE QU'IL FAUT FAIRE DU CHIFFRE** : le passage de 48 à 65 % sur le corpus aveugle de la paire **n'est plus une mesure à l'aveugle**. C'est en partie la mesure de mots choisis en le lisant. Il reste dans les tests parce que c'est la meilleure mesure disponible, et la note à côté dit ce qu'il est.
+
+**Retrouver un aveugle propre demande un TROISIÈME corpus de paire, écrit avant que quoi que ce soit ait été lu.** Voir la file de travail.
+
+---
+
 ## 6. État par phase
 
 | Phase | Contenu | État |
@@ -1280,6 +1296,10 @@ Les chiffres sont en 2bis-bis, 2ter, 5.14 à 5.19.
 
 6. **`mano` coûte deux lignes** et c'est un vrai mot espagnol et lituanien. Jamais mesuré, et le corpus 3 le permet.
 
+8. **ÉCRIRE UN TROISIÈME CORPUS DE PAIRE**, et c'est le seul point de cette file qui ne peut PAS être fait par la session qui a lu les tables. Section 5.35 : l'aveugle actuel a servi à choisir des mots, donc son 65 % n'est plus un chiffre aveugle. Le nouveau doit être écrit d'abord, mesuré ensuite, et jamais relu.
+
+9. **Le registre chat ne bouge plus autant que Tatoeba**, et c'est le signal à surveiller. Le tour italo-nordique a rendu onze lignes Tatoeba et ZÉRO sur les cinq bancs de chat : `vuole` et `vanligvis` ne sont pas ce qu'une ligne de chat écrit. Quand un tour ne bouge que Tatoeba, il achète du rappel de corpus et pas du rappel de produit, et il faut le dire dans le commit.
+
 ### Ce qu'il ne faut PAS refaire
 
 - **Un tour de lexique choisi à la main.** Mesuré deux fois : sept lignes sur le corpus de réglage et **zéro** sur l'aveugle en 2ter, puis trente-sept mots sur quarante-deux qui ne bougent que leur propre corpus en 5.18. Le fond de la méthode est atteint pour le tour MARGINAL. Le lexique déjà en place, lui, transfère toujours.
@@ -1291,6 +1311,7 @@ Les chiffres sont en 2bis-bis, 2ter, 5.14 à 5.19.
 - **Remettre une porte `no`/`da` générique derrière `ø æ`.** Mesurée, section 5.14 : zéro ligne sur les cinq bancs, et elle casse l'unanimité.
 - **Mettre `là` dans un jeu de porte vietnamien.** C'est le `là` français au caractère près, il a volé trois lignes.
 - **Une porte de séquence ASCII** (`sz`, `dz`). Mesurée, section 5.16 : le déclencheur vit dans le mot qui tranche.
+- **Laisser un crible lire un corpus AVEUGLE.** Section 5.35 : les trois cribles neufs le faisaient, et le chiffre de la paire en a payé le prix. Compter un mot dans un aveugle est permis, y chercher des mots ne l'est pas.
 - **Chercher un arbitrage plus malin que l'unanimité** dans la table des lettres exclusives. Mesuré, section 5.24 : **un seul désaccord sur 6070 lignes**, et il est fermé. À rouvrir quand la table aura beaucoup grossi, pas avant.
 - **Appliquer le critère de l'ablation à la table cantonaise** et supprimer ce qui rapporte zéro. Section 5.25 : neuf de ses marqueurs n'apparaissent nulle part et c'est normal, une règle de PRÉSENCE ne se choisit pas sur le gain mesuré.
 - **Ajouter `嘈`, `郁`, `掂`, `慳`, `氹` au cantonais.** Mesurés ou argumentés en 5.25, tous les cinq ont un sens en chinois standard.
