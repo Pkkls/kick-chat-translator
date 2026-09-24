@@ -42,7 +42,14 @@ const original = readFileSync(SOURCE, 'utf8');
  * d'alternance des deux cotes, `|mot|` ou `|mot)`.
  */
 const MOTS = {
-  LETTRES_EXCLUSIVES: 'estic seva dues els tinc vaig volem amb gaire aquesta molt'.split(' '),
+  'JEUX_DE_PORTE.hu': 'az már én ön még most ezt engem tényleg'.split(' '),
+  'JEUX_DE_PORTE.sl': 'moj moja kdo hočem so'.split(' '),
+  'JEUX_DE_PORTE.fi': 'hänen meitä tämän koskaan'.split(' '),
+  'JEUX_DE_PORTE.es': 'qué yo ese ayer tienes'.split(' '),
+  'JEUX_DE_PORTE.fr': 'ça été étais fois mois'.split(' '),
+  'JEUX_DE_PORTE.pt': 'ele tudo só foi ainda esse um'.split(' '),
+  'JEUX_DE_PORTE.it': 'molto mio'.split(' '),
+  'JEUX_DE_PORTE.sk': 'čo niečo chcem'.split(' '),
 };
 
 /**
@@ -57,6 +64,21 @@ function sans(source, constante, mot) {
   // premiere regex, et le script repondait INTROUVABLE sur onze mots d'affilee
   // au lieu de les mesurer, ce qui se voit mais ne casse rien et pourrait donc
   // passer pour un resultat.
+  // Troisieme forme de porteur : UNE ENTREE d'un objet, ecrite
+  // `JEUX_DE_PORTE.hu`. Sans elle, le meme mot present dans deux jeux se fait
+  // retirer du premier rencontre, et la mesure porte sur une autre langue que
+  // celle qu'on croit. C'est le bug de 4.9 sous une troisieme forme.
+  if (constante.includes('.')) {
+    const [objet, cle] = constante.split('.');
+    const bloc = new RegExp(`(const ${objet}[^=]*=[\\s\\S]*?\\n\\};)`).exec(source);
+    if (!bloc) return null;
+    const ligne = new RegExp(`^\\s*${cle}: /.*` + '$', 'm').exec(bloc[1]);
+    if (!ligne) return null;
+    let neuve = ligne[0].replace(new RegExp(`\\|${mot}(?=[|)])`), '');
+    if (neuve === ligne[0]) neuve = ligne[0].replace(new RegExp(`\\(${mot}\\|`), '(');
+    if (neuve === ligne[0]) return null;
+    return source.replace(bloc[1], () => bloc[1].replace(ligne[0], () => neuve));
+  }
   const table = new RegExp(`(const ${constante}[^=]*=[\\s\\S]*?\\n\\];)`);
   const simple = new RegExp(`(const ${constante} =\\s*/[^;]*;)`);
   const m = table.exec(source) ?? simple.exec(source);

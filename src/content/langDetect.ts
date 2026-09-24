@@ -1110,26 +1110,58 @@ function danoisOuNorvegien(text: string): string | undefined {
  * `que` francais, portugais ET catalan ; `para` et `está` espagnols ET
  * portugais. Le slovaque n'a pas de jeu derriere `ä`, ses trois lignes y restent
  * muettes, et c'est le comportement attendu d'une porte qui ne peut pas trancher.
+ *
+ * DEUXIEME TOUR, ET IL VAUT SOIXANTE-TREIZE LIGNES, le plus gros de la branche.
+ * Il n'y avait rien a inventer : ces jeux avaient ete ecrits en meme temps que
+ * la table des portes, a la main, et personne ne les avait rouverts depuis.
+ *
+ * `porte-partagee-diagnostic.mjs` compte ce qui attend derriere chaque porte, et
+ * le chiffre disait ou aller :
+ *
+ *   sk 64 lignes   hu 52   sl 46   fi 41   es 38   fr 36   pt 30   it 19
+ *
+ * `porte-mots-candidats.mjs` les propose, et son seuil est le point qui compte :
+ * il n'exige PAS qu'un mot soit exclusif sur les quarante-deux langues, seulement
+ * que les autres langues DE CETTE PORTE-LA ne l'ecrivent pas. C'est ce que le
+ * fichier dit depuis la premiere porte, `on`, `ei`, `ma`, `ta` et `ja` derriere
+ * `õ`, et ce que le crible ne savait pas encore chercher.
+ *
+ * Trente-neuf mots sur quarante transferent, ce qui est le meilleur rapport du
+ * chantier et s'explique : ce sont des mots OUTILS, `az` `én` `még` `most` pour
+ * le hongrois, `moj` `kdo` `so` pour le slovene, `ça` `été` `fois` pour le
+ * francais, `ele` `tudo` `só` `foi` pour le portugais, `čo` `niečo` pour le
+ * slovaque. Un mot outil ne memorise pas un corpus, il decrit une langue.
+ *
+ * Le seul mort est `tienes`, et il est instructif : conjugue a la deuxieme
+ * personne, donc plus rare que l'infinitif ou la troisieme, alors que `yo`,
+ * `qué` et `ese` a cote de lui rapportent chacun. La frequence d'une forme
+ * compte autant que l'exclusivite du mot.
+ *
+ * REFUSES PARCE QU'UN RIVAL DE LA MEME PORTE LES ECRIT, et le crible les nomme :
+ * `je` (cs sk sl fr), `to` (cs lt lv pl sl), `na` (cs pl pt sl), `si` (ca cs es
+ * fr it sl), `on` et `ei` (et, derriere `ä`), `para` et `está` (es et pt),
+ * `me`, `no`, `el` (ca es pt fr), `il` (it et fr), `van` (nl et hu), `non` qui
+ * est italien ET francais et que seule l'absence du corpus rendait propre.
  */
 const JEUX_DE_PORTE: Readonly<Record<string, RegExp>> = {
-  fi: /(^|[^\p{L}])(että|mutta|niin|kun|myös|vain|hän|ole|olen|täällä|tänään|mikä|mitä|kaikki|miksi)([^\p{L}]|$)/iu,
+  fi: /(^|[^\p{L}])(että|mutta|niin|kun|myös|vain|hän|ole|olen|täällä|tänään|mikä|mitä|kaikki|miksi|hänen|meitä|tämän|koskaan)([^\p{L}]|$)/iu,
   sv: /(^|[^\p{L}])(och|inte|är|jag|att|det|som|för|har|med|den|till|hur|här|hon|vill)([^\p{L}]|$)/iu,
   et: /(^|[^\p{L}])(see|ta|ma|kas|aga|siis|väga|miks|midagi|praegu|kõik)([^\p{L}]|$)/iu,
   de: /(^|[^\p{L}])(nicht|der|die|das|ich|ist|und|mit|für|auf|ein|eine|sich|nur|aber|noch|wieder)([^\p{L}]|$)/iu,
   cs: /(^|[^\p{L}])(jsem|jsou|není|ještě|vždycky|proč|byl|jako|dobře)([^\p{L}]|$)/iu,
-  sk: /(^|[^\p{L}])(som|sú|veľmi|ešte|prečo|vždy|bol|ako|dobre)([^\p{L}]|$)/iu,
-  sl: /(^|[^\p{L}])(sem|lahko|nekaj|ampak|kaj|tudi|ker|zdaj|zelo|zakaj)([^\p{L}]|$)/iu,
+  sk: /(^|[^\p{L}])(som|sú|veľmi|ešte|prečo|vždy|bol|ako|dobre|čo|niečo|chcem)([^\p{L}]|$)/iu,
+  sl: /(^|[^\p{L}])(sem|lahko|nekaj|ampak|kaj|tudi|ker|zdaj|zelo|zakaj|moj|moja|kdo|hočem|so)([^\p{L}]|$)/iu,
   lt: /(^|[^\p{L}])(yra|labai|kaip|tai|jis|ką|dabar|nieko|taip)([^\p{L}]|$)/iu,
   lv: /(^|[^\p{L}])(ļoti|viņš|viņa|kāds|paldies|tagad|arī|nav)([^\p{L}]|$)/iu,
-  hu: /(^|[^\p{L}])(hogy|nem|egy|csak|mint|nagyon|mindig|megint|semmi|miért|jó)([^\p{L}]|$)/iu,
+  hu: /(^|[^\p{L}])(hogy|nem|egy|csak|mint|nagyon|mindig|megint|semmi|miért|jó|az|már|én|ön|még|most|ezt|engem|tényleg)([^\p{L}]|$)/iu,
   pl: /(^|[^\p{L}])(jest|się|nasz|bardzo|jeszcze|wszystko|dlaczego|który)([^\p{L}]|$)/iu,
   vi: /(^|[^\p{L}])(với|của|một|không|được|rồi|quá|này|tôi)([^\p{L}]|$)/iu,
-  es: /(^|[^\p{L}])(pero|muy|con|los|las|una|esto|esa|siempre)([^\p{L}]|$)/iu,
-  pt: /(^|[^\p{L}])(uma|não|você|muito|isso|essa|também)([^\p{L}]|$)/iu,
+  es: /(^|[^\p{L}])(pero|muy|con|los|las|una|esto|esa|siempre|qué|yo|ese|ayer)([^\p{L}]|$)/iu,
+  pt: /(^|[^\p{L}])(uma|não|você|muito|isso|essa|também|ele|tudo|só|foi|ainda|esse|um)([^\p{L}]|$)/iu,
   ca: /(^|[^\p{L}])(això|què|també|més|són|una|és|sóc|després|ací)([^\p{L}]|$)/iu,
-  fr: /(^|[^\p{L}])(est|avec|pour|dans|tout|comme|très|sont|fait)([^\p{L}]|$)/iu,
+  fr: /(^|[^\p{L}])(est|avec|pour|dans|tout|comme|très|sont|fait|ça|été|étais|fois|mois)([^\p{L}]|$)/iu,
   tr: /(^|[^\p{L}])(bir|için|değil|çok|var|bu|şey|daha)([^\p{L}]|$)/iu,
-  it: /(^|[^\p{L}])(allora|quindi|comunque|anche|adesso|perché|però|davvero|questo|sono|più|che|niente|una)([^\p{L}]|$)/iu,
+  it: /(^|[^\p{L}])(allora|quindi|comunque|anche|adesso|perché|però|davvero|questo|sono|più|che|niente|una|molto|mio)([^\p{L}]|$)/iu,
   ro: /(^|[^\p{L}])(foarte|acum|nimic|când|care|pentru|sunt|cred|joacă|cineva)([^\p{L}]|$)/iu,
   nl: /(^|[^\p{L}])(niet|het|een|wat|voor|zijn|heeft|geen|hoe|nog|gewoon|maar)([^\p{L}]|$)/iu,
 };
