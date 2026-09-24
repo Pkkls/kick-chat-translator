@@ -3,7 +3,7 @@
 État vivant de ce chantier, mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-24. Dernier commit de **code** : `c1a2d69`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
+Dernière mise à jour : 2026-09-24. Dernier commit de **code** : `b3549aa`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
 
 ---
 
@@ -49,12 +49,12 @@ Ce qui a été découvert en cours de route et qui n'était pas dans le diagnost
 Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR, 120 lignes par langue.
 Trois issues, **jamais additionnées** : `right` la bonne langue, `silent` le détecteur a refusé de répondre ce qui est l'issue SÛRE, `wrong` une autre langue.
 
-| chemin | portée | départ `ec9e02d` | aujourd'hui `c1a2d69` |
+| chemin | portée | départ `ec9e02d` | aujourd'hui `b3549aa` |
 |---|---|---|---|
-| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3595 r / 1442 s / **3 w** |
-| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 1022 / 655 / **3** |
-| `detectLanguage` | toutes | 3019 / 804 / **1217** | 4076 / 430 / **534** |
-| `detectLanguage` | court | 837 / 364 / **479** | 1176 / 255 / **249** |
+| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3614 r / 1423 s / **3 w** |
+| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 1032 / 645 / **3** |
+| `detectLanguage` | toutes | 3019 / 804 / **1217** | 4091 / 425 / **524** |
+| `detectLanguage` | court | 837 / 364 / **479** | 1185 / 251 / **244** |
 
 Le chemin sûr **répond 2,5 fois plus souvent et se trompe 83 % moins**. C'est le seul mouvement qui compte vraiment : `wrong` sur ce chemin veut dire qu'on demande au moteur de traduire depuis une langue dans laquelle le texte n'est pas.
 
@@ -86,8 +86,10 @@ Les trois dernières du chemin brut, `et fi sl`, sont sorties par le lexique de 
 119  ar vi   116 fa   114 yue   108 lv   105 zh-tw  101 nl uk
 98   pl    95 tr     93 ro     90 zh     89 ru      85 sv    80 cs
 79   de    78 pt     74 bg     73 tl     72 hu      69 es    68 fr lt
-67   et    66 sl     65 ca     60 fi     55 da      51 no    50 it
-44   sk    35 en     33 ms     15 id
+67   et    66 sl     65 ca     60 fi     58 it      56 da    53 no
+52   sk    35 en     33 ms     15 id
+
+**Le bas du tableau n'est plus une question de règles.** `en` est fermé par décision, `ms` et `id` attendent un corpus de registre familier, `sk` et `no` viennent de gagner huit et quatre lignes. La marche suivante pour toutes est la même : du chat, en quantité, dans la langue visée.
 ```
 
 **Plus aucune langue sous 13 sur 120**, contre vingt-six à zéro au départ. Ce tableau est celui de Tatoeba ; sur du chat le classement est différent, voir 2bis.
@@ -1251,6 +1253,26 @@ no->sv 28 -> 26, da->sv 24 -> 22, no 49 -> 51 sur 120, da 51 -> 55
 
 ---
 
+### 5.36 LE SLOVAQUE, L'ITALIEN, LE NORDIQUE, et le registre chat qui ne suit plus (`815d4aa`, `468cb65`, `b3549aa`)
+
+Trois tours de mots outils, dix-neuf lignes Tatoeba, et un quatrième qui ne livre rien.
+
+**Le slovaque, six fois la même règle** : `sme` contre `jsme`, `môj` contre `můj`, `zajtra` contre `zítra`, `vonku` contre `venku`, `práve` contre `právě`, `správne` contre `správně`. C'est ce qui sépare le mieux deux langues proches, et ça vaut huit lignes plus une sur l'aveugle et trois sur le réglage. `ktorý` et `môžem` sont la même règle et sortent à l'ablation.
+
+**L'italien sur sa diphtongue**, `chi`, `vuoi`, `puoi`, `vuole`. La diphtongue `uo` elle-même est impossible en plein air, l'espagnol écrit `cuota`, le finnois `vuosi`, mais ces quatre formes ne sont à personne d'autre. Le nordique prend `dere` contre `I`, `ble` contre `blev`, `gik` contre `gikk`.
+
+**CE TOUR-LÀ A RENDU ONZE LIGNES TATOEBA ET ZÉRO SUR LES CINQ BANCS DE CHAT**, et c'est le signal qui compte : `vuole` et `vanligvis` ne sont pas ce qu'une ligne de chat écrit. Un tour qui ne bouge que Tatoeba achète du rappel de corpus et pas du rappel de produit. `langue-candidats.mjs` a un mode `chat` depuis, qui ne lit que les corpus de chat.
+
+#### Le registre chat scandinave : RIEN, et pourquoi
+
+**Le danois est la langue la plus muette du produit sur du chat**, 20 lignes sur 25, le norvégien 16. Leurs lignes muettes se lisent en une minute et les paires minimales sautent aux yeux : `nu` contre `nå`, `tilbage` contre `tilbake`, `herude` contre `her ute`.
+
+Sept entrées écrites là-dessus, et l'ablation les refuse toutes : **cinq ne bougent QUE le corpus de réglage**, celui dont les lignes les ont écrites ; `nu` pareil ; `nå` transfère d'une ligne et est refusé quand même, parce que le danois dit `nå ja` tous les jours et que seul le corpus le rendait propre.
+
+**Une ligne de chat scandinave de six mots porte une paire minimale et rien d'autre.** Lire ces paires dans le corpus de réglage et les écrire en règles, c'est apprendre vingt-cinq lignes par cœur. **Ce qui manque ici n'est pas une règle, c'est du chat scandinave en quantité.**
+
+---
+
 ## 6. État par phase
 
 | Phase | Contenu | État |
@@ -1532,6 +1554,10 @@ Commits, du plus ancien au plus récent :
 | `ef359f6` | Take the Malay pair from 48 to 65 per cent by letting four words out of the gate |
 | `5cd4742` | Widen the Nordic trigger, and find a word that has been wrong since the first day |
 | `c1a2d69` | Ship two of four spelling differences in the Malay pair, and say what the block really needs |
+| `815d4aa` | Write the Slovak spelling difference six times, and gain eight lines |
+| `468cb65` | Take Italian off its diphthong and the Nordic pair off four more spellings |
+| `4c7b90f` | Stop the three new screens from reading the corpora that are supposed to be blind |
+| `b3549aa` | Try the Scandinavian chat register, ship nothing, and write down why |
 
 ---
 
@@ -1628,7 +1654,7 @@ Ne pas trancher ça dans une passe de détection. **Et surtout : le faire seul n
 
 - Commits : sujet à l'impératif, corps expliquant la cause, le correctif, et **comment il a été constaté**. Terminer par `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`.
 - Gate : `npm run release:check`, jamais seulement `typecheck` et `test`. Il lance aussi `lint`.
-- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **96376 aujourd'hui** (`c1a2d69`), soit +4573 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-sept portes et 433 entrées de lexique. Le détail des neuf derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, **-51 pour +14**, **+13 pour +39**, +65 pour +8, -10 pour +2, +22 pour +5, **-76 pour zéro**, qui ne fait que supprimer des entrées qui ne pouvaient plus se déclencher, **+5 pour +1** ligne aveugle en resserrant `aat`, **+94 pour +2**, le seul tour du chantier à payer un prix pareil parce qu'il achète douze caractères cantonais dont aucun ne gagne de ligne sur les bancs d'aujourd'hui, **+73 pour quatre erreurs fermées** avec la preuve arabe, et **+10 pour +7 lignes aveugles** au dernier, qui est le meilleur rapport de tout le chantier après la porte nordique. Les deux meilleurs rapports de tout le chantier sont la porte nordique à mot, qui supprime plus de code qu'elle n'en ajoute, et les marqueurs tagalog, treize octets. Les six corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
+- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **96448 aujourd'hui** (`b3549aa`), soit +4645 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-sept portes et 433 entrées de lexique. Le détail des neuf derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, **-51 pour +14**, **+13 pour +39**, +65 pour +8, -10 pour +2, +22 pour +5, **-76 pour zéro**, qui ne fait que supprimer des entrées qui ne pouvaient plus se déclencher, **+5 pour +1** ligne aveugle en resserrant `aat`, **+94 pour +2**, le seul tour du chantier à payer un prix pareil parce qu'il achète douze caractères cantonais dont aucun ne gagne de ligne sur les bancs d'aujourd'hui, **+73 pour quatre erreurs fermées** avec la preuve arabe, et **+10 pour +7 lignes aveugles** au dernier, qui est le meilleur rapport de tout le chantier après la porte nordique. Les deux meilleurs rapports de tout le chantier sont la porte nordique à mot, qui supprime plus de code qu'elle n'en ajoute, et les marqueurs tagalog, treize octets. Les six corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
 - Pas de nom de streamer ou de chaîne en dur, nulle part.
 - Pas d'emoji dans le code.
 - Les données de test vivent **inline dans le fichier de test**, pas dans une fixture séparée.
