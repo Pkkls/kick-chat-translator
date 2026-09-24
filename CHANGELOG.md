@@ -42,16 +42,17 @@ source language and is the safe outcome; and wrong.
 
 - **The source language sent to the engine is right 2.9 times more often and
   wrong 97 % less.** On the same 5040 lines: 1262 right and 90 wrong before,
-  3698 right and THREE wrong now. Wrong there means asking the engine to
+  3731 right and THREE wrong now. Wrong there means asking the engine to
   translate from a language the text is not in, which is the expensive mistake.
 - **No language scores zero any more, against twenty-six before.** Catalan went
   from 20 lines of 120 to 65, Slovak from 16 to 52, Hungarian to 79, Bulgarian
-  to 94, Danish from 30 to 56, Vietnamese from 81 to 119.
-- **On chat it never saw, the detector now names 55 % of lines against 48 %**,
+  to 94, German from 28 to 92, Dutch to 108, Danish from 30 to 56, Vietnamese
+  from 81 to 119.
+- **On chat it never saw, the detector now names 57 % of lines against 48 %**,
   and on Malay/Indonesian chat 65 % against 48 %. Those two are the product's
   real register, which is why they are measured separately.
 - The raw detector, which is what decides whether a line is dropped as already
-  in your language, is wrong on 500 lines instead of 1217.
+  in your language, is wrong on 498 lines instead of 1217.
 
 ### Fixed
 
