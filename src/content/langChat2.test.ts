@@ -68,7 +68,7 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
 
   // LA MESURE HONNETE, bande par bande.
   //
-  //   <= 20 car : 58 % sur le corpus de reglage, 55 % a l'aveugle -> 3 points
+  //   <= 20 car : 59 % sur le corpus de reglage, 55 % a l'aveugle -> 4 points
   //   >  20 car : 60 % contre 56 %                  -> 4 points
   //
   // Les deux points de la bande courte sont la memorisation du lexique, et ils
@@ -106,7 +106,7 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
       Object.fromEntries(Object.entries(corp).map(([l, v]) => [l, v.filter(garde)]));
     const court = (t: string): boolean => t.length <= 20;
     const long = (t: string): boolean => t.length > 20;
-    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, court)).total)).toBe(58);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, court)).total)).toBe(59);
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, court)).total)).toBe(55);
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, long)).total)).toBe(60);
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, long)).total)).toBe(56);

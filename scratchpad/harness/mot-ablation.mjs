@@ -42,9 +42,8 @@ const original = readFileSync(SOURCE, 'utf8');
  * d'alternance des deux cotes, `|mot|` ou `|mot)`.
  */
 const MOTS = {
-  'JEUX_DE_PORTE.lt': ['aš','čia','prieš'],
-  'JEUX_DE_PORTE.ro': ['în','cu','aici'],
-  'JEUX_DE_PORTE.et': ['ära','välja'],
+  MOTS_BULGARES: ['се','го','има','нещо','тя','той','моля'],
+  LETTRES_EXCLUSIVES: ['kui','selle','mulle','tavo','reikia','patinka','iyon','mong','maraming'],
 };
 
 /**

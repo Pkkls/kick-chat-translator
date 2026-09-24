@@ -931,6 +931,17 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   // tcheque les trois autres. `kde` et `pri` aussi, le tcheque et le slovene les
   // ecrivent, et seul le corpus les rendait propres.
   [/(^|[^\p{L}])(sme|môj|zajtra|vonku|práve|správne)([^\p{L}]|$)/iu, 'sk'],
+  // Trois langues de plus, meme crible, memes mots outils : `kui` "quand",
+  // `selle` "de ceci" et `mulle` "a moi" pour l estonien ; `tavo` "ton",
+  // `reikia` "il faut" et `patinka` "plait" pour le lituanien ; `iyon`, `mong`
+  // et `maraming` pour le tagalog.
+  //
+  // DEHORS : `oma` est estonien ET finnois, `dito` est un doigt en italien,
+  // `hindi` est le tagalog pour "non" et le nom dune langue partout ailleurs,
+  // `mo` et `pa` sont trop courts pour appartenir a qui que ce soit.
+  [/(^|[^\p{L}])(kui|selle|mulle)([^\p{L}]|$)/iu, 'et'],
+  [/(^|[^\p{L}])(tavo|reikia|patinka)([^\p{L}]|$)/iu, 'lt'],
+  [/(^|[^\p{L}])(iyon|mong|maraming)([^\p{L}]|$)/iu, 'tl'],
   // Quatrieme groupe, et la difference avec le troisieme est la SOURCE : ces
   // motifs-la ont ete extraits du registre chat et non de la prose. Le groupe
   // precedent avait rapporte 76 lignes sur Tatoeba et une seule a l'aveugle,
@@ -1965,7 +1976,7 @@ const MOTS_RUSSES =
  */
 const ADJECTIF_RUSSE = /ый([^\p{L}]|$)/iu;
 const MOTS_BULGARES =
-  /(^|[^\p{L}])(съм|си|сме|сте|са|какво|кой|кога|къде|защо|много|добре|това|няма|ще|аз|мога|гледа|гледам|искам|този|започва|благодаря|страхотен|поздрави|дошли)([^\p{L}]|$)/iu;
+  /(^|[^\p{L}])(съм|си|сме|сте|са|какво|кой|кога|къде|защо|много|добре|това|няма|ще|аз|мога|гледа|гледам|искам|този|започва|благодаря|страхотен|поздрави|дошли|се|го|има|нещо|тя|моля)([^\p{L}]|$)/iu;
 
 /**
  * Le repli `ru` etait une DEVINETTE posee sur le chemin sans devinette.
