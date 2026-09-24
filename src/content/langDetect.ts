@@ -1238,10 +1238,56 @@ function estonienOuPortugais(text: string): string | undefined {
 // des corpus paralleles, qui sont en registre neutre ; les mots partages du
 // registre familier n'y sont pas, donc il ne peut pas les proposer. Voir
 // `langChatPaire.test.ts`.
+//
+// CETTE CONCLUSION ETAIT FAUSSE, ET C'EST LE CRIBLE QUI L'ETAIT, PAS LA PORTE.
+// `porte-diagnostic.mjs` compte la seule chose qui tranche : sur les trente
+// lignes malaises du corpus de reglage, VINGT-QUATRE avaient la porte FERMEE.
+// Le jeu malais derriere n'y etait pour rien, il n'etait jamais consulte.
+// Le declencheur etait bien ce qui bloquait ; ce qui manquait etait un crible
+// qui cherche dans le registre familier au lieu des corpus paralleles, et
+// c'est `paire-declencheur.mjs`.
+//
+// `aku` PORTE LE TOUR A LUI SEUL. "je, moi", les deux langues l'ecrivent, il
+// ouvre quatorze des trente-six lignes fermees, et il ne touche AUCUNE des
+// 5850 lignes etiquetees des autres langues. Il etait sous les yeux depuis le
+// debut, et le test de la paire le cite meme en exemple de ce que le chat
+// familier ecrit, deux paragraphes avant la liste ou il ne figure pas.
+//
+// TRENTE-QUATRE MOTS ONT ETE MESURES, CINQ SONT ICI. L'ablation mot a mot est
+// sans appel : `aku` `pagi` `pergi` `habis` `sore` bougent un corpus qu'ils
+// n'ont pas servi a choisir, les vingt-neuf autres ne bougent QUE le corpus de
+// reglage. Et la version complete a trente-quatre mots donne exactement le
+// meme chiffre que celle-ci sur les neuf autres bancs, aveugle compris : les
+// vingt-neuf mots en trop achetaient seize lignes du corpus ou on les avait
+// lus, et rien nulle part ailleurs. C'est le meme fond que le tour de lexique
+// marginal de 5.18, atteint par un autre chemin.
+//
+// CE QUI EST REFUSE CE TOUR, avec ce que la langue ecrit ailleurs :
+//   sana   le finnois ecrit "mot" et le turc "a toi"
+//   bola   le portugais et l'espagnol ecrivent "balle"
+//   exam   l'anglais et le roumain l'ecrivent
+//   klinik l'allemand, le turc, le suedois et le danois l'ecrivent
+//   bulan  le turc ecrit "celui qui trouve"
+//   tadi   le turc `tadı` depouille de son point donne la meme chaine
+//   ni     mesure : catalan, slovene, suedois et tagalog, treize lignes
+//
+// LA MORPHOLOGIE A ETE ESSAYEE ET ELLE NE MARCHE PAS, et c'etait la piste que
+// la file de travail demandait, parce qu'un affixe ne memorise rien. Les neuf
+// candidats sont dans `paire-declencheur.mjs` avec leurs chiffres : `-nya` est
+// catalan et hongrois, `-kan` est suedois, `ber-` touche six langues, `se-` en
+// touche dix-sept, et le seul propre, `-lah`, n'ouvre aucune ligne. Un affixe
+// de trois lettres en ecriture latine est trop court pour appartenir a une
+// langue. La porte de cette paire restera faite de mots.
+//
+// LA CONTRAINTE QUI BORNE LES DEUX JEUX DERRIERE, et elle se relit avant tout
+// ajout : sur les 5850 lignes etiquetees hors de la paire, UNE SEULE ouvre
+// cette porte, une ligne polonaise sur `pada`. Tant que ce chiffre reste a un,
+// les deux jeux peuvent contenir des mots courts. Des qu'il monte, chacun
+// devient un piege, et c'est exactement ce qui est arrive a `je` ci-dessous.
 const MOTS_MALAIS_INDONESIENS =
-  /(^|[^\p{L}])(yang|tidak|dengan|untuk|saya|ini|itu|dari|pada|sudah|mereka|dalam|lebih|orang|apa|lagi|tidur|siapa|baru|makan|sini)([^\p{L}]|$)/iu;
+  /(^|[^\p{L}])(yang|tidak|dengan|untuk|saya|ini|itu|dari|pada|sudah|mereka|dalam|lebih|orang|apa|lagi|tidur|siapa|baru|makan|sini|aku|pagi|pergi|habis)([^\p{L}]|$)/iu;
 const MOTS_INDONESIENS =
-  /(^|[^\p{L}])(bisa|uang|mobil|coba|karena|besok|kamar|kayak|nggak|gak|banget|gimana|udah|aja|nih|dong|sih|gue|kemarin)([^\p{L}]|$)/iu;
+  /(^|[^\p{L}])(bisa|uang|mobil|coba|karena|besok|kamar|kayak|nggak|gak|banget|gimana|udah|aja|nih|dong|sih|gue|kemarin|sore)([^\p{L}]|$)/iu;
 // LES PARTICULES MALAISES, et c'est la porte qui les rend possibles.
 //
 // `tak`, `dah`, `je`, `weh` sont ce que le chat malaisien ecrit tout le temps et
@@ -1268,8 +1314,27 @@ const MOTS_INDONESIENS =
 // DEHORS : `kau`, que l'indonesien ecrit aussi, mesure sur
 // `Kenapa kau tidak mempercayaiku?` qui partait au malais. `lah`, `tu`, `ni`,
 // `korang` sont corrects et rapportent zero hors du corpus ou ils ont ete lus.
+//
+// `je` EST SORTI, ET C'EST LE DEFAUT LE PLUS INSTRUCTIF DE LA PAIRE. Il etait
+// sur lui-meme, ecrit ici comme tel, et rien dans le fichier ne le rendait
+// faux. C'est l'elargissement du DECLENCHEUR qui l'a rendu faux : `aku` ouvre
+// la porte sur `To je ta najhlupejsia vec, aku som kedy povedal.`, une ligne
+// slovaque privee de ses diacritiques, ou `akú` donne `aku`. Derriere la porte
+// ainsi ouverte, `je` a nomme le malais.
+//
+// LA REGLE A EN RETENIR : elargir un declencheur rend RETROACTIVEMENT moins
+// surs tous les mots derriere lui. Le fichier disait deja que les deux moities
+// sont couplees pour le GAIN ; elles le sont aussi pour le RISQUE, et c'est ce
+// sens-la qui coute des lignes. Relire les deux jeux a chaque fois que la
+// porte bouge.
+//
+// Deux formes ont ete mesurees, 4.6. Garder `je` en exigeant la fin de phrase,
+// ce que le malais en fait et pas le francais ni le tcheque, donne exactement
+// le meme chiffre sur le corpus AVEUGLE que de le supprimer, et une ligne de
+// plus sur le corpus de reglage, qui ne prouve rien. A resultat egal la forme
+// simple gagne, donc il est simplement supprime.
 const MOTS_MALAIS =
-  /(^|[^\p{L}])(kerana|sahaja|cuba|esok|bilik|mahu|jom|awak|tengok|macam|betul|sikit|jugak|memang|nak|tiada|teruk|nampak|berlaku|dah|tak|je|weh)([^\p{L}]|$)/iu;
+  /(^|[^\p{L}])(kerana|sahaja|cuba|esok|bilik|mahu|jom|awak|tengok|macam|betul|sikit|jugak|memang|nak|tiada|teruk|nampak|berlaku|dah|tak|weh)([^\p{L}]|$)/iu;
 
 function malaisOuIndonesien(text: string): string | undefined {
   if (!MOTS_MALAIS_INDONESIENS.test(text)) return undefined;

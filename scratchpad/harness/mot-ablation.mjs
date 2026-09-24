@@ -42,7 +42,12 @@ const original = readFileSync(SOURCE, 'utf8');
  * d'alternance des deux cotes, `|mot|` ou `|mot)`.
  */
 const MOTS = {
-  MOTS_DANO_NORVEGIENS: 'hun dette'.split(' '),
+  MOTS_MALAIS_INDONESIENS:
+    'aku hari pagi semalam minggu depan kali tiga pergi bangun habis kampung kucing anjing panjang sangat gila kalah'.split(
+      ' ',
+    ),
+  MOTS_MALAIS: 'rosak comel sejuk jiran hujung korang kat sedap'.split(' '),
+  MOTS_INDONESIENS: 'rusak lucu dingin tetangga sore nongkrong ayo semalem'.split(' '),
 };
 
 /**
