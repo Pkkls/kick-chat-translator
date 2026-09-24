@@ -28,11 +28,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on two lines in five and is almost never wrong.
   // The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 3392, silent: 1641, wrong: 7 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 3394, silent: 1639, wrong: 7 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
-    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 971, silent: 702, wrong: 7 });
+    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 973, silent: 700, wrong: 7 });
   });
 
   // The expensive one. This is the answer that deletes a message in silence when
@@ -40,11 +40,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
   it('detectLanguage is wrong on a fifth of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 3926, silent: 466, wrong: 648 });
+    expect(plain(DETECT.total)).toEqual({ right: 3928, silent: 466, wrong: 646 });
   });
 
   it('detectLanguage is wrong on a quarter of short lines', () => {
-    expect(plain(DETECT.shortOnly)).toEqual({ right: 1131, silent: 266, wrong: 283 });
+    expect(plain(DETECT.shortOnly)).toEqual({ right: 1133, silent: 266, wrong: 281 });
   });
 });
 
@@ -219,7 +219,7 @@ describe('the two Chinese scripts, fixed 2026-09-21', () => {
     // yue is expected and is the price of the rule: Cantonese is written in
     // traditional characters, so a yue line with every Cantonese word gone can
     // only be read by its script. zh-tw->zh is the franc fallback above.
-    expect(intoChinese).toEqual(['yue->zh-tw=1', 'yue->zh=7', 'zh-tw->zh=15']);
+    expect(intoChinese).toEqual(['yue->zh-tw=1', 'yue->zh=5', 'zh-tw->zh=15']);
   });
 
   // The confident path is the one that matters for this trade, because it is

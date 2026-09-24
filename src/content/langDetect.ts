@@ -1684,9 +1684,56 @@ function cyrilliqueQuelleLangue(text: string): string | undefined {
  *
  * 𨋢 est hors du plan multilingue de base. La boucle de detectByScript itere par
  * point de code, cette regle s'applique au texte entier, les deux le voient.
+ *
+ * DEUXIEME TOUR, ET IL A FALLU D ABORD COMPRENDRE SUR QUOI CETTE TABLE EST
+ * BATIE. Mesure faite : des 36 marqueurs qu elle portait, NEUF n apparaissent
+ * sur aucune ligne d aucun corpus, et 25 ne sont seuls a couvrir aucune ligne.
+ * Cette table n a donc jamais ete choisie sur le gain mesure, contrairement au
+ * lexique et aux terminaisons, et c est correct : une regle de PRESENCE se
+ * choisit sur ce que la langue ecrit, et le corpus ne sert qu a opposer un veto.
+ * Un marqueur qui rapporte zero sur 130 lignes cantonaises n est pas du poids
+ * mort, c est un marqueur que 130 lignes ne suffisent pas a juger.
+ *
+ * Le critere est donc ecrit comme il est reellement applique :
+ *   1. le caractere est cantonais et absent du chinois standard ecrit moderne
+ *   2. zero occurrence sur zh, zh-tw, ja et les 39 autres langues des bancs
+ *   3. zero mouvement sur les neuf bancs, zero faux positif sur canto-bench
+ * Le 1 selectionne, les 2 et 3 opposent un veto. Jamais l inverse, protocole 4.6.
+ * Le crible qui repond au 2 est scratchpad/harness/canto-candidats.mjs.
+ *
+ * Douze caracteres passent : 瞓 dormir, 啱 juste, 嬲 fache, 攞 prendre, 搵
+ * chercher, 唞 se reposer, 嚿 morceau, 冧 s ecrouler, 揼 frapper, 孭 porter sur
+ * le dos, 喐 bouger, 嗌 crier. Cinq sont attestes sur le corpus cantonais, les
+ * sept autres n y sont pas, et AUCUN DES DOUZE NE GAGNE UNE LIGNE : celles qu ils
+ * touchent portaient deja un autre marqueur. C est la forme attendue.
+ *
+ * 嬲 EST LE SEUL QUI PORTE UN RISQUE CONNU, et il n est pas chinois : c est un
+ * kanji japonais reel, なぶる. Il ne coute rien ici parce que le japonais de chat
+ * porte des kana et que detectByScript les lit avant d arriver ici, mais c est le
+ * premier a retirer si une ligne japonaise sans kana arrive un jour.
+ *
+ * CE QUI RESTE DEHORS A CE TOUR, avec la raison :
+ *   嘈   mesure, une ligne zh-tw du banc le porte, 嘈雜 est du standard courant
+ *   郁   standard courant, 濃郁 et 郁金香
+ *   掂   standard courant, 掂量
+ *   慳   existe en standard litteraire, 慳吝
+ *   氹   Taipa s ecrit 氹仔, un texte zh-tw sur Macao le porte legitimement
+ *   收皮 回收皮革 fabrique la meme chaine, c est le defaut de 而家 a l identique
+ *   好耐 好耐用 fabrique la meme chaine
+ *   細路 仔細路過 fabrique la meme chaine
+ *   多過 差不多過了 fabrique la meme chaine
+ *
+ * DU COTE DES MOTS, deux entrees gagnent vraiment, et ce sont les seules du tour
+ * qui bougent un chiffre : 鍾意, aimer, que le standard ecrit 喜歡, et le
+ * demonstratif 呢 suivi d un classificateur. Les deux entrees 呢個 et 呢度 etaient
+ * deja la, ecrites une par une ; c est un MECANISME et pas deux mots, donc la
+ * classe le dit : 呢[個度啲隻件間排粒張本]. 呢 seul est impossible, c est la
+ * particule finale la plus courante du chinois standard.
  */
-const CARACTERES_CANTONAIS = /[唔嘅喺咗哋佢啲嘢冇嗰嚟㗎乜攰嘥噉喎嘞咁睇諗嗮畀冚]|(?<!咩)咩(?!咩)|\u{282E2}/u;
-const MOTS_CANTONAIS = /點解|點樣|邊個|邊度|得閒|屋企|傾偈|靚仔|靚女|呢個|呢度/u;
+const CARACTERES_CANTONAIS =
+  /[唔嘅喺咗哋佢啲嘢冇嗰嚟㗎乜攰嘥噉喎嘞咁睇諗嗮畀冚瞓啱嬲攞搵唞嚿冧揼孭喐嗌]|(?<!咩)咩(?!咩)|\u{282E2}/u;
+const MOTS_CANTONAIS =
+  /點解|點樣|邊個|邊度|得閒|屋企|傾偈|靚仔|靚女|鍾意|呢[個度啲隻件間排粒張本]/u;
 
 /**
  * Simplifie ou traditionnel, et pourquoi c'est une question d'ECRITURE.
