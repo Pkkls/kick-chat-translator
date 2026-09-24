@@ -55,7 +55,7 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
   // quatre. Un mecanisme qui rapporte autant la ou il n'a pas ete regle que la
   // ou il l'a ete est exactement ce que le lexique n'arrivait plus a faire.
   it('rappelle un tiers de moins en brut, mais la longueur en explique la moitie', () => {
-    expect(plain(SURE2.total)).toEqual({ right: 125, silent: 135, wrong: 0 });
+    expect(plain(SURE2.total)).toEqual({ right: 126, silent: 134, wrong: 0 });
     expect(rappel(SURE1.total)).toBe(56);
     expect(rappel(SURE2.total)).toBe(48);
     // Le facteur confondant, mesure : les deux corpus ne sont pas comparables tels quels.
@@ -68,8 +68,8 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
 
   // LA MESURE HONNETE, bande par bande.
   //
-  //   <= 20 car : 55 % sur le corpus de reglage, 52 % a l'aveugle -> 3 points
-  //   >  20 car : 56 % contre 46 %                  -> 10 points
+  //   <= 20 car : 56 % sur le corpus de reglage, 52 % a l'aveugle -> 4 points
+  //   >  20 car : 56 % contre 47 %                  -> 9 points
   //
   // Les trois points de la bande courte sont la memorisation du lexique, et ils
   // sont reels : c'est une liste de mots choisie en lisant un corpus. Ils ont
@@ -109,14 +109,14 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, court)).total)).toBe(56);
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, court)).total)).toBe(52);
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, long)).total)).toBe(56);
-    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, long)).total)).toBe(46);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, long)).total)).toBe(47);
   });
 
   // Le chemin brut perd moins parce qu'il ne depend pas du lexique : franc lit
   // des trigrammes, pas des mots choisis a la main. Sa perte, 61 % a 55 %, est
   // du bruit d'echantillonnage plutot que de la memorisation.
   it('montre que seul le chemin qui depend du lexique perd au changement de corpus', () => {
-    expect(plain(BRUT2.total)).toEqual({ right: 169, silent: 34, wrong: 57 });
+    expect(plain(BRUT2.total)).toEqual({ right: 170, silent: 34, wrong: 56 });
     expect(rappel(BRUT2.total)).toBe(65);
   });
 

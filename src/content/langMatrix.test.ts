@@ -28,11 +28,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // Doing its job: it answers on two lines in five and is almost never wrong.
   // The engine detects the rest itself, which is the safe outcome.
   it('confidentLanguage stays quiet and is rarely wrong', () => {
-    expect(plain(CONFIDENT.total)).toEqual({ right: 3394, silent: 1643, wrong: 3 });
+    expect(plain(CONFIDENT.total)).toEqual({ right: 3426, silent: 1611, wrong: 3 });
   });
 
   it('confidentLanguage on short lines, the regime a chat lives in', () => {
-    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 972, silent: 705, wrong: 3 });
+    expect(plain(CONFIDENT.shortOnly)).toEqual({ right: 978, silent: 699, wrong: 3 });
   });
 
   // The expensive one. This is the answer that deletes a message in silence when
@@ -40,11 +40,11 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
   it('detectLanguage is wrong on a fifth of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 3931, silent: 466, wrong: 643 });
+    expect(plain(DETECT.total)).toEqual({ right: 3963, silent: 463, wrong: 614 });
   });
 
   it('detectLanguage is wrong on a quarter of short lines', () => {
-    expect(plain(DETECT.shortOnly)).toEqual({ right: 1135, silent: 267, wrong: 278 });
+    expect(plain(DETECT.shortOnly)).toEqual({ right: 1141, silent: 265, wrong: 274 });
   });
 });
 
@@ -126,8 +126,16 @@ describe('the languages the detector cannot name at all', () => {
     // the Danish g against the Norwegian k, `øj` against `øy`, then to 36 when
     // `gje` and `æl` started naming the two languages outright, then to 34 and
     // 31 on `jø` and `hun`. Eight rounds, 41 and 39 down to 34 and 31.
-    expect(DETECT.confusions.get('no->sv')).toBe(34);
-    expect(DETECT.confusions.get('da->sv')).toBe(31);
+    //
+    // THE NINTH ROUND IS THE ONE THAT PAID, and it did not touch the gate at
+    // all. `porte-diagnostic.mjs` separates two causes of silence, and for
+    // Norwegian the answer had moved: 34 lines did not open the gate, but
+    // FORTY-SIX opened it with nothing behind to decide. Fourteen spelling
+    // sequences later, `no` is 49 of 120 and `da` is 51, from 37 and 31, and
+    // the two pairs are 28 and 24. `da->nl` fell from 28 to 22 with them,
+    // which nothing in this round was aiming at.
+    expect(DETECT.confusions.get('no->sv')).toBe(28);
+    expect(DETECT.confusions.get('da->sv')).toBe(24);
     expect(DETECT.confusions.get('ca->es')).toBe(29);
   });
 });

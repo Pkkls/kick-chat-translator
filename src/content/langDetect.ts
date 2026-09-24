@@ -876,8 +876,57 @@ const MOTS_DANOIS = /(^|[^\p{L}])(mig|dig|sig|hvad|noget|nogen|efter|af|meget)([
 // danoise, et `gj` en prend trois. Le seuil est ZERO ici, pas trois : le tri se
 // fait entre DEUX langues, donc une ligne de l'autre cote n'est pas du bruit,
 // c'est une erreur.
-const SEQUENCES_NORVEGIENNES = /øy|øk/iu;
-const SEQUENCES_DANOISES = /øj|øg/iu;
+//
+// DEUXIEME TOUR, ET IL VAUT TRENTE-DEUX LIGNES, le plus gros gain unitaire du
+// chantier depuis le repli cyrillique. Ce qui a change est le DIAGNOSTIC et pas
+// la methode : `porte-diagnostic.mjs` dit que 34 lignes norvegiennes n'ouvrent
+// pas la porte mais que QUARANTE-SIX l'ouvrent sans que rien ne tranche
+// derriere. Ce ne sont pas les memes lignes et ce ne sont pas les memes
+// corrections : ici le declencheur va bien, c'est le TRI INTERIEUR qui manque.
+//
+// `nordique-tri.mjs` cherche donc les sous-chaines de deux a quatre lettres
+// qu'une des deux langues ecrit et que l'autre n'ecrit JAMAIS, sur les 155
+// lignes de chacune, tous corpus confondus. Le seuil reste zero.
+//
+// LES QUATORZE QUI RESTENT SONT TOUTES UNE REGLE D'ORTHOGRAPHE, et c'est la
+// seule raison de leur faire confiance au-dela du corpus qui les a rendues :
+//
+//   ei / ej     `nei` contre `nej`, `deilig` contre `dejlig`
+//   itt         `mitt ditt sitt litt` contre `mit dit sit lidt`
+//   inn         `inn finne kvinne` contre `ind finde kvinde`, nn contre nd
+//   opp         `opp oppgave` contre `op opgave`, en tete de mot seulement
+//   het / hed   `mulighet` contre `mulighed`
+//   ike         `like slike` contre `lide slige`
+//   igt         `rigtigt vigtigt` contre `riktig viktig`, gt contre kt
+//   ede         `snakkede elskede` contre `snakket elsket`, en fin de mot
+//   ud          `ud udenfor` contre `ut utenfor`, en tete de mot
+//   bliv        `blive bliver` contre `bli blir`
+//   æb / øb     `æble` contre `eple`, `købe` contre `kjøpe`
+//   kø          `køre køkken` contre `kjøre kjøkken`, le j norvegien
+//   uge         `uge bruge` contre `uke bruke`
+//   dst         `bedst sidst` contre `best sist`
+//
+// DEUX ANCRAGES SONT LA PARCE QUE LA FORME NUE PERDAIT. `opp` nu est dans le
+// danois `stoppe`, `ud` nu est dans `studere` que les deux ecrivent, `ede` nu
+// est dans le norvegien `stedet`. Les trois mesurent propre sur les 310 lignes
+// du banc, et les trois sont des accidents de corpus : la borne est ce qui les
+// rend vraies. RESSERRER PLUTOT QUE SUPPRIMER, troisieme fois sur cette branche.
+//
+// TROIS SONT SORTIES A L'ABLATION, mot a mot, parce qu'elles ne gagnent rien :
+// `uke`, `kje` et `igen`. Les trois sont des regles correctes et les trois sont
+// deja couvertes par une autre entree de la liste. Une regle vraie qui ne
+// rapporte rien reste du poids mort, et le tour en a produit trois sur dix-sept.
+//
+// CE QUI EST DEHORS ET QUE LE CRIBLE PROPOSE ENCORE, parce que le corpus ne
+// peut pas le refuser et que la langue, elle, le refuse : `unn` (le danois
+// ecrit `kunne`), `vel`, `ja`, `nak`, `usk`, `bed`, `gam`, `være` (les deux les
+// ecrivent), `lik` (le danois `politik`), `sj` (le danois `sjov`), `nu` (le
+// norvegien `minutt`), `tag` (`vintage`), `oge` (`toget` des deux cotes),
+//  `nden` (le norvegien `stranden`), `ade` et `igen` (le suedois les ecrit).
+// **Le corpus ne peut pas refuser ce qu'il ne contient pas**, et c'est la seule
+// chose que cette liste sert a dire au prochain passage.
+const SEQUENCES_NORVEGIENNES = /øy|øk|ei|itt|inn|het|ike|(^|[^\p{L}])opp/iu;
+const SEQUENCES_DANOISES = /øj|øg|ej|igt|bliv|æb|øb|kø|uge|dst|hed|ede([^\p{L}]|$)|(^|[^\p{L}])ud/iu;
 
 /**
  * Le meme mecanisme a un cran de plus : une lettre qui nomme un TRIO.

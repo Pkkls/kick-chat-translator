@@ -154,7 +154,7 @@ describe('le contraste avec Tatoeba, sur les memes langues', () => {
   // le chat en ecrit moins que la prose.
   it('montre que le registre coute a franc et pas au chemin sur', () => {
     const t = runMatrix(confidentLanguage, memesLangues());
-    expect(muet(t.total)).toBe(48);
+    expect(muet(t.total)).toBe(47);
     expect(muet(CHAT_SURE.total)).toBe(44);
     // 5, puis 3 avec le retrait de `mano`, puis 1 avec les mots jawi : la seule
     // erreur qui reste sur les 26 langues du chat est `ms -> ar`, une ligne
