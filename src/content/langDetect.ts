@@ -452,7 +452,6 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   // DEHORS : `más` es=10 mais hu=2, `qué` es=14 mais fr=1, `él` es=10 mais
   // fr=4 et hu=13. `nh` et `lh` portugais sont a vi=61 et sk=2.
   [/ão/iu, 'pt'],
-  [/cê/iu, 'pt'],
   [/ía/iu, 'es'],
   // ET CINQ AUTRES du meme crible, dont TROIS EN ASCII PUR, ce qui est rare et
   // precieux : elles repondent encore quand le clavier a mange les diacritiques,
@@ -855,6 +854,33 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   // `gaire` est dehors aussi, pour la raison inverse : correct, exclusif, et zero
   // ligne sur les dix bancs.
   [/(^|[^\p{L}])(estic|seva|dues|els|tinc|vaig|volem|amb|aquesta|molt)([^\p{L}]|$)/iu, 'ca'],
+  // CINQ AUTRES LANGUES PRENNENT LE MEME CHEMIN QUE LE CATALAN, et le crible les
+  // a rendues d'un coup : `langue-candidats.mjs` cherche, pour UNE langue contre
+  // les quarante et une autres, ce que ses lignes MUETTES ecrivent et que
+  // personne ne reprend. Il ne sert a rien de le lancer sur une langue qui va
+  // bien ; le diagnostic dit laquelle en a besoin et combien de lignes n'ouvrent
+  // aucune porte : it 82, sl 52, es 50, pt 48, fr 45.
+  //
+  // `che` et `ele` viennent du jeu de porte, ou ils ne pouvaient rien faire pour
+  // une ligne sans accent, et ils y sont retires en meme temps. Cinquieme et
+  // sixieme promotions de ce genre, apres les cinq mots catalans.
+  //
+  // REFUSES, ET C'EST LA MEME LISTE QU'AILLEURS : le corpus les rend propres, la
+  // langue ne les rend pas.
+  //   non   seize lignes italiennes, et c'est le mot francais. Le plus gros
+  //         candidat du tour, et le seul que son propre corpus ne pouvait pas
+  //         refuser. Le mettre dans les deux jeux ne le sauve pas non plus :
+  //         les deux voteraient a chaque ligne et le vote cesserait d etre
+  //         unanime, ce qui est du silence achete au prix du bruit.
+  //   los   l'allemand ecrit `los`.        onde  l'italien ecrit `onde`.
+  //   aqui  c'est `aquí` sans son accent.  hi    c'est le bonjour anglais.
+  //   bila  c'est `quand` en malais.       encore  l'anglais l'ecrit aussi.
+  //   nå    le danois l ecrit.
+  [/(^|[^\p{L}])(che|tutti|mia)([^\p{L}]|$)/iu, 'it'],
+  [/(^|[^\p{L}])(iz|ima)([^\p{L}]|$)/iu, 'sl'],
+  [/(^|[^\p{L}])(tengo|tiempo|mismo)([^\p{L}]|$)/iu, 'es'],
+  [/(^|[^\p{L}])(ele|ela)([^\p{L}]|$)/iu, 'pt'],
+  [/(^|[^\p{L}])joue([^\p{L}]|$)/iu, 'fr'],
   // Quatrieme groupe, et la difference avec le troisieme est la SOURCE : ces
   // motifs-la ont ete extraits du registre chat et non de la prose. Le groupe
   // precedent avait rapporte 76 lignes sur Tatoeba et une seule a l'aveugle,
@@ -1157,11 +1183,11 @@ const JEUX_DE_PORTE: Readonly<Record<string, RegExp>> = {
   pl: /(^|[^\p{L}])(jest|się|nasz|bardzo|jeszcze|wszystko|dlaczego|który)([^\p{L}]|$)/iu,
   vi: /(^|[^\p{L}])(với|của|một|không|được|rồi|quá|này|tôi)([^\p{L}]|$)/iu,
   es: /(^|[^\p{L}])(pero|muy|con|los|las|una|esto|esa|siempre|qué|yo|ese|ayer)([^\p{L}]|$)/iu,
-  pt: /(^|[^\p{L}])(uma|não|você|muito|isso|essa|também|ele|tudo|só|foi|ainda|esse|um)([^\p{L}]|$)/iu,
+  pt: /(^|[^\p{L}])(uma|não|você|muito|isso|essa|também|tudo|só|foi|ainda|esse|um)([^\p{L}]|$)/iu,
   ca: /(^|[^\p{L}])(això|què|també|més|són|una|és|sóc|després|ací)([^\p{L}]|$)/iu,
   fr: /(^|[^\p{L}])(est|avec|pour|dans|tout|comme|très|sont|fait|ça|été|étais|fois|mois)([^\p{L}]|$)/iu,
   tr: /(^|[^\p{L}])(bir|için|değil|çok|var|bu|şey|daha)([^\p{L}]|$)/iu,
-  it: /(^|[^\p{L}])(allora|quindi|comunque|anche|adesso|perché|però|davvero|questo|sono|più|che|niente|una|molto|mio)([^\p{L}]|$)/iu,
+  it: /(^|[^\p{L}])(allora|quindi|comunque|anche|adesso|perché|però|davvero|questo|sono|più|niente|una|molto|mio)([^\p{L}]|$)/iu,
   ro: /(^|[^\p{L}])(foarte|acum|nimic|când|care|pentru|sunt|cred|joacă|cineva)([^\p{L}]|$)/iu,
   nl: /(^|[^\p{L}])(niet|het|een|wat|voor|zijn|heeft|geen|hoe|nog|gewoon|maar)([^\p{L}]|$)/iu,
 };
@@ -1275,7 +1301,6 @@ const PORTES_PARTAGEES: ReadonlyArray<readonly [RegExp, readonly string[]]> = [
   [/ý/iu, ['sk', 'cs', 'vi']],
   [/è/iu, ['it', 'ca', 'fr']],
   [/à/iu, ['fr', 'vi', 'ca', 'it']],
-  [/ì/iu, ['vi', 'it']],
 ];
 
 function porteQuelleLangue(text: string): string | undefined {

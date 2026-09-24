@@ -38,7 +38,7 @@ const BANC: Ligne[] = [
   ['alguem sabe o que aconteceu', 'pt', 'pt', undefined],
   ['que isso mano kkkk', 'pt', 'pt', 'pt'],
   ['vamos ganhar essa', 'pt', 'pt', 'pt'],
-  ['il joue vraiment mal la', 'fr', 'fr', undefined],
+  ['il joue vraiment mal la', 'fr', 'fr', 'fr'],
   ['quelqu un a vu ce qui s est passe', 'fr', 'fr', 'fr'],
   ['trop fort le mec', 'fr', 'fr', 'fr'],
   ['je comprends rien du tout', 'fr', 'fr', undefined],
@@ -127,6 +127,12 @@ describe('les totaux du banc latin', () => {
   // etait lue FRANCAISE par franc et elle est roumaine. `foarte` la nomme sur
   // les deux chemins. C'est la DEUXIEME fausse que ce banc perd depuis qu'il
   // existe, et la premiere l'avait ete par le meme mecanisme, un mot outil.
+  // Neuvieme passe, les mots en plein air : `il joue vraiment mal la` passe de
+  // muet a `fr` sur le chemin sur. `joue` est un mot francais que personne
+  // d'autre n'ecrit, et la ligne ne porte aucun accent, donc aucune porte ne
+  // pouvait la servir. Le test attendait le SILENCE sur une ligne francaise,
+  // donc il assertait le defaut : cas 4.7, cinquieme fois sur ce banc. Totaux
+  // inchanges, c'est la quatrieme colonne qui bouge.
   it('sont 38 justes, 5 silences et 8 fausses avec assurance sur 51', () => {
     let justes = 0;
     let silences = 0;
