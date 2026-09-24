@@ -3,7 +3,7 @@
 État vivant de ce chantier, mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-24. Dernier commit de **code** : `c75f6b9`, version **2.11.0** prête à publier. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
+Dernière mise à jour : 2026-09-24. Dernier commit de **code** : `8bc1cbd`, version **2.11.0** prête à publier. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
 
 ---
 
@@ -49,12 +49,12 @@ Ce qui a été découvert en cours de route et qui n'était pas dans le diagnost
 Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR, 120 lignes par langue.
 Trois issues, **jamais additionnées** : `right` la bonne langue, `silent` le détecteur a refusé de répondre ce qui est l'issue SÛRE, `wrong` une autre langue.
 
-| chemin | portée | départ `ec9e02d` | aujourd'hui `c75f6b9` |
+| chemin | portée | départ `ec9e02d` | aujourd'hui `8bc1cbd` |
 |---|---|---|---|
-| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3698 r / 1339 s / **3 w** |
-| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 1068 / 609 / **3** |
-| `detectLanguage` | toutes | 3019 / 804 / **1217** | 4148 / 392 / **500** |
-| `detectLanguage` | court | 837 / 364 / **479** | 1211 / 238 / **231** |
+| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3731 r / 1306 s / **3 w** |
+| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 1080 / 597 / **3** |
+| `detectLanguage` | toutes | 3019 / 804 / **1217** | 4154 / 388 / **498** |
+| `detectLanguage` | court | 837 / 364 / **479** | 1216 / 234 / **230** |
 
 Le chemin sûr **répond 2,5 fois plus souvent et se trompe 83 % moins**. C'est le seul mouvement qui compte vraiment : `wrong` sur ce chemin veut dire qu'on demande au moteur de traduire depuis une langue dans laquelle le texte n'est pas.
 
@@ -1311,6 +1311,30 @@ paire ms/id         48 %                     ->   65 %
 
 ---
 
+### 5.38 LES SIX DERNIERES LANGUES, et le fond du registre chat (`8bc1cbd`)
+
+Le crible en plein air n'avait jamais tourné sur `de`, `sv`, `pl`, `ro`, `tr` et `nl`, parce qu'elles étaient les plus hautes du tableau et qu'on cherche d'abord là où il manque le plus. Trente-trois lignes Tatoeba et **quatre sur le corpus aveugle, 55 à 57 %**.
+
+La moitié des mots vient des jeux de porte, où ils ne servaient qu'une ligne accentuée sur deux, et ce sont les plus fréquents de leurs langues : `nicht`, `auf`, `jest`, `heeft`.
+
+```
+de 79 -> 92 sur 120, pl 98 -> 104, nl 101 -> 108, ro 93 -> 102, tr 95 -> 97
+```
+
+**`jag` et `och` repartent dans le jeu de porte suédois** : en plein air ils ne gagnent rien, `ä`, `ö` et `är` ayant déjà leurs lignes. L'ablation le dit, et c'est le sens inverse de la promotion, qui vaut d'être noté : un mot n'est pas mieux en plein air par principe.
+
+**`ich` est refusé et c'est le candidat le plus cher du tour.** Trente-cinq lignes allemandes, plus qu'aucun autre, et le polonais comme le slovaque écrivent `ich` pour « leur ». Mesuré : dix lignes de plus, une erreur sur Tatoeba et SEPT sur le banc clavier. **`inte` est refusé aussi, et seul le banc des lignes MÉLANGÉES voit pourquoi** : il répond sur une ligne à deux langues.
+
+#### LE REGISTRE CHAT EST AU FOND, et voici comment on le sait
+
+Le mode `chat` du crible, qui ne lit que les corpus de chat, a été lancé sur les cinq langues les plus muettes qui restaient, `sk`, `ca`, `sl`, `es`, `it`, en mots, en séquences et en fins de mot. **Il rend zéro candidat propre partout**, sauf `hi` pour le catalan, qui est le bonjour anglais, et `cuá` pour l'espagnol.
+
+`cuá` a été mesuré : `cuánto` contre le catalan `quant` et le portugais `quanto`, c'est une vraie règle. Elle vaut **+1 sur chat1 et +1 sur chat3, zéro sur Tatoeba et zéro sur l'aveugle**. Les deux corpus qu'elle bouge sont ceux que le crible a lus pour la proposer. **Refusée** : le critère ne change pas parce que le filon se tarit.
+
+**Ce qui manque aux langues encore muettes sur du chat n'est pas une règle.** `da` 20 lignes muettes sur 25, `en` 16, `no` 16, `sk` 15, `ca` 14 : leurs lignes muettes portent des mots qui n'apparaissent qu'une fois. Un crible ne peut pas proposer ce qui ne se répète pas, et écrire une règle par ligne est l'apprentissage par cœur que toute cette branche refuse. **La marche suivante est du chat, en quantité, dans la langue visée.**
+
+---
+
 ## 6. État par phase
 
 | Phase | Contenu | État |
@@ -1372,6 +1396,8 @@ Les chiffres sont en 2bis-bis, 2ter, 5.14 à 5.19.
 - **Mettre `là` dans un jeu de porte vietnamien.** C'est le `là` français au caractère près, il a volé trois lignes.
 - **Une porte de séquence ASCII** (`sz`, `dz`). Mesurée, section 5.16 : le déclencheur vit dans le mot qui tranche.
 - **Croire `lang-screen.mjs` sans lancer le diff.** Il lit DEUX corpus sur dix, section 5.37 : `що` en est sorti exclusif et il est bulgare. Le crible propose, le diff dispose.
+- **Relancer le crible en mode `chat` sur `sk`, `ca`, `sl`, `es`, `it`.** Fait, section 5.38, en mots, en séquences et en fins de mot : zéro candidat propre. Ce qui reste muet sur du chat porte des mots qui n'apparaissent qu'une fois, et un crible ne propose pas ce qui ne se répète pas.
+- **Mettre `ich` dans la table exclusive allemande.** Mesuré, 5.38 : le polonais et le slovaque l'écrivent, une erreur sur Tatoeba et SEPT sur le banc clavier pour dix lignes.
 - **Laisser un crible lire un corpus AVEUGLE.** Section 5.35 : les trois cribles neufs le faisaient, et le chiffre de la paire en a payé le prix. Compter un mot dans un aveugle est permis, y chercher des mots ne l'est pas.
 - **Chercher un arbitrage plus malin que l'unanimité** dans la table des lettres exclusives. Mesuré, section 5.24 : **un seul désaccord sur 6070 lignes**, et il est fermé. À rouvrir quand la table aura beaucoup grossi, pas avant.
 - **Appliquer le critère de l'ablation à la table cantonaise** et supprimer ce qui rapporte zéro. Section 5.25 : neuf de ses marqueurs n'apparaissent nulle part et c'est normal, une règle de PRÉSENCE ne se choisit pas sur le gain mesuré.
