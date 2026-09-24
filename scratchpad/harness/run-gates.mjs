@@ -50,8 +50,18 @@ const GATES = [
   // La barre flottante a dix largeurs. Elle n'etait dans aucun dump audite et
   // ses deux boutons vivaient sous 24x24 depuis toujours.
   ['bar-widths', 'node', ['scratchpad/harness/bar-widths.mjs']],
-  ['flags-preview', 'node', ['scratchpad/harness/flags-preview.mjs']],
-  ['lang-panel-measure', 'node', ['scratchpad/harness/lang-panel-measure.mjs']],
+  // DEUX DE PLUS SONT SORTIES, et pour les deux raisons deja ecrites plus haut.
+  //
+  // `flags-preview` dessine les drapeaux pour qu'on les REGARDE et n'asserte
+  // rien : c'est le quatrieme shooter et il avait ete mis dans la liste par
+  // inadvertance. Il y etait ECHEC sur tout clone frais, parce quil lisait un
+  // `flags.css` que rien ne produit ; il lit maintenant la feuille livree et
+  // tourne, a la main, quand on veut voir les drapeaux.
+  //
+  // `lang-panel-measure` ouvre `lang-panel.html`, une page que seule
+  // `lang-panel-shoot` fabrique et que le depot ne contient pas. Les deux sont
+  // donc dehors ensemble. Ce que cette porte mesurait, `bar-panel-live` le
+  // mesure sur le vrai panneau et il est dans la liste.
   // La seule porte qui charge la vraie extension. Toutes les autres montent les
   // composants a la main et ne touchent jamais le manifeste ni le chemin par
   // lequel Chrome injecte. Elle ouvre une fenetre, parce que sans fenetre
