@@ -61,8 +61,8 @@ describe('le corpus de la paire', () => {
   // regle ecrite pour lui. Il bougera ; le bouger sans dire dans quel sens et
   // pourquoi est ce que ce fichier existe pour empecher.
   it('mesure les deux chemins sur du registre familier', () => {
-    expect(plain(SURE.total)).toEqual({ right: 29, silent: 31, wrong: 0 });
-    expect(plain(BRUT.total)).toEqual({ right: 33, silent: 15, wrong: 12 });
+    expect(plain(SURE.total)).toEqual({ right: 39, silent: 21, wrong: 0 });
+    expect(plain(BRUT.total)).toEqual({ right: 43, silent: 11, wrong: 6 });
   });
 
   // LA MESURE QUI JUSTIFIE LE CORPUS, et la reponse n'est pas celle qu'on
@@ -87,8 +87,8 @@ describe('le corpus de la paire', () => {
         wrong: b.short.wrong + b.medium.wrong + b.long.wrong,
       };
     };
-    expect(plain(par('ms'))).toEqual({ right: 14, silent: 16, wrong: 0 });
-    expect(plain(par('id'))).toEqual({ right: 15, silent: 15, wrong: 0 });
+    expect(plain(par('ms'))).toEqual({ right: 15, silent: 15, wrong: 0 });
+    expect(plain(par('id'))).toEqual({ right: 24, silent: 6, wrong: 0 });
   });
 
   // Le chemin brut sur le meme corpus, celui qui pilote le moteur on-device et
@@ -100,10 +100,10 @@ describe('le corpus de la paire', () => {
   // deuxieme chose : sur du registre familier, franc ne se contente pas de
   // confondre les deux entre elles, il sort parfois de la famille entierement.
   it('confond les deux entre elles, et sort parfois de la paire', () => {
-    expect(BRUT.confusions.get('id->ms')).toBe(6);
-    expect(BRUT.confusions.get('ms->id')).toBe(4);
-    // Le reste part ailleurs, et c'est une erreur sur douze.
-    expect(BRUT.confusions.get('id->fr')).toBe(1);
+    expect(BRUT.confusions.get('id->ms')).toBe(2);
+    expect(BRUT.confusions.get('ms->id')).toBe(3);
+    // Le reste part ailleurs, et il en reste UNE sur six.
+    expect(BRUT.confusions.get('id->fr')).toBeUndefined();
     expect(BRUT.confusions.get('ms->fr')).toBe(1);
   });
 });

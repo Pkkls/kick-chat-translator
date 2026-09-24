@@ -881,6 +881,32 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   [/(^|[^\p{L}])(tengo|tiempo|mismo)([^\p{L}]|$)/iu, 'es'],
   [/(^|[^\p{L}])(ele|ela)([^\p{L}]|$)/iu, 'pt'],
   [/(^|[^\p{L}])joue([^\p{L}]|$)/iu, 'fr'],
+  // LA PAIRE MALAIS-INDONESIEN EN PLEIN AIR, et c'est la meme promotion que le
+  // catalan, appliquee a la langue la plus basse du tableau.
+  //
+  // `gue`, `banget`, `udah`, `awak` vivaient derriere la porte ms/id, ou il faut
+  // d'abord qu'un mot PARTAGE se declenche. Or le chat familier de Jakarta
+  // n'ecrit pas les mots partages : il ecrit `gue`, et `gue` seul suffit a
+  // nommer la langue. Quatorze lignes muettes du corpus de la paire le portent.
+  //
+  // Le critere qui separe les deux listes est le seul qui compte ici : un mot
+  // que LES DEUX langues ecrivent va au declencheur, un mot que seule une des
+  // deux ecrit va en plein air. `awak` contre `kamu`, `petang` contre `sore`,
+  // `bahawa` contre `bahwa`, qui est la meme difference orthographique que
+  // `kerana` contre `karena` deja dans le fichier.
+  //
+  // ONZE MOTS PARTAGES SUR QUATORZE SONT MORTS et ils sont sortis : `semalam`,
+  // `datang`, `tengah`, `perlu`, `harga`, `anak`, `waktu`, `dua`, `kembali`,
+  // `pasti`, `selalu`. Les retirer tous ensemble donne EXACTEMENT les memes
+  // chiffres sur les dix bancs, donc ce ne sont pas onze couplages caches,
+  // c'est onze fois le meme mot deja couvert par un autre sur la meme ligne.
+  //
+  // DEHORS : `mau` est `mauvais` en portugais, `cara` est le visage en espagnol,
+  // en portugais et en italien, `kereta` est le train en indonesien, `bila` est
+  // `quand` en malais et un mot slovene. Les cinq mesurent propre et les cinq
+  // sont faux.
+  [/(^|[^\p{L}])(gue|banget|udah)([^\p{L}]|$)/iu, 'id'],
+  [/(^|[^\p{L}])(awak|petang|bahawa|bolehkah)([^\p{L}]|$)/iu, 'ms'],
   // Quatrieme groupe, et la difference avec le troisieme est la SOURCE : ces
   // motifs-la ont ete extraits du registre chat et non de la prose. Le groupe
   // precedent avait rapporte 76 lignes sur Tatoeba et une seule a l'aveugle,
@@ -1452,9 +1478,9 @@ function estonienOuPortugais(text: string): string | undefined {
 // les deux jeux peuvent contenir des mots courts. Des qu'il monte, chacun
 // devient un piege, et c'est exactement ce qui est arrive a `je` ci-dessous.
 const MOTS_MALAIS_INDONESIENS =
-  /(^|[^\p{L}])(yang|tidak|dengan|untuk|saya|ini|itu|dari|pada|sudah|mereka|dalam|lebih|orang|apa|lagi|tidur|siapa|baru|makan|sini|aku|pagi|pergi|habis)([^\p{L}]|$)/iu;
+  /(^|[^\p{L}])(yang|tidak|dengan|untuk|saya|ini|itu|dari|pada|sudah|mereka|dalam|lebih|orang|apa|lagi|tidur|siapa|baru|makan|sini|aku|pagi|pergi|habis|kena|sampai|bukan)([^\p{L}]|$)/iu;
 const MOTS_INDONESIENS =
-  /(^|[^\p{L}])(bisa|uang|mobil|coba|karena|besok|kamar|kayak|nggak|gak|banget|gimana|udah|aja|nih|dong|sih|gue|kemarin|sore)([^\p{L}]|$)/iu;
+  /(^|[^\p{L}])(bisa|uang|mobil|coba|karena|besok|kamar|kayak|nggak|gak|gimana|aja|nih|dong|sih|kemarin|sore)([^\p{L}]|$)/iu;
 // LES PARTICULES MALAISES, et c'est la porte qui les rend possibles.
 //
 // `tak`, `dah`, `je`, `weh` sont ce que le chat malaisien ecrit tout le temps et
@@ -1501,7 +1527,7 @@ const MOTS_INDONESIENS =
 // plus sur le corpus de reglage, qui ne prouve rien. A resultat egal la forme
 // simple gagne, donc il est simplement supprime.
 const MOTS_MALAIS =
-  /(^|[^\p{L}])(kerana|sahaja|cuba|esok|bilik|mahu|jom|awak|tengok|macam|betul|sikit|jugak|memang|nak|tiada|teruk|nampak|berlaku|dah|tak|weh)([^\p{L}]|$)/iu;
+  /(^|[^\p{L}])(kerana|sahaja|cuba|esok|bilik|mahu|jom|tengok|macam|betul|sikit|jugak|memang|nak|tiada|teruk|nampak|berlaku|dah|tak|weh)([^\p{L}]|$)/iu;
 
 function malaisOuIndonesien(text: string): string | undefined {
   if (!MOTS_MALAIS_INDONESIENS.test(text)) return undefined;

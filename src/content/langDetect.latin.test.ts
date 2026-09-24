@@ -61,7 +61,7 @@ const BANC: Ligne[] = [
   ['on gra naprawde slabo', 'pl', undefined, undefined],
   ['co tu sie dzieje', 'pl', 'pl', undefined],
   ['nie moge w to uwierzyc', 'pl', 'pl', undefined],
-  ['dia main jelek banget', 'id', undefined, undefined],
+  ['dia main jelek banget', 'id', 'id', 'id'],
   ['ada apa sih ini', 'id', 'id', 'id'],
   ['gila sih ini keren', 'id', 'id', 'id'],
   ['joaca foarte prost azi', 'ro', 'ro', 'ro'],
@@ -133,7 +133,13 @@ describe('les totaux du banc latin', () => {
   // pouvait la servir. Le test attendait le SILENCE sur une ligne francaise,
   // donc il assertait le defaut : cas 4.7, cinquieme fois sur ce banc. Totaux
   // inchanges, c'est la quatrieme colonne qui bouge.
-  it('sont 38 justes, 5 silences et 8 fausses avec assurance sur 51', () => {
+  // Dixieme passe, la paire malais-indonesien en plein air : `dia main jelek
+  // banget` passe de MUETTE a `id` sur les deux chemins. `banget` etait derriere
+  // la porte ms/id, ou il fallait qu un mot partage se declenche d abord, et
+  // cette ligne n en porte aucun. C est le premier silence que la colonne
+  // `detectLanguage` perd depuis six passes, donc les totaux bougent : 38 justes
+  // et 5 silences deviennent 39 et 4.
+  it('sont 39 justes, 4 silences et 8 fausses avec assurance sur 51', () => {
     let justes = 0;
     let silences = 0;
     let faux = 0;
@@ -143,8 +149,8 @@ describe('les totaux du banc latin', () => {
       else faux++;
     }
     expect({ justes, silences, faux, total: BANC.length }).toEqual({
-      justes: 38,
-      silences: 5,
+      justes: 39,
+      silences: 4,
       faux: 8,
       total: 51,
     });
