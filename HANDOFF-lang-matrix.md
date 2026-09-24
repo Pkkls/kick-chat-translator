@@ -3,7 +3,7 @@
 État vivant de ce chantier, mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-24. Dernier commit de **code** : `1f1f32e`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
+Dernière mise à jour : 2026-09-24. Dernier commit de **code** : `be65c1d`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
 
 ---
 
@@ -49,12 +49,12 @@ Ce qui a été découvert en cours de route et qui n'était pas dans le diagnost
 Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR, 120 lignes par langue.
 Trois issues, **jamais additionnées** : `right` la bonne langue, `silent` le détecteur a refusé de répondre ce qui est l'issue SÛRE, `wrong` une autre langue.
 
-| chemin | portée | départ `ec9e02d` | aujourd'hui `1f1f32e` |
+| chemin | portée | départ `ec9e02d` | aujourd'hui `be65c1d` |
 |---|---|---|---|
-| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3394 r / 1643 s / **3 w** |
-| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 972 / 705 / **3** |
-| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3931 / 466 / **643** |
-| `detectLanguage` | court | 837 / 364 / **479** | 1135 / 267 / **278** |
+| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3443 r / 1594 s / **3 w** |
+| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 982 / 695 / **3** |
+| `detectLanguage` | toutes | 3019 / 804 / **1217** | 3974 / 458 / **608** |
+| `detectLanguage` | court | 837 / 364 / **479** | 1145 / 263 / **272** |
 
 Le chemin sûr **répond 2,5 fois plus souvent et se trompe 83 % moins**. C'est le seul mouvement qui compte vraiment : `wrong` sur ce chemin veut dire qu'on demande au moteur de traduire depuis une langue dans laquelle le texte n'est pas.
 
@@ -83,11 +83,11 @@ Les trois dernières du chemin brut, `et fi sl`, sont sorties par le lexique de 
 
 ```
 120  bn el he hi ja ko ta th        (écritures sans ambiguïté)
-119  ar vi   116 fa   114 yue   108 lv   105 zh-tw  101 uk   99 nl
-98   pl    95 tr     93 ro     90 zh     89 ru      85 sv    79 de
-78   cs    74 bg     73 tl     68 lt     67 et      60 pt    58 fr
-55   hu    51 fi     49 es     46 sl     39 it      37 no    36 ca
-35   en    31 da     29 sk     23 ms     15 id
+119  ar vi   116 fa   114 yue   108 lv   105 zh-tw  101 nl uk
+98   pl    95 tr     93 ro     90 zh     89 ru      85 sv    80 cs
+79   de    74 bg     73 tl     68 lt     67 et      60 pt    58 fr
+55   hu    53 es     51 da fi  49 no     46 sl      39 it    38 sk
+36   ca    35 en     23 ms     15 id
 ```
 
 **Plus aucune langue sous 13 sur 120**, contre vingt-six à zéro au départ. Ce tableau est celui de Tatoeba ; sur du chat le classement est différent, voir 2bis.
@@ -100,19 +100,19 @@ Le bas du tableau n'est plus fait de langues sans règle mais de langues dont le
 
 | de → vers | lignes | note |
 |---|---:|---|
-| id → ms | 44 | jamais traitée, **le plus gros bloc restant et de loin** |
-| no → sv | 34 | 48 avant la règle de paire, 41 avant la porte à mot |
-| ms → id | 33 | |
-| da → sv | 31 | 44, puis 39 |
+| id → ms | 44 | **structurellement bloqué sur Tatoeba**, voir 5.27 |
+| ms → id | 33 | même raison : cette prose n'écrit pas ce qui les sépare |
 | ca → es | 29 | 42 avant les portes, `l·l` n'apparaît que 2 fois sur 120 |
-| da → nl | 28 | |
-| ca → fr | 19 | 29 avant les portes |
-| sk → cs | 18 | 30 avant les lettres exclusives, 27 avant les portes |
+| no → sv | 28 | 48, puis 41, puis 34 avant le tri intérieur (5.28) |
+| da → sv | 24 | 44, puis 39, puis 31 |
+| da → nl | 22 | 28 avant le tri intérieur, tombé sans être visé |
+| ca → fr | 19 | 29 avant les portes, **le plus gros bloc encore vraiment ouvert** |
+| sk → cs | 15 | 30 avant les lettres exclusives, 18 avant `iť` et `sť` |
 | zh-tw → zh | 15 | 120 sur 120 au départ |
 | pt → es | 14 | |
-| da → de | 13 | |
-| no → fr | 10 | |
-| no → nl | 10 | |
+| da → de | 9 | 15 avant le tri intérieur |
+| no → fr | 9 | |
+| no → nl | 9 | 14 avant le tri intérieur |
 | es → pt | 8 | 18 au départ |
 
 **Le bas du tableau est maintenant `ms` 17 et `id` 14, et ils y sont seuls.** Le tagalog, qui partageait ce fond, est monté à 67 en un commit. Voir 5.17.
@@ -1081,6 +1081,64 @@ La borne de surete est maintenant ecrite a cote des jeux : sur les 5850 lignes e
 
 ---
 
+### 5.28 LE TRI INTERIEUR, et la question qui vaut trente-deux lignes (`3eb7479`)
+
+Plus gros gain unitaire de la branche depuis le repli cyrillique, et **la porte n'y etait pour rien**.
+
+`porte-diagnostic.mjs` separe deux causes de silence, et pour le norvegien la reponse avait change de camp : 34 lignes Tatoeba n'ouvrent pas la porte nordique, mais **QUARANTE-SIX l'ouvrent sans que rien ne tranche derriere**. Etoffer le declencheur aurait travaille la moitie la plus petite.
+
+`scratchpad/harness/paire-sequences.mjs` pose la question du tri : quelle sous-chaine de deux a quatre lettres une des deux langues ecrit-elle et l'autre JAMAIS. Le seuil reste **zero**, parce que le tri se fait entre deux langues et qu'une ligne de l'autre cote n'est pas du bruit, c'est une erreur.
+
+**Quatorze survivent et les quatorze sont une regle d'orthographe**, ce qui est la seule raison de leur faire confiance au-dela du corpus :
+
+```
+ei / ej     nei contre nej        itt      mitt ditt contre mit dit
+inn         finne contre finde    opp      opp contre op
+het / hed   mulighet / mulighed   ike      like contre lide
+igt         rigtigt contre riktig ede      snakkede contre snakket
+ud          ut contre ud          bliv     blive contre bli
+æb / øb     æble contre eple      kø       køre contre kjøre
+uge         uge contre uke        dst      bedst contre best
+```
+
+**Trois ont exige un ancrage** : `opp` nu vit dans le danois `stoppe`, `ud` nu dans `studere` que les deux ecrivent, `ede` nu dans le norvegien `stedet`. Les trois mesurent propre sur les 310 lignes du banc et les trois sont des accidents de corpus. **Trois autres sont sorties a l'ablation** : `uke`, `kje`, `igen` sont des regles correctes deja couvertes par une autre entree. **Une regle vraie qui ne rapporte rien reste du poids mort.**
+
+```
+tatoeba  sur  3394r/1643s/3w -> 3426r/1611s/3w     no 37 -> 49, da 31 -> 51
+tatoeba  brut 3931r/466s/643w -> 3963r/463s/614w   no->sv 34->28, da->sv 31->24
+chat2 AVEUGLE sur 125 -> 126
+```
+
+**`da->nl` est tombe de 28 a 22 sans que rien dans ce tour ne le vise** : franc donnait ces lignes au neerlandais faute que la table les nomme, et les nommer danoises les reprend.
+
+---
+
+### 5.29 LE CRIBLE DE PAIRE GENERALISE, trois autres familles (`be65c1d`)
+
+La question n'a rien de nordique, donc le script prend maintenant deux codes de langue. **Ce qui le rend utile n'est pas lui mais le diagnostic qui le precede** : lance sur la mauvaise moitie, il etoffe ce qui n'etait pas le probleme.
+
+Quatre entrees sur douze candidats, chacune une regle :
+
+```
+jsi jsou   le verbe etre tcheque. Le slovaque ecrit si et su.
+iť sť      la desinence slovaque, robiť et radosť. Le tcheque n a pas le caron.
+fue        le passe espagnol, plus fuego et fuerte, contre foi fogo forte.
+oet        le neerlandais moet et zoet, contre le danois må.
+```
+
+**`jsi` a eu besoin de sa borne de mot et SEUL LE BANC SANS DIACRITIQUES l'a dit.** En plein texte il vit dans le slovaque `najhlúpejšia` et le slovene `najlepši`, qui depouilles donnent `najhlupejsia` et `najlepsi` : six lignes partaient au tcheque et aucun autre banc ne le voyait.
+
+**Huit candidats mesuraient propre et sont refuses**, chacun parce que la langue l'ecrit et que le corpus ne le contient pas : `jog` est le droit en hongrois, `fala` la vague en polonais, `quer` vit dans le francais `manquer`, `grad` dans l'espagnol `agradar`, `egun` dans `segundo`, `aqui` est `aquí` sans son accent, `jst` est slovene, `ať` prend une ligne tcheque.
+
+```
+tatoeba  sur  3426r/1611s/3w -> 3443r/1594s/3w
+sk 29 -> 38, cs 78 -> 80, es 49 -> 53, nl 99 -> 101, sk->cs 18 -> 15
+```
+
+Un test a ete **repare et pas renumerote** : `composeHint.test.ts` opposait les deux detecteurs sur `que fue con esos pendejos`, et `fue` le nomme maintenant, correctement. La propriete testee n'a pas bouge, l'exemple si, ce qui est la facon normale dont un banc vieillit.
+
+---
+
 ## 6. État par phase
 
 | Phase | Contenu | État |
@@ -1215,6 +1273,7 @@ tl tgl   pt-br aucun (partage por)   zh-tw aucun (partage cmn)
 | `scratchpad/harness/canto-bench.mjs` | le banc cantonais, moitié réglage et moitié tenue à l'écart | oui |
 | `scratchpad/harness/arabe-preuve.mjs` | **quelle preuve l'arabe porte lui-même**, jeu par jeu | oui |
 | `scratchpad/harness/paire-declencheur.mjs` | **le crible du déclencheur de la paire**, dans le bon registre | oui |
+| `scratchpad/harness/paire-sequences.mjs` | **le crible du TRI INTÉRIEUR**, deux codes de langue en argument | oui |
 | `src/content/langChatDixCorpus.ts` | **le DIXIÈME banc**, 100 lignes, ar ja ko ru | oui |
 | `scratchpad/harness/lang-matrix.mjs` | écrit le rapport lisible | oui |
 | `scratchpad/harness/lang-matrix.md` | le rapport | non, régénérable |
@@ -1345,6 +1404,8 @@ Commits, du plus ancien au plus récent :
 | `1e2a4e4` | Open the Cantonese rule a second time, after finding out what it was built on |
 | `9ad2dea` | Make Arabic name itself instead of being the answer when nobody speaks |
 | `1f1f32e` | Open the Malay gate on the word both languages write, and ship five of thirty-four |
+| `3eb7479` | Sort Danish from Norwegian on fourteen spelling rules, and gain thirty-two lines |
+| `be65c1d` | Run the pair screen on three more close pairs, and take seventeen more lines |
 
 ---
 
@@ -1441,7 +1502,7 @@ Ne pas trancher ça dans une passe de détection. **Et surtout : le faire seul n
 
 - Commits : sujet à l'impératif, corps expliquant la cause, le correctif, et **comment il a été constaté**. Terminer par `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`.
 - Gate : `npm run release:check`, jamais seulement `typecheck` et `test`. Il lance aussi `lint`.
-- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **95959 aujourd'hui** (`1f1f32e`), soit +4156 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-sept portes et 433 entrées de lexique. Le détail des neuf derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, **-51 pour +14**, **+13 pour +39**, +65 pour +8, -10 pour +2, +22 pour +5, **-76 pour zéro**, qui ne fait que supprimer des entrées qui ne pouvaient plus se déclencher, **+5 pour +1** ligne aveugle en resserrant `aat`, **+94 pour +2**, le seul tour du chantier à payer un prix pareil parce qu'il achète douze caractères cantonais dont aucun ne gagne de ligne sur les bancs d'aujourd'hui, **+73 pour quatre erreurs fermées** avec la preuve arabe, et **+10 pour +7 lignes aveugles** au dernier, qui est le meilleur rapport de tout le chantier après la porte nordique. Les deux meilleurs rapports de tout le chantier sont la porte nordique à mot, qui supprime plus de code qu'elle n'en ajoute, et les marqueurs tagalog, treize octets. Les six corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
+- Poids du bundle content relevé avant et après toute modification du content script. **Mesurer les deux bouts soi-même**, la méthode des relevés anciens n'est pas écrite et ils ne se raccordent pas. Repère en `gzip -9` sur `dist/assets/content.js` : 91484 avant les lettres exclusives, 94212 avant les portes partagées, **96013 aujourd'hui** (`be65c1d`), soit +4210 octets depuis l'origine, 4 % du bundle, pour l'ensemble des règles, vingt-sept portes et 433 entrées de lexique. Le détail des neuf derniers tours : +322 octets pour +83 lignes, +44 pour +15, +113 pour +23, **-51 pour +14**, **+13 pour +39**, +65 pour +8, -10 pour +2, +22 pour +5, **-76 pour zéro**, qui ne fait que supprimer des entrées qui ne pouvaient plus se déclencher, **+5 pour +1** ligne aveugle en resserrant `aat`, **+94 pour +2**, le seul tour du chantier à payer un prix pareil parce qu'il achète douze caractères cantonais dont aucun ne gagne de ligne sur les bancs d'aujourd'hui, **+73 pour quatre erreurs fermées** avec la preuve arabe, et **+10 pour +7 lignes aveugles** au dernier, qui est le meilleur rapport de tout le chantier après la porte nordique. Les deux meilleurs rapports de tout le chantier sont la porte nordique à mot, qui supprime plus de code qu'elle n'en ajoute, et les marqueurs tagalog, treize octets. Les six corpus ne pèsent rien dans le bundle, un garde statique de `langMatrix.test.ts` le vérifie à chaque passe.
 - Pas de nom de streamer ou de chaîne en dur, nulle part.
 - Pas d'emoji dans le code.
 - Les données de test vivent **inline dans le fichier de test**, pas dans une fixture séparée.
