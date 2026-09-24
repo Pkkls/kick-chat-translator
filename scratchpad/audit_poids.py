@@ -57,7 +57,29 @@ MANIFESTE = 'dist/manifest.json'
 # `tinyld.light.browser` en pese 68, sous licence MIT. Trente kilo-octets de
 # rendus, soit treize pour cent du bundle, si l'experience de justesse tourne en
 # sa faveur. Elle n'a pas encore tourne.
-REFERENCE_OCTETS = 233217
+#
+# Reference relevee le 2026-09-24, de 233_217 a 248_199, soit +14_982 octets et
+# +6,42 %. La hausse est voulue et elle a ete SEPAREE plutot que devinee : le
+# meme build, avec le seul `langDetect.ts` de master a la place du courant,
+# pese 233_727 octets. Le partage est donc net :
+#
+#     regles de detection    14_472 o   la branche feat/lang-matrix
+#     cantonais hors detecteur  510 o   langue offerte, drapeau, niveau de
+#                                       contexte, garde de translitteration,
+#                                       codes chez deux fournisseurs
+#     ---------------------------------
+#     total                  14_982 o
+#
+# Ce que les 14_472 octets achetent, mesure sur les 5040 lignes de Tatoeba :
+# le chemin qui donne la langue source au moteur passe de 1262 lignes justes et
+# 90 fausses a 3698 justes et TROIS fausses. Plus aucune des 43 langues ne
+# marque zero, contre vingt-six au depart. Quatorze octets et demi par ligne
+# gagnee, et la colonne qui coute cher divisee par trente.
+#
+# En gzip -9, qui est ce que le reseau transporte, l'ecart n'est pas le meme :
+# 91_484 octets avant les lettres exclusives, 96_635 aujourd'hui, soit +5151.
+# Une table de regex se compresse bien.
+REFERENCE_OCTETS = 248199
 MARGE = 0.02
 
 if not os.path.exists(CIBLE):
