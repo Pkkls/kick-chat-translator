@@ -25,8 +25,16 @@
  * mesurait propre pour le catalan et c'est le francais, l'italien et l'anglais.
  * Chaque candidat retenu doit pouvoir s'enoncer comme une regle de la langue.
  *
+ * LE MODE CHAT, et il sert le produit plutot que le banc. Tatoeba pese 120
+ * lignes par langue contre 25 de chat, donc les candidats qu'il propose sont
+ * ceux de la PROSE : `vuole`, `vanligvis`, `spesso`. Ils gagnent des lignes
+ * Tatoeba et zero sur les cinq bancs de chat, ce qui a ete mesure une fois et
+ * se reproduira. `chat` en troisieme argument ne lit que les corpus de chat
+ * lisibles, et rend ce qu'une ligne de chat ecrit vraiment.
+ *
  *   node --import tsx scratchpad/harness/langue-candidats.mjs ca
  *   node --import tsx scratchpad/harness/langue-candidats.mjs ca 2   (seuil)
+ *   node --import tsx scratchpad/harness/langue-candidats.mjs da 2 chat
  */
 import { readFileSync } from 'node:fs';
 import { LANG_CORPUS } from '../../src/content/langCorpus.ts';
@@ -60,8 +68,20 @@ const SEUIL = Number(process.argv[3] ?? 3);
  * servent donc au BRUIT, jamais aux candidats. Le bruit ne les expose pas : on
  * leur demande si un mot y apparait, pas ce qu'ils contiennent.
  */
-const OU_LIRE = [LANG_CORPUS, LANG_CHAT, LANG_CHAT3, LANG_CHAT_DIX, LANG_CHAT_PAIRE_REGLAGE];
-const OU_COMPTER_LE_BRUIT = [...OU_LIRE, LANG_CHAT2, LANG_CHAT_PAIRE];
+const CHAT_SEULEMENT = process.argv[4] === 'chat';
+const OU_LIRE = CHAT_SEULEMENT
+  ? [LANG_CHAT, LANG_CHAT3, LANG_CHAT_DIX, LANG_CHAT_PAIRE_REGLAGE]
+  : [LANG_CORPUS, LANG_CHAT, LANG_CHAT3, LANG_CHAT_DIX, LANG_CHAT_PAIRE_REGLAGE];
+/** Le bruit se compte TOUJOURS partout, mode chat ou pas : sinon il ment. */
+const OU_COMPTER_LE_BRUIT = [
+  LANG_CORPUS,
+  LANG_CHAT,
+  LANG_CHAT2,
+  LANG_CHAT3,
+  LANG_CHAT_DIX,
+  LANG_CHAT_PAIRE,
+  LANG_CHAT_PAIRE_REGLAGE,
+];
 
 const corpus = {};
 for (const c of OU_COMPTER_LE_BRUIT) {

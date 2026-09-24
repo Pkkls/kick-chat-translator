@@ -1129,6 +1129,29 @@ const MOTS_SUEDOIS = /(^|[^\p{L}])(jag|och|inte|är|från)([^\p{L}]|$)/iu;
 // `ham`, `hvorfor`, `fordi`, `hvis`, `nok`, `hvor`, `aldri`, `sådan`. Les
 // retirer ensemble donne exactement les memes chiffres sur les dix bancs.
 //
+// LE REGISTRE CHAT SCANDINAVE A ETE ESSAYE ET IL NE DONNE RIEN, et ce resultat
+// negatif vaut plus que le tour qui ne sera pas fait.
+//
+// Le danois est la langue la plus MUETTE du produit sur du chat, 20 lignes sur
+// 25, et le norvegien la suit a 16. `langue-candidats.mjs da 1 chat` rend leurs
+// lignes muettes, et elles se lisent en une minute : `det kan jeg ikke tro`,
+// `hvor mange er her nu`, `han er endelig tilbage`. Les paires sautent aux yeux,
+// `nu` contre `nå`, `tilbage` contre `tilbake`, `herude` contre `her ute`.
+//
+// Sept entrees ecrites la-dessus, `ute`, `bake`, `ude`, `bage`, `nå`, `bra`,
+// `nu`, et l'ablation les refuse toutes :
+//   CINQ ne bougent QUE le corpus de reglage, celui dont les lignes ont servi
+//        a les ecrire. Elles ne mesurent que leur propre source.
+//   `nu` idem, une ligne, la sienne.
+//   `nå` transfere d'une ligne Tatoeba, et il est refuse quand meme : le danois
+//        ecrit `nå ja` tous les jours, et seul le corpus le rendait propre.
+//
+// CE QUE CA DIT DU REGISTRE. Une ligne de chat scandinave de six mots porte une
+// paire minimale et rien d'autre. Lire ces paires dans le corpus de reglage et
+// les ecrire en regles, c'est apprendre vingt-cinq lignes par coeur : le banc
+// aveugle ne bouge pas et il a raison de ne pas bouger. **Ce qui manque ici
+// n'est pas une regle, c'est du chat scandinave en quantite.**
+//
 // LE TRI INTERIEUR, LUI, EST EPUISE, et c'est un resultat negatif a ne pas
 // refaire : `paire-sequences.mjs` ne rend plus que des sequences que le danois
 // ecrit et que le corpus ne montre pas. `vel` vit dans `ja vel`, `sn` dans
