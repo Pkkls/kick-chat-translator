@@ -42,7 +42,9 @@ const original = readFileSync(SOURCE, 'utf8');
  * d'alternance des deux cotes, `|mot|` ou `|mot)`.
  */
 const MOTS = {
-  LETTRES_EXCLUSIVES: ['sme','ktorý','môj','môžem','zajtra','vonku','práve','správne'],
+  LETTRES_EXCLUSIVES: ['chi','vuoi','puoi','vuole'],
+  MOTS_NORVEGIENS: ['dere','ble','vanligvis'],
+  MOTS_DANOIS: ['gik'],
 };
 
 /**

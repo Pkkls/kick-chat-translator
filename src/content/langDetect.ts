@@ -877,6 +877,14 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   //   bila  c'est `quand` en malais.       encore  l'anglais l'ecrit aussi.
   //   nå    le danois l ecrit.
   [/(^|[^\p{L}])(che|tutti|mia)([^\p{L}]|$)/iu, 'it'],
+  // Les verbes irreguliers italiens a diphtongue, `vuoi`, `puoi`, `vuole`, et
+  // l'interrogatif `chi`. La diphtongue `uo` elle-meme est impossible en plein
+  // air, l'espagnol ecrit `cuota`, le portugais `quota`, le finnois `vuosi`,
+  // mais ces quatre formes-la ne sont a personne d autre.
+  //
+  // `lei` est dehors bien qu'il mesure exclusif : le norvegien ecrit `lei av`,
+  // et le corpus ne le contient pas.
+  [/(^|[^\p{L}])(chi|vuoi|puoi|vuole)([^\p{L}]|$)/iu, 'it'],
   [/(^|[^\p{L}])(iz|ima)([^\p{L}]|$)/iu, 'sl'],
   [/(^|[^\p{L}])(tengo|tiempo|mismo)([^\p{L}]|$)/iu, 'es'],
   [/(^|[^\p{L}])(ele|ela)([^\p{L}]|$)/iu, 'pt'],
@@ -982,9 +990,9 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
  */
 const LETTRES_DANO_NORVEGIENNES = /[øæ]/iu;
 const MOTS_NORVEGIENS =
-  /(^|[^\p{L}])(meg|deg|seg|hva|noe|noen|etter|av|ikkje|veldig|vært)([^\p{L}]|$)/iu;
+  /(^|[^\p{L}])(meg|deg|seg|hva|noe|noen|etter|av|ikkje|veldig|vært|dere|ble)([^\p{L}]|$)/iu;
 const MOTS_DANOIS =
-  /(^|[^\p{L}])(mig|dig|sig|hvad|noget|nogen|efter|af|meget|hende|været)([^\p{L}]|$)/iu;
+  /(^|[^\p{L}])(mig|dig|sig|hvad|noget|nogen|efter|af|meget|hende|været|gik)([^\p{L}]|$)/iu;
 // LES SEQUENCES, et elles valent SEPT des DIX lignes de ce tour a elles seules.
 //
 // Ce qui separe ces deux langues est le plus souvent une LETTRE dans un mot et
