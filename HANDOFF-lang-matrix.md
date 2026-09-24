@@ -3,7 +3,7 @@
 État vivant de ce chantier, mis à jour dès qu'un artefact est créé.
 **Écrit pour être repris par une autre session Claude, sur un autre compte, sur la même machine.** Tout ce qui est nécessaire est ici ou référencé par chemin absolu. Rien n'est supposé connu.
 
-Dernière mise à jour : 2026-09-24. Dernier commit de **code** : `b3549aa`. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
+Dernière mise à jour : 2026-09-24. Dernier commit de **code** : `c75f6b9`, version **2.11.0** prête à publier. Les commits qui ne touchent que ce fichier sont des mises à jour du document.
 
 ---
 
@@ -49,12 +49,12 @@ Ce qui a été découvert en cours de route et qui n'était pas dans le diagnost
 Corpus : 42 langues, 5040 lignes, Tatoeba CC-BY 2.0 FR, 120 lignes par langue.
 Trois issues, **jamais additionnées** : `right` la bonne langue, `silent` le détecteur a refusé de répondre ce qui est l'issue SÛRE, `wrong` une autre langue.
 
-| chemin | portée | départ `ec9e02d` | aujourd'hui `b3549aa` |
+| chemin | portée | départ `ec9e02d` | aujourd'hui `c75f6b9` |
 |---|---|---|---|
-| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3614 r / 1423 s / **3 w** |
-| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 1032 / 645 / **3** |
-| `detectLanguage` | toutes | 3019 / 804 / **1217** | 4091 / 425 / **524** |
-| `detectLanguage` | court | 837 / 364 / **479** | 1185 / 251 / **244** |
+| `confidentLanguage` | toutes | 1262 r / 3688 s / **90 w** | 3698 r / 1339 s / **3 w** |
+| `confidentLanguage` | court ≤20 car. | 415 / 1213 / **52** | 1068 / 609 / **3** |
+| `detectLanguage` | toutes | 3019 / 804 / **1217** | 4148 / 392 / **500** |
+| `detectLanguage` | court | 837 / 364 / **479** | 1211 / 238 / **231** |
 
 Le chemin sûr **répond 2,5 fois plus souvent et se trompe 83 % moins**. C'est le seul mouvement qui compte vraiment : `wrong` sur ce chemin veut dire qu'on demande au moteur de traduire depuis une langue dans laquelle le texte n'est pas.
 
@@ -1273,6 +1273,44 @@ Sept entrées écrites là-dessus, et l'ablation les refuse toutes : **cinq ne b
 
 ---
 
+### 5.37 LE DERNIER BALAYAGE, et 2.11.0 (`00119e2`, `3a5bb30`, `5717d49`, `1253853`, `cc33af7`, `c75f6b9`)
+
+Trois tours de mots outils qui finissent le crible, puis la livraison. `porte-mots-candidats` a fini les dix langues qu'il n'avait pas vues, `langue-candidats` le cyrillique et quatre latines.
+
+```
+lt aš čia prieš    ro în cu aici    et ära välja
+bg се го има нещо тя моля           ru он она вчера
+hu nem egy mindent (promus du jeu de porte)
+sl vsi dober svojo kdor   cs tady velmi líbí   fi taas sinne
+et en plein air : kui selle mulle, tavo reikia patinka, iyon mong maraming
+```
+
+**`що` a failli passer et un seul banc l'a vu.** `lang-screen.mjs` lit Tatoeba et chat1 et le déclarait exclusif à l'ukrainien ; le banc de chat non latin porte `току що дойдох`, qui est bulgare, et il partait à l'ukrainien. Ce banc était à zéro erreur depuis le tour arabe. **Un crible qui lit deux corpus ne peut pas blanchir un marqueur pour dix bancs : lancer le diff avant de croire un crible, chaque fois.**
+
+#### Les portes hors ligne, et les trois défauts qu'elles portaient
+
+`run-gates.mjs` n'avait pas été lancé de la passe. Il l'a été, et il a rendu **38 portes sur 38 vertes** après trois corrections :
+
+- **`audit-poids` était rouge pour une vraie raison.** Le script injecté pèse 248 199 octets contre une référence de 233 217. La hausse a été SÉPARÉE plutôt que devinée : le même build avec le seul `langDetect.ts` de master pèse 233 727, donc **14 472 octets sont les règles de détection** et 510 l'intégration du cantonais hors détecteur. La référence est à jour avec ce partage et ce qu'il achète.
+
+- **Le cantonais était livré SANS SON DRAPEAU.** `FLAG_BY_LANG` porte `yue: 'hk'`, `flagClass('yue')` rend `kt-flag kt-flag-hk`, et aucune règle `.kt-flag-hk` n'existait dans la feuille. Le panneau dessinait un carré vide depuis la branche cantonaise. Rien dans la suite ne pouvait le voir : le test de table vérifie que chaque langue A un code, ce qui était vrai. **Un garde statique lit maintenant la feuille et échoue sur tout code distribué sans règle derrière**, vérifié en retirant la règle.
+
+- **`flags-preview` était rouge sur tout clone** depuis toujours : il lit un `flags.css` que rien ne produit. Il lit la feuille livrée maintenant, et sa liste de langues vient du module au lieu d'une table de 42 écrite à la main, qui avait manqué exactement la langue dont le drapeau n'existait pas. Il sort de `run-gates` avec `lang-panel-measure` : le premier ne sert qu'à REGARDER, le second ouvre une page que le dépôt ne contient pas.
+
+#### 2.11.0
+
+Le store est sur **2.9.2** : 2.10.0 a été taggée et jamais publiée, comme 2.9.3 et 2.9.4. Cette version porte donc les deux. `release/PUBLIER.md` contient les sha256, le chemin dans la console développeur et le texte prêt à coller.
+
+```
+confidentLanguage   1262 r / 3688 s / 90 w   ->   3698 r / 1339 s / 3 w
+detectLanguage      3019 / 804 / 1217        ->   4148 / 392 / 500
+langues a zero      26                       ->   0
+chat aveugle        48 %                     ->   55 %
+paire ms/id         48 %                     ->   65 %
+```
+
+---
+
 ## 6. État par phase
 
 | Phase | Contenu | État |
@@ -1333,6 +1371,7 @@ Les chiffres sont en 2bis-bis, 2ter, 5.14 à 5.19.
 - **Remettre une porte `no`/`da` générique derrière `ø æ`.** Mesurée, section 5.14 : zéro ligne sur les cinq bancs, et elle casse l'unanimité.
 - **Mettre `là` dans un jeu de porte vietnamien.** C'est le `là` français au caractère près, il a volé trois lignes.
 - **Une porte de séquence ASCII** (`sz`, `dz`). Mesurée, section 5.16 : le déclencheur vit dans le mot qui tranche.
+- **Croire `lang-screen.mjs` sans lancer le diff.** Il lit DEUX corpus sur dix, section 5.37 : `що` en est sorti exclusif et il est bulgare. Le crible propose, le diff dispose.
 - **Laisser un crible lire un corpus AVEUGLE.** Section 5.35 : les trois cribles neufs le faisaient, et le chiffre de la paire en a payé le prix. Compter un mot dans un aveugle est permis, y chercher des mots ne l'est pas.
 - **Chercher un arbitrage plus malin que l'unanimité** dans la table des lettres exclusives. Mesuré, section 5.24 : **un seul désaccord sur 6070 lignes**, et il est fermé. À rouvrir quand la table aura beaucoup grossi, pas avant.
 - **Appliquer le critère de l'ablation à la table cantonaise** et supprimer ce qui rapporte zéro. Section 5.25 : neuf de ses marqueurs n'apparaissent nulle part et c'est normal, une règle de PRÉSENCE ne se choisit pas sur le gain mesuré.
