@@ -30,8 +30,8 @@ describe('le corpus de reglage', () => {
   });
 
   it('en nomme 117 sur 260', () => {
-    expect(plain(SURE3.total)).toEqual({ right: 123, silent: 137, wrong: 0 });
-    expect(plain(BRUT3.total)).toEqual({ right: 163, silent: 36, wrong: 61 });
+    expect(plain(SURE3.total)).toEqual({ right: 126, silent: 134, wrong: 0 });
+    expect(plain(BRUT3.total)).toEqual({ right: 166, silent: 35, wrong: 59 });
   });
 
   // CE QU'IL A ATTRAPE LE JOUR DE SA CREATION, et c'est la justification de son
@@ -84,7 +84,7 @@ describe('le corpus de reglage', () => {
   // Un corpus de reglage qui bouge sur un mecanisme pareil ne mesure pas du
   // reglage, il mesure du transfert.
   it('ne bouge que par un mecanisme qui transfere, pas par le lexique', () => {
-    expect(SURE3.total.right).toBe(123);
+    expect(SURE3.total.right).toBe(126);
   });
 
   // Les trois corpus doivent rester distincts, sinon les roles se melangent.

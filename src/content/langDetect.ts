@@ -907,6 +907,22 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   // sont faux.
   [/(^|[^\p{L}])(gue|banget|udah)([^\p{L}]|$)/iu, 'id'],
   [/(^|[^\p{L}])(awak|petang|bahawa|bolehkah)([^\p{L}]|$)/iu, 'ms'],
+  // LE SLOVAQUE, et ces huit mots sont tous la MEME difference orthographique
+  // ecrite six fois. C'est ce qui separe le mieux deux langues proches, et le
+  // fichier le dit depuis les jeux de porte : la meme forme du meme mot ecrite
+  // deux fois vaut mieux qu un vocabulaire distinct.
+  //
+  //   sme     contre `jsme`      môj     contre `můj`
+  //   zajtra  contre `zítra`     vonku   contre `venku`
+  //   práve   contre `právě`     správne contre `správně`
+  //
+  // `ktorý` contre `který` et `môžem` contre `můžu` sont la meme regle et sont
+  // sortis a l'ablation : corrects, et zero ligne sur les dix bancs.
+  //
+  // `ste`, `dnes`, `tam` et `tu` sont dehors : le slovene ecrit le premier, le
+  // tcheque les trois autres. `kde` et `pri` aussi, le tcheque et le slovene les
+  // ecrivent, et seul le corpus les rendait propres.
+  [/(^|[^\p{L}])(sme|môj|zajtra|vonku|práve|správne)([^\p{L}]|$)/iu, 'sk'],
   // Quatrieme groupe, et la difference avec le troisieme est la SOURCE : ces
   // motifs-la ont ete extraits du registre chat et non de la prose. Le groupe
   // precedent avait rapporte 76 lignes sur Tatoeba et une seule a l'aveugle,

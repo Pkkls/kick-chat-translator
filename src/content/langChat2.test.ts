@@ -55,7 +55,7 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
   // quatre. Un mecanisme qui rapporte autant la ou il n'a pas ete regle que la
   // ou il l'a ete est exactement ce que le lexique n'arrivait plus a faire.
   it('rappelle un tiers de moins en brut, mais la longueur en explique la moitie', () => {
-    expect(plain(SURE2.total)).toEqual({ right: 142, silent: 118, wrong: 0 });
+    expect(plain(SURE2.total)).toEqual({ right: 143, silent: 117, wrong: 0 });
     expect(rappel(SURE1.total)).toBe(58);
     expect(rappel(SURE2.total)).toBe(55);
     // Le facteur confondant, mesure : les deux corpus ne sont pas comparables tels quels.
@@ -69,7 +69,7 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
   // LA MESURE HONNETE, bande par bande.
   //
   //   <= 20 car : 57 % sur le corpus de reglage, 54 % a l'aveugle -> 3 points
-  //   >  20 car : 60 % contre 55 %                  -> 5 points
+  //   >  20 car : 60 % contre 56 %                  -> 4 points
   //
   // Les deux points de la bande courte sont la memorisation du lexique, et ils
   // sont reels : c'est une liste de mots choisie en lisant un corpus. Ils ont
@@ -109,14 +109,14 @@ describe('le detecteur sur du chat qu il n a jamais vu', () => {
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, court)).total)).toBe(57);
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, court)).total)).toBe(54);
     expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT, long)).total)).toBe(60);
-    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, long)).total)).toBe(55);
+    expect(rappel(runMatrix(confidentLanguage, bande(LANG_CHAT2, long)).total)).toBe(56);
   });
 
   // Le chemin brut perd moins parce qu'il ne depend pas du lexique : franc lit
   // des trigrammes, pas des mots choisis a la main. Sa perte, 61 % a 55 %, est
   // du bruit d'echantillonnage plutot que de la memorisation.
   it('montre que seul le chemin qui depend du lexique perd au changement de corpus', () => {
-    expect(plain(BRUT2.total)).toEqual({ right: 181, silent: 29, wrong: 50 });
+    expect(plain(BRUT2.total)).toEqual({ right: 182, silent: 29, wrong: 49 });
     expect(rappel(BRUT2.total)).toBe(70);
   });
 

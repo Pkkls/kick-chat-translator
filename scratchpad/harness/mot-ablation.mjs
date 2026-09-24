@@ -42,8 +42,7 @@ const original = readFileSync(SOURCE, 'utf8');
  * d'alternance des deux cotes, `|mot|` ou `|mot)`.
  */
 const MOTS = {
-  MOTS_MALAIS: 'rosak lelaki wang'.split(' '),
-  MOTS_INDONESIENS: 'gitu'.split(' '),
+  LETTRES_EXCLUSIVES: ['sme','ktorý','môj','môžem','zajtra','vonku','práve','správne'],
 };
 
 /**
