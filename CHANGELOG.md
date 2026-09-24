@@ -73,6 +73,25 @@ source language and is the safe outcome; and wrong.
 - Persian, Jawi Malay, Hebrew, Bengali, Tamil, Greek and Ukrainian are read
   correctly where they were being handed to a neighbour.
 
+### Interface
+
+- **Every colour is decided in one file.** The three surfaces carried three
+  palettes: the injected stylesheet had 76 colour literals and 41 hand-written
+  light-theme blocks restating them one component at a time, and the popup and
+  options page had a fourth set of their own. It showed as six different dark
+  greens doing one job and two reds per theme. Two values that did not meet
+  their contrast bar were folded into the neighbour that did rather than kept:
+  a control border measured 2.74:1 against the 3:1 a boundary owes.
+- **The language panel stays inside the chat column.** It was bounded by the
+  window and by nothing else: 408 px wide inside a 340 px column, hanging 68 px
+  past both edges, opaque, with no elevation, over a near-black chat. It read as
+  the chat having disappeared rather than having been covered. It now measures
+  the column it opens in, and carries the one drop shadow in the product because
+  a layer that covers the chat has to say it is a layer.
+- The light theme follows the attribute the extension stamps on the page, never
+  the operating system: Kick owns its own theme, and a light desktop reading a
+  dark chat was being handed light text on a dark ground.
+
 ### Weight
 
 The injected script grows by 14.9 KB raw and 5.2 KB gzipped, which is 5 % of the
