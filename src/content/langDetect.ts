@@ -493,6 +493,36 @@ const LETTRES_EXCLUSIVES: ReadonlyArray<readonly [RegExp, string]> = [
   //         plus qu'une ligne et que ce trigramme prend en trois caracteres.
   // Meme resultat sur les huit bancs avec deux entrees de moins.
   [/jse/iu, 'cs'],
+  // LE CRIBLE DE PAIRE, deuxieme famille. `paire-sequences.mjs` a ete ecrit pour
+  // le tri danois-norvegien ou il a valu trente-deux lignes, et il se relance sur
+  // n'importe quelle paire proche. Quatre entrees en sortent, et les quatre sont
+  // une regle d'orthographe qu'on sait enoncer :
+  //
+  //   jsi jsou   le verbe etre tcheque. Le slovaque ecrit `si` et `sú`.
+  //   iť sť      la desinence slovaque, `robiť` et `radosť`. Le tcheque ecrit
+  //              `dělat` et `radost`, sans le caron.
+  //   fue        le passe espagnol de `ser` et `ir`, plus `fuego` et `fuerte`.
+  //              Le portugais ecrit `foi`, `fogo`, `forte`.
+  //   oet        le neerlandais `moet`, `zoet`. Le danois ecrit `må`.
+  //
+  // `jsi` A EXIGE SA BORNE ET C'EST LE BANC SANS DIACRITIQUES QUI L'A DIT. En
+  // plein texte il vit dans le slovaque `najhlúpejšia` et le slovene
+  // `najlepši`, qui depouilles de leurs signes donnent `najhlupejsia` et
+  // `najlepsi`. Six lignes partaient au tcheque et aucun autre banc ne le
+  // voyait. Borne des deux cotes, la forme garde ses dix-sept lignes Tatoeba et
+  // ne casse plus rien.
+  //
+  // DEHORS, et le crible les proposait tous les quatre : `jst` (le slovene
+  // l'ecrit), `ať` (une ligne tcheque), `jog` (c'est le droit en hongrois),
+  // `fala` (c'est la vague en polonais), `quer` (le francais `manquer`),
+  // `aqui` (l'espagnol `aquí` depouille), `grad` (l'espagnol `agradar`),
+  // `egun` (le portugais `segundo`). Les huit mesurent propre et les huit sont
+  // faux : le corpus ne peut pas refuser ce que la langue ecrit et que lui ne
+  // contient pas.
+  [/(^|[^\p{L}])(jsi|jsou)([^\p{L}]|$)/iu, 'cs'],
+  [/(iť|sť)/iu, 'sk'],
+  [/fue/iu, 'es'],
+  [/oet/iu, 'nl'],
   [/för/iu, 'sv'],
   [/ał/iu, 'pl'],
   [/wy/iu, 'pl'],

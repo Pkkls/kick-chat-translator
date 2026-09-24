@@ -19,8 +19,14 @@ import { confidentLanguage, detectLanguage } from './langDetect';
 
 describe('the two detectors differ where it matters', () => {
   it('withholds a guess that detectLanguage is willing to make', () => {
-    // Short Latin chat with no lexicon hit: franc answers, the lookup does not.
-    const guessy = 'que fue con esos pendejos';
+    // Short Latin chat with no lookup hit: franc answers, the lookup does not.
+    //
+    // This line used to carry `fue`, and it stopped demonstrating anything the
+    // day `fue` entered the exclusive table as a Spanish marker: the confident
+    // detector named it, correctly. The property under test did not change and
+    // the example did, which is the normal way for a bench to age. Dropping
+    // the one word puts it back in the regime it was written for.
+    const guessy = 'que paso con esos pendejos';
     expect(detectLanguage(guessy)).toBeDefined();
     expect(confidentLanguage(guessy)).toBeUndefined();
   });
