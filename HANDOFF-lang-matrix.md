@@ -430,6 +430,46 @@ La deuxième est la forme pure : le déclencheur **est** le mot qui tranche. La 
 
 ---
 
+### 4.11 LES COLLISIONS DE CLAVIER, et le banc qui ne les voyait pas
+
+**La moitié du chat s'écrit sans accents.** Un marqueur peut donc être parfaitement exclusif sur du texte normal et faux sur du texte nu, et c'est une classe d'erreur que rien d'autre ne montre.
+
+**LE SENS DE LA COLLISION COMPTE, et c'est lui qui rend l'audit étroit :**
+
+| forme du marqueur | ce qui se passe sur du texte nu | risque |
+|---|---|---|
+| **accentuée**, `för` | ne matche plus rien, se tait | **aucun**, le silence est l'issue sûre |
+| **nue**, `aqui` | matche le texte nu **et** la forme accentuée d'une autre langue une fois dépouillée | **le seul danger** |
+
+`aqui` est portugais et propre sur 5490 lignes ; l'espagnol et le catalan écrivent `aquí`. Dépouillés, c'est la **même chaîne**.
+
+`scratchpad/harness/collision-clavier.mjs` pose la question sur les six corpus, pour chaque marqueur nu de la table : une autre langue écrit-elle une forme qui le rejoint une fois dépouillée ?
+
+**LE BANC ÉTAIT LE PLUS GROS PROBLÈME.** `chat1-SANS-DIACRITIQUES` contient 390 lignes et sortait à **zéro erreur**. Le même dépouillement sur les 5040 lignes de Tatoeba en montrait **TRENTE**.
+
+> Un banc trop petit ne rend pas zéro, il rend une **conclusion fausse**. C'est exactement la leçon 4.8 sur le banc absent, un cran plus loin : celui-là existait.
+
+`tatoeba-SANS-DIACRITIQUES` est le neuvième banc du diff depuis.
+
+**CE QUE L'AUDIT A TROUVÉ, et comment chaque cas s'est tranché.** Le principe : un marqueur se juge sur **les deux colonnes à la fois**, le rappel qu'il apporte et les erreurs qu'il coûte sur texte nu.
+
+| marqueur | rejoint par | rappel | erreurs | verdict |
+|---|---|---:|---:|---|
+| `hon` sv | vi `hơn` | −3 | −2 | **retiré** |
+| `iya` tl | tr `tatlıya` | **0** | −1 | **retiré, gratuit** |
+| `nho\|nha` pt | vi `nhà` `nhớ` | −6 | −9 | **resserré** en `inho\|inha`, −2 seulement |
+| `day` en | vi `dạy` `đây` | −4 et −1 aveugle | −3 | **resserré**, lettre exigée devant : −3 et rien au chat |
+| `het` nl | hu `hét` | −6 | 0 | gardé |
+| `ist` de | sk `ísť` | −4 | −1 | gardé, le plus discutable |
+| `nang` tl | vi | −1 | 0 | gardé |
+| `niy` tl | tr `utanıyorum` | −2 et −2 aveugle | −1 | gardé |
+
+**RESSERRER PLUTÔT QUE SUPPRIMER**, et c'est la leçon réutilisable. Deux fois sur quatre, la collision venait de la forme COURTE alors que la valeur du marqueur était dans la forme LONGUE : `nho` contre `inho`, `day` nu contre `today`. Mesurer les deux variantes au lieu de supprimer d'emblée a sauvé quatre lignes de rappel dont une du corpus aveugle.
+
+**Résultat : trente erreurs à quinze en trois tours**, et sept des quinze sont les mêmes lignes qui sont fausses sur texte normal. Le vrai prix de taper sans accents est donc de **huit lignes sur 5040**.
+
+---
+
 ## 5. Les règles écrites, et ce qui est DEHORS
 
 Pour chacune, la moitié du travail est la liste de ce qui a été refusé. Le détail complet vit dans les commentaires de `src/content/langDetect.ts` ; ceci est l'index.
