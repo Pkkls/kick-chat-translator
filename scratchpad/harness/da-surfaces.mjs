@@ -43,6 +43,21 @@ const DURATIONS_OK = new Set(['0s', '0.15s']);
  */
 const PREVIEW_CLASSES = ['kt-translation', 'kt-flag', 'kt-provider', 'kt-error', 'kt-retry'];
 
+/**
+ * Le drapeau est une image, pas une surface de l'interface.
+ *
+ * Depuis que les 43 drapeaux vivent dans src/shared/flags.css, la page
+ * d'options les dessine aussi : 172 rayons de 2px et 43 liseres blancs
+ * internes sont arrives d'un coup, et ni l'un ni l'autre n'est negociable.
+ * Un rayon de 4px sur 16x12 arrondirait un rectangle national en pastille, et
+ * le liseré est ce qui empeche un drapeau a fond blanc, JP ou FI, de
+ * disparaitre sur la surface.
+ *
+ * Exemptes sur le rayon et l'ombre uniquement. Tout le reste de la page reste
+ * mesure, et un drapeau qui prendrait une duree hors direction rougirait.
+ */
+const IMAGE_CLASSES = ['kt-flag'];
+
 const browser = await chromium.launch();
 const counts = { radii: new Map(), durations: new Map(), shadows: new Map(), sizes: new Map() };
 const failures = [];
@@ -53,7 +68,7 @@ for (const [name, file] of SURFACES) {
   await page.goto(pathToFileURL(file).href);
   await page.waitForTimeout(250);
 
-  const seen = await page.evaluate((previewClasses) => {
+  const seen = await page.evaluate(({ previewClasses, imageClasses }) => {
     const out = { radii: [], durations: [], shadows: [], sizes: [], n: 0 };
     const inPreview = (el) => {
       for (let n = el; n; n = n.parentElement) {
@@ -68,24 +83,27 @@ for (const [name, file] of SURFACES) {
       const cs = getComputedStyle(el);
       const where = el.tagName.toLowerCase() + '.' + String(el.className).split(' ')[0];
 
+      const estImage = imageClasses.some((c) => el.classList?.contains(c));
+
       for (const corner of [
         'borderTopLeftRadius',
         'borderTopRightRadius',
         'borderBottomLeftRadius',
         'borderBottomRightRadius',
       ]) {
-        if (cs[corner] !== '0px') out.radii.push([cs[corner], where]);
+        if (cs[corner] !== '0px' && !estImage) out.radii.push([cs[corner], where]);
       }
       for (const d of cs.transitionDuration.split(',').map((x) => x.trim())) {
         if (d) out.durations.push([d, where]);
       }
-      if (cs.boxShadow && cs.boxShadow !== 'none') out.shadows.push([cs.boxShadow.slice(0, 50), where]);
+      if (cs.boxShadow && cs.boxShadow !== 'none' && !estImage)
+        out.shadows.push([cs.boxShadow.slice(0, 50), where]);
       if ([...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())) {
         if (!inPreview(el)) out.sizes.push([cs.fontSize, where]);
       }
     }
     return out;
-  }, PREVIEW_CLASSES);
+  }, { previewClasses: PREVIEW_CLASSES, imageClasses: IMAGE_CLASSES });
   await page.close();
 
   elements += seen.n;
