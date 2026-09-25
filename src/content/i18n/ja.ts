@@ -20,6 +20,7 @@ export const ja: Record<string, string> = {
   chipSearch: '言語を絞り込む',
   composeAutoTip: '自動 · $LANG$ で書いています',
   composeInsertTip: '挿入 · Ctrl/Cmd+Enter · Esc で閉じる',
+  composeInsertTipTab: '挿入 · Tab · Esc で閉じる',
   dropBot: '送信者がボットのようです',
   dropChannelBlocked: 'このチャンネルはブロック一覧にあります',
   dropChannelNotAllowed: 'このチャンネルは許可一覧にありません',

@@ -196,4 +196,5 @@ export const ru: Record<string, string> = {
   'Serif': 'С засечками',
   'Monospace': 'Моноширинный',
   'High legibility': 'Повышенная читаемость',
+  'Tab swaps my message for its translation (off = Ctrl/Cmd+Enter only)': 'Tab заменяет моё сообщение переводом (иначе только Ctrl/Cmd+Enter)',
 };

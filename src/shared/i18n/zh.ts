@@ -190,4 +190,5 @@ export const zh: Record<string, string> = {
   'Serif': '衜线',
   'Monospace': '等宽',
   'High legibility': '高易读性',
+  'Tab swaps my message for its translation (off = Ctrl/Cmd+Enter only)': '用 Tab 将我的消息换成译文（关闭则仅 Ctrl/Cmd+Enter）',
 };

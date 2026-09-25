@@ -20,6 +20,7 @@ export const ru: Record<string, string> = {
   chipSearch: 'Фильтр языков',
   composeAutoTip: 'Авто · вы пишете на $LANG$',
   composeInsertTip: 'Вставить · Ctrl/Cmd+Enter · Esc чтобы закрыть',
+  composeInsertTipTab: 'Вставить · Tab · Esc чтобы закрыть',
   dropBot: 'отправитель похож на бота',
   dropChannelBlocked: 'этот канал в вашем списке блокировки',
   dropChannelNotAllowed: 'этого канала нет в вашем списке разрешённых',

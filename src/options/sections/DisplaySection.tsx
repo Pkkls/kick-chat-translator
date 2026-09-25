@@ -196,6 +196,15 @@ export function DisplaySection({ settings, onPatch }: Props) {
           onChange={(v) => onPatch({ composeInsertMode: v ? 'insert' : 'copy' })}
           label={t('Click inserts into the chat box (off = copy to clipboard instead)')}
         />
+        {/* Tab est pris uniquement tant que l'apercu est a l'ecran, jamais sur
+            une boite vide, et Shift+Tab reste libre. Ce reglage existe pour qui
+            navigue au clavier et veut Tab inchange en toute circonstance :
+            Ctrl/Cmd+Entree marche dans les deux cas. */}
+        <ToggleRow
+          checked={settings.composeInsertKey === 'tab-and-enter'}
+          onChange={(v) => onPatch({ composeInsertKey: v ? 'tab-and-enter' : 'ctrl-enter' })}
+          label={t('Tab swaps my message for its translation (off = Ctrl/Cmd+Enter only)')}
+        />
       </section>
     </>
   );

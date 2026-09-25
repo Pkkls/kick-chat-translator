@@ -196,4 +196,5 @@ export const pt: Record<string, string> = {
   'Serif': 'Serif',
   'Monospace': 'Monoespaçada',
   'High legibility': 'Alta legibilidade',
+  'Tab swaps my message for its translation (off = Ctrl/Cmd+Enter only)': 'Tab troca a minha mensagem pela tradução (senão só Ctrl/Cmd+Enter)',
 };

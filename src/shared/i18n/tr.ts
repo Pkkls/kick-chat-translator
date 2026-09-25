@@ -198,4 +198,5 @@ export const tr: Record<string, string> = {
   'Serif': 'Tırnaklı',
   'Monospace': 'Eş aralıklı',
   'High legibility': 'Yüksek okunabilirlik',
+  'Tab swaps my message for its translation (off = Ctrl/Cmd+Enter only)': 'Tab mesajımı çevirisiyle değiştirir (kapalıysa yalnızca Ctrl/Cmd+Enter)',
 };

@@ -161,5 +161,6 @@
   "System",
   "Serif",
   "Monospace",
-  "High legibility"
+  "High legibility",
+  "Tab swaps my message for its translation (off = Ctrl/Cmd+Enter only)"
 ]

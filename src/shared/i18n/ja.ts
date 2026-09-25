@@ -196,4 +196,5 @@ export const ja: Record<string, string> = {
   'Serif': 'セリフ',
   'Monospace': '等幅',
   'High legibility': '高可読性',
+  'Tab swaps my message for its translation (off = Ctrl/Cmd+Enter only)': 'Tab で入力を翻訳に置き換える（オフなら Ctrl/Cmd+Enter のみ）',
 };

@@ -120,6 +120,18 @@ export const SettingsSchema = z.object({
   // 'insert' drops the translation into the chat box (you press Enter); 'copy'
   // puts it on the clipboard instead (safe fallback if Kick's editor rejects writes).
   composeInsertMode: z.enum(['insert', 'copy']).default('insert'),
+  // Which key swaps what you typed for its translation.
+  //
+  // Tab is the gesture people already have for "accept the suggestion", and it
+  // is the one asked for. It is also the key that moves focus, so it is taken
+  // ONLY while the preview is on screen, never on an empty box, and Shift+Tab
+  // is always left alone so walking backwards out of the composer still works.
+  // Escape hides the preview and hands Tab straight back.
+  //
+  // 'ctrl-enter' is for a reader who navigates by keyboard and wants Tab to
+  // stay navigation whatever is on screen. Ctrl/Cmd+Enter keeps working in
+  // both modes; this setting only decides whether Tab joins it.
+  composeInsertKey: z.enum(['tab-and-enter', 'ctrl-enter']).default('tab-and-enter'),
 
   // Languages pinned on the chip that sits in Kick's message box, most recent
   // first. Empty by default: the chip then opens straight onto the full list,

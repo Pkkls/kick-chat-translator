@@ -20,6 +20,7 @@ export const zh: Record<string, string> = {
   chipSearch: '筛选语言',
   composeAutoTip: '自动 · 以 $LANG$ 书写',
   composeInsertTip: '插入 · Ctrl/Cmd+Enter · Esc 关闭',
+  composeInsertTipTab: '插入 · Tab · Esc 关闭',
   dropBot: '发送者看起来像机器人',
   dropChannelBlocked: '该频道在你的屏蔽列表中',
   dropChannelNotAllowed: '该频道不在你的允许列表中',

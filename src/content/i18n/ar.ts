@@ -20,6 +20,7 @@ export const ar: Record<string, string> = {
   chipSearch: 'تصفية اللغات',
   composeAutoTip: 'تلقائي · تكتب بـ $LANG$',
   composeInsertTip: 'إدراج · Ctrl/Cmd+Enter · Esc للإغلاق',
+  composeInsertTipTab: 'إدراج · Tab · Esc للإغلاق',
   dropBot: 'يبدو أن المرسل روبوت',
   dropChannelBlocked: 'هذه القناة في قائمة الحظر لديك',
   dropChannelNotAllowed: 'هذه القناة ليست في قائمة المسموح بها لديك',

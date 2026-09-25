@@ -191,4 +191,5 @@ export const ko: Record<string, string> = {
   'Serif': '세리프',
   'Monospace': '고정폭',
   'High legibility': '높은 가독성',
+  'Tab swaps my message for its translation (off = Ctrl/Cmd+Enter only)': 'Tab으로 내 메시지를 번역으로 바꾸기 (끄면 Ctrl/Cmd+Enter만)',
 };

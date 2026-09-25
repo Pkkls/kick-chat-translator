@@ -20,6 +20,7 @@ export const ko: Record<string, string> = {
   chipSearch: '언어 필터',
   composeAutoTip: '자동 · $LANG$ 로 작성 중',
   composeInsertTip: '삽입 · Ctrl/Cmd+Enter · Esc 로 닫기',
+  composeInsertTipTab: '삽입 · Tab · Esc로 닫기',
   dropBot: '보낸 사람이 봇으로 보입니다',
   dropChannelBlocked: '이 채널은 차단 목록에 있습니다',
   dropChannelNotAllowed: '이 채널은 허용 목록에 없습니다',

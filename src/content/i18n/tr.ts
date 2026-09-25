@@ -20,6 +20,7 @@ export const tr: Record<string, string> = {
   chipSearch: 'Dilleri filtrele',
   composeAutoTip: 'Otomatik · $LANG$ dilinde yaziyorsun',
   composeInsertTip: 'Ekle · Ctrl/Cmd+Enter · Kapatmak icin Esc',
+  composeInsertTipTab: 'Ekle · Tab · Kapatmak için Esc',
   dropBot: 'gonderen bot gibi gorunuyor',
   dropChannelBlocked: 'bu kanal engelli listende',
   dropChannelNotAllowed: 'bu kanal izin listende degil',

@@ -193,4 +193,5 @@ export const ar: Record<string, string> = {
   'Serif': 'مذيّل',
   'Monospace': 'ثابت العرض',
   'High legibility': 'وضوح عالٍ',
+  'Tab swaps my message for its translation (off = Ctrl/Cmd+Enter only)': 'Tab يستبدل رسالتي بترجمتها (وإلا Ctrl/Cmd+Enter فقط)',
 };

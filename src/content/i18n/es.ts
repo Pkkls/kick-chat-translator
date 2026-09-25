@@ -20,6 +20,7 @@ export const es: Record<string, string> = {
   chipSearch: 'Filtrar idiomas',
   composeAutoTip: 'Auto · escribes en $LANG$',
   composeInsertTip: 'Insertar · Ctrl/Cmd+Intro · Esc para cerrar',
+  composeInsertTipTab: 'Insertar · Tab · Esc para cerrar',
   dropBot: 'el remitente parece un bot',
   dropChannelBlocked: 'este canal esta en tu lista de bloqueo',
   dropChannelNotAllowed: 'este canal no esta en tu lista permitida',
