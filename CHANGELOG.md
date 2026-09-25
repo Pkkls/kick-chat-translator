@@ -7,6 +7,79 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.12.0] - 2026-09-25
+
+The extension stops deciding three things on the reader's behalf, and says
+which of its two bars does what.
+
+### Added
+
+- **Tab swaps what you typed for its translation.** The compose preview could
+  only be accepted with Ctrl/Cmd+Enter, a two-handed chord in the middle of
+  typing. Tab is taken only while the preview is on screen, so an empty box
+  never loses it, and Shift+Tab is left alone in every case so walking
+  backwards out of the message box always works. Escape hides the preview and
+  hands Tab back. A setting gives Tab back entirely for anyone who navigates by
+  keyboard.
+- **Text size, line spacing and face for the translated line.** The size
+  multiplies whatever Kick gives the chat line rather than replacing it, so a
+  reader who has already enlarged Kick's own chat keeps that choice. System
+  stacks only, no font file and no network request. The "high legibility"
+  option is named after what it can deliver and not after a condition it
+  cannot guarantee to serve.
+- **Density of the translated block**, three steps. A chat that scrolls fast
+  reads better tight, a slow one reads better airy, and neither setting is
+  right for the other.
+- **Accent colour**, four choices. A closed list and not a colour picker:
+  every value is measured against the contrast bars the theme file states, and
+  the generated stylesheet carries the ratio beside each one. Kick's own green
+  holds 12.74:1 on a dark surface and 1.37:1 on white, which is why a free
+  picker would mostly produce unreadable results.
+- **Chat theme**, pinned dark or light instead of following the channel.
+- **Two keyboard shortcuts**, Alt+T for chat translation and Alt+W for the
+  compose preview. Two and not four: every shortcut taken is one taken away
+  from the browser and from other extensions.
+- **A reading language remembered per channel**, off by default. A known
+  channel restores its language, an unknown one changes nothing. Bounded to
+  fifty channels, because the object shares a storage key with every other
+  setting and one that never empties breaks the saving of all of them.
+
+### Changed
+
+- **The two bars now say which is which.** The bar at the top of the chat
+  translates what other viewers write, the chip at the bottom translates what
+  you write, and nothing on screen separated them. A down arrow on one, an up
+  arrow on the other, vertical so they do not lie in an Arabic interface where
+  the bar mirrors.
+- **The per-message language badge draws a flag** instead of two letters. The
+  letters were a leftover: the language table carries text in a field named
+  flag while the stylesheet has drawn 43 real flags all along, used only by the
+  language picker. The composer chip, which had no flag at all, has one now.
+  Languages without a flag keep their two letters, because a flag names a
+  country and not a language.
+- **The language panel shows the selected language.** It carried the state on a
+  background measured at 1.21:1 against its own surface, where hover sits at
+  1.87, so the two were indistinguishable while the focus ring at 12.74 was the
+  brightest thing in a panel it only passes through. It now carries the tint, the
+  word in the accent and a rail. Flags rest desaturated and come back to full
+  under the pointer and on the current language, so colour is a signal rather
+  than a wall of 43 saturated rectangles.
+- **Language names stop being cut.** The pin icon sat invisible in every row's
+  layout, spending 17 percent of each column to show nothing, and the grid kept
+  three columns whatever the chat width. Columns now follow the measured width.
+  "Chinese (Taiwan)" was rendering as "Chinese (...", undecidable beside
+  "Chinese".
+
+### Fixed
+
+- Control borders inside the language panel sat at 1.80:1 on dark and 1.42:1 on
+  light, against the 3:1 the theme file states for a control's own boundary. The
+  panel's local aliases had inverted the global ones, so the filter field and
+  the pinned tiles were drawing with the quiet separator token.
+- The compose preview's badge and the language panel now follow the light theme
+  through the shared tokens rather than through per-component blocks; five such
+  blocks were dead and are gone, without a pixel moving.
+
 ## [2.11.0] - 2026-09-24
 
 The store is still on 2.9.2, so this release carries 2.10.0 as well.
