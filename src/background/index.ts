@@ -234,6 +234,32 @@ onMessage(async (msg): Promise<RuntimeResponse | void> => {
   }
 });
 
+/**
+ * Les raccourcis clavier.
+ *
+ * Le worker et non le content script : un raccourci doit marcher quel que soit
+ * l'onglet au premier plan, y compris quand aucune page Kick n'est ouverte, et
+ * il ecrit un reglage plutot qu'il ne pilote une page. Le chemin est celui de
+ * la page d'options, mot pour mot : saveSettings valide, applySettings rediffuse,
+ * et tous les onglets ouverts suivent par watchSettings.
+ *
+ * Optionnel a l'appel : chrome.commands n'existe pas dans les contextes de test
+ * ni dans un navigateur ou l'API est absente, et une extension qui refuse de
+ * demarrer pour un raccourci serait un mauvais echange.
+ */
+chrome.commands?.onCommand.addListener((command) => {
+  void (async () => {
+    const patch =
+      command === 'toggle-translation'
+        ? { enabled: !settings.enabled }
+        : command === 'toggle-compose'
+          ? { composeEnabled: !settings.composeEnabled }
+          : undefined;
+    if (!patch) return;
+    applySettings(await saveSettings(patch));
+  })();
+});
+
 chrome.runtime.onInstalled.addListener(() => {
   log.info('Installed / updated');
   void init();

@@ -204,4 +204,5 @@ export const zh: Record<string, string> = {
   'Follow Kick': '跟随 Kick',
   'Always dark': '始终深色',
   'Always light': '始终浅色',
+  'Remember a reading language per channel': '按频道记住阅读语言',
 };

@@ -103,7 +103,7 @@ MANIFESTE = 'dist/manifest.json'
 # transporte, la seconde tranche vaut +343 octets.
 # Relevee le 2026-09-25 : le sens des deux barres et les drapeaux dessines sur
 # les badges, plus la touche Tab. Le detail est dans les messages de commit.
-REFERENCE_OCTETS = 258386
+REFERENCE_OCTETS = 258743
 MARGE = 0.02
 
 if not os.path.exists(CIBLE):

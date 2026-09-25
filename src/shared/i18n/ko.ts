@@ -205,4 +205,5 @@ export const ko: Record<string, string> = {
   'Follow Kick': 'Kick 따르기',
   'Always dark': '항상 다크',
   'Always light': '항상 라이트',
+  'Remember a reading language per channel': '채널별로 읽기 언어 기억',
 };

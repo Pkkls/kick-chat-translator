@@ -149,6 +149,15 @@ export function DisplaySection({ settings, onPatch }: Props) {
           ]}
           onChange={(v) => onPatch({ accent: v as Settings['accent'] })}
         />
+        {/* Eteint par defaut : allume, la langue change toute seule en changeant
+            de chaine, ce qui est ce qu'on veut quand on l'a demande et une
+            surprise sinon. Sur une chaine inconnue rien ne bouge, sans quoi
+            chaque nouvelle chaine effacerait le choix qu'on vient de faire. */}
+        <ToggleRow
+          checked={settings.rememberChannelLang}
+          onChange={(v) => onPatch({ rememberChannelLang: v })}
+          label={t('Remember a reading language per channel')}
+        />
         <SelectRow
           label={t('Chat theme')}
           value={settings.chatScheme}

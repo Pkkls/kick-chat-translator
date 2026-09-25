@@ -34,6 +34,7 @@ import { extractChannelSlug, fetchChannelLangIso } from './kickApi';
 import { localEngine } from './localEngine';
 import { logPlatform, refresh7TV } from './platform';
 import { langFlag, withFavorite } from '~/shared/languages';
+import { memoriserLangueChaine } from '~/shared/channelLang';
 import { ROUTE_POLL_MS } from '~/shared/constants';
 import { msg as localised, setContentLocale } from './msg';
 
@@ -136,6 +137,9 @@ async function main(): Promise<void> {
           onTargetLang: (targetLang) =>
             void patchSettings({
               targetLang,
+              ...(settings.rememberChannelLang && currentSlug
+                ? { channelLangs: memoriserLangueChaine(settings.channelLangs, currentSlug, targetLang) }
+                : {}),
               favoriteLangs:
                 targetLang === 'auto'
                   ? settings.favoriteLangs
@@ -215,6 +219,11 @@ async function main(): Promise<void> {
       compose.setChannelLang(undefined);
       return;
     }
+
+    // La langue de cette chaine, si on en connait une. Avant de monter la
+    // barre, pour qu'elle s'affiche deja sur la bonne plutot que de sauter.
+    const memoire = settings.rememberChannelLang ? settings.channelLangs[slug] : undefined;
+    if (memoire && memoire !== settings.targetLang) void patchSettings({ targetLang: memoire });
 
     refresh7TV();
     logPlatform();

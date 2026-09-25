@@ -214,4 +214,5 @@ export const es: Record<string, string> = {
   'Follow Kick': 'Seguir a Kick',
   'Always dark': 'Siempre oscuro',
   'Always light': 'Siempre claro',
+  'Remember a reading language per channel': 'Recordar un idioma de lectura por canal',
 };

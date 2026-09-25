@@ -210,4 +210,5 @@ export const ru: Record<string, string> = {
   'Follow Kick': 'Как у Kick',
   'Always dark': 'Всегда тёмная',
   'Always light': 'Всегда светлая',
+  'Remember a reading language per channel': 'Запоминать язык чтения для каждого канала',
 };

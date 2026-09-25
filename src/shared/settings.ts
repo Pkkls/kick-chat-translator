@@ -61,6 +61,23 @@ export const SettingsSchema = z.object({
   // 'light' le figent pour qui prefere l'inverse de ce que la chaine affiche.
   chatScheme: z.enum(['auto', 'dark', 'light']).default('auto'),
 
+  // Se souvenir de la langue de lecture par chaine.
+  //
+  // Optionnel et par defaut eteint : allumer ce reglage fait changer la langue
+  // toute seule en changeant de chaine, ce qui est exactement ce qu'on veut
+  // quand on l'a demande et une surprise desagreable sinon.
+  //
+  // La regle est volontairement courte : sur une chaine connue on restaure sa
+  // langue, sur une chaine inconnue on ne touche a rien. Restaurer un defaut
+  // global sur l'inconnue ferait perdre le choix qu'on vient de faire a chaque
+  // clic sur une nouvelle chaine.
+  rememberChannelLang: z.boolean().default(false),
+  // La memoire elle-meme. Bornee a CHANNEL_LANG_MAX, en jetant la plus
+  // ancienne : un objet qui ne se vide jamais finit par ne plus tenir dans le
+  // quota de chrome.storage.sync, et c'est tout le reste des reglages qui
+  // cesse alors de s'enregistrer.
+  channelLangs: z.record(z.string(), z.string()).default({}),
+
   // Engine strategy.
   // local-first : on-device Chromium Translator when the model is downloaded, else cloud.
   // cloud-first : always cloud chain; on-device only if cloud fails.

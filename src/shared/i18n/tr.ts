@@ -212,4 +212,5 @@ export const tr: Record<string, string> = {
   'Follow Kick': "Kick'i izle",
   'Always dark': 'Her zaman koyu',
   'Always light': 'Her zaman açık',
+  'Remember a reading language per channel': 'Her kanal için bir okuma dili hatırla',
 };

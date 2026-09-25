@@ -212,4 +212,5 @@ export const fr: Record<string, string> = {
   'Follow Kick': 'Suivre Kick',
   'Always dark': 'Toujours sombre',
   'Always light': 'Toujours clair',
+  'Remember a reading language per channel': 'Retenir une langue de lecture par chaîne',
 };

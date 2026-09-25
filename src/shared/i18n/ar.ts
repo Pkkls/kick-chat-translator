@@ -207,4 +207,5 @@ export const ar: Record<string, string> = {
   'Follow Kick': 'اتباع Kick',
   'Always dark': 'دائمًا داكن',
   'Always light': 'دائمًا فاتح',
+  'Remember a reading language per channel': 'تذكّر لغة قراءة لكل قناة',
 };

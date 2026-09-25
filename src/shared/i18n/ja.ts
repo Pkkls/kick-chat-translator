@@ -210,4 +210,5 @@ export const ja: Record<string, string> = {
   'Follow Kick': 'Kick に合わせる',
   'Always dark': '常にダーク',
   'Always light': '常にライト',
+  'Remember a reading language per channel': 'チャンネルごとに読む言語を記憶',
 };
