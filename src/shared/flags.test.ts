@@ -50,7 +50,7 @@ describe('flags', () => {
   // answer lives. It costs one file read and it closes the whole class: the next
   // language added to the table fails here until its flag is drawn.
   it('draws every flag code it hands out', () => {
-    const css = readFileSync(resolve(process.cwd(), 'src/content/inject.css'), 'utf8');
+    const css = readFileSync(resolve(process.cwd(), 'src/shared/flags.css'), 'utf8');
     const manquants = [...new Set(Object.values(FLAG_BY_LANG))]
       .filter((code) => !css.includes(`.kt-flag-${code} `))
       .sort();

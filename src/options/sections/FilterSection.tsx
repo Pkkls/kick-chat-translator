@@ -5,6 +5,7 @@ import { sortedLanguages } from '~/shared/languages';
 import { resolveUiLocale } from '~/shared/i18n';
 import { useT } from '~/shared/i18nContext';
 import { Check } from '../components/Check';
+import { flagClass } from '~/shared/flags';
 
 interface Props {
   settings: Settings;
@@ -29,18 +30,20 @@ export function FilterSection({ settings, onPatch, stats }: Props) {
   // Les comptes par langue, et l'ordre qu'ils imposent. Une liste de 43 cases
   // rangees par alphabet demande de connaitre la reponse avant de chercher ;
   // rangee par ce qui est reellement passe dans le chat, elle la donne.
+  // Les comptes, sans toucher a l'ordre. Le tri par usage a ete essaye et
+  // retire : il remontait les deux ou trois langues vues en tete puis laissait
+  // l'alphabet reprendre au milieu, si bien qu'on ne pouvait plus trouver une
+  // langue ni par usage ni par alphabet. L'alphabet est le seul ordre dans
+  // lequel on CHERCHE ; le compte vert signale ce qui a ete vu, et le champ de
+  // filtre juste au-dessus est ce qui sert a aller vite.
   const vues = stats?.byLang ?? {};
-  const langsTriees = useMemo(() => {
-    const vu = (c: string) => vues[c] ?? 0;
-    return [...langs].sort((a, b) => vu(b.code) - vu(a.code) || 0);
-  }, [langs, stats]);
 
   const shown = useMemo(() => {
     const fold = (v: string) => v.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
     const q = fold(langQuery.trim());
-    if (!q) return langsTriees;
-    return langsTriees.filter((l) => fold(l.name).includes(q) || fold(l.code).includes(q));
-  }, [langsTriees, langQuery]);
+    if (!q) return langs;
+    return langs.filter((l) => fold(l.name).includes(q) || fold(l.code).includes(q));
+  }, [langs, langQuery]);
   return (
     <>
       <section class="kt-card space-y-3">
@@ -134,9 +137,18 @@ export function FilterSection({ settings, onPatch, stats }: Props) {
                   }}
                   label={
                     <span class="flex min-w-0 items-center gap-2">
-                      <span class="font-mono text-[10px] tracking-wider text-kick-muted">
-                        {l.code.toUpperCase()}
-                      </span>
+                      {/* Le drapeau dessine, comme dans le chat. Les regles
+                          vivent maintenant dans src/shared/flags.css, que les
+                          deux feuilles importent. Les deux lettres restent le
+                          repli des langues sans drapeau : un drapeau nomme un
+                          pays et pas une langue, il en manque. */}
+                      {flagClass(l.code) ? (
+                        <span class={`${flagClass(l.code)!} shrink-0`} />
+                      ) : (
+                        <span class="shrink-0 font-mono text-[10px] tracking-wider text-kick-muted">
+                          {l.code.toUpperCase()}
+                        </span>
+                      )}
                       <span class="truncate text-kick-muted">{l.name}</span>
                       {/* Ce que cette langue a reellement represente. Sans ce
                           nombre, cocher une case est un pari. */}

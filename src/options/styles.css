@@ -2,6 +2,8 @@
    surfaces read one palette. Kick's own: green #53FC18, ink #0B0B0C,
    surface #171A1C (.agent/PROMPT.md section 3). */
 @import '../shared/theme.css';
+/* Les memes drapeaux que le chat : la liste des langues y est la meme. */
+@import '../shared/flags.css';
 
 @tailwind base;
 @tailwind components;

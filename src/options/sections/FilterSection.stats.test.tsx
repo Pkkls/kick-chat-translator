@@ -53,21 +53,47 @@ describe('FilterSection, wired to what was actually seen', () => {
     }
   });
 
-  it('puts the languages actually seen at the top, most frequent first', () => {
-    const { el } = mount(stats({ byLang: { ko: 12, es: 400, ja: 90 } }));
-    expect(ordreLangues(el).slice(0, 3)).toEqual(['Spanish', 'Japanese', 'Korean']);
+  // CE TEST TENAIT L'INVERSE, et c'est le point. Il exigeait que les langues
+  // vues remontent en tete, ce qui a ete construit puis retire : deux ou trois
+  // langues passaient devant, l'alphabet reprenait au milieu, et on ne pouvait
+  // plus trouver une langue ni par usage ni par ordre. L'alphabet est le seul
+  // ordre dans lequel on CHERCHE. Le compte signale ce qui a ete vu sans
+  // deplacer quoi que ce soit.
+  it('keeps the alphabet, whatever has been seen', () => {
+    const avec = mount(stats({ byLang: { ko: 12, es: 400, ja: 90 } }));
+    const ordre = ordreLangues(avec.el);
+    expect(ordre).toEqual([...ordre].sort((a, b) => a.localeCompare(b)));
+    render(null, host!);
+    host!.remove();
+
+    const sans = mount(undefined);
+    expect(ordreLangues(sans.el)).toEqual(ordre);
   });
 
-  it('shows how much each language represented', () => {
+  it('shows how much each language represented, without moving it', () => {
     const { el } = mount(stats({ byLang: { es: 400 } }));
     expect(el.textContent).toContain('400');
   });
 
-  // Sans stats, l'ordre alphabetique reste : la page ne doit pas se casser
-  // parce que le worker n'a pas encore repondu.
-  it('falls back on the alphabet when nothing has been seen', () => {
-    const { el } = mount(undefined);
-    expect(ordreLangues(el).length).toBeGreaterThan(0);
+  // Les 43 drapeaux etaient dessines dans la feuille du chat et la page
+  // d'options ne pouvait pas les atteindre, donc elle affichait les deux
+  // lettres du code. Ils vivent dans src/shared/flags.css maintenant.
+  it('draws the flag rather than the ISO code', () => {
+    const { el } = mount(stats());
+    expect(el.querySelector('.kt-flag-es')).not.toBeNull();
+    expect(el.querySelector('.kt-flag-jp')).not.toBeNull();
+  });
+
+  // Le repli en deux lettres existe dans le code parce qu'un drapeau nomme un
+  // pays et pas une langue. Mesure : les 43 langues offertes en ont toutes un,
+  // donc il ne se declenche jamais aujourd'hui. Ce test tient l'invariant par
+  // l'autre bout : une 44e langue ajoutee sans drapeau se verra ici plutot que
+  // sur une capture d'ecran.
+  it('has a flag for every language it offers', () => {
+    const { el } = mount(stats());
+    const rangees = el.querySelectorAll('.grid .truncate').length;
+    const drapeaux = el.querySelectorAll('.grid .kt-flag').length;
+    expect(drapeaux).toBe(rangees);
   });
 
   // Une liste vide et une liste de trois se ressemblent quand rien ne dit ce
