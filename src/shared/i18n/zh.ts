@@ -182,4 +182,12 @@ export const zh: Record<string, string> = {
   'Only when you point at the line. Spares your quota.': '仅在指向该行时。节省配额。',
   recommended: '推荐',
   'The other three are still being worked on.': '其余三种仍在完善中。',
+  'Text size': '文字大小',
+  'Line spacing': '行距',
+  'Font': '字体',
+  "Kick's own": 'Kick 默认',
+  'System': '系统',
+  'Serif': '衜线',
+  'Monospace': '等宽',
+  'High legibility': '高易读性',
 };

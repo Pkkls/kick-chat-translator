@@ -185,4 +185,12 @@ export const ar: Record<string, string> = {
   'Only when you point at the line. Spares your quota.': 'فقط عند الإشارة إلى السطر. يوفر حصتك.',
   recommended: 'موصى به',
   'The other three are still being worked on.': 'الأنماط الثلاثة الأخرى لا تزال قيد العمل.',
+  'Text size': 'حجم النص',
+  'Line spacing': 'تباعد الأسطر',
+  'Font': 'الخط',
+  "Kick's own": 'خط Kick',
+  'System': 'النظام',
+  'Serif': 'مذيّل',
+  'Monospace': 'ثابت العرض',
+  'High legibility': 'وضوح عالٍ',
 };

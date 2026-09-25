@@ -116,6 +116,46 @@
      state: the label beside it spells it out. */
   --kt-off: rgb(var(--kt-muted-rgb) / 0.5);
 
+  /* ── Typography ──────────────────────────────────────────────────────
+     TWO SCALES AND NOT ONE, because the sheet has always had two and the
+     line between them is exact. Measured over its 28 sizing declarations:
+     the 9 relative ones are every piece of CONTENT we put inside one of
+     Kick's chat lines, and the 19 in pixels are every surface of our own.
+     Content follows whatever size Kick gives the line it sits in, and a bar
+     or a menu must not. Folding them into one scale would break one or the
+     other, so the two are named apart and neither can be used for the other
+     job by accident. */
+  --kt-font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --kt-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* The provider tag is content, not chrome, and asks for no particular face:
+     the short stack keeps it on whatever the reader's monospace already is. */
+  --kt-font-mono-chat: ui-monospace, monospace;
+
+  /* Chrome, in pixels. Four steps, which is what the sheet uses. */
+  --kt-fs-xs: 10px;
+  --kt-fs-sm: 11px;
+  --kt-fs-md: 12px;
+  --kt-fs-lg: 13px;
+
+  /* Content, relative to the chat line hosting it. A custom property holding
+     `em` is substituted on the element that reads it, so each of these
+     resolves against its own parent, exactly as the literal did. */
+  --kt-fc-xs: 0.62em;
+  --kt-fc-sm: 0.7em;
+  --kt-fc-md: 0.75em;
+  --kt-fc-lg: 0.85em;
+  --kt-fc-xl: 0.9em;
+
+  /* The faces the reader can put the translated line in. Stacks only, never a
+     file: a webfont on a page we do not own costs a network request, and the
+     translated line is the one element that repeats per message.
+     applyTypography() in injector.ts points --kt-tr-font at one of these; it
+     points at nothing for Kick's own face, and the fallback in the rule wins. */
+  --kt-tr-face-system: var(--kt-font-ui);
+  --kt-tr-face-serif: Georgia, 'Times New Roman', Times, serif;
+  --kt-tr-face-mono: var(--kt-font-mono-chat);
+  --kt-tr-face-readable: 'Atkinson Hyperlegible', Verdana, Tahoma, sans-serif;
+
   /* ── The rest of the direction, so it is stated once ─────────────────
      scratchpad/audit_da.py fails the build on any other value. */
   --kt-r-sm: 4px;

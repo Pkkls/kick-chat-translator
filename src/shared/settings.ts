@@ -28,6 +28,27 @@ export const SettingsSchema = z.object({
   showProviderBadge: z.boolean().default(false),
   showFloatingBar: z.boolean().default(true),
 
+  // Readability of the translated line itself. The three defaults are the
+  // values the stylesheet already carried, so a reader who never opens this
+  // section sees exactly what they saw before.
+  //
+  // The scale multiplies whatever size Kick gives the chat line, it does not
+  // replace it: a reader who has already enlarged Kick's own chat keeps that
+  // choice and this one compounds with it.
+  translatedFontScale: z.number().min(0.8).max(1.4).default(1),
+  translatedLineHeight: z.number().min(1.2).max(2).default(1.35),
+  // 'inherit' is Kick's own face, and the default, because the translation
+  // belongs to the line it sits under.
+  //
+  // 'readable' and not 'dyslexic': a genuine dyslexia face (OpenDyslexic,
+  // Atkinson Hyperlegible) is a file, and this extension ships no font file
+  // and fetches none, because a webfont on a page we do not own is a network
+  // request per chat line. The stack asks for Atkinson first in case the
+  // reader already has it, then falls back on Verdana, which really does
+  // separate I from l from 1 better than the average UI face. Naming it after
+  // a condition it cannot guarantee to serve would be a promise we do not keep.
+  translatedFont: z.enum(['inherit', 'system', 'serif', 'mono', 'readable']).default('inherit'),
+
   // Engine strategy.
   // local-first : on-device Chromium Translator when the model is downloaded, else cloud.
   // cloud-first : always cloud chain; on-device only if cloud fails.

@@ -153,5 +153,13 @@
   "On hover",
   "Only when you point at the line. Spares your quota.",
   "recommended",
-  "The other three are still being worked on."
+  "The other three are still being worked on.",
+  "Text size",
+  "Line spacing",
+  "Font",
+  "Kick's own",
+  "System",
+  "Serif",
+  "Monospace",
+  "High legibility"
 ]

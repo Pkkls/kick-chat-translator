@@ -190,4 +190,12 @@ export const tr: Record<string, string> = {
     'Sadece satiri gosterdiginde. Kotani korur.',
   recommended: 'önerilen',
   'The other three are still being worked on.': 'Diğer üçü hâlâ üzerinde çalışılıyor.',
+  'Text size': 'Yazı boyutu',
+  'Line spacing': 'Satır aralığı',
+  'Font': 'Yazı tipi',
+  "Kick's own": "Kick'inki",
+  'System': 'Sistem',
+  'Serif': 'Tırnaklı',
+  'Monospace': 'Eş aralıklı',
+  'High legibility': 'Yüksek okunabilirlik',
 };

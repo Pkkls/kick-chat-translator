@@ -190,4 +190,12 @@ export const fr: Record<string, string> = {
     'Seulement quand tu pointes la ligne. Economise ton quota.',
   recommended: 'recommandé',
   'The other three are still being worked on.': 'Les trois autres sont encore en travaux.',
+  'Text size': 'Taille du texte',
+  'Line spacing': 'Interligne',
+  'Font': 'Police',
+  "Kick's own": 'Celle de Kick',
+  'System': 'Système',
+  'Serif': 'Serif',
+  'Monospace': 'Chasse fixe',
+  'High legibility': 'Haute lisibilité',
 };

@@ -183,4 +183,12 @@ export const ko: Record<string, string> = {
   'Only when you point at the line. Spares your quota.': '줄을 가리킬 때만. 사용량을 아낍니다.',
   recommended: '권장',
   'The other three are still being worked on.': '나머지 세 가지는 아직 작업 중입니다.',
+  'Text size': '글자 크기',
+  'Line spacing': '줄 간격',
+  'Font': '글꼴',
+  "Kick's own": 'Kick 기본',
+  'System': '시스템',
+  'Serif': '세리프',
+  'Monospace': '고정폭',
+  'High legibility': '높은 가독성',
 };

@@ -9,6 +9,7 @@ import {
   HANDLED_SELECTOR,
   applyChatScheme,
   applyShowOriginal,
+  applyTypography,
   ensureStyles,
   mountFloatingBar,
   removeAllArtifacts,
@@ -54,6 +55,7 @@ async function main(): Promise<void> {
   ensureStyles();
   applyChatScheme();
   applyShowOriginal(settings.showOriginal);
+  applyTypography(settings);
 
   // Kick's theme switch repaints the page without reloading it, so the stamp
   // has to follow. Watching the root's class and style attributes is enough:
@@ -381,6 +383,9 @@ async function main(): Promise<void> {
     settings = next;
     pipeline.updateSettings(next);
     compose.updateSettings(next);
+    // Les trois reglages de lisibilite sont des proprietes sur la racine : les
+    // reposer suffit, rien n'est a redessiner ligne par ligne.
+    applyTypography(next);
     rootLogger.setEnabled(next.debug);
     // Ahead of everything that redraws below, so the bar and the chip come back
     // in the language that was just chosen rather than one change late.

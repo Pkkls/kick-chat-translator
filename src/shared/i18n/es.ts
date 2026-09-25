@@ -192,4 +192,12 @@ export const es: Record<string, string> = {
     'Solo cuando apuntas a la linea. Ahorra tu cuota.',
   recommended: 'recomendado',
   'The other three are still being worked on.': 'Los otros tres siguen en desarrollo.',
+  'Text size': 'Tamaño del texto',
+  'Line spacing': 'Interlineado',
+  'Font': 'Fuente',
+  "Kick's own": 'La de Kick',
+  'System': 'Sistema',
+  'Serif': 'Serif',
+  'Monospace': 'Monoespaciada',
+  'High legibility': 'Alta legibilidad',
 };

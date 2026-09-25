@@ -79,7 +79,29 @@ MANIFESTE = 'dist/manifest.json'
 # En gzip -9, qui est ce que le reseau transporte, l'ecart n'est pas le meme :
 # 91_484 octets avant les lettres exclusives, 96_635 aujourd'hui, soit +5151.
 # Une table de regex se compresse bien.
-REFERENCE_OCTETS = 248199
+#
+# ---------------------------------------------------------------------------
+# Reference relevee le 2026-09-25, de 248_199 a 254_174, soit +5975 octets et
+# +2,41 %. Separee en deux plutot que devinee, chaque tranche etant le meme
+# build sans l'autre :
+#
+#     248_199 -> 252_900   +4701 o   la reprise du selecteur de langues
+#     252_900 -> 254_174   +1274 o   la lisibilite de la ligne traduite
+#
+# LA PREMIERE TRANCHE AURAIT DU ETRE RELEVEE DANS SON PROPRE COMMIT et ne l'a
+# pas ete : 252_900 tenait sous 248_199 majore de la marge de 2 %, donc la
+# porte est restee verte et n'a rien eu a dire. Une marge est faite pour
+# absorber le bruit d'un build, pas pour encaisser une hausse voulue. Ce qu'elle
+# achete : la selection portee par trois marqueurs au lieu d'un fond mesure a
+# 1.21:1, les drapeaux eteints au repos, les colonnes derivees de la largeur, et
+# 33 lignes de blocs clairs morts rendues.
+#
+# La seconde achete les trois reglages de lisibilite de la ligne traduite, les
+# deux echelles typographiques et les quatre faces. Les 72 chaines traduites qui
+# vont avec ne pesent RIEN ici : verifie en construisant les deux fois, les
+# catalogues ne sont pas dans le script injecte. En gzip, ce que le reseau
+# transporte, la seconde tranche vaut +343 octets.
+REFERENCE_OCTETS = 254174
 MARGE = 0.02
 
 if not os.path.exists(CIBLE):

@@ -188,4 +188,12 @@ export const pt: Record<string, string> = {
     'So quando voce aponta para a linha. Poupa sua cota.',
   recommended: 'recomendado',
   'The other three are still being worked on.': 'Os outros três ainda estão em desenvolvimento.',
+  'Text size': 'Tamanho do texto',
+  'Line spacing': 'Entrelinhas',
+  'Font': 'Fonte',
+  "Kick's own": 'A do Kick',
+  'System': 'Sistema',
+  'Serif': 'Serif',
+  'Monospace': 'Monoespaçada',
+  'High legibility': 'Alta legibilidade',
 };

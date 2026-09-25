@@ -188,4 +188,12 @@ export const ru: Record<string, string> = {
     'Только когда наводите на строку. Экономит квоту.',
   recommended: 'рекомендуется',
   'The other three are still being worked on.': 'Остальные три ещё дорабатываются.',
+  'Text size': 'Размер текста',
+  'Line spacing': 'Межстрочный интервал',
+  'Font': 'Шрифт',
+  "Kick's own": 'Как у Kick',
+  'System': 'Системный',
+  'Serif': 'С засечками',
+  'Monospace': 'Моноширинный',
+  'High legibility': 'Повышенная читаемость',
 };

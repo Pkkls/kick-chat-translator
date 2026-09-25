@@ -103,7 +103,12 @@ describe('the chat is still there behind it', () => {
 });
 
 describe('the panel says it is a layer', () => {
-  const css = readFileSync('src/content/inject.css', 'utf8');
+  // Normalise les fins de ligne. Le depot stocke du LF, mais .gitattributes
+  // et core.autocrlf rendent un working tree en CRLF sous Windows. Une
+  // assertion dont le saut de ligne n'est pas en tete, comme celle du
+  // selecteur groupe des drapeaux, ne matche alors rien, et l'echec
+  // ressemble a une regle disparue plutot qu'a un retour chariot.
+  const css = readFileSync('src/content/inject.css', 'utf8').replace(/\r\n/g, '\n');
 
   function ruleFor(selector: string): string {
     return (
@@ -197,7 +202,12 @@ describe('the grid follows the width it was given', () => {
  * il faut un porteur qui ne soit pas qu'une nuance de fond.
  */
 describe('the selected row is identifiable', () => {
-  const css = readFileSync('src/content/inject.css', 'utf8');
+  // Normalise les fins de ligne. Le depot stocke du LF, mais .gitattributes
+  // et core.autocrlf rendent un working tree en CRLF sous Windows. Une
+  // assertion dont le saut de ligne n'est pas en tete, comme celle du
+  // selecteur groupe des drapeaux, ne matche alors rien, et l'echec
+  // ressemble a une regle disparue plutot qu'a un retour chariot.
+  const css = readFileSync('src/content/inject.css', 'utf8').replace(/\r\n/g, '\n');
 
   function ruleFor(selector: string): string {
     return (
@@ -255,7 +265,12 @@ describe('the selected row is identifiable', () => {
  * selection y reposait sur un fond a 1.21:1, seul.
  */
 describe('the chip menu carries the same state as the panel', () => {
-  const css = readFileSync('src/content/inject.css', 'utf8');
+  // Normalise les fins de ligne. Le depot stocke du LF, mais .gitattributes
+  // et core.autocrlf rendent un working tree en CRLF sous Windows. Une
+  // assertion dont le saut de ligne n'est pas en tete, comme celle du
+  // selecteur groupe des drapeaux, ne matche alors rien, et l'echec
+  // ressemble a une regle disparue plutot qu'a un retour chariot.
+  const css = readFileSync('src/content/inject.css', 'utf8').replace(/\r\n/g, '\n');
 
   function ruleFor(selector: string): string {
     return (

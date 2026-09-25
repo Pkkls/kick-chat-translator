@@ -189,6 +189,40 @@ export function applyShowOriginal(showOriginal: boolean): void {
   document.documentElement.classList.toggle('kt-hide-original', !showOriginal);
 }
 
+/** The faces `translatedFont` can name, minus 'inherit', which is the absence. */
+const FACES: Record<string, string> = {
+  system: 'var(--kt-tr-face-system)',
+  serif: 'var(--kt-tr-face-serif)',
+  mono: 'var(--kt-tr-face-mono)',
+  readable: 'var(--kt-tr-face-readable)',
+};
+
+/**
+ * How the reader wants the translated line to read.
+ *
+ * Three custom properties on the document root, the same shape as the scheme
+ * stamp above, and the stylesheet reads them with a fallback equal to the value
+ * it used to carry. A profile that has never opened the section therefore
+ * renders exactly what it rendered before, which is also why 'inherit' REMOVES
+ * the face rather than writing a value: the rule's own `inherit` fallback is
+ * Kick's face, and writing it out would freeze it against a future change.
+ *
+ * Nothing is written per row. The chat recycles its lines, and a setting
+ * stamped on a row would survive into the next message that lands there.
+ */
+export function applyTypography(s: {
+  translatedFontScale: number;
+  translatedLineHeight: number;
+  translatedFont: string;
+}): void {
+  const style = document.documentElement.style;
+  style.setProperty('--kt-tr-scale', String(s.translatedFontScale));
+  style.setProperty('--kt-tr-leading', String(s.translatedLineHeight));
+  const face = FACES[s.translatedFont];
+  if (face) style.setProperty('--kt-tr-font', face);
+  else style.removeProperty('--kt-tr-font');
+}
+
 /**
  * Say why a line was left alone, in its tooltip.
  *

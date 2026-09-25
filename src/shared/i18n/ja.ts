@@ -188,4 +188,12 @@ export const ja: Record<string, string> = {
   'Only when you point at the line. Spares your quota.': '行を指したときだけ。使用量を節約します。',
   recommended: '推奨',
   'The other three are still being worked on.': 'ほかの3つはまだ調整中です。',
+  'Text size': '文字サイズ',
+  'Line spacing': '行間',
+  'Font': 'フォント',
+  "Kick's own": 'Kick の書体',
+  'System': 'システム',
+  'Serif': 'セリフ',
+  'Monospace': '等幅',
+  'High legibility': '高可読性',
 };
