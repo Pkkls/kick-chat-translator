@@ -1,4 +1,10 @@
-import type { ProviderStatus, TranslationOutcome, TranslationRequest, UsageStats } from './types';
+import type {
+  CacheStats,
+  ProviderStatus,
+  TranslationOutcome,
+  TranslationRequest,
+  UsageStats,
+} from './types';
 import type { Settings } from './settings';
 import type { UpdateStatus } from './version';
 
@@ -19,6 +25,7 @@ export type RuntimeMessage =
   | { type: 'stats.reset' }
   | { type: 'providers.status' }
   | { type: 'cache.clear' }
+  | { type: 'cache.stats' }
   | { type: 'open.options' }
   | { type: 'stats.local'; payload: { lang: string; chars: number } }
   | { type: 'deepl.usage' }
@@ -30,6 +37,7 @@ export type RuntimeResponse =
   | { type: 'translate.result'; payload: TranslationOutcome }
   | { type: 'settings'; payload: Settings }
   | { type: 'stats'; payload: UsageStats }
+  | { type: 'cache.stats'; payload: CacheStats }
   | { type: 'providers'; payload: ProviderStatus[] }
   | { type: 'deepl.usage'; payload: { configured: boolean; count: number; limit: number } }
   | { type: 'update.info'; payload: UpdateStatus }

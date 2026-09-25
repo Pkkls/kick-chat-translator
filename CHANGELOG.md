@@ -70,8 +70,42 @@ which of its two bars does what.
   "Chinese (Taiwan)" was rendering as "Chinese (...", undecidable beside
   "Chinese".
 
+### Changed
+
+- **The options page shows what it is doing.** Eleven settings, and for nine of
+  them the number that says what the setting does already existed in the code
+  and was not shown. "Cache max entries" sat above a cache that could not report
+  how many entries it held; the per-channel budget could not say whether it had
+  ever held anything back; the language allowlist offered 43 checkboxes while
+  the count of every language actually seen in chat lived two tabs away in ISO
+  codes; and the list of channels watched was collected by four call sites and
+  read by nothing at all, next to a text box whose example content was
+  "some-channel". Each setting now carries its own measurement, and the language
+  list is ordered by what really came through the chat.
+- **The Debug tab is called Activity**, because what it shows is the total of
+  messages translated, what the cache saved and the languages seen, none of
+  which is debugging. Calling it Debug told the reader it was not for them. The
+  card in Advanced that really is maintenance is called Maintenance.
+- **The cache hit rate is readable.** It was seven bars 40 pixels tall whose
+  value existed only in a `title`: invisible to the keyboard, to a screen
+  reader and to a finger, and two neighbouring days at 90 and 95 % looked two
+  pixels apart. Each bar now carries its number and its date.
+- **The About tab describes this extension.** It still spoke of translating
+  "non-English messages" and stopped there, with no mention of the 43
+  languages, the on-device engine or the compose preview, and it did not carry
+  its own version, which is the first thing anyone comes here for. It now
+  carries the version, the language count, how many providers are ready and how
+  many messages have been translated.
+- **The DeepL quota sits next to the DeepL settings.** It was asked for by the
+  popup and by the popup alone.
+- Invented example data is gone from the channel and user boxes. The glossary
+  keeps its example, because it shows a syntax rather than inventing a fact.
+
 ### Fixed
 
+- `.kt-hint` carried a width and nothing else: no size, no colour. A note at the
+  foot of a card therefore rendered as large as the content it was commenting
+  on.
 - Control borders inside the language panel sat at 1.80:1 on dark and 1.42:1 on
   light, against the 3:1 the theme file states for a control's own boundary. The
   panel's local aliases had inverted the global ones, so the filter field and

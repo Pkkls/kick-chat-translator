@@ -93,6 +93,37 @@ export class TranslationCache {
     }
   }
 
+  /**
+   * Ce qu'il y a dedans, pour que le reglage qui le plafonne puisse le dire.
+   *
+   * keys() est deja l'appel que fait warm(). L'age vient du Map parce qu'il est
+   * gratuit ; le prendre sur la base entiere couterait une lecture par cle, et
+   * ce cache monte a vingt mille.
+   */
+  async stats(): Promise<{
+    entries: number;
+    inMemory: number;
+    oldestMs?: number;
+    maxEntries: number;
+  }> {
+    let entries = this.mem.size;
+    try {
+      entries = (await keys(store)).length;
+    } catch (err: unknown) {
+      log.warn('idb keys failed, falling back on the memory layer', err);
+    }
+    let plusVieille: number | undefined;
+    for (const e of this.mem.values()) {
+      if (plusVieille === undefined || e.storedAtMs < plusVieille) plusVieille = e.storedAtMs;
+    }
+    return {
+      entries,
+      inMemory: this.mem.size,
+      ...(plusVieille === undefined ? {} : { oldestMs: Date.now() - plusVieille }),
+      maxEntries: this.maxEntries,
+    };
+  }
+
   private evict(): void {
     const toRemove = this.mem.size - this.maxEntries;
     if (toRemove <= 0) return;

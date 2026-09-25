@@ -13,14 +13,17 @@ import { DebugSection } from './sections/DebugSection';
 import { UsageTrend } from './sections/UsageTrend';
 import { AboutSection } from './sections/AboutSection';
 
-type Tab = 'providers' | 'display' | 'filters' | 'advanced' | 'debug' | 'about';
+type Tab = 'providers' | 'display' | 'filters' | 'advanced' | 'activity' | 'about';
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'providers', label: 'Providers' },
   { id: 'display', label: 'Display' },
   { id: 'filters', label: 'Filters' },
   { id: 'advanced', label: 'Advanced' },
-  { id: 'debug', label: 'Debug' },
+  // Ce que cet onglet montre n'est pas du deboguage : c'est le total des
+  // messages traduits, ce que le cache a evite et les langues vues. L'appeler
+  // Debug disait au lecteur que ce n'etait pas pour lui.
+  { id: 'activity', label: 'Activity' },
   { id: 'about', label: 'About' },
 ];
 
@@ -169,15 +172,17 @@ export function App() {
             <ProviderSection settings={settings} providers={providers} onPatch={patch} />
           )}
           {tab === 'display' && <DisplaySection settings={settings} onPatch={patch} />}
-          {tab === 'filters' && <FilterSection settings={settings} onPatch={patch} />}
-          {tab === 'advanced' && <AdvancedSection settings={settings} onPatch={patch} />}
-          {tab === 'debug' && (
+          {tab === 'filters' && (
+            <FilterSection settings={settings} onPatch={patch} stats={stats} />
+          )}
+          {tab === 'advanced' && <AdvancedSection settings={settings} onPatch={patch} stats={stats} />}
+          {tab === 'activity' && (
             <>
               {stats && <UsageTrend stats={stats} />}
               <DebugSection />
             </>
           )}
-          {tab === 'about' && <AboutSection />}
+          {tab === 'about' && <AboutSection stats={stats} providers={providers} />}
         </main>
       </div>
     </I18nProvider>

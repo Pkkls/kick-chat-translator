@@ -114,6 +114,10 @@ async function handleTranslate(req: TranslationRequest): Promise<TranslationOutc
   }
 
   if (req.channel && !bucketFor(req.channel).tryTake()) {
+    // Compte le refus : sans lui, le reglage qui plafonne ce seau ne peut pas
+    // dire s'il a deja servi a quelque chose, et le lecteur regle un nombre a
+    // l'aveugle.
+    stats.recordThrottled();
     return { ok: false, error: { code: 'channel_budget', message: 'Channel budget exhausted' } };
   }
 
@@ -222,6 +226,8 @@ onMessage(async (msg): Promise<RuntimeResponse | void> => {
     case 'cache.clear':
       await cache.clear();
       return { type: 'ack' };
+    case 'cache.stats':
+      return { type: 'cache.stats', payload: await cache.stats() };
     case 'open.options':
       await chrome.runtime.openOptionsPage();
       return { type: 'ack' };

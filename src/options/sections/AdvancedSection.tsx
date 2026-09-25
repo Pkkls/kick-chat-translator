@@ -1,16 +1,47 @@
-import { useRef, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { exportSettings, importSettings, type Settings } from '~/shared/settings';
 import { send } from '~/shared/messages';
 import { useT } from '~/shared/i18nContext';
 import { Check } from '../components/Check';
 
+import type { CacheStats, UsageStats } from '~/shared/types';
+
 interface Props {
   settings: Settings;
   onPatch: (p: Partial<Settings>) => void;
+  /** Ce que l'extension a fait. Absent tant que le worker n'a pas repondu. */
+  stats?: UsageStats;
 }
 
-export function AdvancedSection({ settings, onPatch }: Props) {
+export function AdvancedSection({ settings, onPatch, stats }: Props) {
   const t = useT();
+  // Ce que contient le cache. Demande une fois a l'ouverture : c'est un compte
+  // de cles, pas un flux, et le relire en continu couterait un appel IndexedDB
+  // par seconde pour un nombre qui bouge lentement.
+  const [cacheStats, setCacheStats] = useState<CacheStats | undefined>(undefined);
+  useEffect(() => {
+    void (async () => {
+      const res = await send({ type: 'cache.stats' });
+      if (res.type === 'cache.stats') setCacheStats(res.payload);
+    })().catch(() => undefined);
+  }, []);
+
+  /** "3 412 entrees, 23 % du plafond". Rien tant que la reponse n'est pas la. */
+  const remplissage =
+    cacheStats === undefined
+      ? undefined
+      : `${cacheStats.entries.toLocaleString()} ${t('entries')}, ${Math.round(
+          (cacheStats.entries / Math.max(1, settings.cacheMaxEntries)) * 100,
+        )}% ${t('of the cap')}`;
+
+  /** L'age de la plus vieille entree gardee en memoire, en heures. */
+  const plusVieille =
+    cacheStats?.oldestMs === undefined
+      ? undefined
+      : `${t('oldest kept in memory:')} ${Math.max(1, Math.round(cacheStats.oldestMs / 3_600_000))} h`;
+
+  const reseau = stats ? stats.totalRequests - stats.totalCacheHits : undefined;
+  const bloques = stats?.throttled ?? 0;
   const [confirmClear, setConfirmClear] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
   const [confirmResetAll, setConfirmResetAll] = useState(false);
@@ -67,6 +98,7 @@ export function AdvancedSection({ settings, onPatch }: Props) {
         <Row
           label={t('Cache max entries')}
           hint={t('Larger = more hits across sessions, more disk space.')}
+          live={remplissage}
           input={
             <input
               aria-label={t('Cache max entries')}
@@ -85,6 +117,7 @@ export function AdvancedSection({ settings, onPatch }: Props) {
         <Row
           label={t('Cache TTL (hours)')}
           hint={t('After this, entries expire.')}
+          live={plusVieille}
           input={
             <input
               aria-label={t('Cache TTL (hours)')}
@@ -102,6 +135,11 @@ export function AdvancedSection({ settings, onPatch }: Props) {
         <Row
           label={t('Concurrent translations')}
           hint={t('In-flight provider requests.')}
+          live={
+            reseau === undefined
+              ? undefined
+              : `${reseau.toLocaleString()} ${t('requests have gone through this limit')}`
+          }
           input={
             <input
               aria-label={t('Concurrent translations')}
@@ -119,6 +157,13 @@ export function AdvancedSection({ settings, onPatch }: Props) {
         <Row
           label={t('Per-channel budget (req/min)')}
           hint={t('Hard cap to avoid hammering providers on fast chats.')}
+          live={
+            stats === undefined
+              ? undefined
+              : bloques === 0
+                ? t('never reached so far')
+                : `${bloques.toLocaleString()} ${t('messages held back by this cap')}`
+          }
           input={
             <input
               aria-label={t('Per-channel budget (req/min)')}
@@ -165,7 +210,7 @@ export function AdvancedSection({ settings, onPatch }: Props) {
       </section>
 
       <section class="kt-card space-y-3">
-        <h2 class="kt-section">{t('Debugging')}</h2>
+        <h2 class="kt-section">{t('Maintenance')}</h2>
         <div class="kt-setting">
           <Check
             checked={settings.debug}
@@ -228,20 +273,37 @@ export function AdvancedSection({ settings, onPatch }: Props) {
   );
 }
 
+/**
+ * Un reglage, son explication, et CE QU'IL FAIT EN CE MOMENT.
+ *
+ * La troisieme ligne est la raison d'etre de ce composant. Un champ qui porte
+ * 15000 sans dire qu'il y a 3412 entrees dedans demande au lecteur de regler
+ * un nombre a l'aveugle, et c'est ce qui rendait cette page creuse.
+ *
+ * role="status" pour que la valeur, qui arrive apres le premier rendu, soit
+ * annoncee au lieu d'apparaitre en silence.
+ */
 function Row({
   label,
   hint,
   input,
+  live,
 }: {
   label: string;
   hint: string;
   input: preact.ComponentChildren;
+  live?: string;
 }) {
   return (
     <div class="grid grid-cols-[1fr,140px] gap-3 items-start">
       <div>
         <div class="text-sm">{label}</div>
         <div class="text-[11px] text-kick-muted">{hint}</div>
+        {live !== undefined && (
+          <div role="status" class="mt-1 text-[11px] tabular-nums text-kick-primary">
+            {live}
+          </div>
+        )}
       </div>
       <div>{input}</div>
     </div>

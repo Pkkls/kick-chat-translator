@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'preact/hooks';
 import type { CloudProviderId, Settings } from '~/shared/settings';
+import { send } from '~/shared/messages';
 import type { ProviderStatus } from '~/shared/types';
 import { useT } from '~/shared/i18nContext';
 import { Check } from '../components/Check';
@@ -15,6 +17,48 @@ interface Props {
   settings: Settings;
   providers: ProviderStatus[];
   onPatch: (p: Partial<Settings>) => void;
+}
+
+/**
+ * Ce qu'il reste du quota DeepL ce mois-ci.
+ *
+ * Demande une fois a l'ouverture : c'est un appel reseau vers l'API de DeepL,
+ * pas une valeur locale, et le rafraichir en continu depenserait du quota pour
+ * mesurer du quota.
+ */
+function DeeplQuota({ configured }: { configured: boolean }) {
+  const t = useT();
+  const [usage, setUsage] = useState<{ count: number; limit: number } | undefined>(undefined);
+
+  useEffect(() => {
+    if (!configured) return;
+    void (async () => {
+      const res = await send({ type: 'deepl.usage' });
+      if (res.type === 'deepl.usage' && res.payload.configured) setUsage(res.payload);
+    })().catch(() => undefined);
+  }, [configured]);
+
+  if (!configured) {
+    return <p class="kt-hint">{t('No key yet, so DeepL is skipped and the chain moves on.')}</p>;
+  }
+  if (usage === undefined) return null;
+
+  const pct = usage.limit > 0 ? Math.round((usage.count / usage.limit) * 100) : 0;
+  return (
+    <div role="status">
+      <div class="mb-1 flex items-baseline justify-between text-[12px]">
+        <span class="text-kick-muted">{t('used this month')}</span>
+        <span class="tabular-nums text-kick-text">
+          {usage.count.toLocaleString()} / {usage.limit.toLocaleString()} ({pct}%)
+        </span>
+      </div>
+      {/* La barre double le chiffre, elle ne le remplace pas : une jauge seule
+          ne se lit ni au clavier ni au lecteur d'ecran. */}
+      <div class="h-1.5 w-full overflow-hidden rounded-full bg-kick-border/60">
+        <div class="h-full rounded-full bg-kick-primary" style={{ width: `${Math.min(100, pct)}%` }} />
+      </div>
+    </div>
+  );
 }
 
 export function ProviderSection({ settings, providers, onPatch }: Props) {
@@ -109,6 +153,11 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
 
       <section class="kt-card space-y-3">
         <h2 class="kt-section">DeepL</h2>
+        {/* LE QUOTA, ICI. Il etait demande par le popup et par lui seul, donc
+            invisible sur la page ou se reglent la cle, le plan et le budget.
+            Regler un pourcentage de quota sans voir le quota est le meme
+            aveuglement que plafonner un cache sans voir ce qu'il contient. */}
+        <DeeplQuota configured={settings.deeplApiKey !== ''} />
         <div class="kt-row">
           <label class="kt-label">{t('API key')}</label>
           <input

@@ -105,3 +105,33 @@ describe('archiveDay', () => {
     expect(out).toEqual([{ day: '2026-08-11', requests: 8, cacheHits: 5 }]);
   });
 });
+
+
+/**
+ * Le compteur de refus du budget par chaine.
+ *
+ * Sans lui, le reglage qui plafonne ce seau ne peut pas dire s'il a deja servi
+ * a quelque chose, et le lecteur regle un nombre a l'aveugle. C'est le meme
+ * defaut que le cache muet, sur un autre champ de la meme carte.
+ */
+describe('throttle counter', () => {
+  it('starts absent rather than at zero, for records written before it existed', () => {
+    const s = new StatsTracker();
+    expect(s.current().throttled).toBeUndefined();
+  });
+
+  it('counts each refusal', () => {
+    const s = new StatsTracker();
+    s.recordThrottled();
+    s.recordThrottled();
+    expect(s.current().throttled).toBe(2);
+  });
+
+  // Il ne doit pas compter les messages qui PASSENT : un compteur qui monte
+  // tout seul ferait croire a un plafond atteint en permanence.
+  it('is untouched by a request that goes through', () => {
+    const s = new StatsTracker();
+    s.recordRequest('google', 'fr', 10, false);
+    expect(s.current().throttled).toBeUndefined();
+  });
+});

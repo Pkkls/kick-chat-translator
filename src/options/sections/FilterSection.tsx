@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'preact/hooks';
 import type { Settings } from '~/shared/settings';
+import type { UsageStats } from '~/shared/types';
 import { sortedLanguages } from '~/shared/languages';
 import { resolveUiLocale } from '~/shared/i18n';
 import { useT } from '~/shared/i18nContext';
@@ -8,6 +9,8 @@ import { Check } from '../components/Check';
 interface Props {
   settings: Settings;
   onPatch: (p: Partial<Settings>) => void;
+  /** Ce que l'extension a vu. Absent tant que le worker n'a pas repondu. */
+  stats?: UsageStats;
 }
 
 function toList(v: string): string[] {
@@ -17,18 +20,27 @@ function toList(v: string): string[] {
     .filter(Boolean);
 }
 
-export function FilterSection({ settings, onPatch }: Props) {
+export function FilterSection({ settings, onPatch, stats }: Props) {
   const t = useT();
   const [langQuery, setLangQuery] = useState('');
   // Localised and collated for the interface language the user chose,
   // not the one their browser happens to run in.
   const langs = useMemo(() => sortedLanguages(resolveUiLocale(settings.uiLang)), [settings.uiLang]);
+  // Les comptes par langue, et l'ordre qu'ils imposent. Une liste de 43 cases
+  // rangees par alphabet demande de connaitre la reponse avant de chercher ;
+  // rangee par ce qui est reellement passe dans le chat, elle la donne.
+  const vues = stats?.byLang ?? {};
+  const langsTriees = useMemo(() => {
+    const vu = (c: string) => vues[c] ?? 0;
+    return [...langs].sort((a, b) => vu(b.code) - vu(a.code) || 0);
+  }, [langs, stats]);
+
   const shown = useMemo(() => {
     const fold = (v: string) => v.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
     const q = fold(langQuery.trim());
-    if (!q) return langs;
-    return langs.filter((l) => fold(l.name).includes(q) || fold(l.code).includes(q));
-  }, [langs, langQuery]);
+    if (!q) return langsTriees;
+    return langsTriees.filter((l) => fold(l.name).includes(q) || fold(l.code).includes(q));
+  }, [langsTriees, langQuery]);
   return (
     <>
       <section class="kt-card space-y-3">
@@ -76,6 +88,13 @@ export function FilterSection({ settings, onPatch }: Props) {
             'Leave empty to translate every detected language. Pick specific ones to ONLY translate those (e.g. only JA + KO).',
           )}
         </p>
+        {/* L'etat courant, en clair. Une liste vide et une liste de trois se
+            ressemblent quand rien ne dit ce que chacune donne. */}
+        <p class="kt-hint" role="status">
+          {settings.sourceLangAllowlist.length === 0
+            ? t('Nothing picked: every language is translated.')
+            : `${settings.sourceLangAllowlist.length} ${t('picked: everything else is left alone.')}`}
+        </p>
         {/* 42 languages behind a scrollbar is the same problem the chip's list
             had, and it takes the same answer: type two letters instead of
             walking the list. Matching covers the ISO code as well as the name,
@@ -119,6 +138,13 @@ export function FilterSection({ settings, onPatch }: Props) {
                         {l.code.toUpperCase()}
                       </span>
                       <span class="truncate text-kick-muted">{l.name}</span>
+                      {/* Ce que cette langue a reellement represente. Sans ce
+                          nombre, cocher une case est un pari. */}
+                      {(vues[l.code] ?? 0) > 0 && (
+                        <span class="ms-auto shrink-0 tabular-nums text-[10px] text-kick-primary">
+                          {vues[l.code]}
+                        </span>
+                      )}
                     </span>
                   }
                 />
@@ -130,6 +156,7 @@ export function FilterSection({ settings, onPatch }: Props) {
 
       <section class="kt-card space-y-3">
         <h2 class="kt-section">{t('Channels & users')}</h2>
+        <ChannelsSeen settings={settings} onPatch={onPatch} stats={stats} />
         <div class="kt-row">
           <label class="kt-label" for="kt-whitelist-channels">
             {t('Whitelist channels (only translate on these)')}
@@ -138,7 +165,7 @@ export function FilterSection({ settings, onPatch }: Props) {
             id="kt-whitelist-channels"
             class="kt-textarea"
             value={settings.whitelistChannels.join('\n')}
-            placeholder={`${t('one channel name per line')}\nsome-channel\nanother-channel`}
+            placeholder={t('one channel name per line')}
             onInput={(e) =>
               onPatch({ whitelistChannels: toList((e.target as HTMLTextAreaElement).value) })
             }
@@ -152,7 +179,7 @@ export function FilterSection({ settings, onPatch }: Props) {
             id="kt-blacklist-channels"
             class="kt-textarea"
             value={settings.blacklistChannels.join('\n')}
-            placeholder={`${t('one channel name per line')}\nsome-channel`}
+            placeholder={t('one channel name per line')}
             onInput={(e) =>
               onPatch({ blacklistChannels: toList((e.target as HTMLTextAreaElement).value) })
             }
@@ -166,7 +193,7 @@ export function FilterSection({ settings, onPatch }: Props) {
             id="kt-blacklist-users"
             class="kt-textarea"
             value={settings.blacklistUsers.join('\n')}
-            placeholder={`${t('one username per line')}\nsome-user`}
+            placeholder={t('one username per line')}
             onInput={(e) =>
               onPatch({ blacklistUsers: toList((e.target as HTMLTextAreaElement).value) })
             }
@@ -190,6 +217,75 @@ export function FilterSection({ settings, onPatch }: Props) {
         />
       </section>
     </>
+  );
+}
+
+/**
+ * Les chaines sur lesquelles l'extension a deja traduit, cliquables.
+ *
+ * stats.byChannel etait rempli par quatre appels du worker et lu par personne,
+ * pendant qu'on tapait des noms de chaines de memoire dans une zone de texte
+ * dont l'exemple etait "some-channel". Reconnaitre plutot que se rappeler.
+ *
+ * Un bouton par chaine, avec ce qu'elle a coute en messages. Cliquer bascule
+ * son appartenance a la liste : le meme geste ajoute et retire, parce qu'une
+ * liste ou l'on ajoute d'un clic et retire en editant du texte est pire que
+ * deux fois du texte.
+ */
+function ChannelsSeen({
+  settings,
+  onPatch,
+  stats,
+}: {
+  settings: Settings;
+  onPatch: (p: Partial<Settings>) => void;
+  stats?: UsageStats;
+}) {
+  const t = useT();
+  const vues = Object.entries(stats?.byChannel ?? {})
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 12);
+  if (vues.length === 0) return null;
+
+  const bascule = (cle: 'whitelistChannels' | 'blacklistChannels', nom: string) => {
+    const liste = settings[cle];
+    onPatch({
+      [cle]: liste.includes(nom) ? liste.filter((c) => c !== nom) : [...liste, nom],
+    } as Partial<Settings>);
+  };
+
+  return (
+    <div class="kt-row">
+      <span class="kt-label">{t('channels you have watched')}</span>
+      <ul class="space-y-1">
+        {vues.map(([nom, n]) => {
+          const blanche = settings.whitelistChannels.includes(nom);
+          const noire = settings.blacklistChannels.includes(nom);
+          return (
+            <li key={nom} class="flex items-center gap-2 text-[12px]">
+              <span class="min-w-0 flex-1 truncate text-kick-text">{nom}</span>
+              <span class="shrink-0 tabular-nums text-[11px] text-kick-muted">{n}</span>
+              <button
+                type="button"
+                class={`kt-chip-toggle ${blanche ? 'is-on' : ''}`}
+                aria-pressed={blanche}
+                onClick={() => bascule('whitelistChannels', nom)}
+              >
+                {t('Only here')}
+              </button>
+              <button
+                type="button"
+                class={`kt-chip-toggle ${noire ? 'is-on' : ''}`}
+                aria-pressed={noire}
+                onClick={() => bascule('blacklistChannels', nom)}
+              >
+                {t('Never here')}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
 

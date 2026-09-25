@@ -46,8 +46,17 @@
      11px type. Long measures are hard to track back to the next line, and the
      page is 768px wide because the controls need it, not the sentences. */
   .kt-card p,
-  .kt-card .kt-hint {
+  .kt-card .kt-hint,
+  .kt-card-lead p,
+  .kt-card-lead .kt-hint {
     max-inline-size: 68ch;
+  }
+
+  /* .kt-hint n'avait QUE sa largeur : pas de taille, pas de couleur. Il
+     heritait donc du corps de texte et une note de bas de carte s'affichait
+     aussi grosse que le contenu qu'elle commente. */
+  .kt-hint {
+    @apply text-[11px] leading-relaxed text-kick-muted;
   }
 
   .kt-tabs {
@@ -110,6 +119,22 @@
   }
 
   .kt-card { @apply rounded-lg bg-kick-surface p-5; }
+
+  /* Un interrupteur de la taille d'une etiquette, pour les listes de chaines.
+     aria-pressed porte l'etat, donc la couleur n'en est pas le seul porteur. */
+  .kt-chip-toggle {
+    @apply shrink-0 rounded border border-kick-stroke px-2 py-0.5 text-[10px] text-kick-muted transition hover:border-kick-primary hover:text-kick-text;
+  }
+  .kt-chip-toggle.is-on {
+    @apply border-kick-primary bg-kick-primary/10 text-kick-primary;
+  }
+
+  /* La carte de tete d'un onglet : ce qu'on vient lire, avant les reglages.
+     Elle se distingue par l'air et par un filet, pas par une autre couleur :
+     cinq cartes de poids identique sont cinq rectangles gris. */
+  .kt-card-lead {
+    @apply rounded-lg border border-kick-stroke bg-kick-surface p-6;
+  }
   .kt-row { @apply flex flex-col gap-1.5; }
 }
 

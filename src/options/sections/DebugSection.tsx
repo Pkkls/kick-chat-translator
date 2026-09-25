@@ -9,6 +9,19 @@ import { useT } from '~/shared/i18nContext';
  * this asks for them when you press the button and never subscribes. They live
  * in that page's memory and are never written to storage.
  */
+/**
+ * Les decisions, comptees par raison, la plus frequente en tete.
+ *
+ * Le champ `outcome` porte le meme texte que l'infobulle de la ligne de chat,
+ * donc les raisons se regroupent telles quelles sans table de correspondance a
+ * tenir a jour.
+ */
+function resumer(rows: Decision[]): [string, number][] {
+  const par = new Map<string, number>();
+  for (const d of rows) par.set(d.outcome, (par.get(d.outcome) ?? 0) + 1);
+  return [...par.entries()].sort((a, b) => b[1] - a[1]);
+}
+
 export function DebugSection() {
   const t = useT();
   const [rows, setRows] = useState<Decision[] | null>(null);
@@ -60,6 +73,27 @@ export function DebugSection() {
         <p class="text-[12px] text-kick-muted">
           {t('Nothing recorded yet. Let a chat run for a moment, then read again.')}
         </p>
+      )}
+
+      {/* LE COMPTE AVANT LA TABLE. Une liste de cinquante lignes repond
+          "qu'est-il arrive a ce message la" ; elle ne repond pas "qu'est-ce
+          que mes filtres font", qui est la question qu'on se pose en ouvrant
+          cette page. Chaque ligne ici correspond a un reglage de l'onglet
+          Filters : trop court vient de la longueur minimale, deja dans ta
+          langue du saut, bot de la liste des comptes automatiques. */}
+      {rows !== null && rows.length > 0 && (
+        <ul class="space-y-1 border-t border-kick-border pt-3">
+          {resumer(rows).map(([raison, n]) => (
+            <li key={raison} class="flex items-baseline gap-2 text-[12px]">
+              <span
+                class={`tabular-nums ${raison === 'translated' ? 'text-kick-primary' : 'text-kick-text'}`}
+              >
+                {n}
+              </span>
+              <span class="min-w-0 truncate text-kick-muted">{raison}</span>
+            </li>
+          ))}
+        </ul>
       )}
 
       {rows !== null && rows.length > 0 && (

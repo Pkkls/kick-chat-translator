@@ -49,6 +49,26 @@ export interface DayStat {
   cacheHits: number;
 }
 
+/**
+ * Ce que le cache sait de lui-meme.
+ *
+ * `entries` est le compte reel dans IndexedDB, un seul appel a keys(). `oldest`
+ * est l'age de la plus vieille entree EN MEMOIRE et pas dans la base : le Map
+ * est deja la et le lire ne coute rien, tandis que dater toutes les entrees
+ * stockees demanderait une lecture par cle. C'est un echantillon, et la page
+ * le dit plutot que de le presenter comme un maximum.
+ */
+export interface CacheStats {
+  /** Entrees dans IndexedDB. */
+  entries: number;
+  /** Entrees actuellement en memoire. */
+  inMemory: number;
+  /** Age en ms de la plus vieille entree en memoire, absent si elle est vide. */
+  oldestMs?: number;
+  /** Le plafond en vigueur, pour que l'appelant n'ait pas a le recroiser. */
+  maxEntries: number;
+}
+
 export interface UsageStats {
   totalRequests: number;
   totalCacheHits: number;
@@ -57,6 +77,8 @@ export interface UsageStats {
   byLang: Record<string, number>;
   byChannel: Record<string, number>;
   charsSent: number;
+  /** Messages refuses par le budget par chaine. Absent avant ce champ. */
+  throttled?: number;
   todayKey: string;
   /** Finished days, oldest first. Absent on records stored before this field existed. */
   history?: DayStat[];

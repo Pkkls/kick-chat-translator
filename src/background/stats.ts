@@ -59,6 +59,13 @@ export class StatsTracker {
     return this.state;
   }
 
+  /** Un message refuse par le budget par chaine. */
+  recordThrottled(): void {
+    this.rollover();
+    this.state.throttled = (this.state.throttled ?? 0) + 1;
+    this.scheduleFlush();
+  }
+
   recordRequest(provider: ProviderId, sourceLang: string, chars: number, cached: boolean, channel?: string): void {
     this.rollover();
     this.state.totalRequests += 1;

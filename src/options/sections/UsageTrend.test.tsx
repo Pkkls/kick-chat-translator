@@ -26,12 +26,27 @@ function mount(stats: UsageStats): HTMLDivElement {
   return host;
 }
 
-/** The sparkline bars are the only elements carrying a title. */
+/** Les barres, par leur reserve : le seul element a hauteur fixe de la serie. */
 function bars(el: HTMLElement): HTMLElement[] {
-  return [...el.querySelectorAll('[title]')] as HTMLElement[];
+  return [...el.querySelectorAll('.h-24 > div')] as HTMLElement[];
 }
 
-describe('UsageTrend sparkline', () => {
+/** Les pourcentages TELS QU'ILS SONT ECRITS, pas tels qu'ils sont dessines. */
+function pourcents(el: HTMLElement): string[] {
+  return [...el.querySelectorAll('.h-24')].map(
+    (b) => b.parentElement?.querySelector('.tabular-nums')?.textContent ?? '',
+  );
+}
+
+/**
+ * CE QUE CES TESTS TIENNENT A CHANGE.
+ *
+ * Ils lisaient l'attribut `title` des barres, c'est-a-dire qu'ils
+ * asservissaient le defaut : la valeur n'existait QUE la, invisible au
+ * clavier, au lecteur d'ecran et au doigt. Ils verifient maintenant que le
+ * nombre est ecrit dans le document.
+ */
+describe('UsageTrend', () => {
   afterEach(() => {
     if (host) {
       render(null, host);
@@ -40,12 +55,17 @@ describe('UsageTrend sparkline', () => {
     }
   });
 
-  it('shows no trend until two days have been recorded', () => {
-    const el = mount(makeStats({ totalRequests: 10, totalCacheHits: 5 }));
-    expect(bars(el)).toHaveLength(0);
+  // Les trois nombres de tete repondent a la question qu'on se pose en ouvrant
+  // la page. Ils ne se deduisent pas d'une serie de barres.
+  it('leads with the totals, in words', () => {
+    const el = mount(makeStats({ totalRequests: 100, totalCacheHits: 75 }));
+    expect(el.textContent).toContain('100');
+    expect(el.textContent).toContain('75%');
+    // 100 - 75 : ce qui est reellement parti sur le reseau.
+    expect(el.textContent).toContain('25');
   });
 
-  it('draws one bar per recorded day, today included', () => {
+  it('writes each day hit rate as text, not only as a bar', () => {
     const el = mount(
       makeStats({
         totalRequests: 4,
@@ -56,8 +76,7 @@ describe('UsageTrend sparkline', () => {
         ],
       }),
     );
-    const titles = bars(el).map((b) => b.getAttribute('title'));
-    expect(titles).toEqual(['2026-08-11: 50% (10)', '2026-08-12: 95% (20)', '2026-08-13: 25% (4)']);
+    expect(pourcents(el)).toEqual(['50%', '95%', '25%']);
   });
 
   it('sizes each bar by that day hit rate', () => {
@@ -82,8 +101,7 @@ describe('UsageTrend sparkline', () => {
         ],
       }),
     );
-    const titles = bars(el).map((b) => b.getAttribute('title'));
-    expect(titles).toEqual(['2026-08-10: 50% (8)', '2026-08-13: 50% (6)']);
+    expect(pourcents(el)).toEqual(['50%', '50%']);
   });
 
   it('keeps a real 0% day visible instead of collapsing it', () => {
@@ -94,9 +112,8 @@ describe('UsageTrend sparkline', () => {
         history: [{ day: '2026-08-12', requests: 9, cacheHits: 9 }],
       }),
     );
-    const today = bars(el).at(-1)!;
-    expect(today.getAttribute('title')).toBe('2026-08-13: 0% (5)');
-    expect(today.className).toContain('min-h-');
+    expect(pourcents(el).at(-1)).toBe('0%');
+    expect(bars(el).at(-1)!.className).toContain('min-h-');
   });
 
   it('shows at most seven days', () => {
@@ -109,17 +126,26 @@ describe('UsageTrend sparkline', () => {
     expect(bars(el)).toHaveLength(7);
   });
 
-  // One day is not a trend, and with no languages either there is nothing to
-  // show — the section removes itself rather than drawing an empty frame.
-  it('renders nothing at all when there is neither a trend nor a language', () => {
+  // ET C'EST L'INVERSE DE CE QUI ETAIT TENU ICI. Le premier jour etait cache
+  // au motif qu'une barre seule n'est pas une tendance. C'etait vrai tant que
+  // la valeur vivait dans une infobulle : une barre muette isolee ne dit rien.
+  // Ecrite, elle dit "aujourd'hui, 33 %", ce qui est precisement ce que
+  // quelqu'un qui vient d'installer l'extension veut savoir.
+  it('shows the very first day, now that the number is written', () => {
     const el = mount(makeStats({ totalRequests: 3, totalCacheHits: 1 }));
-    expect(bars(el)).toHaveLength(0);
+    expect(pourcents(el)).toEqual(['33%']);
+  });
+
+  it('renders nothing at all when nothing has happened', () => {
+    const el = mount(makeStats());
     expect(el.textContent?.trim()).toBe('');
   });
 
-  it('still shows the languages when there is only one day of history', () => {
+  // Les codes ISO etaient le seul nom affiche, sur une page qui sait les
+  // traduire depuis toujours.
+  it('names the languages instead of showing their ISO code alone', () => {
     const el = mount(makeStats({ totalRequests: 3, totalCacheHits: 1, byLang: { ko: 12 } }));
-    expect(bars(el)).toHaveLength(0);
-    expect(el.textContent).toContain('ko');
+    expect(el.textContent).toContain('Korean');
+    expect(el.textContent).toContain('12');
   });
 });

@@ -157,3 +157,39 @@ describe('normalizeForKey across letter case', () => {
     expect(normalizeForKey('ışık')).not.toBe(normalizeForKey('isik'));
   });
 });
+
+
+/**
+ * Ce que le cache sait dire de lui-meme.
+ *
+ * Quatre reglages d'Advanced le pilotaient sans qu'il puisse repondre : le
+ * champ portait 15000 et rien ne disait qu'il y avait 3412 entrees dedans.
+ * keys() etait deja appele pour l'eviction, il ne manquait qu'un message.
+ */
+describe('TranslationCache.stats', () => {
+  it('reports the cap it was given, so the caller need not cross-check it', async () => {
+    const c = new TranslationCache(15000, 3600_000);
+    expect((await c.stats()).maxEntries).toBe(15000);
+  });
+
+  it('counts what it holds', async () => {
+    const c = new TranslationCache(100, 3600_000);
+    await c.set('bonjour', 'en', { translatedText: 'hello', detectedLang: 'fr', provider: 'x' });
+    await c.set('merci', 'en', { translatedText: 'thanks', detectedLang: 'fr', provider: 'x' });
+    const s = await c.stats();
+    expect(s.inMemory).toBe(2);
+    expect(s.entries).toBeGreaterThanOrEqual(2);
+  });
+
+  // L'age vient du Map et non de la base : il est declare comme un echantillon
+  // parce que dater toutes les cles couterait une lecture chacune, et ce cache
+  // monte a vingt mille.
+  it('ages from the memory layer, and says nothing when it is empty', async () => {
+    const vide = new TranslationCache(100, 3600_000);
+    expect((await vide.stats()).oldestMs).toBeUndefined();
+
+    const c = new TranslationCache(100, 3600_000);
+    await c.set('bonjour', 'en', { translatedText: 'hello', detectedLang: 'fr', provider: 'x' });
+    expect((await c.stats()).oldestMs).toBeGreaterThanOrEqual(0);
+  });
+});
