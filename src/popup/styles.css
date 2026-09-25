@@ -1,3 +1,8 @@
+/* The token source, shared with the injected chat stylesheet so all three
+   surfaces read one palette. Kick's own: green #53FC18, ink #0B0B0C,
+   surface #171A1C (.agent/PROMPT.md section 3). */
+@import '../shared/theme.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,8 +16,8 @@
      from the control's own colours, so they are named on the options rather than
      left to the page scheme. */
   select option {
-    background-color: #13181f;
-    color: #e8eef7;
+    background-color: var(--kt-surface);
+    color: var(--kt-text);
   }
 }
 
@@ -43,7 +48,7 @@
      the control, as on the options page. */
   .kt-select:focus-visible,
   .kt-input:focus-visible {
-    outline: 2px solid theme('colors.kick.primary');
+    outline: 2px solid var(--kt-green);
     outline-offset: 1px;
   }
   .kt-label {

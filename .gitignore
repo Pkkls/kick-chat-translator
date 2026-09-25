@@ -30,4 +30,9 @@ scratchpad/harness/*
 
 # Local Claude Code tooling. The graft shims bake an absolute npm-cache path
 # from the machine that generated them, and none of it is project source.
-.claude/
+#
+# The skills are the exception, for the same reason the harness scripts above
+# are tracked: a skill is the checklist a fresh clone needs, and ignoring it
+# leaves it on exactly one machine.
+.claude/*
+!.claude/skills/

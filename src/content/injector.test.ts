@@ -100,7 +100,16 @@ describe('injector artifacts', () => {
       for (const m of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
         // Comments sit in front of the selector and carry commas of their own,
         // so they have to go before the list is split.
-        const head = m[1]!.replace(/\/\*[\s\S]*?\*\//g, '').trim();
+        // An at-rule STATEMENT (`@import ...;`) sits in front of the first
+        // selector in the file and is part of the same match, so skipping any
+        // head that starts with `@` skipped the first rule entirely. Drop the
+        // statement and keep what follows it; a head that still starts with `@`
+        // after that is a block at-rule (@media, @keyframes) and has no
+        // selector of its own.
+        const head = m[1]!
+          .replace(/\/\*[\s\S]*?\*\//g, '')
+          .replace(/^[\s\S]*;/, '')
+          .trim();
         if (head.startsWith('@')) continue;
         if (
           head
@@ -113,10 +122,22 @@ describe('injector artifacts', () => {
       return '';
     };
 
+    // The wash used to be written out as `rgba(83, 252, 24, …)` in each rule and
+    // this asserted that literal. It comes from one token now, so what has to
+    // hold is that all of them draw from the same one rather than that they each
+    // happen to spell the same colour.
     it.each(pillClasses)('%s has the green background', (cls) => {
       // The class must own the rule, not merely appear in a shared selector
       // list such as the copy-cursor one.
-      expect(soleRule(injectCss, `.${cls}`)).toMatch(/background:\s*rgba\(83, 252, 24/);
+      expect(soleRule(injectCss, `.${cls}`)).toMatch(/background:\s*rgb\(var\(--kt-green-rgb\)/);
+    });
+
+    // ...and that the token is still Kick's own green, read from the art
+    // direction the repository states rather than from this stylesheet.
+    it('builds that wash from the green the art direction names', () => {
+      const theme = readFileSync('src/shared/theme.css', 'utf8');
+      expect(theme).toMatch(/--kt-green-rgb:\s*83 252 24/);
+      expect(readFileSync('.agent/PROMPT.md', 'utf8')).toContain('#53FC18');
     });
 
     // Control on the rule above. `replace` must own no pill rule at all: it
@@ -345,19 +366,26 @@ describe('injector artifacts', () => {
 
     // The bar is the only one of the three with a light theme, so there the
     // scheme has to follow it instead of being frozen dark.
-    // The bar is the only one of the three with a light theme, so there the
-    // scheme has to follow it instead of being frozen dark.
     //
     // Keyed on the stamp the content script writes, not on the OS media query
     // it used to sit behind: Kick owns its theme, and a light desktop reading a
     // dark chat was handed the light palette on a dark ground.
+    //
+    // CE QUE CE TEST TIENT A CHANGE, et c'est le point : il exigeait un bloc
+    // html[data-kt-scheme='light'] .kt-lang-panel, donc il tenait un mecanisme.
+    // Ce bloc redeclarait douze jetons dont onze etaient identiques a ceux du
+    // bloc sombre, puisque ce sont les triplets de theme.css qui basculent, et
+    // le douzieme, --kt-lp-accent, est couvert par --kt-green-ink, que
+    // theme.css bascule deja lui aussi. Le supprimer ne change aucun pixel.
+    // L'invariant a tenir est celui que le bloc servait a obtenir : le panneau
+    // n'ecrit aucune couleur en dur, donc il ne peut pas geler un theme.
     it('follows the light theme on the chat bar rather than freezing dark', () => {
       expect(ruleFor(injectCss, "html[data-kt-scheme='light'] .kt-float-lang")).toMatch(
         /background:/,
       );
-      expect(ruleFor(injectCss, "html[data-kt-scheme='light'] .kt-lang-panel")).toMatch(
-        /--kt-lp-surface/,
-      );
+      const panneau = ruleFor(injectCss, '.kt-lang-panel');
+      expect(panneau).toMatch(/--kt-lp-accent:\s*var\(--kt-green-ink\)/);
+      expect(panneau).not.toMatch(/#[0-9a-fA-F]{3}|rgba?\(/);
     });
 
     // Control for the one above: the desktop must no longer decide anything.

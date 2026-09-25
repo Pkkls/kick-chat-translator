@@ -63,6 +63,50 @@ describe('deeplProvider', () => {
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
+  // The detector can now name a language DeepL has never heard of. Sending it as
+  // source_lang is an HTTP 400, and a 400 counts against the provider's health
+  // and pushes it out of rotation, over a message DeepL could have handled by
+  // detecting the language itself.
+  it('drops a source hint DeepL has no language for, rather than sending a 400', async () => {
+    let sentBody = '';
+    globalThis.fetch = vi.fn(async (_url: unknown, init: { body?: string }) => {
+      sentBody = String(init.body);
+      return new Response(JSON.stringify({ translations: [{ detected_source_language: 'ZH', text: 'where' }] }), {
+        status: 200,
+      });
+    }) as unknown as typeof fetch;
+    await deeplProvider.translate(
+      { messageId: '1', text: '佢哋去咗邊度呀', targetLang: 'en', sourceLangHint: 'yue' },
+      { ...baseCtx, deeplApiKey: 'k:fx' },
+    );
+    expect(sentBody).not.toContain('source_lang');
+  });
+
+  it('still sends a source hint DeepL does know, without its region', async () => {
+    let sentBody = '';
+    globalThis.fetch = vi.fn(async (_url: unknown, init: { body?: string }) => {
+      sentBody = String(init.body);
+      return new Response(JSON.stringify({ translations: [{ detected_source_language: 'ZH', text: 'hi' }] }), {
+        status: 200,
+      });
+    }) as unknown as typeof fetch;
+    await deeplProvider.translate(
+      { messageId: '1', text: '你好', targetLang: 'en', sourceLangHint: 'zh-tw' },
+      { ...baseCtx, deeplApiKey: 'k:fx' },
+    );
+    expect(sentBody).toContain('source_lang=ZH');
+    expect(sentBody).not.toContain('ZH-HANT');
+  });
+
+  it('refuses Cantonese as a target without hitting the network', async () => {
+    const fetchSpy = vi.fn();
+    globalThis.fetch = fetchSpy as unknown as typeof fetch;
+    await expect(
+      deeplProvider.translate({ messageId: '1', text: 'hi', targetLang: 'yue' }, { ...baseCtx, deeplApiKey: 'k:fx' }),
+    ).rejects.toMatchObject({ code: 'unsupported' });
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
   it('maps pt-br to the PT-BR target code', async () => {
     let sentBody = '';
     globalThis.fetch = vi.fn(async (_url: unknown, init: { body?: string }) => {

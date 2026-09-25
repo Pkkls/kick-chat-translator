@@ -15,6 +15,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { chromium } from './playwright.mjs';
+import { feuille } from './feuille.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '../..');
@@ -41,7 +42,7 @@ await esbuild.build({
   outfile: BUNDLE,
 });
 
-const css = readFileSync(path.join(ROOT, 'src/content/inject.css'), 'utf8');
+const css = feuille();
 const js = readFileSync(BUNDLE, 'utf8');
 
 // The chat's own catalogue, not public/_locales, which is down to the store

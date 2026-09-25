@@ -231,5 +231,21 @@ describe('googleProvider per-message fallback', () => {
       );
       expect(vus).toEqual(['es']);
     });
+
+    // Le cantonais est le premier code que GOOGLE_CODES ne touche pas et qui
+    // n'est pas non plus un code a deux lettres : il passe tel quel, et c'est la
+    // seule chose a verifier. Mesure directe sur l'endpoint gratuit, sl=yue et
+    // tl=yue repondent tous les deux, et tl=yue rend 唔, un mot que zh-TW ne
+    // produit jamais. Sans ce test, une entree ajoutee par erreur dans
+    // GOOGLE_CODES casserait la langue sans que rien ne le dise.
+    it('passe yue tel quel, sans le confondre avec une variante du chinois', async () => {
+      const vus: string[] = [];
+      globalThis.fetch = fetchQuiRetientSl(vus) as unknown as typeof fetch;
+      await googleProvider.translate(
+        { messageId: '1', text: '佢哋去咗邊度呀', targetLang: 'en', sourceLangHint: 'yue' },
+        {} as never,
+      );
+      expect(vus).toEqual(['yue']);
+    });
   });
 });

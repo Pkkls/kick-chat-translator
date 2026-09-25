@@ -176,3 +176,24 @@ export class RateLimiter {
     return true;
   }
 }
+
+/**
+ * Cette frappe echange-t-elle le message contre sa traduction ?
+ *
+ * Une fonction et non trois lignes dans le gestionnaire, parce que le choix a
+ * des bords qui se testent mal a travers le DOM : Shift+Tab doit passer, Tab
+ * seul ne doit rien prendre en mode 'ctrl-enter', et Ctrl/Cmd+Entree doit
+ * marcher dans les deux modes.
+ *
+ * L'appelant a deja verifie que l'apercu est a l'ecran. C'est lui qui paie
+ * pour Tab : sans apercu il n'y a rien a accepter et la touche n'est jamais
+ * touchee, ce qui est la seule raison pour laquelle prendre la touche de
+ * navigation est acceptable.
+ */
+export function toucheEchange(
+  e: Pick<KeyboardEvent, 'key' | 'shiftKey' | 'ctrlKey' | 'metaKey'>,
+  mode: 'tab-and-enter' | 'ctrl-enter',
+): boolean {
+  if (e.key === 'Tab') return mode === 'tab-and-enter' && !e.shiftKey;
+  return e.key === 'Enter' && (e.ctrlKey || e.metaKey);
+}

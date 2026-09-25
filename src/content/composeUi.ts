@@ -7,7 +7,8 @@
  * state transitions keep the previous text on screen until the next one is ready,
  * so the panel never flashes empty while a request is in flight.
  */
-import { getLang, langFlag } from '~/shared/languages';
+import { getLang } from '~/shared/languages';
+import { flagClass } from '~/shared/flags';
 import { computePanelGeom } from './composeLogic';
 import { showToast } from './injector';
 import { msg } from './msg';
@@ -72,8 +73,7 @@ export function mountComposePreview(
   // Subtle insert cue. The whole chip is clickable; this just signals the action.
   const insert = document.createElement('span');
   insert.className = 'kt-compose-insert';
-  insert.textContent = '↵';
-  insert.title = msg('composeInsertTip', 'Insert · Ctrl/Cmd+Enter · Esc to dismiss');
+  marquerInsertion(insert);
   panel.appendChild(insert);
 
   // Clicking the translation inserts it (mousedown, so the composer doesn't lose
@@ -184,13 +184,46 @@ export function updateComposePreview(state: ComposeUiState): void {
   }
 }
 
+/**
+ * Quelle touche echange ce qu'on a tape contre sa traduction, et ce que le
+ * marqueur en dit.
+ *
+ * Un module et non un parametre de createComposePreview : le panneau est
+ * construit une fois et le reglage peut changer sous lui, depuis la page
+ * d'options, sans qu'on redessine le chat.
+ */
+let toucheInsertion: 'tab-and-enter' | 'ctrl-enter' = 'tab-and-enter';
+
+/** Le glyphe de la touche, et l'aide qui la nomme. */
+function marquerInsertion(el: HTMLElement): void {
+  const tab = toucheInsertion === 'tab-and-enter';
+  // U+21E5 est le symbole de tabulation, U+21B5 celui du retour. Aucun des
+  // deux n'est un emoji : ils se dessinent avec la police du texte.
+  el.textContent = tab ? '\u21e5' : '\u21b5';
+  el.title = tab
+    ? msg('composeInsertTipTab', 'Insert \u00b7 Tab \u00b7 Esc to dismiss')
+    : msg('composeInsertTip', 'Insert \u00b7 Ctrl/Cmd+Enter \u00b7 Esc to dismiss');
+}
+
+/** Appele au demarrage et a chaque changement de reglages. */
+export function setComposeInsertKey(mode: 'tab-and-enter' | 'ctrl-enter'): void {
+  toucheInsertion = mode;
+  const el = document.querySelector<HTMLElement>('.kt-compose-insert');
+  if (el) marquerInsertion(el);
+}
+
 /** Update the target badge when the detected channel language (or override) changes. */
 export function setComposeTargetLang(lang: string): void {
   if (ui) setTargetBadge(ui.targetEl, lang);
 }
 
 function setTargetBadge(el: HTMLElement, lang: string): void {
-  el.textContent = langFlag(lang);
+  // Meme correctif que sur le badge des messages : le champ `flag` des langues
+  // est du texte, la feuille sait dessiner le drapeau, et les deux lettres
+  // restent le repli des langues qui n'en ont pas.
+  const fc = flagClass(lang);
+  el.className = fc ? `kt-compose-target ${fc}` : 'kt-compose-target';
+  el.textContent = fc ? '' : lang.toUpperCase().slice(0, 2);
   el.title = msg('composeAutoTip', 'Auto · writing in $LANG$', [
     getLang(lang)?.native ?? lang.toUpperCase(),
   ]);

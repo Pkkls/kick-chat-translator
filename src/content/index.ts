@@ -9,6 +9,8 @@ import {
   HANDLED_SELECTOR,
   applyChatScheme,
   applyShowOriginal,
+  applyTypography,
+  applyAccent,
   ensureStyles,
   mountFloatingBar,
   removeAllArtifacts,
@@ -32,6 +34,7 @@ import { extractChannelSlug, fetchChannelLangIso } from './kickApi';
 import { localEngine } from './localEngine';
 import { logPlatform, refresh7TV } from './platform';
 import { langFlag, withFavorite } from '~/shared/languages';
+import { memoriserLangueChaine } from '~/shared/channelLang';
 import { ROUTE_POLL_MS } from '~/shared/constants';
 import { msg as localised, setContentLocale } from './msg';
 
@@ -52,14 +55,16 @@ async function main(): Promise<void> {
   setContentLocale(settings.uiLang);
 
   ensureStyles();
-  applyChatScheme();
+  applyChatScheme(document.body, settings.chatScheme);
   applyShowOriginal(settings.showOriginal);
+  applyTypography(settings);
+  applyAccent(settings.accent);
 
   // Kick's theme switch repaints the page without reloading it, so the stamp
   // has to follow. Watching the root's class and style attributes is enough:
   // every theme system on the site flips one of the two, and the probe is a
   // handful of getComputedStyle calls.
-  const themeWatch = new MutationObserver(() => applyChatScheme());
+  const themeWatch = new MutationObserver(() => applyChatScheme(document.body, settings.chatScheme));
   for (const node of [document.documentElement, document.body]) {
     themeWatch.observe(node, {
       attributes: true,
@@ -132,6 +137,9 @@ async function main(): Promise<void> {
           onTargetLang: (targetLang) =>
             void patchSettings({
               targetLang,
+              ...(settings.rememberChannelLang && currentSlug
+                ? { channelLangs: memoriserLangueChaine(settings.channelLangs, currentSlug, targetLang) }
+                : {}),
               favoriteLangs:
                 targetLang === 'auto'
                   ? settings.favoriteLangs
@@ -211,6 +219,11 @@ async function main(): Promise<void> {
       compose.setChannelLang(undefined);
       return;
     }
+
+    // La langue de cette chaine, si on en connait une. Avant de monter la
+    // barre, pour qu'elle s'affiche deja sur la bonne plutot que de sauter.
+    const memoire = settings.rememberChannelLang ? settings.channelLangs[slug] : undefined;
+    if (memoire && memoire !== settings.targetLang) void patchSettings({ targetLang: memoire });
 
     refresh7TV();
     logPlatform();
@@ -381,6 +394,11 @@ async function main(): Promise<void> {
     settings = next;
     pipeline.updateSettings(next);
     compose.updateSettings(next);
+    // Les trois reglages de lisibilite sont des proprietes sur la racine : les
+    // reposer suffit, rien n'est a redessiner ligne par ligne.
+    applyTypography(next);
+    applyAccent(next.accent);
+    applyChatScheme(document.body, next.chatScheme);
     rootLogger.setEnabled(next.debug);
     // Ahead of everything that redraws below, so the bar and the chip come back
     // in the language that was just chosen rather than one change late.

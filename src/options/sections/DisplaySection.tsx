@@ -4,7 +4,13 @@ import { sortedLanguages } from '~/shared/languages';
 import { resolveUiLocale } from '~/shared/i18n';
 import { useT } from '~/shared/i18nContext';
 import { Check } from '../components/Check';
-import { applyShowOriginal, ensureStyles, inject, armHoverTranslate } from '~/content/injector';
+import {
+  applyShowOriginal,
+  applyTypography,
+  ensureStyles,
+  inject,
+  armHoverTranslate,
+} from '~/content/injector';
 
 interface Props {
   settings: Settings;
@@ -80,7 +86,88 @@ export function DisplaySection({ settings, onPatch }: Props) {
 
         <p class="text-[11px] text-kick-muted">{t('The other three are still being worked on.')}</p>
 
+        <RangeRow
+          label={t('Text size')}
+          value={settings.translatedFontScale}
+          min={0.8}
+          max={1.4}
+          step={0.05}
+          format={(v) => `${Math.round(v * 100)}%`}
+          onChange={(v) => onPatch({ translatedFontScale: v })}
+        />
+        <RangeRow
+          label={t('Line spacing')}
+          value={settings.translatedLineHeight}
+          min={1.2}
+          max={2}
+          step={0.05}
+          format={(v) => v.toFixed(2)}
+          onChange={(v) => onPatch({ translatedLineHeight: v })}
+        />
+        <div class="kt-row">
+          <label class="kt-label">{t('Font')}</label>
+          <select
+            aria-label={t('Font')}
+            class="kt-select"
+            value={settings.translatedFont}
+            onChange={(e) =>
+              onPatch({
+                translatedFont: (e.target as HTMLSelectElement)
+                  .value as Settings['translatedFont'],
+              })
+            }
+          >
+            <option value="inherit">{t("Kick's own")}</option>
+            <option value="system">{t('System')}</option>
+            <option value="serif">{t('Serif')}</option>
+            <option value="mono">{t('Monospace')}</option>
+            <option value="readable">{t('High legibility')}</option>
+          </select>
+        </div>
+
+        <SelectRow
+          label={t('Density')}
+          value={settings.translatedDensity}
+          options={[
+            ['compact', t('Compact')],
+            ['normal', t('Normal')],
+            ['roomy', t('Roomy')],
+          ]}
+          onChange={(v) => onPatch({ translatedDensity: v as Settings['translatedDensity'] })}
+        />
+
         <StylePreview settings={settings} />
+
+        <SelectRow
+          label={t('Accent colour')}
+          value={settings.accent}
+          options={[
+            ['kick', t('Kick green')],
+            ['cyan', t('Cyan')],
+            ['violet', t('Violet')],
+            ['amber', t('Amber')],
+          ]}
+          onChange={(v) => onPatch({ accent: v as Settings['accent'] })}
+        />
+        {/* Eteint par defaut : allume, la langue change toute seule en changeant
+            de chaine, ce qui est ce qu'on veut quand on l'a demande et une
+            surprise sinon. Sur une chaine inconnue rien ne bouge, sans quoi
+            chaque nouvelle chaine effacerait le choix qu'on vient de faire. */}
+        <ToggleRow
+          checked={settings.rememberChannelLang}
+          onChange={(v) => onPatch({ rememberChannelLang: v })}
+          label={t('Remember a reading language per channel')}
+        />
+        <SelectRow
+          label={t('Chat theme')}
+          value={settings.chatScheme}
+          options={[
+            ['auto', t('Follow Kick')],
+            ['dark', t('Always dark')],
+            ['light', t('Always light')],
+          ]}
+          onChange={(v) => onPatch({ chatScheme: v as Settings['chatScheme'] })}
+        />
 
         <ToggleRow
           checked={settings.showFloatingBar}
@@ -151,6 +238,15 @@ export function DisplaySection({ settings, onPatch }: Props) {
           onChange={(v) => onPatch({ composeInsertMode: v ? 'insert' : 'copy' })}
           label={t('Click inserts into the chat box (off = copy to clipboard instead)')}
         />
+        {/* Tab est pris uniquement tant que l'apercu est a l'ecran, jamais sur
+            une boite vide, et Shift+Tab reste libre. Ce reglage existe pour qui
+            navigue au clavier et veut Tab inchange en toute circonstance :
+            Ctrl/Cmd+Entree marche dans les deux cas. */}
+        <ToggleRow
+          checked={settings.composeInsertKey === 'tab-and-enter'}
+          onChange={(v) => onPatch({ composeInsertKey: v ? 'tab-and-enter' : 'ctrl-enter' })}
+          label={t('Tab swaps my message for its translation (off = Ctrl/Cmd+Enter only)')}
+        />
       </section>
     </>
   );
@@ -175,6 +271,10 @@ function StylePreview({ settings }: { settings: Settings }) {
     if (!el) return;
     ensureStyles();
     applyShowOriginal(settings.showOriginal);
+    // Sans ceci l'apercu montrerait la taille d'origine pendant que le chat
+    // montre celle du lecteur, et un reglage de lisibilite qu'il faut aller
+    // verifier ailleurs ne sera pas regle.
+    applyTypography(settings);
 
     el.textContent = '';
     const row = document.createElement('div');
@@ -215,6 +315,85 @@ function StylePreview({ settings }: { settings: Settings }) {
     <div>
       <div class="text-[11px] text-kick-muted mb-1">{t('Preview')}</div>
       <div ref={host} class="kt-setting text-sm" />
+    </div>
+  );
+}
+
+/**
+ * Un curseur et sa valeur lue.
+ *
+ * Pas de `for`/`id` : le libelle est traduit, et un identifiant derive d'une
+ * chaine arabe ou japonaise n'est pas un identifiant. aria-label porte le meme
+ * texte et relie les deux sans passer par le DOM.
+ *
+ * onInput et non onChange : le reglage doit se voir pendant qu'on tire le
+ * curseur, sinon il faut le lacher pour savoir ou on en est.
+ */
+/** Une ligne libelle plus liste, pour les reglages a trois ou quatre valeurs. */
+function SelectRow({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: [string, string][];
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div class="kt-row">
+      <label class="kt-label">{label}</label>
+      <select
+        aria-label={label}
+        class="kt-select"
+        value={value}
+        onChange={(e) => onChange((e.target as HTMLSelectElement).value)}
+      >
+        {options.map(([v, l]) => (
+          <option key={v} value={v}>
+            {l}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+function RangeRow({
+  label,
+  value,
+  min,
+  max,
+  step,
+  format,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  format: (v: number) => string;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <div class="kt-row">
+      <label class="kt-label">{label}</label>
+      <div class="flex items-center gap-2">
+        <input
+          type="range"
+          aria-label={label}
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          onInput={(e) => onChange(Number((e.target as HTMLInputElement).value))}
+        />
+        <span class="text-[11px] text-kick-muted tabular-nums w-10 text-end">
+          {format(value)}
+        </span>
+      </div>
     </div>
   );
 }

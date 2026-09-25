@@ -1,7 +1,7 @@
 import injectCss from './inject.css?inline';
 import type { TranslationResult } from '~/shared/types';
 import type { Settings } from '~/shared/settings';
-import { getLang, langFlag, resolveBrowserLang } from '~/shared/languages';
+import { getLang, resolveBrowserLang } from '~/shared/languages';
 import { flagClass } from '~/shared/flags';
 import {
   makeLangMenu,
@@ -147,8 +147,16 @@ export function ensureStyles(): void {
  *
  * Returns the scheme so a caller can log or test it.
  */
-export function applyChatScheme(root: Element | null = document.body): 'light' | 'dark' {
-  const scheme = detectScheme(root) ?? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+export function applyChatScheme(
+  root: Element | null = document.body,
+  force: 'auto' | 'dark' | 'light' = 'auto',
+): 'light' | 'dark' {
+  // Le forcage court-circuite la mesure, il ne la corrige pas : un lecteur qui
+  // fige le theme le veut fige, y compris quand Kick change le sien sous lui.
+  const scheme =
+    force !== 'auto'
+      ? force
+      : (detectScheme(root) ?? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'));
   document.documentElement.setAttribute('data-kt-scheme', scheme);
   return scheme;
 }
@@ -187,6 +195,64 @@ function luminance([r, g, b]: [number, number, number, number]): number {
  */
 export function applyShowOriginal(showOriginal: boolean): void {
   document.documentElement.classList.toggle('kt-hide-original', !showOriginal);
+}
+
+/** The faces `translatedFont` can name, minus 'inherit', which is the absence. */
+const FACES: Record<string, string> = {
+  system: 'var(--kt-tr-face-system)',
+  serif: 'var(--kt-tr-face-serif)',
+  mono: 'var(--kt-tr-face-mono)',
+  readable: 'var(--kt-tr-face-readable)',
+};
+
+/**
+ * How the reader wants the translated line to read.
+ *
+ * Three custom properties on the document root, the same shape as the scheme
+ * stamp above, and the stylesheet reads them with a fallback equal to the value
+ * it used to carry. A profile that has never opened the section therefore
+ * renders exactly what it rendered before, which is also why 'inherit' REMOVES
+ * the face rather than writing a value: the rule's own `inherit` fallback is
+ * Kick's face, and writing it out would freeze it against a future change.
+ *
+ * Nothing is written per row. The chat recycles its lines, and a setting
+ * stamped on a row would survive into the next message that lands there.
+ */
+export function applyTypography(s: {
+  translatedFontScale: number;
+  translatedLineHeight: number;
+  translatedFont: string;
+  translatedDensity?: string;
+}): void {
+  const style = document.documentElement.style;
+  style.setProperty('--kt-tr-scale', String(s.translatedFontScale));
+  style.setProperty('--kt-tr-leading', String(s.translatedLineHeight));
+  const face = FACES[s.translatedFont];
+  if (face) style.setProperty('--kt-tr-font', face);
+  else style.removeProperty('--kt-tr-font');
+  // La densite passe par un attribut et non par trois proprietes : les trois
+  // marges bougent ensemble, et la feuille est le bon endroit pour dire de
+  // combien. Absente ou inconnue, la valeur n'est pas ecrite et la regle de
+  // base, qui est 'normal', s'applique.
+  const d = s.translatedDensity;
+  if (d === 'compact' || d === 'roomy') {
+    document.documentElement.setAttribute('data-kt-density', d);
+  } else {
+    document.documentElement.removeAttribute('data-kt-density');
+  }
+}
+
+/**
+ * L'accent, pose en attribut sur la racine.
+ *
+ * Un attribut et non des proprietes : les quatre triplets d'un accent doivent
+ * changer ENSEMBLE, et theme.css les tient par paires sombre/clair mesurees.
+ * Les poser un par un depuis ici serait recopier ces mesures dans du TypeScript
+ * ou personne ne les relirait.
+ */
+export function applyAccent(accent: string): void {
+  if (accent && accent !== 'kick') document.documentElement.setAttribute('data-kt-accent', accent);
+  else document.documentElement.removeAttribute('data-kt-accent');
 }
 
 /**
@@ -244,7 +310,7 @@ export function inject(
   onRetry?: () => void,
 ): void {
   removeAllArtifacts(targetEl);
-  const flag = settings.showSourceBadge ? langFlag(result.detectedLang) : '';
+  const flag = settings.showSourceBadge ? result.detectedLang : '';
   const provider = settings.showProviderBadge ? result.provider : '';
 
   const style = settings.displayStyle;
@@ -266,17 +332,38 @@ export function inject(
   targetEl.appendChild(el);
 }
 
+/**
+ * Le badge de langue d'une ligne : un drapeau dessine, ou les deux lettres.
+ *
+ * LE CHAMP `flag` DES 44 LANGUES CONTIENT DU TEXTE, pas un emoji. Le
+ * commentaire qui vivait ici disait l'inverse et decrivait un etat disparu :
+ * getLang('ja').flag vaut la chaine 'JA'. Pendant ce temps la feuille dessine
+ * 43 drapeaux en CSS dont seul le selecteur de langues se servait. Deux
+ * systemes, et le bon n'etait pas branche sur les messages.
+ *
+ * Le repli texte reste pour une langue sans drapeau, parce qu'un drapeau
+ * designe un pays et pas une langue : il en manque, et deux lettres valent
+ * mieux qu'un carre vide.
+ */
+function badgeLangue(code: string): HTMLElement {
+  const el = document.createElement('span');
+  const fc = flagClass(code);
+  if (fc) {
+    // Les deux classes : `kt-src-flag` porte la place du badge dans la ligne,
+    // `kt-flag` le dessin. La feuille neutralise le fond et la marge interieure
+    // du premier quand le second est la.
+    el.className = `kt-src-flag ${fc}`;
+  } else {
+    el.className = 'kt-src-flag';
+    el.textContent = code.toUpperCase().slice(0, 2);
+  }
+  return el;
+}
+
 function withBadges(text: string, flag: string, provider: string, detectedLang?: string): DocumentFragment {
   const frag = document.createDocumentFragment();
   if (flag) {
-    const f = document.createElement('span');
-    // Not `kt-flag`: that class now draws a 16x12 flag with a background
-    // gradient, and this badge carries TEXT (langFlag returns an emoji, which
-    // Windows renders as the two letters). Sharing the name made the drawn-flag
-    // rule size and dim this span -- opacity .65 and a 4px side padding leaked
-    // the other way too, onto every real flag.
-    f.className = 'kt-src-flag';
-    f.textContent = flag;
+    const f = badgeLangue(flag);
     if (detectedLang) {
       f.title = msg('flagFrom', 'from $LANG$', [
         getLang(detectedLang)?.native ?? detectedLang.toUpperCase(),
@@ -397,7 +484,7 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
   const langPick = document.createElement('button');
   langPick.type = 'button';
   langPick.className = 'kt-float-lang';
-  langPick.title = msg('barLangTip', 'Translate into');
+  langPick.title = msg('barLangDir', 'Chat from other viewers, translated for you');
   langPick.setAttribute('aria-haspopup', 'listbox');
   langPick.setAttribute('aria-expanded', 'false');
 
@@ -407,6 +494,16 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
 
   const paintLang = (code: string): void => {
     langPick.textContent = '';
+    // LA DIRECTION, A L'ECRAN. Cette barre traduit le chat qu'on RECOIT, la
+    // puce du bas traduit ce qu'on ECRIT, et rien ne le disait : le sens ne
+    // vivait que dans des `title` que personne ne survole. Une fleche
+    // descendante ici, montante sur la puce, et les deux cessent de se
+    // ressembler. Verticale, donc elle ne ment pas en interface arabe.
+    const dir = document.createElement('span');
+    dir.className = 'kt-float-dir';
+    dir.textContent = '\u2193';
+    dir.setAttribute('aria-hidden', 'true');
+    langPick.appendChild(dir);
     const fc = code === 'auto' ? undefined : flagClass(code);
     if (fc) {
       const flag = document.createElement('span');

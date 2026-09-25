@@ -1,3 +1,8 @@
+/* The token source, shared with the injected chat stylesheet so all three
+   surfaces read one palette. Kick's own: green #53FC18, ink #0B0B0C,
+   surface #171A1C (.agent/PROMPT.md section 3). */
+@import '../shared/theme.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,11 +20,11 @@
      unreadable after the first attempt. */
   select {
     color-scheme: dark;
-    background-color: #13181f;
+    background-color: var(--kt-surface);
   }
   select option {
-    background-color: #13181f;
-    color: #e8eef7;
+    background-color: var(--kt-surface);
+    color: var(--kt-text);
   }
 }
 
@@ -47,13 +52,13 @@
 
   .kt-tabs {
     scrollbar-width: thin;
-    scrollbar-color: theme('colors.kick.stroke') transparent;
+    scrollbar-color: var(--kt-edge) transparent;
   }
   .kt-tabs::-webkit-scrollbar {
     block-size: 6px;
   }
   .kt-tabs::-webkit-scrollbar-thumb {
-    background: theme('colors.kick.stroke');
+    background: var(--kt-edge);
     border-radius: 3px;
   }
 
@@ -77,9 +82,9 @@
      rarely pass three entries — measured, the three of them held 330px of the
      Filters tab between them. Four lines to start, and the textarea still
      grows by drag like any other. */
-  .kt-textarea { @apply w-full min-h-[76px] resize-y rounded-md border border-kick-border bg-kick-surface px-3 py-2 text-sm text-kick-text outline-none focus:border-kick-primary placeholder:text-kick-muted font-mono leading-relaxed; border-color: theme('colors.kick.stroke'); }
-  .kt-textarea:hover:not(:disabled) { border-color: theme('colors.kick.stroke-strong'); }
-  .kt-textarea:focus-visible { outline: 2px solid theme('colors.kick.primary'); outline-offset: 1px; }
+  .kt-textarea { @apply w-full min-h-[76px] resize-y rounded-md border border-kick-border bg-kick-surface px-3 py-2 text-sm text-kick-text outline-none focus:border-kick-primary placeholder:text-kick-muted font-mono leading-relaxed; border-color: var(--kt-edge); }
+  .kt-textarea:hover:not(:disabled) { border-color: var(--kt-edge-strong); }
+  .kt-textarea:focus-visible { outline: 2px solid var(--kt-green); outline-offset: 1px; }
   .kt-label { @apply text-[11px] uppercase tracking-wider text-kick-muted; }
   .kt-btn { @apply rounded-md bg-kick-primary px-3 py-2 text-sm font-semibold text-kick-dark hover:brightness-95 transition; }
   .kt-btn-ghost { @apply rounded-md border border-kick-stroke bg-transparent px-3 py-2 text-sm font-medium text-kick-text hover:bg-kick-surface transition; }
@@ -135,7 +140,7 @@
   }
   .kt-check-box {
     @apply pointer-events-none grid h-[18px] w-[18px] flex-none place-items-center rounded;
-    border: 1.5px solid theme('colors.kick.stroke');
+    border: 1.5px solid var(--kt-edge);
     background: transparent;
     transition:
       border-color 0.15s ease,
@@ -143,7 +148,7 @@
   }
   .kt-check-box svg {
     @apply h-[11px] w-[11px];
-    stroke: theme('colors.kick.dark');
+    stroke: var(--kt-ink);
     stroke-width: 2.4;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -159,30 +164,30 @@
 
   /* 1 · hover */
   .kt-check:hover input:not(:disabled) + .kt-check-box {
-    border-color: theme('colors.kick.stroke-strong');
+    border-color: var(--kt-edge-strong);
   }
   /* 2 · pressed */
   .kt-check input:active:not(:disabled) + .kt-check-box {
-    border-color: theme('colors.kick.stroke-strong');
+    border-color: var(--kt-edge-strong);
     transform: scale(0.94);
   }
   /* 3 · focus — the ring sits on the drawn box, since the input is invisible */
   .kt-check input:focus-visible + .kt-check-box {
-    outline: 2px solid theme('colors.kick.primary');
+    outline: 2px solid var(--kt-green);
     outline-offset: 2px;
   }
   /* 4 · checked */
   .kt-check input:checked + .kt-check-box {
-    background: theme('colors.kick.primary');
-    border-color: theme('colors.kick.primary');
+    background: var(--kt-green);
+    border-color: var(--kt-green);
   }
   .kt-check input:checked + .kt-check-box .tick {
     opacity: 1;
   }
   /* 5 · indeterminate */
   .kt-check input:indeterminate + .kt-check-box {
-    background: theme('colors.kick.primary');
-    border-color: theme('colors.kick.primary');
+    background: var(--kt-green);
+    border-color: var(--kt-green);
   }
   .kt-check input:indeterminate + .kt-check-box .tick {
     opacity: 0;
@@ -195,29 +200,29 @@
     @apply cursor-not-allowed;
   }
   .kt-check input:disabled + .kt-check-box {
-    border-color: #393e44;
+    border-color: var(--kt-line);
     background: transparent;
   }
   .kt-check input:disabled:checked + .kt-check-box {
-    background: #2a3a26;
-    border-color: #2a3a26;
+    background: var(--kt-green-bed);
+    border-color: var(--kt-green-bed);
   }
   .kt-check:has(input:disabled) .kt-check-label {
     @apply text-kick-muted/75;
   }
   /* 7 · busy */
   .kt-check[data-busy='true'] .kt-check-box {
-    border-color: theme('colors.kick.primary');
+    border-color: var(--kt-green);
     animation: kt-check-wait 1s ease-in-out infinite;
   }
   @keyframes kt-check-wait {
     50% {
-      border-color: theme('colors.kick.stroke');
+      border-color: var(--kt-edge);
     }
   }
   /* 8 · invalid */
   .kt-check input[aria-invalid='true'] + .kt-check-box {
-    border-color: #e5484d;
+    border-color: var(--kt-danger);
   }
 
 
@@ -226,7 +231,7 @@
      appearance:none already, so the only thing the browser still draws is the
      arrow — replaced by an inline chevron so the control matches the rest. */
   .kt-select {
-    border-color: theme('colors.kick.stroke');
+    border-color: var(--kt-edge);
     background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%239fa6ad' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.6rem center;
@@ -235,10 +240,10 @@
     transition: border-color 0.15s ease;
   }
   .kt-select:hover:not(:disabled) {
-    border-color: theme('colors.kick.stroke-strong');
+    border-color: var(--kt-edge-strong);
   }
   .kt-select:focus-visible {
-    outline: 2px solid theme('colors.kick.primary');
+    outline: 2px solid var(--kt-green);
     outline-offset: 1px;
   }
   .kt-select:disabled {
@@ -246,18 +251,18 @@
   }
 
   .kt-input {
-    border-color: theme('colors.kick.stroke');
+    border-color: var(--kt-edge);
     transition: border-color 0.15s ease;
   }
   .kt-input:hover:not(:disabled) {
-    border-color: theme('colors.kick.stroke-strong');
+    border-color: var(--kt-edge-strong);
   }
   .kt-input:focus-visible {
-    outline: 2px solid theme('colors.kick.primary');
+    outline: 2px solid var(--kt-green);
     outline-offset: 1px;
   }
   .kt-input[aria-invalid='true'] {
-    border-color: #e5484d;
+    border-color: var(--kt-danger);
   }
   .kt-input:disabled {
     @apply cursor-not-allowed opacity-60;

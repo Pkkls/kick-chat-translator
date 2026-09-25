@@ -17,7 +17,13 @@ const css = readFileSync('src/content/inject.css', 'utf8');
 
 function rule(selector: string): string {
   for (const m of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
-    const head = m[1]!.replace(/\/\*[\s\S]*?\*\//g, '').trim();
+    // The `@import` of the token file sits in front of the first selector in
+    // the sheet and lands in this same match, so it has to be dropped or the
+    // first rule in the file is unfindable.
+    const head = m[1]!
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/^[\s\S]*;/, '')
+      .trim();
     if (head === selector) return m[2]!;
   }
   return '';

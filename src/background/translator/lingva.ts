@@ -45,11 +45,28 @@ async function call(req: TranslationRequest, ctx: ProviderContext): Promise<Prov
     try {
       const res = await fetch(url, { signal: ctx.signal, credentials: 'omit' });
       if (res.status === 429) throw new ProviderError('lingva', 'rate_limit', 'Lingva: rate-limited');
+      // A language Lingva does not carry is not a broken instance, and must not
+      // be counted as one: a 400 here would mark every instance in the pool
+      // unhealthy in turn and take Lingva out of the chain for every other
+      // language too. Measured: Lingva publishes 109 codes and Cantonese is not
+      // among them, and `GET /api/v1/en/yue/hello` answers 400 with
+      // {"error":"Invalid target language code."}. 'unsupported' is the code the
+      // chain cascades on for free, same as the over-long URL above.
+      if (res.status === 400) {
+        const body = await res.text();
+        if (/invalid (source|target) language code/i.test(body)) {
+          throw new ProviderError('lingva', 'unsupported', `Lingva has no ${source} → ${req.targetLang}`);
+        }
+        throw new ProviderError('lingva', 'http_400', 'Lingva HTTP 400');
+      }
       if (!res.ok) throw new ProviderError('lingva', `http_${res.status}`, `Lingva HTTP ${res.status}`);
       const data = (await res.json()) as LingvaResponse;
       if (!data.translation) throw new ProviderError('lingva', 'empty', 'Lingva: empty');
       return { translatedText: data.translation, detectedLang: data.info?.detectedSource ?? 'auto' };
     } catch (err: unknown) {
+      // A missing language is missing on every instance in the pool, so trying
+      // the rest is eight requests spent to learn the same thing.
+      if (err instanceof ProviderError && err.code === 'unsupported') throw err;
       lastErr =
         err instanceof ProviderError
           ? err

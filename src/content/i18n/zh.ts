@@ -1,6 +1,6 @@
 /** Chat and floating-bar strings. Generated from the catalogue, do not hand edit. */
 export const zh: Record<string, string> = {
-  barLangTip: '翻译为',
+  barLangDir: '其他观众的聊天，为你翻译',
   barOff: '翻译已关闭',
   barOn: '翻译中',
   barOnTip: '正以 $LANG$ 阅读聊天',
@@ -20,6 +20,7 @@ export const zh: Record<string, string> = {
   chipSearch: '筛选语言',
   composeAutoTip: '自动 · 以 $LANG$ 书写',
   composeInsertTip: '插入 · Ctrl/Cmd+Enter · Esc 关闭',
+  composeInsertTipTab: '插入 · Tab · Esc 关闭',
   dropBot: '发送者看起来像机器人',
   dropChannelBlocked: '该频道在你的屏蔽列表中',
   dropChannelNotAllowed: '该频道不在你的允许列表中',

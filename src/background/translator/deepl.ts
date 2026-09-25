@@ -31,9 +31,23 @@ function deeplTargetCode(code: string): string {
   return DEEPL_TARGETS[lower] ?? lower.toUpperCase().split('-')[0] ?? lower.toUpperCase();
 }
 
-// Source langs take NO regional suffix (EN, PT, ZH — never EN-US / PT-BR / ZH-HANT).
-function deeplSourceCode(code: string): string {
-  return code.toUpperCase().split('-')[0] ?? code.toUpperCase();
+// DeepL's source list is the target list with the regional suffixes dropped: it
+// reads EN, PT, ZH and rejects EN-US, PT-BR, ZH-HANT.
+const DEEPL_SOURCES = new Set([...DEEPL_SUPPORTED].map((c) => c.split('-')[0] ?? c));
+
+/**
+ * The source hint DeepL will accept, or undefined when it has no such language.
+ *
+ * Undefined is the whole point. The detector can now name a language DeepL has
+ * never heard of (Cantonese is the first, and it will not be the last), and
+ * sending it as `source_lang` is an HTTP 400. A 400 is a provider failure: it
+ * counts against DeepL's health and pushes it out of rotation, over a message
+ * DeepL could have translated perfectly well by detecting the language itself.
+ * So an unknown hint is dropped rather than sent.
+ */
+function deeplSourceCode(code: string): string | undefined {
+  const base = code.toUpperCase().split('-')[0] ?? code.toUpperCase();
+  return DEEPL_SOURCES.has(base.toLowerCase()) ? base : undefined;
 }
 
 function assertDeeplTarget(code: string): void {
@@ -78,7 +92,8 @@ async function translate(req: TranslationRequest, ctx: ProviderContext): Promise
   const form = new URLSearchParams();
   form.set('text', req.text);
   form.set('target_lang', deeplTargetCode(req.targetLang));
-  if (req.sourceLangHint) form.set('source_lang', deeplSourceCode(req.sourceLangHint));
+  const sourceLang = req.sourceLangHint ? deeplSourceCode(req.sourceLangHint) : undefined;
+  if (sourceLang) form.set('source_lang', sourceLang);
   // Untranslated context improves disambiguation on short chat lines. On a short
   // message aimed at a non-Latin script an anti-transliteration hint rides in the
   // same free field, which DeepL does not bill.

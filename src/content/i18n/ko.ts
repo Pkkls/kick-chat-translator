@@ -1,6 +1,6 @@
 /** Chat and floating-bar strings. Generated from the catalogue, do not hand edit. */
 export const ko: Record<string, string> = {
-  barLangTip: '번역할 언어',
+  barLangDir: '다른 시청자의 채팅을 나에게 맞게 번역',
   barOff: '번역 꺼짐',
   barOn: '번역 중',
   barOnTip: '채팅을 $LANG$ 로 읽는 중',
@@ -20,6 +20,7 @@ export const ko: Record<string, string> = {
   chipSearch: '언어 필터',
   composeAutoTip: '자동 · $LANG$ 로 작성 중',
   composeInsertTip: '삽입 · Ctrl/Cmd+Enter · Esc 로 닫기',
+  composeInsertTipTab: '삽입 · Tab · Esc로 닫기',
   dropBot: '보낸 사람이 봇으로 보입니다',
   dropChannelBlocked: '이 채널은 차단 목록에 있습니다',
   dropChannelNotAllowed: '이 채널은 허용 목록에 없습니다',

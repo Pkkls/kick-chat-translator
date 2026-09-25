@@ -1,6 +1,6 @@
 /** Chat and floating-bar strings. Generated from the catalogue, do not hand edit. */
 export const ar: Record<string, string> = {
-  barLangTip: 'الترجمة إلى',
+  barLangDir: 'دردشة المشاهدين الآخرين، مترجمة لك',
   barOff: 'الترجمة متوقفة',
   barOn: 'جارٍ الترجمة',
   barOnTip: 'قراءة الدردشة بـ $LANG$',
@@ -20,6 +20,7 @@ export const ar: Record<string, string> = {
   chipSearch: 'تصفية اللغات',
   composeAutoTip: 'تلقائي · تكتب بـ $LANG$',
   composeInsertTip: 'إدراج · Ctrl/Cmd+Enter · Esc للإغلاق',
+  composeInsertTipTab: 'إدراج · Tab · Esc للإغلاق',
   dropBot: 'يبدو أن المرسل روبوت',
   dropChannelBlocked: 'هذه القناة في قائمة الحظر لديك',
   dropChannelNotAllowed: 'هذه القناة ليست في قائمة المسموح بها لديك',

@@ -1,0 +1,128 @@
+/**
+ * LE BANC DES QUATRE LANGUES MAJORITAIRES QUI NE S'ECRIVENT PAS EN LATIN.
+ *
+ * Ces cent lignes vivaient en dur dans `langDetect.dix.test.ts`, donc elles
+ * etaient invisibles a `porte-diff.mjs`, qui est l'outil par lequel le
+ * protocole 4.2 decide. La consequence s'est produite : un lot a fait taire
+ * trois lignes arabes de ce banc-ci, le diff des neuf autres bancs a montre
+ * AUCUNE confusion nouvelle, et seul `vitest` l'a vu, apres coup.
+ *
+ * Un banc que l'outil de mesure ne voit pas est un banc absent, exactement
+ * comme un banc trop petit. Il est ici pour que le diff le lise, et le test
+ * l'importe au lieu de le redecrire.
+ *
+ * Le produit traduit vers 42 langues et il en PARLE dix : son interface et sa
+ * fiche de stores existent en en, ar, es, fr, ja, ko, pt, ru, tr et zh. Les
+ * quatre non latines de cette liste sont ici ; le chinois est traite a part
+ * dans le test, parce qu'il passe par franc et pas par la table.
+ */
+export const LANG_CHAT_DIX: Record<string, readonly string[]> = {
+  ar: [
+    'ما هذا يا رجل',
+    'لعب رائع اليوم',
+    'لا أصدق ما حدث',
+    'من يشاهد الآن',
+    'هذا البث ممتع جدا',
+    'يا سلام على هذه اللقطة',
+    'أخيرا فاز',
+    'الصوت منخفض جدا',
+    'هل يوجد أحد هنا',
+    'ضحكت كثيرا',
+    'هذا أفضل بث اليوم',
+    'متى يبدأ اللعب',
+    'لا أفهم شيئا',
+    'عاش يا بطل',
+    'الخريطة صعبة جدا',
+    'شكرا على الاشتراك',
+    'ماذا يحدث هنا',
+    'هيا يمكنك الفوز',
+    'ما هذا',
+    'رائع',
+    'أحسنت',
+    'مين هنا',
+    'الله يعطيك العافية',
+    'من أي بلد أنت',
+    'لم أر شيئا مثل هذا',
+  ],
+  ja: [
+    'これはやばい',
+    '今日も配信ありがとう',
+    'うますぎるでしょ',
+    '何が起きたの',
+    '誰か見てる',
+    '音が小さいです',
+    '初見です よろしく',
+    'さすがだね',
+    'それは無理だろ',
+    '面白すぎる',
+    'がんばれー',
+    '今のプレイすごい',
+    'もう一回見たい',
+    '日本語わかる人いる',
+    'お疲れ様でした',
+    'マジで',
+    'かわいい',
+    'なるほどね',
+    '待ってた',
+    'これは勝てる',
+    '配信画面が固まってる',
+    'どこの国の人',
+    '全然見えない',
+    'ありがとうございます',
+    '本当にすごかった',
+  ],
+  ko: [
+    '이거 진짜 대박이다',
+    '오늘도 방송 감사합니다',
+    '방금 뭐야',
+    '소리가 너무 작아요',
+    '누구 보고 있어요',
+    '진짜 잘한다',
+    '이해가 안 되네',
+    '처음 왔어요',
+    '화면 멈췄어요',
+    '대박 클립이다',
+    '형 화이팅',
+    '한국 사람 있어요',
+    '너무 웃겨요',
+    '다시 보고 싶다',
+    '수고하셨습니다',
+    '진짜요',
+    '개웃김',
+    '아 진짜',
+    'ㅇㅇ 맞아요',
+    '이번 판 이기자',
+    '어디 사세요',
+    '잘 안 보여요',
+    '감사합니다',
+    '시작했어요',
+    '와 이거 진짜 미쳤다',
+  ],
+  ru: [
+    'что тут происходит',
+    'спасибо за стрим',
+    'он играет очень плохо',
+    'кто нибудь видел это',
+    'звук очень тихий',
+    'я тут первый раз',
+    'это невозможно',
+    'давай ты сможешь',
+    'очень смешно',
+    'хочу ещё раз посмотреть',
+    'кто из России',
+    'не вижу ничего',
+    'экран завис',
+    'отличная игра',
+    'серьёзно',
+    'ага понятно',
+    'спасибо большое',
+    'когда начнётся',
+    'лучший стрим сегодня',
+    'это было круто',
+    'ничего не понял',
+    'молодец',
+    'так держать',
+    'давайте выиграем',
+    'я смотрю уже час',
+  ],
+};

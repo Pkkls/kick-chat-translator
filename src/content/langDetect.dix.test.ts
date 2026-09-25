@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { confidentLanguage, detectLanguage } from './langDetect';
+import { LANG_CHAT_DIX } from './langChatDixCorpus';
 
 /**
  * Le banc des cinq langues majoritaires qui ne s'ecrivent pas en latin.
@@ -20,116 +21,7 @@ import { confidentLanguage, detectLanguage } from './langDetect';
  * par franc, vaut entre 1 sur 4 et 4 sur 5 selon la langue, et un plancher y
  * serait du bruit ; elle est couverte cas par cas dans `langDetect.test.ts`.
  */
-const BANC: Record<string, string[]> = {
-  ar: [
-    'ما هذا يا رجل',
-    'لعب رائع اليوم',
-    'لا أصدق ما حدث',
-    'من يشاهد الآن',
-    'هذا البث ممتع جدا',
-    'يا سلام على هذه اللقطة',
-    'أخيرا فاز',
-    'الصوت منخفض جدا',
-    'هل يوجد أحد هنا',
-    'ضحكت كثيرا',
-    'هذا أفضل بث اليوم',
-    'متى يبدأ اللعب',
-    'لا أفهم شيئا',
-    'عاش يا بطل',
-    'الخريطة صعبة جدا',
-    'شكرا على الاشتراك',
-    'ماذا يحدث هنا',
-    'هيا يمكنك الفوز',
-    'ما هذا',
-    'رائع',
-    'أحسنت',
-    'مين هنا',
-    'الله يعطيك العافية',
-    'من أي بلد أنت',
-    'لم أر شيئا مثل هذا',
-  ],
-  ja: [
-    'これはやばい',
-    '今日も配信ありがとう',
-    'うますぎるでしょ',
-    '何が起きたの',
-    '誰か見てる',
-    '音が小さいです',
-    '初見です よろしく',
-    'さすがだね',
-    'それは無理だろ',
-    '面白すぎる',
-    'がんばれー',
-    '今のプレイすごい',
-    'もう一回見たい',
-    '日本語わかる人いる',
-    'お疲れ様でした',
-    'マジで',
-    'かわいい',
-    'なるほどね',
-    '待ってた',
-    'これは勝てる',
-    '配信画面が固まってる',
-    'どこの国の人',
-    '全然見えない',
-    'ありがとうございます',
-    '本当にすごかった',
-  ],
-  ko: [
-    '이거 진짜 대박이다',
-    '오늘도 방송 감사합니다',
-    '방금 뭐야',
-    '소리가 너무 작아요',
-    '누구 보고 있어요',
-    '진짜 잘한다',
-    '이해가 안 되네',
-    '처음 왔어요',
-    '화면 멈췄어요',
-    '대박 클립이다',
-    '형 화이팅',
-    '한국 사람 있어요',
-    '너무 웃겨요',
-    '다시 보고 싶다',
-    '수고하셨습니다',
-    '진짜요',
-    '개웃김',
-    '아 진짜',
-    'ㅇㅇ 맞아요',
-    '이번 판 이기자',
-    '어디 사세요',
-    '잘 안 보여요',
-    '감사합니다',
-    '시작했어요',
-    '와 이거 진짜 미쳤다',
-  ],
-  ru: [
-    'что тут происходит',
-    'спасибо за стрим',
-    'он играет очень плохо',
-    'кто нибудь видел это',
-    'звук очень тихий',
-    'я тут первый раз',
-    'это невозможно',
-    'давай ты сможешь',
-    'очень смешно',
-    'хочу ещё раз посмотреть',
-    'кто из России',
-    'не вижу ничего',
-    'экран завис',
-    'отличная игра',
-    'серьёзно',
-    'ага понятно',
-    'спасибо большое',
-    'когда начнётся',
-    'лучший стрим сегодня',
-    'это было круто',
-    'ничего не понял',
-    'молодец',
-    'так держать',
-    'давайте выиграем',
-    'я смотрю уже час',
-  ],
-};
+const BANC = LANG_CHAT_DIX;
 
 describe('les cinq langues majoritaires que l ecriture decide', () => {
   it.each(Object.keys(BANC))('lit %s sur vingt-cinq lignes de chat', (langue) => {
@@ -190,8 +82,29 @@ describe('le chinois passe par franc, pas par la table', () => {
     expect(CHINOIS.filter((t) => detectLanguage(t) !== 'zh')).toEqual([]);
   });
 
-  it('mais ne devient jamais une langue source sure', () => {
-    expect(CHINOIS.filter((t) => confidentLanguage(t) !== undefined)).toEqual([]);
+  // Ce test disait "jamais une langue source sure", et ce n'est plus vrai
+  // depuis que la regle d'ecriture separe simplifie et traditionnel. Le
+  // changement est voulu : franc ne portait aucun modele pour le han, il rendait
+  // `cmn` sur tout, et les 120 lignes traditionnelles du banc partaient en `zh`,
+  // drapeau de la Chine compris, cent pour cent d'entre elles.
+  //
+  // Ce qui reste vrai et qui compte : une ligne n'est nommee que quand son
+  // ecriture la nomme. 9 de ces 24 portent un caractere que seule l'ecriture
+  // simplifiee emploie, les 15 autres sont ecrites avec ce que les deux
+  // ecritures partagent et restent sans reponse.
+  //
+  // Elles etaient 7 jusqu'a ce qu'un corpus de chat non latin montre que le
+  // chinois traditionnel tombait a 4 lignes sur 10 en registre court : 氣, 灣 et
+  // 嗎 manquaient simplement aux deux listes. Les ajouter nomme deux lignes de
+  // plus ici, et c'est le meme mouvement des deux cotes.
+  //
+  // Le prix a ete mesure au moteur reel avant d'etre accepte : sur quatre lignes
+  // dont trois que la regle nomme maintenant, `sl=zh-TW` et `sl=auto` rendent
+  // exactement la meme traduction. Annoncer l'ecriture ne coute rien.
+  it('ne nomme que ce que son ecriture nomme', () => {
+    const nommees = CHINOIS.filter((t) => confidentLanguage(t) !== undefined);
+    expect(nommees).toHaveLength(9);
+    expect([...new Set(CHINOIS.map((t) => confidentLanguage(t)))]).toEqual(['zh', undefined]);
   });
 
   // Le prix du renvoi a franc : sous trois caracteres han, plus personne ne

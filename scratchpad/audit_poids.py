@@ -57,7 +57,53 @@ MANIFESTE = 'dist/manifest.json'
 # `tinyld.light.browser` en pese 68, sous licence MIT. Trente kilo-octets de
 # rendus, soit treize pour cent du bundle, si l'experience de justesse tourne en
 # sa faveur. Elle n'a pas encore tourne.
-REFERENCE_OCTETS = 233217
+#
+# Reference relevee le 2026-09-24, de 233_217 a 248_199, soit +14_982 octets et
+# +6,42 %. La hausse est voulue et elle a ete SEPAREE plutot que devinee : le
+# meme build, avec le seul `langDetect.ts` de master a la place du courant,
+# pese 233_727 octets. Le partage est donc net :
+#
+#     regles de detection    14_472 o   la branche feat/lang-matrix
+#     cantonais hors detecteur  510 o   langue offerte, drapeau, niveau de
+#                                       contexte, garde de translitteration,
+#                                       codes chez deux fournisseurs
+#     ---------------------------------
+#     total                  14_982 o
+#
+# Ce que les 14_472 octets achetent, mesure sur les 5040 lignes de Tatoeba :
+# le chemin qui donne la langue source au moteur passe de 1262 lignes justes et
+# 90 fausses a 3698 justes et TROIS fausses. Plus aucune des 43 langues ne
+# marque zero, contre vingt-six au depart. Quatorze octets et demi par ligne
+# gagnee, et la colonne qui coute cher divisee par trente.
+#
+# En gzip -9, qui est ce que le reseau transporte, l'ecart n'est pas le meme :
+# 91_484 octets avant les lettres exclusives, 96_635 aujourd'hui, soit +5151.
+# Une table de regex se compresse bien.
+#
+# ---------------------------------------------------------------------------
+# Reference relevee le 2026-09-25, de 248_199 a 254_174, soit +5975 octets et
+# +2,41 %. Separee en deux plutot que devinee, chaque tranche etant le meme
+# build sans l'autre :
+#
+#     248_199 -> 252_900   +4701 o   la reprise du selecteur de langues
+#     252_900 -> 254_174   +1274 o   la lisibilite de la ligne traduite
+#
+# LA PREMIERE TRANCHE AURAIT DU ETRE RELEVEE DANS SON PROPRE COMMIT et ne l'a
+# pas ete : 252_900 tenait sous 248_199 majore de la marge de 2 %, donc la
+# porte est restee verte et n'a rien eu a dire. Une marge est faite pour
+# absorber le bruit d'un build, pas pour encaisser une hausse voulue. Ce qu'elle
+# achete : la selection portee par trois marqueurs au lieu d'un fond mesure a
+# 1.21:1, les drapeaux eteints au repos, les colonnes derivees de la largeur, et
+# 33 lignes de blocs clairs morts rendues.
+#
+# La seconde achete les trois reglages de lisibilite de la ligne traduite, les
+# deux echelles typographiques et les quatre faces. Les 72 chaines traduites qui
+# vont avec ne pesent RIEN ici : verifie en construisant les deux fois, les
+# catalogues ne sont pas dans le script injecte. En gzip, ce que le reseau
+# transporte, la seconde tranche vaut +343 octets.
+# Relevee le 2026-09-25 : le sens des deux barres et les drapeaux dessines sur
+# les badges, plus la touche Tab. Le detail est dans les messages de commit.
+REFERENCE_OCTETS = 258743
 MARGE = 0.02
 
 if not os.path.exists(CIBLE):

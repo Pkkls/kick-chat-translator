@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { LANGUAGES } from './languages';
 import { FLAG_BY_LANG, flagClass } from './flags';
@@ -36,5 +38,22 @@ describe('flags', () => {
   it('has no flag for auto, rather than a wrong one', () => {
     expect(flagClass('auto')).toBeUndefined();
     expect(flagClass('fr')).toBe('kt-flag kt-flag-fr');
+  });
+
+  // A CODE HERE WITH NO RULE IN THE CSS DRAWS AN EMPTY BOX, and nothing in this
+  // suite could see it: the table above only checks that every language HAS a
+  // code. Cantonese shipped with `hk` in the table, no `.kt-flag-hk` anywhere,
+  // and an empty square in the language panel for as long as it took an offline
+  // gate that nobody runs in CI to say "1 of 39 language rows draw no flag".
+  //
+  // The check is static and reads the stylesheet, which is the only place the
+  // answer lives. It costs one file read and it closes the whole class: the next
+  // language added to the table fails here until its flag is drawn.
+  it('draws every flag code it hands out', () => {
+    const css = readFileSync(resolve(process.cwd(), 'src/content/inject.css'), 'utf8');
+    const manquants = [...new Set(Object.values(FLAG_BY_LANG))]
+      .filter((code) => !css.includes(`.kt-flag-${code} `))
+      .sort();
+    expect(manquants).toEqual([]);
   });
 });

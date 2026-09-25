@@ -26,6 +26,42 @@ describe('lingvaProvider', () => {
     expect(res.detectedLang).toBe('en');
   });
 
+  // Lingva publishes 109 codes and Cantonese is not one of them. Counting that
+  // as a broken instance would walk the whole pool marking each one unhealthy,
+  // and take Lingva out of the chain for every other language too.
+  it('treats a language it does not carry as unsupported, not as a broken instance', async () => {
+    const fetchSpy = vi.fn(
+      async () => new Response(JSON.stringify({ error: 'Invalid target language code.' }), { status: 400 }),
+    );
+    globalThis.fetch = fetchSpy as unknown as typeof fetch;
+    await expect(
+      lingvaProvider.translate({ messageId: '1', text: 'hi', targetLang: 'yue' }, baseCtx),
+    ).rejects.toMatchObject({ code: 'unsupported' });
+  });
+
+  it('stops at the first instance for a missing language instead of walking the pool', async () => {
+    const fetchSpy = vi.fn(
+      async () => new Response(JSON.stringify({ error: 'Invalid target language code.' }), { status: 400 }),
+    );
+    globalThis.fetch = fetchSpy as unknown as typeof fetch;
+    await expect(
+      lingvaProvider.translate(
+        { messageId: '1', text: 'hi', targetLang: 'yue' },
+        { ...baseCtx, lingvaInstance: '' },
+      ),
+    ).rejects.toMatchObject({ code: 'unsupported' });
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('still reports a genuine 400 as a provider failure', async () => {
+    globalThis.fetch = vi.fn(
+      async () => new Response(JSON.stringify({ error: 'Something else went wrong' }), { status: 400 }),
+    ) as unknown as typeof fetch;
+    await expect(
+      lingvaProvider.translate({ messageId: '1', text: 'hi', targetLang: 'es' }, baseCtx),
+    ).rejects.toMatchObject({ code: 'http_400' });
+  });
+
   it('falls back to auto when the instance reports no source language', async () => {
     globalThis.fetch = vi.fn(async () => reply('hola')) as unknown as typeof fetch;
     const res = await lingvaProvider.translate({ messageId: '1', text: 'hi', targetLang: 'es' }, baseCtx);

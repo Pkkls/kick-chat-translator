@@ -7,6 +7,171 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.12.0] - 2026-09-25
+
+The extension stops deciding three things on the reader's behalf, and says
+which of its two bars does what.
+
+### Added
+
+- **Tab swaps what you typed for its translation.** The compose preview could
+  only be accepted with Ctrl/Cmd+Enter, a two-handed chord in the middle of
+  typing. Tab is taken only while the preview is on screen, so an empty box
+  never loses it, and Shift+Tab is left alone in every case so walking
+  backwards out of the message box always works. Escape hides the preview and
+  hands Tab back. A setting gives Tab back entirely for anyone who navigates by
+  keyboard.
+- **Text size, line spacing and face for the translated line.** The size
+  multiplies whatever Kick gives the chat line rather than replacing it, so a
+  reader who has already enlarged Kick's own chat keeps that choice. System
+  stacks only, no font file and no network request. The "high legibility"
+  option is named after what it can deliver and not after a condition it
+  cannot guarantee to serve.
+- **Density of the translated block**, three steps. A chat that scrolls fast
+  reads better tight, a slow one reads better airy, and neither setting is
+  right for the other.
+- **Accent colour**, four choices. A closed list and not a colour picker:
+  every value is measured against the contrast bars the theme file states, and
+  the generated stylesheet carries the ratio beside each one. Kick's own green
+  holds 12.74:1 on a dark surface and 1.37:1 on white, which is why a free
+  picker would mostly produce unreadable results.
+- **Chat theme**, pinned dark or light instead of following the channel.
+- **Two keyboard shortcuts**, Alt+T for chat translation and Alt+W for the
+  compose preview. Two and not four: every shortcut taken is one taken away
+  from the browser and from other extensions.
+- **A reading language remembered per channel**, off by default. A known
+  channel restores its language, an unknown one changes nothing. Bounded to
+  fifty channels, because the object shares a storage key with every other
+  setting and one that never empties breaks the saving of all of them.
+
+### Changed
+
+- **The two bars now say which is which.** The bar at the top of the chat
+  translates what other viewers write, the chip at the bottom translates what
+  you write, and nothing on screen separated them. A down arrow on one, an up
+  arrow on the other, vertical so they do not lie in an Arabic interface where
+  the bar mirrors.
+- **The per-message language badge draws a flag** instead of two letters. The
+  letters were a leftover: the language table carries text in a field named
+  flag while the stylesheet has drawn 43 real flags all along, used only by the
+  language picker. The composer chip, which had no flag at all, has one now.
+  Languages without a flag keep their two letters, because a flag names a
+  country and not a language.
+- **The language panel shows the selected language.** It carried the state on a
+  background measured at 1.21:1 against its own surface, where hover sits at
+  1.87, so the two were indistinguishable while the focus ring at 12.74 was the
+  brightest thing in a panel it only passes through. It now carries the tint, the
+  word in the accent and a rail. Flags rest desaturated and come back to full
+  under the pointer and on the current language, so colour is a signal rather
+  than a wall of 43 saturated rectangles.
+- **Language names stop being cut.** The pin icon sat invisible in every row's
+  layout, spending 17 percent of each column to show nothing, and the grid kept
+  three columns whatever the chat width. Columns now follow the measured width.
+  "Chinese (Taiwan)" was rendering as "Chinese (...", undecidable beside
+  "Chinese".
+
+### Fixed
+
+- Control borders inside the language panel sat at 1.80:1 on dark and 1.42:1 on
+  light, against the 3:1 the theme file states for a control's own boundary. The
+  panel's local aliases had inverted the global ones, so the filter field and
+  the pinned tiles were drawing with the quiet separator token.
+- The compose preview's badge and the language panel now follow the light theme
+  through the shared tokens rather than through per-component blocks; five such
+  blocks were dead and are gone, without a pixel moving.
+
+## [2.11.0] - 2026-09-24
+
+The store is still on 2.9.2, so this release carries 2.10.0 as well.
+
+Everything below is one thing: the language the extension tells the engine a
+message is written in. That answer decides whether a line is translated, what
+it is translated from, and whether it is dropped as "already in your language"
+without the reader ever seeing it. It was wrong more often than it looked.
+
+The numbers come from a 5040-line bench, 42 languages, 120 sentences each, from
+Tatoeba, plus six hand-written chat corpora because prose and chat are not the
+same register. Three outcomes are counted and never added together: right, the
+language the line is in; SILENT, which hands the line to the engine with no
+source language and is the safe outcome; and wrong.
+
+### Added
+
+- **Cantonese, the 43rd language.** It is `yue` and not `zh-hk`: Cantonese and
+  Mandarin are different languages sharing a script, and a Hong Kong viewer
+  reading `zh-tw` gets a register they do not speak. No language library carries
+  it, so it is read off a table of characters standard Chinese does not write,
+  唔 嘅 喺 咗 哋 佢, plus words like 點解 and 鍾意. 114 of its 120 bench lines, and
+  91 % on a separate hand-written chat bench that was written before the rule
+  existed. The six it misses carry no Cantonese word at all.
+- **Roughly 450 new detection rules**, each one measured on ten benches before
+  it shipped and removed again if it gained nothing. Letters one language writes
+  and no other, sequences inside words, word endings, function words, and gates:
+  a letter that names a small set of languages, and a word behind it that picks
+  one. They are written to generalise rather than to memorise the bench, which
+  is why the numbers move on corpora the rules never saw.
+
+### Changed
+
+- **The source language sent to the engine is right 2.9 times more often and
+  wrong 97 % less.** On the same 5040 lines: 1262 right and 90 wrong before,
+  3731 right and THREE wrong now. Wrong there means asking the engine to
+  translate from a language the text is not in, which is the expensive mistake.
+- **No language scores zero any more, against twenty-six before.** Catalan went
+  from 20 lines of 120 to 65, Slovak from 16 to 52, Hungarian to 79, Bulgarian
+  to 94, German from 28 to 92, Dutch to 108, Danish from 30 to 56, Vietnamese
+  from 81 to 119.
+- **On chat it never saw, the detector now names 57 % of lines against 48 %**,
+  and on Malay/Indonesian chat 65 % against 48 %. Those two are the product's
+  real register, which is why they are measured separately.
+- The raw detector, which is what decides whether a line is dropped as already
+  in your language, is wrong on 498 lines instead of 1217.
+
+### Fixed
+
+- **Any Cyrillic line the detector could not name was called Russian.** It was a
+  guess sitting on the path that is supposed to contain no guesses, and it cost
+  72 of the 90 wrong answers on that path. Bulgarian and Ukrainian lines went to
+  the engine as Russian; `bg -> ru` alone was 50 lines. Both pairs are gone from
+  the confusion table.
+- **Any Arabic-script line it could not name was called Arabic**, the same defect
+  one script over. Persian lines written without a Persian letter went to the
+  engine as Arabic. Arabic now has to name itself, and when nothing does, the
+  line stays silent.
+- **Traditional Chinese was read as simplified on 120 lines out of 120**, flag
+  included. It is a character set and there was no rule for it.
+- **Cantonese shipped without its flag.** The language panel drew an empty square
+  where Hong Kong should be, since the Cantonese release. A static check now
+  fails on any flag code handed out without a rule behind it.
+- Persian, Jawi Malay, Hebrew, Bengali, Tamil, Greek and Ukrainian are read
+  correctly where they were being handed to a neighbour.
+
+### Interface
+
+- **Every colour is decided in one file.** The three surfaces carried three
+  palettes: the injected stylesheet had 76 colour literals and 41 hand-written
+  light-theme blocks restating them one component at a time, and the popup and
+  options page had a fourth set of their own. It showed as six different dark
+  greens doing one job and two reds per theme. Two values that did not meet
+  their contrast bar were folded into the neighbour that did rather than kept:
+  a control border measured 2.74:1 against the 3:1 a boundary owes.
+- **The language panel stays inside the chat column.** It was bounded by the
+  window and by nothing else: 408 px wide inside a 340 px column, hanging 68 px
+  past both edges, opaque, with no elevation, over a near-black chat. It read as
+  the chat having disappeared rather than having been covered. It now measures
+  the column it opens in, and carries the one drop shadow in the product because
+  a layer that covers the chat has to say it is a layer.
+- The light theme follows the attribute the extension stamps on the page, never
+  the operating system: Kick owns its own theme, and a light desktop reading a
+  dark chat was being handed light text on a dark ground.
+
+### Weight
+
+The injected script grows by 14.9 KB raw and 5.2 KB gzipped, which is 5 % of the
+content bundle. The gate that watches it is updated in the same commit with the
+split measured rather than guessed: 14 472 bytes are the detection rules and 510
+are the Cantonese integration outside the detector.
+
 ## [2.10.0] - 2026-08-31
 
 Two versions were tagged and never published, 2.9.3 and 2.9.4. Everything they

@@ -47,6 +47,23 @@ export default defineManifest({
       all_frames: false,
     },
   ],
+  // DEUX ET PAS QUATRE. Chrome accepte quatre raccourcis suggeres, et chacun
+  // pris est un raccourci retire au navigateur et aux autres extensions. Ces
+  // deux-la sont les seuls gestes qu'on veut faire sans quitter le champ de
+  // saisie pendant qu'un direct defile ; le reste se regle sur une page qu'on
+  // ouvre une fois. Alt plutot que Ctrl ou Cmd : Ctrl+T ouvre un onglet et
+  // Cmd+W ferme la fenetre, et un raccourci qui se dispute avec le navigateur
+  // est un raccourci que personne ne garde.
+  commands: {
+    'toggle-translation': {
+      suggested_key: { default: 'Alt+T' },
+      description: 'Turn chat translation on or off',
+    },
+    'toggle-compose': {
+      suggested_key: { default: 'Alt+W' },
+      description: 'Turn the compose preview on or off',
+    },
+  },
   permissions: ['storage', 'alarms'],
   host_permissions: [
     'https://kick.com/*',

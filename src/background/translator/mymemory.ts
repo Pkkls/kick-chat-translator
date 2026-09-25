@@ -20,6 +20,14 @@ const MYMEMORY_CODES: Record<string, string> = {
   'zh-hans': 'zh-CN',
   'zh-tw': 'zh-TW',
   'zh-hant': 'zh-TW',
+  // Bare 'yue' resolves to yue-CN, measured: MyMemory echoed `target: "yue-CN"`.
+  // The reader we are serving is in Hong Kong, so the region is named.
+  //
+  // MyMemory answers 200 for this pair, and a 200 here is not evidence of much:
+  // on "hello" it returns 你好, which is also the Mandarin answer. It stays in
+  // the chain as the last free fallback, not as a provider we trust for this
+  // language.
+  yue: 'yue-HK',
   nb: 'no',
   nn: 'no',
 };

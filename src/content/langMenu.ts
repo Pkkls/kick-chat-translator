@@ -26,6 +26,35 @@ import { flagClass } from '~/shared/flags';
  * lists of the same 42 languages stop looking like two different products.
  */
 export const PANEL_COLS = 3;
+
+/** Marge interieure du panneau, et gouttiere de la grille. Les deux sont dans
+ *  la feuille ; ici elles ne servent qu'a savoir combien de colonnes tiennent. */
+const PANEL_PAD_X = 8;
+const GRID_GAP = 2;
+
+/**
+ * Largeur minimale d'une colonne pour qu'un nom reste reconnaissable.
+ *
+ * Le budget de texte d'une colonne vaut sa largeur moins 40 : 8 et 8 de marges
+ * de rangee, 16 de drapeau, 8 de gouttiere. A 127 il reste 87px, soit environ
+ * quatorze caracteres a 12px, ce qui laisse "Chinese (Taiwan)" se couper sur
+ * "Taiw" plutot que sur la parenthese. Coupe a la parenthese, il etait
+ * indecidable a cote de "Chinese".
+ */
+export const MIN_COL_W = 127;
+
+/**
+ * Colonnes tenables a cette largeur.
+ *
+ * PANEL_COLS etait une constante, donc une colonne de chat etroite gardait ses
+ * trois colonnes et rendait six caracteres par nom. n colonnes demandent
+ * n*MIN + (n-1)*GAP + PAD, d'ou la division ci-dessous, qui est exacte et pas
+ * une approximation.
+ */
+export function colsFor(capW: number): number {
+  const n = Math.floor((capW - PANEL_PAD_X + GRID_GAP) / (MIN_COL_W + GRID_GAP));
+  return Math.max(1, Math.min(PANEL_COLS, n));
+}
 import { msg } from './msg';
 
 export interface LangMenuState {
@@ -246,9 +275,12 @@ export function fillLangMenu(
   list.tabIndex = 0;
   list.setAttribute('role', 'group');
   list.setAttribute('aria-label', msg('langAll', 'All languages'));
-  // The column count lives here and the grid reads it, so the arrow keys and
-  // the layout cannot drift apart.
+  // Le compte de colonnes vit sur cet element et la grille le lit, pour que les
+  // fleches et la mise en page ne puissent pas diverger. placeLangMenu le
+  // reecrit une fois la largeur mesuree ; PANEL_COLS n'est plus que le plafond,
+  // et la valeur posee ici sert au panneau qui n'a pas encore ete place.
   list.style.setProperty('--kt-lp-cols', String(PANEL_COLS));
+  list.dataset.cols = String(PANEL_COLS);
   box.appendChild(list);
 
   const addRow = (code: string, name: string, isAuto: boolean): void => {
@@ -382,10 +414,14 @@ export function fillLangMenu(
     // The list runs in columns now, so Down and Up have to cross a whole grid
     // row rather than land on the next tile along. The favourites strip is a
     // single flex row, so a step of one is right there, and Left/Right step one
-    // everywhere. PANEL_COLS is the same number the grid reads, on purpose:
-    // reading it back off the rendered grid would disagree with it under jsdom,
-    // which does not resolve repeat().
-    const pas = here!.classList.contains('kt-lang-row') ? PANEL_COLS : 1;
+    // everywhere. Le pas se lit sur le dataset que la grille lit aussi, et non
+    // plus sur PANEL_COLS : depuis que le compte s'adapte a la largeur, une
+    // constante ferait sauter deux rangees la ou l'ecran n'en montre qu'une.
+    // Le relire sur la grille rendue serait faux sous jsdom, qui ne resout pas
+    // repeat().
+    const pas = here!.classList.contains('kt-lang-row')
+      ? Number(list.dataset.cols) || PANEL_COLS
+      : 1;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       move(here!, pas);
@@ -433,6 +469,111 @@ export function focusLangMenu(menu: HTMLElement): void {
 }
 
 /**
+ * The box the panel has to stay inside: the chat column, not the window.
+ *
+ * Walks out to the first ancestor that clips, which on kick.com is the chat
+ * column itself, and falls back to the anchor when nothing clips (the harness
+ * stages, and any layout that changes under us).
+ *
+ * This exists because the panel was bounded by the viewport and by nothing
+ * else. Measured on the repository's own bar-panel stage: a 408px panel inside
+ * a 340px chat column, hanging 68px past its edges, which is most of why
+ * opening it read as the chat having been replaced rather than covered.
+ */
+function columnBox(anchor: HTMLElement): { width: number; height: number } {
+  for (let p = anchor.parentElement; p && p !== document.body; p = p.parentElement) {
+    const s = getComputedStyle(p);
+    if (!/hidden|clip|auto|scroll/.test(`${s.overflow} ${s.overflowX} ${s.overflowY}`)) continue;
+    const r = p.getBoundingClientRect();
+    if (r.width > 0 && r.height > 0) return { width: r.width, height: r.height };
+  }
+  const r = anchor.getBoundingClientRect();
+  return { width: r.width, height: r.height };
+}
+
+/** Gap between the panel and the control it hangs from. */
+const GAP = 6;
+/** Smallest margin the panel keeps against any edge it is clamped to. */
+const MARGIN = 8;
+/**
+ * Widest the panel is ever drawn, and narrowest.
+ *
+ * 408 is the readable width for three columns of language names. 280 is the
+ * floor: below it the three columns stop being readable at all, and a panel
+ * that narrow is worse than one slightly wider than its column.
+ */
+export const PANEL_MAX_W = 408;
+export const PANEL_MIN_W = 280;
+/**
+ * Most of the chat column the panel may cover.
+ *
+ * This is the number that answers the report. The panel used to be bounded by
+ * the window and by nothing else, so on a tall window it took whatever it
+ * wanted and on a short one it took everything. Leaving 40% of the column
+ * showing is what tells a reader that this is a menu over their chat and not a
+ * screen that replaced it.
+ */
+export const PANEL_COLUMN_SHARE = 0.6;
+
+export interface PanelGeometryInput {
+  /** The control the panel hangs from, in viewport coordinates. */
+  anchor: { top: number; bottom: number; right: number };
+  /** The chat column the panel must stay inside. Zero height means unknown. */
+  column: { width: number; height: number };
+  viewport: { width: number; height: number };
+  /** What the panel would be at its preferred width, unconstrained. */
+  content: { width: number; height: number };
+  prefer: 'above' | 'below';
+}
+
+export interface PanelGeometry {
+  left: number;
+  top: number;
+  width: number;
+  maxHeight: number;
+  above: boolean;
+}
+
+/**
+ * Where the panel goes, as arithmetic.
+ *
+ * Split out from the DOM so the bounds can be tested at real numbers instead of
+ * only looked at. jsdom and happy-dom resolve no layout, so a test that drove
+ * placeLangMenu directly would measure zeros and pass on anything.
+ *
+ * Two bounds, from two different reports:
+ *  - width, from the chat column rather than the window. Measured on this
+ *    repository's own bar-panel stage: 408px of panel inside a 340px column,
+ *    68px of it hanging past both edges.
+ *  - height, capped at a share of that column, so some chat always shows.
+ */
+export function panelGeometry(i: PanelGeometryInput): PanelGeometry {
+  const capW = Math.max(PANEL_MIN_W, Math.min(PANEL_MAX_W, i.column.width - MARGIN * 2));
+  const width = Math.min(i.content.width || capW, capW);
+
+  const roomAbove = i.anchor.top - GAP - MARGIN;
+  const roomBelow = i.viewport.height - i.anchor.bottom - GAP - MARGIN;
+  const share = i.column.height > 0 ? i.column.height * PANEL_COLUMN_SHARE : Infinity;
+  const wanted = Math.min(i.content.height, i.prefer === 'above' ? roomBelow : roomAbove);
+  const above =
+    i.prefer === 'above'
+      ? roomAbove >= wanted || roomAbove > roomBelow
+      : roomBelow < wanted && roomAbove > roomBelow;
+  const room = Math.max(80, above ? roomAbove : roomBelow);
+  const maxHeight = Math.max(80, Math.min(i.content.height, room, share));
+
+  return {
+    width,
+    maxHeight,
+    above,
+    left: Math.max(MARGIN, Math.min(i.anchor.right - width, i.viewport.width - width - MARGIN)),
+    top: above
+      ? Math.max(MARGIN, i.anchor.top - GAP - maxHeight)
+      : Math.min(i.anchor.bottom + GAP, i.viewport.height - maxHeight - MARGIN),
+  };
+}
+
+/**
  * Anchor the panel. Normally it rides with what opened it; inside a clipping
  * ancestor it switches to viewport coordinates so it stays whole. Flips to the
  * other side of the anchor when there is not enough room on the preferred one.
@@ -460,28 +601,35 @@ export function placeLangMenu(
   // en haut a gauche de la page. isClipped reste exporte et teste, le rognage
   // qu'il detecte est toujours reel, il n'est simplement plus la seule raison
   // de placer a la main.
-
-  // Seen live on kick.com: this ran off the left of the chat column and over
-  // the video player, and off the top of the window, because the only bound it
-  // respected was the RIGHT edge. Every edge is clamped now, and the height is
-  // whatever actually fits, not a fixed number the window may not have.
-  const GAP = 6;
-  const MARGIN = 8;
-  const W = menu.offsetWidth || 236;
   const r = anchor.getBoundingClientRect();
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
+  const column = columnBox(anchor);
 
-  const roomAbove = r.top - GAP - MARGIN;
-  const roomBelow = vh - r.bottom - GAP - MARGIN;
-  const wanted = Math.min(menu.scrollHeight, prefer === 'above' ? roomBelow : roomAbove);
-  const above =
-    prefer === 'above' ? roomAbove >= wanted || roomAbove > roomBelow : roomBelow < wanted && roomAbove > roomBelow;
-  const room = Math.max(80, above ? roomAbove : roomBelow);
-  const h = Math.min(menu.scrollHeight, room);
+  // The width cap goes on before anything is measured: a narrower panel is a
+  // taller one, so reading the content height first would size it for a width
+  // it is not going to get.
+  const capW = Math.max(PANEL_MIN_W, Math.min(PANEL_MAX_W, column.width - MARGIN * 2));
+  menu.style.setProperty('--kt-lp-max-w', `${capW}px`);
+
+  // Les colonnes suivent la largeur reelle, pas une constante. Pose avant la
+  // mesure de hauteur : moins de colonnes veut dire une liste plus haute, donc
+  // lire la hauteur d'abord la mesurerait pour une grille qu'elle n'aura pas.
+  const list = menu.querySelector<HTMLElement>('.kt-lang-list');
+  if (list) {
+    const cols = String(colsFor(capW));
+    list.style.setProperty('--kt-lp-cols', cols);
+    list.dataset.cols = cols;
+  }
+
+  const g = panelGeometry({
+    anchor: { top: r.top, bottom: r.bottom, right: r.right },
+    column,
+    viewport: { width: window.innerWidth, height: window.innerHeight },
+    content: { width: menu.offsetWidth, height: menu.scrollHeight },
+    prefer,
+  });
 
   menu.classList.add('kt-lang-panel-fixed');
-  menu.style.maxHeight = `${h}px`;
-  menu.style.left = `${Math.max(MARGIN, Math.min(r.right - W, vw - W - MARGIN))}px`;
-  menu.style.top = `${above ? Math.max(MARGIN, r.top - GAP - h) : Math.min(r.bottom + GAP, vh - h - MARGIN)}px`;
+  menu.style.maxHeight = `${g.maxHeight}px`;
+  menu.style.left = `${g.left}px`;
+  menu.style.top = `${g.top}px`;
 }

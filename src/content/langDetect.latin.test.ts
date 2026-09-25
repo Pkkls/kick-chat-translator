@@ -38,40 +38,40 @@ const BANC: Ligne[] = [
   ['alguem sabe o que aconteceu', 'pt', 'pt', undefined],
   ['que isso mano kkkk', 'pt', 'pt', 'pt'],
   ['vamos ganhar essa', 'pt', 'pt', 'pt'],
-  ['il joue vraiment mal la', 'fr', 'fr', undefined],
-  ['quelqu un a vu ce qui s est passe', 'fr', 'fr', undefined],
+  ['il joue vraiment mal la', 'fr', 'fr', 'fr'],
+  ['quelqu un a vu ce qui s est passe', 'fr', 'fr', 'fr'],
   ['trop fort le mec', 'fr', 'fr', 'fr'],
   ['je comprends rien du tout', 'fr', 'fr', undefined],
   ['ca part en cacahuete', 'fr', 'es', undefined],
   ['non ci posso credere', 'it', 'it', undefined],
-  ['sta giocando malissimo', 'it', undefined, undefined],
+  ['sta giocando malissimo', 'it', 'it', 'it'],
   ['qualcuno ha visto cosa e successo', 'it', 'it', undefined],
-  ['che bella partita', 'it', 'it', undefined],
+  ['che bella partita', 'it', 'it', 'it'],
   ['der spielt richtig schlecht', 'de', 'de', undefined],
-  ['was ist denn hier los', 'de', 'de', undefined],
-  ['hat jemand gesehen was passiert ist', 'de', 'de', undefined],
+  ['was ist denn hier los', 'de', 'de', 'de'],
+  ['hat jemand gesehen was passiert ist', 'de', 'de', 'de'],
   ['das war echt stark', 'de', 'de', undefined],
   ['bu adam cok iyi oynuyor', 'tr', undefined, undefined],
   ['ne oluyor burada', 'tr', 'tr', 'tr'],
   ['inanamiyorum ya', 'tr', 'id', undefined],
   ['goren var mi ne oldu', 'tr', 'tr', undefined],
-  ['hij speelt echt slecht', 'nl', 'nl', undefined],
-  ['wat gebeurt er nu', 'nl', 'de', undefined],
-  ['dat was echt goed man', 'nl', 'de', undefined],
+  ['hij speelt echt slecht', 'nl', 'nl', 'nl'],
+  ['wat gebeurt er nu', 'nl', 'nl', 'nl'],
+  ['dat was echt goed man', 'nl', 'nl', 'nl'],
   ['on gra naprawde slabo', 'pl', undefined, undefined],
   ['co tu sie dzieje', 'pl', 'pl', undefined],
   ['nie moge w to uwierzyc', 'pl', 'pl', undefined],
-  ['dia main jelek banget', 'id', undefined, undefined],
-  ['ada apa sih ini', 'id', 'ms', undefined],
-  ['gila sih ini keren', 'id', undefined, undefined],
-  ['joaca foarte prost azi', 'ro', 'fr', undefined],
+  ['dia main jelek banget', 'id', 'id', 'id'],
+  ['ada apa sih ini', 'id', 'id', 'id'],
+  ['gila sih ini keren', 'id', 'id', 'id'],
+  ['joaca foarte prost azi', 'ro', 'ro', 'ro'],
   ['ce se intampla aici', 'ro', 'ro', undefined],
   ['han spelar riktigt daligt', 'sv', 'sv', undefined],
   ['vad hander har nu', 'sv', 'sv', undefined],
   ['hraje fakt spatne dneska', 'cs', 'cs', undefined],
   ['co se to tu deje', 'cs', 'pt', undefined],
   ['no choi qua te hom nay', 'vi', 'pt', undefined],
-  ['he is playing so bad today', 'en', 'en', undefined],
+  ['he is playing so bad today', 'en', 'en', 'en'],
   ['anyone know what happened', 'en', 'en', undefined],
   ['that was actually insane', 'en', 'en', undefined],
   ['chat is going crazy rn', 'en', 'tl', undefined],
@@ -87,11 +87,64 @@ describe('le banc latin, ligne par ligne', () => {
 describe('les totaux du banc latin', () => {
   // Ces trois nombres sont ce que la passe a publie. Ils sont ici pour qu'un
   // changement du detecteur les fasse bouger sous les yeux de la revue plutot
-  // que dans un journal que personne ne rouvre. Le banc a deja servi : il etait
-  // a 28 justes, 10 silences et 13 fausses, et l'ajout des mots de structure
-  // dans `SHORT_WORD_LANG` a fait rougir exactement six lignes, toutes dans le
-  // bon sens, dont deux qui passaient de FAUSSES a justes.
-  it('sont 33 justes, 7 silences et 11 fausses avec assurance sur 51', () => {
+  // que dans un journal que personne ne rouvre.
+  //
+  // Le banc a deja servi deux fois. Il etait a 28 justes, 10 silences et 13
+  // fausses, et l'ajout des mots de structure dans `SHORT_WORD_LANG` l'a porte
+  // a 33 / 7 / 11 en faisant rougir six lignes, toutes dans le bon sens. La
+  // seconde passe est l'extension du meme lexique aux vingt langues latines
+  // qu'il ignorait : `sih` nomme l'indonesien, donc `ada apa sih ini` cesse
+  // d'etre lu malais et `gila sih ini keren` cesse d'etre muet. Une FAUSSE et un
+  // silence deviennent justes, et le chemin SUR les nomme toutes les deux, la
+  // ou il se taisait.
+  //
+  // Troisieme passe : la terminaison -issimo, ajoutee a la table sans borne,
+  // nomme `sta giocando malissimo` sur les deux chemins. Un silence de plus
+  // devient juste.
+  //
+  // Quatrieme passe, celle des mots outils frequents : `che` nomme `che bella
+  // partita` et `wat` nomme `wat gebeurt er nu`, qui etait lue ALLEMANDE. Une
+  // fausse devient juste, ce qui est le premier mouvement de ce compteur-la
+  // depuis que le banc existe, et le chemin sur nomme les deux.
+  //
+  // Cinquieme passe : la terminaison -day nomme `he is playing so bad today` sur
+  // le chemin SUR, la ou il se taisait. Ces trois totaux ne bougent pas, ils ne
+  // comptent que la colonne `detectLanguage` ; c'est la quatrieme colonne qui
+  // change, et c'est elle qui decide de ce qui part au moteur.
+  //
+  // Septieme passe, les mots outils exclusifs : trois lignes de plus passent de
+  // muettes a nommees sur le chemin sur, et elles sont toutes les trois dans la
+  // bonne langue. `ist` nomme les deux allemandes, `hij` la neerlandaise. Les
+  // trois assertaient le SILENCE, donc le defaut et pas une propriete : c'est
+  // la troisieme fois que le cas 4.7 se presente sur ce banc.
+  //
+  // Sixieme passe, les portes a mot : `quelqu un a vu ce qui s est passe` passe
+  // de muet a `fr` sur le chemin sur. `ce` ouvre la porte ro/fr, le roumain n'a
+  // rien sur cette ligne, le francais a `est`. La ligne est du francais et le
+  // test attendait le SILENCE, donc il assertait le defaut et pas une propriete,
+  // cas 4.7 du protocole. Quatrieme colonne encore, totaux inchanges.
+  // Huitieme passe, le lot de mots outils exclusifs : `joaca foarte prost azi`
+  // etait lue FRANCAISE par franc et elle est roumaine. `foarte` la nomme sur
+  // les deux chemins. C'est la DEUXIEME fausse que ce banc perd depuis qu'il
+  // existe, et la premiere l'avait ete par le meme mecanisme, un mot outil.
+  // Neuvieme passe, les mots en plein air : `il joue vraiment mal la` passe de
+  // muet a `fr` sur le chemin sur. `joue` est un mot francais que personne
+  // d'autre n'ecrit, et la ligne ne porte aucun accent, donc aucune porte ne
+  // pouvait la servir. Le test attendait le SILENCE sur une ligne francaise,
+  // donc il assertait le defaut : cas 4.7, cinquieme fois sur ce banc. Totaux
+  // inchanges, c'est la quatrieme colonne qui bouge.
+  // Dixieme passe, la paire malais-indonesien en plein air : `dia main jelek
+  // banget` passe de MUETTE a `id` sur les deux chemins. `banget` etait derriere
+  // la porte ms/id, ou il fallait qu un mot partage se declenche d abord, et
+  // cette ligne n en porte aucun. C est le premier silence que la colonne
+  // `detectLanguage` perd depuis six passes, donc les totaux bougent : 38 justes
+  // et 5 silences deviennent 39 et 4.
+  // Onzieme passe, les mots outils des six dernieres langues : `dat was echt
+  // goed man` etait lue ALLEMANDE par franc et elle est neerlandaise. `dat` la
+  // nomme sur les deux chemins. C est la TROISIEME fausse que ce banc perd
+  // depuis qu il existe, et les trois l ont ete par le meme mecanisme, un mot
+  // outil rendu au plein air.
+  it('sont 40 justes, 4 silences et 7 fausses avec assurance sur 51', () => {
     let justes = 0;
     let silences = 0;
     let faux = 0;
@@ -101,9 +154,9 @@ describe('les totaux du banc latin', () => {
       else faux++;
     }
     expect({ justes, silences, faux, total: BANC.length }).toEqual({
-      justes: 33,
-      silences: 7,
-      faux: 11,
+      justes: 40,
+      silences: 4,
+      faux: 7,
       total: 51,
     });
   });

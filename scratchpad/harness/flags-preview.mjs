@@ -13,7 +13,36 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { chromium } from './playwright.mjs';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const css = readFileSync(path.join(HERE, 'flags.css'), 'utf8');
+/**
+ * LE CSS VIENT DE LA FEUILLE LIVREE, et il a fallu que la porte casse pour
+ * qu'on le remarque : elle lisait `flags.css`, un fichier que rien ne produit
+ * et que le depot ne contient pas. Elle etait donc rouge sur tout clone frais,
+ * y compris celui-ci, et elle l'est restee sans que personne le voie parce
+ * qu'elle ne sert qu'a REGARDER.
+ *
+ * La liste des langues vient de `languages.ts` pour la meme raison : celle qui
+ * etait ecrite ici en dur comptait quarante-deux entrees et le produit en
+ * offre quarante-trois. Le cantonais manquait, donc la seule surface qui sert a
+ * regarder les drapeaux ne montrait pas celui qui etait casse.
+ */
+const css = (() => {
+  const lignes = readFileSync(path.join(HERE, '../../src/content/inject.css'), 'utf8').split(
+    /\r?\n/,
+  );
+  // `.kt-flag` porte la taille et le rayon sur plusieurs lignes, les quarante-six
+  // `.kt-flag-xx` tiennent chacune sur une. Filtrer ligne a ligne garde l'ouverture
+  // de la premiere et jette sa fermeture, ce qui avale tout le reste dans une
+  // accolade ouverte : la page rendait quarante-deux carres vides et le disait,
+  // ce qui est exactement ce que cette porte sert a voir.
+  const out = [];
+  for (let i = 0; i < lignes.length; i++) {
+    if (!lignes[i].startsWith('.kt-flag')) continue;
+    out.push(lignes[i]);
+    if (lignes[i].includes('}')) continue;
+    while (i + 1 < lignes.length && !lignes[i].includes('}')) out.push(lignes[++i]);
+  }
+  return out.join('\n');
+})();
 
 /** langue -> pays affiche. Convention d'affichage, pas une affirmation. */
 const MAP = [
@@ -31,6 +60,9 @@ const MAP = [
   ['sl', 'sl', 'Slovenscina'], ['et', 'ee', 'Eesti'], ['lt', 'lt', 'Lietuviu'],
   ['lv', 'lv', 'Latviesu'], ['fa', 'ir', 'Farsi'], ['bn', 'bd', 'Bangla'],
   ['ta', 'lk', 'Tamil'], ['ms', 'my', 'Melayu'], ['tl', 'ph', 'Filipino'],
+  // Quarante-troisieme, et la seule que cette table avait manquee : son drapeau
+  // n'etait dessine nulle part et c'est la surface qui sert a le voir.
+  ['yue', 'hk', 'Gwongdungwaa'],
 ];
 
 const PAGE = `<!doctype html><html><head><meta charset="utf-8"><style>

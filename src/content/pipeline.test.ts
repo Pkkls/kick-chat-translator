@@ -164,6 +164,25 @@ describe('TranslationPipeline, a dropped line says why', () => {
     expect(reasonsGiven().join(' ')).toMatch(/already/i);
   });
 
+  // This guard deletes the line, so it only ever gets an answer that was looked
+  // up. franc calls this Spanish sentence Portuguese, and on the old input a
+  // Portuguese reader lost it without a word. Measured across 42 languages, that
+  // mistake cost 1217 deleted lines against 90 on the looked-up answer.
+  it('does not delete a line on a language franc only guessed at', async () => {
+    const p = new TranslationPipeline({ ...defaultSettings(), enabled: true, targetLang: 'pt', pauseWhenHidden: false });
+    await p.onDomMessage(domMsg('Ese que te dijo eso es ateo'));
+    expect(reasonsGiven().join(' ')).not.toMatch(/already/i);
+  });
+
+  // The counterweight: a language the script check read off the text is a fact,
+  // and a Japanese reader must still not be shown Japanese translated to
+  // Japanese. Without this, "never delete" would pass the test above too.
+  it('still deletes a line whose language was read off the script', async () => {
+    const p = new TranslationPipeline({ ...defaultSettings(), enabled: true, targetLang: 'ja', pauseWhenHidden: false });
+    await p.onDomMessage(domMsg(JP));
+    expect(reasonsGiven().join(' ')).toMatch(/already/i);
+  });
+
   // The chat recycles its rows. A row that carried a reason and is reused for a
   // message that DOES translate has to lose it, or it explains another message.
   it('clears the reason on a line it is going to translate', async () => {

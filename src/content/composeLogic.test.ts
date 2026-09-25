@@ -9,6 +9,7 @@ import {
   isLinkOrMentionOnly,
   maskProtected,
   unmaskProtected,
+  toucheEchange,
 } from './composeLogic';
 
 describe('decideComposeAction', () => {
@@ -153,5 +154,61 @@ describe('computePanelGeom', () => {
   it('keeps the top edge on-screen for a tall stack', () => {
     const g = computePanelGeom({ left: 100, top: 20, width: 300 }, VP);
     expect(g.bottom).toBe(VP.innerHeight - COMPOSE_PANEL_TOP_MARGIN); // 770
+  });
+});
+
+/**
+ * Quelle frappe echange le message contre sa traduction.
+ *
+ * Tab est la touche qui deplace le focus, donc la prendre a un cout reel. Ces
+ * cas sont ce qui le rend acceptable : elle n'est prise qu'avec l'apercu a
+ * l'ecran (verifie par l'appelant), Shift+Tab passe toujours, et un lecteur qui
+ * navigue au clavier peut la rendre entierement a la navigation.
+ */
+describe('toucheEchange', () => {
+  const frappe = (key: string, mods: Partial<KeyboardEvent> = {}) => ({
+    key,
+    shiftKey: false,
+    ctrlKey: false,
+    metaKey: false,
+    ...mods,
+  });
+
+  it('takes Tab when Tab is the chosen key', () => {
+    expect(toucheEchange(frappe('Tab'), 'tab-and-enter')).toBe(true);
+  });
+
+  // La sortie de secours d'un lecteur au clavier : reculer hors de la boite de
+  // saisie doit marcher meme quand l'apercu est la.
+  it('always leaves Shift+Tab alone', () => {
+    expect(toucheEchange(frappe('Tab', { shiftKey: true }), 'tab-and-enter')).toBe(false);
+    expect(toucheEchange(frappe('Tab', { shiftKey: true }), 'ctrl-enter')).toBe(false);
+  });
+
+  it('gives Tab back entirely in ctrl-enter mode', () => {
+    expect(toucheEchange(frappe('Tab'), 'ctrl-enter')).toBe(false);
+  });
+
+  // Ctrl/Cmd+Entree etait le seul raccourci et n'avait aucun test. Il doit
+  // survivre aux deux modes, sinon ce reglage retire un geste au lieu d'en
+  // ajouter un.
+  it('keeps Ctrl and Cmd Enter working in both modes', () => {
+    for (const mode of ['tab-and-enter', 'ctrl-enter'] as const) {
+      expect(toucheEchange(frappe('Enter', { ctrlKey: true }), mode)).toBe(true);
+      expect(toucheEchange(frappe('Enter', { metaKey: true }), mode)).toBe(true);
+    }
+  });
+
+  // Entree nu envoie le message sur Kick : le lui prendre enverrait le message
+  // original a chaque fois qu'on voulait sa traduction.
+  it('never takes a bare Enter, which is how Kick sends', () => {
+    expect(toucheEchange(frappe('Enter'), 'tab-and-enter')).toBe(false);
+    expect(toucheEchange(frappe('Enter'), 'ctrl-enter')).toBe(false);
+  });
+
+  it('ignores everything else', () => {
+    for (const k of ['a', ' ', 'Escape', 'ArrowDown', 'Backspace']) {
+      expect(toucheEchange(frappe(k), 'tab-and-enter')).toBe(false);
+    }
   });
 });

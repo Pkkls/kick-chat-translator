@@ -28,6 +28,56 @@ export const SettingsSchema = z.object({
   showProviderBadge: z.boolean().default(false),
   showFloatingBar: z.boolean().default(true),
 
+  // Readability of the translated line itself. The three defaults are the
+  // values the stylesheet already carried, so a reader who never opens this
+  // section sees exactly what they saw before.
+  //
+  // The scale multiplies whatever size Kick gives the chat line, it does not
+  // replace it: a reader who has already enlarged Kick's own chat keeps that
+  // choice and this one compounds with it.
+  translatedFontScale: z.number().min(0.8).max(1.4).default(1),
+  translatedLineHeight: z.number().min(1.2).max(2).default(1.35),
+  // 'inherit' is Kick's own face, and the default, because the translation
+  // belongs to the line it sits under.
+  //
+  // 'readable' and not 'dyslexic': a genuine dyslexia face (OpenDyslexic,
+  // Atkinson Hyperlegible) is a file, and this extension ships no font file
+  // and fetches none, because a webfont on a page we do not own is a network
+  // request per chat line. The stack asks for Atkinson first in case the
+  // reader already has it, then falls back on Verdana, which really does
+  // separate I from l from 1 better than the average UI face. Naming it after
+  // a condition it cannot guarantee to serve would be a promise we do not keep.
+  translatedFont: z.enum(['inherit', 'system', 'serif', 'mono', 'readable']).default('inherit'),
+  // L'air autour du bloc traduit. 'normal' reproduit exactement les marges que
+  // la feuille portait avant que ce reglage existe.
+  translatedDensity: z.enum(['compact', 'normal', 'roomy']).default('normal'),
+
+  // L'accent, ferme a quatre valeurs mesurees plutot qu'ouvert a une couleur
+  // libre : voir l'en-tete des blocs d'accent dans theme.css. Un lecteur qui
+  // choisit son bleu prefere ne sait pas que la verte de Kick tient 1.37:1 sur
+  // du blanc.
+  accent: z.enum(['kick', 'cyan', 'violet', 'amber']).default('kick'),
+  // Le theme suit celui de Kick, mesure sur le fond reel du chat. 'dark' et
+  // 'light' le figent pour qui prefere l'inverse de ce que la chaine affiche.
+  chatScheme: z.enum(['auto', 'dark', 'light']).default('auto'),
+
+  // Se souvenir de la langue de lecture par chaine.
+  //
+  // Optionnel et par defaut eteint : allumer ce reglage fait changer la langue
+  // toute seule en changeant de chaine, ce qui est exactement ce qu'on veut
+  // quand on l'a demande et une surprise desagreable sinon.
+  //
+  // La regle est volontairement courte : sur une chaine connue on restaure sa
+  // langue, sur une chaine inconnue on ne touche a rien. Restaurer un defaut
+  // global sur l'inconnue ferait perdre le choix qu'on vient de faire a chaque
+  // clic sur une nouvelle chaine.
+  rememberChannelLang: z.boolean().default(false),
+  // La memoire elle-meme. Bornee a CHANNEL_LANG_MAX, en jetant la plus
+  // ancienne : un objet qui ne se vide jamais finit par ne plus tenir dans le
+  // quota de chrome.storage.sync, et c'est tout le reste des reglages qui
+  // cesse alors de s'enregistrer.
+  channelLangs: z.record(z.string(), z.string()).default({}),
+
   // Engine strategy.
   // local-first : on-device Chromium Translator when the model is downloaded, else cloud.
   // cloud-first : always cloud chain; on-device only if cloud fails.
@@ -99,6 +149,18 @@ export const SettingsSchema = z.object({
   // 'insert' drops the translation into the chat box (you press Enter); 'copy'
   // puts it on the clipboard instead (safe fallback if Kick's editor rejects writes).
   composeInsertMode: z.enum(['insert', 'copy']).default('insert'),
+  // Which key swaps what you typed for its translation.
+  //
+  // Tab is the gesture people already have for "accept the suggestion", and it
+  // is the one asked for. It is also the key that moves focus, so it is taken
+  // ONLY while the preview is on screen, never on an empty box, and Shift+Tab
+  // is always left alone so walking backwards out of the composer still works.
+  // Escape hides the preview and hands Tab straight back.
+  //
+  // 'ctrl-enter' is for a reader who navigates by keyboard and wants Tab to
+  // stay navigation whatever is on screen. Ctrl/Cmd+Enter keeps working in
+  // both modes; this setting only decides whether Tab joins it.
+  composeInsertKey: z.enum(['tab-and-enter', 'ctrl-enter']).default('tab-and-enter'),
 
   // Languages pinned on the chip that sits in Kick's message box, most recent
   // first. Empty by default: the chip then opens straight onto the full list,

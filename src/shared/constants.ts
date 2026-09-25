@@ -110,3 +110,14 @@ export const COMMON_BOTS = new Set([
 
 /** How many languages the composer chip keeps pinned. Four fits 340px; five does not. */
 export const FAVORITE_LANGS_MAX = 4;
+
+/**
+ * Combien de chaines gardent leur langue.
+ *
+ * chrome.storage.sync plafonne a 8 Ko par cle. Une entree pese un slug plus un
+ * code, une quarantaine d'octets ; cinquante en font deux mille, ce qui laisse
+ * la place au reste des reglages dans la meme cle. Au-dela, la plus ancienne
+ * part : quelqu'un qui suit cinquante chaines ne se souvient de toute facon
+ * plus de ce qu'il avait choisi sur la premiere.
+ */
+export const CHANNEL_LANG_MAX = 50;

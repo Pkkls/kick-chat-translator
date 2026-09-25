@@ -18,6 +18,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { chromium } from './playwright.mjs';
 import { auditerDump } from './a11y.mjs';
+import { feuille } from './feuille.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '../..');
@@ -47,7 +48,7 @@ const js = readFileSync(BUNDLE, 'utf8');
 // stylesheet in production resolves to nothing here. Read it off disk, the way
 // bar-live.mjs already does, or the panel renders unstyled and every
 // measurement below is about the wrong thing.
-const css = readFileSync(path.join(ROOT, 'src/content/inject.css'), 'utf8');
+const css = feuille();
 
 // Kick's chat column, at the size measured on a live channel.
 const PAGE = `<!doctype html><html lang="en" data-kt-scheme="dark"><head><meta charset="utf-8">

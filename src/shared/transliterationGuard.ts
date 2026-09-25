@@ -20,8 +20,12 @@
 
 // ─── Detection ──────────────────────────────────────────────────────────────
 
+// 'yue' is spelled out rather than left to fall back on a base code, because it
+// has none: `getSemanticOverride` below tries the full code then everything
+// before the hyphen, and for Cantonese both are 'yue'. A variant that inherits
+// from 'zh' gets this for free; this one does not.
 const NON_LATIN_TARGETS = new Set([
-  'ja', 'zh', 'zh-tw', 'ko', 'ar', 'ru', 'th', 'hi',
+  'ja', 'zh', 'zh-tw', 'yue', 'ko', 'ar', 'ru', 'th', 'hi',
 ]);
 
 function isLatinInput(text: string): boolean {

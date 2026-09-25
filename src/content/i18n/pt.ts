@@ -1,6 +1,6 @@
 /** Chat and floating-bar strings. Generated from the catalogue, do not hand edit. */
 export const pt: Record<string, string> = {
-  barLangTip: 'Traduzir para',
+  barLangDir: 'O chat dos outros espectadores, traduzido para ti',
   barOff: 'Traducao desativada',
   barOn: 'Traduzindo',
   barOnTip: 'Lendo o chat em $LANG$',
@@ -20,6 +20,7 @@ export const pt: Record<string, string> = {
   chipSearch: 'Filtrar idiomas',
   composeAutoTip: 'Auto · voce escreve em $LANG$',
   composeInsertTip: 'Inserir · Ctrl/Cmd+Enter · Esc para fechar',
+  composeInsertTipTab: 'Inserir · Tab · Esc para fechar',
   dropBot: 'o remetente parece um bot',
   dropChannelBlocked: 'este canal esta na sua lista de bloqueio',
   dropChannelNotAllowed: 'este canal nao esta na sua lista permitida',

@@ -27,6 +27,7 @@ import {
   decideComposeAction,
   maskProtected,
   unmaskProtected,
+  toucheEchange,
 } from './composeLogic';
 import {
   insertIntoComposer,
@@ -38,6 +39,7 @@ import {
   setComposeThrottle,
   unmountComposePreview,
   updateComposePreview,
+  setComposeInsertKey,
 } from './composeUi';
 
 const log = rootLogger.child('compose');
@@ -143,6 +145,9 @@ export class ComposeController {
     const wasEnabled = this.settings.composeEnabled;
     const prevTarget = this.settings.composeTargetLang;
     this.settings = next;
+    // Avant les sorties anticipees qui suivent : le marqueur doit suivre le
+    // reglage meme quand l'apercu est simplement rallume ou eteint.
+    setComposeInsertKey(next.composeInsertKey);
 
     if (next.composeEnabled && !wasEnabled) {
       this.start();
@@ -232,6 +237,8 @@ export class ComposeController {
     mountComposePreview(composer, this.resolveTarget(), {
       onInsert: () => this.handleInsert(),
     });
+    // Apres le montage : le marqueur est dans le panneau qui vient d'etre pose.
+    setComposeInsertKey(this.settings.composeInsertKey);
     // The chip lives in Kick's message box, not above it: switching the language
     // you write in must never send the pointer to the top of the chat.
     if (this.settings.showComposerChip) {
@@ -388,10 +395,20 @@ export class ComposeController {
     this.dismiss();
   }
 
-  /** Keyboard: Ctrl/Cmd+Enter inserts the preview; Esc dismisses it — only while shown. */
+  /**
+   * Keyboard: Tab or Ctrl/Cmd+Enter swaps what you typed for its translation,
+   * Esc dismisses it. Only while the preview is on screen.
+   *
+   * TAB IS THE KEY THAT MOVES FOCUS, so taking it is a real cost and the guard
+   * above is what pays for it: with no preview showing there is nothing to
+   * accept and Tab is never touched. Shift+Tab is left alone in every case, so
+   * walking backwards out of the message box always works, and Escape hides
+   * the preview and hands Tab back on the spot. A reader who would rather keep
+   * Tab as navigation at all times sets composeInsertKey to 'ctrl-enter'.
+   */
   private handleKeydown(e: KeyboardEvent): void {
     if (!isComposePreviewVisible()) return;
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+    if (toucheEchange(e, this.settings.composeInsertKey)) {
       e.preventDefault();
       e.stopPropagation();
       this.handleInsert();

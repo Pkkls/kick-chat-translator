@@ -98,11 +98,33 @@ describe('mounting', () => {
 describe('states', () => {
   const read = () => document.querySelector<HTMLElement>('#kt-lang-chip')!;
 
+  // Lit le creneau du code et non le texte de toute la puce : celle-ci porte
+  // aussi une fleche de sens, qui est decorative et aria-hidden. Mesurer le
+  // parent faisait de ce test l'assertion "la puce ne contient rien d'autre",
+  // ce qu'il n'a jamais voulu dire.
   it('shows the ISO code when a language is pinned', () => {
     const { composer } = makeComposerRow();
     mountLangChip(composer, state({ mode: 'pinned', code: 'fr' }), noop);
-    expect(read().textContent).toBe('FR');
+    expect(read().querySelector('.kt-chip-tag')!.textContent).toBe('FR');
     expect(read().dataset.mode).toBe('pinned');
+  });
+
+  // Le drapeau que la puce n'avait pas : la feuille en dessine 43 et seul le
+  // selecteur s'en servait.
+  it('draws the flag of the pinned language beside the code', () => {
+    const { composer } = makeComposerRow();
+    mountLangChip(composer, state({ mode: 'pinned', code: 'fr' }), noop);
+    const flag = read().querySelector<HTMLElement>('.kt-chip-flag')!;
+    expect(flag.className).toContain('kt-flag-fr');
+    expect(flag.hidden).toBe(false);
+  });
+
+  // Pause, chargement et erreur ne sont pas des langues : un drapeau y serait
+  // celui de la langue d'avant, qui n'est plus ce que la puce raconte.
+  it('hides that flag in the states that are not a language', () => {
+    const { composer } = makeComposerRow();
+    mountLangChip(composer, state({ mode: 'off', code: 'fr' }), noop);
+    expect(read().querySelector<HTMLElement>('.kt-chip-flag')!.hidden).toBe(true);
   });
 
   it('carries every mode onto the element', () => {

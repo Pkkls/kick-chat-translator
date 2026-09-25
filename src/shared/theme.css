@@ -1,0 +1,297 @@
+/**
+ * The one place a colour is decided, for all three surfaces.
+ *
+ * Kick's art direction, not ours (.agent/PROMPT.md section 3): green #53FC18,
+ * ink #0B0B0C, surface #171A1C, radii of 4 and 8 and nothing else, one duration
+ * of 0.15s. Those three colours are the anchors below; everything else is
+ * derived from them and says what it is derived for.
+ *
+ * Why this file exists
+ * --------------------
+ * Before it, the same three surfaces carried three palettes. inject.css had no
+ * token block at all: 76 colour literals spread across its rules, plus 41
+ * hand-written `html[data-kt-scheme='light'] .kt-xxx` blocks restating them one
+ * component at a time. tailwind.config.ts held a fourth, separate set of hex
+ * for the popup and the options page. Three generations of the same decisions
+ * had piled up, and it showed as six different dark greens doing one job
+ * (#24700a #297b0c #256e0a #2a810c #1f6108 #35a10f), two hairlines two hundredths
+ * apart, and two reds per theme.
+ *
+ * The scheme is switched by the `data-kt-scheme` attribute the content script
+ * stamps on `html`, never by a media query. Kick owns its own theme, and a
+ * light desktop reading a dark chat was handed the light palette on a dark
+ * ground. `src/content/injector.test.ts` holds that line.
+ *
+ * Contrast, per the same section: a surface may separate at 1.09 and Kick
+ * itself sits at 1.13, so near-identical surfaces are the house style. But a
+ * control's own boundary holds 3:1 and text holds 4.5:1. Every value here is
+ * measured, and the two that did not clear their bar were folded into the
+ * neighbour that did rather than kept for the sake of not moving:
+ *   - #5f5f60 as a control border measured 2.74:1 on the surface, under the 3:1
+ *     the direction asks for. It is now the hairline, at 3.33:1.
+ *   - #e5484d as error text measured 4.47:1, three hundredths under. It is now
+ *     the same red the chat line already used, at 4.92:1.
+ */
+
+:root {
+  /* ── Kick's three, verbatim ───────────────────────────────────────────
+     As channel triples, so Tailwind's opacity modifiers keep working on the
+     popup and the options page: `bg-kick-primary/10` compiles to
+     `rgb(var(--kt-green-rgb) / 0.1)`. */
+  --kt-green-rgb: 83 252 24;
+  --kt-ink-rgb: 11 11 12;
+  --kt-surface-rgb: 23 26 28;
+
+  /* ── Surfaces ─────────────────────────────────────────────────────────
+     Four steps inside 1.13:1 of each other, which is Kick's own separation.
+     Structure is carried by space, not by borders on cards. */
+  --kt-sunken-rgb: 16 16 18;
+  --kt-hover-rgb: 66 71 77;
+
+  /* ── Lines ────────────────────────────────────────────────────────────
+     `line` separates two surfaces and may be as quiet as it likes. `edge` is
+     the boundary of a control and holds 3:1, which is why the old #5f5f60
+     border is gone. `divider` is the quietest of the three, for a separator
+     inside a menu. */
+  --kt-divider-rgb: 38 42 45;
+  --kt-line-rgb: 60 63 67;
+  --kt-edge-rgb: 108 108 109;
+  /* The same boundary under the pointer or held down. */
+  --kt-edge-strong-rgb: 138 144 153;
+
+  /* ── Text ─────────────────────────────────────────────────────────────
+     17.5:1, 7.1:1 and a secondary at 78% of white, which composites to 11.4:1
+     on the surface. All three clear 4.5:1. */
+  --kt-text-rgb: 255 255 255;
+  --kt-muted-rgb: 159 166 173;
+  --kt-text-2-a: 0.78;
+
+  /* ── The green, and what it can and cannot be ─────────────────────────
+     Three roles, because one colour cannot hold all of them:
+       `green`      the mark. A fill, a dot, a focus ring. Never a border and
+                    never a word on a light ground, where it is 1.37:1.
+       `green-edge` a control's boundary. 4.05:1 here, against a bar of 3.
+       `green-ink`  a word. 12.74:1 on this surface, so on the dark theme it is
+                    the brand green itself; the light theme has to darken it.
+     `green-bed` is the tint behind a selected row. */
+  --kt-green-edge-rgb: 53 139 26;
+  --kt-green-ink-rgb: var(--kt-green-rgb);
+  --kt-green-bed-rgb: 28 46 28;
+
+  /* ── Error ────────────────────────────────────────────────────────────
+     Kick publishes no error colour, so this one is ours and says so. */
+  --kt-danger-rgb: 240 78 78;
+  --kt-danger-bed-rgb: 36 22 24;
+  --kt-danger-ink-rgb: 255 158 161;
+
+  /* ── Resolved, for the injected stylesheet ───────────────────────────
+     The chat UI has no Tailwind to expand the triples for it. */
+  --kt-green: rgb(var(--kt-green-rgb));
+  --kt-green-edge: rgb(var(--kt-green-edge-rgb));
+  --kt-green-ink: rgb(var(--kt-green-ink-rgb));
+  --kt-green-bed: rgb(var(--kt-green-bed-rgb));
+  --kt-ink: rgb(var(--kt-ink-rgb));
+  --kt-sunken: rgb(var(--kt-sunken-rgb));
+  --kt-surface: rgb(var(--kt-surface-rgb));
+  --kt-hover: rgb(var(--kt-hover-rgb));
+  --kt-divider: rgb(var(--kt-divider-rgb));
+  --kt-line: rgb(var(--kt-line-rgb));
+  --kt-edge: rgb(var(--kt-edge-rgb));
+  --kt-edge-strong: rgb(var(--kt-edge-strong-rgb));
+  --kt-text: rgb(var(--kt-text-rgb));
+  --kt-text-2: rgb(var(--kt-text-rgb) / var(--kt-text-2-a));
+  --kt-muted: rgb(var(--kt-muted-rgb));
+  --kt-danger: rgb(var(--kt-danger-rgb));
+  --kt-danger-bed: rgb(var(--kt-danger-bed-rgb));
+  --kt-danger-ink: rgb(var(--kt-danger-ink-rgb));
+
+  /* ── The two panels that float over the chat ─────────────────────────
+     Semi-transparent over a page we do not own, so they are written as the
+     surface at an alpha rather than as a flat colour. The bar was
+     rgba(10, 14, 18, .85), which is not Kick's ink; it is now Kick's ink. */
+  --kt-veil: rgb(var(--kt-ink-rgb) / 0.85);
+  --kt-veil-strong: rgb(var(--kt-ink-rgb) / 0.92);
+  --kt-veil-hover: rgb(var(--kt-surface-rgb) / 0.95);
+  /* The dot with translation paused. Grey, and never the only carrier of that
+     state: the label beside it spells it out. */
+  --kt-off: rgb(var(--kt-muted-rgb) / 0.5);
+
+  /* ── Typography ──────────────────────────────────────────────────────
+     TWO SCALES AND NOT ONE, because the sheet has always had two and the
+     line between them is exact. Measured over its 28 sizing declarations:
+     the 9 relative ones are every piece of CONTENT we put inside one of
+     Kick's chat lines, and the 19 in pixels are every surface of our own.
+     Content follows whatever size Kick gives the line it sits in, and a bar
+     or a menu must not. Folding them into one scale would break one or the
+     other, so the two are named apart and neither can be used for the other
+     job by accident. */
+  --kt-font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --kt-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* The provider tag is content, not chrome, and asks for no particular face:
+     the short stack keeps it on whatever the reader's monospace already is. */
+  --kt-font-mono-chat: ui-monospace, monospace;
+
+  /* Chrome, in pixels. Four steps, which is what the sheet uses. */
+  --kt-fs-xs: 10px;
+  --kt-fs-sm: 11px;
+  --kt-fs-md: 12px;
+  --kt-fs-lg: 13px;
+
+  /* Content, relative to the chat line hosting it. A custom property holding
+     `em` is substituted on the element that reads it, so each of these
+     resolves against its own parent, exactly as the literal did. */
+  --kt-fc-xs: 0.62em;
+  --kt-fc-sm: 0.7em;
+  --kt-fc-md: 0.75em;
+  --kt-fc-lg: 0.85em;
+  --kt-fc-xl: 0.9em;
+
+  /* The faces the reader can put the translated line in. Stacks only, never a
+     file: a webfont on a page we do not own costs a network request, and the
+     translated line is the one element that repeats per message.
+     applyTypography() in injector.ts points --kt-tr-font at one of these; it
+     points at nothing for Kick's own face, and the fallback in the rule wins. */
+  --kt-tr-face-system: var(--kt-font-ui);
+  --kt-tr-face-serif: Georgia, 'Times New Roman', Times, serif;
+  --kt-tr-face-mono: var(--kt-font-mono-chat);
+  --kt-tr-face-readable: 'Atkinson Hyperlegible', Verdana, Tahoma, sans-serif;
+
+  /* ── The rest of the direction, so it is stated once ─────────────────
+     scratchpad/audit_da.py fails the build on any other value. */
+  --kt-r-sm: 4px;
+  --kt-r-md: 8px;
+  --kt-dur: 0.15s;
+
+  /* The one elevation in the product, and the direction says there are none.
+     The exception is argued where it is used, on .kt-lang-panel: every other
+     surface sits in the flow and that one covers the chat. It lives here
+     rather than in the rule so the light theme can restate it without a second
+     hand-written block, which is the pattern this whole file exists to end. */
+  --kt-shadow-panel: 0 10px 28px rgb(0 0 0 / 0.5), 0 2px 6px rgb(0 0 0 / 0.35);
+}
+
+/**
+ * The light theme.
+ *
+ * Kick publishes no light palette, so this one is ours, built to the same rules:
+ * the surfaces sit within 1.16:1 of each other, the control edge holds 3.40:1
+ * and every text token clears 4.5:1 on both the surface and the page behind it.
+ *
+ * Only the triples move. Everything resolved from them above follows, because a
+ * custom property is substituted at computed-value time on the element that
+ * declares it, and this is the same element as `:root`.
+ */
+html[data-kt-scheme='light'] {
+  --kt-ink-rgb: 11 11 12;
+  --kt-sunken-rgb: 244 244 245;
+  --kt-surface-rgb: 255 255 255;
+  --kt-hover-rgb: 232 232 233;
+
+  --kt-divider-rgb: 228 228 230;
+  --kt-line-rgb: 207 207 209;
+  --kt-edge-rgb: 139 139 140;
+  --kt-edge-strong-rgb: 94 94 95;
+
+  /* Ink on paper, and the two quiet steps under it: 19.7, 6.5 and 5.0 on white,
+     17.9, 5.9 and 4.6 on the page. */
+  --kt-text-rgb: 11 11 12;
+  --kt-muted-rgb: 94 94 95;
+  /* Near-black at 78% would be grey mush on white; the secondary text here is
+     the muted token at full strength instead. */
+  --kt-text-2-a: 1;
+
+  /* The border keeps its own value at 3.36:1, over a bar of 3. The word gets
+     one dark green where the sheet had five doing that job (#24700a #297b0c
+     #256e0a #2a810c #1f6108): 6.18:1 on white, 5.62:1 on the page. The brand
+     green stays #53FC18 and stays a fill, because it is 1.37:1 on paper. */
+  --kt-green-edge-rgb: 53 161 15;
+  --kt-green-ink-rgb: 36 112 10;
+  --kt-green-bed-rgb: 215 245 205;
+
+  --kt-danger-rgb: 180 35 42;
+  --kt-danger-bed-rgb: 251 234 235;
+  --kt-danger-ink-rgb: 142 26 32;
+
+  --kt-text-2: rgb(var(--kt-muted-rgb));
+  --kt-veil: rgb(245 247 250 / 0.92);
+  --kt-veil-strong: rgb(var(--kt-surface-rgb) / 0.96);
+  --kt-veil-hover: rgb(235 238 242 / 0.98);
+  --kt-off: rgb(var(--kt-muted-rgb) / 0.5);
+
+  /* The same elevation replayed for paper: that opacity over a light chat is a
+     grey smudge rather than a lift. */
+  --kt-shadow-panel: 0 10px 28px rgb(15 23 42 / 0.18), 0 2px 6px rgb(15 23 42 / 0.12);
+}
+
+/**
+ * Les accents, et pourquoi ce n'est pas un choix libre de couleur.
+ *
+ * Toute la feuille resout sa couleur d'accent depuis quatre triplets. Les
+ * redefinir suffit a repeindre l'extension entiere, ce qui rend un selecteur
+ * libre techniquement facile et produit surtout des combinaisons illisibles :
+ * la marque de Kick tient 12.74:1 sur la surface sombre et 1.37:1 sur le
+ * blanc, ce qui est exactement pourquoi `green` y est un aplat et jamais un
+ * mot. Un lecteur qui choisit son bleu prefere ne sait pas cela.
+ *
+ * Alors le choix est ferme et chaque valeur est MESUREE, par
+ * scratchpad/accents.py, contre les barres que l'en-tete de ce fichier pose :
+ * un bord tient 3:1, un mot 4.5:1, et le mot doit les tenir contre la surface,
+ * contre la page ET contre le lit sur lequel il est le plus souvent pose. Ce
+ * dernier a ete oublie au premier tour et faisait tomber trois teintes sur
+ * quatre a 4.2 la ou ca compte.
+ *
+ * Deux attributs plutot que l'ordre du fichier : `[data-kt-scheme][data-kt-accent]`
+ * bat `[data-kt-scheme]` seul par specificite, donc ces blocs peuvent vivre
+ * n'importe ou sans qu'un deplacement les casse.
+ */
+
+html[data-kt-scheme='dark'][data-kt-accent='cyan'] {
+  /* 7.02:1 sur la surface */
+  --kt-green-rgb: 5 179 214;
+  --kt-green-ink-rgb: var(--kt-green-rgb);
+  /* 3.01:1, bord de controle */
+  --kt-green-edge-rgb: 18 111 129;
+  --kt-green-bed-rgb: 23 40 43;
+}
+
+html[data-kt-scheme='light'][data-kt-accent='cyan'] {
+  /* 3.40:1 sur blanc, 3.10:1 sur la page */
+  --kt-green-edge-rgb: 20 152 179;
+  /* 5.42:1 sur blanc, 4.53:1 sur le lit */
+  --kt-green-ink-rgb: 11 116 137;
+  --kt-green-bed-rgb: 215 239 244;
+}
+
+html[data-kt-scheme='dark'][data-kt-accent='violet'] {
+  /* 7.25:1 sur la surface */
+  --kt-green-rgb: 190 146 252;
+  --kt-green-ink-rgb: var(--kt-green-rgb);
+  /* 3.05:1, bord de controle */
+  --kt-green-edge-rgb: 129 59 227;
+  --kt-green-bed-rgb: 31 23 43;
+}
+
+html[data-kt-scheme='light'][data-kt-accent='violet'] {
+  /* 5.00:1 sur blanc, 4.55:1 sur la page */
+  --kt-green-edge-rgb: 139 71 235;
+  /* 7.11:1 sur blanc, 5.18:1 sur le lit */
+  --kt-green-ink-rgb: 109 19 236;
+  --kt-green-bed-rgb: 227 215 244;
+}
+
+html[data-kt-scheme='dark'][data-kt-accent='amber'] {
+  /* 7.08:1 sur la surface */
+  --kt-green-rgb: 229 147 6;
+  --kt-green-ink-rgb: var(--kt-green-rgb);
+  /* 3.10:1, bord de controle */
+  --kt-green-edge-rgb: 138 95 20;
+  --kt-green-bed-rgb: 43 36 23;
+}
+
+html[data-kt-scheme='light'][data-kt-accent='amber'] {
+  /* 3.40:1 sur blanc, 3.09:1 sur la page */
+  --kt-green-edge-rgb: 188 127 21;
+  /* 5.59:1 sur blanc, 4.65:1 sur le lit */
+  --kt-green-ink-rgb: 142 94 11;
+  --kt-green-bed-rgb: 244 233 215;
+}

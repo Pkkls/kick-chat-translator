@@ -1,6 +1,6 @@
 /** Chat and floating-bar strings. Generated from the catalogue, do not hand edit. */
 export const tr: Record<string, string> = {
-  barLangTip: 'Su dile cevir',
+  barLangDir: 'Diğer izleyicilerin sohbeti, senin için çevrildi',
   barOff: 'Ceviri kapali',
   barOn: 'Ceviriliyor',
   barOnTip: 'Sohbet $LANG$ dilinde okunuyor',
@@ -20,6 +20,7 @@ export const tr: Record<string, string> = {
   chipSearch: 'Dilleri filtrele',
   composeAutoTip: 'Otomatik · $LANG$ dilinde yaziyorsun',
   composeInsertTip: 'Ekle · Ctrl/Cmd+Enter · Kapatmak icin Esc',
+  composeInsertTipTab: 'Ekle · Tab · Kapatmak için Esc',
   dropBot: 'gonderen bot gibi gorunuyor',
   dropChannelBlocked: 'bu kanal engelli listende',
   dropChannelNotAllowed: 'bu kanal izin listende degil',
