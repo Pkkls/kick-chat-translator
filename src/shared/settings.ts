@@ -48,6 +48,18 @@ export const SettingsSchema = z.object({
   // separate I from l from 1 better than the average UI face. Naming it after
   // a condition it cannot guarantee to serve would be a promise we do not keep.
   translatedFont: z.enum(['inherit', 'system', 'serif', 'mono', 'readable']).default('inherit'),
+  // L'air autour du bloc traduit. 'normal' reproduit exactement les marges que
+  // la feuille portait avant que ce reglage existe.
+  translatedDensity: z.enum(['compact', 'normal', 'roomy']).default('normal'),
+
+  // L'accent, ferme a quatre valeurs mesurees plutot qu'ouvert a une couleur
+  // libre : voir l'en-tete des blocs d'accent dans theme.css. Un lecteur qui
+  // choisit son bleu prefere ne sait pas que la verte de Kick tient 1.37:1 sur
+  // du blanc.
+  accent: z.enum(['kick', 'cyan', 'violet', 'amber']).default('kick'),
+  // Le theme suit celui de Kick, mesure sur le fond reel du chat. 'dark' et
+  // 'light' le figent pour qui prefere l'inverse de ce que la chaine affiche.
+  chatScheme: z.enum(['auto', 'dark', 'light']).default('auto'),
 
   // Engine strategy.
   // local-first : on-device Chromium Translator when the model is downloaded, else cloud.

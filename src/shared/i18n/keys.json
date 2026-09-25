@@ -162,5 +162,18 @@
   "Serif",
   "Monospace",
   "High legibility",
-  "Tab swaps my message for its translation (off = Ctrl/Cmd+Enter only)"
+  "Tab swaps my message for its translation (off = Ctrl/Cmd+Enter only)",
+  "Density",
+  "Compact",
+  "Normal",
+  "Roomy",
+  "Accent colour",
+  "Kick green",
+  "Cyan",
+  "Violet",
+  "Amber",
+  "Chat theme",
+  "Follow Kick",
+  "Always dark",
+  "Always light"
 ]

@@ -11,9 +11,11 @@
    it. */
 .kt-translation {
   display: block;
-  margin-top: 2px;
-  padding-block: 2px;
-  padding-inline: 8px 6px;
+  /* Les trois marges du bloc, pilotees ensemble par data-kt-density. Les replis
+     sont les valeurs que la regle portait en dur, donc 'normal' ne bouge rien. */
+  margin-top: var(--kt-tr-gap, 2px);
+  padding-block: var(--kt-tr-pad-b, 2px);
+  padding-inline: var(--kt-tr-pad-i, 8px) 6px;
   background: rgb(var(--kt-green-rgb) / 0.06);
   border-inline-start: 2px solid rgb(var(--kt-green-rgb) / 0.55);
   border-start-start-radius: 0;
@@ -1683,4 +1685,20 @@ html[data-kt-scheme='light'] .kt-chip-menu .kt-flag {
   .kt-lang-panel {
     transition: none !important;
   }
+}
+
+/* ── La densite du bloc traduit ────────────────────────────────────────
+   Trois crans. 'normal' n'a pas de bloc : c'est l'absence d'attribut, et les
+   replis de la regle. Un chat qui defile vite se lit mieux serre, un chat lent
+   se lit mieux aere, et aucun des deux n'est le bon reglage pour l'autre. */
+html[data-kt-density='compact'] .kt-translation {
+  --kt-tr-gap: 1px;
+  --kt-tr-pad-b: 0px;
+  --kt-tr-pad-i: 6px;
+}
+
+html[data-kt-density='roomy'] .kt-translation {
+  --kt-tr-gap: 4px;
+  --kt-tr-pad-b: 5px;
+  --kt-tr-pad-i: 10px;
 }

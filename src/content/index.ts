@@ -10,6 +10,7 @@ import {
   applyChatScheme,
   applyShowOriginal,
   applyTypography,
+  applyAccent,
   ensureStyles,
   mountFloatingBar,
   removeAllArtifacts,
@@ -53,15 +54,16 @@ async function main(): Promise<void> {
   setContentLocale(settings.uiLang);
 
   ensureStyles();
-  applyChatScheme();
+  applyChatScheme(document.body, settings.chatScheme);
   applyShowOriginal(settings.showOriginal);
   applyTypography(settings);
+  applyAccent(settings.accent);
 
   // Kick's theme switch repaints the page without reloading it, so the stamp
   // has to follow. Watching the root's class and style attributes is enough:
   // every theme system on the site flips one of the two, and the probe is a
   // handful of getComputedStyle calls.
-  const themeWatch = new MutationObserver(() => applyChatScheme());
+  const themeWatch = new MutationObserver(() => applyChatScheme(document.body, settings.chatScheme));
   for (const node of [document.documentElement, document.body]) {
     themeWatch.observe(node, {
       attributes: true,
@@ -386,6 +388,8 @@ async function main(): Promise<void> {
     // Les trois reglages de lisibilite sont des proprietes sur la racine : les
     // reposer suffit, rien n'est a redessiner ligne par ligne.
     applyTypography(next);
+    applyAccent(next.accent);
+    applyChatScheme(document.body, next.chatScheme);
     rootLogger.setEnabled(next.debug);
     // Ahead of everything that redraws below, so the bar and the chip come back
     // in the language that was just chosen rather than one change late.

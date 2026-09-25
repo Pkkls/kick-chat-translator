@@ -147,8 +147,16 @@ export function ensureStyles(): void {
  *
  * Returns the scheme so a caller can log or test it.
  */
-export function applyChatScheme(root: Element | null = document.body): 'light' | 'dark' {
-  const scheme = detectScheme(root) ?? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+export function applyChatScheme(
+  root: Element | null = document.body,
+  force: 'auto' | 'dark' | 'light' = 'auto',
+): 'light' | 'dark' {
+  // Le forcage court-circuite la mesure, il ne la corrige pas : un lecteur qui
+  // fige le theme le veut fige, y compris quand Kick change le sien sous lui.
+  const scheme =
+    force !== 'auto'
+      ? force
+      : (detectScheme(root) ?? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'));
   document.documentElement.setAttribute('data-kt-scheme', scheme);
   return scheme;
 }
@@ -214,6 +222,7 @@ export function applyTypography(s: {
   translatedFontScale: number;
   translatedLineHeight: number;
   translatedFont: string;
+  translatedDensity?: string;
 }): void {
   const style = document.documentElement.style;
   style.setProperty('--kt-tr-scale', String(s.translatedFontScale));
@@ -221,6 +230,29 @@ export function applyTypography(s: {
   const face = FACES[s.translatedFont];
   if (face) style.setProperty('--kt-tr-font', face);
   else style.removeProperty('--kt-tr-font');
+  // La densite passe par un attribut et non par trois proprietes : les trois
+  // marges bougent ensemble, et la feuille est le bon endroit pour dire de
+  // combien. Absente ou inconnue, la valeur n'est pas ecrite et la regle de
+  // base, qui est 'normal', s'applique.
+  const d = s.translatedDensity;
+  if (d === 'compact' || d === 'roomy') {
+    document.documentElement.setAttribute('data-kt-density', d);
+  } else {
+    document.documentElement.removeAttribute('data-kt-density');
+  }
+}
+
+/**
+ * L'accent, pose en attribut sur la racine.
+ *
+ * Un attribut et non des proprietes : les quatre triplets d'un accent doivent
+ * changer ENSEMBLE, et theme.css les tient par paires sombre/clair mesurees.
+ * Les poser un par un depuis ici serait recopier ces mesures dans du TypeScript
+ * ou personne ne les relirait.
+ */
+export function applyAccent(accent: string): void {
+  if (accent && accent !== 'kick') document.documentElement.setAttribute('data-kt-accent', accent);
+  else document.documentElement.removeAttribute('data-kt-accent');
 }
 
 /**

@@ -125,7 +125,40 @@ export function DisplaySection({ settings, onPatch }: Props) {
           </select>
         </div>
 
+        <SelectRow
+          label={t('Density')}
+          value={settings.translatedDensity}
+          options={[
+            ['compact', t('Compact')],
+            ['normal', t('Normal')],
+            ['roomy', t('Roomy')],
+          ]}
+          onChange={(v) => onPatch({ translatedDensity: v as Settings['translatedDensity'] })}
+        />
+
         <StylePreview settings={settings} />
+
+        <SelectRow
+          label={t('Accent colour')}
+          value={settings.accent}
+          options={[
+            ['kick', t('Kick green')],
+            ['cyan', t('Cyan')],
+            ['violet', t('Violet')],
+            ['amber', t('Amber')],
+          ]}
+          onChange={(v) => onPatch({ accent: v as Settings['accent'] })}
+        />
+        <SelectRow
+          label={t('Chat theme')}
+          value={settings.chatScheme}
+          options={[
+            ['auto', t('Follow Kick')],
+            ['dark', t('Always dark')],
+            ['light', t('Always light')],
+          ]}
+          onChange={(v) => onPatch({ chatScheme: v as Settings['chatScheme'] })}
+        />
 
         <ToggleRow
           checked={settings.showFloatingBar}
@@ -287,6 +320,37 @@ function StylePreview({ settings }: { settings: Settings }) {
  * onInput et non onChange : le reglage doit se voir pendant qu'on tire le
  * curseur, sinon il faut le lacher pour savoir ou on en est.
  */
+/** Une ligne libelle plus liste, pour les reglages a trois ou quatre valeurs. */
+function SelectRow({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: [string, string][];
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div class="kt-row">
+      <label class="kt-label">{label}</label>
+      <select
+        aria-label={label}
+        class="kt-select"
+        value={value}
+        onChange={(e) => onChange((e.target as HTMLSelectElement).value)}
+      >
+        {options.map(([v, l]) => (
+          <option key={v} value={v}>
+            {l}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
 function RangeRow({
   label,
   value,

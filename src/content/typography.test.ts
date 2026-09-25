@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { applyTypography } from './injector';
+import { applyAccent, applyChatScheme, applyTypography } from './injector';
 import { defaultSettings } from '~/shared/settings';
 
 /**
@@ -133,5 +133,137 @@ describe('typography scale', () => {
     for (const n of ['--kt-fc-xs', '--kt-fc-sm', '--kt-fc-md', '--kt-fc-lg', '--kt-fc-xl']) {
       expect(valeur(n)).toMatch(/^[\d.]+em$/);
     }
+  });
+});
+
+/**
+ * Les accents, verifies contre le fichier et non contre le script qui les a
+ * ecrits.
+ *
+ * scratchpad/accents.py a calcule ces valeurs, mais un test qui le rejouerait
+ * ne prouverait que sa propre coherence. Celui-ci relit les triplets DANS
+ * theme.css et refait les ratios : si quelqu'un retouche un nombre a la main,
+ * ou si un accent arrive sans avoir ete mesure, il rougit.
+ */
+describe('accents', () => {
+  const theme = feuille('src/shared/theme.css');
+
+  const canal = (v: number): number => {
+    const x = v / 255;
+    return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4;
+  };
+  const lum = (c: number[]): number =>
+    0.2126 * canal(c[0]!) + 0.7152 * canal(c[1]!) + 0.0722 * canal(c[2]!);
+  const ratio = (a: number[], b: number[]): number => {
+    const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x) as [number, number];
+    return (hi + 0.05) / (lo + 0.05);
+  };
+
+  /**
+   * Le triplet d'un jeton dans un bloc.
+   *
+   * Decoupe a la main plutot qu'avec un selecteur echappe en regex : ces
+   * selecteurs portent des crochets et des apostrophes, et l'echappement est
+   * exactement ce que le shell du depot abime en chemin.
+   */
+  function jeton(selecteur: string, nom: string): number[] {
+    const i = theme.indexOf(selecteur);
+    expect(i, `bloc absent : ${selecteur}`).toBeGreaterThan(-1);
+    const bloc = theme.slice(i, theme.indexOf('}', i));
+    const j = bloc.indexOf(`${nom}:`);
+    expect(j, `${nom} absent de ${selecteur}`).toBeGreaterThan(-1);
+    const brut = bloc.slice(j + nom.length + 1, bloc.indexOf(';', j)).trim();
+    return brut.split(' ').map(Number);
+  }
+
+  const SOMBRE = [23, 26, 28];
+  const BLANC = [255, 255, 255];
+  const PAGE = [244, 244, 245];
+  // 'kick' n'a pas de bloc : c'est l'absence d'attribut, donc :root.
+  const ACCENTS = ['cyan', 'violet', 'amber'];
+
+  it('gives every accent the schema offers a block in both schemes', () => {
+    const manquants: string[] = [];
+    for (const a of ACCENTS) {
+      for (const s of ['dark', 'light']) {
+        if (!theme.includes(`html[data-kt-scheme='${s}'][data-kt-accent='${a}']`)) {
+          manquants.push(`${a}/${s}`);
+        }
+      }
+    }
+    expect(manquants).toEqual([]);
+  });
+
+  // Les barres sont celles que l'en-tete de theme.css pose : un bord de
+  // controle tient 3:1, un mot 4.5:1. Le mot doit les tenir contre la surface,
+  // contre la page ET contre le lit, qui est le fond sur lequel il est le plus
+  // souvent pose. Ce dernier a ete oublie au premier calcul et faisait tomber
+  // trois teintes sur quatre a 4.2 la ou ca compte.
+  it.each(ACCENTS)('keeps %s above every bar it has to clear', (a) => {
+    const sombre = `html[data-kt-scheme='dark'][data-kt-accent='${a}']`;
+    const clair = `html[data-kt-scheme='light'][data-kt-accent='${a}']`;
+
+    expect(ratio(jeton(sombre, '--kt-green-rgb'), SOMBRE)).toBeGreaterThanOrEqual(4.5);
+    expect(ratio(jeton(sombre, '--kt-green-edge-rgb'), SOMBRE)).toBeGreaterThanOrEqual(3);
+    expect(ratio(BLANC, jeton(sombre, '--kt-green-bed-rgb'))).toBeGreaterThanOrEqual(4.5);
+
+    const bordL = jeton(clair, '--kt-green-edge-rgb');
+    const encreL = jeton(clair, '--kt-green-ink-rgb');
+    const litL = jeton(clair, '--kt-green-bed-rgb');
+    expect(ratio(bordL, BLANC)).toBeGreaterThanOrEqual(3);
+    expect(ratio(bordL, PAGE)).toBeGreaterThanOrEqual(3);
+    expect(ratio(encreL, BLANC)).toBeGreaterThanOrEqual(4.5);
+    expect(ratio(encreL, PAGE)).toBeGreaterThanOrEqual(4.5);
+    expect(ratio(encreL, litL)).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('writes the accent as an attribute, and clears it for Kick', () => {
+    applyAccent('violet');
+    expect(document.documentElement.getAttribute('data-kt-accent')).toBe('violet');
+    applyAccent('kick');
+    expect(document.documentElement.getAttribute('data-kt-accent')).toBeNull();
+  });
+});
+
+/** La densite du bloc traduit, et le theme fige. */
+describe('density and scheme', () => {
+  beforeEach(() => {
+    document.documentElement.removeAttribute('data-kt-density');
+  });
+
+  const base = { translatedFontScale: 1, translatedLineHeight: 1.35, translatedFont: 'inherit' };
+
+  // 'normal' n'a pas de bloc : c'est l'absence d'attribut, donc les replis de
+  // la regle, qui sont les marges que la feuille portait en dur. Lui donner un
+  // bloc voudrait dire ecrire ces trois valeurs une seconde fois, et deux
+  // copies d'un defaut finissent toujours par diverger.
+  it('writes no attribute for the default density', () => {
+    applyTypography({ ...base, translatedDensity: 'normal' });
+    expect(document.documentElement.hasAttribute('data-kt-density')).toBe(false);
+  });
+
+  it.each(['compact', 'roomy'])('writes %s, and the sheet answers it', (d) => {
+    applyTypography({ ...base, translatedDensity: d });
+    expect(document.documentElement.getAttribute('data-kt-density')).toBe(d);
+    expect(feuille('src/content/inject.css')).toContain(
+      `html[data-kt-density='${d}'] .kt-translation`,
+    );
+  });
+
+  it('keeps the untouched sheet on the values it used to hold', () => {
+    const css = feuille('src/content/inject.css');
+    expect(css).toContain('margin-top: var(--kt-tr-gap, 2px);');
+    expect(css).toContain('padding-block: var(--kt-tr-pad-b, 2px);');
+    expect(css).toContain('padding-inline: var(--kt-tr-pad-i, 8px) 6px;');
+  });
+
+  // Figer veut dire figer : la mesure du fond de Kick est court-circuitee et
+  // non corrigee, sinon un changement de theme de la chaine reprendrait la
+  // main sur un lecteur qui a justement demande le contraire.
+  it('forces the scheme past what the chat actually looks like', () => {
+    expect(applyChatScheme(document.body, 'light')).toBe('light');
+    expect(document.documentElement.getAttribute('data-kt-scheme')).toBe('light');
+    expect(applyChatScheme(document.body, 'dark')).toBe('dark');
+    expect(document.documentElement.getAttribute('data-kt-scheme')).toBe('dark');
   });
 });

@@ -222,3 +222,76 @@ html[data-kt-scheme='light'] {
      grey smudge rather than a lift. */
   --kt-shadow-panel: 0 10px 28px rgb(15 23 42 / 0.18), 0 2px 6px rgb(15 23 42 / 0.12);
 }
+
+/**
+ * Les accents, et pourquoi ce n'est pas un choix libre de couleur.
+ *
+ * Toute la feuille resout sa couleur d'accent depuis quatre triplets. Les
+ * redefinir suffit a repeindre l'extension entiere, ce qui rend un selecteur
+ * libre techniquement facile et produit surtout des combinaisons illisibles :
+ * la marque de Kick tient 12.74:1 sur la surface sombre et 1.37:1 sur le
+ * blanc, ce qui est exactement pourquoi `green` y est un aplat et jamais un
+ * mot. Un lecteur qui choisit son bleu prefere ne sait pas cela.
+ *
+ * Alors le choix est ferme et chaque valeur est MESUREE, par
+ * scratchpad/accents.py, contre les barres que l'en-tete de ce fichier pose :
+ * un bord tient 3:1, un mot 4.5:1, et le mot doit les tenir contre la surface,
+ * contre la page ET contre le lit sur lequel il est le plus souvent pose. Ce
+ * dernier a ete oublie au premier tour et faisait tomber trois teintes sur
+ * quatre a 4.2 la ou ca compte.
+ *
+ * Deux attributs plutot que l'ordre du fichier : `[data-kt-scheme][data-kt-accent]`
+ * bat `[data-kt-scheme]` seul par specificite, donc ces blocs peuvent vivre
+ * n'importe ou sans qu'un deplacement les casse.
+ */
+
+html[data-kt-scheme='dark'][data-kt-accent='cyan'] {
+  /* 7.02:1 sur la surface */
+  --kt-green-rgb: 5 179 214;
+  --kt-green-ink-rgb: var(--kt-green-rgb);
+  /* 3.01:1, bord de controle */
+  --kt-green-edge-rgb: 18 111 129;
+  --kt-green-bed-rgb: 23 40 43;
+}
+
+html[data-kt-scheme='light'][data-kt-accent='cyan'] {
+  /* 3.40:1 sur blanc, 3.10:1 sur la page */
+  --kt-green-edge-rgb: 20 152 179;
+  /* 5.42:1 sur blanc, 4.53:1 sur le lit */
+  --kt-green-ink-rgb: 11 116 137;
+  --kt-green-bed-rgb: 215 239 244;
+}
+
+html[data-kt-scheme='dark'][data-kt-accent='violet'] {
+  /* 7.25:1 sur la surface */
+  --kt-green-rgb: 190 146 252;
+  --kt-green-ink-rgb: var(--kt-green-rgb);
+  /* 3.05:1, bord de controle */
+  --kt-green-edge-rgb: 129 59 227;
+  --kt-green-bed-rgb: 31 23 43;
+}
+
+html[data-kt-scheme='light'][data-kt-accent='violet'] {
+  /* 5.00:1 sur blanc, 4.55:1 sur la page */
+  --kt-green-edge-rgb: 139 71 235;
+  /* 7.11:1 sur blanc, 5.18:1 sur le lit */
+  --kt-green-ink-rgb: 109 19 236;
+  --kt-green-bed-rgb: 227 215 244;
+}
+
+html[data-kt-scheme='dark'][data-kt-accent='amber'] {
+  /* 7.08:1 sur la surface */
+  --kt-green-rgb: 229 147 6;
+  --kt-green-ink-rgb: var(--kt-green-rgb);
+  /* 3.10:1, bord de controle */
+  --kt-green-edge-rgb: 138 95 20;
+  --kt-green-bed-rgb: 43 36 23;
+}
+
+html[data-kt-scheme='light'][data-kt-accent='amber'] {
+  /* 3.40:1 sur blanc, 3.09:1 sur la page */
+  --kt-green-edge-rgb: 188 127 21;
+  /* 5.59:1 sur blanc, 4.65:1 sur le lit */
+  --kt-green-ink-rgb: 142 94 11;
+  --kt-green-bed-rgb: 244 233 215;
+}
