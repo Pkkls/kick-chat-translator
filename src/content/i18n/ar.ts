@@ -1,6 +1,6 @@
 /** Chat and floating-bar strings. Generated from the catalogue, do not hand edit. */
 export const ar: Record<string, string> = {
-  barLangTip: 'الترجمة إلى',
+  barLangDir: 'دردشة المشاهدين الآخرين، مترجمة لك',
   barOff: 'الترجمة متوقفة',
   barOn: 'جارٍ الترجمة',
   barOnTip: 'قراءة الدردشة بـ $LANG$',

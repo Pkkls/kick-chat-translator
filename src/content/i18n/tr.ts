@@ -1,6 +1,6 @@
 /** Chat and floating-bar strings. Generated from the catalogue, do not hand edit. */
 export const tr: Record<string, string> = {
-  barLangTip: 'Su dile cevir',
+  barLangDir: 'Diğer izleyicilerin sohbeti, senin için çevrildi',
   barOff: 'Ceviri kapali',
   barOn: 'Ceviriliyor',
   barOnTip: 'Sohbet $LANG$ dilinde okunuyor',

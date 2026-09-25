@@ -165,6 +165,19 @@ function makeChip(): HTMLButtonElement {
   chip.setAttribute('aria-expanded', 'false');
   chip.setAttribute('aria-controls', MENU_ID);
 
+  // Le pendant de la fleche de la barre du haut : celle-ci part de nous.
+  const dir = document.createElement('span');
+  dir.className = 'kt-chip-dir';
+  dir.textContent = '\u2191';
+  dir.setAttribute('aria-hidden', 'true');
+  chip.appendChild(dir);
+
+  // La puce n'avait aucun drapeau, juste deux lettres, alors que la feuille en
+  // dessine 43. Peint par paintChip, qui suit la langue.
+  const flag = document.createElement('span');
+  flag.className = 'kt-chip-flag';
+  chip.appendChild(flag);
+
   const tag = document.createElement('span');
   tag.className = 'kt-chip-tag';
   chip.appendChild(tag);
@@ -593,6 +606,18 @@ export function updateLangChip(state: ChipState): void {
   const { chip } = ui;
   const tag = chip.querySelector<HTMLElement>('.kt-chip-tag');
   if (!tag) return;
+
+  // Le drapeau suit la langue, et disparait pour les etats qui n'en sont pas
+  // une : en pause, en cours, en erreur, il n'y a pas de langue a montrer.
+  const flag = chip.querySelector<HTMLElement>('.kt-chip-flag');
+  if (flag) {
+    const fc =
+      state.mode === 'off' || state.mode === 'loading' || state.mode === 'error'
+        ? undefined
+        : flagClass(state.code ?? '');
+    flag.className = fc ? `kt-chip-flag ${fc}` : 'kt-chip-flag';
+    flag.hidden = !fc;
+  }
 
   chip.dataset.mode = state.mode;
   switch (state.mode) {

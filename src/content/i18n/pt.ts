@@ -1,6 +1,6 @@
 /** Chat and floating-bar strings. Generated from the catalogue, do not hand edit. */
 export const pt: Record<string, string> = {
-  barLangTip: 'Traduzir para',
+  barLangDir: 'O chat dos outros espectadores, traduzido para ti',
   barOff: 'Traducao desativada',
   barOn: 'Traduzindo',
   barOnTip: 'Lendo o chat em $LANG$',

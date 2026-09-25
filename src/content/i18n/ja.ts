@@ -1,6 +1,6 @@
 /** Chat and floating-bar strings. Generated from the catalogue, do not hand edit. */
 export const ja: Record<string, string> = {
-  barLangTip: '訳す言語',
+  barLangDir: '他の視聴者のチャットをあなた向けに翻訳',
   barOff: '翻訳オフ',
   barOn: '翻訳中',
   barOnTip: 'チャットを $LANG$ で読んでいます',

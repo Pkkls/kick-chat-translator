@@ -1,6 +1,6 @@
 /** Chat and floating-bar strings. Generated from the catalogue, do not hand edit. */
 export const ko: Record<string, string> = {
-  barLangTip: '번역할 언어',
+  barLangDir: '다른 시청자의 채팅을 나에게 맞게 번역',
   barOff: '번역 꺼짐',
   barOn: '번역 중',
   barOnTip: '채팅을 $LANG$ 로 읽는 중',

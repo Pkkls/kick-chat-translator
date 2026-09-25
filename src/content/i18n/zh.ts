@@ -1,6 +1,6 @@
 /** Chat and floating-bar strings. Generated from the catalogue, do not hand edit. */
 export const zh: Record<string, string> = {
-  barLangTip: '翻译为',
+  barLangDir: '其他观众的聊天，为你翻译',
   barOff: '翻译已关闭',
   barOn: '翻译中',
   barOnTip: '正以 $LANG$ 阅读聊天',

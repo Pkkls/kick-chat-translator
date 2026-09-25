@@ -1,7 +1,7 @@
 import injectCss from './inject.css?inline';
 import type { TranslationResult } from '~/shared/types';
 import type { Settings } from '~/shared/settings';
-import { getLang, langFlag, resolveBrowserLang } from '~/shared/languages';
+import { getLang, resolveBrowserLang } from '~/shared/languages';
 import { flagClass } from '~/shared/flags';
 import {
   makeLangMenu,
@@ -278,7 +278,7 @@ export function inject(
   onRetry?: () => void,
 ): void {
   removeAllArtifacts(targetEl);
-  const flag = settings.showSourceBadge ? langFlag(result.detectedLang) : '';
+  const flag = settings.showSourceBadge ? result.detectedLang : '';
   const provider = settings.showProviderBadge ? result.provider : '';
 
   const style = settings.displayStyle;
@@ -300,17 +300,38 @@ export function inject(
   targetEl.appendChild(el);
 }
 
+/**
+ * Le badge de langue d'une ligne : un drapeau dessine, ou les deux lettres.
+ *
+ * LE CHAMP `flag` DES 44 LANGUES CONTIENT DU TEXTE, pas un emoji. Le
+ * commentaire qui vivait ici disait l'inverse et decrivait un etat disparu :
+ * getLang('ja').flag vaut la chaine 'JA'. Pendant ce temps la feuille dessine
+ * 43 drapeaux en CSS dont seul le selecteur de langues se servait. Deux
+ * systemes, et le bon n'etait pas branche sur les messages.
+ *
+ * Le repli texte reste pour une langue sans drapeau, parce qu'un drapeau
+ * designe un pays et pas une langue : il en manque, et deux lettres valent
+ * mieux qu'un carre vide.
+ */
+function badgeLangue(code: string): HTMLElement {
+  const el = document.createElement('span');
+  const fc = flagClass(code);
+  if (fc) {
+    // Les deux classes : `kt-src-flag` porte la place du badge dans la ligne,
+    // `kt-flag` le dessin. La feuille neutralise le fond et la marge interieure
+    // du premier quand le second est la.
+    el.className = `kt-src-flag ${fc}`;
+  } else {
+    el.className = 'kt-src-flag';
+    el.textContent = code.toUpperCase().slice(0, 2);
+  }
+  return el;
+}
+
 function withBadges(text: string, flag: string, provider: string, detectedLang?: string): DocumentFragment {
   const frag = document.createDocumentFragment();
   if (flag) {
-    const f = document.createElement('span');
-    // Not `kt-flag`: that class now draws a 16x12 flag with a background
-    // gradient, and this badge carries TEXT (langFlag returns an emoji, which
-    // Windows renders as the two letters). Sharing the name made the drawn-flag
-    // rule size and dim this span -- opacity .65 and a 4px side padding leaked
-    // the other way too, onto every real flag.
-    f.className = 'kt-src-flag';
-    f.textContent = flag;
+    const f = badgeLangue(flag);
     if (detectedLang) {
       f.title = msg('flagFrom', 'from $LANG$', [
         getLang(detectedLang)?.native ?? detectedLang.toUpperCase(),
@@ -431,7 +452,7 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
   const langPick = document.createElement('button');
   langPick.type = 'button';
   langPick.className = 'kt-float-lang';
-  langPick.title = msg('barLangTip', 'Translate into');
+  langPick.title = msg('barLangDir', 'Chat from other viewers, translated for you');
   langPick.setAttribute('aria-haspopup', 'listbox');
   langPick.setAttribute('aria-expanded', 'false');
 
@@ -441,6 +462,16 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
 
   const paintLang = (code: string): void => {
     langPick.textContent = '';
+    // LA DIRECTION, A L'ECRAN. Cette barre traduit le chat qu'on RECOIT, la
+    // puce du bas traduit ce qu'on ECRIT, et rien ne le disait : le sens ne
+    // vivait que dans des `title` que personne ne survole. Une fleche
+    // descendante ici, montante sur la puce, et les deux cessent de se
+    // ressembler. Verticale, donc elle ne ment pas en interface arabe.
+    const dir = document.createElement('span');
+    dir.className = 'kt-float-dir';
+    dir.textContent = '\u2193';
+    dir.setAttribute('aria-hidden', 'true');
+    langPick.appendChild(dir);
     const fc = code === 'auto' ? undefined : flagClass(code);
     if (fc) {
       const flag = document.createElement('span');

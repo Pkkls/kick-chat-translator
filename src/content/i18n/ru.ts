@@ -1,6 +1,6 @@
 /** Chat and floating-bar strings. Generated from the catalogue, do not hand edit. */
 export const ru: Record<string, string> = {
-  barLangTip: 'Переводить на',
+  barLangDir: 'Чат других зрителей, переведённый для вас',
   barOff: 'Перевод выключен',
   barOn: 'Идёт перевод',
   barOnTip: 'Чат читается на $LANG$',

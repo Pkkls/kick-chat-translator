@@ -1084,6 +1084,72 @@ html[data-kt-scheme='light'] .kt-chip[data-mode='loading'] {
   flex-shrink: 0;
 }
 
+/* LE BADGE PORTE UN DRAPEAU DESSINE quand la langue en a un, et ses deux
+   lettres sinon. Les 43 drapeaux de cette feuille ne servaient qu'au selecteur
+   de langues ; le badge d'une ligne, lui, affichait le champ `flag` des
+   langues, qui contient du texte.
+
+   Dimensionne en em et non aux 16x12 de .kt-flag : le badge vit dans la ligne
+   traduite, dont le lecteur regle la taille, et un drapeau en pixels y serait
+   le seul element a ne pas suivre. 1.35em sur 1.0125em garde le rapport 4:3.
+
+   Les deux selecteurs de classe l'emportent sur .kt-src-flag seul, qui garde
+   son fond et sa marge interieure pour le repli texte. */
+.kt-src-flag.kt-flag {
+  inline-size: 1.35em;
+  block-size: 1.0125em;
+  padding: 0;
+  opacity: 0.85;
+  vertical-align: -0.12em;
+}
+
+/* Meme chose sur l'apercu de redaction, aux pixels cette fois : ce badge est
+   dans une surface a nous, pas dans une ligne de chat. */
+.kt-compose-target.kt-flag {
+  padding: 0;
+  inline-size: 18px;
+  block-size: 13px;
+  background-color: transparent;
+  /* .kt-flag arrondit a 2px, ce qui va pour un drapeau dans une liste. Ici le
+     creneau est un badge, et la porte compose-live mesure les badges contre la
+     direction artistique, qui n'admet que 4 et 8. */
+  border-radius: var(--kt-r-sm);
+}
+
+/* ── Le sens de chaque barre ───────────────────────────────────────────
+   Rapporte a l'ecran : rien ne distinguait la barre du haut, qui traduit le
+   chat recu, de la puce du bas, qui traduit ce qu'on ecrit. Une fleche
+   descendante sur l'une, montante sur l'autre, et le couple se lit d'un coup.
+   Verticales par choix : une fleche laterale mentirait en interface arabe, ou
+   toute la barre se retourne.
+   Discretes : elles donnent le sens, elles ne le crient pas, et le nom de la
+   langue a cote reste ce qu'on vient lire. */
+.kt-float-dir,
+.kt-chip-dir {
+  flex-shrink: 0;
+  margin-inline-end: 3px;
+  opacity: 0.55;
+  font-size: var(--kt-fs-sm);
+  line-height: 1;
+}
+
+/* La puce n'avait aucun drapeau, juste deux lettres, pendant que cette feuille
+   en dessine 43. Aux pixels : la puce est une surface a nous, pas une ligne de
+   chat, donc elle ne suit pas la taille du texte du chat. */
+.kt-chip-flag {
+  flex-shrink: 0;
+  margin-inline-end: 4px;
+}
+
+.kt-chip-flag.kt-flag {
+  inline-size: 15px;
+  block-size: 11px;
+}
+
+.kt-chip-flag[hidden] {
+  display: none;
+}
+
 /* ── Bandes verticales ─────────────────────────────────────────────── */
 .kt-flag-fr { background: linear-gradient(90deg, #002654 0 33.3%, #fff 33.3% 66.6%, #ed2939 66.6%); }
 .kt-flag-it { background: linear-gradient(90deg, #009246 0 33.3%, #fff 33.3% 66.6%, #ce2b37 66.6%); }

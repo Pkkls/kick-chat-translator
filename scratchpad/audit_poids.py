@@ -101,7 +101,9 @@ MANIFESTE = 'dist/manifest.json'
 # vont avec ne pesent RIEN ici : verifie en construisant les deux fois, les
 # catalogues ne sont pas dans le script injecte. En gzip, ce que le reseau
 # transporte, la seconde tranche vaut +343 octets.
-REFERENCE_OCTETS = 254174
+# Relevee le 2026-09-25 : le sens des deux barres et les drapeaux dessines sur
+# les badges, plus la touche Tab. Le detail est dans les messages de commit.
+REFERENCE_OCTETS = 256719
 MARGE = 0.02
 
 if not os.path.exists(CIBLE):

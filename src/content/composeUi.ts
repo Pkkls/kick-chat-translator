@@ -7,7 +7,8 @@
  * state transitions keep the previous text on screen until the next one is ready,
  * so the panel never flashes empty while a request is in flight.
  */
-import { getLang, langFlag } from '~/shared/languages';
+import { getLang } from '~/shared/languages';
+import { flagClass } from '~/shared/flags';
 import { computePanelGeom } from './composeLogic';
 import { showToast } from './injector';
 import { msg } from './msg';
@@ -217,7 +218,12 @@ export function setComposeTargetLang(lang: string): void {
 }
 
 function setTargetBadge(el: HTMLElement, lang: string): void {
-  el.textContent = langFlag(lang);
+  // Meme correctif que sur le badge des messages : le champ `flag` des langues
+  // est du texte, la feuille sait dessiner le drapeau, et les deux lettres
+  // restent le repli des langues qui n'en ont pas.
+  const fc = flagClass(lang);
+  el.className = fc ? `kt-compose-target ${fc}` : 'kt-compose-target';
+  el.textContent = fc ? '' : lang.toUpperCase().slice(0, 2);
   el.title = msg('composeAutoTip', 'Auto · writing in $LANG$', [
     getLang(lang)?.native ?? lang.toUpperCase(),
   ]);
