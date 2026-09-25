@@ -366,19 +366,26 @@ describe('injector artifacts', () => {
 
     // The bar is the only one of the three with a light theme, so there the
     // scheme has to follow it instead of being frozen dark.
-    // The bar is the only one of the three with a light theme, so there the
-    // scheme has to follow it instead of being frozen dark.
     //
     // Keyed on the stamp the content script writes, not on the OS media query
     // it used to sit behind: Kick owns its theme, and a light desktop reading a
     // dark chat was handed the light palette on a dark ground.
+    //
+    // CE QUE CE TEST TIENT A CHANGE, et c'est le point : il exigeait un bloc
+    // html[data-kt-scheme='light'] .kt-lang-panel, donc il tenait un mecanisme.
+    // Ce bloc redeclarait douze jetons dont onze etaient identiques a ceux du
+    // bloc sombre, puisque ce sont les triplets de theme.css qui basculent, et
+    // le douzieme, --kt-lp-accent, est couvert par --kt-green-ink, que
+    // theme.css bascule deja lui aussi. Le supprimer ne change aucun pixel.
+    // L'invariant a tenir est celui que le bloc servait a obtenir : le panneau
+    // n'ecrit aucune couleur en dur, donc il ne peut pas geler un theme.
     it('follows the light theme on the chat bar rather than freezing dark', () => {
       expect(ruleFor(injectCss, "html[data-kt-scheme='light'] .kt-float-lang")).toMatch(
         /background:/,
       );
-      expect(ruleFor(injectCss, "html[data-kt-scheme='light'] .kt-lang-panel")).toMatch(
-        /--kt-lp-surface/,
-      );
+      const panneau = ruleFor(injectCss, '.kt-lang-panel');
+      expect(panneau).toMatch(/--kt-lp-accent:\s*var\(--kt-green-ink\)/);
+      expect(panneau).not.toMatch(/#[0-9a-fA-F]{3}|rgba?\(/);
     });
 
     // Control for the one above: the desktop must no longer decide anything.

@@ -844,11 +844,12 @@ html[data-kt-scheme='light'] .kt-compose-insert {
   right: auto;
 }
 .kt-chip-row {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 6px;
   width: 100%;
-  padding: 6px 7px;
+  padding: 6px 8px;
   border: 0;
   border-radius: 4px;
   background: transparent;
@@ -861,15 +862,33 @@ html[data-kt-scheme='light'] .kt-compose-insert {
 .kt-chip-row:hover {
   background: var(--kt-hover);
 }
+/* --kt-green-ink et non --kt-green : theme.css le resout sur la verte de la
+   marque en sombre et sur la verte foncee en clair, donc un seul jeton porte
+   les deux themes et le bloc clair qui doublait cette regle a disparu. */
 .kt-chip-row:focus-visible {
-  outline: 2px solid var(--kt-green);
+  outline: 2px solid var(--kt-green-ink);
   outline-offset: -2px;
 }
+/* MEME ETAT, MEME DEFAUT QUE DANS LE PANNEAU DE LA BARRE, plus un porteur
+ * mort. La selection ne tenait qu'a --kt-green-bed, mesure a 1.21:1 contre la
+ * surface quand le survol est a 1.87. Le second porteur qui suivait,
+ * `.kt-chip-iso { color }`, coloriait les deux lettres ISO ; le commentaire de
+ * .kt-chip-iso dit lui-meme que ce creneau "holds a 16x12 flag now", et une
+ * couleur de texte sur un conteneur qui ne porte plus de texte ne peint rien.
+ * La regle etait donc sans effet depuis que les lettres sont parties, et c'est
+ * pour ca que la langue en cours ne se voyait pas sur la capture.
+ * Le mot et le rail la remplacent, comme dans le panneau. */
 .kt-chip-row[aria-selected='true'] {
   background: var(--kt-green-bed);
+  color: var(--kt-green-ink);
 }
-.kt-chip-row[aria-selected='true'] .kt-chip-iso {
-  color: var(--kt-green);
+.kt-chip-row[aria-selected='true']::before {
+  content: '';
+  position: absolute;
+  inset-block: 4px;
+  inset-inline-start: 0;
+  inline-size: 3px;
+  background: var(--kt-green-ink);
 }
 .kt-chip-iso {
   flex-shrink: 0;
@@ -952,16 +971,13 @@ html[data-kt-scheme='light'] .kt-chip[data-mode='loading'] {
     border-color: var(--kt-green-edge);
   }
 }
-html[data-kt-scheme='light'] .kt-chip-menu {
-  outline-color: var(--kt-edge);
-  background: var(--kt-surface);
-}
-html[data-kt-scheme='light'] .kt-chip-row:focus-visible {
-  outline-color: var(--kt-green-edge);
-}
-html[data-kt-scheme='light'] .kt-chip-row[aria-selected='true'] .kt-chip-iso {
-  color: var(--kt-green-ink);
-}
+/* Les blocs clairs du menu sont partis d'ici sans qu'un pixel bouge. Deux
+   redeclaraient mot pour mot ce que la regle sombre pose deja (--kt-edge,
+   --kt-surface), puisque ce sont les triplets de theme.css qui basculent et
+   non ces regles. Un troisieme peignait .kt-chip-iso, qui ne porte plus de
+   texte. Les deux derniers repassaient l'anneau de focus en --kt-green-edge :
+   les regles de base prennent --kt-green-ink, qui vaut la verte de la marque
+   en sombre et 6.18:1 en clair, contre les 3.40 de --kt-green-edge. */
 
 /* Filter box. 42 languages do not fit a list at screen height, so the list is
    not meant to be walked: two keystrokes reach any of them and the scrollbar
@@ -981,7 +997,7 @@ html[data-kt-scheme='light'] .kt-chip-row[aria-selected='true'] .kt-chip-iso {
   color: var(--kt-muted);
 }
 .kt-chip-search:focus-visible {
-  outline: 2px solid var(--kt-green);
+  outline: 2px solid var(--kt-green-ink);
   outline-offset: -1px;
 }
 .kt-chip-row[hidden],
@@ -995,14 +1011,6 @@ html[data-kt-scheme='light'] .kt-chip-row[aria-selected='true'] .kt-chip-iso {
   font-size: 12px;
 }
 
-html[data-kt-scheme='light'] .kt-chip-search {
-  border-color: var(--kt-edge);
-  background: var(--kt-sunken);
-  color: var(--kt-text);
-}
-html[data-kt-scheme='light'] .kt-chip-search:focus-visible {
-  outline-color: var(--kt-green-edge);
-}
 
 /* The options live in their own listbox: a listbox may only hold options, so
    the filter field and the empty-state notice sit outside it.
@@ -1014,7 +1022,9 @@ html[data-kt-scheme='light'] .kt-chip-search:focus-visible {
 .kt-chip-list {
   display: grid;
   grid-template-columns: repeat(var(--kt-chip-cols, 3), minmax(0, 1fr));
-  gap: 1px;
+  /* 2 et non 1 : a 1px les coins arrondis de deux rangees voisines se touchent
+     et l'arrondi lit comme un defaut de rendu plutot que comme une forme. */
+  gap: 2px;
 }
 
 /* Two entries are not tiles: the auto row is a mode rather than a language and
@@ -1163,14 +1173,23 @@ html[data-kt-scheme='light'] .kt-chip-search:focus-visible {
 .kt-lang-panel {
   --kt-lp-surface: var(--kt-surface);
   --kt-lp-sunken: var(--kt-sunken);
-  --kt-lp-hairline: var(--kt-edge);
-  --kt-lp-edge: var(--kt-line);
+  /* UN SEUL NOM POUR LA FRONTIERE, parce que trois en ont cause un bug.
+   * `hairline`, `edge` et `faint` resolvaient tous sur --kt-edge sauf un :
+   * --kt-lp-edge portait --kt-line, le separateur discret, et c'est lui que
+   * prenaient le champ de filtre et les tuiles epinglees. Mesure : 1.80:1 en
+   * sombre, 1.42:1 en clair, contre la barre de 3 que l'en-tete de theme.css
+   * pose pour la frontiere d'un controle. Les deux themes passent a 3.62 et
+   * 3.10. Le meme jeton tient le contour du panneau, a 3.75 et 5.78 contre la
+   * page, donc les trois noms se replient sur celui-ci. */
+  --kt-lp-edge: var(--kt-edge);
   --kt-lp-sep: var(--kt-divider);
   --kt-lp-text: var(--kt-text);
   --kt-lp-muted: var(--kt-muted);
-  --kt-lp-faint: var(--kt-edge);
   --kt-lp-hover: var(--kt-hover);
-  --kt-lp-accent: var(--kt-green);
+  /* green-ink, pas green : theme.css le resout sur la verte de la marque en
+   * sombre et sur la verte foncee en clair. Un seul jeton couvre les deux, ce
+   * qui rend mort le bloc html[data-kt-scheme='light'] qui suivait ici. */
+  --kt-lp-accent: var(--kt-green-ink);
   --kt-lp-accent-edge: var(--kt-green-edge);
   --kt-lp-accent-bed: var(--kt-green-bed);
   --kt-lp-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -1192,7 +1211,7 @@ html[data-kt-scheme='light'] .kt-chip-search:focus-visible {
   max-inline-size: min(var(--kt-lp-max-w, 408px), calc(100vw - 16px));
   padding: 4px;
   border-radius: 8px;
-  outline: 1px solid var(--kt-lp-hairline);
+  outline: 1px solid var(--kt-lp-edge);
   background: var(--kt-lp-surface);
   /* La seule ombre portee de la feuille, et la regle de la maison dit qu'il n'y
    * en a pas. L'exception est nommee dans scratchpad/audit_da.py avec sa raison,
@@ -1201,24 +1220,6 @@ html[data-kt-scheme='light'] .kt-chip-search:focus-visible {
    * chat, il annonce que le chat n'est plus la, ce qui est exactement ce qui a
    * ete rapporte. Le filet seul ne porte pas cette distinction sur un fond
    * presque noir. */
-  box-shadow: var(--kt-shadow-panel);
-}
-
-html[data-kt-scheme='light'] .kt-lang-panel {
-  --kt-lp-surface: var(--kt-surface);
-  --kt-lp-sunken: var(--kt-sunken);
-  --kt-lp-hairline: var(--kt-edge);
-  --kt-lp-edge: var(--kt-line);
-  --kt-lp-sep: var(--kt-divider);
-  --kt-lp-text: var(--kt-text);
-  --kt-lp-muted: var(--kt-muted);
-  --kt-lp-faint: var(--kt-edge);
-  --kt-lp-hover: var(--kt-hover);
-  --kt-lp-accent: var(--kt-green-ink);
-  --kt-lp-accent-edge: var(--kt-green-edge);
-  --kt-lp-accent-bed: var(--kt-green-bed);
-  /* Meme ombre, rejouee pour du papier : la meme opacite sur un chat clair
-   * donne une tache grise au lieu d'une elevation. */
   box-shadow: var(--kt-shadow-panel);
 }
 
@@ -1238,7 +1239,7 @@ html[data-kt-scheme='light'] .kt-lang-panel {
   inset-inline-start: 9px;
   inline-size: 13px;
   block-size: 13px;
-  color: var(--kt-lp-faint);
+  color: var(--kt-lp-edge);
   pointer-events: none;
   transition: color 0.15s ease;
 }
@@ -1247,7 +1248,9 @@ html[data-kt-scheme='light'] .kt-lang-panel {
   inline-size: 100%;
   block-size: 30px;
   padding-block: 0;
-  padding-inline: 28px 8px;
+  /* 32 = les 8 de marge d'une rangee + les 16 du drapeau + les 8 de gouttiere :
+   * le texte tape se pose sur la meme verticale que les noms de langues. */
+  padding-inline: 32px 8px;
   border: 1px solid var(--kt-lp-edge);
   border-radius: 4px;
   background: var(--kt-lp-sunken);
@@ -1285,7 +1288,7 @@ html[data-kt-scheme='light'] .kt-lang-panel {
 .kt-lang-favs {
   display: flex;
   gap: 4px;
-  padding: 6px 1px;
+  padding: 4px 0;
 }
 
 .kt-lang-fav {
@@ -1372,14 +1375,22 @@ html[data-kt-scheme='light'] .kt-lang-panel {
 }
 
 /* ── La liste ──────────────────────────────────────────────────────── */
-/* Bornee en rangees entieres, pas en pixels devines. Une hauteur qui coupe une
- * rangee en deux annonce mal qu'il y a une suite. */
+/* DEMI-RANGEE, ET C'EST L'INVERSE DE CE QUI ETAIT ECRIT ICI. La regle
+ * precedente bornait en rangees entieres au motif qu'une rangee coupee en deux
+ * "annonce mal qu'il y a une suite". C'est le contraire : une derniere rangee
+ * entiere posee sur un bord net est exactement ce que produit une liste qui
+ * s'arrete, donc elle annonce une fin. La demi-rangee qui depasse est le seul
+ * signal de defilement qui ne coute ni script ni degrade, et qui reste vrai
+ * quel que soit le nombre de langues filtrees.
+ * Le pas est de 32 : 30 de rangee et 2 de gouttiere. 304 en montre neuf et
+ * demie. */
 .kt-lang-list {
   display: grid;
   grid-template-columns: repeat(var(--kt-lp-cols, 3), minmax(0, 1fr));
-  gap: 1px;
-  /* Bornee en rangees entieres : dix de 30px. */
-  max-block-size: 300px;
+  /* 1px laissait les coins arrondis de deux rangees voisines se toucher, ce qui
+   * lit comme un defaut de rendu plutot que comme une forme. */
+  gap: 2px;
+  max-block-size: 304px;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -1395,7 +1406,7 @@ html[data-kt-scheme='light'] .kt-lang-panel {
   /* PT-BR et ZH-TW avaient casse l'uniformite des rangees du menu de la puce :
    * hauteur fixe, et le nom passe en ellipse plutot que de pousser. */
   block-size: 30px;
-  padding-inline: 9px;
+  padding-inline: 8px;
   border: 0;
   border-radius: 4px;
   background: transparent;
@@ -1416,8 +1427,30 @@ html[data-kt-scheme='light'] .kt-lang-panel {
   outline-offset: -2px;
 }
 
+/* LA SELECTION ETAIT L'ETAT LE PLUS FAIBLE DU PANNEAU, et c'est le seul qui
+ * repond a la question posee : je traduis vers quoi. Elle ne portait qu'un
+ * fond, mesure a 1.21:1 contre la surface, quand le survol est a 1.87 : les
+ * deux etats etaient indistinguables, et l'anneau de focus a 12.74 etait de
+ * loin l'element le plus vif d'un panneau dont il n'est qu'un etat passager.
+ * Trois porteurs plutot qu'un, comme 1.4.11 le demande : le fond, le mot en
+ * vert (10.50:1 sur ce fond), et le rail, qui est la partie non textuelle.
+ * Le drapeau reprend sa saturation pleine plus bas, ce qui en fait un
+ * quatrieme. */
 .kt-lang-row[aria-selected='true'] {
   background: var(--kt-lp-accent-bed);
+  color: var(--kt-lp-accent);
+}
+
+/* Un pseudo-element et non un box-shadow inset : l'ombre n'a pas de forme
+ * logique, et dans une interface arabe le rail doit passer a droite avec le
+ * reste. Retrait vertical de 4 pour rester en dehors des coins arrondis. */
+.kt-lang-row[aria-selected='true']::before {
+  content: '';
+  position: absolute;
+  inset-block: 4px;
+  inset-inline-start: 0;
+  inline-size: 3px;
+  background: var(--kt-lp-accent);
 }
 
 .kt-lang-name {
@@ -1434,8 +1467,45 @@ html[data-kt-scheme='light'] .kt-lang-panel {
 
 /* Le liseré des drapeaux vient de flags.css, calibre pour une surface sombre :
  * en clair, un drapeau a fond blanc (JP, FI) flotte sans bord. */
-html[data-kt-scheme='light'] .kt-lang-panel .kt-flag {
+/* Le menu de la puce y est aussi : le liseré lui manquait, et un drapeau a
+ * fond blanc (JP, FI) y flottait sans bord exactement comme dans le panneau. */
+html[data-kt-scheme='light'] .kt-lang-panel .kt-flag,
+html[data-kt-scheme='light'] .kt-chip-menu .kt-flag {
   box-shadow: inset 0 0 0 1px rgb(var(--kt-text-rgb) / 0.18);
+}
+
+/* LA COULEUR REDEVIENT UN SIGNAL. Quarante-trois drapeaux satures en grille de
+ * trois font un mur ou plus rien ne ressort, et dans une liste faite pour etre
+ * lue par nom, c'est le drapeau qui pesait le plus lourd. Au repos ils sont a
+ * demi desatures ; la saturation pleine revient la ou elle dit quelque chose :
+ * sous le pointeur, sous le clavier, et sur la langue en cours.
+ * Une seule regle repare donc deux choses, le mur et la selection, a qui elle
+ * donne son quatrieme porteur. Rien n'est cache : la desaturation ne change
+ * aucune forme, seulement l'intensite, et le nom reste le porteur principal. */
+.kt-lang-panel .kt-flag,
+.kt-chip-menu .kt-flag {
+  filter: saturate(0.5);
+  transition: filter 0.15s ease;
+}
+
+.kt-lang-row:hover .kt-flag,
+.kt-lang-row:focus-visible .kt-flag,
+.kt-lang-row[aria-selected='true'] .kt-flag,
+.kt-lang-fav:hover .kt-flag,
+.kt-lang-fav:focus-visible .kt-flag,
+.kt-lang-fav[aria-selected='true'] .kt-flag,
+.kt-chip-row:hover .kt-flag,
+.kt-chip-row:focus-visible .kt-flag,
+.kt-chip-row[aria-selected='true'] .kt-flag {
+  filter: none;
+}
+
+/* Le menu de la puce n'avait pas de bloc reduced-motion parce qu'il n'avait
+ * aucune transition ; il en a une maintenant. */
+@media (prefers-reduced-motion: reduce) {
+  .kt-chip-menu .kt-flag {
+    transition: none;
+  }
 }
 
 /* Le globe de la detection automatique, au gabarit d'un drapeau pour que la
@@ -1458,11 +1528,24 @@ html[data-kt-scheme='light'] .kt-lang-panel .kt-flag {
  * est invalide, et 42 epingles focalisables ajouteraient 42 arrets de
  * tabulation a une barre qui en compte quatre. Souris sur l'icone, clavier par
  * la touche P sur l'option courante. */
+/* HORS DU FLUX : elle y coutait 17 % de chaque colonne en etant invisible.
+ * A opacity 0 mais flex-shrink 0, elle prenait ses 15px plus les 8px de
+ * gouttiere sur les 43 rangees, en permanence. Le budget de texte d'une
+ * colonne a 408px passait a (408-8-4)/3 - 8 - 8 - 16 - 8 - 23 = 68px, soit
+ * onze caracteres a 12px : c'est la raison mesuree pour laquelle "Chinese
+ * (Taiwan)" s'affichait "Chinese (...", indecidable a cote de "Chinese".
+ * Rendue au nom, la meme colonne en tient quinze.
+ * Le centrage vertical vient de align-items du parent, qui gouverne la
+ * position statique d'un enfant absolu dans un conteneur flex.
+ * ponytail: sur les deux noms qui depassent encore quinze caracteres, l'etoile
+ * se pose sur les points de suspension pendant le survol. Si ca gene, le
+ * correctif est un fond sur l'etoile a la couleur de l'etat de la rangee. */
 .kt-lang-star {
-  flex-shrink: 0;
+  position: absolute;
+  inset-inline-end: 6px;
   inline-size: 15px;
   block-size: 15px;
-  color: var(--kt-lp-faint);
+  color: var(--kt-lp-edge);
   opacity: 0;
   transition: opacity 0.15s ease, color 0.15s ease;
 }

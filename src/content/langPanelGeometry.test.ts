@@ -1,9 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
+  MIN_COL_W,
+  PANEL_COLS,
   PANEL_COLUMN_SHARE,
   PANEL_MAX_W,
   PANEL_MIN_W,
+  colsFor,
   panelGeometry,
   type PanelGeometryInput,
 } from './langMenu';
@@ -127,5 +130,164 @@ describe('the panel says it is a layer', () => {
   // max-inline-size the window decides.
   it('caps its width on what placeLangMenu measured, not on the window', () => {
     expect(ruleFor('.kt-lang-panel')).toMatch(/max-inline-size:\s*min\(var\(--kt-lp-max-w/);
+  });
+});
+
+/**
+ * Combien de colonnes, et pourquoi plus toujours trois.
+ *
+ * PANEL_COLS etait une constante : la largeur du panneau suivait la colonne de
+ * chat, le nombre de colonnes non. Dans une colonne etroite les trois tenaient
+ * quand meme, et chaque nom rendait six caracteres.
+ *
+ * Le budget de texte d'une colonne vaut sa largeur moins 40 : 8 et 8 de marges
+ * de rangee, 16 de drapeau, 8 de gouttiere. MIN_COL_W en laisse 87, soit une
+ * quinzaine de caracteres, ce qui suffit a separer "Chinese (Taiw..." de
+ * "Chinese". Coupe plus tot, il devenait "Chinese (...", indecidable.
+ */
+describe('the grid follows the width it was given', () => {
+  // Les deux seules valeurs que placeLangMenu peut produire, capW etant serre
+  // entre ces bornes.
+  it('keeps three columns at the widest the panel ever gets', () => {
+    expect(colsFor(PANEL_MAX_W)).toBe(3);
+  });
+
+  it('drops to two in the narrowest column the panel accepts', () => {
+    expect(colsFor(PANEL_MIN_W)).toBe(2);
+  });
+
+  // Le seuil se derive, il n'est pas choisi : trois colonnes demandent
+  // 3 * MIN_COL_W, plus deux gouttieres de 2, plus les 8 de marge du panneau.
+  it('switches exactly where three columns stop holding MIN_COL_W', () => {
+    const seuil = 3 * MIN_COL_W + 2 * 2 + 8;
+    expect(colsFor(seuil)).toBe(3);
+    expect(colsFor(seuil - 1)).toBe(2);
+  });
+
+  it('never returns less than one or more than PANEL_COLS', () => {
+    expect(colsFor(0)).toBe(1);
+    expect(colsFor(10_000)).toBe(PANEL_COLS);
+  });
+
+  // Les trois tests ci-dessus se derivent tous de MIN_COL_W, donc aucun ne la
+  // tient : passee a 100 ils restent verts et les noms retombent a douze
+  // caracteres. MIN_COL_W est une mesure, pas un reglage, et celui-ci la tient
+  // par ce qu'elle produit plutot que par sa valeur.
+  it('leaves room for fifteen characters at every width it is given', () => {
+    // La colonne moins ses 8 et 8 de marges, ses 16 de drapeau et ses 8 de
+    // gouttiere. 87px est ce que quinze caracteres prennent a 12px.
+    const HORS_TEXTE = 40;
+    const QUINZE = 87;
+    for (const capW of [PANEL_MIN_W, 340, PANEL_MAX_W]) {
+      const n = colsFor(capW);
+      const colonne = (capW - 8 - 2 * (n - 1)) / n;
+      expect(colonne - HORS_TEXTE).toBeGreaterThanOrEqual(QUINZE);
+    }
+  });
+});
+
+/**
+ * La selection est le seul etat qui reponde a la question que pose le panneau,
+ * et c'etait le plus faible qu'il portait.
+ *
+ * Elle n'avait qu'un fond, mesure a 1.21:1 contre la surface quand le survol
+ * est a 1.87 : les deux etats se ressemblaient. Pendant ce temps l'anneau de
+ * focus, a 12.74, etait de loin l'element le plus vif d'un panneau dont il
+ * n'est qu'un etat passager. 1.4.11 demande qu'un etat soit identifiable, donc
+ * il faut un porteur qui ne soit pas qu'une nuance de fond.
+ */
+describe('the selected row is identifiable', () => {
+  const css = readFileSync('src/content/inject.css', 'utf8');
+
+  function ruleFor(selector: string): string {
+    return (
+      new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{([^}]*)\\}`).exec(css)?.[1] ??
+      ''
+    );
+  }
+
+  it('carries the word in the accent, not a bed alone', () => {
+    expect(ruleFor(".kt-lang-row[aria-selected='true']")).toMatch(
+      /color:\s*var\(--kt-lp-accent\)/,
+    );
+  });
+
+  it('carries a non-text rail as well', () => {
+    expect(ruleFor(".kt-lang-row[aria-selected='true']::before")).toMatch(
+      /background:\s*var\(--kt-lp-accent\)/,
+    );
+  });
+
+  // Logique et non physique : dans une interface arabe le rail passe a droite
+  // avec le reste. C'est toute la raison du pseudo-element, un box-shadow inset
+  // n'ayant pas de forme logique.
+  it('puts that rail on the logical start edge', () => {
+    const rail = ruleFor(".kt-lang-row[aria-selected='true']::before");
+    expect(rail).toMatch(/inset-inline-start:/);
+    expect(rail).not.toMatch(/\bleft:/);
+  });
+
+  // 15px d'etoile plus 8px de gouttiere sur 43 rangees, a opacity 0 : 17 % de
+  // chaque colonne depense a ne rien montrer. Hors du flux, ils vont au nom.
+  it('keeps the pin out of the row flow', () => {
+    expect(ruleFor('.kt-lang-star')).toMatch(/position:\s*absolute/);
+    expect(ruleFor('.kt-lang-star')).not.toMatch(/flex-shrink/);
+  });
+
+  // Ancre sur un debut de ligne : sans cela le selecteur du theme clair, qui
+  // contient celui-ci, repondrait a sa place.
+  it('spends full saturation only where it means something', () => {
+    expect(css).toMatch(
+      /\n\.kt-lang-panel \.kt-flag,\n\.kt-chip-menu \.kt-flag \{[^}]*filter:\s*saturate\(0\.5\)/,
+    );
+    expect(css).toMatch(/\.kt-lang-row\[aria-selected='true'\] \.kt-flag[^{]*\{[^}]*filter:\s*none/);
+    expect(css).toMatch(/\.kt-chip-row\[aria-selected='true'\] \.kt-flag[^{]*\{[^}]*filter:\s*none/);
+  });
+});
+
+/**
+ * Le menu de la puce est la deuxieme liste des memes 43 langues, avec son
+ * propre jeu de classes, et il portait les memes defauts.
+ *
+ * Son second porteur de selection etait mort : `.kt-chip-iso { color }`
+ * coloriait deux lettres ISO, et le creneau tient un drapeau depuis. Une
+ * couleur de texte sur un conteneur sans texte ne peint rien, donc la
+ * selection y reposait sur un fond a 1.21:1, seul.
+ */
+describe('the chip menu carries the same state as the panel', () => {
+  const css = readFileSync('src/content/inject.css', 'utf8');
+
+  function ruleFor(selector: string): string {
+    return (
+      new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{([^}]*)\\}`).exec(css)?.[1] ??
+      ''
+    );
+  }
+
+  it('gives the selected row a word and a rail, not a bed alone', () => {
+    expect(ruleFor(".kt-chip-row[aria-selected='true']")).toMatch(
+      /color:\s*var\(--kt-green-ink\)/,
+    );
+    expect(ruleFor(".kt-chip-row[aria-selected='true']::before")).toMatch(
+      /background:\s*var\(--kt-green-ink\)/,
+    );
+  });
+
+  // Le porteur mort ne doit pas revenir : il a survecu a la disparition des
+  // lettres qu'il coloriait, et c'est ce qui a fait croire que l'etat etait
+  // porte deux fois.
+  it('no longer paints a container that holds no text', () => {
+    expect(css).not.toMatch(/\.kt-chip-iso\s*\{[^}]*\}[\s\S]{0,40}color:\s*var\(--kt-green\)/);
+    expect(ruleFor(".kt-chip-row[aria-selected='true'] .kt-chip-iso")).toBe('');
+  });
+
+  // --kt-green-ink vaut la verte de la marque en sombre et 6.18:1 en clair,
+  // donc un seul jeton couvre les deux themes et les blocs clairs qui
+  // doublaient ces regles ont disparu.
+  it('takes its focus ring from the token that switches by itself', () => {
+    expect(ruleFor('.kt-chip-row:focus-visible')).toMatch(/var\(--kt-green-ink\)/);
+    expect(ruleFor('.kt-chip-search:focus-visible')).toMatch(/var\(--kt-green-ink\)/);
+    expect(css).not.toContain("html[data-kt-scheme='light'] .kt-chip-search");
+    expect(css).not.toContain("html[data-kt-scheme='light'] .kt-chip-menu {");
   });
 });
