@@ -9,7 +9,7 @@ import { StatsTracker } from './stats';
 import { TranslationCoalescer } from './coalescer';
 import { anyProviderReady, getProviderStatus, setDeeplUsagePct } from './translator';
 import { installKeepalive } from './keepalive';
-import { getUpdateStatus } from './updateChecker';
+import { getUpdateStatus, installUpdateCheck } from './updateChecker';
 import { DEEPL_USAGE_FREE, DEEPL_USAGE_PRO, STORAGE_KEY_SETTINGS } from '~/shared/constants';
 import { getSemanticOverride } from '~/shared/transliterationGuard';
 import type { ProviderId, TranslationOutcome, TranslationRequest } from '~/shared/types';
@@ -179,6 +179,7 @@ async function init(): Promise<void> {
   await cache.warm(200, warmTargets(resolveTargetLang(settings.targetLang), stats.current().byLang));
   log.info('Service worker initialized');
   installKeepalive();
+  installUpdateCheck();
   scheduleDeeplUsageRefresh();
   // Seed the budget pacing on startup.
   if (settings.deeplApiKey) void fetchDeeplUsage();

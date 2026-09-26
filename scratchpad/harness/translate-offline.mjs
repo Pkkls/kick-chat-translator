@@ -622,6 +622,16 @@ if (OVERRIDE) {
   }
   if (!vuParLeMoteur.includes('github'))
     fails0.push('la release GitHub n a jamais ete demandee : rien ne verifie les versions');
+
+  // Depuis 2.12.4 l'icone de la barre d'outils porte la nouvelle aussi, lue ici
+  // dans le vrai navigateur et pas dans un chrome simule.
+  const badge = await sw.evaluate(async () => ({
+    texte: await chrome.action.getBadgeText({}),
+    fond: await chrome.action.getBadgeBackgroundColor({}),
+  }));
+  console.log(`badge            ${JSON.stringify(badge.texte)} sur rgba(${badge.fond.join(',')})`);
+  if (badge.texte !== '↑') fails0.push(`l icone ne signale pas la mise a jour : badge ${JSON.stringify(badge.texte)}`);
+  else if (badge.fond.slice(0, 3).join(',') !== '83,252,24') fails0.push(`badge d une autre couleur que le vert : ${badge.fond}`);
   // Ce mode ne juge pas la traduction.
   traductionVue = 'sans objet';
 } else if (CACHE) {

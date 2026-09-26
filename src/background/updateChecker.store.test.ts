@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CHROME_STORE_ID, CHROME_STORE_URL, FIREFOX_ADDON_ID } from '~/shared/constants';
-import { getUpdateStatus } from './updateChecker';
+import { getUpdateStatus, installUpdateCheck } from './updateChecker';
 
 /**
  * The update notice was written when a release zip was the only way to get this
@@ -97,5 +97,67 @@ describe('update notice by install source', () => {
   it('recognises the id the Firefox manifest fixes', () => {
     const manifest = readFileSync(join(process.cwd(), 'manifest.config.ts'), 'utf8');
     expect(manifest.match(/gecko:\s*\{\s*id:\s*'([^']+)'/)?.[1]).toBe(FIREFOX_ADDON_ID);
+  });
+});
+
+/**
+ * The toolbar icon carries the news as well, so it is seen without opening the
+ * popup, and it follows every check: set when a newer release exists, cleared
+ * otherwise, never on a store copy.
+ */
+function iconStub({ id, latest, alarm }: { id: string; latest: string | null; alarm?: object }) {
+  const ok = () => Promise.resolve();
+  const icon = { setBadgeText: vi.fn(ok), setBadgeBackgroundColor: vi.fn(ok), setBadgeTextColor: vi.fn(ok) };
+  const listeners: unknown[] = [];
+  const alarms = {
+    get: vi.fn(async () => alarm),
+    create: vi.fn(ok),
+    onAlarm: {
+      addListener: vi.fn((f: unknown) => listeners.push(f)),
+      hasListener: vi.fn((f: unknown) => listeners.includes(f)),
+    },
+  };
+  vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true, json: async () => ({ tag_name: latest }) })));
+  vi.stubGlobal('chrome', {
+    runtime: { id, getManifest: () => ({ version: '2.8.0' }) },
+    storage: { local: { get: async () => ({}), set: async () => undefined } },
+    action: icon,
+    alarms,
+  });
+  return { icon, alarms, listeners };
+}
+
+describe('update badge on the toolbar icon', () => {
+  const ZIP = 'igdnhalokbeabohdmncbmogjakkgcheb';
+
+  it('shows an arrow, readable on the green, when a newer release exists', async () => {
+    const { icon } = iconStub({ id: ZIP, latest: 'v9.9.9' });
+    await getUpdateStatus(true);
+    expect(icon.setBadgeText).toHaveBeenLastCalledWith({ text: '↑' });
+    expect(icon.setBadgeBackgroundColor).toHaveBeenCalledWith({ color: '#53FC18' });
+    expect(icon.setBadgeTextColor).toHaveBeenCalledWith({ color: '#000000' });
+  });
+
+  it('clears it once the copy is current, and on a store copy', async () => {
+    const zip = iconStub({ id: ZIP, latest: 'v2.8.0' });
+    await getUpdateStatus(true);
+    expect(zip.icon.setBadgeText).toHaveBeenLastCalledWith({ text: '' });
+    const store = iconStub({ id: CHROME_STORE_ID, latest: 'v9.9.9' });
+    await getUpdateStatus(true);
+    expect(store.icon.setBadgeText).toHaveBeenLastCalledWith({ text: '' });
+  });
+
+  it('schedules the six-hour check once, without resetting an alarm that exists', async () => {
+    const fresh = iconStub({ id: ZIP, latest: 'v9.9.9' });
+    installUpdateCheck();
+    installUpdateCheck();
+    await vi.waitFor(() => expect(fresh.alarms.create).toHaveBeenCalledWith('kt.update', { periodInMinutes: 360 }));
+    expect(fresh.listeners).toHaveLength(1);
+
+    const running = iconStub({ id: ZIP, latest: 'v9.9.9', alarm: { name: 'kt.update' } });
+    installUpdateCheck();
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(running.alarms.create).not.toHaveBeenCalled();
   });
 });

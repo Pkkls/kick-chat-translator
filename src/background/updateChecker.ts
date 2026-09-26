@@ -17,6 +17,39 @@ import { rootLogger } from '~/shared/logger';
 
 const log = rootLogger.child('update');
 
+const ALARM = 'kt.update';
+
+/**
+ * The same news on the toolbar icon, so it is seen without opening the popup.
+ * Only a copy installed by hand ever shows it: a store copy clears it.
+ */
+function showOnIcon(updateAvailable: boolean): void {
+  const action = globalThis.chrome?.action;
+  if (!action) return;
+  void action.setBadgeText({ text: updateAvailable ? '↑' : '' }).catch(() => undefined);
+  if (!updateAvailable) return;
+  void action.setBadgeBackgroundColor({ color: '#53FC18' }).catch(() => undefined);
+  // White on Kick's green is 1.37:1. setBadgeTextColor exists from Chrome 110.
+  void action.setBadgeTextColor?.({ color: '#000000' })?.catch(() => undefined);
+}
+
+function onAlarm(alarm: chrome.alarms.Alarm): void {
+  if (alarm.name === ALARM) void getUpdateStatus();
+}
+
+/** Checks every six hours in the background, so the icon changes without the popup ever opening. */
+export function installUpdateCheck(): void {
+  // Created only when missing: re-creating a named alarm resets its clock, and a
+  // service worker woken more often than every six hours would never let it fire.
+  void chrome.alarms.get(ALARM).then((existing) => {
+    if (!existing) void chrome.alarms.create(ALARM, { periodInMinutes: UPDATE_CHECK_TTL_MS / 60_000 });
+  });
+  // init() runs twice on an install or an update: one listener, not two.
+  if (!chrome.alarms.onAlarm.hasListener(onAlarm)) chrome.alarms.onAlarm.addListener(onAlarm);
+  // From the cache unless it is stale: sets the icon again after a browser restart.
+  void getUpdateStatus();
+}
+
 interface CachedCheck {
   at: number;
   latest: string | null;
@@ -76,6 +109,7 @@ export async function getUpdateStatus(force = false): Promise<UpdateStatus> {
   //
   // Returning early also means no request to GitHub at all from those copies.
   if (fromStore()) {
+    showOnIcon(false);
     return { current, latest: null, updateAvailable: false, releaseUrl: CHROME_STORE_URL };
   }
 
@@ -94,10 +128,7 @@ export async function getUpdateStatus(force = false): Promise<UpdateStatus> {
     }
   }
 
-  return {
-    current,
-    latest,
-    updateAvailable: latest !== null && isNewerVersion(latest, current),
-    releaseUrl: CHROME_STORE_URL,
-  };
+  const updateAvailable = latest !== null && isNewerVersion(latest, current);
+  showOnIcon(updateAvailable);
+  return { current, latest, updateAvailable, releaseUrl: CHROME_STORE_URL };
 }
