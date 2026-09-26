@@ -7,6 +7,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.12.1] - 2026-09-26
+
+A design pass over the chat, the popup and the options page, run through the
+UX kit's audit and its gates. Most of it is things that were drawn wrong.
+
+### Fixed
+
+- **Flags on translated lines.** 2.12.0 replaced the two-letter source code
+  with a drawn flag, and every one of them rendered as an empty grey pill: the
+  badge's fallback tint came after the flag sheet at the same specificity and
+  reset the drawing. Same on the compose preview and on the preview in the
+  options page, in both themes. The chat and compose gates now fail on a flag
+  whose computed background is empty.
+- **The floating bar's language list ran over the chat** when no ancestor of
+  the bar clipped. The panel took the 24px button it hangs from for the chat
+  column, capped itself at 80px, and let its 338px list spill below its own
+  background. An unknown column no longer caps anything, and the bar panel
+  gate now opens it without a clipping ancestor.
+- **The compose preview covered the language chip** that sets its language,
+  18 of its 24px, with the bottom of the chip's outline showing under the
+  panel. It now sits above the chip.
+- **Text size and line spacing sliders** were the browser's blue, the only
+  blue in the product, and 16px tall. They take the accent green and a 24px
+  target (WCAG 2.5.8).
+- **Four chat notices were English in every language**: translation copied,
+  every provider down, quota reached, provider switched.
+- **The Activity tab was untranslated** in the nine other interface languages.
+
+### Changed
+
+- The on-device model chips show each language's flag, which the hint above
+  them already promised, and an unavailable pair is muted with a title instead
+  of a ✕ that read as "remove".
+- Channel and user filters are an allowlist and blocklists, like the
+  source-language allowlist on the same tab.
+- One product name everywhere, Kick Chat Translator, window titles included.
+- The popup's toggles read Enable, Keep original and Language badge, in the
+  sentence case the rest of the popup uses.
+- The compose preview's description no longer promises a DeepL-first chain it
+  does not use.
+- The note under the display styles says what it means: the recommended style
+  is the most tested, and the other three may still change.
+- No long dash left in interface text or in the Russian store listing, which
+  also turns the store listing audit green again.
+- The lead card of the Activity and About tabs drops its border, a control's
+  3:1 stroke drawn on a card, which the art direction rules out.
+- The Spanish sample line in the Display preview keeps its question mark at the
+  end in a right-to-left interface.
+
 ## [2.12.0] - 2026-09-25
 
 The extension stops deciding three things on the reader's behalf, and says

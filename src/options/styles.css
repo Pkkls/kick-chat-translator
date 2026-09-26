@@ -70,7 +70,8 @@
   }
   .kt-tabs::-webkit-scrollbar-thumb {
     background: var(--kt-edge);
-    border-radius: 3px;
+    /* A pill, a shape rather than a step: the scale has 4 and 8 and no 3. */
+    border-radius: 9999px;
   }
 
   .kt-link-target {
@@ -132,10 +133,12 @@
   }
 
   /* La carte de tete d'un onglet : ce qu'on vient lire, avant les reglages.
-     Elle se distingue par l'air et par un filet, pas par une autre couleur :
-     cinq cartes de poids identique sont cinq rectangles gris. */
+     Elle se distingue par l'air seul. Le filet qu'elle portait etait le trait
+     de controle a 3:1 pose sur une carte, ce que la direction (.agent/PROMPT.md
+     section 3) exclut : pas de bordure decorative, la structure passe par
+     l'espace. */
   .kt-card-lead {
-    @apply rounded-lg border border-kick-stroke bg-kick-surface p-6;
+    @apply rounded-lg bg-kick-surface p-6;
   }
   .kt-row { @apply flex flex-col gap-1.5; }
 }

@@ -151,7 +151,9 @@ for (const scheme of ['dark', 'light']) {
 
         return {
           contrasteBordure: ratio(edge, behind),
-          contrasteBadge: textRatio(badge),
+          // A drawn flag has no text: 1.4.3 has nothing to measure on it. The
+          // two-letter fallback still does, and still gets measured.
+          contrasteBadge: badge?.textContent?.trim() ? textRatio(badge) : null,
           contrasteFleche: textRatio(panel.querySelector('.kt-compose-insert')),
           contrasteTexte: textRatio(body),
           visible: cs.visibility === 'visible' && cs.opacity !== '0',
@@ -164,6 +166,10 @@ for (const scheme of ['dark', 'light']) {
           taillePanneau: px(cs.fontSize),
           tailleBadge: badge ? px(getComputedStyle(badge).fontSize) : null,
           rayonBadge: badge ? getComputedStyle(badge).borderRadius : null,
+          // null when the badge carries no drawn flag: then this probe measured nothing.
+          dessinBadge: badge?.classList.contains('kt-flag')
+            ? getComputedStyle(badge).backgroundImage !== 'none'
+            : null,
           tailleTexte: body ? px(getComputedStyle(body).fontSize) : null,
         };
       },
@@ -196,6 +202,8 @@ const whole = (v) => v !== null && Number.isInteger(v);
 for (const r of report) {
   const tag = `${r.scheme}/${r.cas}`;
   if (!r.visible) failures.push(`${tag}: le panneau ne s affiche pas`);
+  if (r.dessinBadge === null) failures.push(`${tag}: le badge ne porte aucun drapeau, rien de mesure`);
+  if (r.dessinBadge === false) failures.push(`${tag}: le drapeau du badge a perdu son dessin`);
   if (r.deborde) failures.push(`${tag}: le panneau sort de la fenetre`);
   if (r.ombre !== 'aucune') failures.push(`${tag}: ombre portee -> ${r.ombre}`);
   // The shadow was the only thing separating this panel from the chat: the

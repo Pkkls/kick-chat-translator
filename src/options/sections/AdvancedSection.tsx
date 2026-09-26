@@ -265,7 +265,7 @@ export function AdvancedSection({ settings, onPatch, stats }: Props) {
         </div>
         <p class="text-[11px] text-kick-muted">
           {t(
-            '"Reset all settings" restores defaults — use it if translations stop appearing because a filter (whitelist / source-language allowlist) was left active.',
+            '"Reset all settings" restores defaults. Use it if translations stop appearing because a filter (channel allowlist or source-language allowlist) was left active.',
           )}
         </p>
       </section>

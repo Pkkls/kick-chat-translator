@@ -194,8 +194,6 @@ writeFileSync(path.join(HERE, 'bar-panel-live.html'), await page.content(), 'utf
 await page.locator('.kt-lang-fav').first().click();
 const shutAgain = await panel.evaluate((el) => el.hidden);
 
-await browser.close();
-
 const fails = [];
 if (rangeesVisiblesAuDump !== m.rows)
   fails.push(`le dump audite montre ${rangeesVisiblesAuDump} rangees sur ${m.rows} : il a ete pris dans un etat filtre`);
@@ -228,6 +226,38 @@ console.log(`rows       ${m.rowHeights.join(', ')}px, ${m.rows} of them, ${m.fla
 console.log(`favourites ${m.tiles.join(' ')}`);
 console.log(`filter     "por" leaves ${afterFilter} rows`);
 console.log(`picking    reported ${picked.join(',') || 'nothing'}, panel shut: ${shutAgain}`);
+
+// The same bar with no clipping ancestor, which is how the store fixture is
+// built. columnBox used to fall back to the 24px button as the column, the
+// share of it capped the panel at 80px, and the list ran 258px past the panel's
+// own background, over the chat.
+const libre = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+// The stage's own rule, not the first `overflow: hidden` in the page: the
+// stylesheet inlined above it has plenty, and replacing one of those left
+// #panel clipping and this check measuring the case that already worked.
+await libre.setContent(PAGE.replace('#101012; overflow: hidden;', '#101012; overflow: visible;'));
+await libre.evaluate(() => {
+  const I = window.Injector;
+  I.ensureStyles();
+  I.mountFloatingBar(document.getElementById('panel'), { ...I.defaultSettings(), enabled: true }, {
+    onToggle: () => {}, onTargetLang: () => {}, onOpenOptions: () => {}, onEnableLocal: () => {},
+  });
+});
+await libre.locator('.kt-float-lang').click();
+const sansCadre = await libre.evaluate(() => {
+  const el = document.querySelector('.kt-lang-panel');
+  const bas = el.getBoundingClientRect().bottom;
+  const rows = [...el.querySelectorAll('.kt-lang-row')];
+  const list = el.querySelector('.kt-lang-list');
+  const lb = list.getBoundingClientRect().bottom;
+  return { rows: rows.length, depasse: Math.round(lb - bas), maxH: el.style.maxHeight };
+});
+await browser.close();
+console.log(`sans cadre ${sansCadre.rows} rows, max-height ${sansCadre.maxH}, liste depasse de ${sansCadre.depasse}px`);
+if (sansCadre.rows < 10) fails.push(`sans cadre : ${sansCadre.rows} rangees, le panneau ne s est pas ouvert`);
+else if (sansCadre.depasse > 1) {
+  fails.push(`sans cadre : la liste depasse le panneau de ${sansCadre.depasse}px (max-height ${sansCadre.maxH})`);
+}
 if (fails.length) {
   console.error('FAIL: ' + fails.join(' ; '));
   process.exit(1);

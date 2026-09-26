@@ -66,9 +66,15 @@
   margin-inline-end: 5px;
   padding: 0 4px;
   border-radius: 4px;
-  background: rgb(var(--kt-text-rgb) / 0.06);
   text-transform: uppercase;
   vertical-align: middle;
+}
+/* The tint belongs to the two-letter fallback only. As a `background`
+   shorthand on .kt-src-flag it came after `@import flags.css` at the same
+   specificity, reset every .kt-flag-xx gradient to none, and each drawn flag
+   rendered as an empty grey pill. */
+.kt-src-flag:not(.kt-flag) {
+  background: rgb(var(--kt-text-rgb) / 0.06);
 }
 
 .kt-provider {
@@ -558,13 +564,17 @@ html[data-kt-scheme='light'] .kt-translation-replace {
   flex-shrink: 0;
   margin-top: 2px;
   padding: 2px 6px;
-  background: rgb(var(--kt-green-rgb) / 0.13);
   border-radius: 4px;
   color: var(--kt-green);
   font-size: var(--kt-fs-xs);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+/* Same trap as .kt-src-flag: the tint is for the text fallback, a drawn flag
+   keeps its own background. */
+.kt-compose-target:not(.kt-flag) {
+  background: rgb(var(--kt-green-rgb) / 0.13);
 }
 
 /* The translation — the hero. Shows in full (grows the chip upward); scrolls only
@@ -634,7 +644,7 @@ html[data-kt-scheme='light'] .kt-translation-inline {
 /* Renamed with its dark counterpart. Under the old name this rule outranked
    every .kt-flag-xx gradient on specificity (0,2,1 against 0,1,0), so in the
    light scheme it repainted each drawn flag with a flat grey. */
-html[data-kt-scheme='light'] .kt-src-flag {
+html[data-kt-scheme='light'] .kt-src-flag:not(.kt-flag) {
   background: rgb(var(--kt-text-rgb) / 0.06);
   color: var(--kt-muted);
 }
@@ -679,7 +689,7 @@ html[data-kt-scheme='light'] .kt-compose {
 /* The brand green is unreadable on a light ground: measured 1.29:1 for the
    badge and 1.22 for the cue, where the chip section already records 1.25 for
    green as text. #2A810C is the variant that section measured at 4.50. */
-html[data-kt-scheme='light'] .kt-compose-target {
+html[data-kt-scheme='light'] .kt-compose-target:not(.kt-flag) {
   background: rgb(var(--kt-green-ink-rgb) / 0.13);
   /* var(--kt-green-ink) is the 4.50 figure against the plain light surface; the badge sits
      on its own green tint, which lifts the ground and brought it back to 4.31.

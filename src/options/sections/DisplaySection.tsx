@@ -34,7 +34,7 @@ export function DisplaySection({ settings, onPatch }: Props) {
             value={settings.targetLang}
             onChange={(e) => onPatch({ targetLang: (e.target as HTMLSelectElement).value })}
           >
-            <option value="auto">{t('Auto — your browser language')}</option>
+            <option value="auto">{t('Auto (your browser language)')}</option>
             {langs.map((l) => (
               <option key={l.code} value={l.code}>
                 {l.name}
@@ -84,7 +84,7 @@ export function DisplaySection({ settings, onPatch }: Props) {
           />
         </div>
 
-        <p class="text-[11px] text-kick-muted">{t('The other three are still being worked on.')}</p>
+        <p class="text-[11px] text-kick-muted">{t('The recommended style is the most tested. The other three may still change.')}</p>
 
         <RangeRow
           label={t('Text size')}
@@ -206,7 +206,7 @@ export function DisplaySection({ settings, onPatch }: Props) {
         <h2 class="kt-section">{t('Compose preview')}</h2>
         <p class="text-[12px] text-kick-muted">
           {t(
-            'Translate what you type before sending. A live preview appears above the chat box; click it to drop the translation in. Uses the same DeepL-first chain as incoming chat.',
+            'Translate what you type before sending. A live preview appears above the chat box; click it to drop the translation in. Uses the same engine and providers as incoming chat.',
           )}
         </p>
         <ToggleRow
@@ -222,7 +222,7 @@ export function DisplaySection({ settings, onPatch }: Props) {
             value={settings.composeTargetLang}
             onChange={(e) => onPatch({ composeTargetLang: (e.target as HTMLSelectElement).value })}
           >
-            <option value="auto">{t("Auto — the channel's language")}</option>
+            <option value="auto">{t("Auto (the channel's language)")}</option>
             {langs.map((l) => (
               <option key={l.code} value={l.code}>
                 {l.name}
@@ -231,7 +231,7 @@ export function DisplaySection({ settings, onPatch }: Props) {
           </select>
         </div>
         <p class="text-[11px] text-kick-muted">
-          {t("Auto detects the channel's broadcast language from Kick — no manual picking.")}
+          {t("Auto detects the channel's broadcast language from Kick. No manual picking.")}
         </p>
         <ToggleRow
           checked={settings.composeInsertMode === 'insert'}
@@ -283,6 +283,9 @@ function StylePreview({ settings }: { settings: Settings }) {
     who.textContent = `${SAMPLE_USER}: `;
     const said = document.createElement('span');
     said.className = 'font-normal';
+    // The sample is Spanish; in an Arabic interface the page is rtl and its
+    // closing "?" jumped to the start of the line.
+    said.dir = 'auto';
     said.textContent = SAMPLE_TEXT;
     row.append(who, said);
     el.appendChild(row);
@@ -381,8 +384,11 @@ function RangeRow({
     <div class="kt-row">
       <label class="kt-label">{label}</label>
       <div class="flex items-center gap-2">
+        {/* Unstyled, a range is Chrome's blue, the only blue in the product,
+            and 16 pixels tall where WCAG 2.5.8 asks for 24. */}
         <input
           type="range"
+          class="h-6 accent-kick-primary"
           aria-label={label}
           min={min}
           max={max}

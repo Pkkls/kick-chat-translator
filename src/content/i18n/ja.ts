@@ -49,4 +49,8 @@ export const ja: Record<string, string> = {
   skipSlang: 'チャットスラングだけです',
   skipTooLong: 'サイズ上限を超えています',
   toastChatNotFound: 'Kick Chat Translator: チャットが見つかりません。更新が必要かもしれません。',
+  toastAllDown: 'すべての翻訳プロバイダーが停止しています。まもなく再試行します。',
+  toastCopied: '翻訳をコピーしました。Ctrl+V で貼り付けてください。',
+  toastQuota: '$PROVIDER$ の上限に達しました。次のプロバイダーに切り替えます。',
+  toastSwitched: '$PROVIDER$ に切り替えました',
 };

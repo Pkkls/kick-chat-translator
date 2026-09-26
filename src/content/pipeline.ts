@@ -356,9 +356,13 @@ export class TranslationPipeline {
         return;
       }
       if (code === 'saturated' || code === 'no_provider') {
-        this.maybeToast('All translation providers are down — retrying shortly');
+        this.maybeToast(localised('toastAllDown', 'Every translation provider is down. Retrying shortly.'));
       } else if (code === 'quota' || outcome.error.message?.includes('quota')) {
-        this.maybeToast(`${outcome.error.provider ?? 'Provider'} quota reached — falling back`);
+        this.maybeToast(
+          localised('toastQuota', '$PROVIDER$ quota reached. Falling back to the next provider.', [
+            outcome.error.provider ?? 'Provider',
+          ]),
+        );
       }
       showError(msg.injectionTarget, code, () => void this.forceRetranslate(msg, real));
       return;
@@ -527,7 +531,7 @@ export class TranslationPipeline {
     updateActiveProvider(result.provider);
     // Provider switch notification.
     if (this.lastProvider && this.lastProvider !== result.provider) {
-      this.maybeToast(`Switched to ${result.provider}`);
+      this.maybeToast(localised('toastSwitched', 'Switched to $PROVIDER$', [result.provider]));
     }
     this.lastProvider = result.provider;
   }

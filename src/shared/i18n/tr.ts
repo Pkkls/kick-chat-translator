@@ -7,6 +7,7 @@ export const tr: Record<string, string> = {
   Display: 'Görünüm',
   Filters: 'Filtreler',
   Advanced: 'Gelişmiş',
+  Activity: 'Etkinlik',
   About: 'Hakkında',
   'Kick Chat Translator listens to chat in real time and translates non-English (or non-target-language) messages right under the original. No tracking, no account, fully open-source.':
     'Kick Chat Translator sohbeti gerçek zamanlı dinler ve İngilizce olmayan (veya hedef dilde olmayan) mesajları orijinalin hemen altında çevirir. Takip yok, hesap yok, tamamen açık kaynak.',
@@ -44,19 +45,17 @@ export const tr: Record<string, string> = {
   'Reset usage stats': 'Kullanım istatistiklerini sıfırla',
   'Reset all settings to defaults': 'Tüm ayarları varsayılana sıfırla',
   'click again to confirm': 'onaylamak için tekrar tıkla',
-  '"Reset all settings" restores defaults — use it if translations stop appearing because a filter (whitelist / source-language allowlist) was left active.':
-    '"Tüm ayarları sıfırla" varsayılanları geri yükler. Bir filtre (beyaz liste / kaynak dili izin listesi) açık kaldığı için çeviriler görünmeyi kestiyse bunu kullan.',
+  '"Reset all settings" restores defaults. Use it if translations stop appearing because a filter (channel allowlist or source-language allowlist) was left active.': '"Tüm ayarları sıfırla" varsayılanları geri yükler. Bir filtre (kanal izin listesi veya kaynak dili izin listesi) açık kaldığı için çeviriler görünmeyi kestiyse bunu kullan.',
   'Translation target': 'Çeviri hedefi',
   'Display style': 'Görünüm stili',
   'Compose preview': 'Yazma önizlemesi',
   'Translate everything to': 'Her şeyi şu dile çevir',
-  'Auto — your browser language': 'Otomatik (tarayıcının dili)',
+  'Auto (your browser language)': 'Otomatik (tarayıcının dili)',
   'Auto reads incoming chat in your own language, detected from the browser.':
     'Otomatik, gelen sohbeti tarayıcından algılanan kendi dilinde gösterir.',
   'Write my messages in': 'Mesajlarımı şu dilde yaz',
-  "Auto — the channel's language": 'Otomatik (kanalın dili)',
-  "Auto detects the channel's broadcast language from Kick — no manual picking.":
-    'Kanalın yayın dilini Kick üzerinden otomatik algılar, elle seçim gerekmez.',
+  "Auto (the channel's language)": 'Otomatik (kanalın dili)',
+  "Auto detects the channel's broadcast language from Kick. No manual picking.": 'Kanalın yayın dilini Kick üzerinden otomatik algılar, elle seçim gerekmez.',
   Below: 'Altında',
   'On a new line under the message.': 'Mesajın altında yeni bir satırda.',
   Inline: 'Satır içi',
@@ -70,8 +69,7 @@ export const tr: Record<string, string> = {
   'Enable compose preview': 'Yazma önizlemesini etkinleştir',
   'Click inserts into the chat box (off = copy to clipboard instead)':
     'Tıklama, çeviriyi sohbet kutusuna ekler (kapalıysa panoya kopyalanır)',
-  'Translate what you type before sending. A live preview appears above the chat box; click it to drop the translation in. Uses the same DeepL-first chain as incoming chat.':
-    'Göndermeden önce yazdıklarını çevirir. Sohbet kutusunun üstünde canlı bir önizleme belirir; çeviriyi eklemek için üzerine tıkla. Gelen sohbetle aynı, önce DeepL denenen zinciri kullanır.',
+  'Translate what you type before sending. A live preview appears above the chat box; click it to drop the translation in. Uses the same engine and providers as incoming chat.': 'Göndermeden önce yazdıklarını çevirir. Sohbet kutusunun üstünde canlı bir önizleme belirir; çeviriyi eklemek için üzerine tıkla. Gelen sohbetle aynı motoru ve sağlayıcıları kullanır.',
   Engine: 'Motor',
   'on-device:': 'cihaz üzerinde:',
   'available ✓': 'kullanılabilir ✓',
@@ -93,10 +91,9 @@ export const tr: Record<string, string> = {
   'Skip messages already in target language': 'Zaten hedef dilde olan mesajları atla',
   'Ignore common bot accounts (StreamElements, Nightbot, …)':
     'Yaygın bot hesaplarını yoksay (StreamElements, Nightbot, …)',
-  'Whitelist channels (only translate on these)':
-    'Beyaz listedeki kanallar (yalnızca bunlarda çevir)',
-  'Blacklist channels': 'Kara listedeki kanallar',
-  'Blacklist users': 'Kara listedeki kullanıcılar',
+  'Channel allowlist (only translate on these)': 'İzin verilen kanallar (yalnızca bunlarda çevir)',
+  'Channel blocklist': 'Engellenen kanallar',
+  'User blocklist': 'Engellenen kullanıcılar',
   'Cloud fallback chain': 'Bulut yedek zinciri',
   "Used when on-device is off or a language pair isn't downloaded. Providers are tried in order; failing ones are temporarily skipped (exponential cooldown).":
     'Cihaz üzerinde çeviri kapalıyken veya bir dil çifti indirilmemişken kullanılır. Sağlayıcılar sırayla denenir; başarısız olanlar geçici olarak atlanır (üstel bekleme süresi).',
@@ -122,16 +119,15 @@ export const tr: Record<string, string> = {
   'Target language': 'Hedef dil',
   'Translate what I type': 'Yazdıklarımı çevir',
   Today: 'Bugün',
-  'Auto — your language': 'Otomatik (dilin)',
+  'Auto (your language)': 'Otomatik (dilin)',
   'Below original': 'Orijinalin altında',
-  'Auto — channel language': 'Otomatik (kanal dili)',
-  "Auto-detects the channel's language. Preview shows above the chat box — click it to insert.":
-    'Kanalın dilini otomatik algılar. Önizleme sohbet kutusunun üstünde görünür, eklemek için tıkla.',
+  'Auto (channel language)': 'Otomatik (kanal dili)',
+  "Auto-detects the channel's language. Preview shows above the chat box. Click it to insert.": 'Kanalın dilini otomatik algılar. Önizleme sohbet kutusunun üstünde görünür, eklemek için tıkla.',
   'order in options': 'seçeneklerdeki sıra',
   'DeepL quota': 'DeepL kotası',
-  enable: 'etkinleştir',
-  'keep original': 'orijinali koru',
-  'lang badge': 'dil rozeti',
+  'Enable': 'Etkinleştir',
+  'Keep original': 'Orijinali koru',
+  'Language badge': 'Dil rozeti',
   'Clear cache': 'Önbelleği temizle',
   Options: 'Seçenekler',
   requests: 'istekler',
@@ -189,7 +185,7 @@ export const tr: Record<string, string> = {
   'Only when you point at the line. Spares your quota.':
     'Sadece satiri gosterdiginde. Kotani korur.',
   recommended: 'önerilen',
-  'The other three are still being worked on.': 'Diğer üçü hâlâ üzerinde çalışılıyor.',
+  'The recommended style is the most tested. The other three may still change.': 'Önerilen stil en çok test edilendir. Diğer üçü hâlâ değişebilir.',
   'Text size': 'Yazı boyutu',
   'Line spacing': 'Satır aralığı',
   'Font': 'Yazı tipi',

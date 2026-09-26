@@ -171,7 +171,7 @@ export function FilterSection({ settings, onPatch, stats }: Props) {
         <ChannelsSeen settings={settings} onPatch={onPatch} stats={stats} />
         <div class="kt-row">
           <label class="kt-label" for="kt-whitelist-channels">
-            {t('Whitelist channels (only translate on these)')}
+            {t('Channel allowlist (only translate on these)')}
           </label>
           <textarea
             id="kt-whitelist-channels"
@@ -185,7 +185,7 @@ export function FilterSection({ settings, onPatch, stats }: Props) {
         </div>
         <div class="kt-row">
           <label class="kt-label" for="kt-blacklist-channels">
-            {t('Blacklist channels')}
+            {t('Channel blocklist')}
           </label>
           <textarea
             id="kt-blacklist-channels"
@@ -199,7 +199,7 @@ export function FilterSection({ settings, onPatch, stats }: Props) {
         </div>
         <div class="kt-row">
           <label class="kt-label" for="kt-blacklist-users">
-            {t('Blacklist users')}
+            {t('User blocklist')}
           </label>
           <textarea
             id="kt-blacklist-users"

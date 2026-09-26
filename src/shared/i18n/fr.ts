@@ -9,6 +9,7 @@ export const fr: Record<string, string> = {
   Display: 'Affichage',
   Filters: 'Filtres',
   Advanced: 'Avancé',
+  Activity: 'Activité',
   About: 'À propos',
   'Kick Chat Translator listens to chat in real time and translates non-English (or non-target-language) messages right under the original. No tracking, no account, fully open-source.':
     "Kick Chat Translator écoute le chat en temps réel et traduit les messages non anglais (ou hors langue cible) juste sous l'original. Aucun suivi, aucun compte, entièrement open-source.",
@@ -44,19 +45,17 @@ export const fr: Record<string, string> = {
   'Reset usage stats': 'Réinitialiser les statistiques',
   'Reset all settings to defaults': 'Réinitialiser tous les paramètres',
   'click again to confirm': 'cliquer à nouveau pour confirmer',
-  '"Reset all settings" restores defaults — use it if translations stop appearing because a filter (whitelist / source-language allowlist) was left active.':
-    '"Réinitialiser tous les paramètres" restaure les valeurs par défaut — utilisez-le si les traductions disparaissent car un filtre (liste blanche / liste d\'autorisation de langue source) est resté actif.',
+  '"Reset all settings" restores defaults. Use it if translations stop appearing because a filter (channel allowlist or source-language allowlist) was left active.': '"Réinitialiser tous les paramètres" restaure les valeurs par défaut. Utilisez-le si les traductions disparaissent parce qu\'un filtre (liste de salons autorisés ou liste de langues source autorisées) est resté actif.',
   'Translation target': 'Langue cible',
   'Display style': "Style d'affichage",
   'Compose preview': 'Aperçu de saisie',
   'Translate everything to': 'Tout traduire vers',
-  'Auto — your browser language': 'Auto — langue de votre navigateur',
+  'Auto (your browser language)': 'Auto (langue de votre navigateur)',
   'Auto reads incoming chat in your own language, detected from the browser.':
     'Auto lit le chat entrant dans votre langue, détectée depuis le navigateur.',
   'Write my messages in': 'Écrire mes messages en',
-  "Auto — the channel's language": 'Auto — langue du salon',
-  "Auto detects the channel's broadcast language from Kick — no manual picking.":
-    'Détecte automatiquement la langue de diffusion du salon depuis Kick — aucune sélection manuelle.',
+  "Auto (the channel's language)": 'Auto (langue du salon)',
+  "Auto detects the channel's broadcast language from Kick. No manual picking.": 'Détecte automatiquement la langue de diffusion du salon depuis Kick. Aucune sélection manuelle.',
   Below: 'En dessous',
   'On a new line under the message.': 'Sur une nouvelle ligne sous le message.',
   Inline: 'Intégré',
@@ -70,8 +69,7 @@ export const fr: Record<string, string> = {
   'Enable compose preview': "Activer l'aperçu de saisie",
   'Click inserts into the chat box (off = copy to clipboard instead)':
     'Clic insère dans la zone de chat (désactivé = copier dans le presse-papiers)',
-  'Translate what you type before sending. A live preview appears above the chat box; click it to drop the translation in. Uses the same DeepL-first chain as incoming chat.':
-    "Traduit ce que vous tapez avant l'envoi. Un aperçu en direct apparaît au-dessus de la zone de chat ; cliquez dessus pour insérer la traduction. Utilise la même chaîne DeepL en priorité que le chat entrant.",
+  'Translate what you type before sending. A live preview appears above the chat box; click it to drop the translation in. Uses the same engine and providers as incoming chat.': "Traduit ce que vous tapez avant l'envoi. Un aperçu en direct apparaît au-dessus de la zone de chat ; cliquez dessus pour insérer la traduction. Utilise le même moteur et les mêmes fournisseurs que le chat entrant.",
   Engine: 'Moteur',
   'on-device:': "sur l'appareil :",
   'available ✓': 'disponible ✓',
@@ -93,10 +91,9 @@ export const fr: Record<string, string> = {
   'Skip messages already in target language': 'Ignorer les messages déjà dans la langue cible',
   'Ignore common bot accounts (StreamElements, Nightbot, …)':
     'Ignorer les comptes bots courants (StreamElements, Nightbot, …)',
-  'Whitelist channels (only translate on these)':
-    'Liste blanche de salons (traduire uniquement sur ceux-ci)',
-  'Blacklist channels': 'Liste noire de salons',
-  'Blacklist users': "Liste noire d'utilisateurs",
+  'Channel allowlist (only translate on these)': 'Salons autorisés (traduire uniquement sur ceux-ci)',
+  'Channel blocklist': 'Salons bloqués',
+  'User blocklist': 'Utilisateurs bloqués',
   'Cloud fallback chain': 'Chaîne de repli cloud',
   "Used when on-device is off or a language pair isn't downloaded. Providers are tried in order; failing ones are temporarily skipped (exponential cooldown).":
     "Utilisée quand la traduction sur l'appareil est désactivée ou qu'une paire de langues n'est pas téléchargée. Les fournisseurs sont essayés dans l'ordre ; ceux en échec sont temporairement ignorés (délai exponentiel).",
@@ -121,16 +118,15 @@ export const fr: Record<string, string> = {
   'Target language': 'Langue cible',
   'Translate what I type': 'Traduire ma saisie',
   Today: "Aujourd'hui",
-  'Auto — your language': 'Auto — votre langue',
+  'Auto (your language)': 'Auto (votre langue)',
   'Below original': "Sous l'original",
-  'Auto — channel language': 'Auto — langue du salon',
-  "Auto-detects the channel's language. Preview shows above the chat box — click it to insert.":
-    "Détecte automatiquement la langue du salon. L'aperçu s'affiche au-dessus de la zone de chat — cliquez pour insérer.",
+  'Auto (channel language)': 'Auto (langue du salon)',
+  "Auto-detects the channel's language. Preview shows above the chat box. Click it to insert.": "Détecte automatiquement la langue du salon. L'aperçu s'affiche au-dessus de la zone de chat. Cliquez pour insérer.",
   'order in options': 'ordre dans les options',
   'DeepL quota': 'Quota DeepL',
-  enable: 'activer',
-  'keep original': "garder l'original",
-  'lang badge': 'badge de langue',
+  'Enable': 'Activer',
+  'Keep original': "Garder l'original",
+  'Language badge': 'Badge de langue',
   'Clear cache': 'Vider le cache',
   Options: 'Options',
   requests: 'requêtes',
@@ -189,7 +185,7 @@ export const fr: Record<string, string> = {
   'Only when you point at the line. Spares your quota.':
     'Seulement quand tu pointes la ligne. Economise ton quota.',
   recommended: 'recommandé',
-  'The other three are still being worked on.': 'Les trois autres sont encore en travaux.',
+  'The recommended style is the most tested. The other three may still change.': 'Le style recommandé est le plus éprouvé. Les trois autres peuvent encore changer.',
   'Text size': 'Taille du texte',
   'Line spacing': 'Interligne',
   'Font': 'Police',

@@ -156,9 +156,15 @@ for (const scheme of ['dark', 'light']) {
           const box = chat.getBoundingClientRect();
           const visible = rows.filter((r) => r.getBoundingClientRect().bottom <= box.bottom).length;
           const heights = rows.slice(0, 8).map((r) => +r.getBoundingClientRect().height.toFixed(1));
+          // A drawn flag whose gradient lost the cascade still has its box, so
+          // it passes every geometry check and renders as an empty grey pill.
+          // Counted from the computed style, which is the only place it shows.
+          const flags = [...chat.querySelectorAll('.kt-src-flag.kt-flag')];
           out[style] = {
             visibles: visible,
             hauteurMoyenne: +(heights.reduce((a, b) => a + b, 0) / heights.length).toFixed(1),
+            drapeaux: flags.length,
+            drapeauxVides: flags.filter((f) => getComputedStyle(f).backgroundImage === 'none').length,
           };
         }
         return out;
@@ -191,6 +197,16 @@ for (const r of report) console.log(r.name, JSON.stringify(r.measured));
 // down to the tenth of a pixel.
 const byName = Object.fromEntries(report.map((r) => [r.name, r.measured]));
 const failures = [];
+for (const r of report) {
+  for (const style of ['below', 'inline', 'replace']) {
+    const { drapeaux, drapeauxVides } = r.measured[style];
+    // Zero flags would mean the probe measured nothing, not that none is empty.
+    if (drapeaux === 0) failures.push(`${r.name}/${style}: aucun drapeau dessine sur les lignes`);
+    else if (drapeauxVides > 0) {
+      failures.push(`${r.name}/${style}: ${drapeauxVides}/${drapeaux} drapeaux sans dessin`);
+    }
+  }
+}
 for (const scheme of ['dark', 'light']) {
   for (const style of ['below', 'inline']) {
     const shown = byName[`chat-live-${scheme}`][style].visibles;

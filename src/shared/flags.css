@@ -67,7 +67,6 @@
   padding: 0;
   inline-size: 18px;
   block-size: 13px;
-  background-color: transparent;
   /* .kt-flag arrondit a 2px, ce qui va pour un drapeau dans une liste. Ici le
      creneau est un badge, et la porte compose-live mesure les badges contre la
      direction artistique, qui n'admet que 4 et 8. */

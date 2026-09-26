@@ -118,14 +118,30 @@ function positionPanel(panel: HTMLElement, composer: HTMLElement): void {
   // behind it. Falls back to the layout viewport on desktop.
   const vv = window.visualViewport;
   const keyboardInset = vv ? Math.max(0, window.innerHeight - vv.height - vv.offsetTop) : 0;
+  const overlay = findOverlayTopAbove(composer, r.top);
+  const chip = chipTopAbove(r.top);
   const geom = computePanelGeom(
     { left: r.left, top: r.top, width: r.width },
     { innerWidth: window.innerWidth, innerHeight: window.innerHeight, keyboardInset },
-    findOverlayTopAbove(composer, r.top),
+    overlay === undefined ? chip : chip === undefined ? overlay : Math.min(overlay, chip),
   );
   panel.style.left = `${geom.left}px`;
   panel.style.width = `${geom.width}px`;
   panel.style.bottom = `${geom.bottom}px`;
+}
+
+/**
+ * Our own language chip, in the row just above the composer. The panel sat on
+ * the composer's top edge and covered 18 of its 24px: the control that sets
+ * this preview's language was out of reach while typing, and the bottom 6px of
+ * its outline showed under the panel.
+ */
+function chipTopAbove(composerTop: number): number | undefined {
+  const chip = document.querySelector<HTMLElement>('.kt-chip');
+  if (!chip) return undefined;
+  const box = chip.getBoundingClientRect();
+  if (box.height === 0) return undefined;
+  return box.top < composerTop && box.bottom <= composerTop + 8 ? box.top : undefined;
 }
 
 // Overlays Kick pops up over the composer (emote / emoji picker, autocomplete) that
@@ -328,5 +344,5 @@ function setNativeValue(el: HTMLTextAreaElement | HTMLInputElement, value: strin
 
 function copyAndToast(text: string): void {
   void navigator.clipboard?.writeText(text).catch(() => undefined);
-  showToast('Translation copied — paste with Ctrl+V');
+  showToast(msg('toastCopied', 'Translation copied. Paste it with Ctrl+V.'));
 }

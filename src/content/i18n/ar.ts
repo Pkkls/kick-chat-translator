@@ -49,4 +49,8 @@ export const ar: Record<string, string> = {
   skipSlang: 'مجرد عامية دردشة',
   skipTooLong: 'أطول من الحد المسموح',
   toastChatNotFound: 'Kick Chat Translator: لم يتم العثور على الدردشة. قد تحتاج إلى تحديث.',
+  toastAllDown: 'جميع مزودي الترجمة متوقفون. ستتم إعادة المحاولة قريباً.',
+  toastCopied: 'تم نسخ الترجمة. الصقها باستخدام Ctrl+V.',
+  toastQuota: 'تم بلوغ حصة $PROVIDER$. جارٍ الانتقال إلى المزود التالي.',
+  toastSwitched: 'تم التبديل إلى $PROVIDER$',
 };

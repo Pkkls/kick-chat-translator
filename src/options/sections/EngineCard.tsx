@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
 import type { Settings } from '~/shared/settings';
 import { useT } from '~/shared/i18nContext';
+import { flagClass } from '~/shared/flags';
 import { Check } from '../components/Check';
 
 interface Props {
@@ -119,7 +120,8 @@ export function EngineCard({ settings, onPatch }: Props) {
                 <button
                   key={s}
                   disabled={ready || busy === s}
-                  class={`rounded-md border px-2 py-1 text-xs transition ${
+                  title={st === 'unavailable' ? t('unavailable') : undefined}
+                  class={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs transition ${
                     ready
                       ? 'border-kick-primary/50 bg-kick-primary/10 text-kick-primary cursor-default'
                       : st === 'unavailable'
@@ -133,8 +135,12 @@ export function EngineCard({ settings, onPatch }: Props) {
                   }`}
                   onClick={() => void download(s)}
                 >
-                  {s.toUpperCase()}{' '}
-                  {ready ? '✓' : busy === s ? '…' : st === 'unavailable' ? '✕' : '⬇'}
+                  {/* The hint above says "click a flag below": there was no flag
+                      below, only the code. And a bare ✕ on a chip reads as
+                      "remove"; the muted chip and its title say unavailable. */}
+                  {flagClass(s) && <span class={flagClass(s)} aria-hidden="true" />}
+                  {s.toUpperCase()}
+                  {ready ? ' ✓' : busy === s ? ' …' : st === 'unavailable' ? '' : ' ⬇'}
                 </button>
               );
             })}

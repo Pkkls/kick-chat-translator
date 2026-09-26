@@ -9,6 +9,7 @@ export const ru: Record<string, string> = {
   Display: 'Отображение',
   Filters: 'Фильтры',
   Advanced: 'Дополнительно',
+  Activity: 'Активность',
   About: 'О расширении',
   'Kick Chat Translator listens to chat in real time and translates non-English (or non-target-language) messages right under the original. No tracking, no account, fully open-source.':
     'Kick Chat Translator слушает чат в реальном времени и переводит сообщения не на целевом языке прямо под оригиналом. Без слежки, без аккаунта, полностью открытый исходный код.',
@@ -44,19 +45,17 @@ export const ru: Record<string, string> = {
   'Reset usage stats': 'Сбросить статистику',
   'Reset all settings to defaults': 'Сбросить все настройки',
   'click again to confirm': 'нажмите ещё раз для подтверждения',
-  '"Reset all settings" restores defaults — use it if translations stop appearing because a filter (whitelist / source-language allowlist) was left active.':
-    '«Сбросить все настройки» восстанавливает значения по умолчанию — используйте, если переводы перестали отображаться из-за активного фильтра (белый список / список разрешённых языков источника).',
+  '"Reset all settings" restores defaults. Use it if translations stop appearing because a filter (channel allowlist or source-language allowlist) was left active.': '«Сбросить все настройки» восстанавливает значения по умолчанию. Используйте, если переводы перестали отображаться из-за активного фильтра (список разрешённых каналов или список разрешённых языков источника).',
   'Translation target': 'Целевой язык перевода',
   'Display style': 'Стиль отображения',
   'Compose preview': 'Предпросмотр набора',
   'Translate everything to': 'Переводить всё на',
-  'Auto — your browser language': 'Авто — язык браузера',
+  'Auto (your browser language)': 'Авто (язык браузера)',
   'Auto reads incoming chat in your own language, detected from the browser.':
     'Авто определяет ваш язык из браузера и переводит входящий чат на него.',
   'Write my messages in': 'Писать мои сообщения на',
-  "Auto — the channel's language": 'Авто — язык канала',
-  "Auto detects the channel's broadcast language from Kick — no manual picking.":
-    'Авто определяет язык трансляции канала из Kick — ручной выбор не нужен.',
+  "Auto (the channel's language)": 'Авто (язык канала)',
+  "Auto detects the channel's broadcast language from Kick. No manual picking.": 'Авто определяет язык трансляции канала из Kick. Ручной выбор не нужен.',
   Below: 'Снизу',
   'On a new line under the message.': 'На новой строке под сообщением.',
   Inline: 'Встроенный',
@@ -70,8 +69,7 @@ export const ru: Record<string, string> = {
   'Enable compose preview': 'Включить предпросмотр набора',
   'Click inserts into the chat box (off = copy to clipboard instead)':
     'Клик вставляет в поле чата (выкл = копировать в буфер обмена)',
-  'Translate what you type before sending. A live preview appears above the chat box; click it to drop the translation in. Uses the same DeepL-first chain as incoming chat.':
-    'Перевод вводимого текста перед отправкой. Предпросмотр появляется над полем чата; нажмите для вставки перевода. Использует ту же цепочку с DeepL в приоритете, что и для входящих сообщений.',
+  'Translate what you type before sending. A live preview appears above the chat box; click it to drop the translation in. Uses the same engine and providers as incoming chat.': 'Перевод вводимого текста перед отправкой. Предпросмотр появляется над полем чата; нажмите для вставки перевода. Использует тот же движок и тех же провайдеров, что и для входящих сообщений.',
   Engine: 'Движок',
   'on-device:': 'на устройстве:',
   'available ✓': 'доступно ✓',
@@ -93,9 +91,9 @@ export const ru: Record<string, string> = {
   'Skip messages already in target language': 'Пропускать сообщения уже на целевом языке',
   'Ignore common bot accounts (StreamElements, Nightbot, …)':
     'Игнорировать типичные аккаунты ботов (StreamElements, Nightbot, …)',
-  'Whitelist channels (only translate on these)': 'Белый список каналов (переводить только на них)',
-  'Blacklist channels': 'Чёрный список каналов',
-  'Blacklist users': 'Чёрный список пользователей',
+  'Channel allowlist (only translate on these)': 'Разрешённые каналы (переводить только на них)',
+  'Channel blocklist': 'Заблокированные каналы',
+  'User blocklist': 'Заблокированные пользователи',
   'Cloud fallback chain': 'Резервная облачная цепочка',
   "Used when on-device is off or a language pair isn't downloaded. Providers are tried in order; failing ones are temporarily skipped (exponential cooldown).":
     'Используется когда перевод на устройстве выключен или языковая пара не загружена. Провайдеры перебираются по порядку; неработающие временно пропускаются (экспоненциальная задержка).',
@@ -111,7 +109,7 @@ export const ru: Record<string, string> = {
   'Pro (api.deepl.com)': 'Платный Pro (api.deepl.com)',
   'Smart budget routing': 'Умное распределение бюджета',
   'Spend DeepL only on the European languages it clearly wins at; other targets (Japanese, Arabic, Hindi…) use the free engines first, so your DeepL quota lasts much longer.':
-    'DeepL используется только для европейских языков, где он явно лидирует; для остальных (японский, арабский, хинди…) сначала используются бесплатные движки — квота DeepL расходуется значительно медленнее.',
+    'DeepL используется только для европейских языков, где он явно лидирует; для остальных (японский, арабский, хинди…) сначала используются бесплатные движки, поэтому квота DeepL расходуется значительно медленнее.',
   'Lingva instance': 'Экземпляр Lingva',
   'Custom URL (optional)': 'Произвольный URL (необязательно)',
   'Leave blank to use the default public instance.':
@@ -120,16 +118,15 @@ export const ru: Record<string, string> = {
   'Target language': 'Целевой язык',
   'Translate what I type': 'Переводить набираемое',
   Today: 'Сегодня',
-  'Auto — your language': 'Авто — ваш язык',
+  'Auto (your language)': 'Авто (ваш язык)',
   'Below original': 'Под оригиналом',
-  'Auto — channel language': 'Авто — язык канала',
-  "Auto-detects the channel's language. Preview shows above the chat box — click it to insert.":
-    'Автоопределение языка канала. Предпросмотр появляется над полем чата — нажмите для вставки.',
+  'Auto (channel language)': 'Авто (язык канала)',
+  "Auto-detects the channel's language. Preview shows above the chat box. Click it to insert.": 'Автоопределение языка канала. Предпросмотр появляется над полем чата. Нажмите для вставки.',
   'order in options': 'порядок в настройках',
   'DeepL quota': 'Квота DeepL',
-  enable: 'включить',
-  'keep original': 'сохранять оригинал',
-  'lang badge': 'метка языка',
+  'Enable': 'Включить',
+  'Keep original': 'Сохранять оригинал',
+  'Language badge': 'Метка языка',
   'Clear cache': 'Очистить кэш',
   Options: 'Настройки',
   requests: 'запросы',
@@ -187,7 +184,7 @@ export const ru: Record<string, string> = {
   'Only when you point at the line. Spares your quota.':
     'Только когда наводите на строку. Экономит квоту.',
   recommended: 'рекомендуется',
-  'The other three are still being worked on.': 'Остальные три ещё дорабатываются.',
+  'The recommended style is the most tested. The other three may still change.': 'Рекомендуемый стиль проверен лучше всего. Остальные три ещё могут измениться.',
   'Text size': 'Размер текста',
   'Line spacing': 'Межстрочный интервал',
   'Font': 'Шрифт',

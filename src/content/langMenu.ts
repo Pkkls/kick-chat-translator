@@ -487,8 +487,12 @@ function columnBox(anchor: HTMLElement): { width: number; height: number } {
     const r = p.getBoundingClientRect();
     if (r.width > 0 && r.height > 0) return { width: r.width, height: r.height };
   }
+  // The anchor stands in for the width only, which PANEL_MIN_W floors anyway.
+  // Its height is a 24px button, not a column: taken as one, the 0.6 share
+  // capped the panel at the 80px floor while its list ran 338px past it, with
+  // no background behind. Zero is what panelGeometry reads as unknown.
   const r = anchor.getBoundingClientRect();
-  return { width: r.width, height: r.height };
+  return { width: r.width, height: 0 };
 }
 
 /** Gap between the panel and the control it hangs from. */

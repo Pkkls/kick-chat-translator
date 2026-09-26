@@ -50,4 +50,8 @@ export const es: Record<string, string> = {
   skipTooLong: 'supera el limite de tamano',
   toastChatNotFound:
     'Kick Chat Translator: chat no encontrado. Puede que haga falta una actualizacion.',
+  toastAllDown: 'Todos los proveedores de traducción están caídos. Se reintentará en breve.',
+  toastCopied: 'Traducción copiada. Pégala con Ctrl+V.',
+  toastQuota: 'Cuota de $PROVIDER$ agotada. Se pasa al siguiente proveedor.',
+  toastSwitched: 'Cambiado a $PROVIDER$',
 };
