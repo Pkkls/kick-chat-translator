@@ -152,6 +152,8 @@ export const ko: Record<string, string> = {
     '과거 번역을 재사용하는 방식과, 채팅이 몰릴 때 엔진에 걸리는 부하 정도를 조정합니다. 기본값은 대부분의 채널에 적합합니다.',
   'one channel name per line': '한 줄에 채널 이름 하나씩',
   'one username per line': '한 줄에 사용자 이름 하나씩',
+  'Hide messages containing': '다음을 포함한 메시지 숨기기',
+  'one keyword per line, e.g. !fish': '한 줄에 키워드 하나 (예: !fish)',
   Glossary: '용어집',
   'Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.':
     '채널에서 엔진이 계속 잘못 번역하는 단어입니다. 각 줄은 번역 후 왼쪽 단어를 오른쪽 단어로 바꿉니다.',

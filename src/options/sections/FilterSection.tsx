@@ -211,6 +211,20 @@ export function FilterSection({ settings, onPatch, stats }: Props) {
             }
           />
         </div>
+        <div class="kt-row">
+          <label class="kt-label" for="kt-blocked-keywords">
+            {t('Hide messages containing')}
+          </label>
+          <textarea
+            id="kt-blocked-keywords"
+            class="kt-textarea"
+            value={settings.blockedKeywords.join('\n')}
+            placeholder={t('one keyword per line, e.g. !fish')}
+            onInput={(e) =>
+              onPatch({ blockedKeywords: toList((e.target as HTMLTextAreaElement).value) })
+            }
+          />
+        </div>
       </section>
 
       <section class="kt-card space-y-3">

@@ -21,6 +21,12 @@ export function shouldDropByUserOrChannel(meta: MessageMeta, settings: Settings)
   return undefined;
 }
 
+/** Case-insensitive substring match: `!fish` catches `!fish` and `!fish 3`. */
+export function hasBlockedKeyword(text: string, settings: Settings): boolean {
+  const t = foldCase(text);
+  return settings.blockedKeywords.some((k) => k && t.includes(foldCase(k)));
+}
+
 export function shouldDropBySourceLang(detected: string | undefined, settings: Settings): string | undefined {
   if (settings.sourceLangAllowlist.length === 0) return undefined;
   if (!detected) return 'lang_unknown';

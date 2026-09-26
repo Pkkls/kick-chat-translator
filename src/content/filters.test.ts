@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { defaultSettings } from '~/shared/settings';
 import {
+  hasBlockedKeyword,
   isKeyboardSmash,
   isNoise,
   isSameLanguageAsTarget,
@@ -189,5 +190,15 @@ describe('isKeyboardSmash', () => {
   it('ecarte le martelement au titre du bruit, comme le rire', () => {
     expect(isNoise('asdfghjkl')).toBe(true);
     expect(isNoise('hola amigos')).toBe(false);
+  });
+});
+
+describe('hasBlockedKeyword', () => {
+  const s = (blockedKeywords: string[]) => ({ ...defaultSettings(), blockedKeywords });
+  it('matches case-insensitively as a substring', () => {
+    expect(hasBlockedKeyword('!FISH', s(['!fish']))).toBe(true);
+    expect(hasBlockedKeyword('!fish 3', s(['!fish']))).toBe(true);
+    expect(hasBlockedKeyword('hi covfefe', s(['!fish']))).toBe(false);
+    expect(hasBlockedKeyword('anything', s(['']))).toBe(false);
   });
 });

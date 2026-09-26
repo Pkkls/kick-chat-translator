@@ -158,6 +158,8 @@ export const es: Record<string, string> = {
     'Reutilización de traducciones pasadas, y cuánto se exige a los motores en un chat concurrido. Los valores predeterminados funcionan bien para la mayoría de los canales.',
   'one channel name per line': 'un nombre de canal por línea',
   'one username per line': 'un nombre de usuario por línea',
+  'Hide messages containing': 'Ocultar mensajes que contengan',
+  'one keyword per line, e.g. !fish': 'una palabra clave por línea, p. ej. !fish',
   Glossary: 'Glosario',
   'Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.':
     'Palabras que los motores siguen traduciendo mal para tus canales. Cada línea reemplaza el lado izquierdo por el lado derecho, después de traducir.',

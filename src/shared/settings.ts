@@ -106,6 +106,8 @@ export const SettingsSchema = z.object({
   ignoreEnglish: z.boolean().default(true),
   ignoreBots: z.boolean().default(true),
   blacklistUsers: z.array(z.string()).default([]),
+  // A line containing one of these is hidden from chat, not just left untranslated.
+  blockedKeywords: z.array(z.string()).default([]),
   blacklistChannels: z.array(z.string()).default([]),
   whitelistChannels: z.array(z.string()).default([]),
   sourceLangAllowlist: z.array(z.string()).default([]),

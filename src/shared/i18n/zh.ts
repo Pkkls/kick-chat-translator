@@ -148,6 +148,8 @@ export const zh: Record<string, string> = {
     '重用过去的翻译，以及引擎在繁忙聊天中的工作强度。默认设置适合大多数频道。',
   'one channel name per line': '每行输入一个频道名称',
   'one username per line': '每行输入一个用户名',
+  'Hide messages containing': '隐藏包含以下内容的消息',
+  'one keyword per line, e.g. !fish': '每行一个关键词，例如 !fish',
   Glossary: '词汇表',
   'Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.':
     '引擎对您频道的误翻单词。每行在翻译后将左侧替换为右侧。',

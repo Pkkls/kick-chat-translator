@@ -157,6 +157,8 @@ export const tr: Record<string, string> = {
     'Geçmiş çevirilerin yeniden kullanımı ve yoğun bir sohbette motorların ne kadar zorlandığı. Varsayılan değerler çoğu kanal için uygundur.',
   'one channel name per line': 'satır başına bir kanal adı',
   'one username per line': 'satır başına bir kullanıcı adı',
+  'Hide messages containing': 'Şunu içeren mesajları gizle',
+  'one keyword per line, e.g. !fish': 'her satıra bir anahtar kelime, örn. !fish',
   Glossary: 'Sözlük',
   'Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.':
     'Motorların kanalların için sürekli yanlış çevirdiği kelimeler. Her satır, çeviriden sonra sol taraftakini sağ taraftakiyle değiştirir.',

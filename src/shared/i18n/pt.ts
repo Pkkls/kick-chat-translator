@@ -151,6 +151,8 @@ export const pt: Record<string, string> = {
     'Reutilização de traduções anteriores e o quanto os mecanismos são pressionados em um chat movimentado. As configurações padrão funcionam bem na maioria dos canais.',
   'one channel name per line': 'um nome de canal por linha',
   'one username per line': 'um nome de usuário por linha',
+  'Hide messages containing': 'Ocultar mensagens contendo',
+  'one keyword per line, e.g. !fish': 'uma palavra-chave por linha, ex.: !fish',
   Glossary: 'Glossário',
   'Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.':
     'Palavras que os mecanismos traduzem incorretamente para seus canais. Cada linha substitui o lado esquerdo pelo lado direito, após a tradução.',

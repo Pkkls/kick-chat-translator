@@ -151,6 +151,8 @@ export const ru: Record<string, string> = {
     'Повторное использование прошлых переводов и нагрузка на движки при активном чате. Стандартные параметры подходят для большинства каналов.',
   'one channel name per line': 'одно название канала на строку',
   'one username per line': 'одно имя пользователя на строку',
+  'Hide messages containing': 'Скрывать сообщения, содержащие',
+  'one keyword per line, e.g. !fish': 'одно ключевое слово в строке, напр. !fish',
   Glossary: 'Глоссарий',
   'Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.':
     'Слова, которые движки неправильно переводят для ваших каналов. Каждая строка заменяет левую сторону на правую сторону после перевода.',

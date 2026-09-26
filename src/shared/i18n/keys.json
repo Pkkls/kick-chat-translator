@@ -128,6 +128,8 @@
   "Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels.",
   "one channel name per line",
   "one username per line",
+  "Hide messages containing",
+  "one keyword per line, e.g. !fish",
   "Glossary",
   "Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.",
   "one rule per line, in the form word→replacement",

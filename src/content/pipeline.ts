@@ -11,7 +11,7 @@ import { extractMessageText } from './selectors';
 import { confidentLanguage, detectLanguage } from './langDetect';
 import { resolveBrowserLang } from '~/shared/languages';
 import { isContextCritical } from '~/shared/langTiers';
-import { isNoise, isSameLanguageAsTarget, normalizeElongation, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
+import { hasBlockedKeyword, isNoise, isSameLanguageAsTarget, normalizeElongation, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
 import { HANDLED_SELECTOR, inject, incrementFloatingCount, armHoverTranslate, markSkipped, removeAllArtifacts, showError, showLoading, showThrottleIndicator, showToast, updateActiveProvider } from './injector';
 import { localEngine } from './localEngine';
 import { memCache } from './memcache';
@@ -249,6 +249,11 @@ export class TranslationPipeline {
   }
 
   async onDomMessage(msg: IncomingDomMessage): Promise<void> {
+    // Set both ways: the virtual scroller recycles rows, so a row hidden for a
+    // blocked line must come back when it carries the next one.
+    const blocked = this.settings.enabled && hasBlockedKeyword(msg.text, this.settings);
+    (msg.rowElement as HTMLElement).style.display = blocked ? 'none' : '';
+    if (blocked) return;
     const prepared = this.prepare(msg.text, msg);
     if (typeof prepared === 'string') {
       this.skip(msg, prepared);

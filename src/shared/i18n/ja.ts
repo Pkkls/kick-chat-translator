@@ -153,6 +153,8 @@ export const ja: Record<string, string> = {
     '過去の翻訳の再利用、および混雑したチャットでエンジンにかかる負荷。デフォルト設定はほとんどのチャンネルに適しています。',
   'one channel name per line': 'チャンネル名を1行に1つ入力',
   'one username per line': 'ユーザー名を1行に1つ入力',
+  'Hide messages containing': '次を含むメッセージを非表示',
+  'one keyword per line, e.g. !fish': '1行に1キーワード（例: !fish）',
   Glossary: '用語集',
   'Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.':
     'エンジンがあなたのチャンネルで誤訳する単語。各行は翻訳後に左側を右側に置き換えます。',

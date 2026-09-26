@@ -150,6 +150,8 @@ export const ar: Record<string, string> = {
     'إعادة استخدام الترجمات السابقة، ومدى ضغط المحركات على دردشة مشغولة. الإعدادات الافتراضية تناسب معظم القنوات.',
   'one channel name per line': 'اسم قناة واحد في كل سطر',
   'one username per line': 'اسم مستخدم واحد في كل سطر',
+  'Hide messages containing': 'إخفاء الرسائل التي تحتوي على',
+  'one keyword per line, e.g. !fish': 'كلمة مفتاحية واحدة في كل سطر، مثل !fish',
   Glossary: 'المسرد',
   'Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.':
     'الكلمات التي تُترجمها المحركات بشكل خاطئ لقنواتك. كل سطر يستبدل الجانب الأيسر بالجانب الأيمن، بعد الترجمة.',
