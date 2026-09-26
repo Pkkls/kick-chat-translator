@@ -16,25 +16,35 @@
  * Les traductions rendues sont plausibles et pas des marqueurs : une capture
  * ne sert a rien si elle montre ZZTRADUCTIONZZ.
  *
- *   node test/e2e/store-shots-fixture.mjs
+ *   node test/e2e/store-shots-fixture.mjs              # fiche anglaise, et le README
+ *   node test/e2e/store-shots-fixture.mjs --lang=ja     # une autre langue de fiche
+ *   node test/e2e/store-shots-fixture.mjs --gif         # anglais, plus readme/demo.gif (ffmpeg)
  *
- * Ecrit dans test/e2e/store-fixture/ en 01..05, au 1280x800 que le
+ * Ecrit dans test/e2e/store-fixture/<lang>/ en 01..05, au 1280x800 que le
  * store demande, et verifie que chaque image montre bien son sujet avant de la
- * compter.
+ * compter. Le lecteur lit, tape et voit l'interface dans la langue de la fiche ;
+ * le salon et ses traductions sont dans `store-shots-lines.mjs`.
  */
+import { spawnSync } from 'node:child_process';
 import os from 'node:os';
 import path from 'node:path';
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 import { chromium } from './playwright.mjs';
+import { LINES, PSEUDOS, ROOM_ES, SETTINGS, TYPED } from './store-shots-lines.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 // Par defaut le repertoire de build. `KT_EXT` permet de pointer sur un paquet
 // decompresse : ce qui part au store n'est pas `dist/` mais l'archive, et
 // personne n'avait jamais lance ces portes sur l'archive elle-meme.
 const EXT = process.env.KT_EXT ?? path.resolve(HERE, '../../dist');
-const OUT = path.join(HERE, 'store-fixture');
+const LANG = process.argv.find((a) => a.startsWith('--lang='))?.slice(7) ?? 'en';
+if (!SETTINGS[LANG]) {
+  console.error(`langue de fiche inconnue : ${LANG}, connues : ${Object.keys(SETTINGS).join(' ')}`);
+  process.exit(2);
+}
+const OUT = path.join(HERE, 'store-fixture', LANG);
 
 if (!fs.existsSync(path.join(EXT, 'manifest.json'))) {
   console.error('dist/manifest.json absent. Lancer `npm run build` avant.');
@@ -43,46 +53,22 @@ if (!fs.existsSync(path.join(EXT, 'manifest.json'))) {
 fs.mkdirSync(OUT, { recursive: true });
 
 /**
- * Le salon. Espagnol vers anglais, parce que c'est la paire ou un lecteur
- * anglophone voit tout de suite ce que l'extension apporte.
- *
- * Les pseudos sont inventes et volontairement quelconques. Aucun ne doit
- * ressembler a un vrai diffuseur : ces images partent sur une page publique.
+ * Le salon. Espagnol vers la langue de la fiche, et anglais vers espagnol pour
+ * la fiche espagnole. Les pseudos sont inventes et volontairement quelconques.
+ * Aucun ne doit ressembler a un vrai diffuseur : ces images partent sur une page
+ * publique.
  */
-const CONVERSATION = [
-  ['pixel_raton', 'buenas noches a todos que tal va la cosa'],
-  ['nubecita77', 'esa jugada ha sido increible de verdad'],
-  ['tortuga_veloz', 'alguien sabe a que hora empieza el torneo'],
-  ['pixel_raton', 'yo creo que en media hora mas o menos'],
-  ['calcetin_azul', 'me encanta este mapa es mi favorito'],
-  ['nubecita77', 'no me lo puedo creer otra vez lo mismo'],
-  ['ventana_rota', 'la ultima ronda ha estado muy renida'],
-  ['calcetin_azul', 'me tengo que ir pero vuelvo luego'],
-  ['pixel_raton', 'suerte con el torneo de esta noche'],
-  ['tortuga_veloz', 'que configuracion usas para el raton'],
-  ['ventana_rota', 'buena partida, nos vemos manana'],
-  ['nubecita77', 'gracias por el stream de hoy'],
-];
+const [READ, UI, CODE] = SETTINGS[LANG];
+const SALON = LANG === 'es' ? 'en' : 'es';
+const CONVERSATION = PSEUDOS.map((p, i) => [p, (LANG === 'es' ? LINES.en : ROOM_ES)[i]]);
 
-/** Ce que le faux moteur rend, phrase par phrase. */
-const TRADUCTIONS = new Map([
-  // Ce que le lecteur tape, vers la langue de la chaine. Sans cette entree
-  // l'apercu rendait la phrase anglaise telle quelle et la capture montrait la
-  // fonctionnalite en train de ne rien faire.
-  ['thanks for the stream, see you tomorrow', 'gracias por el stream, nos vemos manana'],
-  ['la ultima ronda ha estado muy renida', 'that last round was really close'],
-  ['me tengo que ir pero vuelvo luego', 'I have to go, but I will be back later'],
-  ['suerte con el torneo de esta noche', 'good luck in the tournament tonight'],
-  ['que configuracion usas para el raton', 'what settings do you use for your mouse'],
-  ['buenas noches a todos que tal va la cosa', 'good evening everyone, how is it going'],
-  ['esa jugada ha sido increible de verdad', 'that play was genuinely incredible'],
-  ['alguien sabe a que hora empieza el torneo', 'does anyone know when the tournament starts'],
-  ['yo creo que en media hora mas o menos', 'in about half an hour, I think'],
-  ['me encanta este mapa es mi favorito', 'I love this map, it is my favourite'],
-  ['no me lo puedo creer otra vez lo mismo', 'I cannot believe it, the same thing again'],
-  ['buena partida, nos vemos manana', 'good game, see you tomorrow'],
-  ['gracias por el stream de hoy', 'thanks for the stream today'],
-]);
+/**
+ * Ce que le faux moteur rend, phrase par phrase : les lignes du salon vers la
+ * langue du lecteur, et ce que le lecteur tape vers celle du salon. Sans cette
+ * derniere entree l'apercu rendait la phrase telle quelle et la capture montrait
+ * la fonctionnalite en train de ne rien faire.
+ */
+const TRADUCTIONS = new Map([...CONVERSATION.map(([, t], i) => [t, LINES[LANG][i]]), TYPED[LANG]]);
 
 const rangee = (i, [pseudo, texte]) =>
   `<div data-index="${i}" class="px-3 py-1">` +
@@ -117,8 +103,11 @@ const PAGE = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>
   #live { position: absolute; left: 24px; top: 22px; display: flex; align-items: center;
           gap: 8px; font-size: 12px; letter-spacing: .04em; color: #cfd4d8; }
   #live b { width: 8px; height: 8px; border-radius: 50%; background: #ff4d4d; }
+  /* overflow: hidden comme sur Kick. Le panneau de langues se borne a la colonne
+     qui rogne son ancre ; sans elle il retombait sur la boite du bouton, 80px de
+     haut, et la liste debordait sur le chat de toutes les captures 02. */
   #channel-chatroom { width: 360px; border-left: 1px solid #1f2326; display: flex;
-                      flex-direction: column; background: #101013; }
+                      flex-direction: column; background: #101013; overflow: hidden; }
   /* Le leurre existe pour que l'observateur choisisse le bon conteneur entre
      deux qui repondent au meme selecteur, comme sur le vrai site. Il ne doit pas
      prendre de place : avec "flex: 1" sur les deux, il mangeait la moitie haute
@@ -143,10 +132,23 @@ const PAGE = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>
         ${CONVERSATION.map((c, i) => rangee(i, c)).join('\n')}
       </div>
       <div id="compose">
-        <div contenteditable="true" role="textbox" data-testid="chat-input" class="editor-input"></div>
+        <div contenteditable="true" spellcheck="false" role="textbox" data-testid="chat-input" class="editor-input"></div>
       </div>
     </div>
   </div>
+  <script>
+    // Comme l'editeur Lexical de Kick : un beforeinput insertText, meme
+    // synthetique, remplace la selection. Un contenteditable nu l'ignore, et Tab
+    // retombait sur la copie dans le presse-papiers au lieu d'echanger le texte.
+    document.addEventListener('beforeinput', (e) => {
+      if (e.isTrusted || e.inputType !== 'insertText' || !e.target.isContentEditable) return;
+      e.preventDefault();
+      const r = getSelection().getRangeAt(0);
+      r.deleteContents();
+      r.insertNode(document.createTextNode(e.data));
+      getSelection().collapseToEnd();
+    });
+  </script>
 </body></html>`;
 
 const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'kct-shots-'));
@@ -179,10 +181,13 @@ await ctx.route('**://translate.googleapis.com/**', async (route) => {
     null,
     10,
   ]);
+  // La langue detectee : celle du lecteur pour ce qu'il tape, celle du salon
+  // pour le reste. Le drapeau de source de chaque ligne traduite la montre.
+  const source = lignes[0].trim() === TYPED[LANG][0] ? CODE : SALON;
   await route.fulfill({
     status: 200,
     contentType: 'application/json',
-    body: JSON.stringify([segments, null, 'es']),
+    body: JSON.stringify([segments, null, source]),
   });
 });
 
@@ -194,7 +199,7 @@ await ctx.route(KICK, async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify({ chatroom: { id: 1 }, livestream: { lang_iso: 'es' } }),
+      body: JSON.stringify({ chatroom: { id: 1 }, livestream: { lang_iso: SALON } }),
     });
   } else {
     await route.fulfill({ status: 204, body: '' });
@@ -203,6 +208,21 @@ await ctx.route(KICK, async (route) => {
 
 const page = ctx.pages()[0] ?? (await ctx.newPage());
 await page.goto('https://kick.com/demo-channel', { waitUntil: 'domcontentloaded' });
+await page.waitForTimeout(3000);
+
+// La langue de lecture et celle de l'interface, posees avant que le salon ne
+// soit lu : le service worker n'existe qu'une fois une page kick.com ouverte.
+const sw = ctx.serviceWorkers()[0] ?? (await ctx.waitForEvent('serviceworker', { timeout: 20000 }));
+const extId = await sw.evaluate(() => chrome.runtime.id);
+await sw.evaluate(
+  async ([read, ui]) => {
+    const KEY = 'kt.settings.v2';
+    const cur = (await chrome.storage.sync.get(KEY))[KEY] ?? {};
+    await chrome.storage.sync.set({ [KEY]: { ...cur, targetLang: read, uiLang: ui } });
+  },
+  [READ, UI],
+);
+await page.reload({ waitUntil: 'domcontentloaded' });
 await page.waitForTimeout(9000);
 
 // Le chat se lit par le bas, comme un vrai salon.
@@ -268,18 +288,13 @@ async function cadreDe(p, selecteurs) {
 }
 
 async function prendreReadme(nom, selecteurs, sujet) {
+  // Le README est en anglais ; ses images viennent de la fiche anglaise.
+  if (LANG !== 'en') return;
   const clip = await cadreDe(page, selecteurs);
   const montre = clip !== null && (await page.evaluate(sujet));
   if (clip) await page.screenshot({ path: path.join(OUT_README, `${nom}.png`), clip });
   notes.push({ nom, montre: !!montre, readme: true, clip });
 }
-
-// 01 : le chat qui fait son travail. Verifie en comptant les traductions
-// reellement posees, pas en supposant qu'elles sont la.
-await prendre(
-  '01-chat-traduit',
-  () => document.querySelectorAll('.kt-translation, .kt-translation-inline, .kt-translation-replace').length >= 6,
-);
 
 // Une rangee coupee en deux sur le bord haut d'une image se lit comme un defaut
 // de rendu, pas comme un chat defile.
@@ -314,7 +329,15 @@ const alignement = await page.evaluate(() => {
 });
 await page.waitForTimeout(300);
 console.log(`alignement       ${alignement.retirees} rangee(s) retiree(s), ${alignement.rangees} restantes, ${alignement.reste} encore coupee(s)`);
-if (alignement.reste) failsAlign.push('une rangee reste coupee en haut du cadre du README');
+if (alignement.reste) failsAlign.push('une rangee reste coupee en haut du cadre');
+
+// 01 : le chat qui fait son travail. Verifie en comptant les traductions
+// reellement posees, pas en supposant qu'elles sont la.
+await prendre(
+  '01-chat-traduit',
+  () => document.querySelectorAll('.kt-translation, .kt-translation-inline, .kt-translation-replace').length >= 6,
+);
+
 
 // Le meme instant, cadre pour le README : la barre et la liste de messages, sans
 // la zone video vide qui occupe les trois quarts de l'image du store.
@@ -331,9 +354,12 @@ await prendreReadme(
 // un panneau ferme.
 await page.evaluate(() => document.querySelector('#kt-floating-bar .kt-float-lang')?.click());
 await page.waitForTimeout(900);
+// Compter les rangees ne suffisait pas : un panneau de 80px dont la liste
+// debordait passait le controle. La liste doit tenir dans son panneau.
 await prendre('02-langues', () => {
   const l = document.querySelector('.kt-lang-panel, .kt-chip-menu');
-  return !!l && l.querySelectorAll('.kt-lang-row, .kt-chip-row').length > 10;
+  const liste = l?.querySelector('.kt-lang-list')?.getBoundingClientRect();
+  return !!l && l.querySelectorAll('.kt-lang-row, .kt-chip-row').length > 10 && (!liste || liste.bottom <= l.getBoundingClientRect().bottom + 1);
 });
 await prendreReadme('languages', ['.kt-lang-panel', '.kt-chip-menu'], () => {
   const l = document.querySelector('.kt-lang-panel, .kt-chip-menu');
@@ -345,11 +371,11 @@ await page.waitForTimeout(400);
 // 03 : l'apercu de composition, au-dessus de la boite de saisie.
 const saisie = page.locator('#channel-chatroom [contenteditable="true"]');
 await saisie.click();
-await saisie.type('thanks for the stream, see you tomorrow', { delay: 20 });
+await saisie.type(TYPED[LANG][0], { delay: 20 });
 await page.waitForTimeout(7000);
 await prendre('03-composition', () => {
   const p = document.querySelector('.kt-compose');
-  return !!p && !p.hasAttribute('hidden') && (p.textContent ?? '').trim().length > 3;
+  return !!p && p.dataset.state === 'ready' && (p.textContent ?? '').trim().length > 3;
 });
 
 // Pour le README, le compositeur et son apercu seulement : c'est la ou se passe
@@ -366,14 +392,11 @@ await prendreReadme(
   ],
   () => {
     const p = document.querySelector('.kt-compose');
-    return !!p && !p.hasAttribute('hidden') && (p.textContent ?? '').trim().length > 3;
+    return !!p && p.dataset.state === 'ready' && (p.textContent ?? '').trim().length > 3;
   },
 );
 
 // 04 et 05 : des pages de l'extension, aucun salon en jeu.
-const sw = ctx.serviceWorkers()[0] ?? (await ctx.waitForEvent('serviceworker', { timeout: 20000 }));
-const extId = await sw.evaluate(() => chrome.runtime.id);
-
 const opt = await ctx.newPage();
 await opt.setViewportSize({ width: 1280, height: 800 });
 await opt.goto(`chrome-extension://${extId}/src/options/index.html`);
@@ -392,8 +415,10 @@ const brut = await pop.screenshot();
 // Le popup a sa taille reelle pour le README : le cadre 1280x800 ci-dessous
 // existe pour le store, qui impose cette dimension, et il noierait le popup dans
 // une page reduite a la largeur d'une colonne de texte.
-fs.writeFileSync(path.join(OUT_README, 'popup.png'), brut);
-notes.push({ nom: 'popup', montre: popOk, readme: true, clip: { natif: true } });
+if (LANG === 'en') {
+  fs.writeFileSync(path.join(OUT_README, 'popup.png'), brut);
+  notes.push({ nom: 'popup', montre: popOk, readme: true, clip: { natif: true } });
+}
 await pop.close();
 
 const cadre = await ctx.newPage();
@@ -409,6 +434,66 @@ await cadre.waitForTimeout(400);
 await cadre.screenshot({ path: path.join(OUT, '05-popup.png') });
 notes.push({ nom: '05-popup', montre: popOk });
 await cadre.close();
+
+// Le GIF du README : le salon qui se remplit ligne par ligne, puis une reponse
+// tapee, son apercu, et Tab qui la remplace. Des captures du cadre du chat,
+// assemblees par ffmpeg, qui seul sait ecrire un GIF sans dependance ajoutee.
+if (LANG === 'en' && process.argv.includes('--gif')) {
+  // Page rechargee : la phrase tapee pour la capture 03 compte comme deja
+  // traitee, et la retaper a l'identique ne rouvre pas l'apercu.
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(9000);
+  const images = fs.mkdtempSync(path.join(os.tmpdir(), 'kct-gif-'));
+  const clip = await cadreDe(page, ['#channel-chatroom']);
+  let n = 0;
+  const image = async (fois = 1) => {
+    const b = await page.screenshot({ clip });
+    for (let k = 0; k < fois; k++) fs.writeFileSync(path.join(images, `f${String(n++).padStart(4, '0')}.png`), b);
+  };
+  await page.evaluate(() => document.querySelector('#channel-chatroom [data-which="messages"]')?.replaceChildren());
+  await page.waitForTimeout(300);
+  await image(2);
+  // De nouveaux index : ceux d'avant sont deja traduits, et Kick recycle ses
+  // rangees sous le meme index, que l'extension retraduit.
+  for (const [i, c] of CONVERSATION.entries()) {
+    await page.evaluate(
+      (html) => document.querySelector('#channel-chatroom [data-which="messages"]')?.insertAdjacentHTML('beforeend', html),
+      rangee(100 + i, c),
+    );
+    await page.waitForTimeout(120);
+    await image();
+    await page.waitForTimeout(500);
+    await image();
+  }
+  await saisie.click();
+  const phrase = TYPED[LANG][0];
+  for (let k = 0; k < phrase.length; k += 5) {
+    await saisie.type(phrase.slice(k, k + 5), { delay: 15 });
+    await image();
+  }
+  await page
+    .waitForFunction(() => {
+      const p = document.querySelector('.kt-compose');
+      return !!p && p.dataset.state === 'ready' && (p.textContent ?? '').trim().length > 3;
+    }, null, { timeout: 15000 })
+    .catch(() => undefined);
+  // L'apercu entre en fondu : l'image se prend une fois qu'il est opaque.
+  await page.waitForTimeout(500);
+  await image(6);
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(500);
+  await image(12);
+
+  const gif = path.join(OUT_README, 'demo.gif');
+  const r = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', '4', '-i', path.join(images, 'f%04d.png'),
+    '-vf', 'split[a][b];[a]palettegen=max_colors=128[p];[b][p]paletteuse=dither=none', '-loop', '0', gif]);
+  fs.rmSync(images, { recursive: true, force: true });
+  const taille = fs.existsSync(gif) ? fs.statSync(gif).size : 0;
+  const echange = await saisie.textContent();
+  console.log(`readme/demo.gif      ${n} images, ${Math.round(taille / 1024)}Ko, Tab a remplace la saisie: ${echange?.trim() === TYPED[LANG][1]}`);
+  if (r.status !== 0 || !taille) failsAlign.push(`demo.gif : ffmpeg a echoue (${r.error?.code ?? String(r.stderr).trim().slice(0, 120)})`);
+  if (echange?.trim() !== TYPED[LANG][1]) failsAlign.push(`demo.gif : apres Tab la saisie porte "${echange?.trim()}"`);
+}
 
 await ctx.close();
 fs.rmSync(profile, { recursive: true, force: true });
@@ -448,7 +533,7 @@ for (const n of notes) {
 const nStore = notes.filter((n) => !n.readme).length;
 const nReadme = notes.filter((n) => n.readme).length;
 if (nStore !== 5) fails.push(`${nStore} images de store sur 5`);
-if (nReadme !== 4) fails.push(`${nReadme} images de README sur 4`);
+if (LANG === 'en' && nReadme !== 4) fails.push(`${nReadme} images de README sur 4`);
 
 console.log(`\n${OUT}`);
 if (fails.length) {
