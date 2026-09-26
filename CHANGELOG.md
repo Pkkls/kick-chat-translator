@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-09-26
+
+The first store release since 2.9.2 on the Chrome Web Store. It gathers
+2.9.3 to 2.13.0, tagged on GitHub while the store stayed on 2.9.2, and
+starts a numbering where a version exists only once it ships to the stores.
+
+### Added
+
+- **Hide chat lines that contain a blocked keyword.** A list in the filter
+  settings, one keyword per line, matched in any case: bot commands such as
+  !fish no longer flood the chat.
+- **A copy installed by hand shows a pending update on its toolbar icon**, a
+  green badge, as well as in the popup. Store copies update themselves and
+  show neither.
+
+### Fixed
+
+- The store descriptions in French, Spanish, Brazilian Portuguese, Turkish and
+  Czech had lost their accents.
+
 ## [2.12.3] - 2026-09-26
 
 ### Fixed

@@ -28,6 +28,15 @@ Both clients have a self-test against a fake store; run them after touching eith
 node .claude/skills/publish-stores/cws-selftest.mjs && node .claude/skills/publish-stores/amo-selftest.mjs
 ```
 
+## Versioning
+
+- **A version exists only when it ships to the stores.** Number, tag `vX.Y.Z` and GitHub release are created together, for a build submitted to both stores. Work in between stays on master under `## [Unreleased]` in CHANGELOG, with no bump and no tag.
+- **Semver on what store users receive**: patch for fixes, minor for a feature, major for a break or a reset.
+- **Never backwards.** AMO keeps every version it ever received and refuses a number at or below one of them; Chrome compares with the published one.
+- **`release/` between two releases is a dev build** carrying the last released number: never upload it. The store zips are rebuilt from the tag at release time (section 0 checks it against the AMO notes' checksums).
+- **No release to test the update notice.** 2.12.5 was an empty tag published only for that; `translate-maj` and a stubbed GitHub response show the same thing without a public release.
+- **The 3.0.0 reset, 2026-09-26.** 2.9.3 to 2.13.0 were tagged on GitHub while the Chrome Web Store stayed on 2.9.2, so store users would have jumped from 2.9.2 to 2.13.0. 3.0.0 is the next release on both stores and the first under these rules.
+
 ## 0. Before any upload
 
 1. The version is committed, tagged `vX.Y.Z` and **pushed**: the AMO reviewer notes tell the reviewer to `git checkout` that tag.

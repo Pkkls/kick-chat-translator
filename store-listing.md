@@ -1,7 +1,7 @@
 # Chrome Web Store listing
 
 Plain text. The store renders no markdown, so the CAPS headers are the only
-structure available. Fact-checked against manifest 2.13.0, README, CHANGELOG.
+structure available. Fact-checked against manifest 3.0.0, README, CHANGELOG.
 
 ## Short summary (132 char limit)
 
@@ -9,7 +9,7 @@ Kick chat in a language you don't read? It gets translated under each message, l
 
 ## Description (EN)
 
-NEW IN 2.13.0
+NEW IN 3.0.0
 
 Hide chat lines that contain a word you choose. Add keywords in the filter settings, one per line: a line containing one, in any case, disappears from the chat instead of being translated. Handy against bot commands like !fish that flood some channels.
 
@@ -57,7 +57,7 @@ Open source, MIT: github.com/Pkkls/kick-chat-translator
 
 Short summary: Chat Kick dans une langue que tu ne lis pas ? Traduit sous chaque message, en direct. Tes reponses partent dans celle de la chaine.
 
-NOUVEAU EN 2.13.0
+NOUVEAU EN 3.0.0
 
 Masque les lignes du chat qui contiennent un mot de ton choix. Ajoute tes mots-clés dans les réglages des filtres, un par ligne : une ligne qui en contient un, en majuscules ou non, disparaît du chat au lieu d'être traduite. Pratique contre les commandes de bots comme !fish qui inondent certaines chaînes.
 
@@ -109,7 +109,7 @@ the Turkish store. No native reader was available; verified by round-tripping ea
 
 Short summary: Okuyamadığın bir dilde Kick sohbeti mi? Her mesajın altına canlı çeviri gelir, yanıtların da kanalın dilinde gider.
 
-2.13.0 İLE GELENLER
+3.0.0 İLE GELENLER
 
 Seçtiğiniz bir kelimeyi içeren sohbet satırlarını gizleyin. Anahtar kelimeleri filtre ayarlarına her satıra bir tane olacak şekilde ekleyin: bunlardan birini içeren bir satır, büyük ya da küçük harfle yazılmış olsun, çevrilmek yerine sohbetten kaybolur. Bazı kanalları dolduran !fish gibi bot komutlarına karşı işe yarar.
 
@@ -161,7 +161,7 @@ and handles right-to-left text. No native reader was available; verified by roun
 
 Short summary: دردشة Kick بلغة لا تقرأها؟ تظهر الترجمة أسفل كل رسالة مباشرةً، وردودك تخرج بلغة القناة.
 
-الجديد في 2.13.0
+الجديد في 3.0.0
 
 أخفِ أسطر الدردشة التي تحتوي على كلمة تختارها. أضف كلماتك المفتاحية في إعدادات عوامل التصفية، كلمة في كل سطر: أي سطر يحتوي على إحداها، بأحرف كبيرة أو صغيرة، يختفي من الدردشة بدل أن يُترجم. مفيد ضد أوامر البوتات مثل !fish التي تغمر بعض القنوات.
 
@@ -214,7 +214,7 @@ reader was available; same standard as the Turkish and Arabic blocks above.
 
 Short summary: 読めない言語の Kick チャットが、届いたそばから各メッセージの下に翻訳されます。あなたの返信はチャンネルの言語で送れます。
 
-2.13.0 の新機能
+3.0.0 の新機能
 
 選んだ言葉を含むチャットの行を非表示にできます。フィルター設定にキーワードを一行に一つずつ追加すると、そのどれかを含む行は大文字小文字を問わず、翻訳される代わりにチャットから消えます。一部のチャンネルにあふれる !fish のようなボットのコマンドに便利です。
 
@@ -265,7 +265,7 @@ no native reader.
 
 Short summary: ¿Chat de Kick en un idioma que no lees? Se traduce bajo cada mensaje, en directo, y tus respuestas salen en el del canal.
 
-NUEVO EN 2.13.0
+NUEVO EN 3.0.0
 
 Oculta las líneas del chat que contienen una palabra que tú eliges. Añade tus palabras clave en los ajustes de filtros, una por línea: una línea que contenga una, en mayúsculas o no, desaparece del chat en lugar de traducirse. Útil contra los comandos de bots como !fish que inundan algunos canales.
 
@@ -316,7 +316,7 @@ no native reader.
 
 Short summary: Chat da Kick num idioma que você não lê? Ele é traduzido embaixo de cada mensagem, ao vivo, e suas respostas saem no do canal.
 
-NOVIDADES NA 2.13.0
+NOVIDADES NA 3.0.0
 
 Esconda as linhas do chat que contêm uma palavra que você escolher. Adicione suas palavras-chave nas configurações de filtros, uma por linha: uma linha que contenha uma delas, em maiúsculas ou não, some do chat em vez de ser traduzida. Útil contra comandos de bots como !fish que inundam alguns canais.
 
@@ -367,7 +367,7 @@ no native reader.
 
 Short summary: Чат Kick на языке, который вы не читаете? Перевод появляется под каждым сообщением, а ваши ответы уходят на языке канала.
 
-НОВОЕ В 2.13.0
+НОВОЕ В 3.0.0
 
 Скрывайте строки чата, в которых есть выбранное вами слово. Добавьте ключевые слова в настройках фильтров, по одному в строке: строка, содержащая любое из них, в любом регистре, исчезает из чата, а не переводится. Удобно против команд ботов вроде !fish, которые заполоняют некоторые каналы.
 
@@ -418,7 +418,7 @@ blocks: no native reader.
 
 Short summary: Kick 的聊天是你读不懂的语言？每条消息下方都会实时出现译文，你的回复也会用频道的语言发出。
 
-2.13.0 的新功能
+3.0.0 的新功能
 
 隐藏包含你所选词语的聊天行。在过滤设置里添加关键词，每行一个：含有其中任何一个的行，不论大小写，都会从聊天中消失，而不是被翻译。对付 !fish 这类刷屏的机器人命令很方便。
 
@@ -469,7 +469,7 @@ native reader.
 
 Short summary: 읽지 못하는 언어로 흐르는 Kick 채팅? 각 메시지 아래에 실시간으로 번역이 붙고, 답장은 채널의 언어로 나갑니다.
 
-2.13.0의 새로운 기능
+3.0.0의 새로운 기능
 
 직접 고른 단어가 들어간 채팅 줄을 숨길 수 있습니다. 필터 설정에 키워드를 한 줄에 하나씩 추가하면, 그중 하나라도 들어간 줄은 대소문자와 상관없이 번역되는 대신 채팅에서 사라집니다. 일부 채널을 가득 채우는 !fish 같은 봇 명령어에 유용합니다.
 
@@ -522,7 +522,7 @@ blocks: no native reader.
 
 Short summary: Chat na Kicku v jazyce, který neumíte přečíst? Překlad se objeví pod každou zprávou, živě.
 
-NOVINKY VE VERZI 2.13.0
+NOVINKY VE VERZI 3.0.0
 
 Skryjte řádky chatu, které obsahují slovo podle vaší volby. Přidejte klíčová slova do nastavení filtrů, jedno na řádek: řádek, který některé z nich obsahuje, bez ohledu na velikost písmen, z chatu zmizí, místo aby se překládal. Hodí se proti příkazům botů jako !fish, které zaplavují některé kanály.
 
@@ -737,19 +737,19 @@ Okuyamadığın bir dildeki Kick sohbeti, her mesajın altında geldiği anda ç
 AMO asks for source when the submitted code is bundled or minified, which this
 is. Paste this into the "Notes for reviewers" field.
 
-Source: https://github.com/Pkkls/kick-chat-translator, public, MIT, tag v2.13.0.
+Source: https://github.com/Pkkls/kick-chat-translator, public, MIT, tag v3.0.0.
 The submitted zip is built from that tag with no patching in between.
 
 Build:
 
   git clone https://github.com/Pkkls/kick-chat-translator
   cd kick-chat-translator
-  git checkout v2.13.0
+  git checkout v3.0.0
   npm ci
   npm run build:firefox
   npm run pack:firefox
 
-The archive lands in release/kick-chat-translator-2.13.0-firefox.zip.
+The archive lands in release/kick-chat-translator-3.0.0-firefox.zip.
 
 Toolchain actually used for the submitted build: Node v22.22.0, npm 10.9.4, on
 Windows. The repository's .nvmrc pins 20 and package.json asks for node >= 20;
@@ -774,7 +774,7 @@ GET to the project's own GitHub releases endpoint for the update notice.
 Minification is esbuild and Vite defaults through @crxjs/vite-plugin. There is
 no obfuscation step.
 
-The source archive attached to this version is `git archive v2.13.0` of that tag.
+The source archive attached to this version is `git archive v3.0.0` of that tag.
 
 The three UNSAFE_VAR_ASSIGNMENT warnings: two are the same line, src/content/langMenu.ts:95, which writes one of the fixed SVG strings of the ICONS constant declared in that file (line 80). No remote or user text reaches it. The third is the dangerouslySetInnerHTML path inside Preact's own renderer, which this code never uses.
 
