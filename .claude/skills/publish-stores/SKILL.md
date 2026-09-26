@@ -1,6 +1,6 @@
 ---
 name: publish-stores
-description: Publish a tagged release to addons.mozilla.org (version, source archive, release notes in every locale, reviewer notes, listing) through Claude in Chrome, and hand the Chrome Web Store part to the user. Use when the user asks to upload, publish or ship a version to the stores, or to update the store listings.
+description: Publish a tagged release to addons.mozilla.org (version, source archive, release notes in every locale, reviewer notes, listing) through Claude in Chrome, and to the Chrome Web Store through its API with a service account. Use when the user asks to upload, publish or ship a version to the stores, or to update the store listings.
 ---
 
 # Publishing to the stores
@@ -20,16 +20,24 @@ Every step below was run for 2.12.1 and is the path that worked. The dead ends a
    node .claude/skills/publish-stores/payloads.mjs <scratchpad>/stores
    ```
 
-## 1. Chrome Web Store: the user does it
+## 1. Chrome Web Store: through the API, never a browser
 
-Chrome forbids every extension from reading or driving the Web Store ("The extensions gallery cannot be scripted"): no text, no screenshot, no click through Claude in Chrome. The built-in browser pane refuses to load it, and computer use only reads browsers. Do not try. Give the user:
+Chrome forbids every extension from reading or driving the Web Store ("The extensions gallery cannot be scripted"): no text, no screenshot, no click through Claude in Chrome. The built-in browser pane refuses to load it, and computer use only reads browsers. Do not try. The package goes through the Chrome Web Store API v2 with a service account:
 
-- https://chrome.google.com/webstore/devconsole, the item, Package, Upload new package: `release/kick-chat-translator-X.Y.Z-chromium.zip`.
-- Store listing, per language: paste `## Description (XX)` from `store-listing.md` where it differs from what is online.
-- Privacy tab: only if the manifest's permissions changed (`## Chrome dashboard: permission justifications`).
-- Submit for review.
+```bash
+node .claude/skills/publish-stores/cws.mjs status
+node .claude/skills/publish-stores/cws.mjs upload release/kick-chat-translator-X.Y.Z-chromium.zip --publish
+```
 
-Automating it would need the Chrome Web Store API with an OAuth client and refresh token the user creates. Never create or type those credentials yourself.
+`cws.mjs` signs its own JWT with the service account key (Node stdlib, no dependency), so there is no OAuth window and no refresh token expiring after seven days. It reads the key and the publisher ID outside the repository, `~/.config/kick-chat-translator/cws-service-account.json` and `~/.config/kick-chat-translator/cws.json` (`{"publisherId": "..."}`), and never prints either the key or the token. `cws-selftest.mjs` runs it against a fake Google that checks the JWT signature and the zip bytes: run it after touching `cws.mjs`.
+
+One-time setup, done by the user (it creates credentials, never do it for them):
+1. Google Cloud Console: enable "Chrome Web Store API" in a project, create a service account (no role needed), create a JSON key for it and save it as the key file above.
+2. Developer Dashboard, Account: add the service account's email (one per publisher). Publisher > Settings shows the publisher ID for `cws.json`.
+
+`status` failing with `invalid_grant ... account not found` means the key is not the one registered; a 403 from the store means the email was not added in the dashboard.
+
+The API does not touch the listing. When `## Description (XX)` in `store-listing.md` changed, the user pastes it per language in the dashboard, and the Privacy tab only if the manifest's permissions changed (`## Chrome dashboard: permission justifications`).
 
 ## 2. AMO: new version
 
