@@ -5,7 +5,7 @@
  *   node scripts/stores/verify.mjs
  *
  * Chrome: the public detail page, fetched once per language, carries the
- * version, the short description (the manifest's extDescription) and the whole
+ * version, the name (the manifest's extName), the short description (the manifest's extDescription) and the whole
  * detailed description. AMO: the public API. No key needed for either.
  *
  * Exits 1 on any difference. Between a submission and its approval that is the
@@ -20,7 +20,8 @@ const VERSION = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf
 const ITEM = 'nkkjmbkmacbdkboijmnhjnblcaiclhni';
 const SLUG = 'kick-chat-translator';
 const store = (rel) => fs.readFileSync(path.join(ROOT, 'store', rel), 'utf8').trim();
-const locale = (dir) => JSON.parse(fs.readFileSync(path.join(ROOT, 'public/_locales', dir, 'messages.json'), 'utf8')).extDescription.message;
+const catalog = (dir) => JSON.parse(fs.readFileSync(path.join(ROOT, 'public/_locales', dir, 'messages.json'), 'utf8'));
+const locale = (dir) => catalog(dir).extDescription.message;
 
 const plain = (s) =>
   (s ?? '')
@@ -44,10 +45,12 @@ for (const [lang, [hl, dir]] of Object.entries(CHROME)) {
   const html = await r.text();
   const page = squash(html);
   const served = [...new Set([...html.matchAll(/"(\d+\.\d+\.\d+)"/g)].map((m) => m[1]))][0] ?? '?';
+  const name = squash(html.match(/<title>([^<]*) - [^<]*<\/title>/)?.[1]);
   const blurb = squash(html.match(/<meta name="description" content="([^"]*)"/)?.[1]);
   const paras = store(`chrome/description/${lang}.txt`).split(/\n\s*\n/).map(squash).filter((p) => p.length >= 30);
   const found = paras.filter((p) => page.includes(p)).length;
   row(served === VERSION, `chrome ${lang.padEnd(5)} version`, `servie ${served}, depot ${VERSION}`);
+  row(name === catalog(dir).extName.message, `chrome ${lang.padEnd(5)} nom`, name === catalog(dir).extName.message ? '' : `servi "${name}"`);
   row(blurb === squash(locale(dir)), `chrome ${lang.padEnd(5)} resume`, blurb === squash(locale(dir)) ? '' : `servi "${blurb.slice(0, 50)}"`);
   row(found === paras.length, `chrome ${lang.padEnd(5)} description`, `${found}/${paras.length} paragraphes`);
 }
@@ -56,7 +59,9 @@ for (const [lang, [hl, dir]] of Object.entries(CHROME)) {
 const AMO = { en: 'en-US', fr: 'fr', tr: 'tr', ja: 'ja', es: 'es-ES', 'pt-BR': 'pt-BR', ru: 'ru', zh: 'zh-CN', ko: 'ko', cs: 'cs' };
 const a = await (await fetch(`https://addons.mozilla.org/api/v5/addons/addon/${SLUG}/`)).json();
 row(a.current_version?.version === VERSION, 'amo   version', `servie ${a.current_version?.version}, depot ${VERSION}`);
+const DIR = { 'pt-BR': 'pt_BR', zh: 'zh_CN' };
 for (const [lang, loc] of Object.entries(AMO)) {
+  row(a.name?.[loc] === catalog(DIR[lang] ?? lang).extName.message, `amo   ${lang.padEnd(5)} nom`);
   row(squash(a.summary?.[loc]) === squash(store(`amo/summary/${lang}.txt`)), `amo   ${lang.padEnd(5)} resume`);
   row(squash(a.description?.[loc]) === squash(store(`amo/description/${lang}.txt`)), `amo   ${lang.padEnd(5)} description`);
 }

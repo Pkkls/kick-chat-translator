@@ -56,6 +56,14 @@ describe('store listing locales', () => {
   // and it recognises only this list. `pt` and `zh` shipped for months and the
   // Brazilian and Chinese listings fell back to English: measured on the public
   // page, fr and ja were localised, pt-BR and zh-CN were not.
+  // The brand leads every name, so a search for it finds the listing in any
+  // language; AMO refuses names over 50 characters.
+  it.each(locales)('%s names the extension after its brand, in 45 characters at most', (locale) => {
+    const name = read(locale).extName?.message ?? '';
+    expect(name.startsWith('Kick Chat Translator')).toBe(true);
+    expect(name.length).toBeLessThanOrEqual(45);
+  });
+
   it.each(locales)('%s is a locale code the Chrome Web Store recognises', (locale) => {
     expect(CHROME_LOCALES).toContain(locale);
   });

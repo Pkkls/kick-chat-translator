@@ -5,7 +5,7 @@
  *   node scripts/stores/payloads.mjs <outdir>
  *
  * Writes <outdir>/amo-notes.json {notes, rev}, <outdir>/amo-listing.json
- * {summary, description} and <outdir>/cws-description-<lang>.txt (pasted by
+ * {name, summary, description} (the name from public/_locales) and <outdir>/cws-description-<lang>.txt (pasted by
  * hand: no API sets Chrome's description). `rev` is store/amo/reviewer-notes.txt
  * with {{VERSION}} from package.json, {{CHECKSUMS}} from the two zips of that
  * version in release/, and {{TOOLCHAIN}} from the machine running this.
@@ -87,15 +87,22 @@ const NOTES = {
 };
 const CHROME = ['en', 'fr', 'es', 'pt-BR', 'tr', 'ru', 'ar', 'ja', 'ko', 'zh', 'cs'];
 
+// The name is the manifest's, so both stores carry the same one per language.
+const extName = (lang) =>
+  JSON.parse(fs.readFileSync(path.join(ROOT, 'public/_locales', { 'pt-BR': 'pt_BR', zh: 'zh_CN' }[lang] ?? lang, 'messages.json'), 'utf8'))
+    .extName.message;
+
+const name = {};
 const summary = {};
 const description = {};
 for (const [lang, locales] of Object.entries(LISTING)) {
+  const n = extName(lang);
   const s = read(`amo/summary/${lang}.txt`);
   const d = read(`amo/description/${lang}.txt`);
   check(`resume AMO ${lang}`, lang, s);
   check(`description AMO ${lang}`, lang, d);
   if ([...s].length > 250) fails.push(`resume AMO ${lang}: ${[...s].length} caracteres, 250 max`);
-  for (const loc of locales) (summary[loc] = s), (description[loc] = d);
+  for (const loc of locales) (name[loc] = n), (summary[loc] = s), (description[loc] = d);
 }
 
 const notes = {};
@@ -143,7 +150,7 @@ if (fails.length) {
   process.exit(1);
 }
 fs.writeFileSync(path.join(out, 'amo-notes.json'), JSON.stringify({ notes, rev }));
-fs.writeFileSync(path.join(out, 'amo-listing.json'), JSON.stringify({ summary, description }));
+fs.writeFileSync(path.join(out, 'amo-listing.json'), JSON.stringify({ name, summary, description }));
 for (const [lang, text] of Object.entries(cws)) fs.writeFileSync(path.join(out, `cws-description-${lang}.txt`), text + '\n');
 console.log(`${VERSION} | notes ${Object.keys(notes).length} locales | fiche AMO ${Object.keys(summary).length} locales | fiche Chrome ${CHROME.length} langues | ${toolchain}`);
 console.log(`-> ${out}`);

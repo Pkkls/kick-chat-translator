@@ -8,7 +8,7 @@
  *
  * `release` uploads the package, waits for validation, creates the version
  * with its source archive, then sets the release notes and reviewer notes.
- * `listing` sets the summary and description in every locale of the JSON.
+ * `listing` sets the name, summary and description in every locale of the JSON.
  * Both JSON files come from payloads.mjs.
  *
  * Reads, outside the repository:
@@ -109,15 +109,16 @@ if (cmd === 'status') {
     release_notes: Object.keys(after.release_notes ?? {}).length,
   }, null, 2));
 } else if (cmd === 'listing') {
-  const { summary, description } = JSON.parse(fs.readFileSync(args[0] ?? die('amo-listing.json manquant'), 'utf8'));
+  const { name, summary, description } = JSON.parse(fs.readFileSync(args[0] ?? die('amo-listing.json manquant'), 'utf8'));
   const sent = localised(summary);
-  await call('PATCH', `${addon}/`, { summary: sent, description: localised(description) });
+  await call('PATCH', `${addon}/`, { name: localised(name), summary: sent, description: localised(description) });
   // Without `lang`, translated fields come back as {locale: text}: compare them all.
   // AMO serves descriptions with URLs turned into outgoing links, even with
   // wrap_outgoing_links=false, so the markup is stripped before comparing.
   const plain = (s) => (s ?? '').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
   const a = await call('GET', `${addon}/`, undefined, true);
-  const same = Object.keys(sent).filter((l) => a.summary?.[l] === sent[l] && plain(a.description?.[l]) === localised(description)[l]);
+  const same = Object.keys(sent).filter((l) =>
+    a.name?.[l] === localised(name)[l] && a.summary?.[l] === sent[l] && plain(a.description?.[l]) === localised(description)[l]);
   console.log(`fiche : ${same.length}/${Object.keys(sent).length} locales relues identiques`);
   if (same.length !== Object.keys(sent).length) die(`differentes : ${Object.keys(sent).filter((l) => !same.includes(l)).join(' ')}`);
 } else {

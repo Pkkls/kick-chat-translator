@@ -2,7 +2,7 @@
   "name": "kick-chat-translator",
   "version": "3.0.0",
   "private": true,
-  "description": "Translates Kick chat into your language as it scrolls, and your replies into the channel's.",
+  "description": "Translates Kick live chat into your language as it scrolls, and your replies into the channel's. Google or DeepL, no account.",
   "license": "MIT",
   "author": "Pkkls",
   "homepage": "https://github.com/Pkkls/kick-chat-translator",

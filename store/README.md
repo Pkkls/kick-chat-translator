@@ -15,11 +15,14 @@ amo/reviewer-notes.txt          notes for AMO reviewers; {{VERSION}}, {{CHECKSUM
                                 {{TOOLCHAIN}} are filled at build time
 amo/data-collection.txt         answers for AMO's data collection form
 notes/<lang>.txt                release notes of the version being shipped (AMO)
+keywords.json                   the queries each language is tracked on, read by scripts/stores/rank.mjs
 ```
 
 `<lang>` is `en fr es pt-BR tr ru ar ja ko zh cs` (notes add `de` and European `pt`).
-The short description Chrome shows under the name is not here: it is the
-manifest's `extDescription`, in `public/_locales/*/messages.json`.
+The name and the short description Chrome shows under it are not here: they are
+the manifest's `extName` and `extDescription`, in `public/_locales/*/messages.json`,
+and `payloads.mjs` sends the same name to AMO. How they were chosen, and how to
+audit them, is the `store-seo` skill.
 
 ## Rules
 
