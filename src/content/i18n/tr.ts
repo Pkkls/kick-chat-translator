@@ -1,4 +1,4 @@
-/** Chat and floating-bar strings. Generated from the catalogue, do not hand edit. */
+/** Chat and floating-bar strings. This file is the source, edit it by hand; msg.coverage.test.ts holds it to every msg() call. */
 export const tr: Record<string, string> = {
   barLangDir: 'Diğer izleyicilerin sohbeti, senin için çevrildi',
   barOff: 'Ceviri kapali',

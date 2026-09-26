@@ -1,4 +1,4 @@
-/** Chat and floating-bar strings. Generated from the catalogue, do not hand edit. */
+/** Chat and floating-bar strings. This file is the source, edit it by hand; msg.coverage.test.ts holds it to every msg() call. */
 export const ja: Record<string, string> = {
   barLangDir: '他の視聴者のチャットをあなた向けに翻訳',
   barOff: '翻訳オフ',

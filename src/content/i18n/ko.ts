@@ -1,4 +1,4 @@
-/** Chat and floating-bar strings. Generated from the catalogue, do not hand edit. */
+/** Chat and floating-bar strings. This file is the source, edit it by hand; msg.coverage.test.ts holds it to every msg() call. */
 export const ko: Record<string, string> = {
   barLangDir: '다른 시청자의 채팅을 나에게 맞게 번역',
   barOff: '번역 꺼짐',
