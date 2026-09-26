@@ -1,229 +1,195 @@
+<div align="center">
+
+<img src="public/icons/icon128.png" alt="" width="80" height="80">
+
 # Kick Chat Translator
 
+Um tradutor de chat em tempo real para a Kick. Leia o chat de qualquer live no seu idioma e responda na língua do canal.
+
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=Chrome%20Web%20Store&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
+[![Usuários do Chrome](https://img.shields.io/chrome-web-store/users/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=usu%C3%A1rios&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
+[![Firefox Add-on](https://img.shields.io/amo/v/kick-chat-translator?label=Firefox%20Add-on&color=53fc18)](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)
 [![CI](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml/badge.svg)](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/Pkkls/kick-chat-translator?style=flat&color=53fc18)](https://github.com/Pkkls/kick-chat-translator/stargazers)
-[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=Chrome%20Web%20Store&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
-[![Chrome Users](https://img.shields.io/chrome-web-store/users/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=users&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
-[![Firefox Add-on](https://img.shields.io/amo/v/kick-chat-translator?label=Firefox%20Add-on&color=53fc18)](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)
 
 [English](README.md) · [日本語](README.ja.md) · [Español](README.es.md)
 
-Tradução em tempo real do chat da Kick.com, tanto em lives quanto em replays de VOD. Você abre uma
-transmissão e qualquer mensagem em outro idioma aparece traduzida logo abaixo. Sem nada para configurar.
+<img src="screenshots/demo.gif" alt="Mensagens de chat em espanhol chegam uma a uma, cada uma com a tradução em inglês logo abaixo; depois uma resposta em inglês é digitada, uma prévia em espanhol aparece acima da caixa de chat e o Tab a coloca no lugar" width="360">
 
+</div>
 
+## O que faz
 
-Funciona no **Brave, Chrome, Edge e Firefox**, e entende os emotes do 7TV.
+Abra uma live da Kick em que o chat está num idioma que você não lê. Cada mensagem ganha a tradução logo
+abaixo, à medida que chega, em lives e em replays de VOD. Digite uma resposta e uma prévia a mostra no idioma
+do canal acima da caixa de chat: aperte Tab ou clique nela, e essa versão substitui o que você digitou.
 
+Não há nada para configurar. O chat que chega vai para o idioma do seu navegador, e o que você escreve sai no
+idioma em que o canal transmite, lido da própria Kick. Os dois podem ser trocados nas configurações.
 
-**Configuração zero.** O chat recebido é traduzido para o idioma do *seu* navegador. Quando você digita, uma
-prévia mostra a sua mensagem no idioma *do canal* (detectado automaticamente a partir da Kick) logo acima da
-caixa de chat; clique nela ou pressione **Ctrl/Cmd+Enter** para enviar essa versão. As duas direções funcionam
-sozinhas, então você nunca precisa escolher um idioma. (Ainda assim, dá para escolher nas configurações.)
+- 43 idiomas, incluindo os escritos da direita para a esquerda (árabe, hebraico, persa) e variantes regionais
+  (português do Brasil, chinês tradicional, cantonês)
+- Google de fábrica, sem chave e sem conta. Sua própria chave gratuita do DeepL para mais qualidade,
+  MyMemory e Lingva como reserva
+- Tradução no próprio dispositivo no Chrome e no Edge quando o navegador oferece: 22 ms em vez de 1,6 s, e o
+  texto nunca sai da sua máquina
+- Emotes do 7TV, filtros de bots e de usuários, filtro de palavras-chave, um glossário para os nomes que os
+  motores estragam
+- Chrome, Brave, Edge e Firefox
 
-**42 idiomas**, incluindo os de escrita da direita para a esquerda (árabe, hebraico, persa) e variantes
-regionais (português do Brasil, chinês tradicional).
-
----
-
-| O chat, traduzido enquanto rola | O popup da barra |
+| O chat, traduzido enquanto rola | A janela da barra de ferramentas |
 |---|---|
-| <img src="screenshots/chat.png" alt="Chat da Kick em que cada mensagem em espanhol traz embaixo a traducao em ingles, com a barra de status da extensao acima da lista" width="360"> | <img src="screenshots/popup.png" alt="O popup da extensao com idioma de destino, modo de exibicao, lista de provedores e as contagens do dia" width="360"> |
+| <img src="screenshots/chat.png" alt="Chat da Kick em que cada mensagem em espanhol traz a tradução em inglês logo abaixo, com a barra de status da extensão acima da lista" width="360"> | <img src="screenshots/popup.png" alt="A janela da extensão com o idioma de destino, o modo de exibição, a lista de provedores e as requisições do dia" width="360"> |
 
-| O que voce digita, antes de enviar | Escolha um idioma, ou deixe ele escolher |
+| O que você digita, antes de enviar | Escolha um idioma, ou deixe que ela escolha |
 |---|---|
-| <img src="screenshots/compose.png" alt="A caixa de escrita com uma mensagem em ingles e, acima, a previa da versao em espanhol que sera enviada" width="360"> | <img src="screenshots/languages.png" alt="Uma grade de idiomas com bandeiras e nomes, com o idioma do canal em primeiro" width="360"> |
+| <img src="screenshots/compose.png" alt="A caixa de chat com uma mensagem em inglês e, acima, uma prévia com a versão em espanhol que será enviada" width="360"> | <img src="screenshots/languages.png" alt="Uma grade pesquisável de bandeiras e nomes de idiomas, com o idioma do canal primeiro" width="360"> |
 
-<sub>Feitas a partir da build publicada por <code>test/e2e/store-shots-fixture.mjs</code>, numa sala de chat que este repositorio inventa. Os nomes e as mensagens sao inventados, as traducoes sao respondidas localmente e nada sai da maquina, entao o nome de nenhuma pessoa real vai parar nesta pagina.</sub>
-
-## Novidades da [2.8.1](https://github.com/Pkkls/kick-chat-translator/releases/latest)
-
-**As traducoes chegam cerca de duas vezes mais rapido.** Cada linha ficava retida numa janela de
-agrupamento antes de ser enviada, e essa janela so se paga se outra linha aparecer enquanto ela esta
-aberta. Quase nunca aparecia: medido num canal ao vivo, vinte e quatro de vinte e sete despachos sairam
-com uma unica mensagem, e a espera era de 186ms numa mediana de 217ms enquanto a propria chamada de
-traducao respondia em 43ms. A mediana agora e de 111ms, sem enviar requisicoes a mais, e nada muda num
-chat rapido, onde agrupar realmente compensa.
-
-## Novidades da [2.8.0](https://github.com/Pkkls/kick-chat-translator/releases/tag/v2.8.0)
-
-Uma passada por cada superfície que a extensão coloca na tela: o chat, a barra acima dele, o popup e as seis
-abas de configurações. Parte é nova; a maioria são coisas que estavam erradas em silêncio.
-
-**Um botão de idioma, onde sua mão já está.** Trocar o idioma em que você escreve exigia subir até a barra
-no topo do chat e voltar. Agora o botão fica na própria barra de ações do chat, logo antes da engrenagem,
-então o ponteiro não sai do campo de texto. Um clique alterna entre o idioma do canal e sua última escolha,
-a seta abre a lista inteira e digitar duas letras filtra. O primeiro idioma escolhido vira favorito; não há
-nada para configurar.
-
-**As traduções ficavam invisíveis para parte de vocês, e há bastante tempo.** O texto inserido seguia a
-configuração clara ou escura *do sistema operacional* em vez do chat onde ele vive. Num sistema claro lendo
-um Kick escuro, isso pintava texto escuro sobre o fundo escuro do Kick: medido em 1,01:1 contra o que estava
-embaixo, ou seja, contraste nenhum. Agora ele lê o fundo real do chat e acompanha a troca de tema do Kick sem
-recarregar. Medido depois: 10,98:1.
-
-**"Substituir" substitui.** Era um quarto valor de exibição que nenhum controle alcançava, nomeando um
-estilo idêntico ao "Em linha" com o original ainda ao lado. Agora mostra 12 mensagens na tela onde o em
-linha mostra 9. O "Ao passar o mouse" também parou de escrever um rótulo embaixo de cada mensagem,
-passasse você por cima ou não, o que custava ao chat um terço do que ele podia mostrar. **Abaixo continua
-sendo o estilo a usar; os outros três estão em desenvolvimento, e as configurações dizem isso.**
-
-**Tudo fala o seu idioma.** O chat, a barra e todos os menus de idioma seguem o idioma de interface que você
-escolheu na extensão, não o do navegador, nas dez interfaces. Trinta e nove textos que ficavam em inglês
-independentemente da sua escolha agora vêm do catálogo, e os arquivos de idioma passaram de três para dez.
-
-**Funciona sem mouse, e espelha para o árabe.** A barra de abas das configurações era seis botões sem
-relação para um leitor de tela e exigia cinco toques para atravessar; agora é uma parada só, com as setas,
-Home e End. Cada controle tem nome, nenhum compartilha o mesmo, e nenhuma borda interativa é mais invisível.
-O chat, o popup e as configurações espelham corretamente para leitura da direita para a esquerda. Tudo que
-anima para para quem pede isso ao sistema, sem tocar nas animações do próprio Kick.
-
-**E as pequenas coisas ruinosas.** Uma URL longa ou uma parede de spam não empurra mais o chat para o lado.
-Uma linha que falhou não ocupa mais uma fileira inteira, o que importava porque falhas nunca chegam
-sozinhas: com um provedor fora do ar, o chat caía de 13 mensagens na tela para 8. O botão de tentar de novo
-funciona pelo teclado e no toque, quando antes só respondia ao mouse. A página de configurações não rola
-mais para o lado numa janela estreita.
-
-Tudo verificado com a extensão carregada num navegador real, num canal real, que foi como se descobriu que o
-botão de idioma estava ancorado no lugar errado.
-
-Lista completa em [CHANGELOG.md](CHANGELOG.md).
----
+<sub>Capturas da versão publicada numa sala de chat que este repositório inventa: os nomes e as mensagens são
+fictícios e as traduções são respondidas localmente, então nenhum usuário real aparece aqui.</sub>
 
 ## Instalação
 
-**[➥ Chrome / Brave / Edge · Chrome Web Store](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)**
+[Chrome, Brave, Edge: Chrome Web Store](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
 &nbsp;·&nbsp;
-**[➥ Firefox · Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
+[Firefox: Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)
 
-Um clique para instalar. Abra qualquer live da Kick: uma barra verde no topo do chat indica que está funcionando.
+Abra qualquer live da Kick: a barra verde no topo do chat indica que está funcionando. As cópias das lojas se
+atualizam sozinhas.
 
 <details>
-<summary>Ou instale manualmente (descompactada / build de desenvolvimento)</summary>
+<summary>Instalação manual, a partir de um zip de release</summary>
 
-Baixe o zip certo em [Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest) e descompacte.
+Baixe o zip do seu navegador em [Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest) e descompacte.
 
-- **Chrome / Brave / Edge** (`…-chromium.zip`): abra `chrome://extensions`, ative o **Modo do desenvolvedor**, clique em **Carregar sem compactação** e selecione a pasta.
-- **Firefox 121+** (`…-firefox.zip`): abra `about:debugging#/runtime/this-firefox`, clique em **Carregar extensão temporária…** e selecione o `manifest.json`.
+- Chrome, Brave, Edge (`…-chromium.zip`): abra `chrome://extensions`, ative o Modo do desenvolvedor, clique em Carregar sem compactação e escolha a pasta.
+- Firefox 121+ (`…-firefox.zip`): abra `about:debugging#/runtime/this-firefox`, clique em Carregar extensão temporária e escolha `manifest.json`.
+
+Uma cópia instalada assim não se atualiza sozinha. O ícone dela mostra um selo quando existe uma versão nova,
+e a janela leva à loja.
 
 </details>
 
 ## Motores de tradução
 
-Quatro provedores em cadeia: se um cai, o próximo assume.
+Quatro provedores encadeados: quando um falha, o próximo assume. A ordem é você quem define.
 
-| Provedor | Chave? | Nota |
+| Provedor | Chave | Observação |
 |---|---|---|
-| Google | Não | Padrão, funciona direto |
-| DeepL | Sim (grátis) | Melhor qualidade. [Pegue uma chave grátis](https://www.deepl.com/pro-api) (1M de caracteres/mês, R$ 0) |
-| MyMemory | Não | Reserva |
-| Lingva | Não | Reserva. Usa uma instância pública já de saída; aponte para a sua nos ajustes se preferir |
+| Google | nenhuma | o padrão, funciona de fábrica |
+| DeepL | gratuita | a melhor qualidade, [chave gratuita](https://www.deepl.com/pro-api) para 1 milhão de caracteres por mês |
+| MyMemory | nenhuma | reserva |
+| Lingva | nenhuma | reserva, numa instância pública a menos que você aponte para a sua |
 
-A ordem é você quem define nas configurações.
-
-### Tradução no dispositivo
-
-O tradutor embutido do Chromium, onde está disponível, é de longe o caminho mais rápido. Medido em um
-canal ao vivo: **22 ms** desde a mensagem aparecer até a tradução estar na tela, contra **1618 ms** pela
-cadeia na nuvem. Sem rede, sem limite, e o texto nunca sai da sua máquina.
-
-Duas coisas condicionam isso, e vale conhecer as duas antes de contar com ela.
-
-A API precisa existir. O Firefox não a traz. Chrome e Edge 138+ deveriam, mas não é garantido: na mesma
-máquina, um Chrome 151 a expunha e outro não. Se o seu não tiver, tudo recai na cadeia na nuvem acima e
-nada quebra.
-
-E o modelo do seu par de idiomas precisa estar baixado, uma vez, com um clique na barra. Até lá esse par
-também vai para a nuvem, mesmo que os pares já baixados continuem locais.
+O tradutor embutido do Chromium é mais rápido que todos eles. Medido num canal ao vivo: 22 ms entre uma
+mensagem aparecer e a tradução estar na tela, contra 1618 ms pela cadeia na nuvem, sem rede e sem cota. O
+Chrome e o Edge 138 ou mais recentes podem oferecê-lo, embora nem toda cópia ofereça, e cada par de idiomas
+precisa baixar o modelo uma vez, com um clique na barra. O Firefox não tem. Onde ele falta, a cadeia na nuvem
+assume e nada quebra.
 
 ## Configurações
 
-Clique na engrenagem da barra do chat, ou clique com o botão direito no ícone da extensão → Opções.
+Clique na engrenagem da barra do chat, ou clique com o botão direito no ícone da extensão e escolha Opções.
 
-- **Idioma de destino**: para qual idioma tudo é traduzido (42 disponíveis)
-- **Ordem dos provedores**: arraste para reordenar, cole sua chave do DeepL
-- **Modo do motor**: dispositivo primeiro, nuvem primeiro, ou apenas no dispositivo
-- **Exibição**: quatro estilos. Abaixo da mensagem em linha própria, na mesma linha num chip depois dela, no lugar do original deixando os emotes onde estão, ou só ao passar o mouse. **Abaixo é o que convém usar por enquanto; os outros três ainda estão em desenvolvimento.** O texto original, o idioma de origem e o provedor são selos opcionais. Uma linha de exemplo nos ajustes mostra cada estilo antes de você escolher
-- **Botão de idioma**: um chip na barra de ações do chat, logo antes da engrenagem. Um clique alterna entre o idioma do canal e sua última escolha, manter pressionado abre a lista e digitar duas letras filtra. Fica ali para que mudar o idioma em que você escreve nunca exija subir ao topo do chat
-- **Prévia ao escrever**: ligada ou desligada, seu idioma de destino, e se clicar preenche a caixa de chat ou copia a tradução para a área de transferência
-- **Filtros**: pular bots, bloquear usuários ou canais, restringir os idiomas de origem, ou permitir apenas certos canais
-- **Glossário**: pares de localizar e substituir aplicados à tradução, para nomes e piadas internas que os motores destroem
-- **Orçamento**: cota do DeepL e roteamento inteligente, limite de frequência por canal, tamanho e duração do cache, concorrência
-- **Pausa automática**: abas em segundo plano param de traduzir (economiza sua cota do DeepL)
-- **Idioma da interface** da própria extensão, em inglês, espanhol, francês, português, turco, russo, árabe, chinês, japonês ou coreano, além de botões para limpar o cache ou redefinir estatísticas e ajustes
-- **Depuração**: as últimas decisões do tradutor e por que uma linha foi deixada de lado, mantidas apenas em memória
+- Idioma de destino, e um idioma de leitura lembrado por canal se você ativar
+- Ordem dos provedores, sua chave do DeepL e o modo do motor: dispositivo primeiro, nuvem primeiro, ou só
+  dispositivo
+- Exibição: abaixo da mensagem (recomendada), na mesma linha depois dela, no lugar dela ou ao passar o mouse,
+  com o texto original e o selo do idioma de origem opcionais
+- O botão de idioma na barra de ações do chat: um clique alterna entre o idioma do canal e a sua última
+  escolha, segurar abre a lista, digitar duas letras filtra
+- Prévia de escrita: ligada ou não, o idioma de destino dela, e se o clique preenche a caixa de chat ou copia
+- Filtros: pular bots, bloquear usuários, canais ou palavras-chave, restringir os idiomas de origem
+- Glossário: pares de localizar e substituir aplicados às traduções
+- Orçamento: parte da cota do DeepL, limite por canal, tamanho e duração do cache
+- Legibilidade e aparência: tamanho do texto, espaçamento entre linhas, fonte, cor de destaque, tema do chat
+- Teclado: Alt+T liga ou desliga a tradução do chat, Alt+W a prévia de escrita
+- Atividade: mensagens traduzidas, acertos do cache, cada idioma visto no chat, e por que cada uma das últimas
+  50 linhas foi traduzida ou não
+- A interface da própria extensão em inglês, espanhol, francês, português, turco, russo, árabe, chinês,
+  japonês ou coreano
+
+## Idiomas
+
+Inglês · Francês · Espanhol · Português · Português (Brasil) · Alemão · Italiano · Holandês · Polonês · Sueco · Tcheco · Eslovaco · Romeno · Russo · Ucraniano · Turco · Árabe · Hebraico · Japonês · Coreano · Chinês (simplificado) · Chinês (tradicional) · Tailandês · Vietnamita · Indonésio · Hindi · Finlandês · Norueguês · Dinamarquês · Grego · Húngaro · Búlgaro · Catalão · Esloveno · Estoniano · Lituano · Letão · Persa · Bengali · Tâmil · Malaio · Filipino · Cantonês
 
 ## Privacidade
 
-Sem conta, sem analytics, sem nenhum servidor meu. As mensagens vão para o provedor de tradução que você
-escolheu e para mais nenhum lugar; e no modo local, nem isso. [Detalhes](PRIVACY.md)
+Sem conta, sem analytics, sem servidor próprio. As mensagens do chat vão para o provedor de tradução que você
+escolheu e para nenhum outro lugar, e no modo dispositivo nem para ele. Uma cópia instalada de uma loja não faz
+nenhuma outra requisição. Uma cópia instalada à mão pergunta ao GitHub a última tag de release, no máximo a
+cada seis horas, para saber se mostra o selo de atualização. [Detalhes](PRIVACY.md)
 
-## FAQ
+## Perguntas frequentes
 
-**P: A barra verde desapareceu / a tradução parou de funcionar.**
-**R:** A 2.6.0 corrigiu a causa disso: a Kick deixa na página uma segunda cópia oculta do painel de chat, e a barra estava sendo montada nessa cópia, invisível desde o início. Atualize primeiro. Se ainda acontecer na 2.6.0 ou posterior, recarregue a página e abra uma issue, porque aí seria um problema novo.
+**As mensagens não são traduzidas.**
+Abra a aba Atividade nas configurações e aperte "Ler decisões": ela lista as últimas 50 linhas e diz por que
+cada uma foi traduzida ou não. A maioria das linhas puladas é pulada de propósito. Numa sessão ao vivo, 213
+de 234 eram o mesmo usuário se repetindo, 9 eram curtas demais, 7 eram só emoji ou risada, e 1 já estava no
+idioma de leitura. Se a aba não mostra nada, a extensão não está vendo o chat: abra uma issue.
 
-**P: As mensagens não estão sendo traduzidas.**
-**R:** Abra as configurações e verifique se o idioma de destino é diferente do de origem. Confira também se pelo menos um provedor está ativo na cadeia.
+**A barra verde sumiu.**
+Recarregue a página. Se acontecer de novo, abra uma [issue](https://github.com/Pkkls/kick-chat-translator/issues)
+com o canal e o que você fez antes.
 
-**P: Funciona em replays de VOD?**
-**R:** Sim, a extensão traduz o chat tanto em transmissões ao vivo quanto em replays de VOD.
+**Como consigo traduções melhores?**
+Adicione uma chave gratuita do DeepL nas configurações. O plano gratuito cobre um milhão de caracteres por mês,
+e o DeepL só é gasto nos pares de idiomas em que supera os motores gratuitos.
 
-**P: Quais navegadores são suportados?**
-**R:** Chrome, Brave, Edge e Firefox são todos suportados.
+**Qual estilo de exibição devo usar?**
+Abaixo da mensagem. Os outros três funcionam e ainda estão sendo ajustados.
 
-**P: Meus dados estão seguros?**
-**R:** Não há sistema de contas nem coleta de dados analíticos. As mensagens do chat são enviadas apenas para o provedor de tradução que você selecionou, e para mais nenhum lugar.
+**Funciona em replays de VOD?**
+Sim, do mesmo jeito que ao vivo.
 
-**P: Como consigo uma qualidade de tradução melhor?**
-**R:** Adicione uma chave de API gratuita do DeepL nas configurações. O plano gratuito do DeepL cobre até 1 milhão de caracteres por mês e supera consistentemente os provedores padrão.
+**Parou de funcionar depois de uma atualização da Kick.**
+A Kick às vezes muda a estrutura do chat. Abra uma [issue](https://github.com/Pkkls/kick-chat-translator/issues)
+e ela é corrigida.
 
-**P: Algumas mensagens mostram caracteres estranhos ou não são traduzidas.**
-**R:** Mensagens muito curtas e mensagens só com emotes são ignoradas de propósito: raramente contêm texto traduzível e desperdiçariam chamadas de API.
+**É feita pela Kick?**
+Não. É um projeto independente de código aberto, sem vínculo com a Kick.
 
-**P: A extensão quebrou após uma atualização do Kick.**
-**R:** O Kick às vezes muda a estrutura do chat, o que pode quebrar a detecção de mensagens. Abra uma [issue no GitHub](https://github.com/Pkkls/kick-chat-translator/issues) e ela será corrigida o mais rápido possível.
+## Novidades
 
-## Idiomas suportados
+Cada versão, com o que mudou e a medição por trás:
+[Releases](https://github.com/Pkkls/kick-chat-translator/releases) e [CHANGELOG.md](CHANGELOG.md).
 
-Inglês · Francês · Espanhol · Português · Português (Brasil) · Alemão · Italiano · Holandês · Polonês · Sueco · Tcheco · Eslovaco · Romeno · Russo · Ucraniano · Turco · Árabe · Hebraico · Japonês · Coreano · Chinês (simplificado) · Chinês (tradicional) · Tailandês · Vietnamita · Indonésio · Hindi · Finlandês · Norueguês · Dinamarquês · Grego · Húngaro · Búlgaro · Catalão · Esloveno · Estoniano · Lituano · Letão · Persa · Bengali · Tâmil · Malaio · Filipino
-
-## Como funciona
-
-1. Um content script observa o DOM do chat da Kick e captura cada mensagem nova.
-2. A mensagem é passada para o service worker em segundo plano, que tenta os provedores em ordem até um dar certo.
-3. A tradução é injetada de volta no DOM, abaixo da mensagem original.
-4. Para as mensagens enviadas, o idioma do canal é detectado automaticamente pela API da Kick e uma prévia aparece acima da caixa de chat.
-
-A extensão nunca intercepta nem modifica as próprias requisições de rede da Kick.
-
-Ela pede `storage` e `alarms`, e acesso de host à kick.com, a cada provedor de tradução que pode chamar (Google, DeepL, MyMemory, as duas instâncias do Lingva) e a `api.github.com`. Esse último é a verificação de atualização: lê a tag da release mais recente, com limite de frequência e cache, e o popup oferece um link quando existe uma versão mais nova. Nada é enviado nessa requisição e nada se atualiza sozinho.
-
----
-
-## Compilar a partir do código
+## Desenvolvimento
 
 ```bash
 git clone https://github.com/Pkkls/kick-chat-translator.git
 cd kick-chat-translator
 npm ci
-npm run build     # saída em dist/
+npm run release:check    # typecheck, lint, testes unitários, build: o controle por onde passa cada pacote
+npm run build:firefox    # build do Firefox, na mesma pasta dist/
+npm run package:all      # os dois zips, em release/
+npm run dev              # HMR
 ```
 
-Outros comandos: `npm run dev` (HMR), `npm run test`, `npm run lint`,
-`npm run pack` (zip para distribuição).
+Os builds são reproduzíveis: o mesmo commit gera zips idênticos byte a byte em qualquer máquina, verificado
+construindo um `git archive` da tag numa pasta vazia e comparando os hashes.
 
-Stack: MV3, Vite, TypeScript, Preact, Tailwind. O content script é distribuído
-como um IIFE clássico para uma injeção confiável no Brave.
+Além dos testes unitários, 39 testes sem rede carregam a extensão construída num navegador real, operam a
+extensão e verificam o que ela faz, com a página e o motor de tradução servidos localmente. Eles precisam do
+Playwright, que de propósito não é uma dependência: aponte `UX_KIT` para uma pasta cujo `node_modules` o
+contenha, ou rode `npm i -D playwright`.
 
-## Licença
+```bash
+node test/e2e/run-gates.mjs --headless                  # os 39, sem janela
+node test/e2e/store-shots-fixture.mjs --lang=pt-BR      # as capturas da loja, num idioma da página
+node test/e2e/store-shots-fixture.mjs --gif             # capturas em inglês, as imagens do README e este GIF
+```
 
-MIT. Sem afiliação com a Kick.
+Stack: Manifest V3, Vite, TypeScript, Preact, Tailwind. Os textos das lojas ficam em [store/](store/), e uma
+release é uma tag de versão: a CI a constrói, verifica e publica nas duas lojas.
 
 ## Projetos relacionados
 
-- [kick-ad-blocker](https://github.com/Pkkls/kick-ad-blocker), bloqueia os anúncios da Kick
-- [kick-core](https://github.com/Pkkls/kick-core), o cliente de gateway em tempo real compartilhado por essas extensões
-- [kickbus](https://github.com/Pkkls/kickbus), webhooks oficiais da Kick retransmitidos por SSE para bots locais
-- [kick-drops-miner](https://github.com/Pkkls/kick-drops-miner), app Windows que avança o tempo de exibição dos drops
+- [kick-ad-blocker](https://github.com/Pkkls/kick-ad-blocker), bloqueia os anúncios pre-roll e sobrepostos da Kick
+- [kick-core](https://github.com/Pkkls/kick-core), o cliente do gateway em tempo real compartilhado por estas extensões
+- [kickbus](https://github.com/Pkkls/kickbus), webhooks oficiais da Kick repassados a bots locais por SSE
+- [kick-drops-miner](https://github.com/Pkkls/kick-drops-miner), app de Windows que avança o tempo assistido dos drops da Kick
+
+## Licença
+
+MIT. Sem vínculo com a Kick.

@@ -1,18 +1,40 @@
+<div align="center">
+
+<img src="public/icons/icon128.png" alt="" width="80" height="80">
+
 # Kick Chat Translator
 
+A live chat translator for Kick. Read any stream's chat in your own language, and reply in the channel's.
+
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=Chrome%20Web%20Store&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
+[![Chrome users](https://img.shields.io/chrome-web-store/users/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=users&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
+[![Firefox Add-on](https://img.shields.io/amo/v/kick-chat-translator?label=Firefox%20Add-on&color=53fc18)](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)
 [![CI](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml/badge.svg)](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/Pkkls/kick-chat-translator?style=flat&color=53fc18)](https://github.com/Pkkls/kick-chat-translator/stargazers)
-[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=Chrome%20Web%20Store&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
-[![Chrome Users](https://img.shields.io/chrome-web-store/users/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=users&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
-[![Firefox Add-on](https://img.shields.io/amo/v/kick-chat-translator?label=Firefox%20Add-on&color=53fc18)](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)
 
-[日本語](README.ja.md) · [Español](README.es.md) · [Português](README.pt-BR.md)
+[Español](README.es.md) · [日本語](README.ja.md) · [Português](README.pt-BR.md)
 
-Real-time translation for Kick.com chat, on live streams and VOD replays. Open a stream, and any
-message in another language gets its translation rendered right underneath. Nothing to set up.
+<img src="screenshots/demo.gif" alt="Spanish chat messages arrive one by one, each with its English translation underneath; then an English reply is typed, a Spanish preview appears above the chat box, and Tab swaps it in" width="360">
 
-Runs on **Brave, Chrome, Edge and Firefox**, and understands 7TV emotes.
+</div>
+
+## What it does
+
+Open a Kick stream where the chat is in a language you don't read. Each message gets its translation right
+underneath as it arrives, on live streams and on VOD replays. Type a reply and a preview shows it in the
+channel's language above the chat box: press Tab or click it, and that version replaces what you typed.
+
+There is nothing to set up. Incoming chat goes into your browser's language, and what you write goes out in
+the language the channel broadcasts in, read from Kick itself. Both can be changed in the settings.
+
+- 43 languages, right-to-left scripts included (Arabic, Hebrew, Persian) and regional variants (Brazilian
+  Portuguese, Traditional Chinese, Cantonese)
+- Google out of the box, with no key and no account. Your own free DeepL key for better quality, MyMemory
+  and Lingva as fallbacks
+- On-device translation in Chrome and Edge where the browser offers it: 22 ms instead of 1.6 s, and the text
+  never leaves your machine
+- 7TV emotes, bot and user filters, a keyword filter, a glossary for names engines mangle
+- Chrome, Brave, Edge and Firefox
 
 | Chat, translated as it scrolls | The toolbar popup |
 |---|---|
@@ -22,274 +44,143 @@ Runs on **Brave, Chrome, Edge and Firefox**, and understands 7TV emotes.
 |---|---|
 | <img src="screenshots/compose.png" alt="The compose box holding an English message, with a preview above it showing the Spanish version that will be sent" width="360"> | <img src="screenshots/languages.png" alt="A searchable grid of language flags and names, with the channel's own language first" width="360"> |
 
-<sub>Taken from the shipping build by
-<code>test/e2e/store-shots-fixture.mjs</code>, in a chat room this
-repository makes up. The usernames and messages are invented, the translations
-are answered locally, and nothing leaves the machine, so no real person's handle
-ends up on this page. What the images show of the product is real: it is
-<code>dist/</code> running, reading that room the way it reads any other.</sub>
-
-**Zero config.** Incoming chat is translated into *your* browser's language. When you type, a live preview
-shows your own message in the *channel's* language (auto-detected from Kick) just above the chat box; click
-it or press **Tab** to swap what you typed for the translation, then send it yourself. Both directions
-work on their own, so you never have to pick a language. (You still can, in settings.)
-
-**43 languages**, right-to-left scripts included (Arabic, Hebrew, Persian) as well as regional variants
-(Brazilian Portuguese, Traditional Chinese).
-
----
-
-## What's new in [3.0.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
-
-**Nine things the extension used to decide for you are yours now.** Text size, line spacing and typeface for
-the translated line, how much air its block gets, the accent colour, the chat theme, a reading language
-remembered per channel, and two keyboard shortcuts. Each default is exactly what the stylesheet carried
-before, so a reader who never opens the settings sees no change at all.
-
-**Tab swaps what you typed for its translation.** Accepting the compose preview meant Ctrl/Cmd+Enter, a
-two-handed chord in the middle of typing. Tab is taken only while the preview is on screen, so an empty box
-never loses it, and Shift+Tab is left alone in every case so walking backwards out of the message box always
-works. A setting gives Tab back entirely to anyone who navigates by keyboard.
-
-**The two bars say which is which.** The bar at the top of the chat translates what other viewers write; the
-chip at the bottom translates what you write. Nothing on screen separated them, and the information lived in
-tooltips nobody hovers. A down arrow on one, an up arrow on the other, vertical so they do not lie in an
-Arabic interface where the whole bar mirrors.
-
-**Flags instead of two letters, everywhere.** The language table carried the string `JA` in a field named
-`flag`, while the stylesheet has drawn 43 real flags all along, used only by one picker. Every surface draws
-them now: each translated line, both bars, the compose preview and the language list.
-
-**The language panel shows which language is selected.** It carried that state on a background measured at
-1.21:1 against its own surface, where hover sits at 1.87, so the two were indistinguishable while the focus
-ring at 12.74 was the brightest thing in a panel it only passes through. Tint, the word in the accent, and a
-rail. Flags rest desaturated and come back to full under the pointer, so colour is a signal rather than a
-wall of 43 saturated rectangles.
-
-**Long names stopped being cut.** The pin icon sat invisible in every row of the picker, spending 17 percent
-of each column to show nothing, and the grid kept three columns whatever the chat width. `Chinese (Taiwan)`
-was rendering as `Chinese (...`, which you could not tell from `Chinese`.
-
-**The settings page shows what it is doing.** Eleven settings, and for nine of them the number that answers
-"what is this doing" already existed and was not shown. The cache says how many entries it holds, the
-per-channel budget says whether it ever held anything back, and the language list shows how much each
-language actually represented. The tab called Debug is called Activity, because a total of messages
-translated is not debugging.
-
-Control borders inside the language panel sat at 1.80:1 on dark and 1.42:1 on light, against the 3:1 the
-theme file states for a control's own boundary.
-
-Every release before this one is in [CHANGELOG.md](CHANGELOG.md), with the
-measurement behind each entry.
-
----
+<sub>Taken from the shipping build in a chat room this repository makes up: the usernames and messages are
+invented and the translations are answered locally, so no real person's handle ends up on this page.</sub>
 
 ## Install
 
-**[➥ Chrome / Brave / Edge · Chrome Web Store](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)**
+[Chrome, Brave, Edge: Chrome Web Store](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
 &nbsp;·&nbsp;
-**[➥ Firefox · Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
+[Firefox: Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)
 
-One click to install. Open any Kick stream, and the green bar at the top of chat tells you it's live.
+Open any Kick stream: the green bar at the top of the chat says it is running. Store copies update
+themselves.
 
 <details>
-<summary>Or install manually (unpacked / dev build)</summary>
+<summary>Install by hand, from a release zip</summary>
 
-Grab the right zip from [Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest) and unzip it.
+Download the zip for your browser from [Releases](https://github.com/Pkkls/kick-chat-translator/releases/latest) and unzip it.
 
-- **Chrome / Brave / Edge** (`…-chromium.zip`): open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, pick the folder.
-- **Firefox 121+** (`…-firefox.zip`): open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on…**, pick `manifest.json`.
+- Chrome, Brave, Edge (`…-chromium.zip`): open `chrome://extensions`, turn on Developer mode, click Load unpacked, pick the folder.
+- Firefox 121+ (`…-firefox.zip`): open `about:debugging#/runtime/this-firefox`, click Load Temporary Add-on, pick `manifest.json`.
+
+A copy installed this way does not update itself. Its icon shows a badge when a newer version exists, and
+the popup links to the store.
 
 </details>
 
 ## Translation engines
 
-Four providers chained together. If one fails, the next takes over:
+Four providers, chained: when one fails, the next takes over. The order is yours to set.
 
-| Provider | Key needed? | Note |
+| Provider | Key | Note |
 |---|---|---|
-| Google | No | Default, works out of the box |
-| DeepL | Yes (free) | Best quality. [Get a free key](https://www.deepl.com/pro-api) (1M chars/month, €0) |
-| MyMemory | No | Fallback |
-| Lingva | No | Fallback. Uses a public instance out of the box; point it at your own in the settings if you'd rather |
+| Google | none | the default, works out of the box |
+| DeepL | free | the best quality, [free key](https://www.deepl.com/pro-api) for 1 million characters a month |
+| MyMemory | none | fallback |
+| Lingva | none | fallback, on a public instance unless you point it at your own |
 
-The order is yours to set in the settings.
-
-### On-device translation
-
-Chromium's built-in translator, where it is available, is the fastest path by a wide margin. Measured on
-a live channel: **22 ms** from a message appearing to its translation being on screen, against **1618 ms**
-through the cloud chain. No network, no quota, and the text never leaves your machine.
-
-Two things gate it, and both are worth knowing before you count on it.
-
-The API has to be there at all. Firefox does not ship it. Chrome and Edge 138+ are supposed to, but it is
-not guaranteed: on the same machine, one Chrome 151 exposed it and another did not. If yours does not,
-everything falls back to the cloud chain above and nothing breaks.
-
-And the model for your language pair has to be downloaded, once, with one click from the bar. Until then
-that pair goes to the cloud too, even though the pairs you already downloaded stay local.
+Chromium's built-in translator is faster than all of them. Measured on a live channel: 22 ms from a message
+appearing to its translation on screen, against 1618 ms through the cloud chain, with no network and no
+quota. Chrome and Edge 138 and later can offer it, though not every copy does, and each language pair needs
+its model downloaded once, with one click from the bar. Firefox does not have it. Wherever it is missing,
+the cloud chain takes over and nothing breaks.
 
 ## Settings
 
-Click the gear on the chat bar, or right-click the extension icon → Options.
+Click the gear on the chat bar, or right-click the extension icon and choose Options.
 
-- **Target language**: what everything is translated into (43 to choose from)
-- **Provider order**: drag to reorder, paste your DeepL key
-- **Engine mode**: on-device first, cloud first, or on-device only
-- **Display**: four styles. Below the message on its own line, inline in a pill after it, in place of the original with the emotes left alone, or only on hover. **Below is the one to use for now; the other three are still being worked on.** Original text, source language and provider badges each optional. A sample line in the settings shows each style before you pick it
-- **Language button**: a chip in the chat's action bar, just before the gear. One click switches between the channel's language and your last pick, press-and-hold opens the list, and typing two letters filters it. It sits there so changing the language you write in never sends you to the top of the chat
-- **Compose preview**: on or off, its target language, and whether clicking it fills the chat box or copies the translation instead
-- **Filters**: skip bots, blocklist users or channels, restrict the source languages, or whitelist channels
-- **Glossary**: find and replace pairs applied to the translation, for names and in-jokes that engines mangle
-- **Budget**: DeepL quota share and smart routing, per-channel rate limit, cache size and lifetime, concurrency
-- **Auto-pause**: background tabs stop translating (saves your DeepL quota)
-- **UI language** for the extension's own interface, in English, Spanish, French, Portuguese, Turkish, Russian, Arabic, Chinese, Japanese or Korean, plus buttons to clear the cache or reset stats and settings
-- **Readability**: text size, line spacing and typeface for the translated line, plus how much air the block gets. The size multiplies whatever Kick gives the chat, so if you already enlarged Kick's own chat your choice is kept and this one adds to it
-- **Appearance**: accent colour out of four, each one measured for contrast rather than picked, and the chat theme pinned dark or light instead of following the channel
-- **Per-channel language**: off by default. Turned on, a channel you have already read restores the language you read it in
-- **Keyboard**: Alt+T turns chat translation on or off, Alt+W the compose preview. Both are changed in `chrome://extensions/shortcuts`
-- **Activity**: what the extension actually did. Messages translated, how many were served from the cache, and every language seen in chat with its count, which is what the source-language allowlist decides between
-
-## Privacy
-
-No account, no analytics, no server of mine. Messages go to the translation provider you picked and nowhere
-else, and in on-device mode, not even there. [Details](PRIVACY.md)
-
-## FAQ
-
-**Q: The green bar disappeared / translation stopped working.**
-**A:** 2.6.0 fixed the cause of this: Kick leaves a hidden second copy of the chat panel in the page and the bar was being mounted into that one, invisible from the start. Update first. If it still happens on 2.6.0 or later, refresh the page and open an issue, because that would be a new one.
-
-**Q: Messages aren't being translated.**
-**A:** Open the **Activity** tab in the settings and press "Read decisions": it lists the last 50 lines and says, for each one, why it was translated or left alone. That answers this faster than guessing.
-
-Most lines that get skipped are skipped on purpose. Measured over one live session, out of 234 skipped lines: 213 were the same user repeating themselves, 9 were under the minimum length, 7 were emoji or laughter only, and 1 was already in the reading language. If the Activity tab shows nothing at all, then the extension is not seeing the chat, which is a different problem worth an issue.
-
-**Q: Which display style should I use?**
-**A:** Below. The other three work, but they are still being adjusted and the settings mark Below as the recommended one. If you switch and something reads oddly, that is why.
-
-**Q: Does it work on VOD replays?**
-**A:** Yes. The extension translates chat on both live streams and VOD replays.
-
-**Q: Which browsers are supported?**
-**A:** Chrome, Brave, Edge and Firefox are all supported.
-
-**Q: Is my data safe?**
-**A:** There's no account system and no analytics. Chat messages are sent only to the translation provider you chose, and nowhere else.
-
-**Q: How do I get better translation quality?**
-**A:** Add a free DeepL API key in the settings. DeepL's free tier covers up to 1 million characters a month and consistently beats the default providers.
-
-**Q: A stretched message like "muuuuy biennnn" stays untranslated.**
-**A:** It should not, since 2.7.0. The translation services hand messages like that straight back unchanged, so the line is retried once on its flattened text. If you still see one, the Activity tab will say which of the two attempts gave up.
-
-**Q: The extension broke after a Kick update.**
-**A:** Kick sometimes changes its chat structure, which can break message detection. Open a [GitHub issue](https://github.com/Pkkls/kick-chat-translator/issues) and it'll be patched as soon as possible.
+- Target language, and a reading language remembered per channel if you turn it on
+- Provider order, your DeepL key, and the engine mode: on-device first, cloud first, or on-device only
+- Display: below the message (recommended), inline after it, in place of it, or on hover, with the original
+  text and the source language badge optional
+- The language button in the chat's action bar: one click switches between the channel's language and your
+  last pick, press and hold opens the list, typing two letters filters it
+- Compose preview: on or off, its target language, and whether clicking it fills the chat box or copies
+- Filters: skip bots, block users, channels or keywords, restrict source languages
+- Glossary: find and replace pairs applied to translations
+- Budget: DeepL quota share, per-channel rate limit, cache size and lifetime
+- Readability and appearance: text size, line spacing, typeface, accent colour, chat theme
+- Keyboard: Alt+T turns chat translation on or off, Alt+W the compose preview
+- Activity: messages translated, cache hits, every language seen in chat, and why each of the last 50 lines
+  was translated or left alone
+- The extension's own interface in English, Spanish, French, Portuguese, Turkish, Russian, Arabic, Chinese,
+  Japanese or Korean
 
 ## Supported languages
 
 English · French · Spanish · Portuguese · Portuguese (Brazil) · German · Italian · Dutch · Polish · Swedish · Czech · Slovak · Romanian · Russian · Ukrainian · Turkish · Arabic · Hebrew · Japanese · Korean · Chinese (Simplified) · Chinese (Traditional) · Thai · Vietnamese · Indonesian · Hindi · Finnish · Norwegian · Danish · Greek · Hungarian · Bulgarian · Catalan · Slovenian · Estonian · Lithuanian · Latvian · Persian · Bengali · Tamil · Malay · Filipino · Cantonese
 
-## How it works
+## Privacy
 
-1. A content script watches the Kick chat DOM and catches each new message.
-2. The message is handed to the background service worker, which tries providers in order until one succeeds.
-3. The translation is injected back into the DOM, beneath the original message.
-4. For outgoing messages, the channel's language is auto-detected through the Kick API and a live preview appears above the chat input.
+No account, no analytics, no server of mine. Chat messages go to the translation provider you picked and
+nowhere else, and in on-device mode not even there. A copy installed from a store makes no other request. A
+copy installed by hand asks GitHub for the latest release tag, at most every six hours, to know whether to
+show its update badge. [Details](PRIVACY.md)
 
-The extension never intercepts or modifies Kick's own network requests.
+## FAQ
 
-It asks for `storage` and `alarms`, and for host access to kick.com, to each translation provider it can call (Google, DeepL, MyMemory, the two Lingva instances), and to `api.github.com`. That last one is the update check: it reads the latest release tag, throttled and cached, and the popup offers a link when a newer version exists. Nothing is sent with that request and nothing auto-updates.
+**Messages aren't being translated.**
+Open the Activity tab in the settings and press "Read decisions": it lists the last 50 lines and says why
+each one was translated or left alone. Most skipped lines are skipped on purpose. Over one live session, 213
+of 234 were the same user repeating themselves, 9 were too short, 7 were emoji or laughter only, and 1 was
+already in the reading language. If the tab shows nothing at all, the extension is not seeing the chat:
+please open an issue.
 
----
+**The green bar disappeared.**
+Refresh the page. If it happens again, open an [issue](https://github.com/Pkkls/kick-chat-translator/issues)
+with the channel and what you did before.
 
-## Build from source
+**How do I get better translations?**
+Add a free DeepL key in the settings. The free tier covers a million characters a month, and DeepL is only
+spent on the language pairs where it beats the free engines.
+
+**Which display style should I use?**
+Below the message. The other three work, and are still being adjusted.
+
+**Does it work on VOD replays?**
+Yes, the same way as on live streams.
+
+**It broke after a Kick update.**
+Kick sometimes changes how its chat is built. Open an [issue](https://github.com/Pkkls/kick-chat-translator/issues)
+and it gets patched.
+
+**Is this made by Kick?**
+No. It is an independent open-source project, not affiliated with Kick.
+
+## What's new
+
+Every release, with what changed and the measurement behind it:
+[Releases](https://github.com/Pkkls/kick-chat-translator/releases) and [CHANGELOG.md](CHANGELOG.md).
+
+## Development
 
 ```bash
 git clone https://github.com/Pkkls/kick-chat-translator.git
 cd kick-chat-translator
 npm ci
-npm run build            # Chromium, output in dist/
-npm run build:firefox    # Firefox, same output directory
-npm run pack             # zip into release/
-npm run pack:firefox
+npm run release:check    # typecheck, lint, unit tests, build: the gate every package goes through
+npm run build:firefox    # Firefox build, same dist/ folder
+npm run package:all      # both zips, in release/
+npm run dev              # HMR
 ```
 
-`npm run release:check` is the gate the packages go through: typecheck, lint, tests
-and build, in that order. Run it rather than its parts, since running only three of
-the four is how three lint errors once reached a release branch unnoticed.
+Builds are reproducible: the same commit yields byte-identical zips on any machine, checked by building a
+`git archive` of the tag in an empty folder and comparing hashes.
 
-Other commands: `npm run dev` (HMR), `npm run test`, `npm run test:watch`.
-
-**Builds are reproducible.** `.gitattributes` pins line endings and `scripts/pack.ts`
-fixes entry order and timestamps, so the same commit yields a byte-identical zip on
-any machine. Verified by extracting a `git archive` of the tag into an empty
-directory, building there, and comparing hashes. Worth repeating before any store
-submission that asks for source.
-
-Stack: MV3, Vite, TypeScript, Preact, Tailwind. The content script ships as
-a classic IIFE for reliable injection on Brave.
-
-`scripts/check-strip.ts` runs at the end of every build. The repository carries a
-development-only instrumentation module, and this fails the build if any part of it,
-or even one of its measurement key strings, survives into a release bundle. It
-checks both directions, so an instrumented build that lost the code fails too.
-
-## Tests
+Beyond the unit tests, 39 offline gates load the built extension into a real browser, drive it and assert
+what it does, with the page served locally and the translation engine answered locally. They need
+Playwright, which is deliberately not a dependency: point `UX_KIT` at a folder whose `node_modules` holds it,
+or run `npm i -D playwright`.
 
 ```bash
-npm run release:check    # typecheck, lint, 1032 unit tests, build
+node test/e2e/run-gates.mjs --headless                  # all 39, no window
+node test/e2e/store-shots-fixture.mjs --lang=ja         # the store screenshots, in one listing language
+node test/e2e/store-shots-fixture.mjs --gif             # English store screenshots, the README images and this GIF
 ```
 
-Run it rather than its parts. Running only three of the four is how three lint
-errors once reached a release branch unnoticed.
-
-Beyond the unit tests there are 39 offline gates. They load the built extension
-into a real browser, drive it, and assert what it does: a chat row gets its
-translation, the fallback chain takes over when the first engine rate-limits, a
-recycled row is re-translated, the language change reaches the page without a
-reload, the compose preview targets the channel's language and not the reader's.
-None of them touches the network or kick.com. The page is served locally and the
-translation engine is answered locally, so the assertions are exact rather than
-dependent on what some server felt like returning.
-
-```bash
-node test/e2e/run-gates.mjs --headless            # all 39, no window
-node test/e2e/run-gates.mjs --headless --jobs 8   # 50s on 8 workers
-node test/e2e/run-gates.mjs --only translate-offline,extension-load
-```
-
-Playwright is deliberately not a dependency of this project: CI installs with
-`npm ci` on two jobs and never runs these gates, so adding it would pull browser
-binaries into both for nothing. Point the harness at an existing install with
-`UX_KIT=<dir containing node_modules/playwright>`, or `npm i -D playwright` in
-the clone. Without it the runner exits 2 and says so, because a missing
-prerequisite is not a failed test.
-
-**On `--headless`, since the obvious version of it does not work.** Playwright's
-own `headless: true` does not load an MV3 extension at all: no content script, no
-service worker. Chromium's `--headless=new` does, which is what this flag passes.
-Measured on the same build and the same page:
-
-| mode | content script | service worker |
-|---|---|---|
-| windowed, pushed off screen | injected | started |
-| `--headless=new` | injected | started |
-| Playwright `headless: true` | absent | absent |
-
-All 39 gates pass either way, pixel assertions included, so the flag costs
-nothing and buys a run with no window and no stolen focus.
-
-The screenshots in this README are generated, not collected:
-
-```bash
-node test/e2e/store-shots-fixture.mjs   # writes to test/e2e/readme/
-```
-
-Every image is checked for the thing it is supposed to show before it counts as
-taken, so a redesign that empties a panel fails the run instead of shipping a
-picture of nothing.
+Stack: Manifest V3, Vite, TypeScript, Preact, Tailwind. The store texts live in [store/](store/), and a
+release is a version tag: CI builds, checks and publishes it to both stores.
 
 ## Related projects
 
