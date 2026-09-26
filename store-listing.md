@@ -1,7 +1,7 @@
 # Chrome Web Store listing
 
 Plain text. The store renders no markdown, so the CAPS headers are the only
-structure available. Fact-checked against manifest 2.9.4, README, CHANGELOG.
+structure available. Fact-checked against manifest 2.12.0, README, CHANGELOG.
 
 ## Short summary (132 char limit)
 
@@ -9,21 +9,25 @@ Kick chat in a language you don't read? It gets translated under each message, l
 
 ## Description (EN)
 
-NEW IN 2.9.4
+NEW IN 2.12.0
 
-Two controls are now big enough to hit. The pause button and the settings gear on the bar were 26 by 18 and 25 by 19, and the retry arrow that sits on every translated line was 10 by 15, where the accessibility guidelines ask for 24 by 24. They are 24 tall now and the bar and the chat are exactly as compact as they were.
+Nine things the extension used to decide for you are yours now: text size, line spacing and typeface for the translated line, how much air its block gets, the accent colour out of four measured for contrast, the chat theme pinned dark or light instead of following the channel, a reading language remembered per channel, and two keyboard shortcuts. Every default is what the extension already did, so nothing moves until you move it.
 
-NEW IN 2.9.3
+Tab swaps what you typed for its translation. The key is taken only while the preview is on screen, so an empty box never loses it, and Shift+Tab always stays navigation.
 
-Messages are translated whole again. A cleanup rule meant to strip emote names out of chat was deleting ordinary words with them: every Turkish verb ending in -mez, Spanish vez, Czech bez, and any all-lowercase word of thirteen letters or more, which is an everyday length in Spanish, Portuguese, Turkish, German and Finnish. What you read was a translation of a sentence nobody had written, with nothing on screen to say a word had gone. Measured over 11,583 words of these listings: 30 ordinary words destroyed before, 13 after, all of them brand names, and emote names are still stripped just as well. On a fast chat, a message that lands in a row the list is recycling now gets translated too; it used to be skipped in silence. And the extension no longer publishes any of its files to the page, so a script running on Kick can no longer test whether you have it installed.
+The bar at the top of the chat translates what other viewers write; the chip at the bottom translates what you write. Nothing on screen said which was which, and an arrow on each says it now.
 
-NEW IN 2.9.2
+Flags instead of two-letter codes on every translated line, on both bars and in the language list. The language panel shows which language is selected, which it used to carry on a background you could not tell apart from hover. And "Chinese (Taiwan)" stopped rendering as "Chinese (...", which you could not tell from "Chinese".
 
-The language list is a grid of flags instead of a column of two-letter codes, and one click opens it. It used to run the full height of the screen, 43 entries one per line, each of them read letter by letter, and it sat behind a caret of 10 by 6 pixels on a chip of 45 by 24: miss that and the click did something else entirely. Three columns of drawn flags fit the same list into 42 percent less height, a click anywhere on the chip opens it, and Kick's own interface no longer paints over it. The flags are drawn in CSS rather than shipped as emoji, because flag emoji do not render on Windows, where the system falls back to the very letters being replaced. The panel behind the bar's AUTO button got the same treatment: it was showing six entries out of forty.
+The settings page shows what each setting is doing: the cache says how many entries it holds, the per-channel limit says whether it ever held anything back, and the language list shows how much each language actually represented.
+
+SINCE 2.9.2
+
+Cantonese is the 43rd language. The source language sent to the translator is right three times more often and wrong 97 percent less, measured on 5040 sentences across 43 languages, and no language is left undetected any more: twenty-six of them were. Cyrillic that could not be identified was called Russian and Arabic script was called Arabic; Bulgarian, Ukrainian and Persian are read as themselves now. Traditional Chinese was read as simplified every single time.
 
 Open a Kick stream where the chat is in a language you don't read. Each message gets its translation right underneath, as it comes in. A green bar at the top of chat tells you it's running.
 
-Type a reply and a preview shows it in the channel's language above the chat box. Click the preview or press Ctrl+Enter and that version replaces what you typed in the chat box, ready for you to send.
+Type a reply and a preview shows it in the channel's language above the chat box. Click the preview or press Tab and that version replaces what you typed in the chat box, ready for you to send.
 
 Nothing to set up. Incoming chat is translated into your browser's language, and what you write goes out in whatever the channel broadcasts in, read from Kick itself. Both are overridable in settings. Works on live streams and on VOD replays, and it handles 7TV emotes.
 
@@ -41,7 +45,7 @@ FILTERS
 
 Skip bots, blocklist users or channels, or limit which source languages get translated at all. Emotes, mentions, links and emoji spam are stripped before anything is sent out, so you're not paying to translate "kkkkkk". Background tabs pause themselves.
 
-42 languages, right-to-left included (Arabic, Hebrew, Persian), with regional variants kept apart (pt-BR, zh-TW). The extension's own interface comes in 10: English, Spanish, French, Portuguese, Turkish, Russian, Arabic, Chinese, Japanese and Korean.
+43 languages, right-to-left included (Arabic, Hebrew, Persian), with regional variants kept apart (pt-BR, zh-TW). The extension's own interface comes in 10: English, Spanish, French, Portuguese, Turkish, Russian, Arabic, Chinese, Japanese and Korean.
 
 No account, no analytics, no server of mine. It asks for storage, for a wake-up timer so the translator stays ready while you watch, and for access to kick.com plus the translation engines it can call: Google, DeepL, MyMemory and Lingva. It also reads the GitHub releases page to tell you when a newer version exists, sending nothing with that request. Your chat text goes to the engine you picked and nowhere else, and on-device it doesn't even go there.
 
@@ -51,17 +55,21 @@ Open source, MIT: github.com/Pkkls/kick-chat-translator
 
 Short summary: Chat Kick dans une langue que tu ne lis pas ? Traduit sous chaque message, en direct. Tes reponses partent dans celle de la chaine.
 
-NOUVEAU EN 2.9.4
+NOUVEAU EN 2.12.0
 
-Deux commandes sont enfin assez grandes pour la main. Le bouton pause et l'engrenage de la barre faisaient 26 par 18 et 25 par 19, et la fleche de relance posee sur chaque ligne traduite faisait 10 par 15, la ou les regles d'accessibilite demandent 24 par 24. Elles font 24 de haut, et la barre comme le chat restent aussi compacts qu'avant.
+Neuf choses que l'extension decidait pour toi t'appartiennent : taille du texte, interligne et police de la ligne traduite, l'air autour de son bloc, la couleur d'accent parmi quatre mesurees pour leur contraste, le theme du chat fige en sombre ou en clair au lieu de suivre la chaine, une langue de lecture retenue par chaine, et deux raccourcis clavier. Chaque valeur par defaut est ce que l'extension faisait deja : rien ne bouge tant que tu ne bouges rien.
 
-NOUVEAU EN 2.9.3
+Tab remplace ce que tu as tape par sa traduction. La touche n'est prise que tant que l'apercu est a l'ecran, donc une boite vide ne la perd jamais, et Shift+Tab reste toujours la navigation.
 
-Les messages repartent entiers. Une regle de nettoyage censee retirer les noms d'emotes supprimait aussi des mots ordinaires : tous les verbes turcs en -mez, l'espagnol vez, le tcheque bez, et n'importe quel mot en minuscules de treize lettres ou plus, une longueur banale en espagnol, portugais, turc, allemand et finnois. Vous lisiez la traduction d'une phrase que personne n'avait ecrite, sans rien a l'ecran pour signaler qu'un mot manquait. Mesure sur les 11 583 mots de ces fiches : 30 mots ordinaires detruits avant, 13 apres, tous des noms de marques, et les noms d'emotes sont toujours aussi bien retires. Sur un chat rapide, un message qui arrive dans une rangee que la liste recycle est desormais traduit lui aussi ; il passait a la trappe sans un mot. Et l'extension ne publie plus aucun de ses fichiers a la page, donc un script tournant sur Kick ne peut plus tester si vous l'avez installee.
+La barre en haut du chat traduit ce que les autres ecrivent ; la puce en bas traduit ce que tu ecris. Rien a l'ecran ne les distinguait, une fleche sur chacune le dit maintenant.
 
-NOUVEAU EN 2.9.2
+Des drapeaux au lieu des codes a deux lettres sur chaque ligne traduite, sur les deux barres et dans la liste des langues. Le panneau des langues montre laquelle est choisie, ce qu'il portait avant sur un fond qu'on ne distinguait pas du survol. Et « Chinese (Taiwan) » ne s'affiche plus « Chinese (... », indecidable a cote de « Chinese ».
 
-La liste des langues est une grille de drapeaux au lieu d'une colonne de codes a deux lettres, et un clic l'ouvre. Elle occupait toute la hauteur de l'ecran, 43 entrees une par ligne, chacune a dechiffrer lettre par lettre, et elle se cachait derriere un chevron de 10 sur 6 pixels dans une puce de 45 sur 24 : a cote, le clic faisait tout autre chose. Trois colonnes de drapeaux dessines y logent la meme liste avec 42 pour cent de hauteur en moins, un clic n'importe ou sur la puce l'ouvre, et l'interface de Kick ne passe plus par-dessus. Les drapeaux sont dessines en CSS et non livres en emoji, parce que les emoji de drapeaux ne s'affichent pas sous Windows : le systeme y retombe sur les deux lettres qu'il s'agissait justement de remplacer. Le panneau du bouton AUTO de la barre a eu le meme traitement : il montrait six entrees sur quarante.
+La page de reglages montre ce que chaque reglage fait : le cache dit combien d'entrees il contient, le plafond par chaine dit s'il a deja retenu quelque chose, et la liste des langues montre ce que chacune a represente.
+
+DEPUIS 2.9.2
+
+Le cantonais est la 43e langue. La langue source envoyee au traducteur est juste trois fois plus souvent et fausse 97 pour cent moins, mesure sur 5040 phrases dans 42 langues, et plus aucune langue ne reste non detectee : vingt-six l'etaient. Le cyrillique non identifie etait appele russe et l'ecriture arabe etait appelee arabe ; le bulgare, l'ukrainien et le persan sont lus pour eux-memes. Le chinois traditionnel etait lu comme du simplifie a chaque fois.
 
 Tu ouvres un stream Kick où le chat est dans une langue que tu ne lis pas. Chaque message reçoit sa traduction juste en dessous, au fil de l'arrivée. Une barre verte en haut du chat indique que ça tourne.
 
@@ -97,21 +105,25 @@ the Turkish store. No native reader was available; verified by round-tripping ea
 
 Short summary: Okuyamadığın bir dilde Kick sohbeti mi? Her mesajın altına canlı çeviri gelir, yanıtların da kanalın dilinde gider.
 
-2.9.4 İLE GELENLER
+2.12.0 İLE GELENLER
 
-Iki denetim artik parmakla isabet ettirilecek kadar buyuk. Cubuktaki duraklat dugmesi ve ayar disllisi 26'ya 18 ve 25'e 19'du, cevrilmis her satirda duran yeniden deneme oku ise 10'a 15'ti; erisilebilirlik kurallari 24'e 24 ister. Artik 24 yuksekliginde, ve cubuk da sohbet de eskisi kadar derli toplu.
+Uzantinin sizin yerinize karar verdigi dokuz sey artik sizin: cevrilen satirin yazi boyutu, satir araligi ve yazi tipi, blogunun aldigi bosluk, kontrast olculerek belirlenmis dort vurgu renginden biri, kanali izlemek yerine koyu ya da aciga sabitlenen sohbet temasi, her kanal icin hatirlanan bir okuma dili ve iki klavye kisayolu. Her varsayilan, uzantinin zaten yaptigi seydir: siz oynatana kadar hicbir sey oynamaz.
 
-2.9.3 İLE GELENLER
+Tab yazdiginizi cevirisiyle degistirir. Tus yalnizca onizleme ekrandayken alinir, bos bir kutu onu asla kaybetmez ve Shift+Tab her zaman gezinme kalir.
 
-Mesajlar yeniden eksiksiz cevriliyor. Sohbetteki emote adlarini ayiklamak icin yazilan bir temizleme kurali siradan kelimeleri de siliyordu: -mez ile biten her Turkce fiil, Ispanyolca vez, Cekce bez ve on uc harf ve uzeri her kucuk harfli kelime. On uc harf; Ispanyolca, Portekizce, Turkce, Almanca ve Fincede siradan bir uzunluktur. Okudugunuz sey, kimsenin yazmadigi bir cumlenin cevirisiydi ve bir kelimenin eksildigini gosteren hicbir isaret yoktu. Bu magaza metinlerinin 11.583 kelimesi uzerinde olculdu: oncesinde 30 siradan kelime yok ediliyordu, simdi 13 ve hepsi marka adi; emote adlari ise eskisi gibi temizleniyor. Hizli bir sohbette, listenin yeniden kullandigi bir satira dusen mesaj da artik cevriliyor; eskiden sessizce atlaniyordu. Ayrica eklenti artik hicbir dosyasini sayfaya acmiyor, boylece Kick uzerinde calisan bir betik onu kurup kurmadiginizi test edemez.
+Sohbetin ustundeki cubuk baskalarinin yazdigini cevirir; alttaki dugme sizin yazdiginizi cevirir. Ekranda hicbir sey ikisini ayirmiyordu, artik her birinde bir ok bunu soyluyor.
 
-2.9.2 İLE GELENLER
+Her cevrilen satirda, iki cubukta ve dil listesinde iki harfli kodlar yerine bayraklar. Dil paneli hangi dilin secili oldugunu gosteriyor; onceden bunu, uzerine gelmekten ayirt edilemeyen bir zeminde tasiyordu. Ve "Chinese (Taiwan)" artik "Chinese (..." olarak gorunmuyor, ki bu "Chinese"den ayirt edilemiyordu.
 
-Dil listesi artık iki harfli kodlardan oluşan bir sütun değil, bayraklardan oluşan bir ızgara, ve tek tıklamayla açılıyor. Eskiden ekranın tüm yüksekliğini kaplıyordu: her satırda bir tane olmak üzere 43 giriş, her biri harf harf okunuyordu, ve liste 45 x 24 boyutundaki bir düğmenin içindeki 10 x 6 piksellik bir okun arkasındaydı; ıskalarsanız tıklama bambaşka bir şey yapıyordu. Üç sütun hâlinde çizilmiş bayraklar aynı listeyi yüzde 42 daha az yükseklikte gösteriyor, düğmenin herhangi bir yerine tıklamak listeyi açıyor ve Kick'in kendi arayüzü artık listenin üzerine çizmiyor. Bayraklar emoji olarak değil CSS ile çiziliyor, çünkü bayrak emojileri Windows'ta görünmüyor: sistem tam da değiştirmek istediğimiz iki harfe geri dönüyor. Çubuktaki AUTO düğmesinin arkasındaki panel de aynı işlemi gördü: kırk girdiden altısını gösteriyordu.
+Ayarlar sayfasi her ayarin ne yaptigini gosteriyor: onbellek kac kayit tuttugunu, kanal basina sinir bir sey tutup tutmadigini, dil listesi de her dilin ne kadarini temsil ettigini soyluyor.
+
+2.9.2'DEN BERİ
+
+Kantonca 43. dil. Cevirmene bildirilen kaynak dil uc kat daha sik dogru ve yuzde 97 daha az yanlis; 42 dilde 5040 cumle uzerinde olculdu, ve artik hicbir dil tespit edilmeden kalmiyor: yirmi alti tanesi kaliyordu. Tanimlanamayan Kiril rusca, Arap yazisi da arapca sayiliyordu; Bulgarca, Ukraynaca ve Farsca kendileri olarak okunuyor. Geleneksel Cince her seferinde basitlestirilmis okunuyordu.
 
 Okuyamadığın bir dilde sohbet akan bir Kick yayını aç. Her mesaj, geldiği anda, hemen altında çevirisini alır. Sohbetin üstündeki yeşil çubuk çalıştığını gösterir.
 
-Bir yanıt yaz, sohbet kutusunun üstünde kanalın dilinde bir önizleme belirir. Önizlemeye tıkla ya da Ctrl+Enter'a bas, o sürüm yazdığının yerine geçer ve göndermeye hazır olur.
+Bir yanıt yaz, sohbet kutusunun üstünde kanalın dilinde bir önizleme belirir. Önizlemeye tıkla ya da Tab'a bas, o sürüm yazdığının yerine geçer ve göndermeye hazır olur.
 
 Ayarlanacak bir şey yok. Gelen sohbet tarayıcının diline çevrilir, yazdıkların da kanalın yayın diline gider, bu bilgi doğrudan Kick'ten okunur. İkisi de ayarlardan değiştirilebilir. Canlı yayınlarda da VOD tekrarlarında da çalışır, 7TV emotelerini anlar.
 
@@ -143,21 +155,25 @@ and handles right-to-left text. No native reader was available; verified by roun
 
 Short summary: دردشة Kick بلغة لا تقرأها؟ تظهر الترجمة أسفل كل رسالة مباشرةً، وردودك تخرج بلغة القناة.
 
-الجديد في 2.9.4
+الجديد في 2.12.0
 
-أصبح عنصران من عناصر التحكم كبيرين بما يكفي للنقر عليهما. كان زر الإيقاف المؤقت وترس الإعدادات في الشريط بمقاس 26 في 18 و25 في 19، وكان سهم إعادة المحاولة الموجود على كل سطر مترجم بمقاس 10 في 15، بينما تطلب إرشادات إمكانية الوصول 24 في 24. ارتفاعها الآن 24، ويظل الشريط والدردشة بالإحكام نفسه تمامًا.
+تسعة أمور كانت الإضافة تقررها عنك صارت لك: حجم النص وتباعد الأسطر وخط السطر المترجم، والمساحة حول كتلته، ولون التمييز من بين أربعة مقيسة على التباين، وسمة الدردشة مثبّتة داكنة أو فاتحة بدل اتباع القناة، ولغة قراءة محفوظة لكل قناة، واختصاران للوحة المفاتيح. كل قيمة افتراضية هي ما كانت الإضافة تفعله أصلًا: لا شيء يتحرك حتى تحركه أنت.
 
-الجديد في 2.9.3
+Tab يستبدل ما كتبته بترجمته. لا يُؤخذ المفتاح إلا والمعاينة ظاهرة، فالحقل الفارغ لا يفقده أبدًا، وShift+Tab يبقى دائمًا للتنقل.
 
-تعود الرسائل مترجمة كاملة. كانت قاعدة تنظيف وُضعت لإزالة أسماء الرموز التعبيرية من الدردشة تحذف معها كلمات عادية: كل فعل تركي ينتهي بـ mez، والإسبانية vez، والتشيكية bez، وأي كلمة بحروف صغيرة من ثلاثة عشر حرفًا فأكثر، وهو طول اعتيادي في الإسبانية والبرتغالية والتركية والألمانية والفنلندية. كنت تقرأ ترجمة لجملة لم يكتبها أحد، دون أي إشارة على الشاشة إلى أن كلمة قد سقطت. قياسًا على 11583 كلمة من نصوص المتجر هذه: 30 كلمة عادية كانت تُتلف قبل ذلك، و13 بعده، جميعها أسماء علامات تجارية، وأسماء الرموز التعبيرية لا تزال تُزال كما ينبغي. في دردشة سريعة، الرسالة التي تحل في صف تعيد القائمة استخدامه تُترجم الآن أيضًا؛ كانت تُتجاهل في صمت. كما أن الإضافة لم تعد تنشر أيًّا من ملفاتها للصفحة، فلم يعد بإمكان أي سكربت يعمل على Kick أن يختبر ما إذا كنت قد ثبّتها.
+الشريط أعلى الدردشة يترجم ما يكتبه الآخرون، والزر أسفلها يترجم ما تكتبه أنت. لم يكن شيء على الشاشة يفرّق بينهما، والآن يقول ذلك سهم على كل منهما.
 
-الجديد في 2.9.2
+أعلام بدل الرموز المكوّنة من حرفين في كل سطر مترجم، وعلى الشريطين، وفي قائمة اللغات. لوحة اللغات تُظهر اللغة المختارة، وقد كانت تحمل ذلك على خلفية لا تُميّز عن حالة المرور بالمؤشر. ولم تعد "Chinese (Taiwan)" تظهر "...Chinese (" التي لا تُميّز عن "Chinese".
 
-صارت قائمة اللغات شبكة من الأعلام بدل عمود من رموز من حرفين، وتُفتح بنقرة واحدة. كانت تشغل ارتفاع الشاشة كله، بـ 43 مدخلاً في سطر لكل منها، ويُقرأ كل واحد حرفاً حرفاً، وكانت خلف سهم بمقاس 10 في 6 بكسل داخل زر بمقاس 45 في 24: وإن أخطأته فعلت النقرة شيئاً آخر تماماً. ثلاثة أعمدة من الأعلام المرسومة تضع القائمة نفسها في ارتفاع أقل بنسبة 42 بالمئة، والنقر في أي مكان من الزر يفتحها، وواجهة Kick نفسها لم تعد ترسم فوقها. والأعلام مرسومة بـ CSS لا مُرسلة كرموز تعبيرية، لأن رموز الأعلام لا تظهر على ويندوز، فيعود النظام إلى الحرفين اللذين أردنا استبدالهما. ولوحة زر AUTO في الشريط نالت المعاملة نفسها: كانت تعرض ستة مدخلات من أربعين.
+صفحة الإعدادات تُظهر ما يفعله كل إعداد: المخبأ يقول كم مدخلًا يحمل، وحد القناة يقول إن كان قد أوقف شيئًا، وقائمة اللغات تُظهر نصيب كل لغة.
+
+منذ 2.9.2
+
+الكانتونية هي اللغة الثالثة والأربعون. اللغة المصدر المرسلة للمترجم صحيحة ثلاثة أضعاف وخاطئة بنسبة أقل 97 بالمئة، مقيسة على 5040 جملة من 42 لغة، ولم تعد أي لغة بلا تعرّف: كانت ست وعشرون كذلك. السيريلية غير المعروفة كانت تُسمّى روسية والكتابة العربية تُسمّى عربية؛ البلغارية والأوكرانية والفارسية تُقرأ على حقيقتها. الصينية التقليدية كانت تُقرأ مبسّطة في كل مرة.
 
 افتح بثاً على Kick تجري دردشته بلغة لا تقرأها. تحصل كل رسالة على ترجمتها أسفلها مباشرةً، فور وصولها. الشريط الأخضر أعلى الدردشة يخبرك أن الإضافة تعمل.
 
-اكتب رداً، فتظهر معاينة له بلغة القناة فوق صندوق الدردشة. انقر المعاينة أو اضغط Ctrl+Enter، فتحل تلك النسخة محل ما كتبته، جاهزة للإرسال.
+اكتب رداً، فتظهر معاينة له بلغة القناة فوق صندوق الدردشة. انقر المعاينة أو اضغط Tab، فتحل تلك النسخة محل ما كتبته، جاهزة للإرسال.
 
 لا شيء لتضبطه. تُترجم الدردشة الواردة إلى لغة متصفحك، ويخرج ما تكتبه بلغة بث القناة، وهي تُقرأ من Kick نفسه. كلاهما قابل للتغيير من الإعدادات. تعمل على البث المباشر وعلى إعادات VOD، وتتعامل مع رموز 7TV.
 
@@ -190,21 +206,25 @@ reader was available; same standard as the Turkish and Arabic blocks above.
 
 Short summary: 読めない言語の Kick チャットが、届いたそばから各メッセージの下に翻訳されます。あなたの返信はチャンネルの言語で送れます。
 
-2.9.4 の新機能
+2.12.0 の新機能
 
-二つの操作が、ようやく指で狙える大きさになりました。バーの一時停止ボタンと設定の歯車は 26×18 と 25×19、翻訳された行すべてに付く再試行の矢印は 10×15 でしたが、アクセシビリティの指針は 24×24 を求めます。いまはどれも高さ 24 で、バーもチャットも以前とまったく同じ詰まり具合のままです。
+拡張機能が決めていた九つのことが、あなたのものになりました。訳文の文字サイズ、行間、書体、ブロックの余白、コントラストを測って決めた四色のアクセント、チャンネルに合わせる代わりに固定できるダークかライトのテーマ、チャンネルごとに覚える読む言語、そして二つのキーボードショートカット。どの初期値も拡張機能がすでにしていたことなので、あなたが動かすまで何も動きません。
 
-2.9.3 の新機能
+Tab で入力した文をその訳に置き換えます。プレビューが表示されている間だけキーを取るので、空の入力欄で失われることはなく、Shift+Tab は常に移動のままです。
 
-メッセージがふたたび丸ごと翻訳されます。チャットからエモート名を取り除くための整理ルールが、ふつうの単語まで削っていました。-mez で終わるトルコ語の動詞すべて、スペイン語の vez、チェコ語の bez、そして小文字だけで十三文字以上の単語。十三文字はスペイン語、ポルトガル語、トルコ語、ドイツ語、フィンランド語ではごくふつうの長さです。読んでいたのは誰も書いていない文の翻訳で、単語が消えたことを示すものは画面のどこにもありませんでした。このストア文面の 11,583 語で計測しました。以前は 30 語のふつうの単語が壊れ、いまは 13 語、そのすべてがブランド名です。エモート名はこれまでどおり取り除かれます。速いチャットでは、リストが再利用する行に届いたメッセージも翻訳されるようになりました。以前は黙って飛ばされていました。また拡張機能はページにファイルを一切公開しなくなったので、Kick 上で動くスクリプトから導入の有無を調べられません。
+チャット上部のバーは他の視聴者が書いたものを訳し、下部のボタンはあなたが書くものを訳します。画面上に区別がありませんでしたが、今はそれぞれの矢印が示します。
 
-2.9.2 の新機能
+訳された各行、両方のバー、言語一覧で、二文字のコードではなく国旗を表示します。言語パネルはどの言語を選んでいるかを示します。以前はカーソルを重ねた状態と見分けのつかない背景でそれを表していました。また「Chinese (Taiwan)」が「Chinese (...」と表示されて「Chinese」と区別できなかった問題もなくなりました。
 
-言語リストが2文字コードの縦一列ではなく、旗のグリッドになりました。クリック一回で開きます。以前は画面の高さいっぱいに43項目が一行ずつ並び、どれも一文字ずつ読む必要があり、しかもリスト自体は45×24のボタンの中にある10×6ピクセルの矢印の奥にありました。そこを外すと、クリックはまったく別のことをしていました。3列に描かれた旗が同じリストを42パーセント低い高さに収め、ボタンのどこをクリックしても開き、Kick 自身の画面がその上に重なることもなくなりました。旗は絵文字ではなく CSS で描いています。旗の絵文字は Windows では表示されず、置き換えたかったはずの2文字に戻ってしまうからです。バーの AUTO ボタンの奥にあるパネルも同じ扱いです。40 項目のうち 6 つしか出ていませんでした。
+設定ページは各設定の働きを示します。キャッシュは何件保持しているか、チャンネルごとの上限は実際に何かを止めたか、言語一覧は各言語がどれだけを占めたかを答えます。
+
+2.9.2 以降
+
+広東語が 43 番目の言語になりました。翻訳機に渡す元言語は 3 倍正しく、誤りは 97 パーセント減りました。42 言語 5040 文で測定しています。検出されないまま残る言語はなくなりました。以前は 26 ありました。判別できないキリル文字はロシア語、アラビア文字はアラビア語と呼ばれていましたが、ブルガリア語、ウクライナ語、ペルシア語はそれ自身として読まれます。繁体字中国語は毎回簡体字として読まれていました。
 
 読めない言語でチャットが流れている Kick の配信を開いてください。届いたメッセージの真下に、その場で翻訳が付きます。チャット上部の緑のバーが、動いていることを示します。
 
-返信を打つと、チャット欄の上に、チャンネルの言語での下書きが出ます。その下書きをクリックするか Ctrl+Enter を押すと、打った文章がその訳文に置き換わり、あとは自分で送るだけです。
+返信を打つと、チャット欄の上に、チャンネルの言語での下書きが出ます。その下書きをクリックするか Tab を押すと、打った文章がその訳文に置き換わり、あとは自分で送るだけです。
 
 設定は要りません。届くチャットはブラウザの言語に翻訳され、あなたが書いたものはチャンネルの配信言語で出ていきます。配信言語は Kick から読み取ります。どちらも設定で上書きできます。ライブ配信でも VOD の録画でも動き、7TV のエモートにも対応しています。
 
@@ -235,17 +255,21 @@ no native reader.
 
 Short summary: ¿Chat de Kick en un idioma que no lees? Se traduce bajo cada mensaje, en directo, y tus respuestas salen en el del canal.
 
-NUEVO EN 2.9.4
+NUEVO EN 2.12.0
 
-Dos controles ya son lo bastante grandes para acertarles. El boton de pausa y el engranaje de ajustes de la barra median 26 por 18 y 25 por 19, y la flecha de reintento que hay en cada linea traducida median 10 por 15, cuando las pautas de accesibilidad piden 24 por 24. Ahora miden 24 de alto, y tanto la barra como el chat siguen igual de compactos.
+Nueve cosas que la extension decidia por ti ahora son tuyas: tamano del texto, interlineado y tipografia de la linea traducida, el aire alrededor de su bloque, el color de acento entre cuatro medidos por contraste, el tema del chat fijado en oscuro o claro en vez de seguir al canal, un idioma de lectura recordado por canal, y dos atajos de teclado. Cada valor por defecto es lo que la extension ya hacia: nada se mueve hasta que tu lo muevas.
 
-NUEVO EN 2.9.3
+Tab cambia lo que escribiste por su traduccion. Solo se toma mientras la vista previa esta en pantalla, asi que una caja vacia nunca la pierde, y Shift+Tab sigue siendo navegacion siempre.
 
-Los mensajes vuelven a traducirse enteros. Una regla de limpieza pensada para quitar nombres de emotes del chat borraba tambien palabras corrientes: todos los verbos turcos acabados en -mez, el espanol vez, el checo bez y cualquier palabra en minusculas de trece letras o mas, una longitud de lo mas normal en espanol, portugues, turco, aleman y finlandes. Leias la traduccion de una frase que nadie habia escrito, sin nada en pantalla que avisara de que faltaba una palabra. Medido sobre las 11.583 palabras de estos textos de tienda: antes se destruian 30 palabras corrientes, ahora 13, todas nombres de marcas, y los nombres de emotes se siguen quitando igual de bien. En un chat rapido, un mensaje que cae en una fila que la lista esta reutilizando tambien se traduce ya; antes se saltaba en silencio. Y la extension ya no publica ninguno de sus archivos a la pagina, asi que un script que corra en Kick no puede comprobar si la tienes instalada.
+La barra de arriba del chat traduce lo que escriben los demas; el boton de abajo traduce lo que escribes tu. Nada en pantalla los separaba, y ahora una flecha en cada uno lo dice.
 
-NUEVO EN 2.9.2
+Banderas en vez de codigos de dos letras en cada linea traducida, en ambas barras y en la lista de idiomas. El panel de idiomas muestra cual esta seleccionado, algo que antes llevaba sobre un fondo que no se distinguia del cursor encima. Y "Chinese (Taiwan)" ya no aparece como "Chinese (...", indistinguible de "Chinese".
 
-La lista de idiomas es una cuadrícula de banderas en vez de una columna de códigos de dos letras, y se abre con un clic. Antes ocupaba toda la altura de la pantalla, 43 entradas una por línea, cada una leída letra a letra, y estaba detrás de una flecha de 10 por 6 píxeles dentro de un botón de 45 por 24: si fallabas, el clic hacía otra cosa completamente distinta. Tres columnas de banderas dibujadas meten la misma lista en un 42 por ciento menos de altura, un clic en cualquier parte del botón la abre, y la interfaz de Kick ya no se pinta por encima. Las banderas se dibujan en CSS y no se envían como emoji, porque los emoji de bandera no se muestran en Windows: el sistema vuelve justo a las dos letras que queríamos sustituir. El panel del botón AUTO de la barra recibió el mismo tratamiento: mostraba seis entradas de cuarenta.
+La pagina de ajustes muestra lo que hace cada ajuste: la cache dice cuantas entradas guarda, el limite por canal dice si alguna vez retuvo algo, y la lista de idiomas muestra cuanto represento cada uno.
+
+DESDE 2.9.2
+
+El cantones es el idioma 43. El idioma de origen enviado al traductor acierta tres veces mas y falla un 97 por ciento menos, medido en 5040 frases de 42 idiomas, y ningun idioma queda sin detectar: veintiseis lo estaban. El cirilico no identificado se llamaba ruso y la escritura arabe se llamaba arabe; el bulgaro, el ucraniano y el persa se leen como si mismos. El chino tradicional se leia como simplificado siempre.
 
 Abre un directo de Kick donde el chat esté en un idioma que no lees. Cada mensaje recibe su traducción justo debajo, según va llegando. Una barra verde en la parte superior del chat te dice que está funcionando.
 
@@ -280,21 +304,25 @@ no native reader.
 
 Short summary: Chat da Kick num idioma que você não lê? Ele é traduzido embaixo de cada mensagem, ao vivo, e suas respostas saem no do canal.
 
-NOVIDADES NA 2.9.4
+NOVIDADES NA 2.12.0
 
-Dois controles agora sao grandes o bastante para acertar. O botao de pausa e a engrenagem de ajustes da barra tinham 26 por 18 e 25 por 19, e a seta de repetir que fica em cada linha traduzida tinha 10 por 15, quando as diretrizes de acessibilidade pedem 24 por 24. Agora tem 24 de altura, e tanto a barra quanto o chat continuam igualmente compactos.
+Nove coisas que a extensao decidia por voce agora sao suas: tamanho do texto, entrelinha e fonte da linha traduzida, o ar em volta do bloco, a cor de destaque entre quatro medidas por contraste, o tema do chat fixado em escuro ou claro em vez de seguir o canal, um idioma de leitura lembrado por canal, e dois atalhos de teclado. Cada padrao e o que a extensao ja fazia: nada muda ate voce mudar.
 
-NOVIDADES NA 2.9.3
+Tab troca o que voce digitou pela traducao. A tecla so e tomada enquanto a previa esta na tela, entao uma caixa vazia nunca a perde, e Shift+Tab continua sempre sendo navegacao.
 
-As mensagens voltam a ser traduzidas inteiras. Uma regra de limpeza feita para tirar nomes de emotes do chat apagava tambem palavras comuns: todo verbo turco terminado em -mez, o espanhol vez, o tcheco bez e qualquer palavra em minusculas com treze letras ou mais, um comprimento banal em espanhol, portugues, turco, alemao e finlandes. Voce lia a traducao de uma frase que ninguem tinha escrito, sem nada na tela avisando que uma palavra havia sumido. Medido sobre as 11.583 palavras destes textos de loja: antes 30 palavras comuns eram destruidas, agora 13, todas nomes de marcas, e os nomes de emotes continuam sendo removidos do mesmo jeito. Num chat rapido, uma mensagem que cai numa linha que a lista esta reaproveitando tambem passa a ser traduzida; antes era pulada em silencio. E a extensao nao publica mais nenhum de seus arquivos para a pagina, entao um script rodando no Kick nao consegue mais testar se voce a tem instalada.
+A barra no topo do chat traduz o que os outros escrevem; o botao embaixo traduz o que voce escreve. Nada na tela separava os dois, e agora uma seta em cada um diz isso.
 
-NOVIDADES NA 2.9.2
+Bandeiras em vez de codigos de duas letras em cada linha traduzida, nas duas barras e na lista de idiomas. O painel de idiomas mostra qual esta selecionado, o que antes ficava num fundo que nao dava para distinguir do cursor por cima. E "Chinese (Taiwan)" parou de aparecer como "Chinese (...", indistinguivel de "Chinese".
 
-A lista de idiomas é uma grade de bandeiras em vez de uma coluna de códigos de duas letras, e abre com um clique. Antes ela ocupava a altura inteira da tela, 43 entradas uma por linha, cada uma lida letra por letra, e ficava atrás de uma seta de 10 por 6 pixels dentro de um botão de 45 por 24: se você errasse, o clique fazia outra coisa completamente diferente. Três colunas de bandeiras desenhadas colocam a mesma lista em 42 por cento menos altura, um clique em qualquer ponto do botão a abre, e a interface da própria Kick não passa mais por cima. As bandeiras são desenhadas em CSS e não enviadas como emoji, porque emoji de bandeira não aparece no Windows: o sistema volta justamente para as duas letras que se queria substituir. O painel do botão AUTO da barra recebeu o mesmo tratamento: mostrava seis entradas de quarenta.
+A pagina de configuracoes mostra o que cada opcao faz: o cache diz quantas entradas guarda, o limite por canal diz se ja segurou alguma coisa, e a lista de idiomas mostra quanto cada um representou.
+
+DESDE A 2.9.2
+
+O cantones e o 43.o idioma. O idioma de origem enviado ao tradutor acerta tres vezes mais e erra 97 por cento menos, medido em 5040 frases de 42 idiomas, e nenhum idioma fica sem deteccao: vinte e seis ficavam. O cirilico nao identificado era chamado de russo e a escrita arabe de arabe; bulgaro, ucraniano e persa sao lidos como eles mesmos. O chines tradicional era lido como simplificado sempre.
 
 Abra uma transmissão na Kick onde o chat está num idioma que você não lê. Cada mensagem recebe sua tradução logo abaixo, conforme chega. Uma barra verde no topo do chat mostra que está funcionando.
 
-Digite uma resposta e uma prévia a mostra no idioma do canal, acima da caixa de chat. Clique na prévia ou pressione Ctrl+Enter e essa versão substitui o que você digitou, pronta para enviar.
+Digite uma resposta e uma prévia a mostra no idioma do canal, acima da caixa de chat. Clique na prévia ou pressione Tab e essa versão substitui o que você digitou, pronta para enviar.
 
 Nada para configurar. O chat que chega é traduzido para o idioma do seu navegador, e o que você escreve sai no idioma em que o canal transmite, lido da própria Kick. Os dois podem ser trocados nas configurações. Funciona em transmissões ao vivo e em replays VOD, e lida com os emotes do 7TV.
 
@@ -325,21 +353,25 @@ no native reader.
 
 Short summary: Чат Kick на языке, который вы не читаете? Перевод появляется под каждым сообщением, а ваши ответы уходят на языке канала.
 
-НОВОЕ В 2.9.4
+НОВОЕ В 2.12.0
 
-Два элемента управления наконец стали достаточно крупными, чтобы в них попасть. Кнопка паузы и шестерёнка настроек на панели были 26 на 18 и 25 на 19, а стрелка повтора на каждой переведённой строке была 10 на 15, тогда как правила доступности требуют 24 на 24. Теперь их высота 24, а панель и чат остались ровно такими же компактными.
+Девять вещей, которые расширение решало за вас, теперь ваши: размер текста, межстрочный интервал и шрифт переведённой строки, воздух вокруг её блока, акцентный цвет из четырёх, измеренных на контраст, тема чата, закреплённая тёмной или светлой вместо следования каналу, язык чтения, запомненный для каждого канала, и два сочетания клавиш. Все значения по умолчанию — это то, что расширение уже делало: ничего не сдвинется, пока вы сами не сдвинете.
 
-НОВОЕ В 2.9.3
+Tab заменяет набранное его переводом. Клавиша занята только пока предпросмотр на экране, поэтому пустое поле её никогда не теряет, а Shift+Tab всегда остаётся навигацией.
 
-Сообщения снова переводятся целиком. Правило очистки, написанное чтобы убирать из чата названия эмодзи-эмоций, заодно удаляло обычные слова: каждый турецкий глагол на -mez, испанское vez, чешское bez и любое слово строчными буквами длиной тринадцать букв и больше, а это обычная длина в испанском, португальском, турецком, немецком и финском. Вы читали перевод фразы, которую никто не писал, и ничто на экране не говорило, что слово пропало. Измерено на 11 583 словах этих текстов для магазинов: раньше портилось 30 обычных слов, теперь 13, и все они названия брендов, а названия эмоций удаляются как прежде. В быстром чате сообщение, попавшее в строку, которую список переиспользует, теперь тоже переводится; раньше его молча пропускали. И расширение больше не публикует ни одного своего файла в страницу, так что скрипт на Kick не может проверить, установлено ли оно у вас.
+Панель вверху чата переводит то, что пишут другие; кнопка внизу переводит то, что пишете вы. Ничто на экране их не различало, теперь об этом говорит стрелка на каждой.
 
-НОВОЕ В 2.9.2
+Флаги вместо двухбуквенных кодов в каждой переведённой строке, на обеих панелях и в списке языков. Панель языков показывает, какой язык выбран, — раньше она несла это на фоне, который нельзя было отличить от наведения. И "Chinese (Taiwan)" больше не отображается как "Chinese (...", что не отличить от "Chinese".
 
-Список языков теперь сетка флагов, а не столбец двухбуквенных кодов, и открывается одним щелчком. Раньше он занимал всю высоту экрана: 43 строки по одной записи, каждую нужно было читать по буквам, а сам список прятался за стрелкой размером 10 на 6 пикселей внутри кнопки 45 на 24. Промахнулись, и щелчок делал совсем другое. Три колонки нарисованных флагов вмещают тот же список в высоту на 42 процента меньше, щелчок в любом месте кнопки открывает его, и интерфейс самого Kick больше не перекрывает его сверху. Флаги нарисованы средствами CSS, а не отправлены эмодзи: флаговые эмодзи не отображаются в Windows, и система возвращает те самые две буквы, которые мы и хотели заменить. Панель за кнопкой AUTO на полосе получила ту же обработку: она показывала шесть записей из сорока.
+Страница настроек показывает, что делает каждая настройка: кэш говорит, сколько записей хранит, лимит на канал — задерживал ли он что-нибудь, а список языков показывает, сколько каждый из них составил.
+
+С 2.9.2
+
+Кантонский — 43-й язык. Язык оригинала, сообщаемый переводчику, верен втрое чаще и ошибочен на 97 процентов реже, измерено на 5040 предложениях 42 языков, и ни один язык больше не остаётся неопознанным: двадцать шесть оставались. Неопознанная кириллица называлась русским, а арабское письмо — арабским; болгарский, украинский и персидский читаются как они есть. Традиционный китайский каждый раз читался как упрощённый.
 
 Откройте трансляцию на Kick, где чат идёт на языке, который вы не читаете. Каждое сообщение получает перевод прямо под собой, по мере поступления. Зелёная полоса вверху чата показывает, что всё работает.
 
-Наберите ответ, и над полем ввода появится его вариант на языке канала. Щёлкните по нему или нажмите Ctrl+Enter, и этот вариант заменит набранный текст, останется только отправить.
+Наберите ответ, и над полем ввода появится его вариант на языке канала. Щёлкните по нему или нажмите Tab, и этот вариант заменит набранный текст, останется только отправить.
 
 Настраивать нечего. Входящий чат переводится на язык вашего браузера, а то, что вы пишете, уходит на языке вещания канала, считанном у самого Kick. Оба меняются в настройках. Работает на прямых эфирах и на записях VOD, поддерживает эмоуты 7TV.
 
@@ -370,21 +402,25 @@ blocks: no native reader.
 
 Short summary: Kick 的聊天是你读不懂的语言？每条消息下方都会实时出现译文，你的回复也会用频道的语言发出。
 
-2.9.4 的新功能
+2.12.0 的新功能
 
-两个控件终于大到可以点中了。栏上的暂停按钮和设置齿轮此前是 26×18 和 25×19，每条已翻译消息旁的重试箭头是 10×15，而无障碍规范要求 24×24。现在它们的高度都是 24，栏和聊天区依旧和从前一样紧凑。
+扩展过去替你决定的九件事，现在归你了：译文的文字大小、行距、字体，它那一块留多少空白，四种测过对比度的强调色之一，固定为深色或浅色而不再跟随频道的聊天主题，按频道记住的阅读语言，以及两个键盘快捷键。每一项默认值都是扩展原本就在做的事：你不动，它就不动。
 
-2.9.3 的新功能
+Tab 把你打的字换成它的译文。只有预览在屏幕上时才占用这个键，所以空输入框永远不会丢掉它，而 Shift+Tab 始终是导航。
 
-消息重新被完整翻译。一条本用来剔除聊天中表情名称的清理规则，连普通词一起删掉了：所有以 -mez 结尾的土耳其语动词、西班牙语的 vez、捷克语的 bez，以及任何十三个字母及以上的全小写单词。十三个字母在西班牙语、葡萄牙语、土耳其语、德语和芬兰语里再普通不过。你读到的是一句没人写过的话的译文，屏幕上没有任何提示告诉你少了一个词。在这些商店文案的 11,583 个词上测量：此前有 30 个普通词被破坏，现在是 13 个，且全是品牌名，而表情名称依然照常剔除。在快速滚动的聊天里，落进列表正在复用的那一行的消息现在也会被翻译；以前会被悄悄跳过。另外扩展不再向页面公开任何文件，因此在 Kick 上运行的脚本无法再检测你是否安装了它。
+聊天顶部的栏翻译别人写的内容，底部的按钮翻译你写的内容。屏幕上没有任何东西区分两者，现在各自的箭头说明了。
 
-2.9.2 的新功能
+每一行译文、两条栏以及语言列表，都用国旗代替两个字母的代码。语言面板会显示当前选中的是哪一种语言，以前它把这个状态放在一个和鼠标悬停分不出来的底色上。另外 "Chinese (Taiwan)" 不再显示成 "Chinese (..."，那时它和 "Chinese" 无法区分。
 
-语言列表现在是旗帜网格，而不是两个字母代码的竖排列表，点一下就打开。它以前占满整个屏幕高度，43 个条目每行一个，每一个都要逐字母去读，而且列表藏在 45×24 按钮里一个 10×6 像素的箭头后面：点偏了，这一下就做了完全不同的事。三列绘制的旗帜把同一份列表放进少 42% 的高度里，点按钮任意位置都能打开，Kick 自己的界面也不再盖在它上面。旗帜用 CSS 绘制而不是用 emoji，因为旗帜 emoji 在 Windows 上根本不显示，系统会退回到我们本想替换掉的那两个字母。工具条上 AUTO 按钮背后的面板也做了同样的处理：原本 40 项只显示 6 项。
+设置页会显示每一项设置在做什么：缓存会说它存了多少条，按频道的上限会说它是否真的拦下过东西，语言列表会显示每种语言各占多少。
+
+自 2.9.2 起
+
+粤语是第 43 种语言。发给翻译引擎的源语言正确率提高到三倍，出错减少 97 个百分点，在 42 种语言的 5040 个句子上测得，而且不再有语言无法识别：以前有二十六种。无法辨认的西里尔文被当作俄语，阿拉伯字母被当作阿拉伯语；保加利亚语、乌克兰语和波斯语现在被读作它们自己。繁体中文过去每次都被读成简体。
 
 打开一个聊天语言你读不懂的 Kick 直播。每条消息一到，正下方就会出现它的译文。聊天区顶部的绿色条表示正在运行。
 
-输入回复时，聊天框上方会用频道的语言显示一份预览。点击预览或按 Ctrl+Enter，这个版本就会替换你输入的内容，直接发送即可。
+输入回复时，聊天框上方会用频道的语言显示一份预览。点击预览或按 Tab，这个版本就会替换你输入的内容，直接发送即可。
 
 无需设置。收到的聊天会翻译成你浏览器的语言，你写的内容会用频道的直播语言发出，该语言从 Kick 自身读取。两者都可以在设置里覆盖。直播和 VOD 回放都能用，并支持 7TV 表情。
 
@@ -415,21 +451,25 @@ native reader.
 
 Short summary: 읽지 못하는 언어로 흐르는 Kick 채팅? 각 메시지 아래에 실시간으로 번역이 붙고, 답장은 채널의 언어로 나갑니다.
 
-2.9.4의 새로운 기능
+2.12.0의 새로운 기능
 
-두 개의 컨트롤이 이제 누를 수 있을 만큼 커졌습니다. 바의 일시정지 버튼과 설정 톱니바퀴는 26×18과 25×19였고, 번역된 모든 줄에 붙는 재시도 화살표는 10×15였습니다. 접근성 지침은 24×24를 요구합니다. 이제 높이가 24이며, 바와 채팅은 예전과 똑같이 조밀합니다.
+확장 프로그램이 대신 정하던 아홉 가지가 이제 여러분의 것입니다. 번역된 줄의 글자 크기, 줄 간격, 글꼴, 그 블록이 갖는 여백, 대비를 측정해 고른 네 가지 강조색 중 하나, 채널을 따라가는 대신 어둡게 또는 밝게 고정하는 채팅 테마, 채널마다 기억되는 읽기 언어, 그리고 두 개의 단축키입니다. 모든 기본값은 확장 프로그램이 이미 하던 그대로라, 여러분이 바꾸기 전까지는 아무것도 달라지지 않습니다.
 
-2.9.3의 새로운 기능
+Tab이 입력한 글을 번역으로 바꿉니다. 미리보기가 보이는 동안에만 키를 가져가므로 빈 입력창이 이를 잃는 일은 없고, Shift+Tab은 언제나 이동으로 남습니다.
 
-메시지가 다시 통째로 번역됩니다. 채팅에서 이모트 이름을 걸러내려던 정리 규칙이 평범한 단어까지 지우고 있었습니다. -mez로 끝나는 모든 터키어 동사, 스페인어 vez, 체코어 bez, 그리고 소문자로만 이루어진 열세 글자 이상의 단어가 그렇습니다. 열세 글자는 스페인어, 포르투갈어, 터키어, 독일어, 핀란드어에서 흔한 길이입니다. 읽고 있던 것은 아무도 쓰지 않은 문장의 번역이었고, 단어가 사라졌다는 표시는 화면 어디에도 없었습니다. 이 스토어 문안 11,583개 단어로 측정했습니다. 이전에는 평범한 단어 30개가 망가졌고 지금은 13개이며 모두 브랜드 이름입니다. 이모트 이름은 예전처럼 걸러집니다. 빠른 채팅에서 목록이 재사용하는 줄에 들어온 메시지도 이제 번역됩니다. 예전에는 조용히 건너뛰었습니다. 또한 확장 프로그램은 더 이상 어떤 파일도 페이지에 공개하지 않으므로, Kick에서 실행되는 스크립트가 설치 여부를 확인할 수 없습니다.
+채팅 위쪽 막대는 다른 시청자가 쓴 것을 번역하고, 아래쪽 버튼은 여러분이 쓰는 것을 번역합니다. 화면에서 둘을 구분할 방법이 없었지만, 이제 각각의 화살표가 알려 줍니다.
 
-2.9.2의 새로운 기능
+번역된 각 줄, 두 막대, 언어 목록에서 두 글자 코드 대신 국기를 씁니다. 언어 패널이 어떤 언어가 선택되었는지 보여 줍니다. 예전에는 마우스를 올린 상태와 구별할 수 없는 배경으로 그것을 나타냈습니다. 또한 "Chinese (Taiwan)"이 "Chinese (..."로 표시되어 "Chinese"와 구별할 수 없던 문제도 없어졌습니다.
 
-언어 목록이 두 글자 코드의 세로 목록이 아니라 국기 그리드가 되었고, 한 번 클릭하면 열립니다. 예전에는 화면 높이를 가득 채워 43개 항목이 한 줄에 하나씩 놓였고, 하나하나 글자로 읽어야 했으며, 목록 자체는 45×24 버튼 안의 10×6 픽셀짜리 화살표 뒤에 있었습니다. 빗나가면 클릭은 전혀 다른 일을 했습니다. 세 열로 그려진 국기가 같은 목록을 42퍼센트 낮은 높이에 담고, 버튼 어디를 클릭해도 열리며, Kick 자체 화면이 그 위를 덮는 일도 없어졌습니다. 국기는 이모지가 아니라 CSS로 그립니다. 국기 이모지는 Windows에서 표시되지 않고, 시스템이 바로 그 두 글자로 되돌아가기 때문입니다. 바의 AUTO 버튼 뒤에 있는 패널도 같은 손질을 받았습니다. 40개 중 6개만 보이던 목록입니다.
+설정 페이지가 각 설정이 무엇을 하는지 보여 줍니다. 캐시는 몇 개를 담고 있는지, 채널별 한도는 실제로 무언가를 막은 적이 있는지, 언어 목록은 각 언어가 얼마나 차지했는지 답합니다.
+
+2.9.2 이후
+
+광둥어가 43번째 언어가 되었습니다. 번역기에 보내는 원본 언어가 세 배 더 자주 맞고 97퍼센트 덜 틀립니다. 42개 언어 5040개 문장에서 측정했습니다. 감지되지 않은 채 남는 언어도 없습니다. 예전에는 스물여섯 개였습니다. 식별할 수 없는 키릴 문자는 러시아어로, 아랍 문자는 아랍어로 불렸지만 불가리아어, 우크라이나어, 페르시아어는 그 자체로 읽힙니다. 번체 중국어는 매번 간체로 읽혔습니다.
 
 읽지 못하는 언어로 채팅이 흐르는 Kick 방송을 열어 보세요. 도착하는 메시지 바로 아래에 번역이 붙습니다. 채팅 상단의 초록색 막대가 작동 중임을 알려 줍니다.
 
-답장을 입력하면 채팅 입력창 위에 채널의 언어로 된 미리보기가 나타납니다. 미리보기를 클릭하거나 Ctrl+Enter를 누르면 입력한 내용이 그 번역으로 바뀌고, 보내기만 하면 됩니다.
+답장을 입력하면 채팅 입력창 위에 채널의 언어로 된 미리보기가 나타납니다. 미리보기를 클릭하거나 Tab를 누르면 입력한 내용이 그 번역으로 바뀌고, 보내기만 하면 됩니다.
 
 설정할 것이 없습니다. 들어오는 채팅은 브라우저 언어로 번역되고, 작성한 내용은 채널의 방송 언어로 나갑니다. 방송 언어는 Kick에서 읽어 옵니다. 둘 다 설정에서 바꿀 수 있습니다. 라이브와 VOD 다시보기 모두에서 동작하며 7TV 이모트도 지원합니다.
 
@@ -462,21 +502,25 @@ blocks: no native reader.
 
 Short summary: Chat na Kicku v jazyce, který neumíte přečíst? Překlad se objeví pod každou zprávou, živě.
 
-NOVINKY VE VERZI 2.9.4
+NOVINKY VE VERZI 2.12.0
 
-Dva ovládací prvky jsou konečně dost velké na to, aby se do nich dalo trefit. Tlačítko pauzy a ozubené kolo nastavení na liště měly 26 na 18 a 25 na 19 a šipka opakování, která je na každém přeloženém řádku, měla 10 na 15, přičemž pravidla přístupnosti žádají 24 na 24. Nyní jsou vysoké 24 a lišta i chat zůstávají stejně kompaktní jako dřív.
+Devet veci, o kterych rozsireni rozhodovalo za vas, je ted vasich: velikost textu, radkovani a pismo prelozene radky, vzduch kolem jejiho bloku, barva zvyrazneni ze ctyr merenych na kontrast, motiv chatu pripnuty na tmavy nebo svetly misto sledovani kanalu, jazyk cteni zapamatovany pro kazdy kanal a dve klavesove zkratky. Kazda vychozi hodnota je to, co rozsireni delalo uz driv: nic se nehne, dokud s tim nehnete vy.
 
-NOVINKY VE VERZI 2.9.3
+Tab vymeni to, co jste napsali, za preklad. Klavesa se bere jen dokud je nahled na obrazovce, takze prazdne pole ji nikdy neztrati, a Shift+Tab zustava vzdy navigaci.
 
-Zprávy se opět překládají celé. Čisticí pravidlo, které mělo z chatu odstraňovat názvy emotů, mazalo spolu s nimi i běžná slova: každé turecké sloveso končící na -mez, španělské vez, české bez a jakékoli slovo psané malými písmeny o třinácti a více znacích, což je ve španělštině, portugalštině, turečtině, němčině a finštině zcela běžná délka. Četli jste překlad věty, kterou nikdo nenapsal, a nic na obrazovce neupozornilo, že slovo zmizelo. Změřeno na 11 583 slovech těchto textů pro obchody: dříve se zničilo 30 běžných slov, nyní 13 a všechna jsou názvy značek, přičemž názvy emotů se odstraňují stejně dobře jako dřív. V rychlém chatu se nyní přeloží i zpráva, která dopadne do řádku, jejž seznam právě recykluje; dříve se tiše přeskočila. A rozšíření už na stránku nezpřístupňuje žádný ze svých souborů, takže skript běžící na Kicku nemůže zjistit, zda jej máte nainstalované.
+Listа nahore v chatu preklada to, co pisi ostatni; tlacitko dole preklada to, co pisete vy. Nic na obrazovce je neodlisovalo, ted to rika sipka na kazdem z nich.
 
-NOVINKY VE VERZI 2.9.2
+Vlajky misto dvoupismennych kodu na kazde prelozene radce, na obou listach i v seznamu jazyku. Panel jazyku ukazuje, ktery jazyk je vybrany, coz driv nesl na pozadi, ktere neslo odlisit od najeti mysi. A "Chinese (Taiwan)" uz se nezobrazuje jako "Chinese (...", coz neslo odlisit od "Chinese".
 
-Seznam jazyků je mřížka vlajek místo sloupce dvoupísmenných kódů a otevře se jedním kliknutím. Dříve zabíral celou výšku obrazovky, 43 položek po jedné na řádek, každou bylo nutné číst písmeno po písmenu, a samotný seznam se skrýval za šipkou o velikosti 10 na 6 pixelů uvnitř tlačítka 45 na 24. Když jste ji minuli, kliknutí udělalo něco úplně jiného. Tři sloupce kreslených vlajek vejdou stejný seznam do o 42 procent menší výšky, kliknutí kamkoli na tlačítko jej otevře a rozhraní samotného Kicku už jej nepřekrývá. Vlajky jsou kreslené v CSS, ne posílané jako emoji, protože vlajkové emoji se ve Windows nezobrazují a systém se vrátí právě k těm dvěma písmenům, která jsme chtěli nahradit. Panel za tlačítkem AUTO na liště prošel stejnou úpravou: zobrazoval šest položek ze čtyřiceti.
+Stranka nastaveni ukazuje, co kazde nastaveni dela: cache rekne, kolik zaznamu drzi, limit na kanal rekne, jestli uz neco zadrzel, a seznam jazyku ukaze, kolik kazdy z nich predstavoval.
+
+OD VERZE 2.9.2
+
+Kantonstina je 43. jazyk. Zdrojovy jazyk poslany prekladaci je spravne trikrat casteji a spatne o 97 procent mene, mereno na 5040 vetach ve 42 jazycich, a zadny jazyk uz nezustava nerozpoznany: dvacet sest jich zustavalo. Nerozpoznana cyrilice se nazyvala rustinou a arabske pismo arabstinou; bulharstina, ukrajinstina a perstina se ctou jako ony samy. Tradicni cinstina se pokazde cetla jako zjednodusena.
 
 Otevřete na Kicku vysílání, kde chat běží v jazyce, který neumíte přečíst. Každá zpráva dostane svůj překlad přímo pod sebou, jakmile dorazí. Zelený pruh nahoře v chatu ukazuje, že to běží.
 
-Napíšete odpověď a nad polem chatu se objeví náhled v jazyce kanálu. Klikněte na náhled nebo stiskněte Ctrl+Enter a tato verze nahradí to, co jste napsali, připravená k odeslání.
+Napíšete odpověď a nad polem chatu se objeví náhled v jazyce kanálu. Klikněte na náhled nebo stiskněte Tab a tato verze nahradí to, co jste napsali, připravená k odeslání.
 
 Není co nastavovat. Příchozí chat se překládá do jazyka vašeho prohlížeče a to, co píšete, odchází v jazyce, ve kterém kanál vysílá, načteném přímo z Kicku. Obojí lze změnit v nastavení. Funguje na živých vysíláních i na záznamech VOD a zvládá emotikony 7TV.
 
@@ -624,7 +668,7 @@ Kick chat in a language you don't read gets translated under each message as it 
 
 Open a Kick stream where the chat is in a language you don't read. Each message gets its translation right underneath, as it comes in. A green bar at the top of chat tells you it's running.
 
-Type a reply and a preview shows it in the channel's language above the chat box. Click the preview or press Ctrl+Enter and that version replaces what you typed, ready for you to send.
+Type a reply and a preview shows it in the channel's language above the chat box. Click the preview or press Tab and that version replaces what you typed, ready for you to send.
 
 Nothing to set up. Incoming chat is translated into your browser's language, and what you write goes out in whatever the channel broadcasts in, read from Kick itself. Both are overridable in settings. It handles 7TV emotes.
 
@@ -640,7 +684,7 @@ FILTERS
 
 Skip bots, block users or channels, or limit which source languages get translated at all. Emotes, mentions, links and emoji spam are stripped before anything is sent, so you are not paying to translate "kkkkkk". Background tabs pause themselves.
 
-42 languages, right to left included (Arabic, Hebrew, Persian), with regional variants kept apart (pt-BR, zh-TW). The extension's own interface comes in 10: English, Spanish, French, Portuguese, Turkish, Russian, Arabic, Chinese, Japanese and Korean.
+43 languages, right to left included (Arabic, Hebrew, Persian), with regional variants kept apart (pt-BR, zh-TW). The extension's own interface comes in 10: English, Spanish, French, Portuguese, Turkish, Russian, Arabic, Chinese, Japanese and Korean.
 
 WHAT LEAVES YOUR BROWSER
 
@@ -754,7 +798,7 @@ Chat na Kicku v jazyce, který neumíte přečíst? Překlad se objeví pod kaž
 
 Otevřete na Kicku vysílání, kde chat běží v jazyce, který neumíte přečíst. Každá zpráva dostane svůj překlad přímo pod sebou, jakmile dorazí. Zelený pruh nahoře v chatu ukazuje, že to běží.
 
-Napíšete odpověď a nad polem chatu se objeví náhled v jazyce kanálu. Klikněte na náhled nebo stiskněte Ctrl+Enter a tato verze nahradí to, co jste napsali, připravená k odeslání.
+Napíšete odpověď a nad polem chatu se objeví náhled v jazyce kanálu. Klikněte na náhled nebo stiskněte Tab a tato verze nahradí to, co jste napsali, připravená k odeslání.
 
 Není co nastavovat. Příchozí chat se překládá do jazyka vašeho prohlížeče a to, co píšete, odchází v jazyce, ve kterém kanál vysílá, načteném přímo z Kicku. Obojí lze změnit v nastavení. Funguje na živých vysíláních i na záznamech VOD a zvládá emotikony 7TV.
 
@@ -814,7 +858,7 @@ Code source ouvert, MIT : github.com/Pkkls/kick-chat-translator
 
 Okuyamadığın bir dilde sohbet akan bir Kick yayını aç. Her mesaj, geldiği anda, hemen altında çevirisini alır. Sohbetin üstündeki yeşil çubuk çalıştığını gösterir.
 
-Bir yanıt yaz, sohbet kutusunun üstünde kanalın dilinde bir önizleme belirir. Önizlemeye tıkla ya da Ctrl+Enter'a bas, o sürüm yazdığının yerine geçer ve göndermeye hazır olur.
+Bir yanıt yaz, sohbet kutusunun üstünde kanalın dilinde bir önizleme belirir. Önizlemeye tıkla ya da Tab'a bas, o sürüm yazdığının yerine geçer ve göndermeye hazır olur.
 
 Ayarlanacak bir şey yok. Gelen sohbet tarayıcının diline çevrilir, yazdıkların da kanalın yayın diline gider, bu bilgi doğrudan Kick'ten okunur. İkisi de ayarlardan değiştirilebilir. Canlı yayınlarda da VOD tekrarlarında da çalışır, 7TV emotelerini anlar.
 
@@ -844,7 +888,7 @@ Açık kaynak, MIT: github.com/Pkkls/kick-chat-translator
 
 افتح بثاً على Kick تجري دردشته بلغة لا تقرأها. تحصل كل رسالة على ترجمتها أسفلها مباشرةً، فور وصولها. الشريط الأخضر أعلى الدردشة يخبرك أن الإضافة تعمل.
 
-اكتب رداً، فتظهر معاينة له بلغة القناة فوق صندوق الدردشة. انقر المعاينة أو اضغط Ctrl+Enter، فتحل تلك النسخة محل ما كتبته، جاهزة للإرسال.
+اكتب رداً، فتظهر معاينة له بلغة القناة فوق صندوق الدردشة. انقر المعاينة أو اضغط Tab، فتحل تلك النسخة محل ما كتبته، جاهزة للإرسال.
 
 لا شيء لتضبطه. تُترجم الدردشة الواردة إلى لغة متصفحك، ويخرج ما تكتبه بلغة بث القناة، وهي تُقرأ من Kick نفسه. كلاهما قابل للتغيير من الإعدادات. تعمل على البث المباشر وعلى إعادات VOD، وتتعامل مع رموز 7TV.
 
@@ -904,7 +948,7 @@ Código abierto, MIT: github.com/Pkkls/kick-chat-translator
 
 Abra uma transmissão na Kick onde o chat está num idioma que você não lê. Cada mensagem recebe sua tradução logo abaixo, conforme chega. Uma barra verde no topo do chat mostra que está funcionando.
 
-Digite uma resposta e uma prévia a mostra no idioma do canal, acima da caixa de chat. Clique na prévia ou pressione Ctrl+Enter e essa versão substitui o que você digitou, pronta para enviar.
+Digite uma resposta e uma prévia a mostra no idioma do canal, acima da caixa de chat. Clique na prévia ou pressione Tab e essa versão substitui o que você digitou, pronta para enviar.
 
 Nada para configurar. O chat que chega é traduzido para o idioma do seu navegador, e o que você escreve sai no idioma em que o canal transmite, lido da própria Kick. Os dois podem ser trocados nas configurações. Funciona em transmissões ao vivo e em replays VOD, e lida com os emotes do 7TV.
 
@@ -934,7 +978,7 @@ Código aberto, MIT: github.com/Pkkls/kick-chat-translator
 
 Откройте трансляцию на Kick, где чат идёт на языке, который вы не читаете. Каждое сообщение получает перевод прямо под собой, по мере поступления. Зелёная полоса вверху чата показывает, что всё работает.
 
-Наберите ответ, и над полем ввода появится его вариант на языке канала. Щёлкните по нему или нажмите Ctrl+Enter, и этот вариант заменит набранный текст, останется только отправить.
+Наберите ответ, и над полем ввода появится его вариант на языке канала. Щёлкните по нему или нажмите Tab, и этот вариант заменит набранный текст, останется только отправить.
 
 Настраивать нечего. Входящий чат переводится на язык вашего браузера, а то, что вы пишете, уходит на языке вещания канала, считанном у самого Kick. Оба меняются в настройках. Работает на прямых эфирах и на записях VOD, поддерживает эмоуты 7TV.
 
@@ -964,7 +1008,7 @@ Firefox пока не предоставляет встроенный в бра�
 
 打开一个聊天语言你读不懂的 Kick 直播。每条消息一到，正下方就会出现它的译文。聊天区顶部的绿色条表示正在运行。
 
-输入回复时，聊天框上方会用频道的语言显示一份预览。点击预览或按 Ctrl+Enter，这个版本就会替换你输入的内容，直接发送即可。
+输入回复时，聊天框上方会用频道的语言显示一份预览。点击预览或按 Tab，这个版本就会替换你输入的内容，直接发送即可。
 
 无需设置。收到的聊天会翻译成你浏览器的语言，你写的内容会用频道的直播语言发出，该语言从 Kick 自身读取。两者都可以在设置里覆盖。直播和 VOD 回放都能用，并支持 7TV 表情。
 
@@ -994,7 +1038,7 @@ Firefox 尚未提供 Chrome 和 Edge 138 及以上所暴露的浏览器级翻译
 
 읽지 못하는 언어로 채팅이 흐르는 Kick 방송을 열어 보세요. 도착하는 메시지 바로 아래에 번역이 붙습니다. 채팅 상단의 초록색 막대가 작동 중임을 알려 줍니다.
 
-답장을 입력하면 채팅 입력창 위에 채널의 언어로 된 미리보기가 나타납니다. 미리보기를 클릭하거나 Ctrl+Enter를 누르면 입력한 내용이 그 번역으로 바뀌고, 보내기만 하면 됩니다.
+답장을 입력하면 채팅 입력창 위에 채널의 언어로 된 미리보기가 나타납니다. 미리보기를 클릭하거나 Tab를 누르면 입력한 내용이 그 번역으로 바뀌고, 보내기만 하면 됩니다.
 
 설정할 것이 없습니다. 들어오는 채팅은 브라우저 언어로 번역되고, 작성한 내용은 채널의 방송 언어로 나갑니다. 방송 언어는 Kick에서 읽어 옵니다. 둘 다 설정에서 바꿀 수 있습니다. 라이브와 VOD 다시보기 모두에서 동작하며 7TV 이모트도 지원합니다.
 
@@ -1024,7 +1068,7 @@ Firefox는 Chrome과 Edge 138 이상이 제공하는 브라우저 수준의 번�
 
 読めない言語でチャットが流れている Kick の配信を開いてください。届いたメッセージの真下に、その場で翻訳が付きます。チャット上部の緑のバーが、動いていることを示します。
 
-返信を打つと、チャット欄の上に、チャンネルの言語での下書きが出ます。その下書きをクリックするか Ctrl+Enter を押すと、打った文章がその訳文に置き換わり、あとは自分で送るだけです。
+返信を打つと、チャット欄の上に、チャンネルの言語での下書きが出ます。その下書きをクリックするか Tab を押すと、打った文章がその訳文に置き換わり、あとは自分で送るだけです。
 
 設定は要りません。届くチャットはブラウザの言語に翻訳され、あなたが書いたものはチャンネルの配信言語で出ていきます。配信言語は Kick から読み取ります。どちらも設定で上書きできます。7TV のエモートにも対応しています。
 

@@ -31,46 +31,53 @@ ends up on this page. What the images show of the product is real: it is
 
 **Zero config.** Incoming chat is translated into *your* browser's language. When you type, a live preview
 shows your own message in the *channel's* language (auto-detected from Kick) just above the chat box; click
-it or press **Ctrl/Cmd+Enter** to put that version in the chat box, then send it yourself. Both directions
-work on their own, so you never have to
-pick a language. (You still can, in settings.)
+it or press **Tab** to swap what you typed for the translation, then send it yourself. Both directions
+work on their own, so you never have to pick a language. (You still can, in settings.)
 
-**42 languages**, right-to-left scripts included (Arabic, Hebrew, Persian) as well as regional variants
+**43 languages**, right-to-left scripts included (Arabic, Hebrew, Persian) as well as regional variants
 (Brazilian Portuguese, Traditional Chinese).
 
 ---
 
-## What's new in [2.10.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+## What's new in [2.12.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
 
-**A release about reading the language right, because getting it wrong costs a message.** A line detected as
-your own language is skipped as "already in your language", in silence, so a wrong answer is not a wrong
-flag: it is a message you never see.
+**Nine things the extension used to decide for you are yours now.** Text size, line spacing and typeface for
+the translated line, how much air its block gets, the accent colour, the chat theme, a reading language
+remembered per channel, and two keyboard shortcuts. Each default is exactly what the stylesheet carried
+before, so a reader who never opens the settings sees no change at all.
 
-**Persian was read as Arabic, Mongolian and Ukrainian and Bulgarian as Russian, all with confidence.** A
-writing system is not a language, and the code treated it as one. Twelve Persian lines of twelve, twenty
-Mongolian of twenty. The engine was told the wrong source language, the flag was wrong on every line, and a
-reader of the language it guessed lost the message entirely. Each is now separated by the letters that
-actually differ, measured on lines written after the rule rather than the ones that built it.
+**Tab swaps what you typed for its translation.** Accepting the compose preview meant Ctrl/Cmd+Enter, a
+two-handed chord in the middle of typing. Tab is taken only while the preview is on screen, so an empty box
+never loses it, and Shift+Tab is left alone in every case so walking backwards out of the message box always
+works. A setting gives Tab back entirely to anyone who navigates by keyboard.
 
-**One emoji could erase a line's writing system**, and no chat is emoji-free. The script check counted every
-non-ASCII character, and an emoji feeds no script while inflating the count, so "да" plus two emoji came out
-as nothing at all and Arabic plus four emoji came out as Persian.
+**The two bars say which is which.** The bar at the top of the chat translates what other viewers write; the
+chip at the bottom translates what you write. Nothing on screen separated them, and the information lived in
+tooltips nobody hovers. A down arrow on one, an up arrow on the other, vertical so they do not lie in an
+Arabic interface where the whole bar mirrors.
 
-**Four writing systems typed on a Latin keyboard are recognised now**: arabizi, romanised Russian, Greek and
-Japanese, and Bulgarian in Latin letters. All four were being read as some Latin language.
+**Flags instead of two letters, everywhere.** The language table carried the string `JA` in a field named
+`flag`, while the stylesheet has drawn 43 real flags all along, used only by one picker. Every surface draws
+them now: each translated line, both bars, the compose preview and the language list.
 
-**Written laughter has a dictionary.** 45 forms across nine writing systems, jajaja, kkkk, mdr, wkwk, 555,
-2333, ㅋㅋㅋ, хахаха. They are skipped before a translation is paid for, and the unambiguous ones say what
-language the line is in, which no detector manages at five characters.
+**The language panel shows which language is selected.** It carried that state on a background measured at
+1.21:1 against its own surface, where hover sits at 1.87, so the two were indistinguishable while the focus
+ring at 12.74 was the brightest thing in a panel it only passes through. Tint, the word in the accent, and a
+rail. Flags rest desaturated and come back to full under the pointer, so colour is a signal rather than a
+wall of 43 saturated rectangles.
 
-**Short greetings came back spelled out instead of translated.** bonjour aimed at Japanese returned the
-French syllables in katakana rather than the Japanese word. Ninety common expressions now have an answer
-that ships with the extension, so they are both correct and free.
+**Long names stopped being cut.** The pin icon sat invisible in every row of the picker, spending 17 percent
+of each column to show nothing, and the grid kept three columns whatever the chat width. `Chinese (Taiwan)`
+was rendering as `Chinese (...`, which you could not tell from `Chinese`.
 
-**Three controls were too small to hit**, the pause button, the settings gear and the retry arrow on every
-translated line, all under the 24 by 24 WCAG asks for.
+**The settings page shows what it is doing.** Eleven settings, and for nine of them the number that answers
+"what is this doing" already existed and was not shown. The cache says how many entries it holds, the
+per-channel budget says whether it ever held anything back, and the language list shows how much each
+language actually represented. The tab called Debug is called Activity, because a total of messages
+translated is not debugging.
 
-And the injected script is smaller than it was in 2.9.2, despite all of the above.
+Control borders inside the language panel sat at 1.80:1 on dark and 1.42:1 on light, against the 3:1 the
+theme file states for a control's own boundary.
 
 Every release before this one is in [CHANGELOG.md](CHANGELOG.md), with the
 measurement behind each entry.
@@ -127,7 +134,7 @@ that pair goes to the cloud too, even though the pairs you already downloaded st
 
 Click the gear on the chat bar, or right-click the extension icon → Options.
 
-- **Target language**: what everything is translated into (42 to choose from)
+- **Target language**: what everything is translated into (43 to choose from)
 - **Provider order**: drag to reorder, paste your DeepL key
 - **Engine mode**: on-device first, cloud first, or on-device only
 - **Display**: four styles. Below the message on its own line, inline in a pill after it, in place of the original with the emotes left alone, or only on hover. **Below is the one to use for now; the other three are still being worked on.** Original text, source language and provider badges each optional. A sample line in the settings shows each style before you pick it
@@ -138,7 +145,11 @@ Click the gear on the chat bar, or right-click the extension icon → Options.
 - **Budget**: DeepL quota share and smart routing, per-channel rate limit, cache size and lifetime, concurrency
 - **Auto-pause**: background tabs stop translating (saves your DeepL quota)
 - **UI language** for the extension's own interface, in English, Spanish, French, Portuguese, Turkish, Russian, Arabic, Chinese, Japanese or Korean, plus buttons to clear the cache or reset stats and settings
-- **Debug**: the last decisions the translator made and why a line was left alone, kept in memory only
+- **Readability**: text size, line spacing and typeface for the translated line, plus how much air the block gets. The size multiplies whatever Kick gives the chat, so if you already enlarged Kick's own chat your choice is kept and this one adds to it
+- **Appearance**: accent colour out of four, each one measured for contrast rather than picked, and the chat theme pinned dark or light instead of following the channel
+- **Per-channel language**: off by default. Turned on, a channel you have already read restores the language you read it in
+- **Keyboard**: Alt+T turns chat translation on or off, Alt+W the compose preview. Both are changed in `chrome://extensions/shortcuts`
+- **Activity**: what the extension actually did. Messages translated, how many were served from the cache, and every language seen in chat with its count, which is what the source-language allowlist decides between
 
 ## Privacy
 
@@ -151,9 +162,9 @@ else, and in on-device mode, not even there. [Details](PRIVACY.md)
 **A:** 2.6.0 fixed the cause of this: Kick leaves a hidden second copy of the chat panel in the page and the bar was being mounted into that one, invisible from the start. Update first. If it still happens on 2.6.0 or later, refresh the page and open an issue, because that would be a new one.
 
 **Q: Messages aren't being translated.**
-**A:** Open the **Debug** tab in the settings and press "Read decisions": it lists the last 50 lines and says, for each one, why it was translated or left alone. That answers this faster than guessing.
+**A:** Open the **Activity** tab in the settings and press "Read decisions": it lists the last 50 lines and says, for each one, why it was translated or left alone. That answers this faster than guessing.
 
-Most lines that get skipped are skipped on purpose. Measured over one live session, out of 234 skipped lines: 213 were the same user repeating themselves, 9 were under the minimum length, 7 were emoji or laughter only, and 1 was already in the reading language. If the Debug tab shows nothing at all, then the extension is not seeing the chat, which is a different problem worth an issue.
+Most lines that get skipped are skipped on purpose. Measured over one live session, out of 234 skipped lines: 213 were the same user repeating themselves, 9 were under the minimum length, 7 were emoji or laughter only, and 1 was already in the reading language. If the Activity tab shows nothing at all, then the extension is not seeing the chat, which is a different problem worth an issue.
 
 **Q: Which display style should I use?**
 **A:** Below. The other three work, but they are still being adjusted and the settings mark Below as the recommended one. If you switch and something reads oddly, that is why.
@@ -171,14 +182,14 @@ Most lines that get skipped are skipped on purpose. Measured over one live sessi
 **A:** Add a free DeepL API key in the settings. DeepL's free tier covers up to 1 million characters a month and consistently beats the default providers.
 
 **Q: A stretched message like "muuuuy biennnn" stays untranslated.**
-**A:** It should not, since 2.7.0. The translation services hand messages like that straight back unchanged, so the line is retried once on its flattened text. If you still see one, the Debug tab will say which of the two attempts gave up.
+**A:** It should not, since 2.7.0. The translation services hand messages like that straight back unchanged, so the line is retried once on its flattened text. If you still see one, the Activity tab will say which of the two attempts gave up.
 
 **Q: The extension broke after a Kick update.**
 **A:** Kick sometimes changes its chat structure, which can break message detection. Open a [GitHub issue](https://github.com/Pkkls/kick-chat-translator/issues) and it'll be patched as soon as possible.
 
 ## Supported languages
 
-English · French · Spanish · Portuguese · Portuguese (Brazil) · German · Italian · Dutch · Polish · Swedish · Czech · Slovak · Romanian · Russian · Ukrainian · Turkish · Arabic · Hebrew · Japanese · Korean · Chinese (Simplified) · Chinese (Traditional) · Thai · Vietnamese · Indonesian · Hindi · Finnish · Norwegian · Danish · Greek · Hungarian · Bulgarian · Catalan · Slovenian · Estonian · Lithuanian · Latvian · Persian · Bengali · Tamil · Malay · Filipino
+English · French · Spanish · Portuguese · Portuguese (Brazil) · German · Italian · Dutch · Polish · Swedish · Czech · Slovak · Romanian · Russian · Ukrainian · Turkish · Arabic · Hebrew · Japanese · Korean · Chinese (Simplified) · Chinese (Traditional) · Thai · Vietnamese · Indonesian · Hindi · Finnish · Norwegian · Danish · Greek · Hungarian · Bulgarian · Catalan · Slovenian · Estonian · Lithuanian · Latvian · Persian · Bengali · Tamil · Malay · Filipino · Cantonese
 
 ## How it works
 
