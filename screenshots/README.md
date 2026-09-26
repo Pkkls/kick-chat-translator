@@ -1,6 +1,6 @@
 # Screenshots
 
-Generated, not collected. `scratchpad/harness/store-shots-fixture.mjs` loads the
+Generated, not collected. `test/e2e/store-shots-fixture.mjs` loads the
 built extension into a browser, opens a chat room this repository makes up, and
 captures it.
 
@@ -14,8 +14,8 @@ captures it.
 Regenerate them all with:
 
 ```bash
-node scratchpad/harness/store-shots-fixture.mjs
-cp scratchpad/harness/readme/*.png screenshots/
+node test/e2e/store-shots-fixture.mjs
+cp test/e2e/readme/*.png screenshots/
 ```
 
 Two rules these images follow, and both were paid for.
@@ -33,7 +33,7 @@ shot unless the panel holds more than ten rows, the compose shot unless the
 preview is mounted and carries text. A redesign that empties a panel therefore
 fails the run rather than shipping a picture of nothing.
 
-The same harness also writes `scratchpad/harness/store-fixture/01..05.png` at the
+The same harness also writes `test/e2e/store-fixture/01..05.png` at the
 1280x800 the Chrome Web Store demands. Those are the store's, not this file's:
 at that size the fabricated page is three quarters empty video area, which is
 fine in a listing where the image is clicked and enlarged, and useless in a

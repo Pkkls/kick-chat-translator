@@ -119,7 +119,7 @@ describe('the panel says it is a layer', () => {
   // An opaque panel with a hairline over a near-black chat is what the report
   // describes. The house rule bans drop shadows because every other surface
   // sits in the flow; this one covers one. The exception is named in
-  // scratchpad/audit_da.py, which keeps that gate honest rather than silent.
+  // test/audits/audit_da.py, which keeps that gate honest rather than silent.
   it('carries the one drop shadow in the sheet', () => {
     expect(ruleFor('.kt-lang-panel')).toMatch(/box-shadow:\s*var\(--kt-shadow-panel\)/);
   });

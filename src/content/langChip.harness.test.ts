@@ -17,7 +17,7 @@ import { mountLangChip, unmountLangChip, type ChipMode } from './langChip';
  * the gates, not a source file.
  */
 const MODES: ChipMode[] = ['auto', 'pinned', 'off', 'loading', 'error'];
-const OUT = 'scratchpad/harness';
+const OUT = 'test/e2e';
 
 /** A stand-in for Kick's composer and its action bar, close enough to anchor to. */
 function stage(): HTMLElement {

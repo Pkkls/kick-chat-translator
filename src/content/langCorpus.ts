@@ -1,6 +1,6 @@
 /**
  * Labelled sentences for the cross-language detection matrix. GENERATED, do not
- * hand-edit: rebuild with `node scratchpad/harness/build-lang-corpus.mjs`.
+ * hand-edit: rebuild with `node test/e2e/build-lang-corpus.mjs`.
  *
  * Source: Tatoeba per-language exports, CC-BY 2.0 FR, https://tatoeba.org
  * Contributors: the Tatoeba community. These sentences are redistributed under

@@ -2091,7 +2091,7 @@ function cyrilliqueQuelleLangue(text: string): string | undefined {
  *
  * Une regle de presence produit des faux positifs par construction, donc elle se
  * mesure des deux cotes ou elle ne vaut rien. Banc dans
- * scratchpad/harness/canto-bench.mjs, ecrit et non recolte : Kick n'a
+ * test/e2e/canto-bench.mjs, ecrit et non recolte : Kick n'a
  * pratiquement pas de chaine hongkongaise, et attendre qu'il y en ait une n'est
  * pas un plan. La moitie tenue a l'ecart a ete ecrite AVANT la regle.
  *
@@ -2150,7 +2150,7 @@ function cyrilliqueQuelleLangue(text: string): string | undefined {
  *   2. zero occurrence sur zh, zh-tw, ja et les 39 autres langues des bancs
  *   3. zero mouvement sur les neuf bancs, zero faux positif sur canto-bench
  * Le 1 selectionne, les 2 et 3 opposent un veto. Jamais l inverse, protocole 4.6.
- * Le crible qui repond au 2 est scratchpad/harness/canto-candidats.mjs.
+ * Le crible qui repond au 2 est test/e2e/canto-candidats.mjs.
  *
  * Douze caracteres passent : 瞓 dormir, 啱 juste, 嬲 fache, 攞 prendre, 搵
  * chercher, 唞 se reposer, 嚿 morceau, 冧 s ecrouler, 揼 frapper, 孭 porter sur

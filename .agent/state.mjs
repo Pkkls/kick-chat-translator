@@ -178,7 +178,7 @@ function paquets() {
  * a defect and never wired into the runner protects nothing on the next pass.
  */
 function portes() {
-  const runner = path.join(ROOT, 'scratchpad/harness/run-gates.mjs');
+  const runner = path.join(ROOT, 'test/e2e/run-gates.mjs');
   let enumerees = [];
   if (existsSync(runner)) {
     const s = readFileSync(runner, 'utf8');
@@ -188,7 +188,7 @@ function portes() {
     // thirty-six where there are eighteen.
     if (bloc) enumerees = [...bloc[1].matchAll(/^\s*\[\s*'([^']+)'/gm)].map((m) => m[1]);
   }
-  const dir = path.join(ROOT, 'scratchpad/harness');
+  const dir = path.join(ROOT, 'test/e2e');
   // Runners and shared modules are not gates and must not be counted as
   // orphans: doing so inflated the number by two and made the figure the queue
   // quotes wrong.
@@ -200,7 +200,7 @@ function portes() {
     : [];
   const orphelins = surDisque.filter((n) => !enumerees.includes(n)).sort();
   return {
-    runner: existsSync(runner) ? 'scratchpad/harness/run-gates.mjs' : null,
+    runner: existsSync(runner) ? 'test/e2e/run-gates.mjs' : null,
     enumerees: enumerees.length,
     noms: enumerees,
     harnaisSurDisque: surDisque.length,

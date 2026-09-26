@@ -35,7 +35,7 @@ regionales (portugués de Brasil, chino tradicional).
 |---|---|
 | <img src="screenshots/compose.png" alt="La caja de escritura con un mensaje en ingles y, encima, la vista previa de la version en espanol que se enviara" width="360"> | <img src="screenshots/languages.png" alt="Una cuadricula de idiomas con banderas y nombres, con el idioma del canal primero" width="360"> |
 
-<sub>Tomadas de la compilacion publicada por <code>scratchpad/harness/store-shots-fixture.mjs</code>, en una sala de chat que este repositorio inventa. Los nombres y los mensajes son inventados, las traducciones se responden localmente y nada sale de la maquina, asi que el nombre de ninguna persona real acaba en esta pagina.</sub>
+<sub>Tomadas de la compilacion publicada por <code>test/e2e/store-shots-fixture.mjs</code>, en una sala de chat que este repositorio inventa. Los nombres y los mensajes son inventados, las traducciones se responden localmente y nada sale de la maquina, asi que el nombre de ninguna persona real acaba en esta pagina.</sub>
 
 ## Novedades de la [2.8.1](https://github.com/Pkkls/kick-chat-translator/releases/latest)
 

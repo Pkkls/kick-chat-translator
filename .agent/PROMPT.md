@@ -88,7 +88,7 @@ looking at an image after the assertions were green.
 
 ```
 npm run typecheck && npm run lint && npm run test && npm run build
-node scratchpad/harness/run-gates.mjs
+node test/e2e/run-gates.mjs
 ```
 
 Read the exit code or the JSON reporter. Never the tee, which rewrites test
@@ -99,7 +99,7 @@ The offline runner pools one worker per core and takes `--jobs`, `--only` and
 `--no-build`. The live harnesses open a browser onto kick.com and are in no
 runner; `ETAT.json` lists which harnesses no runner covers.
 
-**If `scratchpad/harness/` is not there, you are not on the machine this was
+**If `test/e2e/` is not there, you are not on the machine this was
 built on.** That directory is gitignored, so a fresh clone has no gates, no
 harnesses and no audits at all. The four npm commands above still work. Say so
 plainly rather than reporting green on a suite that was never present, and read
