@@ -20,6 +20,8 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run test
+      - name: Store clients against fake stores
+        run: node scripts/stores/cws-selftest.mjs && node scripts/stores/amo-selftest.mjs
 
   build:
     name: build (chrome + firefox)
@@ -36,6 +38,10 @@ jobs:
       - run: npm run pack            # → release/…-chromium.zip
       - run: npm run build:firefox   # rebuild dist/ as the Firefox bundle
       - run: npm run pack:firefox    # → release/…-firefox.zip
+      # The store texts, checked on every change rather than on release day:
+      # field limits and permissions, then dashes, accents and versions.
+      - run: python3 test/audits/audit_fiche.py
+      - run: node scripts/stores/payloads.mjs "$RUNNER_TEMP/stores"
       - uses: actions/upload-artifact@v4
         with:
           name: extension-bundles

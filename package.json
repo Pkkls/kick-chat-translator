@@ -28,7 +28,10 @@
     "metrics": "npm run build:metrics && node test/e2e/metrics-offline.mjs && npm run build",
     "pack:firefox": "cross-env BROWSER=firefox tsx scripts/pack.ts",
     "package:all": "npm run build && npm run pack && npm run build:firefox && npm run pack:firefox && npm run build",
-    "release:check": "npm run typecheck && npm run lint && npm run test && npm run build"
+    "release:check": "npm run typecheck && npm run lint && npm run test && npm run build",
+    "stores:selftest": "node scripts/stores/cws-selftest.mjs && node scripts/stores/amo-selftest.mjs",
+    "stores:payloads": "node scripts/stores/payloads.mjs",
+    "stores:verify": "node scripts/stores/verify.mjs"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0-beta.28",
