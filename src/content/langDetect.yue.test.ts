@@ -3,7 +3,7 @@ import { confidentLanguage, detectLanguage } from './langDetect';
 
 /**
  * The rule these exercise is measured, not asserted: the numbers live in
- * scratchpad/harness/canto-bench.mjs, which reads the two regexes straight out of
+ * test/e2e/canto-bench.mjs, which reads the two regexes straight out of
  * langDetect.ts so the bench cannot drift from the source. 32 of 35 held-out
  * Cantonese lines, 11 of 12 code-mixed, zero false positives on 40 lines of
  * standard Chinese.

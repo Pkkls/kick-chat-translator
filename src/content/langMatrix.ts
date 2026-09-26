@@ -125,7 +125,7 @@ const merge = (b: Record<Band, Cell>): Cell => ({
   wrong: b.short.wrong + b.medium.wrong + b.long.wrong,
 });
 
-/** The human-readable report. Written to scratchpad/harness/lang-matrix.md. */
+/** The human-readable report. Written to test/e2e/lang-matrix.md. */
 export function report(confident: Run, detect: Run, stamp: string): string {
   const langs = Object.keys(LANG_CORPUS).length;
   const lines = Object.values(LANG_CORPUS).reduce((s, v) => s + v.length, 0);
@@ -133,7 +133,7 @@ export function report(confident: Run, detect: Run, stamp: string): string {
 
   out.push('# Cross-language detection matrix');
   out.push('');
-  out.push(`Generated ${stamp} by \`npx tsx scratchpad/harness/lang-matrix.mjs\`. Do not hand-edit.`);
+  out.push(`Generated ${stamp} by \`npx tsx test/e2e/lang-matrix.mjs\`. Do not hand-edit.`);
   out.push('');
   out.push(`Corpus: ${langs} languages, ${lines} lines, Tatoeba CC-BY 2.0 FR. See \`src/content/langCorpus.ts\`.`);
   out.push('');

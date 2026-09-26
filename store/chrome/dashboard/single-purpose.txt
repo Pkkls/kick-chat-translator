@@ -1,0 +1,5 @@
+Kick Chat Translator does one thing: it translates chat on kick.com. Incoming
+messages get their translation rendered under, inside or after the original, and
+the message the user is typing gets a preview in the language the channel
+broadcasts in. Every permission below exists to serve that, and the extension is
+inert on every other site.

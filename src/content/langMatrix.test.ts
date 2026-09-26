@@ -9,8 +9,8 @@ import { LANGUAGES } from '~/shared/languages';
 /**
  * The cross-language baseline, asserted so the next change has to move it on
  * purpose. What the numbers mean and why they are never added together is in
- * `langMatrix.ts`; the human report is `scratchpad/harness/lang-matrix.md`,
- * rebuilt with `node --import tsx scratchpad/harness/lang-matrix.mjs`.
+ * `langMatrix.ts`; the human report is `test/e2e/lang-matrix.md`,
+ * rebuilt with `node --import tsx test/e2e/lang-matrix.mjs`.
  *
  * These are a record of what the code does today, not a target. Moving them is
  * expected. Moving them without saying which way and why is not, and that is the

@@ -1,62 +1,52 @@
 ---
 name: publish-stores
-description: Publish a tagged release to the Chrome Web Store and addons.mozilla.org without a browser, through both stores' APIs (package, source archive, release notes and listing in every locale), with the AMO browser walk kept as a fallback. Use when the user asks to upload, publish or ship a version to the stores, or to update the store listings.
+description: Ship a release to the Chrome Web Store and addons.mozilla.org. A tag vX.Y.Z runs the Release workflow, which builds, checks and publishes through both stores' APIs; store texts live in store/. Covers the versioning rule, the one manual step (Chrome's descriptions), checking what the stores serve, and the manual fallbacks. Use when the user asks to release, upload, publish or ship a version, or to change or check the store listings.
 ---
 
 # Publishing to the stores
 
-Every step below was run for 2.12.1 and 2.12.2 and is the path that worked. The dead ends are listed at the end so they are not tried again.
+## A release, since 3.0.0
 
-## The whole release, autonomous
+1. **On master**, merged through a pull request with CI green: bump `package.json`, move `## [Unreleased]` in CHANGELOG under the new version, write `store/notes/<lang>.txt` for it (what changed, every language), then check locally:
+   ```bash
+   npm run release:check && npm run package:all && npm run stores:payloads -- <scratchpad>/stores
+   ```
+2. **Only if a Chrome description changed**: the user pastes `store/chrome/description/<lang>.txt` in the dashboard (`chrome.google.com/webstore/devconsole/<publisher>/<item>/edit`, page "Fiche Store"), language by language, and saves the draft. Nothing else in either listing is manual.
+3. **Tag and push**: `git tag -a vX.Y.Z -m "Release X.Y.Z" && git push origin vX.Y.Z`. The Release workflow (`.github/workflows/release.yml`) checks the tag equals package.json, runs release:check and the store clients' self-tests, builds and packs twice and compares the bytes, makes the source archive, builds the payloads and runs the listing audit, cancels a Chrome submission still in review, uploads and submits to Chrome, releases and lists on AMO, and creates the GitHub release with the notes and checksums. Started by hand (workflow_dispatch) it is a dry run that sends nothing.
+4. **After approval**: `npm run stores:verify`, also run weekly by the Stores verify workflow, compares what both stores serve with the repository, language by language.
 
-Once the one-time setup of both keys is done (sections 1 and 2), a tagged version ships with these commands and nothing else. `X.Y.Z` is `package.json`'s version; `$P` a scratchpad folder.
-
-```bash
-node .claude/skills/publish-stores/payloads.mjs $P                       # texts, refused if a dash or lost accents
-node .claude/skills/publish-stores/cws.mjs upload release/kick-chat-translator-X.Y.Z-chromium.zip
-node .claude/skills/publish-stores/amo.mjs release release/kick-chat-translator-X.Y.Z-firefox.zip release/kick-chat-translator-X.Y.Z-source.zip $P/amo-notes.json
-node .claude/skills/publish-stores/amo.mjs listing $P/amo-listing.json
-node .claude/skills/publish-stores/cws.mjs publish                       # after the Chrome listing, see below
-node .claude/skills/publish-stores/amo.mjs status
-```
-
-Preconditions are section 0. The Chrome listing is the one part no API reaches: when a `## Description (XX)` changed, the user pastes `$P/cws-description-XX.txt` per language in the dashboard between `upload` and `publish` (publishing submits the listing with the package). The dashboard only offers a listing language for a `_locales` directory the package ships, spelled the way Chrome spells it (`pt_BR`, `zh_CN`; bare `pt` and `zh` are ignored), which `src/shared/locales.test.ts` enforces.
-
-Both clients have a self-test against a fake store; run them after touching either:
-
-```bash
-node .claude/skills/publish-stores/cws-selftest.mjs && node .claude/skills/publish-stores/amo-selftest.mjs
-```
+Secrets, in the repository's Actions settings: `CWS_SERVICE_ACCOUNT_JSON`, `CWS_PUBLISHER_ID`, `AMO_JWT_ISSUER`, `AMO_JWT_SECRET`. The same credentials live in `~/.config/kick-chat-translator/` for the scripts run by hand.
 
 ## Versioning
 
-- **A version exists only when it ships to the stores.** Number, tag `vX.Y.Z` and GitHub release are created together, for a build submitted to both stores. Work in between stays on master under `## [Unreleased]` in CHANGELOG, with no bump and no tag.
+- **A version exists only when it ships to the stores.** Number, tag and GitHub release are created together by the Release workflow. Work in between stays on master under `## [Unreleased]` in CHANGELOG, with no bump and no tag.
 - **Semver on what store users receive**: patch for fixes, minor for a feature, major for a break or a reset.
 - **Never backwards.** AMO keeps every version it ever received and refuses a number at or below one of them; Chrome compares with the published one.
-- **`release/` between two releases is a dev build** carrying the last released number: never upload it. The store zips are rebuilt from the tag at release time (section 0 checks it against the AMO notes' checksums).
+- **`release/` between two releases is a dev build** carrying the last released number: never upload it. The Release workflow builds its own from the tag.
 - **No release to test the update notice.** 2.12.5 was an empty tag published only for that; `translate-maj` and a stubbed GitHub response show the same thing without a public release.
 - **The 3.0.0 reset, 2026-09-26.** 2.9.3 to 2.13.0 were tagged on GitHub while the Chrome Web Store stayed on 2.9.2, so store users would have jumped from 2.9.2 to 2.13.0. 3.0.0 is the next release on both stores and the first under these rules.
 
-## 0. Before any upload
+## Store texts
 
-1. The version is committed, tagged `vX.Y.Z` and **pushed**: the AMO reviewer notes tell the reviewer to `git checkout` that tag.
-2. The archives in `release/` were built from a clean worktree of the tag, not from the working tree (it can hold someone's uncommitted work, and 2.12.0's zips once shipped it). Check: the SHA-256 in `store-listing.md`'s AMO notes equals `sha256sum release/*.zip`.
-3. Source archive for AMO, from the tag:
-   ```bash
-   git archive --format=zip --prefix=kick-chat-translator-X.Y.Z/ -o release/kick-chat-translator-X.Y.Z-source.zip vX.Y.Z
-   ```
-4. Build the payloads. The script refuses to write when a text has a dash, has lost its accents, or a summary is over 250 characters. Fix the text, never the check.
-   ```bash
-   node .claude/skills/publish-stores/payloads.mjs <scratchpad>/stores
-   ```
+`store/` holds every text either store shows, one file per store, field and language (layout and rules in `store/README.md`). Descriptions carry no version number, so Chrome's never go stale with a release; what changed goes in `store/notes/`. The AMO reviewer notes are a template, `store/amo/reviewer-notes.txt`, whose `{{VERSION}}`, `{{CHECKSUMS}}` and `{{TOOLCHAIN}}` are filled at build time from the zips actually built. `payloads.mjs` refuses a dash, a Latin-script paragraph without accents, a Cyrillic letter in a Latin text, or a version in a description; `test/audits/audit_fiche.py` checks the field limits and that every shipped permission is justified. CI runs both on every push.
+
+## Running the scripts by hand
+
+```bash
+npm run stores:payloads -- <dir>        # texts and reviewer notes for the current version
+node scripts/stores/cws.mjs status | upload <zip> [--publish] | publish | cancel
+node scripts/stores/amo.mjs status | release <firefox.zip> <source.zip> <amo-notes.json> | listing <amo-listing.json>
+npm run stores:verify                   # what the stores serve against the repository
+npm run stores:selftest                 # after touching cws.mjs or amo.mjs
+```
 
 ## 1. Chrome Web Store: through the API, never a browser
 
 Chrome forbids every extension from reading or driving the Web Store ("The extensions gallery cannot be scripted"): no text, no screenshot, no click through Claude in Chrome. The built-in browser pane refuses to load it, and computer use only reads browsers. Do not try. The package goes through the Chrome Web Store API v2 with a service account:
 
 ```bash
-node .claude/skills/publish-stores/cws.mjs status
-node .claude/skills/publish-stores/cws.mjs upload release/kick-chat-translator-X.Y.Z-chromium.zip --publish
+node scripts/stores/cws.mjs status
+node scripts/stores/cws.mjs upload release/kick-chat-translator-X.Y.Z-chromium.zip --publish
 ```
 
 `cws.mjs` signs its own JWT with the service account key (Node stdlib, no dependency), so there is no OAuth window and no refresh token expiring after seven days. It reads the key and the publisher ID outside the repository, `~/.config/kick-chat-translator/cws-service-account.json` and `~/.config/kick-chat-translator/cws.json` (`{"publisherId": "..."}`), and never prints either the key or the token. `cws-selftest.mjs` runs it against a fake Google that checks the JWT signature and the zip bytes: run it after touching `cws.mjs`.
@@ -74,7 +64,7 @@ Found while setting it up for 2.12.1 (project `kicktranslator`, account `kicktra
 - Chrome left the downloaded key as a `.tmp` in Downloads, a save prompt waiting. The `.tmp` already held the whole key: check it parses and its `private_key_id` matches the key the console shows, copy it to the key file, and have the user cancel the pending download so no stray copy remains.
 - To check a key before the dashboard step, run `status` with `CWS_PUBLISHER_ID=probe`: a 403 from the store means the token was granted.
 
-The API does not touch the listing. When `## Description (XX)` in `store-listing.md` changed, the user pastes it per language in the dashboard, and the Privacy tab only if the manifest's permissions changed (`## Chrome dashboard: permission justifications`).
+The API does not touch the listing. When a file in `store/chrome/description/` changed, the user pastes it per language in the dashboard, and the Privacy tab only if the manifest's permissions changed (`store/chrome/dashboard/permission-justifications.txt`).
 
 ## 2. AMO: through the API
 

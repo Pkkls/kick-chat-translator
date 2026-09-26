@@ -1,0 +1,37 @@
+Source: https://github.com/Pkkls/kick-chat-translator, public, MIT, tag v{{VERSION}}.
+The submitted zip is built from that tag with no patching in between.
+
+Build:
+
+  git clone https://github.com/Pkkls/kick-chat-translator
+  cd kick-chat-translator
+  git checkout v{{VERSION}}
+  npm ci
+  npm run build:firefox
+  npm run pack:firefox
+
+The archive lands in release/kick-chat-translator-{{VERSION}}-firefox.zip.
+
+Toolchain actually used for the submitted build: {{TOOLCHAIN}}.
+
+The build is byte-reproducible. Two consecutive runs of build plus pack produced
+the same archive, verified by SHA-256 rather than assumed:
+
+{{CHECKSUMS}}
+
+The zip is written by scripts/pack.ts rather than by a platform tool, because
+PowerShell's Compress-Archive on .NET Framework writes backslash separators into
+entry names and produces an archive that is not a tree. Entry names are checked
+to contain no backslash before release.
+
+No remote code. Every line of JavaScript is inside the package: no eval, no new
+Function on fetched text, no remote script tag, no hosted module. The only
+network calls are the translation engines the user selects, kick.com, and one
+GET to the project's own GitHub releases endpoint for the update notice.
+
+Minification is esbuild and Vite defaults through @crxjs/vite-plugin. There is
+no obfuscation step.
+
+The source archive attached to this version is `git archive v{{VERSION}}` of that tag.
+
+The three UNSAFE_VAR_ASSIGNMENT warnings: two are the same line, src/content/langMenu.ts:95, which writes one of the fixed SVG strings of the ICONS constant declared in that file (line 80). No remote or user text reaches it. The third is the dangerouslySetInnerHTML path inside Preact's own renderer, which this code never uses.

@@ -1,0 +1,15 @@
+The manifest declares this already, under browser_specific_settings, as
+data_collection_permissions required: websiteContent. In the submission form:
+
+Website content: yes. The text of a chat message, and only that, is sent to the
+translation engine the user selected, to be translated. Not the username, not
+the channel, not who said what. It is not stored, not logged and not sent
+anywhere else.
+
+Authentication information: yes, conditionally. If the user enters a DeepL API
+key, it is kept in local storage, never synced, and sent only to DeepL to
+authenticate that user's own request.
+
+Everything else: no. No personally identifying information, no location, no
+browsing history, no financial or health data, no user activity tracking, no
+analytics, no accounts, and no server operated by the developer.

@@ -1,0 +1,1 @@
+¿Chat de Kick en un idioma que no lees? Se traduce bajo cada mensaje según va llegando, y tus respuestas salen en el idioma del canal. Sin cuenta y sin configurar nada. Funciona en directos y en repeticiones.

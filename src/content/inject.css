@@ -1057,7 +1057,7 @@ html[data-kt-scheme='light'] .kt-chip[data-mode='loading'] {
 
 /* ── Language selector, shared by the chip and the float bar ────────
  * Source of truth for both. Kept verbatim from the harness under
- * scratchpad/harness/, where the gates and the screenshots live.
+ * test/e2e/, where the gates and the screenshots live.
  */
 
 
@@ -1135,7 +1135,7 @@ html[data-kt-scheme='light'] .kt-chip[data-mode='loading'] {
   outline: 1px solid var(--kt-lp-edge);
   background: var(--kt-lp-surface);
   /* La seule ombre portee de la feuille, et la regle de la maison dit qu'il n'y
-   * en a pas. L'exception est nommee dans scratchpad/audit_da.py avec sa raison,
+   * en a pas. L'exception est nommee dans test/audits/audit_da.py avec sa raison,
    * la voici : toutes les autres surfaces sont dans le flux, celle-ci en couvre
    * une. Un aplat opaque sans elevation n'annonce pas qu'il est pose sur le
    * chat, il annonce que le chat n'est plus la, ce qui est exactement ce qui a

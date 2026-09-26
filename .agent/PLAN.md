@@ -19,8 +19,8 @@ ATTRACTORS, root only
   src/content/inject.css
   src/content/injector.ts
 
-A. gate coverage        scratchpad/harness/run-gates.mjs
-                        scratchpad/harness/*.mjs (the orphans)
+A. gate coverage        test/e2e/run-gates.mjs
+                        test/e2e/*.mjs (the orphans)
                         .agent/state.mjs
    independent of everything below
 
@@ -28,12 +28,12 @@ B. repository hygiene   .gitattributes, .nvmrc, package.json
                         git history (node_modules)
    independent of A
 
-C. live verification    scratchpad/harness/compose-kick-live.mjs
-                        scratchpad/harness/lang-menu-live.mjs
-                        scratchpad/harness/bar-panel-mesure.mjs
+C. live verification    test/e2e/compose-kick-live.mjs
+                        test/e2e/lang-menu-live.mjs
+                        test/e2e/bar-panel-mesure.mjs
    blocked on kil for the emote picker, open for the rest
 
-D. store listing        store-listing.md
+D. store listing        store/
                         screenshots
    blocked on kil for review and submission
 
@@ -411,7 +411,7 @@ reads dist/, so it serialises behind any build. D touches no code.
   **The miss is where to start.** Coming back to a channel that is still paused
   resumes it. `attachForRoute` does push the recomputed view to the pipeline on
   the channel change, so the cause is below that and is not located yet. Run
-  `node scratchpad/harness/nav-monde.mjs`, which fails on exactly that line and
+  `node test/e2e/nav-monde.mjs`, which fails on exactly that line and
   passes on the other three. Not on master on purpose: the unverified quarter is
   a regression risk on a path nobody watches, and the old behaviour at least did
   something.
@@ -752,7 +752,7 @@ reads dist/, so it serialises behind any build. D touches no code.
   nothing third-party appears and nothing leaves the machine, while the shipped
   build does the translating in the image. Five PNGs at exactly the 1280x800 the
   Chrome Web Store requires, each checked for its subject before it counts as
-  taken. The older live set stays in `scratchpad/harness/store/` and the listing
+  taken. The older live set stays in `test/e2e/store/` and the listing
   says not to submit it.
 
 ---
@@ -1065,7 +1065,7 @@ reads dist/, so it serialises behind any build. D touches no code.
   Adding a permission and forgetting to justify it is a rejection reason that
   otherwise surfaces a week later. Witness: two invented entries produce two
   named failures. And the metadata section pointed submitters at
-  `scratchpad/harness/store/`, the older set taken on a live channel; it names
+  `test/e2e/store/`, the older set taken on a live channel; it names
   `store-fixture/` now and says not to submit the other one.
 - [x] **The listing is at 2.9.3 in all eleven languages**, each with a paragraph
   on what changed: whole messages again, a recycled row translated, no file

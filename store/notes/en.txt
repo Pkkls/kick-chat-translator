@@ -1,0 +1,23 @@
+Hide chat lines that contain a word you choose. Add keywords in the filter settings, one per line: a line containing one, in any case, disappears from the chat instead of being translated. Handy against bot commands like !fish that flood some channels.
+
+Nine things the extension used to decide for you are yours now.
+
+- Text size, line spacing and typeface for the translated line, and how much air its block gets. The size multiplies whatever Kick gives the chat, so if you already enlarged Kick's own chat your choice is kept.
+- Accent colour, four of them, each measured for contrast rather than picked.
+- The chat theme pinned dark or light instead of following the channel.
+- A reading language remembered per channel.
+- Alt+T turns chat translation on or off, Alt+W the compose preview.
+
+Tab swaps what you typed for its translation. It is taken only while the preview is on screen, so an empty box never loses it, and Shift+Tab always stays navigation.
+
+The bar at the top of the chat translates what other viewers write; the chip at the bottom translates what you write. Nothing on screen said which was which. An arrow on each says it now.
+
+Flags instead of two-letter codes, everywhere: on every translated line, on both bars, and in the language list.
+
+The language panel shows which language is selected. It used to carry that on a background you could not tell apart from hover.
+
+Language names stopped being cut. "Chinese (Taiwan)" was rendering as "Chinese (...", which you could not tell from "Chinese".
+
+The settings page shows what each setting is doing. The cache says how many entries it holds, the per-channel budget says whether it ever held anything back, and the language list shows how much each language actually represented.
+
+Since 2.9.2: Cantonese is the 43rd language, the source language sent to the translator is right three times more often and wrong 97 % less, and no language is left undetected any more. Twenty-six of them were.

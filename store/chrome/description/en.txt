@@ -1,0 +1,41 @@
+WHAT'S NEW
+
+Hide chat lines that contain a word you choose. Add keywords in the filter settings, one per line: a line containing one, in any case, disappears from the chat instead of being translated. Handy against bot commands like !fish that flood some channels.
+
+Nine things the extension used to decide for you are yours now: text size, line spacing and typeface for the translated line, how much air its block gets, the accent colour out of four measured for contrast, the chat theme pinned dark or light instead of following the channel, a reading language remembered per channel, and two keyboard shortcuts. Every default is what the extension already did, so nothing moves until you move it.
+
+Tab swaps what you typed for its translation. The key is taken only while the preview is on screen, so an empty box never loses it, and Shift+Tab always stays navigation.
+
+The bar at the top of the chat translates what other viewers write; the chip at the bottom translates what you write. Nothing on screen said which was which, and an arrow on each says it now.
+
+Flags instead of two-letter codes on every translated line, on both bars and in the language list. The language panel shows which language is selected, which it used to carry on a background you could not tell apart from hover. And "Chinese (Taiwan)" stopped rendering as "Chinese (...", which you could not tell from "Chinese".
+
+The settings page shows what each setting is doing: the cache says how many entries it holds, the per-channel limit says whether it ever held anything back, and the language list shows how much each language actually represented.
+
+Cantonese is the 43rd language. The source language sent to the translator is right three times more often and wrong 97 percent less, measured on 5040 sentences across 43 languages, and no language is left undetected any more: twenty-six of them were. Cyrillic that could not be identified was called Russian and Arabic script was called Arabic; Bulgarian, Ukrainian and Persian are read as themselves now. Traditional Chinese was read as simplified every single time.
+
+Open a Kick stream where the chat is in a language you don't read. Each message gets its translation right underneath, as it comes in. A green bar at the top of chat tells you it's running.
+
+Type a reply and a preview shows it in the channel's language above the chat box. Click the preview or press Tab and that version replaces what you typed in the chat box, ready for you to send.
+
+Nothing to set up. Incoming chat is translated into your browser's language, and what you write goes out in whatever the channel broadcasts in, read from Kick itself. Both are overridable in settings. Works on live streams and on VOD replays, and it handles 7TV emotes.
+
+ENGINES
+
+Google works out of the box, no key, no account. Add your own free DeepL key (their free tier covers 1 million characters a month without a card) and quality jumps on European languages. DeepL also receives the recent channel lines as context so the wording fits the conversation, and it's asked for the polite register where the language has one: keigo in Japanese, vous rather than tu in French. To make a free quota last, DeepL is spent only on the pairs where it actually beats the free engines. MyMemory and Lingva sit behind as fallbacks, and when one engine fails the next takes over. You set the order.
+
+Chrome and Edge 138+ can also translate on-device, hardware permitting. The model downloads once per language pair, then everything runs locally: offline, unlimited, and no chat text leaves your machine. Brave and Firefox don't ship that API yet, so they use the engines above.
+
+DISPLAY
+
+Translation below the original, inline with it, after it in smaller italics, or only when you hover. Hover mode fetches nothing until you point at a message, which cuts usage by roughly 10x on a fast chat.
+
+FILTERS
+
+Skip bots, blocklist users or channels, or limit which source languages get translated at all. Emotes, mentions, links and emoji spam are stripped before anything is sent out, so you're not paying to translate "kkkkkk". Background tabs pause themselves.
+
+43 languages, right-to-left included (Arabic, Hebrew, Persian), with regional variants kept apart (pt-BR, zh-TW). The extension's own interface comes in 10: English, Spanish, French, Portuguese, Turkish, Russian, Arabic, Chinese, Japanese and Korean.
+
+No account, no analytics, no server of mine. It asks for storage, for a wake-up timer so the translator stays ready while you watch, and for access to kick.com plus the translation engines it can call: Google, DeepL, MyMemory and Lingva. It also reads the GitHub releases page to tell you when a newer version exists, sending nothing with that request. Your chat text goes to the engine you picked and nowhere else, and on-device it doesn't even go there.
+
+Open source, MIT: github.com/Pkkls/kick-chat-translator

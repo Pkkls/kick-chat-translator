@@ -35,7 +35,7 @@ Kick.com のチャットをリアルタイムで翻訳します。ライブ配�
 |---|---|
 | <img src="screenshots/compose.png" alt="入力欄の英語のメッセージと、その上に表示される、送信されるスペイン語のプレビュー" width="360"> | <img src="screenshots/languages.png" alt="旗と言語名のグリッド。チャンネルの言語が先頭にある" width="360"> |
 
-<sub><code>scratchpad/harness/store-shots-fixture.mjs</code> が公開ビルドから撮影したもので、チャットルームはこのリポジトリが作った架空のものです。ユーザー名もメッセージも架空で、翻訳はローカルで返され、マシンの外には何も出ません。実在の人物のユーザー名はこのページに載りません。</sub>
+<sub><code>test/e2e/store-shots-fixture.mjs</code> が公開ビルドから撮影したもので、チャットルームはこのリポジトリが作った架空のものです。ユーザー名もメッセージも架空で、翻訳はローカルで返され、マシンの外には何も出ません。実在の人物のユーザー名はこのページに載りません。</sub>
 
 ## [2.8.1](https://github.com/Pkkls/kick-chat-translator/releases/latest) の新機能
 

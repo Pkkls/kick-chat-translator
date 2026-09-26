@@ -181,7 +181,7 @@
     }
   ],
   "portes": {
-    "runner": "scratchpad/harness/run-gates.mjs",
+    "runner": "test/e2e/run-gates.mjs",
     "enumerees": 40,
     "noms": [
       "snapshot",

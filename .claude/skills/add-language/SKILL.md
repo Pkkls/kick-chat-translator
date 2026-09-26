@@ -62,7 +62,7 @@ Two shapes of rule, and they cost differently:
 
 Not optional, and the repo's existing rules all carry their numbers in a comment. Match that.
 
-1. Collect real chat lines. `scratchpad/harness/` has the corpus collector. **No channel or streamer name in the repo**, in code, tests or fixtures: pass them as arguments or environment variables.
+1. Collect real chat lines. `test/e2e/` has the corpus collector. **No channel or streamer name in the repo**, in code, tests or fixtures: pass them as arguments or environment variables.
 2. Label at least three buckets: the new language, the language it is most confusable with, and a mixed bucket with English inside it.
 3. Report two numbers separately: recall on the new bucket, and false positives on the confusable bucket. The second is the one that protects: a rule that steals lines from a language that works today is a regression, not a feature.
 4. Hold a set out. The lines used to write the rule do not score it. Write both numbers and say which is which.
@@ -115,7 +115,7 @@ Not `typecheck` plus `test`. It also runs `lint`, and lint is the step that has 
 
 The content script has a weight budget (69.0 KB gzipped at the last reading). A character table is small, a model is not. Measure before and after and put both numbers in the commit body.
 
-Commit convention, from `HANDOFF.md`: `[item N] Imperative subject`, one item per commit, body giving cause, fix, and how it was witnessed. Read `HANDOFF.md` for the next item number and update it when done.
+Commit convention, from `docs/HANDOFF.md`: `[item N] Imperative subject`, one item per commit, body giving cause, fix, and how it was witnessed. Read `HANDOFF.md` for the next item number and update it when done.
 
 ## Refuse to ship on
 

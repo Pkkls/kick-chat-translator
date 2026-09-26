@@ -1,0 +1,41 @@
+NOVINKY
+
+Skryjte řádky chatu, které obsahují slovo podle vaší volby. Přidejte klíčová slova do nastavení filtrů, jedno na řádek: řádek, který některé z nich obsahuje, bez ohledu na velikost písmen, z chatu zmizí, místo aby se překládal. Hodí se proti příkazům botů jako !fish, které zaplavují některé kanály.
+
+Devět věcí, o kterých rozšíření rozhodovalo za vás, je teď vašich: velikost textu, řádkování a písmo přeložené řádky, vzduch kolem jejího bloku, barva zvýraznění ze čtyř měřených na kontrast, motiv chatu připnutý na tmavý nebo světlý místo sledování kanálu, jazyk čtení zapamatovaný pro každý kanál a dvě klávesové zkratky. Každá výchozí hodnota je to, co rozšíření dělalo už dřív: nic se nehne, dokud s tím nehnete vy.
+
+Tab vymění to, co jste napsali, za překlad. Klávesa se bere jen dokud je náhled na obrazovce, takže prázdné pole ji nikdy neztratí, a Shift+Tab zůstává vždy navigací.
+
+Lišta nahoře v chatu překládá to, co píší ostatní; tlačítko dole překládá to, co píšete vy. Nic na obrazovce je neodlišovalo, teď to říká šipka na každém z nich.
+
+Vlajky místo dvoupísmenných kódů na každé přeložené řádce, na obou lištách i v seznamu jazyků. Panel jazyků ukazuje, který jazyk je vybraný, což dřív nesl na pozadí, které nešlo odlišit od najetí myší. A "Chinese (Taiwan)" už se nezobrazuje jako "Chinese (...", což nešlo odlišit od "Chinese".
+
+Stránka nastavení ukazuje, co každé nastavení dělá: cache řekne, kolik záznamů drží, limit na kanál řekne, jestli už něco zadržel, a seznam jazyků ukáže, kolik každý z nich představoval.
+
+Kantonština je 43. jazyk. Zdrojový jazyk poslaný překladači je správně třikrát častěji a špatně o 97 procent méně, měřeno na 5040 větách ve 42 jazycích, a žádný jazyk už nezůstává nerozpoznaný: dvacet šest jich zůstávalo. Nerozpoznaná cyrilice se nazývala ruštinou a arabské písmo arabštinou; bulharština, ukrajinština a perština se čtou jako ony samy. Tradiční čínština se pokaždé četla jako zjednodušená.
+
+Otevřete na Kicku vysílání, kde chat běží v jazyce, který neumíte přečíst. Každá zpráva dostane svůj překlad přímo pod sebou, jakmile dorazí. Zelený pruh nahoře v chatu ukazuje, že to běží.
+
+Napíšete odpověď a nad polem chatu se objeví náhled v jazyce kanálu. Klikněte na náhled nebo stiskněte Tab a tato verze nahradí to, co jste napsali, připravená k odeslání.
+
+Není co nastavovat. Příchozí chat se překládá do jazyka vašeho prohlížeče a to, co píšete, odchází v jazyce, ve kterém kanál vysílá, načteném přímo z Kicku. Obojí lze změnit v nastavení. Funguje na živých vysíláních i na záznamech VOD a zvládá emotikony 7TV.
+
+ENGINY
+
+Google funguje rovnou, bez klíče a bez účtu. Přidejte vlastní bezplatný klíč DeepL (bezplatný tarif pokrývá milion znaků měsíčně bez karty) a kvalita u evropských jazyků výrazně stoupne. DeepL navíc dostává poslední řádky kanálu jako kontext, takže formulace sedí do konverzace, a je požádán o zdvořilý registr tam, kde jej jazyk má: keigo v japonštině, vous místo tu ve francouzštině. Aby bezplatná kvóta vydržela, DeepL se spotřebovává jen na dvojicích, kde skutečně překonává bezplatné enginy. MyMemory a Lingva čekají vzadu jako záloha, a když jeden engine selže, převezme to další. Pořadí určujete vy.
+
+Chrome a Edge 138 a novější umí překládat i přímo v zařízení, pokud to hardware dovolí. Model se stáhne jednou pro každou dvojici jazyků a pak vše běží lokálně: offline, bez limitu, a text chatu neopustí váš počítač. Brave a Firefox toto API zatím nemají, takže používají enginy výše.
+
+ZOBRAZENÍ
+
+Překlad pod originálem, na stejném řádku, za ním menší kurzívou, nebo jen při najetí myší. Režim najetí myší si nic nevyžádá, dokud na zprávu neukážete, což v rychlém chatu sníží spotřebu zhruba desetkrát.
+
+FILTRY
+
+Přeskočit boty, blokovat uživatele nebo kanály, nebo omezit, které zdrojové jazyky se vůbec překládají. Emotikony, zmínky, odkazy a záplavy emoji se odstraní před odesláním, takže neplatíte za překlad „kkkkkk“. Panely na pozadí se samy pozastaví.
+
+42 jazyků, včetně písma zprava doleva (arabština, hebrejština, perština), s odděleně vedenými regionálními variantami (pt-BR, zh-TW). Rozhraní samotného rozšíření existuje v 10 jazycích: angličtina, španělština, francouzština, portugalština, turečtina, ruština, arabština, čínština, japonština a korejština.
+
+Žádný účet, žádná analytika, žádný můj server. Rozšíření žádá o úložiště, o časovač, aby překladač zůstal připravený, zatímco se díváte, a o přístup ke kick.com a k překladovým enginům, které může volat: Google, DeepL, MyMemory a Lingva. Čte také stránku vydání na GitHubu, aby vám oznámilo, že existuje novější verze, a s tímto požadavkem neposílá nic. Text vašeho chatu jde jen do enginu, který jste zvolili, a nikam jinam; v režimu v zařízení ani tam.
+
+Otevřený zdrojový kód, MIT: github.com/Pkkls/kick-chat-translator

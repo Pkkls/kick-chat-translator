@@ -23,7 +23,7 @@ Runs on **Brave, Chrome, Edge and Firefox**, and understands 7TV emotes.
 | <img src="screenshots/compose.png" alt="The compose box holding an English message, with a preview above it showing the Spanish version that will be sent" width="360"> | <img src="screenshots/languages.png" alt="A searchable grid of language flags and names, with the channel's own language first" width="360"> |
 
 <sub>Taken from the shipping build by
-<code>scratchpad/harness/store-shots-fixture.mjs</code>, in a chat room this
+<code>test/e2e/store-shots-fixture.mjs</code>, in a chat room this
 repository makes up. The usernames and messages are invented, the translations
 are answered locally, and nothing leaves the machine, so no real person's handle
 ends up on this page. What the images show of the product is real: it is
@@ -255,9 +255,9 @@ translation engine is answered locally, so the assertions are exact rather than
 dependent on what some server felt like returning.
 
 ```bash
-node scratchpad/harness/run-gates.mjs --headless            # all 39, no window
-node scratchpad/harness/run-gates.mjs --headless --jobs 8   # 50s on 8 workers
-node scratchpad/harness/run-gates.mjs --only translate-offline,extension-load
+node test/e2e/run-gates.mjs --headless            # all 39, no window
+node test/e2e/run-gates.mjs --headless --jobs 8   # 50s on 8 workers
+node test/e2e/run-gates.mjs --only translate-offline,extension-load
 ```
 
 Playwright is deliberately not a dependency of this project: CI installs with
@@ -284,7 +284,7 @@ nothing and buys a run with no window and no stolen focus.
 The screenshots in this README are generated, not collected:
 
 ```bash
-node scratchpad/harness/store-shots-fixture.mjs   # writes to scratchpad/harness/readme/
+node test/e2e/store-shots-fixture.mjs   # writes to test/e2e/readme/
 ```
 
 Every image is checked for the thing it is supposed to show before it counts as

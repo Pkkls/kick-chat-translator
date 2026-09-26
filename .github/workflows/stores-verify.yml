@@ -1,0 +1,19 @@
+name: Stores verify
+
+# What the Chrome Web Store and AMO serve, compared with store/ and
+# package.json. Between a submission and its approval the difference is
+# expected: the stores still serve the previous release.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 7 * * 1'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/stores/verify.mjs

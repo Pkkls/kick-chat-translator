@@ -1,0 +1,27 @@
+Abra uma transmissão na Kick onde o chat está num idioma que você não lê. Cada mensagem recebe sua tradução logo abaixo, conforme chega. Uma barra verde no topo do chat mostra que está funcionando.
+
+Digite uma resposta e uma prévia a mostra no idioma do canal, acima da caixa de chat. Clique na prévia ou pressione Tab e essa versão substitui o que você digitou, pronta para enviar.
+
+Nada para configurar. O chat que chega é traduzido para o idioma do seu navegador, e o que você escreve sai no idioma em que o canal transmite, lido da própria Kick. Os dois podem ser trocados nas configurações. Funciona em transmissões ao vivo e em replays VOD, e lida com os emotes do 7TV.
+
+MOTORES
+
+O Google funciona de cara, sem chave e sem conta. Adicione sua própria chave gratuita da DeepL (o plano gratuito cobre um milhão de caracteres por mês sem cartão) e a qualidade sobe bastante nos idiomas europeus. A DeepL também recebe as linhas recentes do canal como contexto, então o texto acompanha a conversa, e é pedido o registro formal onde o idioma tem um: keigo em japonês, vous em vez de tu em francês. Para a cota gratuita durar, a DeepL só é gasta nos pares em que ela realmente supera os motores gratuitos. MyMemory e Lingva ficam atrás como reserva, e quando um motor falha o seguinte assume. A ordem é sua.
+
+EXIBIÇÃO
+
+Tradução abaixo do original, na mesma linha, depois dele em itálico menor, ou só ao passar o mouse. O modo ao passar o mouse não busca nada até você apontar para uma mensagem, o que corta o uso em cerca de 10 vezes num chat rápido.
+
+FILTROS
+
+Pular bots, bloquear usuários ou canais, ou limitar quais idiomas de origem são traduzidos. Emotes, menções, links e enxurradas de emoji são removidos antes de qualquer envio, então você não paga para traduzir "kkkkkk". Abas em segundo plano se pausam sozinhas.
+
+42 idiomas, incluindo escrita da direita para a esquerda (árabe, hebraico, persa), com as variantes regionais mantidas separadas (pt-BR, zh-TW). A interface da extensão existe em 10: inglês, espanhol, francês, português, turco, russo, árabe, chinês, japonês e coreano.
+
+O QUE SAI DO SEU NAVEGADOR
+
+O texto de uma mensagem do chat, e só isso, para o motor de tradução que você escolheu. Não o seu nome de usuário, não o canal, não quem disse o quê. É isso que a linha “conteúdo do site” nas permissões acima designa, e é tudo o que ela designa. Sem conta, sem analytics, sem servidor meu: a extensão fala com a Kick, com o motor que você escolheu, e com a página de versões do GitHub para avisar que existe uma mais nova, sem enviar nada nessa última requisição.
+
+O Firefox ainda não expõe a API de tradução no nível do navegador que Chrome e Edge 138+ oferecem, então esta build sempre usa os motores acima. Se a Mozilla lançar uma, a extensão já sabe usá-la e vai traduzir na sua máquina, offline e sem limites.
+
+Código aberto, MIT: github.com/Pkkls/kick-chat-translator

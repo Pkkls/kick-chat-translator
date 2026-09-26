@@ -10,7 +10,7 @@
  * Why it exists: every other language in this product was measured on harvested
  * lines, with scripts/kick-chat-collector.js. Cantonese cannot be, because Kick
  * has next to no Hong Kong channels and waiting for one is not a plan. The
- * detection rule has a bench of its own in scratchpad/harness/canto-bench.mjs;
+ * detection rule has a bench of its own in test/e2e/canto-bench.mjs;
  * what a bench cannot show is the extension actually reading a line off a page
  * and putting a translation under it. This does that.
  *

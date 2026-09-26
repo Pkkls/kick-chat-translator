@@ -1,0 +1,23 @@
+Esconda as linhas do chat que contêm uma palavra que você escolher. Adicione suas palavras-chave nas configurações de filtros, uma por linha: uma linha que contenha uma delas, em maiúsculas ou não, some do chat em vez de ser traduzida. Útil contra comandos de bots como !fish que inundam alguns canais.
+
+Nove coisas que a extensão decidia por você agora são suas.
+
+- Tamanho do texto, entrelinha e fonte da linha traduzida, e o espaço ao redor do bloco. O tamanho multiplica o que a Kick dá ao chat: se você já tinha aumentado, sua escolha é mantida.
+- Cor de destaque, quatro, cada uma medida pelo contraste e não escolhida no olho.
+- O tema do chat fixado em escuro ou claro em vez de seguir o canal.
+- Um idioma de leitura lembrado por canal.
+- Alt+T liga ou desliga a tradução do chat, Alt+W a pré-visualização.
+
+Tab troca o que você digitou pela tradução. Ela só é usada enquanto a pré-visualização está na tela, então uma caixa vazia nunca a perde, e Shift+Tab continua sempre sendo navegação.
+
+A barra no topo do chat traduz o que os outros escrevem; o botão embaixo traduz o que você escreve. Nada na tela os separava. Agora uma seta em cada um diz isso.
+
+Bandeiras em vez de códigos de duas letras, em todo lugar: em cada linha traduzida, nas duas barras e na lista de idiomas.
+
+O painel de idiomas mostra qual está selecionado. Antes ele mostrava isso num fundo que não se distinguia do cursor por cima.
+
+Os nomes de idioma não são mais cortados. "Chinese (Taiwan)" aparecia como "Chinese (...", indistinguível de "Chinese".
+
+A página de configurações mostra o que cada configuração faz. O cache diz quantas entradas guarda, o limite por canal diz se já reteve algo, e a lista de idiomas mostra quanto cada um representou.
+
+Desde a 2.9.2: o cantonês é o 43º idioma, o idioma de origem enviado ao tradutor acerta três vezes mais e erra 97% menos, e nenhum idioma fica sem ser detectado. Vinte e seis ficavam.

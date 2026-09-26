@@ -157,7 +157,7 @@
   --kt-tr-face-readable: 'Atkinson Hyperlegible', Verdana, Tahoma, sans-serif;
 
   /* ── The rest of the direction, so it is stated once ─────────────────
-     scratchpad/audit_da.py fails the build on any other value. */
+     test/audits/audit_da.py fails the build on any other value. */
   --kt-r-sm: 4px;
   --kt-r-md: 8px;
   --kt-dur: 0.15s;

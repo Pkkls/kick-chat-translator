@@ -120,7 +120,7 @@ describe('menu rows', () => {
    * narrow for it -- is guarded upstream now: flags.test.ts asserts the table
    * covers every offered language, so a language reaching this fallback fails
    * there first. Uniform row height is asserted where it can actually be seen,
-   * on the rendered menu, by scratchpad/harness/lang-menu-live.mjs.
+   * on the rendered menu, by test/e2e/lang-menu-live.mjs.
    */
   it('gives the flag column room for the flag, and forbids wrapping', () => {
     const iso = rule('.kt-chip-iso');
