@@ -615,8 +615,10 @@ if (OVERRIDE) {
   else {
     if (!banniere.texte.includes('99.0.0'))
       fails0.push(`la banniere n annonce pas la version publiee : ${JSON.stringify(banniere.texte)}`);
-    if (!banniere.href.includes('github.com'))
-      fails0.push(`la banniere ne mene pas aux releases : ${banniere.href}`);
+    // Depuis 2.12.3 une copie installee a la main est envoyee sur la fiche du
+    // Chrome Web Store, d'ou elle se mettra a jour seule, plutot que sur un zip.
+    if (!banniere.href.startsWith('https://chromewebstore.google.com/detail/kick-chat-translator/'))
+      fails0.push(`la banniere ne mene pas a la fiche du store : ${banniere.href}`);
   }
   if (!vuParLeMoteur.includes('github'))
     fails0.push('la release GitHub n a jamais ete demandee : rien ne verifie les versions');
