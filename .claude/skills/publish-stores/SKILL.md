@@ -153,12 +153,16 @@ Kept so the next release starts from what happened, not from what was assumed.
 12. **A false alarm on the AMO listing.** The first `amo.mjs listing` read back 0/16 although the PATCH had stored every text: AMO serves descriptions with URLs turned into outgoing links, even with `wrap_outgoing_links=false`. The comparison now strips the markup (16/16), and the fake AMO in the self-test wraps links the same way.
 13. **The AMO key by mail.** I clicked "Confirm email address" and searched the connected Gmail: nothing arrived within the hour, spam included. The user generated the key and pasted it in the chat, so the secret sits in that transcript until it is regenerated (then replace `amo-api.json`).
 
+14. **2.12.3: a gate that encoded the old requirement.** `translate-maj` asserted that the update banner leads to GitHub; the release changed that on purpose, and the gate failed three runs out of three. The consistency told it apart from the snapshot race (which fails once, then passes). The fix was the gate's expectation, in its own commit, with the rest of the check untouched.
+15. **Descriptions pasted for the previous version.** The user pasted the Chrome texts cut for 2.12.2 ("NEW IN 2.12.2"), then 2.12.3 shipped over them with only its package. Paste the texts `payloads.mjs` produces for the version that will actually be submitted.
+
 ### What worked
 
 - Byte-reproducible builds, checked three ways each time: two consecutive runs, a third from another checkout path, and a rebuild from the tagged commit, all on the same SHA-256.
 - AMO 2.12.1 in full: package, `git archive` source, release notes in 16 locales, reviewer notes explaining the validator's warnings, listing in 16 locales; approved automatically within minutes.
 - The Chrome service account: JWT signed with the Node standard library, key taken from Chrome's pending `.tmp` without being displayed, publisher ID read from the tab URL, a 403 with `CWS_PUBLISHER_ID=probe` proving the token before the dashboard knew the account, then 200 on the first call after registration.
 - Chrome 2.12.2 through the API: `upload` SUCCEEDED on the tagged zip, `publish` returned PENDING_REVIEW.
+- 2.12.3 shipped on both stores with the six commands and nothing else, the Chrome part being `cancel` (2.12.2 was in review, and the store refuses a package during a review), `upload`, `publish`. The listing texts pasted in the draft survived the cancel and the new upload.
 - AMO 2.12.2 without a browser: `amo.mjs release` (upload 201, validation 0 errors and the usual 5 warnings, version created with its source, release notes in 16 locales) then `amo.mjs listing` (16/16 read back). The first real run of both scripts.
 - Every script has a check that fails when it should: `cws-selftest` and `amo-selftest` (5/5 each against fake stores), `payloads.mjs` rejecting a trapped copy, `locales.test.ts` failing on a bare `pt`, `flag-surfaces` failing on both reintroduced defects.
 
