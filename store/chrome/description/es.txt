@@ -1,18 +1,4 @@
-NOVEDADES
-
-Oculta las líneas del chat que contienen una palabra que tú eliges. Añade tus palabras clave en los ajustes de filtros, una por línea: una línea que contenga una, en mayúsculas o no, desaparece del chat en lugar de traducirse. Útil contra los comandos de bots como !fish que inundan algunos canales.
-
-Nueve cosas que la extensión decidía por ti ahora son tuyas: tamaño del texto, interlineado y tipografía de la línea traducida, el aire alrededor de su bloque, el color de acento entre cuatro medidos por contraste, el tema del chat fijado en oscuro o claro en vez de seguir al canal, un idioma de lectura recordado por canal, y dos atajos de teclado. Cada valor por defecto es lo que la extensión ya hacía: nada se mueve hasta que tú lo muevas.
-
-Tab cambia lo que escribiste por su traducción. Solo se toma mientras la vista previa está en pantalla, así que una caja vacía nunca la pierde, y Shift+Tab sigue siendo navegación siempre.
-
-La barra de arriba del chat traduce lo que escriben los demás; el botón de abajo traduce lo que escribes tú. Nada en pantalla los separaba, y ahora una flecha en cada uno lo dice.
-
-Banderas en vez de códigos de dos letras en cada línea traducida, en ambas barras y en la lista de idiomas. El panel de idiomas muestra cuál está seleccionado, algo que antes llevaba sobre un fondo que no se distinguía del cursor encima. Y "Chinese (Taiwan)" ya no aparece como "Chinese (...", indistinguible de "Chinese".
-
-La página de ajustes muestra lo que hace cada ajuste: la caché dice cuántas entradas guarda, el límite por canal dice si alguna vez retuvo algo, y la lista de idiomas muestra cuánto representó cada uno.
-
-El cantonés es el idioma 43. El idioma de origen enviado al traductor acierta tres veces más y falla un 97 por ciento menos, medido en 5040 frases de 42 idiomas, y ningún idioma queda sin detectar: veintiséis lo estaban. El cirílico no identificado se llamaba ruso y la escritura árabe se llamaba árabe; el búlgaro, el ucraniano y el persa se leen como sí mismos. El chino tradicional se leía como simplificado siempre.
+Un traductor de chat en vivo para Kick: lee el chat de cualquier stream en tu idioma y responde en el del canal.
 
 Abre un directo de Kick donde el chat esté en un idioma que no lees. Cada mensaje recibe su traducción justo debajo, según va llegando. Una barra verde en la parte superior del chat te dice que está funcionando.
 
@@ -37,5 +23,21 @@ Saltarse los bots, bloquear usuarios o canales, o limitar qué idiomas de origen
 42 idiomas, incluida la escritura de derecha a izquierda (árabe, hebreo, persa), con las variantes regionales separadas (pt-BR, zh-TW). La interfaz de la extensión existe en 10: inglés, español, francés, portugués, turco, ruso, árabe, chino, japonés y coreano.
 
 Sin cuenta, sin analíticas, sin servidor mío. Pide almacenamiento, un temporizador para que el traductor siga listo mientras miras, y acceso a kick.com más los motores de traducción que puede llamar: Google, DeepL, MyMemory y Lingva. También lee la página de versiones de GitHub para avisarte de que existe una más nueva, sin enviar nada con esa petición. El texto de tu chat va al motor que elegiste y a ningún otro sitio, y en modo local ni siquiera va ahí.
+
+NOVEDADES
+
+Oculta las líneas del chat que contienen una palabra que tú eliges. Añade tus palabras clave en los ajustes de filtros, una por línea: una línea que contenga una, en mayúsculas o no, desaparece del chat en lugar de traducirse. Útil contra los comandos de bots como !fish que inundan algunos canales.
+
+Nueve cosas que la extensión decidía por ti ahora son tuyas: tamaño del texto, interlineado y tipografía de la línea traducida, el aire alrededor de su bloque, el color de acento entre cuatro medidos por contraste, el tema del chat fijado en oscuro o claro en vez de seguir al canal, un idioma de lectura recordado por canal, y dos atajos de teclado. Cada valor por defecto es lo que la extensión ya hacía: nada se mueve hasta que tú lo muevas.
+
+Tab cambia lo que escribiste por su traducción. Solo se toma mientras la vista previa está en pantalla, así que una caja vacía nunca la pierde, y Shift+Tab sigue siendo navegación siempre.
+
+La barra de arriba del chat traduce lo que escriben los demás; el botón de abajo traduce lo que escribes tú. Nada en pantalla los separaba, y ahora una flecha en cada uno lo dice.
+
+Banderas en vez de códigos de dos letras en cada línea traducida, en ambas barras y en la lista de idiomas. El panel de idiomas muestra cuál está seleccionado, algo que antes llevaba sobre un fondo que no se distinguía del cursor encima. Y "Chinese (Taiwan)" ya no aparece como "Chinese (...", indistinguible de "Chinese".
+
+La página de ajustes muestra lo que hace cada ajuste: la caché dice cuántas entradas guarda, el límite por canal dice si alguna vez retuvo algo, y la lista de idiomas muestra cuánto representó cada uno.
+
+El cantonés es el idioma 43. El idioma de origen enviado al traductor acierta tres veces más y falla un 97 por ciento menos, medido en 5040 frases de 42 idiomas, y ningún idioma queda sin detectar: veintiséis lo estaban. El cirílico no identificado se llamaba ruso y la escritura árabe se llamaba árabe; el búlgaro, el ucraniano y el persa se leen como sí mismos. El chino tradicional se leía como simplificado siempre.
 
 Código abierto, MIT: github.com/Pkkls/kick-chat-translator
