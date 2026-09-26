@@ -1,13 +1,34 @@
 ---
 name: publish-stores
-description: Publish a tagged release to addons.mozilla.org (version, source archive, release notes in every locale, reviewer notes, listing) through Claude in Chrome, and to the Chrome Web Store through its API with a service account. Use when the user asks to upload, publish or ship a version to the stores, or to update the store listings.
+description: Publish a tagged release to the Chrome Web Store and addons.mozilla.org without a browser, through both stores' APIs (package, source archive, release notes and listing in every locale), with the AMO browser walk kept as a fallback. Use when the user asks to upload, publish or ship a version to the stores, or to update the store listings.
 ---
 
 # Publishing to the stores
 
-Every step below was run for 2.12.1 and is the path that worked. The dead ends are listed at the end so they are not tried again.
+Every step below was run for 2.12.1 and 2.12.2 and is the path that worked. The dead ends are listed at the end so they are not tried again.
 
-## 0. Before any browser
+## The whole release, autonomous
+
+Once the one-time setup of both keys is done (sections 1 and 2), a tagged version ships with these commands and nothing else. `X.Y.Z` is `package.json`'s version; `$P` a scratchpad folder.
+
+```bash
+node .claude/skills/publish-stores/payloads.mjs $P                       # texts, refused if a dash or lost accents
+node .claude/skills/publish-stores/cws.mjs upload release/kick-chat-translator-X.Y.Z-chromium.zip
+node .claude/skills/publish-stores/amo.mjs release release/kick-chat-translator-X.Y.Z-firefox.zip release/kick-chat-translator-X.Y.Z-source.zip $P/amo-notes.json
+node .claude/skills/publish-stores/amo.mjs listing $P/amo-listing.json
+node .claude/skills/publish-stores/cws.mjs publish                       # after the Chrome listing, see below
+node .claude/skills/publish-stores/amo.mjs status
+```
+
+Preconditions are section 0. The Chrome listing is the one part no API reaches: when a `## Description (XX)` changed, the user pastes `$P/cws-description-XX.txt` per language in the dashboard between `upload` and `publish` (publishing submits the listing with the package). The dashboard only offers a listing language for a `_locales` directory the package ships, spelled the way Chrome spells it (`pt_BR`, `zh_CN`; bare `pt` and `zh` are ignored), which `src/shared/locales.test.ts` enforces.
+
+Both clients have a self-test against a fake store; run them after touching either:
+
+```bash
+node .claude/skills/publish-stores/cws-selftest.mjs && node .claude/skills/publish-stores/amo-selftest.mjs
+```
+
+## 0. Before any upload
 
 1. The version is committed, tagged `vX.Y.Z` and **pushed**: the AMO reviewer notes tell the reviewer to `git checkout` that tag.
 2. The archives in `release/` were built from a clean worktree of the tag, not from the working tree (it can hold someone's uncommitted work, and 2.12.0's zips once shipped it). Check: the SHA-256 in `store-listing.md`'s AMO notes equals `sha256sum release/*.zip`.
@@ -44,7 +65,15 @@ Found while setting it up for 2.12.1 (project `kicktranslator`, account `kicktra
 
 The API does not touch the listing. When `## Description (XX)` in `store-listing.md` changed, the user pastes it per language in the dashboard, and the Privacy tab only if the manifest's permissions changed (`## Chrome dashboard: permission justifications`).
 
-## 2. AMO: new version
+## 2. AMO: through the API
+
+`amo.mjs release` uploads the package with `channel=listed`, waits for validation, creates the version with its source archive (multipart: the API refuses a source in JSON), then sets the release notes and the reviewer notes (JSON: the API refuses them in multipart). `amo.mjs listing` sets the summary and description per locale and reads them back. The devhub spells locales `en-us`, the API `en-US`: the script converts.
+
+It signs an HS256 JWT per request with the key in `~/.config/kick-chat-translator/amo-api.json` (`{"issuer": "...", "secret": "..."}`, AMO_API_KEY overrides), never printed. One-time setup, the user's: https://addons.mozilla.org/en-US/developers/addon/api/key/ first asks to confirm the account's email ("Confirm email address" mails a link), then "Generate new credentials" shows the issuer and the secret once. A link read from the user's mailbox is only followed with their explicit yes.
+
+When that file is missing, the browser walk below does the same through Claude in Chrome.
+
+## 2b. AMO: new version, through the browser
 
 Claude in Chrome, the user's session. Slug `kick-chat-translator`, default locale `fr`, AMO has no Arabic locale.
 
@@ -68,7 +97,7 @@ Claude in Chrome, the user's session. Slug `kick-chat-translator`, default local
    ```
    Verify by reloading and counting non-empty `textarea[name^=release_notes_]`: one per locale in the JSON.
 
-## 3. AMO: listing
+## 3. AMO: listing, through the browser
 
 The sections of `/edit` load by AJAX. Same file-input trick with `amo-listing.json`, then:
 
