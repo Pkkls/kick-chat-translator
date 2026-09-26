@@ -42,35 +42,25 @@
   flex-shrink: 0;
 }
 
-/* LE BADGE PORTE UN DRAPEAU DESSINE quand la langue en a un, et ses deux
-   lettres sinon. Les 43 drapeaux de cette feuille ne servaient qu'au selecteur
-   de langues ; le badge d'une ligne, lui, affichait le champ `flag` des
-   langues, qui contient du texte.
+/* Le drapeau est toujours un enfant de son creneau (flagEl), et chaque creneau
+   ne fait que le dimensionner. Un creneau qui peint son propre fond ne le peint
+   que sur son repli texte, jamais derriere un drapeau.
 
-   Dimensionne en em et non aux 16x12 de .kt-flag : le badge vit dans la ligne
-   traduite, dont le lecteur regle la taille, et un drapeau en pixels y serait
-   le seul element a ne pas suivre. 1.35em sur 1.0125em garde le rapport 4:3.
-
-   Les deux selecteurs de classe l'emportent sur .kt-src-flag seul, qui garde
-   son fond et sa marge interieure pour le repli texte. */
-.kt-src-flag.kt-flag {
+   Dans une ligne traduite, en em : le lecteur regle la taille du texte, et un
+   drapeau en pixels y serait le seul element a ne pas suivre. Rapport 4:3. */
+.kt-src-flag > .kt-flag {
+  display: block;
   inline-size: 1.35em;
   block-size: 1.0125em;
-  padding: 0;
   opacity: 0.85;
-  vertical-align: -0.12em;
 }
 
-/* Meme chose sur l'apercu de redaction, aux pixels cette fois : ce badge est
-   dans une surface a nous, pas dans une ligne de chat. */
-.kt-compose-target.kt-flag {
-  padding: 0;
+/* Sur l'apercu de redaction, aux pixels : une surface a nous. Le rayon suit la
+   direction artistique, que la porte compose-live mesure (4 et 8 seulement). */
+.kt-compose-target > .kt-flag {
+  display: block;
   inline-size: 18px;
   block-size: 13px;
-  background-color: transparent;
-  /* .kt-flag arrondit a 2px, ce qui va pour un drapeau dans une liste. Ici le
-     creneau est un badge, et la porte compose-live mesure les badges contre la
-     direction artistique, qui n'admet que 4 et 8. */
   border-radius: var(--kt-r-sm);
 }
 
@@ -99,7 +89,8 @@
   margin-inline-end: 4px;
 }
 
-.kt-chip-flag.kt-flag {
+.kt-chip-flag > .kt-flag {
+  display: block;
   inline-size: 15px;
   block-size: 11px;
 }
@@ -145,7 +136,7 @@
 
 /* ── Blasons reduits, tribandes a charge ───────────────────────────── */
 .kt-flag-sk { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12'%3E %3Crect width='16' height='4' fill='%23fff'/%3E %3Crect y='4' width='16' height='4' fill='%230b4ea2'/%3E %3Crect y='8' width='16' height='4' fill='%23ee1c25'/%3E %3Cpath d='M3 2.9h4.2v3.9a2.1 2.1 0 0 1-2.1 2.3 2.1 2.1 0 0 1-2.1-2.3z' fill='%23ee1c25' stroke='%23fff' stroke-width='.7'/%3E %3Cpath d='M5.1 4v3.3M4.1 5.1h2' stroke='%23fff' stroke-width='.65'/%3E %3C/svg%3E") center/cover no-repeat; }
-.kt-flag-sl { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12'%3E %3Crect width='16' height='4' fill='%23fff'/%3E %3Crect y='4' width='16' height='4' fill='%23005ce6'/%3E %3Crect y='8' width='16' height='4' fill='%23ed1c24'/%3E %3Cpath d='M2.6 2.4h4v3.4l-2 2.1-2-2.1z' fill='%23005ce6' stroke='%23fff' stroke-width='.7'/%3E %3Cpath d='M3.3 5.9l1.3-1.9 1.3 1.9z' fill='%23fff'/%3E %3C/svg%3E") center/cover no-repeat; }
+.kt-flag-si { background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12'%3E %3Crect width='16' height='4' fill='%23fff'/%3E %3Crect y='4' width='16' height='4' fill='%23005ce6'/%3E %3Crect y='8' width='16' height='4' fill='%23ed1c24'/%3E %3Cpath d='M2.6 2.4h4v3.4l-2 2.1-2-2.1z' fill='%23005ce6' stroke='%23fff' stroke-width='.7'/%3E %3Cpath d='M3.3 5.9l1.3-1.9 1.3 1.9z' fill='%23fff'/%3E %3C/svg%3E") center/cover no-repeat; }
 
 /* ── Formes que les degrades ne savent pas faire. SVG inline dans la
    feuille : aucun fichier a servir, aucune requete.

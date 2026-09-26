@@ -129,7 +129,7 @@ const vu = await page.evaluate(() => {
   const echRow = rows.slice(0, 3).map((r) => ({
     code: r.dataset.code ?? null,
     rangee: boite(r),
-    drapeau: boite(r.querySelector('.kt-lang-flag')),
+    drapeau: boite(r.querySelector('.kt-flag')),
     nom: r.querySelector('.kt-lang-name')?.textContent?.slice(0, 22) ?? null,
     tailleNom: r.querySelector('.kt-lang-name') ? +parseFloat(getComputedStyle(r.querySelector('.kt-lang-name')).fontSize).toFixed(1) : null,
     contrasteNom: contraste(r.querySelector('.kt-lang-name')),

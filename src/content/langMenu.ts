@@ -16,7 +16,7 @@
  * list is not meant to be walked.
  */
 import { LANGUAGES, getLang, localLangName, uiLocale } from '~/shared/languages';
-import { flagClass } from '~/shared/flags';
+import { flagEl } from '~/shared/flags';
 
 /**
  * Columns in the panel's language grid.
@@ -235,12 +235,8 @@ export function fillLangMenu(
       // tile, that label is gone and the code is how anything addresses one.
       tile.dataset.code = code;
 
-      const fc = flagClass(code);
-      if (fc) {
-        const flag = document.createElement('span');
-        flag.className = fc;
-        tile.appendChild(flag);
-      }
+      const flag = flagEl(code);
+      if (flag) tile.appendChild(flag);
       // No code under the flag either. It was rendering at 9px in a 73x44
       // tile, which is a label nobody reads, and the tile already carries the
       // language's full name as its accessible name and its tooltip. The flag
@@ -303,10 +299,8 @@ export function fillLangMenu(
       globe.appendChild(icon('globe', ''));
       row.appendChild(globe);
     } else {
-      const fc = flagClass(code);
-      if (fc) {
-        const flag = document.createElement('span');
-        flag.className = `${fc} kt-lang-flag`;
+      const flag = flagEl(code);
+      if (flag) {
         row.appendChild(flag);
       } else {
         // No flag rather than a wrong one; the gap keeps the columns aligned.

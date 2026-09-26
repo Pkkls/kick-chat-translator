@@ -20,7 +20,7 @@
  * and it must never be the reason a layout moves.
  */
 import { LANGUAGES, getLang, localLangName, uiLocale } from '~/shared/languages';
-import { flagClass } from '~/shared/flags';
+import { flagEl } from '~/shared/flags';
 import { msg } from './msg';
 
 const CHIP_ID = 'kt-lang-chip';
@@ -266,19 +266,12 @@ function fillMenu(menu: HTMLElement, state: ChipState, h: ChipHandlers, close: (
     // The drawn flag, in the slot the ISO code used to fill. Forty-three rows
     // of two-letter codes are read letter by letter; a colour block is spotted
     // without reading, which is the whole reason flags.ts exists. The code
-    // stays as the fallback for any language with no flag: `flagClass` returns
-    // undefined rather than pointing at a wrong country, and an empty 34px slot
+    // stays as the fallback for any language with no flag: `flagEl` returns
+    // null rather than pointing at a wrong country, and an empty 34px slot
     // would break the column alignment.
     const iso = document.createElement('span');
     iso.className = 'kt-chip-iso';
-    const fc = code === 'auto' ? undefined : flagClass(code);
-    if (fc) {
-      const flag = document.createElement('span');
-      flag.className = fc;
-      iso.appendChild(flag);
-    } else {
-      iso.textContent = code === 'auto' ? '' : code.toUpperCase();
-    }
+    iso.append(flagEl(code) ?? (code === 'auto' ? '' : code.toUpperCase()));
     row.appendChild(iso);
 
     const label = document.createElement('span');
@@ -611,12 +604,12 @@ export function updateLangChip(state: ChipState): void {
   // une : en pause, en cours, en erreur, il n'y a pas de langue a montrer.
   const flag = chip.querySelector<HTMLElement>('.kt-chip-flag');
   if (flag) {
-    const fc =
+    const drawn =
       state.mode === 'off' || state.mode === 'loading' || state.mode === 'error'
-        ? undefined
-        : flagClass(state.code ?? '');
-    flag.className = fc ? `kt-chip-flag ${fc}` : 'kt-chip-flag';
-    flag.hidden = !fc;
+        ? null
+        : flagEl(state.code ?? '');
+    flag.replaceChildren(drawn ?? '');
+    flag.hidden = !drawn;
   }
 
   chip.dataset.mode = state.mode;

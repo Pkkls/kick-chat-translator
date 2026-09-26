@@ -52,22 +52,25 @@
   color: var(--kt-text-2);
 }
 
-/* Source-language badge on a translated chat line. Text, not a drawn flag:
-   langFlag() returns a flag emoji and Windows falls back to the two letters.
-   It was called .kt-flag until that name was taken by the drawn 16x12 flags
-   further down, which then sized and dimmed it -- and, the other way round,
-   lent every drawn flag this rule's opacity and padding. */
+/* Source-language badge on a translated chat line: a slot holding the drawn
+   flag (a .kt-flag child, sized in flags.css) or, for a language without one,
+   its two letters. The font size stays on the slot because the flag is sized
+   in em against it. */
 .kt-src-flag {
   display: inline-block;
   font-size: var(--kt-fc-sm);
   font-weight: 700;
-  opacity: 0.65;
   letter-spacing: 0.04em;
   margin-inline-end: 5px;
+  text-transform: uppercase;
+  vertical-align: -0.12em;
+}
+/* The pill belongs to the two letters only: behind a flag it hid the flag. */
+.kt-src-flag:not(:has(> .kt-flag)) {
+  opacity: 0.65;
   padding: 0 4px;
   border-radius: 4px;
   background: rgb(var(--kt-text-rgb) / 0.06);
-  text-transform: uppercase;
   vertical-align: middle;
 }
 
@@ -557,14 +560,17 @@ html[data-kt-scheme='light'] .kt-translation-replace {
 .kt-compose-target {
   flex-shrink: 0;
   margin-top: 2px;
-  padding: 2px 6px;
-  background: rgb(var(--kt-green-rgb) / 0.13);
   border-radius: 4px;
   color: var(--kt-green);
   font-size: var(--kt-fs-xs);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+/* La pastille ne va qu'aux deux lettres : derriere un drapeau, elle le masquait. */
+.kt-compose-target:not(:has(> .kt-flag)) {
+  padding: 2px 6px;
+  background: rgb(var(--kt-green-rgb) / 0.13);
 }
 
 /* The translation — the hero. Shows in full (grows the chip upward); scrolls only
@@ -631,11 +637,7 @@ html[data-kt-scheme='light'] .kt-translation-inline {
   background: rgb(var(--kt-green-ink-rgb) / 0.12);
   border-inline-start-color: rgb(var(--kt-green-ink-rgb) / 0.6);
 }
-/* Renamed with its dark counterpart. Under the old name this rule outranked
-   every .kt-flag-xx gradient on specificity (0,2,1 against 0,1,0), so in the
-   light scheme it repainted each drawn flag with a flat grey. */
 html[data-kt-scheme='light'] .kt-src-flag {
-  background: rgb(var(--kt-text-rgb) / 0.06);
   color: var(--kt-muted);
 }
 html[data-kt-scheme='light'] .kt-retry {
@@ -679,8 +681,10 @@ html[data-kt-scheme='light'] .kt-compose {
 /* The brand green is unreadable on a light ground: measured 1.29:1 for the
    badge and 1.22 for the cue, where the chip section already records 1.25 for
    green as text. #2A810C is the variant that section measured at 4.50. */
-html[data-kt-scheme='light'] .kt-compose-target {
+html[data-kt-scheme='light'] .kt-compose-target:not(:has(> .kt-flag)) {
   background: rgb(var(--kt-green-ink-rgb) / 0.13);
+}
+html[data-kt-scheme='light'] .kt-compose-target {
   /* var(--kt-green-ink) is the 4.50 figure against the plain light surface; the badge sits
      on its own green tint, which lifts the ground and brought it back to 4.31.
      Darkened until the tint is paid for. */
@@ -1376,10 +1380,6 @@ html[data-kt-scheme='light'] .kt-chip[data-mode='loading'] {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.kt-lang-flag {
-  flex-shrink: 0;
 }
 
 /* Le liseré des drapeaux vient de flags.css, calibre pour une surface sombre :

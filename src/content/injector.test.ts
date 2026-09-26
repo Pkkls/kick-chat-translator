@@ -294,6 +294,20 @@ describe('injector artifacts', () => {
       expect(bars[0]?.querySelector('.kt-float-label')?.textContent).toBe('STALE');
     });
 
+    // Redrawn by the mount's own painter. A positional lookup used to take the
+    // direction arrow for the flag, repaint the arrow and leave the old flag.
+    it('redraws the language button when the language changes elsewhere', () => {
+      const host = twoPanels();
+      mountFloatingBar(host, { ...defaultSettings(), enabled: true, targetLang: 'fr' }, barHandlers());
+      updateFloatingBar({ ...defaultSettings(), enabled: true, targetLang: 'ja' });
+
+      const pick = document.querySelectorAll('#kt-floating-bar')[1]!.querySelector('.kt-float-lang')!;
+      expect(pick.querySelector('.kt-float-dir')?.className).toBe('kt-float-dir');
+      expect(pick.querySelector('.kt-flag-jp')).not.toBeNull();
+      expect(pick.querySelector('.kt-flag-fr')).toBeNull();
+      expect(pick.querySelector('.kt-float-lang-tag')?.textContent).toBe('JA');
+    });
+
     // Teardown is the one place that stays document wide, so it cannot strand a
     // copy in the panel that is off screen.
     it('takes every copy away when it unmounts', () => {

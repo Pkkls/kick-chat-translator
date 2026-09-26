@@ -18,7 +18,11 @@
  * that way, so one row that meant something else was the odd one out.
  */
 
-/** Language code to the ISO 3166-1 alpha-2 code whose flag is drawn. */
+/**
+ * Language code to the suffix of the `.kt-flag-*` class that draws its flag: an
+ * ISO 3166-1 alpha-2 code, except `ca`, the Catalan senyera, because Catalonia
+ * has none (`ca` as a country is Canada, which nothing here draws).
+ */
 export const FLAG_BY_LANG: Readonly<Record<string, string>> = {
   en: 'gb',
   fr: 'fr',
@@ -59,7 +63,7 @@ export const FLAG_BY_LANG: Readonly<Record<string, string>> = {
   hu: 'hu',
   bg: 'bg',
   ca: 'ca',
-  sl: 'sl',
+  sl: 'si',
   et: 'ee',
   lt: 'lt',
   lv: 'lv',
@@ -82,4 +86,19 @@ export function flagClass(code: string): string | undefined {
   // Prefixed, like every other class this extension injects. A bare `.f` on
   // kick.com is a collision waiting to happen.
   return cc ? `kt-flag kt-flag-${cc}` : undefined;
+}
+
+/**
+ * The drawn flag as an element of its own, or null when the language has none.
+ *
+ * Always a child of the slot that holds it, never classes added to that slot:
+ * a slot that paints its own background wins the cascade over the drawing, and
+ * the line badge and the compose badge shipped as grey boxes that way.
+ */
+export function flagEl(code: string): HTMLSpanElement | null {
+  const fc = flagClass(code);
+  if (!fc) return null;
+  const el = document.createElement('span');
+  el.className = fc;
+  return el;
 }

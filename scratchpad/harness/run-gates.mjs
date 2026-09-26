@@ -30,6 +30,7 @@ const GATES = [
   ['names', 'node', ['scratchpad/harness/names.mjs']],
   ['chip-live', 'node', ['scratchpad/harness/chip-live.mjs']],
   ['chat-live', 'node', ['scratchpad/harness/chat-live.mjs']],
+  ['flag-surfaces', 'node', ['scratchpad/harness/flag-surfaces.mjs']],
   ['measure-popup', 'node', ['scratchpad/harness/measure-popup.mjs']],
   ['emote-survival', 'node', ['scratchpad/harness/emote-survival.mjs']],
   ['bar-live', 'node', ['scratchpad/harness/bar-live.mjs']],

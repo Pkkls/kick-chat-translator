@@ -2,7 +2,7 @@ import injectCss from './inject.css?inline';
 import type { TranslationResult } from '~/shared/types';
 import type { Settings } from '~/shared/settings';
 import { getLang, resolveBrowserLang } from '~/shared/languages';
-import { flagClass } from '~/shared/flags';
+import { flagEl } from '~/shared/flags';
 import {
   makeLangMenu,
   fillLangMenu,
@@ -332,31 +332,11 @@ export function inject(
   targetEl.appendChild(el);
 }
 
-/**
- * Le badge de langue d'une ligne : un drapeau dessine, ou les deux lettres.
- *
- * LE CHAMP `flag` DES 44 LANGUES CONTIENT DU TEXTE, pas un emoji. Le
- * commentaire qui vivait ici disait l'inverse et decrivait un etat disparu :
- * getLang('ja').flag vaut la chaine 'JA'. Pendant ce temps la feuille dessine
- * 43 drapeaux en CSS dont seul le selecteur de langues se servait. Deux
- * systemes, et le bon n'etait pas branche sur les messages.
- *
- * Le repli texte reste pour une langue sans drapeau, parce qu'un drapeau
- * designe un pays et pas une langue : il en manque, et deux lettres valent
- * mieux qu'un carre vide.
- */
+/** Le badge de langue d'une ligne : le drapeau dessine, ou les deux lettres d'une langue qui n'en a pas. */
 function badgeLangue(code: string): HTMLElement {
   const el = document.createElement('span');
-  const fc = flagClass(code);
-  if (fc) {
-    // Les deux classes : `kt-src-flag` porte la place du badge dans la ligne,
-    // `kt-flag` le dessin. La feuille neutralise le fond et la marge interieure
-    // du premier quand le second est la.
-    el.className = `kt-src-flag ${fc}`;
-  } else {
-    el.className = 'kt-src-flag';
-    el.textContent = code.toUpperCase().slice(0, 2);
-  }
+  el.className = 'kt-src-flag';
+  el.append(flagEl(code) ?? code.toUpperCase().slice(0, 2));
   return el;
 }
 
@@ -439,6 +419,9 @@ function findBar(): HTMLElement | null {
   return findChatPanel()?.querySelector<HTMLElement>(`#${FLOAT_ID}`) ?? null;
 }
 
+/** Each bar's own painter for its language button, so an update redraws it the one way the mount does. */
+const langPainters = new WeakMap<HTMLElement, (code: string) => void>();
+
 export interface FloatingBarHandlers {
   onToggle: (enabled: boolean) => void;
   /** Reading language picked on the bar, so the two most used settings need no page. */
@@ -504,18 +487,15 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
     dir.textContent = '\u2193';
     dir.setAttribute('aria-hidden', 'true');
     langPick.appendChild(dir);
-    const fc = code === 'auto' ? undefined : flagClass(code);
-    if (fc) {
-      const flag = document.createElement('span');
-      flag.className = fc;
-      langPick.appendChild(flag);
-    }
+    const flag = flagEl(code);
+    if (flag) langPick.appendChild(flag);
     const tag = document.createElement('span');
     tag.className = 'kt-float-lang-tag';
     tag.textContent = code === 'auto' ? 'AUTO' : code.toUpperCase();
     langPick.appendChild(tag);
   };
   paintLang(settings.targetLang);
+  langPainters.set(bar, paintLang);
 
   const closeLang = (): void => {
     const wasInside = langMenu.contains(document.activeElement);
@@ -691,14 +671,7 @@ export function updateFloatingBar(settings: Settings): void {
   if (bar && label) setBarEnabled(bar, label, settings.enabled, settings.targetLang);
   // The language button carries the code and its flag, so a change made
   // anywhere else (the options page, the chip) has to reach it too.
-  const tag = bar?.querySelector<HTMLElement>('.kt-float-lang-tag');
-  if (tag) {
-    tag.textContent =
-      settings.targetLang === 'auto' ? 'AUTO' : settings.targetLang.toUpperCase();
-    const flag = bar?.querySelector<HTMLElement>('.kt-float-lang > span:first-child');
-    const fc = settings.targetLang === 'auto' ? undefined : flagClass(settings.targetLang);
-    if (flag && flag !== tag) flag.className = fc ?? '';
-  }
+  if (bar) langPainters.get(bar)?.(settings.targetLang);
 }
 
 /** Show/hide a throttle indicator on the floating bar. */

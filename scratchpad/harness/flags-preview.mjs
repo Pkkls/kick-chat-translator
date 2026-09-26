@@ -57,7 +57,7 @@ const MAP = [
   ['id', 'id', 'Indonesia'], ['hi', 'in', 'Hindi'], ['fi', 'fi', 'Suomi'],
   ['no', 'no', 'Norsk'], ['da', 'dk', 'Dansk'], ['el', 'gr', 'Ellinika'],
   ['hu', 'hu', 'Magyar'], ['bg', 'bg', 'Balgarski'], ['ca', 'ca', 'Catala'],
-  ['sl', 'sl', 'Slovenscina'], ['et', 'ee', 'Eesti'], ['lt', 'lt', 'Lietuviu'],
+  ['sl', 'si', 'Slovenscina'], ['et', 'ee', 'Eesti'], ['lt', 'lt', 'Lietuviu'],
   ['lv', 'lv', 'Latviesu'], ['fa', 'ir', 'Farsi'], ['bn', 'bd', 'Bangla'],
   ['ta', 'lk', 'Tamil'], ['ms', 'my', 'Melayu'], ['tl', 'ph', 'Filipino'],
   // Quarante-troisieme, et la seule que cette table avait manquee : son drapeau
@@ -112,7 +112,7 @@ await page.setContent(PAGE);
 // de « fond non transparent » a laisse passer dix-huit regles invalides : les
 // anciennes regles degrade repondaient a leur place et la capture etait
 // identique a celle d'avant.
-const EN_SVG = ['gb','kr','cz','ph','my','tr','br','vn','cn','gr','lk','sa','il','in','se','dk','no','fi','tw','sk','sl'];
+const EN_SVG = ['gb','kr','cz','ph','my','tr','br','vn','cn','gr','lk','sa','il','in','se','dk','no','fi','tw','sk','si'];
 const missing = await page.evaluate((attendus) => {
   const out = [];
   for (const el of document.querySelectorAll('#small .kt-flag')) {

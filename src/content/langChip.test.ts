@@ -115,7 +115,9 @@ describe('states', () => {
     const { composer } = makeComposerRow();
     mountLangChip(composer, state({ mode: 'pinned', code: 'fr' }), noop);
     const flag = read().querySelector<HTMLElement>('.kt-chip-flag')!;
-    expect(flag.className).toContain('kt-flag-fr');
+    // The drawing is a child of the slot, never classes on it: see flagEl.
+    expect(flag.querySelector('.kt-flag.kt-flag-fr')).not.toBeNull();
+    expect(flag.className).toBe('kt-chip-flag');
     expect(flag.hidden).toBe(false);
   });
 

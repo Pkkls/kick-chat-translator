@@ -53,6 +53,14 @@ well.
 - `.kt-hint` carried a width and nothing else: no size, no colour. A note at the
   foot of a card therefore rendered as large as the content it was commenting
   on.
+- **The flag on a translated line and on the compose preview was a grey box.**
+  The flag classes sat on a badge that paints its own background, and the
+  badge's background won: in the light theme since 2.12.0, in both themes once
+  the flags moved to a sheet shared with the options page. The flag is now an
+  element of its own inside the badge, and the badge's pill is only drawn
+  behind the two letters of a language that has no flag.
+- Changing the reading language from the options page or the chip repainted
+  the direction arrow on the bar as a flag and left the old flag in place.
 
 ## [2.12.0] - 2026-09-25
 
