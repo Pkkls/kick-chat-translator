@@ -752,6 +752,10 @@ GET to the project's own GitHub releases endpoint for the update notice.
 Minification is esbuild and Vite defaults through @crxjs/vite-plugin. There is
 no obfuscation step.
 
+The source archive attached to this version is `git archive v2.12.1` of that tag.
+
+The three UNSAFE_VAR_ASSIGNMENT warnings: two are the same line, src/content/langMenu.ts:95, which writes one of the fixed SVG strings of the ICONS constant declared in that file (line 80). No remote or user text reaches it. The third is the dangerouslySetInnerHTML path inside Preact's own renderer, which this code never uses.
+
 ## AMO data collection
 
 The manifest declares this already, under browser_specific_settings, as
