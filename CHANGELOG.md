@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.12.2] - 2026-09-26
+
+The Chrome Web Store listing in every language the listing is written in.
+
+### Fixed
+
+- **Brazilian Portuguese and Chinese readers got the English listing.** The
+  package named those locales `pt` and `zh`, which the Chrome Web Store does
+  not recognise, so it offered no listing in either and fell back to English:
+  on the public page, French and Japanese were localised, pt-BR and zh-CN were
+  not. They are `pt_BR` and `zh_CN` now, and a test holds every locale to the
+  store's list.
+- The French and Turkish store blurbs had lost their accents.
+
+### Added
+
+- **Czech listing.** The store offers a listing language only for a locale the
+  package ships, and the Czech text had nowhere to go.
+
 ## [2.12.1] - 2026-09-26
 
 The options page says what each setting is doing. 2.12.0 was tagged and never

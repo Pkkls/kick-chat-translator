@@ -16,6 +16,11 @@ const ROOT = join(process.cwd(), 'public', '_locales');
 const DEFAULT_LOCALE = 'en';
 /** Chrome Web Store short-description limit. */
 const MAX_BLURB = 132;
+/** developer.chrome.com/docs/extensions/reference/api/i18n, "Supported locales", read 2026-09-26. */
+const CHROME_LOCALES = (
+  'ar am bg bn ca cs da de el en en_AU en_GB en_US es es_419 et fa fi fil fr gu he hi hr hu id it ja kn ' +
+  'ko lt lv ml mr ms nl no pl pt_BR pt_PT ro ru sk sl sr sv sw ta te th tr uk vi zh_CN zh_TW'
+).split(' ');
 
 type Catalog = Record<string, { message: string; description?: string }>;
 
@@ -45,6 +50,14 @@ describe('store listing locales', () => {
       expect(entry.message.trim(), `${locale}/${key} is empty`).not.toBe('');
       expect(entry.message.length, `${locale}/${key} is over ${MAX_BLURB} chars`).toBeLessThanOrEqual(MAX_BLURB);
     }
+  });
+
+  // The store offers a listing language per _locales directory it recognises,
+  // and it recognises only this list. `pt` and `zh` shipped for months and the
+  // Brazilian and Chinese listings fell back to English: measured on the public
+  // page, fr and ja were localised, pt-BR and zh-CN were not.
+  it.each(locales)('%s is a locale code the Chrome Web Store recognises', (locale) => {
+    expect(CHROME_LOCALES).toContain(locale);
   });
 
   it.each(locales)('%s left no untranslated copy of the English text', (locale) => {

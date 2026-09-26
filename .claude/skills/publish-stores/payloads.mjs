@@ -102,6 +102,24 @@ for (const [lang, locales] of Object.entries(NOTES)) {
 // Without a Brazilian section, Brazil reads the European text rather than the French default.
 notes['pt-br'] ??= notes['pt-pt'];
 
+// Chrome Web Store descriptions. Each section opens with notes for whoever
+// pastes it ("Paste into the Turkish listing...", "Short summary: ...") and the
+// text to publish starts at the version header, "NEW IN 2.12.2" or its
+// translation, the first line that names the package version.
+const version = JSON.parse(fs.readFileSync('package.json', 'utf8')).version;
+const cws = {};
+for (const lang of ['EN', 'FR', 'TR', 'AR', 'JA', 'ES', 'PT-BR', 'RU', 'ZH', 'KO', 'CS']) {
+  const lines = (listing[`Description (${lang})`] ?? '').split('\n');
+  const start = lines.findIndex((l) => l.includes(version) && !/paste|summary/i.test(l));
+  if (start < 0) {
+    fails.push(`description Chrome ${lang}: aucune ligne ne cite ${version}`);
+    continue;
+  }
+  cws[lang] = lines.slice(start).join('\n').trim();
+  check(`description Chrome ${lang}`, lang, cws[lang]);
+  if (/\bpaste into\b/i.test(cws[lang])) fails.push(`description Chrome ${lang}: consigne de collage restee dans le texte`);
+}
+
 const rawRev = listing['AMO reviewer notes (source code and build)'] ?? '';
 const rev = rawRev.slice(rawRev.indexOf('Source:')).trim();
 check('notes relecteurs', 'EN', rev);
@@ -113,5 +131,7 @@ if (fails.length) {
 }
 fs.writeFileSync(path.join(out, 'amo-notes.json'), JSON.stringify({ notes, rev }));
 fs.writeFileSync(path.join(out, 'amo-listing.json'), JSON.stringify({ summary, description }));
-console.log(`notes ${Object.keys(notes).length} locales | fiche ${Object.keys(summary).length} locales | relecteurs ${rev.length} car.`);
-console.log(`-> ${path.join(out, 'amo-notes.json')}\n-> ${path.join(out, 'amo-listing.json')}`);
+fs.writeFileSync(path.join(out, 'cws-listing.json'), JSON.stringify(cws));
+for (const [lang, text] of Object.entries(cws)) fs.writeFileSync(path.join(out, `cws-description-${lang}.txt`), text + '\n');
+console.log(`notes ${Object.keys(notes).length} locales | fiche AMO ${Object.keys(summary).length} locales | fiche Chrome ${Object.keys(cws).length} langues | relecteurs ${rev.length} car.`);
+console.log(`-> ${out}`);
