@@ -37,6 +37,11 @@ One-time setup, done by the user (it creates credentials, never do it for them):
 
 `status` failing with `invalid_grant ... account not found` means the key is not the one registered; a 403 from the store means the email was not added in the dashboard.
 
+Found while setting it up for 2.12.1 (project `kicktranslator`, account `kicktranslator@kicktranslator.iam.gserviceaccount.com`, publisher `ef2a9029-0a4d-4858-bb63-4ca619ffd657`):
+- The publisher ID is the UUID in the dashboard's URL, `chrome.google.com/webstore/devconsole/<publisher>`. `tabs_context_mcp` shows the URL even though the page itself cannot be read.
+- Chrome left the downloaded key as a `.tmp` in Downloads, a save prompt waiting. The `.tmp` already held the whole key: check it parses and its `private_key_id` matches the key the console shows, copy it to the key file, and have the user cancel the pending download so no stray copy remains.
+- To check a key before the dashboard step, run `status` with `CWS_PUBLISHER_ID=probe`: a 403 from the store means the token was granted.
+
 The API does not touch the listing. When `## Description (XX)` in `store-listing.md` changed, the user pastes it per language in the dashboard, and the Privacy tab only if the manifest's permissions changed (`## Chrome dashboard: permission justifications`).
 
 ## 2. AMO: new version
