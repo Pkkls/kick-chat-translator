@@ -38,15 +38,16 @@ const codeMissing = [...codeKeys].filter((k) => !keySet.has(k));
 // catalogue because the key is the message. A locale missing from this list is
 // never checked, so it can drift out of date without anything saying so.
 const locales = ['ja', 'fr', 'zh', 'ar', 'ru', 'pt', 'es', 'tr', 'ko'];
-const keyLineRe = /^\s*"((?:\\.|[^"\\])*)"\s*:/;
+// The catalogue is evaluated, not scanned line by line. Its keys come bare,
+// single- or double-quoted, sometimes with the value wrapped onto the next line,
+// and a line regex that knew only the double-quoted form saw 6 of 212. Past the
+// `= {` the file is a plain object literal, so JS reads it exactly as the build
+// does, and a file that stops being one throws here instead of counting low.
+const literalRe = /=\s*(\{[\s\S]*\})/;
 const report = {};
 for (const loc of locales) {
   const s = readFileSync(join(root, `src/shared/i18n/${loc}.ts`), 'utf8');
-  const lk = new Set();
-  for (const line of s.split('\n')) {
-    const m = line.match(keyLineRe);
-    if (m) lk.add(unesc(m[1]));
-  }
+  const lk = new Set(Object.keys(Function(`return ${s.match(literalRe)[1]}`)()));
   report[loc] = {
     entries: lk.size,
     missing: keys.filter((k) => !lk.has(k)),
