@@ -1,13 +1,14 @@
 /**
  * "Update available" check. Polls the GitHub *latest release* tag (throttled, cached
  * in storage.local) and compares it to the installed manifest version. The popup
- * surfaces a button when a newer release exists. No auto-update — the button just
- * links to the release page (the extension is distributed as a release zip).
+ * surfaces a button when a newer release exists, for a copy installed by hand; the
+ * button opens the Chrome Web Store listing, where the copy it installs updates itself.
  */
 import {
   CHROME_STORE_ID,
+  CHROME_STORE_URL,
+  FIREFOX_ADDON_ID,
   GITHUB_LATEST_RELEASE_API,
-  GITHUB_RELEASES_URL,
   STORAGE_KEY_UPDATE,
   UPDATE_CHECK_TTL_MS,
 } from '~/shared/constants';
@@ -22,15 +23,17 @@ interface CachedCheck {
 }
 
 /**
- * True when this copy came from the Chrome Web Store.
+ * True when this copy came from a store, which updates it by itself.
  *
- * The store assigns the id and it is stable for the listing, so this costs no
- * permission. Every other install, a release zip, an unpacked folder, a
- * sideload, gets a different one.
+ * On Chrome the store assigns the id and it is stable for the listing, so this
+ * costs no permission; a release zip, an unpacked folder or a sideload gets a
+ * different one. On Firefox the id is the one the manifest fixes, and release
+ * Firefox only runs that build signed by AMO, so it is an AMO copy (or a
+ * developer's temporary load, who needs no notice either).
  */
-function fromChromeStore(): boolean {
+function fromStore(): boolean {
   try {
-    return chrome.runtime.id === CHROME_STORE_ID;
+    return chrome.runtime.id === CHROME_STORE_ID || chrome.runtime.id === FIREFOX_ADDON_ID;
   } catch {
     return false;
   }
@@ -72,8 +75,8 @@ export async function getUpdateStatus(force = false): Promise<UpdateStatus> {
   // when a release zip was the only way to get the extension.
   //
   // Returning early also means no request to GitHub at all from those copies.
-  if (fromChromeStore()) {
-    return { current, latest: null, updateAvailable: false, releaseUrl: GITHUB_RELEASES_URL };
+  if (fromStore()) {
+    return { current, latest: null, updateAvailable: false, releaseUrl: CHROME_STORE_URL };
   }
 
   const stored = await chrome.storage.local.get(STORAGE_KEY_UPDATE);
@@ -95,6 +98,6 @@ export async function getUpdateStatus(force = false): Promise<UpdateStatus> {
     current,
     latest,
     updateAvailable: latest !== null && isNewerVersion(latest, current),
-    releaseUrl: GITHUB_RELEASES_URL,
+    releaseUrl: CHROME_STORE_URL,
   };
 }

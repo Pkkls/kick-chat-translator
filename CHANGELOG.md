@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.12.3] - 2026-09-26
+
+### Fixed
+
+- **Firefox users were told to download a zip.** The popup's "Update available"
+  button recognised a store install only by the Chrome Web Store's id, so every
+  AMO copy fell through and pointed at a GitHub release their browser would not
+  install. An AMO copy updates itself, like a Chrome Web Store one, and now says
+  nothing either.
+
+### Changed
+
+- On a copy installed by hand, the button opens the Chrome Web Store listing
+  instead of the GitHub releases page: installed from there, the extension
+  updates itself and the notice never has to appear again.
+
 ## [2.12.2] - 2026-09-26
 
 The Chrome Web Store listing in every language the listing is written in.

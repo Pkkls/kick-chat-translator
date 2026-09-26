@@ -1,5 +1,7 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { CHROME_STORE_ID } from '~/shared/constants';
+import { CHROME_STORE_ID, CHROME_STORE_URL, FIREFOX_ADDON_ID } from '~/shared/constants';
 import { getUpdateStatus } from './updateChecker';
 
 /**
@@ -43,6 +45,15 @@ describe('update notice by install source', () => {
     expect(fetched).not.toHaveBeenCalled();
   });
 
+  // An AMO copy updates itself just the same. It used to fall through to the
+  // zip branch, because only the Chrome id was recognised, and sent Firefox
+  // users to a GitHub zip their browser would refuse to install.
+  it('says nothing to an AMO install either, and asks GitHub nothing', async () => {
+    const fetched = chromeStub({ id: FIREFOX_ADDON_ID, latest: 'v9.9.9' });
+    expect((await getUpdateStatus(true)).updateAvailable).toBe(false);
+    expect(fetched).not.toHaveBeenCalled();
+  });
+
   /**
    * The control, and the reason the check above is not simply "never announce":
    * a zip or unpacked copy has no way to update itself, so it is exactly who the
@@ -53,7 +64,9 @@ describe('update notice by install source', () => {
     const status = await getUpdateStatus(true);
     expect(status.updateAvailable).toBe(true);
     expect(status.latest).toBe('v9.9.9');
-    expect(status.releaseUrl).toContain('github.com');
+    // The store rather than a zip: once installed from there, the copy updates
+    // itself and this notice never has to appear again.
+    expect(status.releaseUrl).toBe(CHROME_STORE_URL);
   });
 
   it('stays quiet on a zip install that is already current', async () => {
@@ -75,5 +88,14 @@ describe('update notice by install source', () => {
   // nobody and nothing would ever fail.
   it('carries the id the listing actually has', () => {
     expect(CHROME_STORE_ID).toMatch(/^[a-p]{32}$/);
+    expect(CHROME_STORE_URL).toBe(`https://chromewebstore.google.com/detail/kick-chat-translator/${CHROME_STORE_ID}`);
+  });
+
+  // Same failure mode for Firefox: an id that drifts from the manifest's would
+  // put the GitHub notice back in front of every AMO user, and nothing else
+  // would notice.
+  it('recognises the id the Firefox manifest fixes', () => {
+    const manifest = readFileSync(join(process.cwd(), 'manifest.config.ts'), 'utf8');
+    expect(manifest.match(/gecko:\s*\{\s*id:\s*'([^']+)'/)?.[1]).toBe(FIREFOX_ADDON_ID);
   });
 });

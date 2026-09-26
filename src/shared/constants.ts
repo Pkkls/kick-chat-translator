@@ -94,8 +94,12 @@ export const GITHUB_REPO = 'Pkkls/kick-chat-translator';
  */
 export const CHROME_STORE_ID = 'nkkjmbkmacbdkboijmnhjnblcaiclhni';
 
+/** The Firefox build's id, fixed in manifest.config.ts: every AMO install carries it. */
+export const FIREFOX_ADDON_ID = 'kick-translator@pkkls.dev';
+/** Where the update notice sends a zip install: the store copy updates itself from then on. */
+export const CHROME_STORE_URL = `https://chromewebstore.google.com/detail/kick-chat-translator/${CHROME_STORE_ID}`;
+
 export const GITHUB_LATEST_RELEASE_API = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
-export const GITHUB_RELEASES_URL = `https://github.com/${GITHUB_REPO}/releases/latest`;
 export const UPDATE_CHECK_TTL_MS = 6 * 60 * 60_000; // 6h
 
 export const COMMON_BOTS = new Set([
