@@ -715,19 +715,19 @@ Okuyamadığın bir dildeki Kick sohbeti, her mesajın altında geldiği anda ç
 AMO asks for source when the submitted code is bundled or minified, which this
 is. Paste this into the "Notes for reviewers" field.
 
-Source: https://github.com/Pkkls/kick-chat-translator, public, MIT, tag v2.9.4.
+Source: https://github.com/Pkkls/kick-chat-translator, public, MIT, tag v2.12.0.
 The submitted zip is built from that tag with no patching in between.
 
 Build:
 
   git clone https://github.com/Pkkls/kick-chat-translator
   cd kick-chat-translator
-  git checkout v2.9.4
+  git checkout v2.12.0
   npm ci
   npm run build:firefox
   npm run pack:firefox
 
-The archive lands in release/kick-chat-translator-2.9.4-firefox.zip.
+The archive lands in release/kick-chat-translator-2.12.0-firefox.zip.
 
 Toolchain actually used for the submitted build: Node v22.22.0, npm 10.9.4, on
 Windows. The repository's .nvmrc pins 20 and package.json asks for node >= 20;
