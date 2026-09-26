@@ -33,7 +33,7 @@ C. live verification    test/e2e/compose-kick-live.mjs
                         test/e2e/bar-panel-mesure.mjs
    blocked on kil for the emote picker, open for the rest
 
-D. store listing        store-listing.md
+D. store listing        store/
                         screenshots
    blocked on kil for review and submission
 

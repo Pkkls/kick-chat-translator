@@ -1,0 +1,1 @@
+Kick chat in a language you don't read gets translated under each message as it arrives, and your replies go out in the channel's language. No account, no setup. Works on live streams and VOD.

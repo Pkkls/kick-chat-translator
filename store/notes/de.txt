@@ -1,0 +1,23 @@
+Chatzeilen ausblenden, die ein Wort deiner Wahl enthalten. Trag Schlüsselwörter in den Filtereinstellungen ein, eines pro Zeile: Eine Zeile, die eines davon enthält, egal ob groß oder klein geschrieben, verschwindet aus dem Chat, statt übersetzt zu werden. Praktisch gegen Bot-Befehle wie !fish, die manche Kanäle fluten.
+
+Neun Dinge, die die Erweiterung für dich entschieden hat, gehören jetzt dir.
+
+- Schriftgröße, Zeilenabstand und Schriftart der übersetzten Zeile, und wie viel Luft ihr Block bekommt. Die Größe multipliziert die von Kick: wenn du den Chat schon vergrößert hast, bleibt deine Wahl erhalten.
+- Akzentfarbe, vier davon, jede auf Kontrast gemessen statt ausgesucht.
+- Das Chat-Thema fest auf dunkel oder hell statt dem Kanal zu folgen.
+- Eine Lesesprache, pro Kanal gemerkt.
+- Alt+T schaltet die Chat-Übersetzung ein oder aus, Alt+W die Vorschau.
+
+Tab tauscht das Getippte gegen seine Übersetzung. Die Taste wird nur belegt, solange die Vorschau zu sehen ist, und Shift+Tab bleibt immer Navigation.
+
+Die Leiste oben im Chat übersetzt, was andere schreiben; der Knopf unten übersetzt, was du schreibst. Nichts auf dem Bildschirm trennte die beiden. Jetzt sagt es ein Pfeil an jedem.
+
+Flaggen statt Zwei-Buchstaben-Codes, überall: in jeder übersetzten Zeile, an beiden Leisten und in der Sprachliste.
+
+Das Sprachfeld zeigt, welche Sprache gewählt ist. Vorher trug es das auf einem Hintergrund, den man vom Mauszeiger-Zustand nicht unterscheiden konnte.
+
+Sprachnamen werden nicht mehr abgeschnitten. "Chinese (Taiwan)" erschien als "Chinese (..." und war von "Chinese" nicht zu unterscheiden.
+
+Die Einstellungsseite zeigt, was jede Einstellung tut.
+
+Seit 2.9.2: Kantonesisch ist die 43. Sprache, die an den Übersetzer gemeldete Ausgangssprache stimmt dreimal so oft und ist 97 % seltener falsch.

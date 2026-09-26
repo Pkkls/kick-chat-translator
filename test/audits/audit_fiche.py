@@ -18,33 +18,39 @@ livree se lit maintenant a la source.
 import glob
 import io
 import json
+import os
 import re
 import sys
 
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
-s = io.open('store-listing.md', encoding='utf8').read()
+def lire(f):
+    return io.open(f, encoding='utf8').read().strip()
+
+
+# Un fichier par store, champ et langue, dans store/ (voir store/README.md).
+FICHIERS = sorted(glob.glob('store/**/*.txt', recursive=True))
+s = '\n'.join(lire(f) for f in FICHIERS)
 
 LIMITES = [
-    (r'^## Description \(([A-Z-]+)\)$', 16000, 'Chrome description'),
-    (r'^## Short summary \(132 char limit\)$', 132, 'Chrome resume'),
-    (r'^## AMO summary \(([A-Z-]+)(?:, 250 char limit)?\)$', 250, 'AMO resume'),
-    (r'^## AMO description \(([A-Z-]+)\)$', 15000, 'AMO description'),
+    ('store/chrome/description/*.txt', 16000, 'Chrome description'),
+    ('store/chrome/summary.txt', 132, 'Chrome resume'),
+    ('store/amo/summary/*.txt', 250, 'AMO resume'),
+    ('store/amo/description/*.txt', 15000, 'AMO description'),
 ]
 
-titres = [(m.start(), m.group(0)) for m in re.finditer(r'^## .*$', s, re.M)]
 echecs = []
 comptes = {}
 
-for k, (pos, titre) in enumerate(titres):
-    fin = titres[k + 1][0] if k + 1 < len(titres) else len(s)
-    corps = s[pos + len(titre):fin].strip().rstrip('-').strip()
-    for motif, limite, genre in LIMITES:
-        if re.match(motif, titre):
-            comptes[genre] = comptes.get(genre, 0) + 1
-            if len(corps) > limite:
-                echecs.append(f'{titre} : {len(corps)} caracteres pour {limite}')
-            break
+for motif, limite, genre in LIMITES:
+    trouves = sorted(glob.glob(motif))
+    if not trouves:
+        echecs.append(f'{motif} : aucun fichier')
+    for f in trouves:
+        comptes[genre] = comptes.get(genre, 0) + 1
+        n = len(lire(f))
+        if n > limite:
+            echecs.append(f'{f} : {n} caracteres pour {limite}')
 
 # Le champ `description` tel qu'il est reellement livre, langue par langue.
 livrees = 0
@@ -63,11 +69,10 @@ comptes['description livree'] = livrees
 # permission et oublier sa justification est un motif de rejet, et cela se
 # decouvre autrement une semaine plus tard.
 manifeste = json.load(io.open('dist/manifest.json', encoding='utf8'))
-i = s.find('## Chrome dashboard: permission justifications')
-j = s.find('## Chrome dashboard: data usage')
-bloc = s[i:j] if i >= 0 and j > i else ''
+JUSTIFS = 'store/chrome/dashboard/permission-justifications.txt'
+bloc = lire(JUSTIFS) if os.path.exists(JUSTIFS) else ''
 if not bloc:
-    echecs.append('la section des justifications de permissions est introuvable')
+    echecs.append(f'{JUSTIFS} : introuvable ou vide')
 justifiees = 0
 for perm in list(manifeste.get('permissions', [])) + list(manifeste.get('host_permissions', [])):
     cle = perm.replace('https://', '').replace('/*', '')
@@ -88,9 +93,18 @@ print('tirets cadratins ou demi-cadratins :', cadratins)
 if cadratins:
     echecs.append(f'{cadratins} tiret(s) cadratin dans un texte destine au public')
 
-# Une version publiee doit apparaitre partout ou la fiche en cite une.
-versions = set(re.findall(r'\b2\.\d+\.\d+\b', s))
-print('versions citees :', ' '.join(sorted(versions)))
+# Aucune description ni aucun resume ne cite une version : la description Chrome
+# ne se change qu'en la recollant a la main dans onze langues, donc elle ne porte
+# rien qui vieillisse a chaque release. Les nouveautes vont dans store/notes/.
+# Les notes pour les relecteurs AMO portent {{VERSION}}, rempli au build.
+citees = set()
+for f in FICHIERS:
+    if '/notes/' in f.replace('\\', '/') or f.endswith('reviewer-notes.txt'):
+        continue
+    for v in re.findall(r'\b\d+\.\d+\.\d+\b', lire(f)):
+        citees.add(v)
+        echecs.append(f'{f} : cite la version {v}')
+print('versions citees hors notes :', ' '.join(sorted(citees)) or 'aucune')
 
 if echecs:
     print()

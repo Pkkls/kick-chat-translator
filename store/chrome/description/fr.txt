@@ -1,0 +1,41 @@
+NOUVEAUTÉS
+
+Masque les lignes du chat qui contiennent un mot de ton choix. Ajoute tes mots-clés dans les réglages des filtres, un par ligne : une ligne qui en contient un, en majuscules ou non, disparaît du chat au lieu d'être traduite. Pratique contre les commandes de bots comme !fish qui inondent certaines chaînes.
+
+Neuf choses que l'extension décidait pour toi t'appartiennent : taille du texte, interligne et police de la ligne traduite, l'air autour de son bloc, la couleur d'accent parmi quatre mesurées pour leur contraste, le thème du chat figé en sombre ou en clair au lieu de suivre la chaîne, une langue de lecture retenue par chaîne, et deux raccourcis clavier. Chaque valeur par défaut est ce que l'extension faisait déjà : rien ne bouge tant que tu ne bouges rien.
+
+Tab remplace ce que tu as tapé par sa traduction. La touche n'est prise que tant que l'aperçu est à l'écran, donc une boîte vide ne la perd jamais, et Shift+Tab reste toujours la navigation.
+
+La barre en haut du chat traduit ce que les autres écrivent ; la puce en bas traduit ce que tu écris. Rien à l'écran ne les distinguait, une flèche sur chacune le dit maintenant.
+
+Des drapeaux au lieu des codes à deux lettres sur chaque ligne traduite, sur les deux barres et dans la liste des langues. Le panneau des langues montre laquelle est choisie, ce qu'il portait avant sur un fond qu'on ne distinguait pas du survol. Et « Chinese (Taiwan) » ne s'affiche plus « Chinese (... », indécidable à côté de « Chinese ».
+
+La page de réglages montre ce que chaque réglage fait : le cache dit combien d'entrées il contient, le plafond par chaîne dit s'il a déjà retenu quelque chose, et la liste des langues montre ce que chacune a représenté.
+
+Le cantonais est la 43e langue. La langue source envoyée au traducteur est juste trois fois plus souvent et fausse 97 pour cent moins, mesuré sur 5040 phrases dans 42 langues, et plus aucune langue ne reste non détectée : vingt-six l'étaient. Le cyrillique non identifié était appelé russe et l'écriture arabe était appelée arabe ; le bulgare, l'ukrainien et le persan sont lus pour eux-mêmes. Le chinois traditionnel était lu comme du simplifié à chaque fois.
+
+Tu ouvres un stream Kick où le chat est dans une langue que tu ne lis pas. Chaque message reçoit sa traduction juste en dessous, au fil de l'arrivée. Une barre verte en haut du chat indique que ça tourne.
+
+Tu écris une réponse, un aperçu la montre dans la langue de la chaîne au-dessus de la barre de chat. Clic sur l'aperçu ou Ctrl+Entrée, et cette version remplace ce que tu as tapé dans la boîte de chat, prête à partir.
+
+Rien à régler. Le chat entrant est traduit vers la langue de ton navigateur, ce que tu écris part dans la langue de diffusion de la chaîne, lue depuis Kick. Les deux se changent dans les réglages. Marche sur les lives comme sur les replays VOD, et gère les emotes 7TV.
+
+MOTEURS
+
+Google fonctionne d'emblée, sans clé, sans compte. Ajoute ta propre clé DeepL gratuite (leur offre gratuite couvre 1 million de caractères par mois, sans carte) et la qualité monte nettement sur les langues européennes. DeepL reçoit aussi les lignes récentes de la chaîne comme contexte, donc la formulation colle à la conversation, et on lui demande le registre poli quand la langue en a un : keigo en japonais, vouvoiement en français. Pour faire durer un quota gratuit, DeepL n'est dépensé que sur les paires où il bat vraiment les moteurs gratuits. MyMemory et Lingva restent derrière en secours, et quand un moteur tombe le suivant prend le relais. L'ordre est le tien.
+
+Chrome et Edge 138+ savent aussi traduire en local, si la machine suit. Le modèle se télécharge une fois par paire de langues, puis tout tourne sur ta machine : hors ligne, sans limite, et aucun texte de chat ne sort. Brave et Firefox n'ont pas encore cette API, ils passent par les moteurs ci-dessus.
+
+AFFICHAGE
+
+Traduction sous l'original, en ligne avec lui, après lui en italique plus petit, ou seulement au survol. Le mode survol ne demande rien tant que tu ne pointes pas un message, ce qui divise l'usage par dix environ sur un chat rapide.
+
+FILTRES
+
+Ignorer les bots, blacklister des utilisateurs ou des chaînes, ou limiter les langues source à traduire. Emotes, mentions, liens et murs d'emoji sont retirés avant tout envoi, tu ne paies pas pour traduire "kkkkkk". Les onglets en arrière-plan se mettent en pause seuls.
+
+42 langues, écriture droite-gauche comprise (arabe, hébreu, persan), variantes régionales gardées distinctes (pt-BR, zh-TW). L'interface de l'extension existe en 10 langues : anglais, espagnol, français, portugais, turc, russe, arabe, chinois, japonais et coréen.
+
+Pas de compte, pas d'analytics, pas de serveur à moi. Elle demande le stockage, un minuteur de réveil pour que le traducteur reste prêt pendant que tu regardes, et l'accès à kick.com plus les moteurs de traduction qu'elle peut appeler : Google, DeepL, MyMemory et Lingva. Elle lit aussi la page des versions GitHub pour te signaler qu'une plus récente existe, sans rien envoyer avec cette requête. Ton texte va au moteur que tu as choisi et nulle part ailleurs, et en local il n'y va même pas.
+
+Code source ouvert, MIT : github.com/Pkkls/kick-chat-translator

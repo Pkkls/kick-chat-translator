@@ -1,0 +1,23 @@
+Seçtiğiniz bir kelimeyi içeren sohbet satırlarını gizleyin. Anahtar kelimeleri filtre ayarlarına her satıra bir tane olacak şekilde ekleyin: bunlardan birini içeren bir satır, büyük ya da küçük harfle yazılmış olsun, çevrilmek yerine sohbetten kaybolur. Bazı kanalları dolduran !fish gibi bot komutlarına karşı işe yarar.
+
+Uzantının sizin yerinize karar verdiği dokuz şey artık sizin.
+
+- Çevrilen satırın yazı boyutu, satır aralığı ve yazı tipi, ve bloğunun aldığı boşluk. Boyut, Kick'in sohbete verdiğini çarpar: sohbeti zaten büyüttüyseniz seçiminiz korunur.
+- Vurgu rengi, dört tane, her biri göz kararıyla değil kontrast ölçülerek.
+- Sohbet teması, kanalı izlemek yerine koyu ya da açığa sabitlenmiş.
+- Her kanal için hatırlanan bir okuma dili.
+- Alt+T sohbet çevirisini açar kapatır, Alt+W yazma önizlemesini.
+
+Tab yazdığınızı çevirisiyle değiştirir. Tuş yalnızca önizleme ekrandayken alınır, boş bir kutu onu asla kaybetmez ve Shift+Tab her zaman gezinme kalır.
+
+Sohbetin üstündeki çubuk başkalarının yazdığını çevirir; alttaki düğme sizin yazdığınızı çevirir. Ekranda hiçbir şey ikisini ayırmıyordu. Artık her birinde bir ok bunu söylüyor.
+
+İki harfli kodlar yerine bayraklar, her yerde: her çevrilen satırda, iki çubukta ve dil listesinde.
+
+Dil paneli hangi dilin seçili olduğunu gösteriyor. Önceden bunu, üzerine gelmekten ayırt edemediğiniz bir zeminde taşıyordu.
+
+Dil adları artık kesilmiyor. "Chinese (Taiwan)" "Chinese (..." olarak görülüyordu ve "Chinese"den ayırt edilemiyordu.
+
+Ayarlar sayfası her ayarın ne yaptığını gösteriyor. Önbellek kaç kayıt tuttuğunu, kanal başına sınırı bir şey tutup tutmadığını, dil listesi de her dilin ne kadarını temsil ettiğini söylüyor.
+
+2.9.2'den beri: Kantonca 43. dil, çevirmene bildirilen kaynak dil üç kat daha sık doğru ve %97 daha az yanlış, ve artık hiçbir dil tespit edilmeden kalmıyor. Yirmi altı tanesi kalıyordu.
