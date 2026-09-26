@@ -156,6 +156,8 @@ Kept so the next release starts from what happened, not from what was assumed.
 14. **2.12.3: a gate that encoded the old requirement.** `translate-maj` asserted that the update banner leads to GitHub; the release changed that on purpose, and the gate failed three runs out of three. The consistency told it apart from the snapshot race (which fails once, then passes). The fix was the gate's expectation, in its own commit, with the rest of the check untouched.
 15. **Descriptions pasted for the previous version.** The user pasted the Chrome texts cut for 2.12.2 ("NEW IN 2.12.2"), then 2.12.3 shipped over them with only its package. Paste the texts `payloads.mjs` produces for the version that will actually be submitted.
 
+16. **An accent check too weak to matter.** `payloads.mjs` asked for one accented letter per text, so a single header ("ZOBRAZENÍ") passed six ASCII paragraphs in five Chrome descriptions and two in the French AMO one, and all of them reached the stores, pasted by the user or sent by `amo.mjs`. The Czech text also hid a Cyrillic "а" in "Lista". Now: one accent per paragraph of 120+ characters once quoted English is set aside, no Cyrillic letter in a Latin-script text. Against the old listing it names exactly the 32 paragraphs and the Cyrillic letter; the corrections were checked to change nothing but accents (the texts compared with accents and case stripped).
+
 ### What worked
 
 - Byte-reproducible builds, checked three ways each time: two consecutive runs, a third from another checkout path, and a rebuild from the tagged commit, all on the same SHA-256.
