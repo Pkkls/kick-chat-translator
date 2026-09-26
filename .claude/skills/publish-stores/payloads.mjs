@@ -65,10 +65,13 @@ const NOTES = {
 const LATIN_WITH_DIACRITICS = new Set(['fr', 'es', 'pt', 'pt-br', 'de', 'tr', 'cs', 'FR', 'ES', 'PT-BR', 'TR', 'CS']);
 
 const fails = [];
+// Built from code points so this file never carries the characters it hunts.
+const DASH = new RegExp(`[${String.fromCharCode(0x2013, 0x2014)}]`);
+const DIACRITIC = new RegExp(`[${String.fromCharCode(0xc0)}-${String.fromCharCode(0x17f)}]`);
 const check = (label, lang, text) => {
   if (!text) fails.push(`${label}: vide`);
-  if (/[–—]/.test(text)) fails.push(`${label}: tiret cadratin ou demi-cadratin`);
-  if (LATIN_WITH_DIACRITICS.has(lang) && !/[À-ſ]/.test(text)) fails.push(`${label}: aucun accent, texte ASCII`);
+  if (DASH.test(text)) fails.push(`${label}: tiret cadratin ou demi-cadratin`);
+  if (LATIN_WITH_DIACRITICS.has(lang) && !DIACRITIC.test(text)) fails.push(`${label}: aucun accent, texte ASCII`);
 };
 
 const listing = sections('store-listing.md');
