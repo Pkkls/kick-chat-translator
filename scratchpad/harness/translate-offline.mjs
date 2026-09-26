@@ -359,9 +359,12 @@ const console_ = [];
 page.on('console', (m) => console_.push(`${m.type()}: ${m.text().slice(0, 160)}`));
 
 await page.goto('https://kick.com/kt-fixture-channel', { waitUntil: 'domcontentloaded' });
-await page.waitForTimeout(3000);
 
-const barreMontee = await page.evaluate(() => !!document.getElementById('kt-inject-style'));
+// Attente bornee, pas fixe : sous 24 portes en parallele le script de contenu
+// demarre parfois juste apres 3 s, et la porte le declarait absent a tort.
+const barreMontee = await page
+  .waitForSelector('#kt-inject-style', { state: 'attached', timeout: 15000 })
+  .then(() => true, () => false);
 
 if (SURVOL || OVERRIDE) {
   // Le reglage se pose la ou l'extension le lit, depuis son propre service
