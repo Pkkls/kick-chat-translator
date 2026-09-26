@@ -3,32 +3,31 @@ export interface LangInfo {
   code: string;
   label: string;
   native: string;
-  flag: string;
 }
 
 export const LANGUAGES: readonly LangInfo[] = [
-  { code: 'en', label: 'English', native: 'English', flag: 'EN' },
-  { code: 'fr', label: 'French', native: 'Français', flag: 'FR' },
-  { code: 'es', label: 'Spanish', native: 'Español', flag: 'ES' },
-  { code: 'pt', label: 'Portuguese (Portugal)', native: 'Português', flag: 'PT' },
-  { code: 'pt-br', label: 'Portuguese (Brazil)', native: 'Português (BR)', flag: 'BR' },
-  { code: 'de', label: 'German', native: 'Deutsch', flag: 'DE' },
-  { code: 'it', label: 'Italian', native: 'Italiano', flag: 'IT' },
-  { code: 'nl', label: 'Dutch', native: 'Nederlands', flag: 'NL' },
-  { code: 'pl', label: 'Polish', native: 'Polski', flag: 'PL' },
-  { code: 'sv', label: 'Swedish', native: 'Svenska', flag: 'SV' },
-  { code: 'cs', label: 'Czech', native: 'Čeština', flag: 'CS' },
-  { code: 'sk', label: 'Slovak', native: 'Slovenčina', flag: 'SK' },
-  { code: 'ro', label: 'Romanian', native: 'Română', flag: 'RO' },
-  { code: 'ru', label: 'Russian', native: 'Русский', flag: 'RU' },
-  { code: 'uk', label: 'Ukrainian', native: 'Українська', flag: 'UA' },
-  { code: 'tr', label: 'Turkish', native: 'Türkçe', flag: 'TR' },
-  { code: 'ar', label: 'Arabic', native: 'العربية', flag: 'AR' },
-  { code: 'he', label: 'Hebrew', native: 'עברית', flag: 'HE' },
-  { code: 'ja', label: 'Japanese', native: '日本語', flag: 'JA' },
-  { code: 'ko', label: 'Korean', native: '한국어', flag: 'KO' },
-  { code: 'zh', label: 'Chinese (Simplified)', native: '简体中文', flag: 'ZH' },
-  { code: 'zh-tw', label: 'Chinese (Traditional)', native: '繁體中文', flag: 'TW' },
+  { code: 'en', label: 'English', native: 'English' },
+  { code: 'fr', label: 'French', native: 'Français' },
+  { code: 'es', label: 'Spanish', native: 'Español' },
+  { code: 'pt', label: 'Portuguese (Portugal)', native: 'Português' },
+  { code: 'pt-br', label: 'Portuguese (Brazil)', native: 'Português (BR)' },
+  { code: 'de', label: 'German', native: 'Deutsch' },
+  { code: 'it', label: 'Italian', native: 'Italiano' },
+  { code: 'nl', label: 'Dutch', native: 'Nederlands' },
+  { code: 'pl', label: 'Polish', native: 'Polski' },
+  { code: 'sv', label: 'Swedish', native: 'Svenska' },
+  { code: 'cs', label: 'Czech', native: 'Čeština' },
+  { code: 'sk', label: 'Slovak', native: 'Slovenčina' },
+  { code: 'ro', label: 'Romanian', native: 'Română' },
+  { code: 'ru', label: 'Russian', native: 'Русский' },
+  { code: 'uk', label: 'Ukrainian', native: 'Українська' },
+  { code: 'tr', label: 'Turkish', native: 'Türkçe' },
+  { code: 'ar', label: 'Arabic', native: 'العربية' },
+  { code: 'he', label: 'Hebrew', native: 'עברית' },
+  { code: 'ja', label: 'Japanese', native: '日本語' },
+  { code: 'ko', label: 'Korean', native: '한국어' },
+  { code: 'zh', label: 'Chinese (Simplified)', native: '简体中文' },
+  { code: 'zh-tw', label: 'Chinese (Traditional)', native: '繁體中文' },
   // Cantonese is 'yue' and not 'zh-hk' on purpose, and the two are not the same
   // thing. 'zh-hk' is Chinese as Hong Kong writes it formally: standard Chinese
   // grammar in traditional characters, which a Taipei reader reads without
@@ -36,27 +35,27 @@ export const LANGUAGES: readonly LangInfo[] = [
   // actually types, with its own grammar and its own characters, and a Mandarin
   // reader does not read it. The free Google endpoint agrees: it answers to
   // tl=yue and returns 唔, which is a word 'zh-tw' never produces.
-  { code: 'yue', label: 'Cantonese', native: '廣東話', flag: 'HK' },
-  { code: 'th', label: 'Thai', native: 'ไทย', flag: 'TH' },
-  { code: 'vi', label: 'Vietnamese', native: 'Tiếng Việt', flag: 'VI' },
-  { code: 'id', label: 'Indonesian', native: 'Bahasa Indonesia', flag: 'ID' },
-  { code: 'hi', label: 'Hindi', native: 'हिन्दी', flag: 'HI' },
-  { code: 'fi', label: 'Finnish', native: 'Suomi', flag: 'FI' },
-  { code: 'no', label: 'Norwegian', native: 'Norsk', flag: 'NO' },
-  { code: 'da', label: 'Danish', native: 'Dansk', flag: 'DA' },
-  { code: 'el', label: 'Greek', native: 'Ελληνικά', flag: 'EL' },
-  { code: 'hu', label: 'Hungarian', native: 'Magyar', flag: 'HU' },
-  { code: 'bg', label: 'Bulgarian', native: 'Български', flag: 'BG' },
-  { code: 'ca', label: 'Catalan', native: 'Català', flag: 'CA' },
-  { code: 'sl', label: 'Slovenian', native: 'Slovenščina', flag: 'SI' },
-  { code: 'et', label: 'Estonian', native: 'Eesti', flag: 'EE' },
-  { code: 'lt', label: 'Lithuanian', native: 'Lietuvių', flag: 'LT' },
-  { code: 'lv', label: 'Latvian', native: 'Latviešu', flag: 'LV' },
-  { code: 'fa', label: 'Persian', native: 'فارسی', flag: 'FA' },
-  { code: 'bn', label: 'Bengali', native: 'বাংলা', flag: 'BN' },
-  { code: 'ta', label: 'Tamil', native: 'தமிழ்', flag: 'TA' },
-  { code: 'ms', label: 'Malay', native: 'Bahasa Melayu', flag: 'MS' },
-  { code: 'tl', label: 'Filipino', native: 'Filipino', flag: 'PH' },
+  { code: 'yue', label: 'Cantonese', native: '廣東話' },
+  { code: 'th', label: 'Thai', native: 'ไทย' },
+  { code: 'vi', label: 'Vietnamese', native: 'Tiếng Việt' },
+  { code: 'id', label: 'Indonesian', native: 'Bahasa Indonesia' },
+  { code: 'hi', label: 'Hindi', native: 'हिन्दी' },
+  { code: 'fi', label: 'Finnish', native: 'Suomi' },
+  { code: 'no', label: 'Norwegian', native: 'Norsk' },
+  { code: 'da', label: 'Danish', native: 'Dansk' },
+  { code: 'el', label: 'Greek', native: 'Ελληνικά' },
+  { code: 'hu', label: 'Hungarian', native: 'Magyar' },
+  { code: 'bg', label: 'Bulgarian', native: 'Български' },
+  { code: 'ca', label: 'Catalan', native: 'Català' },
+  { code: 'sl', label: 'Slovenian', native: 'Slovenščina' },
+  { code: 'et', label: 'Estonian', native: 'Eesti' },
+  { code: 'lt', label: 'Lithuanian', native: 'Lietuvių' },
+  { code: 'lv', label: 'Latvian', native: 'Latviešu' },
+  { code: 'fa', label: 'Persian', native: 'فارسی' },
+  { code: 'bn', label: 'Bengali', native: 'বাংলা' },
+  { code: 'ta', label: 'Tamil', native: 'தமிழ்' },
+  { code: 'ms', label: 'Malay', native: 'Bahasa Melayu' },
+  { code: 'tl', label: 'Filipino', native: 'Filipino' },
 ];
 
 /** The 'use the detected language' sentinel stored in settings. */
@@ -162,10 +161,6 @@ export function normalizeLang(raw: string): string {
   if (variant) return variant;
   const base = lower.split('-')[0] ?? lower; // strip region → base language
   return BY_CODE.has(base) ? base : lower;
-}
-
-export function langFlag(code: string): string {
-  return getLang(code)?.flag ?? code.toUpperCase().slice(0, 2);
 }
 
 const RTL_LANGS = new Set(['ar', 'he', 'fa', 'ur']);

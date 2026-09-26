@@ -33,7 +33,7 @@ import {
 import { extractChannelSlug, fetchChannelLangIso } from './kickApi';
 import { localEngine } from './localEngine';
 import { logPlatform, refresh7TV } from './platform';
-import { langFlag, withFavorite } from '~/shared/languages';
+import { withFavorite } from '~/shared/languages';
 import { memoriserLangueChaine } from '~/shared/channelLang';
 import { ROUTE_POLL_MS } from '~/shared/constants';
 import { msg as localised, setContentLocale } from './msg';
@@ -100,7 +100,7 @@ async function main(): Promise<void> {
     if (downloading) {
       return { kind: 'downloading', pct: localEngine.progressOf(downloading.src, downloading.tgt) };
     }
-    if (downloadable.length > 0) return { kind: 'download', label: langFlag(downloadable[0]!.src) };
+    if (downloadable.length > 0) return { kind: 'download', label: downloadable[0]!.src.toUpperCase() };
     return { kind: 'hidden' };
   }
 
