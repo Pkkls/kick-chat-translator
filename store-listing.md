@@ -1,7 +1,7 @@
 # Chrome Web Store listing
 
 Plain text. The store renders no markdown, so the CAPS headers are the only
-structure available. Fact-checked against manifest 2.12.4, README, CHANGELOG.
+structure available. Fact-checked against manifest 2.12.5, README, CHANGELOG.
 
 ## Short summary (132 char limit)
 
@@ -9,7 +9,7 @@ Kick chat in a language you don't read? It gets translated under each message, l
 
 ## Description (EN)
 
-NEW IN 2.12.4
+NEW IN 2.12.5
 
 Nine things the extension used to decide for you are yours now: text size, line spacing and typeface for the translated line, how much air its block gets, the accent colour out of four measured for contrast, the chat theme pinned dark or light instead of following the channel, a reading language remembered per channel, and two keyboard shortcuts. Every default is what the extension already did, so nothing moves until you move it.
 
@@ -55,7 +55,7 @@ Open source, MIT: github.com/Pkkls/kick-chat-translator
 
 Short summary: Chat Kick dans une langue que tu ne lis pas ? Traduit sous chaque message, en direct. Tes reponses partent dans celle de la chaine.
 
-NOUVEAU EN 2.12.4
+NOUVEAU EN 2.12.5
 
 Neuf choses que l'extension decidait pour toi t'appartiennent : taille du texte, interligne et police de la ligne traduite, l'air autour de son bloc, la couleur d'accent parmi quatre mesurees pour leur contraste, le theme du chat fige en sombre ou en clair au lieu de suivre la chaine, une langue de lecture retenue par chaine, et deux raccourcis clavier. Chaque valeur par defaut est ce que l'extension faisait deja : rien ne bouge tant que tu ne bouges rien.
 
@@ -105,7 +105,7 @@ the Turkish store. No native reader was available; verified by round-tripping ea
 
 Short summary: Okuyamadığın bir dilde Kick sohbeti mi? Her mesajın altına canlı çeviri gelir, yanıtların da kanalın dilinde gider.
 
-2.12.4 İLE GELENLER
+2.12.5 İLE GELENLER
 
 Uzantinin sizin yerinize karar verdigi dokuz sey artik sizin: cevrilen satirin yazi boyutu, satir araligi ve yazi tipi, blogunun aldigi bosluk, kontrast olculerek belirlenmis dort vurgu renginden biri, kanali izlemek yerine koyu ya da aciga sabitlenen sohbet temasi, her kanal icin hatirlanan bir okuma dili ve iki klavye kisayolu. Her varsayilan, uzantinin zaten yaptigi seydir: siz oynatana kadar hicbir sey oynamaz.
 
@@ -155,7 +155,7 @@ and handles right-to-left text. No native reader was available; verified by roun
 
 Short summary: دردشة Kick بلغة لا تقرأها؟ تظهر الترجمة أسفل كل رسالة مباشرةً، وردودك تخرج بلغة القناة.
 
-الجديد في 2.12.4
+الجديد في 2.12.5
 
 تسعة أمور كانت الإضافة تقررها عنك صارت لك: حجم النص وتباعد الأسطر وخط السطر المترجم، والمساحة حول كتلته، ولون التمييز من بين أربعة مقيسة على التباين، وسمة الدردشة مثبّتة داكنة أو فاتحة بدل اتباع القناة، ولغة قراءة محفوظة لكل قناة، واختصاران للوحة المفاتيح. كل قيمة افتراضية هي ما كانت الإضافة تفعله أصلًا: لا شيء يتحرك حتى تحركه أنت.
 
@@ -206,7 +206,7 @@ reader was available; same standard as the Turkish and Arabic blocks above.
 
 Short summary: 読めない言語の Kick チャットが、届いたそばから各メッセージの下に翻訳されます。あなたの返信はチャンネルの言語で送れます。
 
-2.12.4 の新機能
+2.12.5 の新機能
 
 拡張機能が決めていた九つのことが、あなたのものになりました。訳文の文字サイズ、行間、書体、ブロックの余白、コントラストを測って決めた四色のアクセント、チャンネルに合わせる代わりに固定できるダークかライトのテーマ、チャンネルごとに覚える読む言語、そして二つのキーボードショートカット。どの初期値も拡張機能がすでにしていたことなので、あなたが動かすまで何も動きません。
 
@@ -255,7 +255,7 @@ no native reader.
 
 Short summary: ¿Chat de Kick en un idioma que no lees? Se traduce bajo cada mensaje, en directo, y tus respuestas salen en el del canal.
 
-NUEVO EN 2.12.4
+NUEVO EN 2.12.5
 
 Nueve cosas que la extension decidia por ti ahora son tuyas: tamano del texto, interlineado y tipografia de la linea traducida, el aire alrededor de su bloque, el color de acento entre cuatro medidos por contraste, el tema del chat fijado en oscuro o claro en vez de seguir al canal, un idioma de lectura recordado por canal, y dos atajos de teclado. Cada valor por defecto es lo que la extension ya hacia: nada se mueve hasta que tu lo muevas.
 
@@ -304,7 +304,7 @@ no native reader.
 
 Short summary: Chat da Kick num idioma que você não lê? Ele é traduzido embaixo de cada mensagem, ao vivo, e suas respostas saem no do canal.
 
-NOVIDADES NA 2.12.4
+NOVIDADES NA 2.12.5
 
 Nove coisas que a extensao decidia por voce agora sao suas: tamanho do texto, entrelinha e fonte da linha traduzida, o ar em volta do bloco, a cor de destaque entre quatro medidas por contraste, o tema do chat fixado em escuro ou claro em vez de seguir o canal, um idioma de leitura lembrado por canal, e dois atalhos de teclado. Cada padrao e o que a extensao ja fazia: nada muda ate voce mudar.
 
@@ -353,7 +353,7 @@ no native reader.
 
 Short summary: Чат Kick на языке, который вы не читаете? Перевод появляется под каждым сообщением, а ваши ответы уходят на языке канала.
 
-НОВОЕ В 2.12.4
+НОВОЕ В 2.12.5
 
 Девять вещей, которые расширение решало за вас, теперь ваши: размер текста, межстрочный интервал и шрифт переведённой строки, воздух вокруг её блока, акцентный цвет из четырёх, измеренных на контраст, тема чата, закреплённая тёмной или светлой вместо следования каналу, язык чтения, запомненный для каждого канала, и два сочетания клавиш. Все значения по умолчанию совпадают с тем, что расширение уже делало: ничего не сдвинется, пока вы сами не сдвинете.
 
@@ -402,7 +402,7 @@ blocks: no native reader.
 
 Short summary: Kick 的聊天是你读不懂的语言？每条消息下方都会实时出现译文，你的回复也会用频道的语言发出。
 
-2.12.4 的新功能
+2.12.5 的新功能
 
 扩展过去替你决定的九件事，现在归你了：译文的文字大小、行距、字体，它那一块留多少空白，四种测过对比度的强调色之一，固定为深色或浅色而不再跟随频道的聊天主题，按频道记住的阅读语言，以及两个键盘快捷键。每一项默认值都是扩展原本就在做的事：你不动，它就不动。
 
@@ -451,7 +451,7 @@ native reader.
 
 Short summary: 읽지 못하는 언어로 흐르는 Kick 채팅? 각 메시지 아래에 실시간으로 번역이 붙고, 답장은 채널의 언어로 나갑니다.
 
-2.12.4의 새로운 기능
+2.12.5의 새로운 기능
 
 확장 프로그램이 대신 정하던 아홉 가지가 이제 여러분의 것입니다. 번역된 줄의 글자 크기, 줄 간격, 글꼴, 그 블록이 갖는 여백, 대비를 측정해 고른 네 가지 강조색 중 하나, 채널을 따라가는 대신 어둡게 또는 밝게 고정하는 채팅 테마, 채널마다 기억되는 읽기 언어, 그리고 두 개의 단축키입니다. 모든 기본값은 확장 프로그램이 이미 하던 그대로라, 여러분이 바꾸기 전까지는 아무것도 달라지지 않습니다.
 
@@ -502,7 +502,7 @@ blocks: no native reader.
 
 Short summary: Chat na Kicku v jazyce, který neumíte přečíst? Překlad se objeví pod každou zprávou, živě.
 
-NOVINKY VE VERZI 2.12.4
+NOVINKY VE VERZI 2.12.5
 
 Devet veci, o kterych rozsireni rozhodovalo za vas, je ted vasich: velikost textu, radkovani a pismo prelozene radky, vzduch kolem jejiho bloku, barva zvyrazneni ze ctyr merenych na kontrast, motiv chatu pripnuty na tmavy nebo svetly misto sledovani kanalu, jazyk cteni zapamatovany pro kazdy kanal a dve klavesove zkratky. Kazda vychozi hodnota je to, co rozsireni delalo uz driv: nic se nehne, dokud s tim nehnete vy.
 
@@ -715,19 +715,19 @@ Okuyamadığın bir dildeki Kick sohbeti, her mesajın altında geldiği anda ç
 AMO asks for source when the submitted code is bundled or minified, which this
 is. Paste this into the "Notes for reviewers" field.
 
-Source: https://github.com/Pkkls/kick-chat-translator, public, MIT, tag v2.12.4.
+Source: https://github.com/Pkkls/kick-chat-translator, public, MIT, tag v2.12.5.
 The submitted zip is built from that tag with no patching in between.
 
 Build:
 
   git clone https://github.com/Pkkls/kick-chat-translator
   cd kick-chat-translator
-  git checkout v2.12.4
+  git checkout v2.12.5
   npm ci
   npm run build:firefox
   npm run pack:firefox
 
-The archive lands in release/kick-chat-translator-2.12.4-firefox.zip.
+The archive lands in release/kick-chat-translator-2.12.5-firefox.zip.
 
 Toolchain actually used for the submitted build: Node v22.22.0, npm 10.9.4, on
 Windows. The repository's .nvmrc pins 20 and package.json asks for node >= 20;
@@ -752,7 +752,7 @@ GET to the project's own GitHub releases endpoint for the update notice.
 Minification is esbuild and Vite defaults through @crxjs/vite-plugin. There is
 no obfuscation step.
 
-The source archive attached to this version is `git archive v2.12.4` of that tag.
+The source archive attached to this version is `git archive v2.12.5` of that tag.
 
 The three UNSAFE_VAR_ASSIGNMENT warnings: two are the same line, src/content/langMenu.ts:95, which writes one of the fixed SVG strings of the ICONS constant declared in that file (line 80). No remote or user text reaches it. The third is the dangerouslySetInnerHTML path inside Preact's own renderer, which this code never uses.
 
