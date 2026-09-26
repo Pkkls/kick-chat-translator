@@ -11,6 +11,8 @@ Kick chat in a language you don't read? It gets translated under each message, l
 
 NEW IN 2.13.0
 
+Hide chat lines that contain a word you choose. Add keywords in the filter settings, one per line: a line containing one, in any case, disappears from the chat instead of being translated. Handy against bot commands like !fish that flood some channels.
+
 Nine things the extension used to decide for you are yours now: text size, line spacing and typeface for the translated line, how much air its block gets, the accent colour out of four measured for contrast, the chat theme pinned dark or light instead of following the channel, a reading language remembered per channel, and two keyboard shortcuts. Every default is what the extension already did, so nothing moves until you move it.
 
 Tab swaps what you typed for its translation. The key is taken only while the preview is on screen, so an empty box never loses it, and Shift+Tab always stays navigation.
@@ -57,19 +59,21 @@ Short summary: Chat Kick dans une langue que tu ne lis pas ? Traduit sous chaque
 
 NOUVEAU EN 2.13.0
 
-Neuf choses que l'extension decidait pour toi t'appartiennent : taille du texte, interligne et police de la ligne traduite, l'air autour de son bloc, la couleur d'accent parmi quatre mesurees pour leur contraste, le theme du chat fige en sombre ou en clair au lieu de suivre la chaine, une langue de lecture retenue par chaine, et deux raccourcis clavier. Chaque valeur par defaut est ce que l'extension faisait deja : rien ne bouge tant que tu ne bouges rien.
+Masque les lignes du chat qui contiennent un mot de ton choix. Ajoute tes mots-clés dans les réglages des filtres, un par ligne : une ligne qui en contient un, en majuscules ou non, disparaît du chat au lieu d'être traduite. Pratique contre les commandes de bots comme !fish qui inondent certaines chaînes.
 
-Tab remplace ce que tu as tape par sa traduction. La touche n'est prise que tant que l'apercu est a l'ecran, donc une boite vide ne la perd jamais, et Shift+Tab reste toujours la navigation.
+Neuf choses que l'extension décidait pour toi t'appartiennent : taille du texte, interligne et police de la ligne traduite, l'air autour de son bloc, la couleur d'accent parmi quatre mesurées pour leur contraste, le thème du chat figé en sombre ou en clair au lieu de suivre la chaîne, une langue de lecture retenue par chaîne, et deux raccourcis clavier. Chaque valeur par défaut est ce que l'extension faisait déjà : rien ne bouge tant que tu ne bouges rien.
 
-La barre en haut du chat traduit ce que les autres ecrivent ; la puce en bas traduit ce que tu ecris. Rien a l'ecran ne les distinguait, une fleche sur chacune le dit maintenant.
+Tab remplace ce que tu as tapé par sa traduction. La touche n'est prise que tant que l'aperçu est à l'écran, donc une boîte vide ne la perd jamais, et Shift+Tab reste toujours la navigation.
 
-Des drapeaux au lieu des codes a deux lettres sur chaque ligne traduite, sur les deux barres et dans la liste des langues. Le panneau des langues montre laquelle est choisie, ce qu'il portait avant sur un fond qu'on ne distinguait pas du survol. Et « Chinese (Taiwan) » ne s'affiche plus « Chinese (... », indecidable a cote de « Chinese ».
+La barre en haut du chat traduit ce que les autres écrivent ; la puce en bas traduit ce que tu écris. Rien à l'écran ne les distinguait, une flèche sur chacune le dit maintenant.
 
-La page de reglages montre ce que chaque reglage fait : le cache dit combien d'entrees il contient, le plafond par chaine dit s'il a deja retenu quelque chose, et la liste des langues montre ce que chacune a represente.
+Des drapeaux au lieu des codes à deux lettres sur chaque ligne traduite, sur les deux barres et dans la liste des langues. Le panneau des langues montre laquelle est choisie, ce qu'il portait avant sur un fond qu'on ne distinguait pas du survol. Et « Chinese (Taiwan) » ne s'affiche plus « Chinese (... », indécidable à côté de « Chinese ».
+
+La page de réglages montre ce que chaque réglage fait : le cache dit combien d'entrées il contient, le plafond par chaîne dit s'il a déjà retenu quelque chose, et la liste des langues montre ce que chacune a représenté.
 
 DEPUIS 2.9.2
 
-Le cantonais est la 43e langue. La langue source envoyee au traducteur est juste trois fois plus souvent et fausse 97 pour cent moins, mesure sur 5040 phrases dans 42 langues, et plus aucune langue ne reste non detectee : vingt-six l'etaient. Le cyrillique non identifie etait appele russe et l'ecriture arabe etait appelee arabe ; le bulgare, l'ukrainien et le persan sont lus pour eux-memes. Le chinois traditionnel etait lu comme du simplifie a chaque fois.
+Le cantonais est la 43e langue. La langue source envoyée au traducteur est juste trois fois plus souvent et fausse 97 pour cent moins, mesuré sur 5040 phrases dans 42 langues, et plus aucune langue ne reste non détectée : vingt-six l'étaient. Le cyrillique non identifié était appelé russe et l'écriture arabe était appelée arabe ; le bulgare, l'ukrainien et le persan sont lus pour eux-mêmes. Le chinois traditionnel était lu comme du simplifié à chaque fois.
 
 Tu ouvres un stream Kick où le chat est dans une langue que tu ne lis pas. Chaque message reçoit sa traduction juste en dessous, au fil de l'arrivée. Une barre verte en haut du chat indique que ça tourne.
 
@@ -107,19 +111,21 @@ Short summary: Okuyamadığın bir dilde Kick sohbeti mi? Her mesajın altına c
 
 2.13.0 İLE GELENLER
 
-Uzantinin sizin yerinize karar verdigi dokuz sey artik sizin: cevrilen satirin yazi boyutu, satir araligi ve yazi tipi, blogunun aldigi bosluk, kontrast olculerek belirlenmis dort vurgu renginden biri, kanali izlemek yerine koyu ya da aciga sabitlenen sohbet temasi, her kanal icin hatirlanan bir okuma dili ve iki klavye kisayolu. Her varsayilan, uzantinin zaten yaptigi seydir: siz oynatana kadar hicbir sey oynamaz.
+Seçtiğiniz bir kelimeyi içeren sohbet satırlarını gizleyin. Anahtar kelimeleri filtre ayarlarına her satıra bir tane olacak şekilde ekleyin: bunlardan birini içeren bir satır, büyük ya da küçük harfle yazılmış olsun, çevrilmek yerine sohbetten kaybolur. Bazı kanalları dolduran !fish gibi bot komutlarına karşı işe yarar.
 
-Tab yazdiginizi cevirisiyle degistirir. Tus yalnizca onizleme ekrandayken alinir, bos bir kutu onu asla kaybetmez ve Shift+Tab her zaman gezinme kalir.
+Uzantının sizin yerinize karar verdiği dokuz şey artık sizin: çevrilen satırın yazı boyutu, satır aralığı ve yazı tipi, bloğunun aldığı boşluk, kontrast ölçülerek belirlenmiş dört vurgu renginden biri, kanalı izlemek yerine koyu ya da açığa sabitlenen sohbet teması, her kanal için hatırlanan bir okuma dili ve iki klavye kısayolu. Her varsayılan, uzantının zaten yaptığı şeydir: siz oynatana kadar hiçbir şey oynamaz.
 
-Sohbetin ustundeki cubuk baskalarinin yazdigini cevirir; alttaki dugme sizin yazdiginizi cevirir. Ekranda hicbir sey ikisini ayirmiyordu, artik her birinde bir ok bunu soyluyor.
+Tab yazdığınızı çevirisiyle değiştirir. Tuş yalnızca önizleme ekrandayken alınır, boş bir kutu onu asla kaybetmez ve Shift+Tab her zaman gezinme kalır.
 
-Her cevrilen satirda, iki cubukta ve dil listesinde iki harfli kodlar yerine bayraklar. Dil paneli hangi dilin secili oldugunu gosteriyor; onceden bunu, uzerine gelmekten ayirt edilemeyen bir zeminde tasiyordu. Ve "Chinese (Taiwan)" artik "Chinese (..." olarak gorunmuyor, ki bu "Chinese"den ayirt edilemiyordu.
+Sohbetin üstündeki çubuk başkalarının yazdığını çevirir; alttaki düğme sizin yazdığınızı çevirir. Ekranda hiçbir şey ikisini ayırmıyordu, artık her birinde bir ok bunu söylüyor.
 
-Ayarlar sayfasi her ayarin ne yaptigini gosteriyor: onbellek kac kayit tuttugunu, kanal basina sinir bir sey tutup tutmadigini, dil listesi de her dilin ne kadarini temsil ettigini soyluyor.
+Her çevrilen satırda, iki çubukta ve dil listesinde iki harfli kodlar yerine bayraklar. Dil paneli hangi dilin seçili olduğunu gösteriyor; önceden bunu, üzerine gelmekten ayırt edilemeyen bir zeminde taşıyordu. Ve "Chinese (Taiwan)" artık "Chinese (..." olarak görünmüyor, ki bu "Chinese"den ayırt edilemiyordu.
+
+Ayarlar sayfası her ayarın ne yaptığını gösteriyor: önbellek kaç kayıt tuttuğunu, kanal başına sınır bir şey tutup tutmadığını, dil listesi de her dilin ne kadarını temsil ettiğini söylüyor.
 
 2.9.2'DEN BERİ
 
-Kantonca 43. dil. Cevirmene bildirilen kaynak dil uc kat daha sik dogru ve yuzde 97 daha az yanlis; 42 dilde 5040 cumle uzerinde olculdu, ve artik hicbir dil tespit edilmeden kalmiyor: yirmi alti tanesi kaliyordu. Tanimlanamayan Kiril rusca, Arap yazisi da arapca sayiliyordu; Bulgarca, Ukraynaca ve Farsca kendileri olarak okunuyor. Geleneksel Cince her seferinde basitlestirilmis okunuyordu.
+Kantonca 43. dil. Çevirmene bildirilen kaynak dil üç kat daha sık doğru ve yüzde 97 daha az yanlış; 42 dilde 5040 cümle üzerinde ölçüldü, ve artık hiçbir dil tespit edilmeden kalmıyor: yirmi altı tanesi kalıyordu. Tanımlanamayan Kiril Rusça, Arap yazısı da Arapça sayılıyordu; Bulgarca, Ukraynaca ve Farsça kendileri olarak okunuyor. Geleneksel Çince her seferinde basitleştirilmiş okunuyordu.
 
 Okuyamadığın bir dilde sohbet akan bir Kick yayını aç. Her mesaj, geldiği anda, hemen altında çevirisini alır. Sohbetin üstündeki yeşil çubuk çalıştığını gösterir.
 
@@ -156,6 +162,8 @@ and handles right-to-left text. No native reader was available; verified by roun
 Short summary: دردشة Kick بلغة لا تقرأها؟ تظهر الترجمة أسفل كل رسالة مباشرةً، وردودك تخرج بلغة القناة.
 
 الجديد في 2.13.0
+
+أخفِ أسطر الدردشة التي تحتوي على كلمة تختارها. أضف كلماتك المفتاحية في إعدادات عوامل التصفية، كلمة في كل سطر: أي سطر يحتوي على إحداها، بأحرف كبيرة أو صغيرة، يختفي من الدردشة بدل أن يُترجم. مفيد ضد أوامر البوتات مثل !fish التي تغمر بعض القنوات.
 
 تسعة أمور كانت الإضافة تقررها عنك صارت لك: حجم النص وتباعد الأسطر وخط السطر المترجم، والمساحة حول كتلته، ولون التمييز من بين أربعة مقيسة على التباين، وسمة الدردشة مثبّتة داكنة أو فاتحة بدل اتباع القناة، ولغة قراءة محفوظة لكل قناة، واختصاران للوحة المفاتيح. كل قيمة افتراضية هي ما كانت الإضافة تفعله أصلًا: لا شيء يتحرك حتى تحركه أنت.
 
@@ -208,6 +216,8 @@ Short summary: 読めない言語の Kick チャットが、届いたそばか�
 
 2.13.0 の新機能
 
+選んだ言葉を含むチャットの行を非表示にできます。フィルター設定にキーワードを一行に一つずつ追加すると、そのどれかを含む行は大文字小文字を問わず、翻訳される代わりにチャットから消えます。一部のチャンネルにあふれる !fish のようなボットのコマンドに便利です。
+
 拡張機能が決めていた九つのことが、あなたのものになりました。訳文の文字サイズ、行間、書体、ブロックの余白、コントラストを測って決めた四色のアクセント、チャンネルに合わせる代わりに固定できるダークかライトのテーマ、チャンネルごとに覚える読む言語、そして二つのキーボードショートカット。どの初期値も拡張機能がすでにしていたことなので、あなたが動かすまで何も動きません。
 
 Tab で入力した文をその訳に置き換えます。プレビューが表示されている間だけキーを取るので、空の入力欄で失われることはなく、Shift+Tab は常に移動のままです。
@@ -257,19 +267,21 @@ Short summary: ¿Chat de Kick en un idioma que no lees? Se traduce bajo cada men
 
 NUEVO EN 2.13.0
 
-Nueve cosas que la extension decidia por ti ahora son tuyas: tamano del texto, interlineado y tipografia de la linea traducida, el aire alrededor de su bloque, el color de acento entre cuatro medidos por contraste, el tema del chat fijado en oscuro o claro en vez de seguir al canal, un idioma de lectura recordado por canal, y dos atajos de teclado. Cada valor por defecto es lo que la extension ya hacia: nada se mueve hasta que tu lo muevas.
+Oculta las líneas del chat que contienen una palabra que tú eliges. Añade tus palabras clave en los ajustes de filtros, una por línea: una línea que contenga una, en mayúsculas o no, desaparece del chat en lugar de traducirse. Útil contra los comandos de bots como !fish que inundan algunos canales.
 
-Tab cambia lo que escribiste por su traduccion. Solo se toma mientras la vista previa esta en pantalla, asi que una caja vacia nunca la pierde, y Shift+Tab sigue siendo navegacion siempre.
+Nueve cosas que la extensión decidía por ti ahora son tuyas: tamaño del texto, interlineado y tipografía de la línea traducida, el aire alrededor de su bloque, el color de acento entre cuatro medidos por contraste, el tema del chat fijado en oscuro o claro en vez de seguir al canal, un idioma de lectura recordado por canal, y dos atajos de teclado. Cada valor por defecto es lo que la extensión ya hacía: nada se mueve hasta que tú lo muevas.
 
-La barra de arriba del chat traduce lo que escriben los demas; el boton de abajo traduce lo que escribes tu. Nada en pantalla los separaba, y ahora una flecha en cada uno lo dice.
+Tab cambia lo que escribiste por su traducción. Solo se toma mientras la vista previa está en pantalla, así que una caja vacía nunca la pierde, y Shift+Tab sigue siendo navegación siempre.
 
-Banderas en vez de codigos de dos letras en cada linea traducida, en ambas barras y en la lista de idiomas. El panel de idiomas muestra cual esta seleccionado, algo que antes llevaba sobre un fondo que no se distinguia del cursor encima. Y "Chinese (Taiwan)" ya no aparece como "Chinese (...", indistinguible de "Chinese".
+La barra de arriba del chat traduce lo que escriben los demás; el botón de abajo traduce lo que escribes tú. Nada en pantalla los separaba, y ahora una flecha en cada uno lo dice.
 
-La pagina de ajustes muestra lo que hace cada ajuste: la cache dice cuantas entradas guarda, el limite por canal dice si alguna vez retuvo algo, y la lista de idiomas muestra cuanto represento cada uno.
+Banderas en vez de códigos de dos letras en cada línea traducida, en ambas barras y en la lista de idiomas. El panel de idiomas muestra cuál está seleccionado, algo que antes llevaba sobre un fondo que no se distinguía del cursor encima. Y "Chinese (Taiwan)" ya no aparece como "Chinese (...", indistinguible de "Chinese".
+
+La página de ajustes muestra lo que hace cada ajuste: la caché dice cuántas entradas guarda, el límite por canal dice si alguna vez retuvo algo, y la lista de idiomas muestra cuánto representó cada uno.
 
 DESDE 2.9.2
 
-El cantones es el idioma 43. El idioma de origen enviado al traductor acierta tres veces mas y falla un 97 por ciento menos, medido en 5040 frases de 42 idiomas, y ningun idioma queda sin detectar: veintiseis lo estaban. El cirilico no identificado se llamaba ruso y la escritura arabe se llamaba arabe; el bulgaro, el ucraniano y el persa se leen como si mismos. El chino tradicional se leia como simplificado siempre.
+El cantonés es el idioma 43. El idioma de origen enviado al traductor acierta tres veces más y falla un 97 por ciento menos, medido en 5040 frases de 42 idiomas, y ningún idioma queda sin detectar: veintiséis lo estaban. El cirílico no identificado se llamaba ruso y la escritura árabe se llamaba árabe; el búlgaro, el ucraniano y el persa se leen como sí mismos. El chino tradicional se leía como simplificado siempre.
 
 Abre un directo de Kick donde el chat esté en un idioma que no lees. Cada mensaje recibe su traducción justo debajo, según va llegando. Una barra verde en la parte superior del chat te dice que está funcionando.
 
@@ -306,19 +318,21 @@ Short summary: Chat da Kick num idioma que você não lê? Ele é traduzido emba
 
 NOVIDADES NA 2.13.0
 
-Nove coisas que a extensao decidia por voce agora sao suas: tamanho do texto, entrelinha e fonte da linha traduzida, o ar em volta do bloco, a cor de destaque entre quatro medidas por contraste, o tema do chat fixado em escuro ou claro em vez de seguir o canal, um idioma de leitura lembrado por canal, e dois atalhos de teclado. Cada padrao e o que a extensao ja fazia: nada muda ate voce mudar.
+Esconda as linhas do chat que contêm uma palavra que você escolher. Adicione suas palavras-chave nas configurações de filtros, uma por linha: uma linha que contenha uma delas, em maiúsculas ou não, some do chat em vez de ser traduzida. Útil contra comandos de bots como !fish que inundam alguns canais.
 
-Tab troca o que voce digitou pela traducao. A tecla so e tomada enquanto a previa esta na tela, entao uma caixa vazia nunca a perde, e Shift+Tab continua sempre sendo navegacao.
+Nove coisas que a extensão decidia por você agora são suas: tamanho do texto, entrelinha e fonte da linha traduzida, o ar em volta do bloco, a cor de destaque entre quatro medidas por contraste, o tema do chat fixado em escuro ou claro em vez de seguir o canal, um idioma de leitura lembrado por canal, e dois atalhos de teclado. Cada padrão é o que a extensão já fazia: nada muda até você mudar.
 
-A barra no topo do chat traduz o que os outros escrevem; o botao embaixo traduz o que voce escreve. Nada na tela separava os dois, e agora uma seta em cada um diz isso.
+Tab troca o que você digitou pela tradução. A tecla só é tomada enquanto a prévia está na tela, então uma caixa vazia nunca a perde, e Shift+Tab continua sempre sendo navegação.
 
-Bandeiras em vez de codigos de duas letras em cada linha traduzida, nas duas barras e na lista de idiomas. O painel de idiomas mostra qual esta selecionado, o que antes ficava num fundo que nao dava para distinguir do cursor por cima. E "Chinese (Taiwan)" parou de aparecer como "Chinese (...", indistinguivel de "Chinese".
+A barra no topo do chat traduz o que os outros escrevem; o botão embaixo traduz o que você escreve. Nada na tela separava os dois, e agora uma seta em cada um diz isso.
 
-A pagina de configuracoes mostra o que cada opcao faz: o cache diz quantas entradas guarda, o limite por canal diz se ja segurou alguma coisa, e a lista de idiomas mostra quanto cada um representou.
+Bandeiras em vez de códigos de duas letras em cada linha traduzida, nas duas barras e na lista de idiomas. O painel de idiomas mostra qual está selecionado, o que antes ficava num fundo que não dava para distinguir do cursor por cima. E "Chinese (Taiwan)" parou de aparecer como "Chinese (...", indistinguível de "Chinese".
+
+A página de configurações mostra o que cada opção faz: o cache diz quantas entradas guarda, o limite por canal diz se já segurou alguma coisa, e a lista de idiomas mostra quanto cada um representou.
 
 DESDE A 2.9.2
 
-O cantones e o 43.o idioma. O idioma de origem enviado ao tradutor acerta tres vezes mais e erra 97 por cento menos, medido em 5040 frases de 42 idiomas, e nenhum idioma fica sem deteccao: vinte e seis ficavam. O cirilico nao identificado era chamado de russo e a escrita arabe de arabe; bulgaro, ucraniano e persa sao lidos como eles mesmos. O chines tradicional era lido como simplificado sempre.
+O cantonês é o 43º idioma. O idioma de origem enviado ao tradutor acerta três vezes mais e erra 97 por cento menos, medido em 5040 frases de 42 idiomas, e nenhum idioma fica sem detecção: vinte e seis ficavam. O cirílico não identificado era chamado de russo e a escrita árabe de árabe; búlgaro, ucraniano e persa são lidos como eles mesmos. O chinês tradicional era lido como simplificado sempre.
 
 Abra uma transmissão na Kick onde o chat está num idioma que você não lê. Cada mensagem recebe sua tradução logo abaixo, conforme chega. Uma barra verde no topo do chat mostra que está funcionando.
 
@@ -354,6 +368,8 @@ no native reader.
 Short summary: Чат Kick на языке, который вы не читаете? Перевод появляется под каждым сообщением, а ваши ответы уходят на языке канала.
 
 НОВОЕ В 2.13.0
+
+Скрывайте строки чата, в которых есть выбранное вами слово. Добавьте ключевые слова в настройках фильтров, по одному в строке: строка, содержащая любое из них, в любом регистре, исчезает из чата, а не переводится. Удобно против команд ботов вроде !fish, которые заполоняют некоторые каналы.
 
 Девять вещей, которые расширение решало за вас, теперь ваши: размер текста, межстрочный интервал и шрифт переведённой строки, воздух вокруг её блока, акцентный цвет из четырёх, измеренных на контраст, тема чата, закреплённая тёмной или светлой вместо следования каналу, язык чтения, запомненный для каждого канала, и два сочетания клавиш. Все значения по умолчанию совпадают с тем, что расширение уже делало: ничего не сдвинется, пока вы сами не сдвинете.
 
@@ -404,6 +420,8 @@ Short summary: Kick 的聊天是你读不懂的语言？每条消息下方都会
 
 2.13.0 的新功能
 
+隐藏包含你所选词语的聊天行。在过滤设置里添加关键词，每行一个：含有其中任何一个的行，不论大小写，都会从聊天中消失，而不是被翻译。对付 !fish 这类刷屏的机器人命令很方便。
+
 扩展过去替你决定的九件事，现在归你了：译文的文字大小、行距、字体，它那一块留多少空白，四种测过对比度的强调色之一，固定为深色或浅色而不再跟随频道的聊天主题，按频道记住的阅读语言，以及两个键盘快捷键。每一项默认值都是扩展原本就在做的事：你不动，它就不动。
 
 Tab 把你打的字换成它的译文。只有预览在屏幕上时才占用这个键，所以空输入框永远不会丢掉它，而 Shift+Tab 始终是导航。
@@ -452,6 +470,8 @@ native reader.
 Short summary: 읽지 못하는 언어로 흐르는 Kick 채팅? 각 메시지 아래에 실시간으로 번역이 붙고, 답장은 채널의 언어로 나갑니다.
 
 2.13.0의 새로운 기능
+
+직접 고른 단어가 들어간 채팅 줄을 숨길 수 있습니다. 필터 설정에 키워드를 한 줄에 하나씩 추가하면, 그중 하나라도 들어간 줄은 대소문자와 상관없이 번역되는 대신 채팅에서 사라집니다. 일부 채널을 가득 채우는 !fish 같은 봇 명령어에 유용합니다.
 
 확장 프로그램이 대신 정하던 아홉 가지가 이제 여러분의 것입니다. 번역된 줄의 글자 크기, 줄 간격, 글꼴, 그 블록이 갖는 여백, 대비를 측정해 고른 네 가지 강조색 중 하나, 채널을 따라가는 대신 어둡게 또는 밝게 고정하는 채팅 테마, 채널마다 기억되는 읽기 언어, 그리고 두 개의 단축키입니다. 모든 기본값은 확장 프로그램이 이미 하던 그대로라, 여러분이 바꾸기 전까지는 아무것도 달라지지 않습니다.
 
@@ -504,19 +524,21 @@ Short summary: Chat na Kicku v jazyce, který neumíte přečíst? Překlad se o
 
 NOVINKY VE VERZI 2.13.0
 
-Devet veci, o kterych rozsireni rozhodovalo za vas, je ted vasich: velikost textu, radkovani a pismo prelozene radky, vzduch kolem jejiho bloku, barva zvyrazneni ze ctyr merenych na kontrast, motiv chatu pripnuty na tmavy nebo svetly misto sledovani kanalu, jazyk cteni zapamatovany pro kazdy kanal a dve klavesove zkratky. Kazda vychozi hodnota je to, co rozsireni delalo uz driv: nic se nehne, dokud s tim nehnete vy.
+Skryjte řádky chatu, které obsahují slovo podle vaší volby. Přidejte klíčová slova do nastavení filtrů, jedno na řádek: řádek, který některé z nich obsahuje, bez ohledu na velikost písmen, z chatu zmizí, místo aby se překládal. Hodí se proti příkazům botů jako !fish, které zaplavují některé kanály.
 
-Tab vymeni to, co jste napsali, za preklad. Klavesa se bere jen dokud je nahled na obrazovce, takze prazdne pole ji nikdy neztrati, a Shift+Tab zustava vzdy navigaci.
+Devět věcí, o kterých rozšíření rozhodovalo za vás, je teď vašich: velikost textu, řádkování a písmo přeložené řádky, vzduch kolem jejího bloku, barva zvýraznění ze čtyř měřených na kontrast, motiv chatu připnutý na tmavý nebo světlý místo sledování kanálu, jazyk čtení zapamatovaný pro každý kanál a dvě klávesové zkratky. Každá výchozí hodnota je to, co rozšíření dělalo už dřív: nic se nehne, dokud s tím nehnete vy.
 
-Listа nahore v chatu preklada to, co pisi ostatni; tlacitko dole preklada to, co pisete vy. Nic na obrazovce je neodlisovalo, ted to rika sipka na kazdem z nich.
+Tab vymění to, co jste napsali, za překlad. Klávesa se bere jen dokud je náhled na obrazovce, takže prázdné pole ji nikdy neztratí, a Shift+Tab zůstává vždy navigací.
 
-Vlajky misto dvoupismennych kodu na kazde prelozene radce, na obou listach i v seznamu jazyku. Panel jazyku ukazuje, ktery jazyk je vybrany, coz driv nesl na pozadi, ktere neslo odlisit od najeti mysi. A "Chinese (Taiwan)" uz se nezobrazuje jako "Chinese (...", coz neslo odlisit od "Chinese".
+Lišta nahoře v chatu překládá to, co píší ostatní; tlačítko dole překládá to, co píšete vy. Nic na obrazovce je neodlišovalo, teď to říká šipka na každém z nich.
 
-Stranka nastaveni ukazuje, co kazde nastaveni dela: cache rekne, kolik zaznamu drzi, limit na kanal rekne, jestli uz neco zadrzel, a seznam jazyku ukaze, kolik kazdy z nich predstavoval.
+Vlajky místo dvoupísmenných kódů na každé přeložené řádce, na obou lištách i v seznamu jazyků. Panel jazyků ukazuje, který jazyk je vybraný, což dřív nesl na pozadí, které nešlo odlišit od najetí myší. A "Chinese (Taiwan)" už se nezobrazuje jako "Chinese (...", což nešlo odlišit od "Chinese".
+
+Stránka nastavení ukazuje, co každé nastavení dělá: cache řekne, kolik záznamů drží, limit na kanál řekne, jestli už něco zadržel, a seznam jazyků ukáže, kolik každý z nich představoval.
 
 OD VERZE 2.9.2
 
-Kantonstina je 43. jazyk. Zdrojovy jazyk poslany prekladaci je spravne trikrat casteji a spatne o 97 procent mene, mereno na 5040 vetach ve 42 jazycich, a zadny jazyk uz nezustava nerozpoznany: dvacet sest jich zustavalo. Nerozpoznana cyrilice se nazyvala rustinou a arabske pismo arabstinou; bulharstina, ukrajinstina a perstina se ctou jako ony samy. Tradicni cinstina se pokazde cetla jako zjednodusena.
+Kantonština je 43. jazyk. Zdrojový jazyk poslaný překladači je správně třikrát častěji a špatně o 97 procent méně, měřeno na 5040 větách ve 42 jazycích, a žádný jazyk už nezůstává nerozpoznaný: dvacet šest jich zůstávalo. Nerozpoznaná cyrilice se nazývala ruštinou a arabské písmo arabštinou; bulharština, ukrajinština a perština se čtou jako ony samy. Tradiční čínština se pokaždé četla jako zjednodušená.
 
 Otevřete na Kicku vysílání, kde chat běží v jazyce, který neumíte přečíst. Každá zpráva dostane svůj překlad přímo pod sebou, jakmile dorazí. Zelený pruh nahoře v chatu ukazuje, že to běží.
 
@@ -852,9 +874,9 @@ Ignorer les bots, blacklister des utilisateurs ou des chaînes, ou limiter les l
 
 CE QUI SORT DE TON NAVIGATEUR
 
-Le texte d'un message de chat, et rien d'autre, vers le moteur de traduction que tu as choisi. Pas ton pseudo, pas la chaine, pas qui a dit quoi. C'est ce que designe la ligne « contenu du site » dans les permissions ci-dessus, et c'est tout ce qu'elle designe. Pas de compte, pas d'analytics, pas de serveur a moi : l'extension parle a Kick, au moteur que tu as choisi, et a la page des versions GitHub pour te signaler qu'une plus recente existe, sans rien envoyer avec cette derniere requete.
+Le texte d'un message de chat, et rien d'autre, vers le moteur de traduction que tu as choisi. Pas ton pseudo, pas la chaîne, pas qui a dit quoi. C'est ce que désigne la ligne « contenu du site » dans les permissions ci-dessus, et c'est tout ce qu'elle désigne. Pas de compte, pas d'analytics, pas de serveur à moi : l'extension parle à Kick, au moteur que tu as choisi, et à la page des versions GitHub pour te signaler qu'une plus récente existe, sans rien envoyer avec cette dernière requête.
 
-Firefox n'expose pas encore l'API de traduction integree au navigateur que Chrome et Edge 138+ proposent, donc cette version passe toujours par les moteurs ci-dessus. Si Mozilla la livre, l'extension sait deja s'en servir et traduira sur ta machine, hors ligne et sans limite.
+Firefox n'expose pas encore l'API de traduction intégrée au navigateur que Chrome et Edge 138+ proposent, donc cette version passe toujours par les moteurs ci-dessus. Si Mozilla la livre, l'extension sait déjà s'en servir et traduira sur ta machine, hors ligne et sans limite.
 
 Code source ouvert, MIT : github.com/Pkkls/kick-chat-translator
 

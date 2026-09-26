@@ -68,10 +68,23 @@ const fails = [];
 // Built from code points so this file never carries the characters it hunts.
 const DASH = new RegExp(`[${String.fromCharCode(0x2013, 0x2014)}]`);
 const DIACRITIC = new RegExp(`[${String.fromCharCode(0xc0)}-${String.fromCharCode(0x17f)}]`);
+const CYRILLIC = new RegExp(`[${String.fromCharCode(0x400)}-${String.fromCharCode(0x4ff)}]`);
 const check = (label, lang, text) => {
   if (!text) fails.push(`${label}: vide`);
   if (DASH.test(text)) fails.push(`${label}: tiret cadratin ou demi-cadratin`);
-  if (LATIN_WITH_DIACRITICS.has(lang) && !DIACRITIC.test(text)) fails.push(`${label}: aucun accent, texte ASCII`);
+  // Per paragraph, not per text: one accented header ("ZOBRAZENÍ") let six
+  // ASCII paragraphs through in five languages, and they reached the stores.
+  // Quoted English ("Chinese (Taiwan)") is set aside first: a short sentence
+  // around it can be correct without a single accent. The stripped paragraphs
+  // that shipped ran 150 characters and more.
+  if (!LATIN_WITH_DIACRITICS.has(lang) || !text) return;
+  // A Cyrillic letter that looks Latin: the Czech "Lista" shipped with one.
+  const cyr = text.match(CYRILLIC);
+  if (cyr) fails.push(`${label}: lettre cyrillique dans un texte latin, "${text.slice(Math.max(0, cyr.index - 15), cyr.index + 15)}"`);
+  for (const p of text.split(/\n\s*\n/).map((x) => x.trim())) {
+    const own = p.replace(/"[^"]*"|«[^»]*»|“[^”]*”/g, '');
+    if (own.length >= 120 && !DIACRITIC.test(own)) fails.push(`${label}: paragraphe sans accent, "${p.slice(0, 50)}..."`);
+  }
 };
 
 const listing = sections('store-listing.md');
