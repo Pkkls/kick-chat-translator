@@ -39,7 +39,7 @@ work on their own, so you never have to pick a language. (You still can, in sett
 
 ---
 
-## What's new in [2.12.0](https://github.com/Pkkls/kick-chat-translator/releases/latest)
+## What's new in [2.12.1](https://github.com/Pkkls/kick-chat-translator/releases/latest)
 
 **Nine things the extension used to decide for you are yours now.** Text size, line spacing and typeface for
 the translated line, how much air its block gets, the accent colour, the chat theme, a reading language
