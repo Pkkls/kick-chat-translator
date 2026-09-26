@@ -736,8 +736,8 @@ Windows. The repository's .nvmrc pins 20 and package.json asks for node >= 20;
 The build is byte-reproducible. Two consecutive runs of build plus pack produced
 the same archive, verified by SHA-256 rather than assumed:
 
-  chromium  692fe7297e451e6efc48aadd3bd7b07014702f40ef91a47b4941c23318964f9e  318421 bytes
-  firefox   9ab7cbf89c0c6cec43b4a0336c6a59af9a169e8792d54000675bcdf173cb4ded  318350 bytes
+  chromium  a80e0c2147db1f4c22fff3dd5a25f8e9f9c9fad9385a626d56355576328b6cf2  318862 bytes
+  firefox   1d0477eb232cc93598ebbe3223bea66298588004bfb56c47261d082e65b85fd2  318791 bytes
 
 The zip is written by scripts/pack.ts rather than by a platform tool, because
 PowerShell's Compress-Archive on .NET Framework writes backslash separators into
