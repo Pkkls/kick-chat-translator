@@ -1,7 +1,8 @@
 name: Stores verify
 
-# What the Chrome Web Store and AMO serve, compared with store/ and
-# package.json. Between a submission and its approval the difference is
+# Where the listing ranks for store/keywords.json and how many people use it
+# (job summary), then what the Chrome Web Store and AMO serve, compared with
+# store/ and package.json. Between a submission and its approval the difference is
 # expected: the stores still serve the previous release.
 on:
   workflow_dispatch:
@@ -16,4 +17,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - run: node scripts/stores/rank.mjs
       - run: node scripts/stores/verify.mjs
