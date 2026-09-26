@@ -60,6 +60,8 @@ One-time setup, done by the user (it creates credentials, never do it for them):
 
 Found while setting it up for 2.12.1 (project `kicktranslator`, account `kicktranslator@kicktranslator.iam.gserviceaccount.com`, publisher `ef2a9029-0a4d-4858-bb63-4ca619ffd657`):
 - The publisher ID is the UUID in the dashboard's URL, `chrome.google.com/webstore/devconsole/<publisher>`. `tabs_context_mcp` shows the URL even though the page itself cannot be read.
+- Where to send the user, since the pages cannot be read: the service account field is on `devconsole/<publisher>/settings` (title "Paramètres", section "Compte de service"), the listing on `devconsole/<publisher>/<item>/edit` (title "Fiche Store"). `/account` is a 404. The user confused Google Cloud's service account pages with the dashboard twice: name the site, not just the section.
+- Registration takes effect at once: the first `status` after it returned 200.
 - Chrome left the downloaded key as a `.tmp` in Downloads, a save prompt waiting. The `.tmp` already held the whole key: check it parses and its `private_key_id` matches the key the console shows, copy it to the key file, and have the user cancel the pending download so no stray copy remains.
 - To check a key before the dashboard step, run `status` with `CWS_PUBLISHER_ID=probe`: a 403 from the store means the token was granted.
 
@@ -131,10 +133,36 @@ const a = await fetch('https://addons.mozilla.org/api/v5/addons/addon/kick-chat-
 
 Compare as booleans: the tool output masks version strings as tokens. Then open `https://addons.mozilla.org/fr/firefox/addon/kick-chat-translator/` and read the summary and the start of the description.
 
-## Dead ends, already paid for
+## Journal: 2.12.0 to 2.12.2, 2026-09-26
 
-- Leaving `/details` to fill the source step: the source Continue finalises the submission and the details step is skipped. Notes then go through step 5, which works anyway.
-- Clicking Save on the version page: nothing is posted. Always verify by reload, never by the page state after the click.
-- `NOUVEAUTES.md` release notes written without accents: the script now refuses them.
-- Hard-wrapped notes pasted as is: AMO keeps the line breaks. The script unwraps them, without spaces for Chinese and Japanese, with them for Korean.
-- The Web Store through any browser tool: impossible, see section 1.
+Kept so the next release starts from what happened, not from what was assumed.
+
+### Mistakes, and what now stops each one
+
+1. **Zips built from a dirty working tree.** The 2.12.0 archives in `release/` held another session's uncommitted feature (`blockedKeywords`). My first check said they were clean: `unzip -p zip '*.js' | grep` read nothing and counted 0. Now: build only in a clean `git worktree` of the tag, and check archive contents after extracting them, with a positive control (the same grep must find the marker in a known-bad zip).
+2. **A tag that did not match the shipped code.** `v2.12.0` sat on the feature branch tip, while the listing, CHANGELOG and AMO notes described later commits. Now: the AMO notes carry checksums, and a rebuild from the tagged commit must land on them.
+3. **Grey boxes shipped instead of flags.** A built 2.12.1 had them on every translated line; 39 gates were green because none looked at the drawing. Now: the `flag-surfaces` gate.
+4. **AMO version submitted without notes.** I left `/details` for `/source`, and the source step's Continue submits. Then the Save button on the version page posted nothing and I believed the page state until a reload. Now: the API (`amo.mjs`), or in the browser a `fetch` POST verified by reload.
+5. **AMO listing POST refused (403)** without the CSRF and AJAX headers.
+6. **Accents lost.** The release notes in `NOUVEAUTES.md` and the French and Turkish manifest descriptions were ASCII (the latter live on the Chrome store for months). Now: `payloads.mjs` refuses a Latin-script text without diacritics.
+7. **`pt` and `zh` locales ignored by the Chrome store for months**, found only by reading the public page with `hl=pt-BR` and `hl=zh-CN`. Now: `locales.test.ts` holds every `_locales` directory to Chrome's list.
+8. **Wrong dashboard page guessed** (`/account` is a 404), and the user sent to "Compte de service" without naming the site: twice they landed in Google Cloud instead (a second service account created, an "import key" dialog opened). Now: section 1 gives the exact URLs and names the site.
+9. **A Chrome with a remote-debugging port, to drive the dashboard through Playwright**, was denied by the permission classifier. Never retried, by any route.
+10. **Tooling slips.** Several heredocs in one bash call broke parsing (use Write for multi-line files). The Write tool turned `\u2013` escapes into the characters themselves, so `payloads.mjs` matched its own dash search (now built with `String.fromCharCode`). The CJK unwrap first joined Korean without spaces.
+11. **2.12.2 submitted with the old Chrome descriptions.** The detailed descriptions cannot be set by any tool available here (next section), so the package went into review with the listing as it stood; the texts wait in the paste page. `cws.mjs cancel` reopens the draft if they must go in before approval.
+12. **A false alarm on the AMO listing.** The first `amo.mjs listing` read back 0/16 although the PATCH had stored every text: AMO serves descriptions with URLs turned into outgoing links, even with `wrap_outgoing_links=false`. The comparison now strips the markup (16/16), and the fake AMO in the self-test wraps links the same way.
+13. **The AMO key by mail.** I clicked "Confirm email address" and searched the connected Gmail: nothing arrived within the hour, spam included. The user generated the key and pasted it in the chat, so the secret sits in that transcript until it is regenerated (then replace `amo-api.json`).
+
+### What worked
+
+- Byte-reproducible builds, checked three ways each time: two consecutive runs, a third from another checkout path, and a rebuild from the tagged commit, all on the same SHA-256.
+- AMO 2.12.1 in full: package, `git archive` source, release notes in 16 locales, reviewer notes explaining the validator's warnings, listing in 16 locales; approved automatically within minutes.
+- The Chrome service account: JWT signed with the Node standard library, key taken from Chrome's pending `.tmp` without being displayed, publisher ID read from the tab URL, a 403 with `CWS_PUBLISHER_ID=probe` proving the token before the dashboard knew the account, then 200 on the first call after registration.
+- Chrome 2.12.2 through the API: `upload` SUCCEEDED on the tagged zip, `publish` returned PENDING_REVIEW.
+- AMO 2.12.2 without a browser: `amo.mjs release` (upload 201, validation 0 errors and the usual 5 warnings, version created with its source, release notes in 16 locales) then `amo.mjs listing` (16/16 read back). The first real run of both scripts.
+- Every script has a check that fails when it should: `cws-selftest` and `amo-selftest` (5/5 each against fake stores), `payloads.mjs` rejecting a trapped copy, `locales.test.ts` failing on a bare `pt`, `flag-surfaces` failing on both reintroduced defects.
+
+### What stays manual, and why
+
+- **Chrome detailed descriptions.** The API v2 has five methods (upload, publish, fetchStatus, cancelSubmission, setPublishedDeployPercentage; discovery document read 2026-09-26) and no listing schema. The dashboard refuses Claude in Chrome, the built-in pane refuses to load it, computer use only reads browsers, and the remote-debugging route is denied. The user pastes from the page `payloads.mjs` feeds (`cws-description-XX.txt`), then `cws.mjs publish`; a copy page was published for 2.12.2 at https://claude.ai/artifact/CZ28h6CwWsMeFVjUWFNNwu.
+- **One-time registrations, both done 2026-09-26**: the service account email in the dashboard, and the AMO API key (Mozilla releases it only after the account's email is confirmed through a mailed link).

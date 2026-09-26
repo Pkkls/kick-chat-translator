@@ -113,8 +113,11 @@ if (cmd === 'status') {
   const sent = localised(summary);
   await call('PATCH', `${addon}/`, { summary: sent, description: localised(description) });
   // Without `lang`, translated fields come back as {locale: text}: compare them all.
+  // AMO serves descriptions with URLs turned into outgoing links, even with
+  // wrap_outgoing_links=false, so the markup is stripped before comparing.
+  const plain = (s) => (s ?? '').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
   const a = await call('GET', `${addon}/`, undefined, true);
-  const same = Object.keys(sent).filter((l) => a.summary?.[l] === sent[l] && a.description?.[l] === localised(description)[l]);
+  const same = Object.keys(sent).filter((l) => a.summary?.[l] === sent[l] && plain(a.description?.[l]) === localised(description)[l]);
   console.log(`fiche : ${same.length}/${Object.keys(sent).length} locales relues identiques`);
   if (same.length !== Object.keys(sent).length) die(`differentes : ${Object.keys(sent).filter((l) => !same.includes(l)).join(' ')}`);
 } else {

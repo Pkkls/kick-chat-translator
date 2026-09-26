@@ -23,7 +23,7 @@ const src = crypto.randomBytes(5000);
 fs.writeFileSync(path.join(dir, 'ff.zip'), pkg);
 fs.writeFileSync(path.join(dir, 'src.zip'), src);
 fs.writeFileSync(path.join(dir, 'notes.json'), JSON.stringify({ notes: { fr: 'n fr', 'en-us': 'n en', 'pt-br': 'n br' }, rev: 'for reviewers' }));
-fs.writeFileSync(path.join(dir, 'listing.json'), JSON.stringify({ summary: { fr: 's fr', 'en-us': 's en' }, description: { fr: 'd fr', 'en-us': 'd en' } }));
+fs.writeFileSync(path.join(dir, 'listing.json'), JSON.stringify({ summary: { fr: 's fr', 'en-us': 's en' }, description: { fr: 'd fr github.com/x & co', 'en-us': 'd en' } }));
 
 const seen = [];
 let polls = 0;
@@ -69,7 +69,10 @@ const srv = http.createServer(async (req, res) => {
     return send(200, {});
   }
   if (req.method === 'GET' && url === '/addons/addon/kick-chat-translator/') {
-    return send(200, { status: 'public', current_version: { version: '9.9.9', file: { status: 'public' } }, ...stored });
+    // As the real AMO does: URLs become outgoing links, & is escaped.
+    const served = Object.fromEntries(Object.entries(stored.description ?? {}).map(([l, t]) => [l,
+      t.replace(/&/g, '&amp;').replace(/github\.com\/x/, '<a href="https://outgoing.example/v1/x" rel="nofollow">github.com/x</a>')]));
+    return send(200, { status: 'public', current_version: { version: '9.9.9', file: { status: 'public' } }, ...stored, description: served });
   }
   send(404, { detail: `unexpected ${req.method} ${url}` });
 });

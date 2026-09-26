@@ -5,6 +5,7 @@
  *   node .claude/skills/publish-stores/cws.mjs status
  *   node .claude/skills/publish-stores/cws.mjs upload <zip> [--publish]
  *   node .claude/skills/publish-stores/cws.mjs publish
+ *   node .claude/skills/publish-stores/cws.mjs cancel
  *
  * Reads, outside the repository:
  *   ~/.config/kick-chat-translator/cws-service-account.json   the key (CWS_SA_KEY overrides)
@@ -96,7 +97,10 @@ if (cmd === 'status') {
   if (process.argv.includes('--publish')) await call('POST', `${base}:publish`, token);
 } else if (cmd === 'publish') {
   await call('POST', `${item()}:publish`, await accessToken());
+} else if (cmd === 'cancel') {
+  // The listing cannot be edited while a submission is in review: cancel, edit, publish again.
+  await call('POST', `${item()}:cancelSubmission`, await accessToken());
 } else {
-  console.error('usage: cws.mjs status | upload <zip> [--publish] | publish');
+  console.error('usage: cws.mjs status | upload <zip> [--publish] | publish | cancel');
   process.exit(2);
 }
