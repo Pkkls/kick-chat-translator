@@ -1,23 +1,9 @@
-Masque les lignes du chat qui contiennent un mot de ton choix. Ajoute tes mots-clés dans les réglages des filtres, un par ligne : une ligne qui en contient un, en majuscules ou non, disparaît du chat au lieu d'être traduite. Pratique contre les commandes de bots comme !fish qui inondent certaines chaînes.
+L'aperçu de rédaction ne cache plus la puce de langue juste en dessous : tu peux changer la langue dans laquelle tu écris pendant que l'aperçu est affiché.
 
-Neuf choses que l'extension décidait pour toi t'appartiennent maintenant.
+La liste des langues ouverte depuis la barre du haut reste dans son panneau et défile, au lieu de déborder sur le chat avec certaines mises en page.
 
-- Taille du texte, interligne et police de la ligne traduite, et l'air autour de son bloc. La taille multiplie celle que Kick donne au chat : si tu l'as déjà agrandi, ton choix est conservé.
-- Couleur d'accent, quatre, chacune mesurée pour son contraste et non choisie.
-- Le thème du chat figé en sombre ou en clair au lieu de suivre la chaîne.
-- Une langue de lecture retenue par chaîne.
-- Alt+T coupe ou relance la traduction du chat, Alt+W l'aperçu de rédaction.
+Les notifications du chat (traduction copiée, tous les fournisseurs indisponibles, quota atteint, changement de fournisseur) s'affichent maintenant dans la langue de l'interface. Elles étaient toujours en anglais.
 
-Tab remplace ce que tu as tapé par sa traduction. La touche n'est prise que tant que l'aperçu est à l'écran, donc une boîte vide ne la perd jamais, et Shift+Tab reste toujours la navigation.
+Dans les réglages, l'onglet Activité est traduit, les curseurs de taille du texte et d'interligne prennent la couleur d'accent et se saisissent plus facilement, et les puces des modèles locaux montrent le drapeau de chaque langue.
 
-La barre en haut du chat traduit ce que les autres écrivent ; la puce en bas traduit ce que tu écris. Rien à l'écran ne les distinguait. Une flèche sur chacune le dit maintenant.
-
-Des drapeaux au lieu des codes à deux lettres, partout : sur chaque ligne traduite, sur les deux barres et dans la liste des langues.
-
-Le panneau des langues montre laquelle est choisie. Il portait cet état sur un fond qu'on ne distinguait pas du survol.
-
-Les noms de langues ne sont plus coupés. « Chinese (Taiwan) » s'affichait « Chinese (... », indécidable à côté de « Chinese ».
-
-La page de réglages montre ce que chaque réglage fait. Le cache dit combien d'entrées il contient, le budget par chaîne dit s'il a déjà bloqué quelque chose, et la liste des langues montre ce que chacune a représenté.
-
-Depuis 2.9.2 : le cantonais est la 43e langue, la langue source envoyée au traducteur est juste trois fois plus souvent et fausse 97 % moins, et plus aucune langue ne reste non détectée. Vingt-six l'étaient.
+Des libellés plus clairs dans le popup et les réglages : les filtres de chaînes et d'utilisateurs disent autorisés et bloqués au lieu de liste blanche et liste noire, et l'extension porte un seul nom partout.
