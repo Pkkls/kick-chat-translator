@@ -50,4 +50,8 @@ export const ko: Record<string, string> = {
   skipTooLong: '크기 제한을 넘습니다',
   toastChatNotFound:
     'Kick Chat Translator: 채팅을 찾을 수 없습니다. 업데이트가 필요할 수 있습니다.',
+  toastAllDown: '모든 번역 제공자가 중단되었습니다. 잠시 후 다시 시도합니다.',
+  toastCopied: '번역을 복사했습니다. Ctrl+V로 붙여넣으세요.',
+  toastQuota: '$PROVIDER$ 한도에 도달했습니다. 다음 제공자로 전환합니다.',
+  toastSwitched: '$PROVIDER$(으)로 전환했습니다',
 };

@@ -49,4 +49,8 @@ export const ru: Record<string, string> = {
   skipSlang: 'это только чат-сленг',
   skipTooLong: 'он длиннее допустимого',
   toastChatNotFound: 'Kick Chat Translator: чат не найден. Возможно, нужно обновление.',
+  toastAllDown: 'Все сервисы перевода недоступны. Скоро повторим попытку.',
+  toastCopied: 'Перевод скопирован. Вставьте его с помощью Ctrl+V.',
+  toastQuota: 'Лимит $PROVIDER$ исчерпан. Переключаемся на следующий сервис.',
+  toastSwitched: 'Переключено на $PROVIDER$',
 };

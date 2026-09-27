@@ -49,4 +49,8 @@ export const zh: Record<string, string> = {
   skipSlang: '只是聊天俚语',
   skipTooLong: '超出长度上限',
   toastChatNotFound: 'Kick Chat Translator：未找到聊天。可能需要更新。',
+  toastAllDown: '所有翻译服务均不可用，稍后重试。',
+  toastCopied: '译文已复制。按 Ctrl+V 粘贴。',
+  toastQuota: '$PROVIDER$ 配额已用完，正在切换到下一个服务。',
+  toastSwitched: '已切换到 $PROVIDER$',
 };

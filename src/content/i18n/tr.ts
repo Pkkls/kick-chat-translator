@@ -49,4 +49,8 @@ export const tr: Record<string, string> = {
   skipSlang: 'sadece sohbet argosu',
   skipTooLong: 'boyut sinirindan uzun',
   toastChatNotFound: 'Kick Chat Translator: sohbet bulunamadi. Guncelleme gerekebilir.',
+  toastAllDown: 'Tüm çeviri sağlayıcıları çalışmıyor. Birazdan yeniden denenecek.',
+  toastCopied: 'Çeviri kopyalandı. Ctrl+V ile yapıştır.',
+  toastQuota: '$PROVIDER$ kotası doldu. Sıradaki sağlayıcıya geçiliyor.',
+  toastSwitched: '$PROVIDER$ sağlayıcısına geçildi',
 };
