@@ -351,6 +351,17 @@ await prendre('03-composition', () => {
   const p = document.querySelector('.kt-compose');
   return !!p && !p.hasAttribute('hidden') && (p.textContent ?? '').trim().length > 3;
 });
+// L'apercu couvrait 18px des 24 de la puce de langue, celle qui regle la langue
+// de cet apercu, et laissait depasser le bas de son contour sous le panneau.
+const chevauchement = await page.evaluate(() => {
+  const p = document.querySelector('.kt-compose')?.getBoundingClientRect();
+  const c = document.querySelector('.kt-chip')?.getBoundingClientRect();
+  if (!p || !c || !c.height) return null;
+  return Math.max(0, Math.min(p.bottom, c.bottom) - Math.max(p.top, c.top));
+});
+console.log(`apercu/puce       ${chevauchement ?? 'puce absente'}px de chevauchement`);
+if (chevauchement === null) failsAlign.push('03 : pas de puce de langue a mesurer sous l apercu');
+else if (chevauchement > 0) failsAlign.push(`03 : l apercu couvre ${Math.round(chevauchement)}px de la puce de langue`);
 
 // Pour le README, le compositeur et son apercu seulement : c'est la ou se passe
 // la chose, et la liste de messages au-dessus la noierait.
