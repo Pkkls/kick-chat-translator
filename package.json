@@ -2,7 +2,7 @@
   "name": "kick-chat-translator",
   "version": "3.0.1",
   "private": true,
-  "description": "Translates Kick chat into your language as it scrolls, and your replies into the channel's.",
+  "description": "Translates Kick live chat into your language as it scrolls, and your replies into the channel's. Google or DeepL, no account.",
   "license": "MIT",
   "author": "Pkkls",
   "homepage": "https://github.com/Pkkls/kick-chat-translator",
@@ -31,7 +31,8 @@
     "release:check": "npm run typecheck && npm run lint && npm run test && npm run build",
     "stores:selftest": "node scripts/stores/cws-selftest.mjs && node scripts/stores/amo-selftest.mjs",
     "stores:payloads": "node scripts/stores/payloads.mjs",
-    "stores:verify": "node scripts/stores/verify.mjs"
+    "stores:verify": "node scripts/stores/verify.mjs",
+    "stores:rank": "node scripts/stores/rank.mjs"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0-beta.28",

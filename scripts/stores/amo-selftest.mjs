@@ -23,7 +23,7 @@ const src = crypto.randomBytes(5000);
 fs.writeFileSync(path.join(dir, 'ff.zip'), pkg);
 fs.writeFileSync(path.join(dir, 'src.zip'), src);
 fs.writeFileSync(path.join(dir, 'notes.json'), JSON.stringify({ notes: { fr: 'n fr', 'en-us': 'n en', 'pt-br': 'n br' }, rev: 'for reviewers' }));
-fs.writeFileSync(path.join(dir, 'listing.json'), JSON.stringify({ summary: { fr: 's fr', 'en-us': 's en' }, description: { fr: 'd fr github.com/x & co', 'en-us': 'd en' } }));
+fs.writeFileSync(path.join(dir, 'listing.json'), JSON.stringify({ name: { fr: 'n fr', 'en-us': 'n en' }, summary: { fr: 's fr', 'en-us': 's en' }, description: { fr: 'd fr github.com/x & co', 'en-us': 'd en' } }));
 
 const seen = [];
 let polls = 0;

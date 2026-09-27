@@ -5,14 +5,15 @@ const isFirefox = process.env.BROWSER === 'firefox';
 
 export default defineManifest({
   manifest_version: 3,
-  name: 'Kick Chat Translator',
+  name: '__MSG_extName__',
   short_name: 'Kick Translator',
   version: pkg.version,
-  // The blurb both stores show in SEARCH RESULTS, served in the reader's browser
-  // language from public/_locales. Organic search is where 60% of new users come
-  // from, and a Turkish reader looking for "sohbet çevirmen" never matches an
-  // English sentence. The name stays literal: it is the brand, and "Kick" is the
-  // query people actually type.
+  // The name and blurb both stores show in SEARCH RESULTS, served in the
+  // reader's browser language from public/_locales. Organic search is where 60%
+  // of new users come from, and a Turkish reader looking for "sohbet çevirici"
+  // never matches an English sentence. The name keeps the brand first, "Kick" is
+  // the query people actually type, then adds the generic query of each
+  // language, from store/keywords.json.
   //
   // The English message must stay in step with `description` in package.json,
   // which is what npm and the repo show. locales.test.ts asserts they match.

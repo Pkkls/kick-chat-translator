@@ -68,7 +68,7 @@ The API does not touch the listing. When a file in `store/chrome/description/` c
 
 ## 2. AMO: through the API
 
-`amo.mjs release` uploads the package with `channel=listed`, waits for validation, creates the version with its source archive (multipart: the API refuses a source in JSON), then sets the release notes and the reviewer notes (JSON: the API refuses them in multipart). `amo.mjs listing` sets the summary and description per locale and reads them back. The devhub spells locales `en-us`, the API `en-US`: the script converts.
+`amo.mjs release` uploads the package with `channel=listed`, waits for validation, creates the version with its source archive (multipart: the API refuses a source in JSON), then sets the release notes and the reviewer notes (JSON: the API refuses them in multipart). `amo.mjs listing` sets the name (the manifest's `extName`), summary and description per locale and reads them back. The devhub spells locales `en-us`, the API `en-US`: the script converts.
 
 It signs an HS256 JWT per request with the key in `~/.config/kick-chat-translator/amo-api.json` (`{"issuer": "...", "secret": "..."}`, AMO_API_KEY overrides), never printed. One-time setup, the user's: https://addons.mozilla.org/en-US/developers/addon/api/key/ first asks to confirm the account's email ("Confirm email address" mails a link), then "Generate new credentials" shows the issuer and the secret once. A link read from the user's mailbox is only followed with their explicit yes.
 

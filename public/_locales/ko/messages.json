@@ -1,6 +1,10 @@
 {
+  "extName": {
+    "message": "Kick Chat Translator: 채팅 실시간 번역",
+    "description": "Extension and store listing name: the brand, then the query this language types. 45 character limit."
+  },
   "extDescription": {
-    "message": "Kick 채팅을 흐르는 대로 내 언어로, 내 답장은 채널의 언어로 번역합니다.",
+    "message": "Kick 실시간 채팅을 흐르는 대로 내 언어로, 내 답장은 채널의 언어로 번역합니다. Google 또는 DeepL, 계정 불필요.",
     "description": "Store listing blurb and manifest description. 132 character limit."
   }
 }
