@@ -82,7 +82,7 @@ export function App() {
             K
           </div>
           <div class="flex flex-col">
-            <span class="text-sm font-semibold text-kick-text">Kick Translator</span>
+            <span class="text-sm font-semibold text-kick-text">Kick Chat Translator</span>
             <span class="text-[10px] text-kick-muted">
               v{chrome.runtime.getManifest().version} · {savedAt ? t('saved') : t('ready')}
             </span>
@@ -91,7 +91,7 @@ export function App() {
             <Toggle
               checked={settings.enabled}
               onChange={(v) => void patch('enabled', v)}
-              label={t('enable')}
+              label={t('Enable')}
               srLabel={t('Translate the chat')}
             />
           </div>
@@ -105,7 +105,7 @@ export function App() {
             rel="noreferrer"
             title={`Installed v${update.current} · ${update.latest ?? '?'} available`}
           >
-            {t('⬆ Update available')} — {update.latest}
+            {t('⬆ Update available')} · {update.latest}
           </a>
         )}
 
@@ -117,7 +117,7 @@ export function App() {
             value={settings.targetLang}
             onChange={(e) => void patch('targetLang', (e.target as HTMLSelectElement).value)}
           >
-            <option value="auto">{t('Auto — your language')}</option>
+            <option value="auto">{t('Auto (your language)')}</option>
             {langs.map((l) => (
               <option key={l.code} value={l.code}>
                 {l.name}
@@ -151,7 +151,7 @@ export function App() {
             <Toggle
               checked={settings.showOriginal}
               onChange={(v) => void patch('showOriginal', v)}
-              label={t('keep original')}
+              label={t('Keep original')}
               // Replace puts the translation where the message was, so there is
               // no original left for this to keep. The picker it contradicts is
               // the row directly above.
@@ -160,7 +160,7 @@ export function App() {
             <Toggle
               checked={settings.showSourceBadge}
               onChange={(v) => void patch('showSourceBadge', v)}
-              label={t('lang badge')}
+              label={t('Language badge')}
             />
           </div>
         </section>
@@ -171,7 +171,7 @@ export function App() {
             <Toggle
               checked={settings.composeEnabled}
               onChange={(v) => void patch('composeEnabled', v)}
-              label={t('enable')}
+              label={t('Enable')}
               srLabel={t('Translate what I type')}
             />
           </div>
@@ -189,7 +189,7 @@ export function App() {
                   void patch('composeTargetLang', (e.target as HTMLSelectElement).value)
                 }
               >
-                <option value="auto">{t('Auto — channel language')}</option>
+                <option value="auto">{t('Auto (channel language)')}</option>
                 {langs.map((l) => (
                   <option key={l.code} value={l.code}>
                     {l.name}
