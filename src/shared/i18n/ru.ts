@@ -244,4 +244,6 @@ export const ru: Record<string, string> = {
   'These are the languages the allowlist in Filters decides between.': 'Это те языки, между которыми решает список в фильтрах.',
   'Paused on this channel': 'Приостановлено на этом канале',
   'Resume': 'Возобновить',
+  'Open a Kick channel: its chat is translated as it arrives.': 'Откройте канал на Kick: его чат переводится по мере поступления сообщений.',
+  'Open Kick': 'Открыть Kick',
 };

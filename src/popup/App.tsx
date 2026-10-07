@@ -36,6 +36,7 @@ export function App() {
   // rien. host_permissions couvre kick.com, donc l'URL est lisible sans la
   // permission "tabs", qui ferait re-approuver la mise a jour a chacun.
   const [channel, setChannel] = useState<string | undefined>(undefined);
+  const [onKick, setOnKick] = useState(false);
 
   const locale = resolveUiLocale(settings.uiLang);
   // Named for the reader and sorted with their locale's collation. Keyed on the
@@ -51,7 +52,9 @@ export function App() {
       .then(([tab]) => {
         if (!tab?.url) return;
         const url = new URL(tab.url);
-        if (/(^|\.)kick\.com$/.test(url.hostname)) setChannel(extractChannelSlug(url.pathname));
+        if (!/(^|\.)kick\.com$/.test(url.hostname)) return;
+        setOnKick(true);
+        setChannel(extractChannelSlug(url.pathname));
       })
       .catch(() => undefined);
   }, []);
@@ -85,6 +88,11 @@ export function App() {
   }
 
   const pausedHere = settings.enabled && !!channel && settings.pausedChannels.includes(channel);
+  // Quelqu'un qui n'a encore rien traduit, et qui ouvre le popup ailleurs que
+  // sur Kick : des reglages ne lui disent pas quoi faire. Un historique vide
+  // distingue un nouvel installe d'un habitue un jour calme.
+  const firstRun =
+    !onKick && !!stats && stats.totalRequests === 0 && !(stats.history?.length ?? 0);
 
   function openOptions() {
     void chrome.runtime.openOptionsPage();
@@ -126,6 +134,15 @@ export function App() {
               }
             >
               {t('Resume')}
+            </button>
+          </section>
+        )}
+
+        {firstRun && (
+          <section class="kt-card flex items-center justify-between gap-2">
+            <span class="text-xs text-kick-text">{t('Open a Kick channel: its chat is translated as it arrives.')}</span>
+            <button class="kt-btn shrink-0" onClick={() => void chrome.tabs.create({ url: 'https://kick.com/' })}>
+              {t('Open Kick')}
             </button>
           </section>
         )}
@@ -268,7 +285,7 @@ export function App() {
         {/* A la place de la ligne de pause, pas en plus : avec les deux, le popup
           par defaut mesure 654px contre 600 de plafond et defile. Les chiffres
           du jour reviennent a la reprise. */}
-        {settings.popupShowsStats && stats && !pausedHere && (
+        {settings.popupShowsStats && stats && !pausedHere && !firstRun && (
           <section class="kt-card">
             <span class="kt-label">{t('Today')}</span>
             <StatsBar stats={stats} />

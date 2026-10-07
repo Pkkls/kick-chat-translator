@@ -3,3 +3,7 @@ O botão de pausa da barra do chat passa a pausar apenas o canal que está a ver
 Quando o canal do separador atual está em pausa, o popup indica-o e oferece um botão Retomar.
 
 Um separador do Kick que já estava aberto enquanto a extensão era instalada ou atualizada continua a traduzir. Antes parava até recarregar a página.
+
+Até à sua primeira tradução, o popup aberto fora da Kick sugere abrir um canal e oferece um botão para isso.
+
+Os textos do chat, da barra, do popup e das definições voltam a ter os seus acentos em português, espanhol, francês e turco.

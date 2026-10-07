@@ -130,6 +130,40 @@ async function poser(texte, index) {
 }
 
 const avant = await etat('hola amigo que tal');
+
+/**
+ * La zone de saisie, avant et apres. L'orphelin 3.0.1 garde son ecouteur de
+ * clavier : il ne doit ni bloquer Entree, qui envoie le message, ni avaler Tab,
+ * qui insere la traduction. Le releve d'avant est le controle positif : s'il ne
+ * voit pas d'insertion, la sonde ne mesure rien.
+ */
+async function ecrire(texte) {
+  await page.evaluate(() => {
+    const el = document.querySelector('[data-testid="chat-input"]');
+    el.textContent = '';
+    el.focus();
+  });
+  await page.keyboard.type(texte, { delay: 25 });
+  // Le meme delai que la porte translate-compose : l'apercu attend la frappe
+  // finie puis un aller-retour au moteur.
+  await page.waitForTimeout(9000);
+  const apercu = await page.evaluate(() => {
+    const p = document.querySelector('.kt-compose');
+    return p ? !p.hasAttribute('hidden') && (p.textContent ?? '').length > 0 : false;
+  });
+  const entreeBloquee = await page.evaluate(() => {
+    const el = document.querySelector('[data-testid="chat-input"]');
+    const ev = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+    el.dispatchEvent(ev);
+    return ev.defaultPrevented;
+  });
+  return {
+    apercu,
+    entreeBloquee,
+    panneaux: await page.evaluate(() => document.querySelectorAll('[id="kt-compose-bar"]').length),
+  };
+}
+const saisieAvant = await ecrire('hello my friends');
 const consoleLignes = [];
 page.on('console', (m) => consoleLignes.push(`page ${m.type()}: ${m.text()}`.slice(0, 200)));
 await page.evaluate(() => document.querySelector('#kt-floating-bar')?.setAttribute('data-sonde', 'ancien'));
@@ -181,6 +215,8 @@ const diag = {
 console.log('DIAG', JSON.stringify(diag));
 
 const apres = await poser('seguimos aqui despues de actualizar', 1);
+const saisieApres = await ecrire('see you all tomorrow');
+console.log('SAISIE', JSON.stringify({ avant: saisieAvant, apres: saisieApres }));
 
 console.log(consoleLignes.slice(0, 15).join(String.fromCharCode(10)));
 await ctx.close();
@@ -198,7 +234,17 @@ console.log(`\n## Un onglet Kick ouvert pendant une mise a jour\n`);
 console.log(ligne('avant la mise a jour', avant));
 console.log(ligne('message apres la mise a jour', apres));
 
+// Le controle positif est l'apercu, pas l'insertion : sur cette fixture, Tab ne
+// remplace pas le texte meme avant toute mise a jour, et aucune porte ne mesure
+// l'insertion hors de kick.com. Elle reste a observer sur le vrai site.
+if (!saisieAvant.apercu) {
+  console.error('SONDE MUETTE: avant la mise a jour, aucun apercu de composition, la saisie ne mesure rien.');
+  process.exit(2);
+}
 const fails = [];
+if (saisieApres.entreeBloquee) fails.push('apres une mise a jour, Entree est bloquee dans la zone de saisie : plus moyen d envoyer');
+if (!saisieApres.apercu) fails.push('apres une mise a jour, l apercu de composition ne s affiche plus');
+if (saisieApres.panneaux !== 1) fails.push(`apres une mise a jour, ${saisieApres.panneaux} panneaux de composition`);
 if (!apres.traduite) fails.push('apres une mise a jour, un onglet deja ouvert ne traduit plus rien');
 for (const k of ['bandeaux', 'pastilles', 'menus', 'composes'])
   if (apres[k] > avant[k]) fails.push(`apres une mise a jour, ${k} : ${avant[k]} avant, ${apres[k]} apres, un predecesseur a laisse le sien`);

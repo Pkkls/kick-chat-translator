@@ -243,4 +243,6 @@ export const ja: Record<string, string> = {
   'These are the languages the allowlist in Filters decides between.': 'フィルターの許可リストが選ぶのはこれらの言語です。',
   'Paused on this channel': 'このチャンネルで一時停止中',
   'Resume': '再開',
+  'Open a Kick channel: its chat is translated as it arrives.': 'Kick のチャンネルを開くと、チャットが届くそばから翻訳されます。',
+  'Open Kick': 'Kick を開く',
 };

@@ -10,6 +10,8 @@ import { defaultSettings } from '~/shared/settings';
  */
 const sent: unknown[] = [];
 let settings = { ...defaultSettings(), pausedChannels: ['some-channel', 'other'] };
+let stats: Record<string, unknown> = {};
+const usedStats = { totalRequests: 3, totalCacheHits: 0, totalErrors: 0, byLang: {}, byProvider: {}, byChannel: {}, charsSent: 0, todayKey: 'today', history: [] };
 
 vi.mock('~/shared/messages', () => ({
   send: vi.fn(async (m: { type: string; payload?: Record<string, unknown> }) => {
@@ -19,11 +21,7 @@ vi.mock('~/shared/messages', () => ({
       settings = { ...settings, ...m.payload };
       return { type: 'settings', payload: settings };
     }
-    if (m.type === 'stats.get')
-      return {
-        type: 'stats',
-        payload: { totalRequests: 3, totalCacheHits: 0, totalErrors: 0, byLang: {}, byProvider: {}, byChannel: {}, charsSent: 0, todayKey: 'today', history: [] },
-      };
+    if (m.type === 'stats.get') return { type: 'stats', payload: stats };
     return { type: 'none' };
   }),
 }));
@@ -52,6 +50,7 @@ describe('popup on a paused channel', () => {
   beforeEach(() => {
     sent.length = 0;
     settings = { ...defaultSettings(), pausedChannels: ['some-channel', 'other'] };
+    stats = usedStats;
   });
   afterEach(() => {
     document.body.innerHTML = '';
@@ -85,5 +84,42 @@ describe('popup on a paused channel', () => {
     const root = await mount();
     expect(root.textContent).toContain('Target language');
     expect(resumeButton(root)).toBeUndefined();
+  });
+});
+
+const FIRST = 'Open a Kick channel: its chat is translated as it arrives.';
+
+describe('popup for someone who has translated nothing yet', () => {
+  const fresh = { ...usedStats, totalRequests: 0, history: [] };
+  beforeEach(() => {
+    sent.length = 0;
+    settings = { ...defaultSettings() };
+  });
+  afterEach(() => {
+    document.body.innerHTML = '';
+    vi.unstubAllGlobals();
+  });
+
+  it('points to Kick when the tab is elsewhere, in place of the empty day', async () => {
+    stats = fresh;
+    stubTab('https://example.com/');
+    const root = await mount();
+    expect(root.textContent).toContain(FIRST);
+    expect(root.textContent).not.toContain('Today');
+  });
+
+  it('says nothing on Kick itself', async () => {
+    stats = fresh;
+    stubTab('https://kick.com/');
+    const root = await mount();
+    expect(root.textContent).not.toContain(FIRST);
+  });
+
+  it('says nothing to a regular on a quiet day', async () => {
+    stats = { ...fresh, history: [{ day: 'yesterday', requests: 40 }] };
+    stubTab('https://example.com/');
+    const root = await mount();
+    expect(root.textContent).not.toContain(FIRST);
+    expect(root.textContent).toContain('Today');
   });
 });

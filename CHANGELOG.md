@@ -23,8 +23,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   menu its predecessor left, and its row marks are signed so an orphaned 3.0.1
   script cannot make it skip new messages.
 
+- **The chat and bar strings had no accents in French, Spanish, Portuguese
+  and Turkish** ("Traduction desactivee", "Ceviri kapali", "Voce escreve"),
+  nor twenty popup and options strings. 145 strings restored, and a test
+  fails on any form that only exists without its accent.
+
 ### Added
 
+- Until a first translation, the popup opened outside Kick says to open a
+  channel and offers a button that does, in place of a day's numbers that
+  would all read zero.
+- The bar's pause tooltip says it acts on this channel.
 - The popup says when the channel in the current tab is paused and offers
   Resume. The row takes the place of the day's numbers while it shows, which
   keeps the default popup under Chrome's 600px ceiling.

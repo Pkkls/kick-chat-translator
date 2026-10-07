@@ -660,8 +660,8 @@ function setBarEnabled(bar: HTMLElement, label: HTMLElement, enabled: boolean, l
   if (power) {
     power.textContent = enabled ? '⏸' : '▶';
     power.title = enabled
-      ? msg('barPause', 'Pause translation')
-      : msg('barResume', 'Resume translation');
+      ? msg('barPause', 'Pause on this channel')
+      : msg('barResume', 'Resume on this channel');
   }
 }
 

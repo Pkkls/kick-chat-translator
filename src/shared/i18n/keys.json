@@ -213,5 +213,7 @@
   "languages seen in chat",
   "These are the languages the allowlist in Filters decides between.",
   "Paused on this channel",
-  "Resume"
+  "Resume",
+  "Open a Kick channel: its chat is translated as it arrives.",
+  "Open Kick"
 ]

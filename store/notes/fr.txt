@@ -3,3 +3,7 @@ Le bouton pause de la barre du chat ne met plus en pause que la chaîne que tu r
 Quand la chaîne de l'onglet en cours est en pause, le popup l'indique et propose un bouton Reprendre.
 
 Un onglet Kick déjà ouvert pendant l'installation ou la mise à jour de l'extension continue de traduire. Avant, il s'arrêtait jusqu'à ce que tu recharges la page.
+
+Tant que tu n'as rien traduit, le popup ouvert ailleurs que sur Kick t'invite à ouvrir une chaîne et propose un bouton pour le faire.
+
+Les textes du chat, de la barre, du popup et des réglages retrouvent leurs accents en français, en espagnol, en portugais et en turc.

@@ -3,3 +3,7 @@ Sohbet çubuğundaki duraklatma düğmesi artık yalnızca izlediğiniz kanalı 
 Geçerli sekmedeki kanal duraklatılmışsa açılır pencere bunu belirtir ve bir Devam et düğmesi sunar.
 
 Uzantı yüklenirken veya güncellenirken zaten açık olan bir Kick sekmesi çevirmeye devam ediyor. Önceden sayfayı yeniden yükleyene kadar duruyordu.
+
+İlk çevirinizi yapana kadar, Kick dışında açılan açılır pencere bir kanal açmayı önerir ve bunun için bir düğme sunar.
+
+Sohbet, çubuk, açılır pencere ve ayarlardaki metinler Türkçe, Fransızca, İspanyolca ve Portekizcede yeniden doğru harflerle yazılıyor.

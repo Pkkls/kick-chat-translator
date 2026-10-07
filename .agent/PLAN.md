@@ -154,7 +154,7 @@ reads dist/, so it serialises behind any build. D touches no code.
   fixed. It is latent rather than live: the script check answers before franc on
   anything Arabic-majority, so no measured case reaches it. Written down instead
   of fixed, because a table entry with no case behind it is a guess.
-- [ ] **Chinese never gets a confident source language, alone among the five.**
+- [x] **Chinese never gets a confident source language, alone among the five.**
   ar, ja, ko and ru all come out of `detectByScript` as looked-up facts and go
   to the engine as `sl`; zh is deferred to franc by `if (pct(han)) return
   undefined`, so `confidentLanguage` withholds it and every Chinese line leaves
@@ -162,6 +162,7 @@ reads dist/, so it serialises behind any build. D touches no code.
   source. The deferral is deliberate, Han-only text can be Japanese, and the
   cost is small since engines auto-detect Chinese well. Recorded so the
   asymmetry is a decision rather than a surprise.
+  **Re-measured 2026-10-07, the entry was stale.** `cantonaisOuChinois` now returns `zh` or `zh-tw` from simplified or traditional markers: on the four corpora, simplified 90/120 lines leave with a confident source, traditional 105/120 (ja, ko 120/120, ar 119, ru 97). The 30 simplified lines left use only characters both scripts share, and announcing `zh` on them would mislabel kanji-only Japanese. Nothing to change.
 
 - [x] **The short-text residue has its damage measured, and two repairs were
   measured and thrown away.** 51 short chat lines in 14 languages through the
@@ -420,10 +421,11 @@ reads dist/, so it serialises behind any build. D touches no code.
   no longer an orphan.
   **Not observed on kick.com.** Every line above is the fixture. The live check is
   one pause, one channel switch, one return.
-- [ ] **The bar's pause does not say it is per channel.** Its tooltip still reads
+- [x] **The bar's pause does not say it is per channel.** Its tooltip still reads
   "Pause translation", which was true when it was global. "Pause on this channel"
   needs a new string in every UI language, and the native-review item below is
   what keeps new strings honest, so it waits on that rather than on a guess.
+  **2026-10-07:** done without waiting: "Pause on this channel" and "Resume on this channel" in the ten interface languages, short enough to need no native read beyond the review already listed.
 - [x] **The popup knows the channel is paused.** With the pause scoped to a
   channel, the popup's switch read "on" over a tab that translated nothing. The
   popup now reads the active tab's URL (host_permissions covers kick.com, so no
@@ -459,6 +461,24 @@ reads dist/, so it serialises behind any build. D touches no code.
   (`disableReasons.unsupportedDeveloperExtension`). Both runs measured a dead
   extension, not an update. Developer mode on, then `developerPrivate.reload`:
   the worker comes back and `onInstalled` runs.
+- [x] **The chat strings had no accents in four languages.** fr, es, pt and tr
+  chat and bar strings were ASCII from end to end ("Traduction desactivee",
+  "Ceviri kapali", "Voce escreve", French elisions as "l envoyer"), plus twenty
+  popup and options strings. 145 restored, placeholders checked, and
+  `i18n.accents.test.ts` fails on any form that only exists unaccented: all
+  eight of its cases fail against the old tables.
+- [x] **A new install is pointed to Kick.** Until a first translation (zero
+  requests and an empty history), the popup opened outside Kick offers to open
+  a channel, at the top, in place of a day of zeros. Russian, the longest,
+  wraps to three lines: 567px of 600.
+- [ ] **Re-injection is unverified on Firefox.** `mise-a-jour` runs Chromium
+  only; Playwright's Firefox cannot load the extension. The Firefox build
+  carries the same code.
+- [k] **Tab insertion after an update, on kick.com.** `mise-a-jour` now types
+  in the composer across an update from 3.0.1: the preview shows, Enter is not
+  blocked, one panel. Insertion itself is not measured: Tab does not replace
+  the text on the fixture even before any update, and no gate measures it off
+  the live site.
 - [k] **`scripting` on a store update: confirm no prompt.** Chrome documents no
   install warning for `scripting` on its own, and the unpacked 3.0.1 to this
   build reload stayed ENABLED, but an unpacked reload is not the store's update
@@ -466,12 +486,13 @@ reads dist/, so it serialises behind any build. D touches no code.
   store that the extension is still enabled and no "new permissions" banner
   appeared. A disabled-pending-approval extension across thousands of installs
   is the failure this guards against.
-- [ ] **`translate-navigation` asserts less than its name promises.** It replaces
+- [x] **`translate-navigation` asserts less than its name promises.** It replaces
   the container wholesale, which the observer's own net rescues, so it stays
   green while every other consequence of a channel switch is broken. It wants the
   four assertions `nav-monde.mjs` makes, per channel: translations resume, the
   bar is there, the channel language is re-queried, and the pause state follows
   the channel. Until then a green run on it means less than it looks.
+  **2026-10-07:** `nav-monde` is in the runner now and makes the four assertions per channel, so the guard this asked for exists. `translate-navigation` stays as it is: it still guards the observer re-attaching when the container is replaced.
 
 - [x] **CI had been red for fifteen days and forty-eight runs, and the defect it
   named was real.** Found by rendering the README to look at it: the badge at the
@@ -529,12 +550,13 @@ reads dist/, so it serialises behind any build. D touches no code.
   the language panel's selector the way a redesign would turns it red on both
   halves, "no element found, nothing to frame" and "does not show its subject",
   instead of writing a picture of an empty page.
-- [ ] **The three localised READMEs are behind, in two ways that differ.** Their
+- [k] **The three localised READMEs are behind, in two ways that differ.** Their
   images are fixed, so no real person's handle is on any of them any more. What
   is not fixed: their release-note sections stop at 2.8.1 while the product is at
   2.10.0, and the alt strings written for the new images were written without a
   native reader, in es, pt-BR and ja. That is the same class as the store listing
   item below, and it wants the same answer rather than more of me guessing.
+  **2026-10-07:** the release-note half is gone, all four READMEs point to the releases and CHANGELOG instead of copying them. What remains is the native read of the image alt strings in es, pt-BR and ja, which belongs with the store text review.
 
 - [x] **The transliteration guard is rescued, measured against the real
   provider, and wired.** 427 lines that existed on one disk, untracked since

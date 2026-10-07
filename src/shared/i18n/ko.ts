@@ -239,4 +239,6 @@ export const ko: Record<string, string> = {
   'These are the languages the allowlist in Filters decides between.': '필터의 허용 목록이 고르는 언어들입니다.',
   'Paused on this channel': '이 채널에서 일시 중지됨',
   'Resume': '재개',
+  'Open a Kick channel: its chat is translated as it arrives.': 'Kick 채널을 열면 채팅이 도착하는 대로 번역됩니다.',
+  'Open Kick': 'Kick 열기',
 };
