@@ -396,30 +396,34 @@ reads dist/, so it serialises behind any build. D touches no code.
   The check is one build and one switch: `npm run build`, load `dist/` unpacked,
   switch stream from the sidebar, and see whether the next channel translates
   without a reload.
-- [ ] **Per-channel pause: three quarters measured, one quarter open.** The bar's
+- [x] **Per-channel pause: on master, all four quarters observed.** The bar's
   control wrote `settings.enabled`, which is global and synced, so pausing on one
   stream turned the product off on every other stream, in every tab, durably.
   That was kil's second report. It writes `pausedChannels` now and one derived
   view, `vueLocale`, is the single place the rule lives; the pipeline, the compose
-  controller and the bar take that view and none of them changed.
+  controller and the bar take that view and none of them changed. Ported from
+  `feat/nav-monde-isole` onto 3.0.1, where the URL poll had already landed.
 
       pause clicked, same channel        stops translating     OK
       resume clicked, same channel       translates again      OK
       next channel after a pause         translates            OK   <- the report
-      returning to a paused channel      translates            MISS
+      returning to a paused channel      stays paused          OK   <- was MISS
 
-  **The miss is where to start.** Coming back to a channel that is still paused
-  resumes it. `attachForRoute` does push the recomputed view to the pipeline on
-  the channel change, so the cause is below that and is not located yet. Run
-  `node test/e2e/nav-monde.mjs`, which fails on exactly that line and
-  passes on the other three. Not on master on purpose: the unverified quarter is
-  a regression risk on a path nobody watches, and the old behaviour at least did
-  something.
-  **A probe artefact worth keeping.** The pause was first tested after two
-  navigations and the click wrote nothing at all. The scenario that replaces
-  `#channel-chatroom` with a clone copies its contents through `innerHTML`, which
-  rebuilds the bar as inert markup without its listeners, so the click landed on
-  a dead button. Testing the pause before any navigation separated the two.
+  **The miss was a race, not a missing push.** The new channel's rows can reach
+  the observer before the URL poll sees the change, up to `ROUTE_POLL_MS` later.
+  They were handled with the view of the channel being left. The observer marks a
+  row `data-kt-id` before its callback runs, so the reset the poll triggers never
+  took them back: a row translated in that window stayed translated. The callback
+  now compares the live slug with `currentSlug` and catches the route up first.
+  Witness: `nav-monde` red on line D with the port alone, green with the catch-up,
+  the 39 other gates green both times. `nav-monde` is now in the runner, so it is
+  no longer an orphan.
+  **Not observed on kick.com.** Every line above is the fixture. The live check is
+  one pause, one channel switch, one return.
+- [ ] **The bar's pause does not say it is per channel.** Its tooltip still reads
+  "Pause translation", which was true when it was global. "Pause on this channel"
+  needs a new string in every UI language, and the native-review item below is
+  what keeps new strings honest, so it waits on that rather than on a guess.
 - [ ] **`translate-navigation` asserts less than its name promises.** It replaces
   the container wholesale, which the observer's own net rescues, so it stays
   green while every other consequence of a channel switch is broken. It wants the

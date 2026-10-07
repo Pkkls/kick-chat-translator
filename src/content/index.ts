@@ -35,7 +35,7 @@ import { localEngine } from './localEngine';
 import { logPlatform, refresh7TV } from './platform';
 import { withFavorite } from '~/shared/languages';
 import { memoriserLangueChaine } from '~/shared/channelLang';
-import { ROUTE_POLL_MS } from '~/shared/constants';
+import { PAUSED_CHANNELS_MAX, ROUTE_POLL_MS } from '~/shared/constants';
 import { msg as localised, setContentLocale } from './msg';
 
 const log = rootLogger.child('content');
@@ -72,11 +72,35 @@ async function main(): Promise<void> {
     });
   }
 
-  const pipeline = new TranslationPipeline(settings);
-  const compose = new ComposeController(settings, (patch) => void patchSettings(patch));
   let currentSlug: string | undefined;
 
+  /**
+   * Les reglages tels que CETTE chaine les voit.
+   *
+   * `enabled` est l'interrupteur general, celui du popup et de la page d'options.
+   * Le bouton du bandeau est une PAUSE sur un chat : il n'ecrit plus `enabled`,
+   * il ajoute ou retire la chaine courante de `pausedChannels`. Avant, mettre en
+   * pause sur un stream eteignait le produit sur tous les autres, dans tous les
+   * onglets, et durablement.
+   *
+   * Tout ce qui lit `enabled` recoit cette vue : le pipeline, la composition et
+   * le bandeau. Aucun de ces modules n'a eu a changer.
+   */
+  function vueLocale(base: Settings = settings, slug = currentSlug): Settings {
+    if (!slug || !base.pausedChannels.includes(slug)) return base;
+    return { ...base, enabled: false };
+  }
+
+  const pipeline = new TranslationPipeline(vueLocale());
+  const compose = new ComposeController(vueLocale(), (patch) => void patchSettings(patch));
+
   const observer = new ChatObserver((msg) => {
+    // Les lignes de la nouvelle chaine peuvent arriver avant que le sondage de
+    // l'URL ait vu le changement, jusqu'a ROUTE_POLL_MS plus tard. Traitees avec
+    // la vue de la chaine quittee, elles etaient traduites sur une chaine en
+    // pause : la ligne est marquee avant d'arriver ici, donc la remise a zero du
+    // sondage ne la reprenait jamais. Rattraper la route d'abord.
+    if (extractChannelSlug(location.pathname) !== currentSlug) attachForRoute();
     void pipeline.onDomMessage({
       rowElement: msg.rowElement,
       injectionTarget: msg.injectionTarget,
@@ -127,8 +151,17 @@ async function main(): Promise<void> {
           barPolling = false;
           return;
         }
-        mountFloatingBar(host, settings, {
-          onToggle: (enabled) => void patchSettings({ enabled }),
+        mountFloatingBar(host, vueLocale(), {
+          onToggle: (enabled) => {
+            const slug = currentSlug;
+            // Hors d'une chaine il n'y a rien a mettre en pause localement, donc
+            // le bouton retombe sur l'interrupteur general.
+            if (!slug) return void patchSettings({ enabled });
+            const sansElle = settings.pausedChannels.filter((c) => c !== slug);
+            void patchSettings({
+              pausedChannels: enabled ? sansElle : [slug, ...sansElle].slice(0, PAUSED_CHANNELS_MAX),
+            });
+          },
           // Picking on the bar seeds the favourites, the same way picking in
           // the composer already did. That is the whole configuration step for
           // the flag tiles: the three or four languages someone actually
@@ -206,11 +239,24 @@ async function main(): Promise<void> {
     }, 12_000);
   }
 
-  function attachForRoute(): void {
+  /**
+   * `force` sert quand le slug n'a pas bouge mais que son verdict, si : sortir
+   * la chaine courante de pause. Sans lui, la sortie anticipee sur
+   * `slug === currentSlug` avalait la reprise.
+   */
+  function attachForRoute(force = false): void {
     const slug = extractChannelSlug(location.pathname);
-    if (slug === currentSlug) return;
+    if (slug === currentSlug && !force) return;
     currentSlug = slug;
     log.debug('route change, channel slug:', slug);
+
+    // Une chaine en pause et une qui ne l'est pas ne donnent pas le meme
+    // `enabled` : le pipeline comme le bandeau doivent l'apprendre avant que la
+    // premiere ligne arrive.
+    const vue = vueLocale(settings, slug);
+    pipeline.updateSettings(vue);
+    compose.updateSettings(vue);
+    updateFloatingBar(vue);
 
     if (!slug) {
       observer.stop();
@@ -389,11 +435,15 @@ async function main(): Promise<void> {
   }
 
   watchSettings((next) => {
-    const wasEnabled = settings.enabled;
+    // Le verdict qui compte est celui de la chaine courante, pas l'interrupteur
+    // general : c'est lui qui decide si l'observateur tourne et ce que le
+    // bandeau affiche.
+    const wasEnabled = vueLocale().enabled;
     const prev = settings;
     settings = next;
-    pipeline.updateSettings(next);
-    compose.updateSettings(next);
+    const vue = vueLocale(next);
+    pipeline.updateSettings(vue);
+    compose.updateSettings(vue);
     // Les trois reglages de lisibilite sont des proprietes sur la racine : les
     // reposer suffit, rien n'est a redessiner ligne par ligne.
     applyTypography(next);
@@ -403,16 +453,16 @@ async function main(): Promise<void> {
     // Ahead of everything that redraws below, so the bar and the chip come back
     // in the language that was just chosen rather than one change late.
     setContentLocale(next.uiLang);
-    updateFloatingBar(next);
+    updateFloatingBar(vue);
     applyShowOriginal(next.showOriginal);
     refreshChip();
 
     // Ordered after updateSettings on purpose: the rows are re-run through the
     // pipeline, which must already hold the new settings when they arrive.
-    if (next.enabled && RERENDER_KEYS.some((k) => prev[k] !== next[k])) retranslateHandledRows();
+    if (vue.enabled && RERENDER_KEYS.some((k) => prev[k] !== next[k])) retranslateHandledRows();
 
-    if (next.enabled && !wasEnabled) attachForRoute();
-    if (!next.enabled && wasEnabled) {
+    if (vue.enabled && !wasEnabled) attachForRoute(true);
+    if (!vue.enabled && wasEnabled) {
       observer.stop();
     }
     if (next.showFloatingBar) mountBar();

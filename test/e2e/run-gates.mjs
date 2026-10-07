@@ -85,6 +85,12 @@ const GATES = [
   // Couverture propre, mesuree : desactiver le rattachement au remontage laisse
   // les 621 tests verts et fait rougir cette porte.
   ['translate-navigation', 'node', ['test/e2e/translate-offline.mjs', '--navigation']],
+  // La pause du bandeau est par chaine : elle ne doit ni deborder sur la
+  // suivante ni se perdre au retour. Couverture propre, mesuree : sans le
+  // rattrapage de route dans le rappel de l'observateur, le retour sur une
+  // chaine en pause la retrouve traduite (ligne D) et cette porte rougit ; les
+  // 39 autres restent vertes.
+  ['nav-monde', 'node', ['test/e2e/nav-monde.mjs']],
   // Le mode survol, dont la fiche des stores fait un argument chiffre : environ
   // dix fois moins de consommation. L'argument ne tient que si rien ne part
   // avant que la souris passe. Couverture propre, mesuree : court-circuiter

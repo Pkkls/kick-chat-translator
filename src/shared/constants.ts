@@ -125,3 +125,14 @@ export const FAVORITE_LANGS_MAX = 4;
  * plus de ce qu'il avait choisi sur la premiere.
  */
 export const CHANNEL_LANG_MAX = 50;
+
+/**
+ * Combien de chaines peuvent rester en pause en meme temps.
+ *
+ * La pause du bandeau eteignait `enabled`, qui est global : mettre en pause sur
+ * une chaine eteignait le produit sur toutes les autres, dans tous les onglets,
+ * et durablement, alors que le bouton se lit comme "silence CETTE chaine". La
+ * liste est bornee pour la meme raison que les favoris : elle vit dans
+ * `storage.sync`, dont le quota par cle est petit.
+ */
+export const PAUSED_CHANNELS_MAX = 50;
