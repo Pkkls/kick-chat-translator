@@ -4,6 +4,8 @@ Quando o canal do separador atual está em pausa, o popup indica-o e oferece um 
 
 Um separador do Kick que já estava aberto enquanto a extensão era instalada ou atualizada continua a traduzir. Antes parava até recarregar a página.
 
+Depois de mudar para outro canal sem recarregar, a tradução parava até atualizar a página. Agora acompanha o chat que está a ver.
+
 Até à sua primeira tradução, o popup aberto fora da Kick sugere abrir um canal e oferece um botão para isso.
 
 Os textos do chat, da barra, do popup e das definições voltam a ter os seus acentos em português, espanhol, francês e turco.

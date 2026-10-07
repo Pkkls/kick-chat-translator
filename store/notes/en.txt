@@ -4,6 +4,8 @@ When the channel in your current tab is paused, the popup says so and offers a R
 
 A Kick tab that was already open while the extension was installed or updated keeps translating. It used to stop until you reloaded the page.
 
+After switching to another channel without reloading, translation stopped until you refreshed the page. It now follows the chat you are looking at.
+
 Until your first translation, the popup opened outside Kick says to open a channel and offers a button that does.
 
 The texts in the chat, the bar, the popup and the settings carry their accents again in French, Spanish, Portuguese and Turkish.

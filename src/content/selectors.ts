@@ -70,8 +70,14 @@ export function pickFirst(root: ParentNode, list: readonly string[]): Element | 
  *
  * Returns null while no candidate holds a row yet (chat still empty), so the
  * caller keeps polling rather than binding to the wrong element for good.
+ *
+ * A list on screen wins over one that is not. After a channel switch Kick keeps
+ * the previous chat as a hidden copy, rows included, while the new list is still
+ * empty: taking the first list with rows bound the observer to that copy, and
+ * nothing was translated until a reload. Measured live, 0 of 13 new lines.
  */
 export function findChatContainer(root: ParentNode = document): Element | null {
+  let hidden: Element | null = null;
   for (const sel of SELECTORS.containers) {
     let nodes: NodeListOf<Element>;
     try {
@@ -80,10 +86,17 @@ export function findChatContainer(root: ParentNode = document): Element | null {
       continue; // invalid selector, ignore
     }
     for (const el of nodes) {
-      if (el.querySelector(SELECTORS.messageRows[0])) return el;
+      if (!el.querySelector(SELECTORS.messageRows[0])) continue;
+      if (isShown(el)) return el;
+      hidden ??= el;
     }
   }
-  return null;
+  return hidden;
+}
+
+/** Laid out on screen: `display: none` on it or any ancestor leaves no box. */
+export function isShown(el: Element): boolean {
+  return el.getClientRects().length > 0;
 }
 
 /**
@@ -115,8 +128,11 @@ export function findAllRows(container: ParentNode): Element[] {
  */
 export function findChatPanel(root: ParentNode = document): Element | null {
   const panels = Array.from(root.querySelectorAll(CHAT_PANEL_SELECTOR));
+  const hasRows = (p: Element) => p.querySelector(SELECTORS.messageRows[0]) !== null;
   return (
-    panels.find((p) => p.querySelector(SELECTORS.messageRows[0])) ??
+    // The hidden copy Kick keeps after a channel switch has rows too.
+    panels.find((p) => hasRows(p) && isShown(p)) ??
+    panels.find(hasRows) ??
     panels.find((p) => p.getBoundingClientRect().height > 0) ??
     panels[0] ??
     null

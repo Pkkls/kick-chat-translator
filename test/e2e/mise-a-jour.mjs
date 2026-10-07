@@ -214,6 +214,22 @@ const diag = {
 };
 console.log('DIAG', JSON.stringify(diag));
 
+// En direct sur Brave, un rechargement a donne deux "Content script ready" a la
+// meme seconde. `KT_DOUBLE` rejoue une seconde injection apres la mise a jour :
+// mesure, l'onglet traduit toujours, avec une seule piece de chaque. Les 0 sur
+// 38 vus ce jour-la venaient de l'onglet pas encore affiche, ou rien n'est
+// traduit par choix (pauseWhenHidden), pas de deux copies qui se battent.
+if (process.env.KT_DOUBLE) {
+  const ouvert = ctx.serviceWorkers().at(-1);
+  const r = await ouvert.evaluate(async () => {
+    const [cs] = chrome.runtime.getManifest().content_scripts;
+    const [tab] = await chrome.tabs.query({ url: cs.matches });
+    await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: cs.js });
+    return 'injecte';
+  }).catch((e) => String(e).slice(0, 120));
+  console.log('seconde injection :', r);
+  await page.waitForTimeout(3000);
+}
 const apres = await poser('seguimos aqui despues de actualizar', 1);
 const saisieApres = await ecrire('see you all tomorrow');
 console.log('SAISIE', JSON.stringify({ avant: saisieAvant, apres: saisieApres }));

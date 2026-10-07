@@ -4,4 +4,6 @@ Ist der Kanal im aktuellen Tab pausiert, zeigt das Popup das an und bietet eine 
 
 Ein Kick-Tab, der schon offen war, während die Erweiterung installiert oder aktualisiert wurde, übersetzt weiter. Früher hörte er auf, bis du die Seite neu geladen hast.
 
+Nach einem Wechsel zu einem anderen Kanal ohne Neuladen stoppte die Übersetzung, bis du die Seite aktualisiert hast. Jetzt folgt sie dem angezeigten Chat.
+
 Solange du noch nichts übersetzt hast, schlägt das Popup außerhalb von Kick vor, einen Kanal zu öffnen, und bietet dafür eine Schaltfläche.
