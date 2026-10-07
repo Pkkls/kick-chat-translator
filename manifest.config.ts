@@ -65,7 +65,11 @@ export default defineManifest({
       description: 'Turn the compose preview on or off',
     },
   },
-  permissions: ['storage', 'alarms'],
+  // `scripting` : reinjecter le script de contenu dans les onglets Kick deja
+  // ouverts a l'installation et a chaque mise a jour. Sans lui, une mise a jour
+  // laissait chaque onglet ouvert muet jusqu'a un rechargement que rien ne
+  // demandait. Pas d'avertissement de plus : l'acces a kick.com est deja accorde.
+  permissions: ['storage', 'alarms', 'scripting'],
   host_permissions: [
     'https://kick.com/*',
     'https://api.github.com/*',

@@ -1,22 +1,24 @@
 {
-  "genere": "2026-10-07T01:38:02.914Z",
+  "genere": "2026-10-07T02:16:58.506Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase. La version commitee decrit l'etat d'AVANT le commit qui la porte, puisque la fin de passe genere puis commite : git.head y pointe le commit precedent et git.arbrePropre y est faux. Relancer `node .agent/state.mjs` avant de lire, ce que le prompt demande deja en premier.",
   "git": {
     "remotesEnDouble": [],
     "branche": "feat/ergonomics",
-    "head": "3d40d91bb130ebfdd386aaabf3705704f693da47",
-    "sujet": "Merge pull request #5 from Pkkls/feat/store-seo",
+    "head": "9ffb3e819353f29e29d6e773fd1af5b9fa369caf",
+    "sujet": "Scope the bar's pause to the channel it was clicked on",
     "arbrePropre": false,
-    "fichiersModifies": 6,
+    "fichiersModifies": 22,
     "dernierTag": "v3.0.1",
-    "decrit": "v3.0.1-8-g3d40d91",
+    "decrit": "v3.0.1-9-g9ffb3e8",
     "remotes": {
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
     },
     "ecarts": {
       "origin": {
-        "note": "pas de origin/feat/ergonomics connu localement"
+        "derriere": 0,
+        "devant": 0,
+        "aJour": true
       }
     }
   },
@@ -54,7 +56,7 @@
   ],
   "portes": {
     "runner": "test/e2e/run-gates.mjs",
-    "enumerees": 40,
+    "enumerees": 41,
     "noms": [
       "snapshot",
       "names",
@@ -79,6 +81,7 @@
       "translate-recyclage",
       "translate-navigation",
       "nav-monde",
+      "mise-a-jour",
       "translate-survol",
       "translate-reglages",
       "translate-seventv",
@@ -97,7 +100,7 @@
       "poids-notes",
       "audit-fiche"
     ],
-    "harnaisSurDisque": 78,
+    "harnaisSurDisque": 79,
     "orphelins": [
       "a11y",
       "anglais-essai",
@@ -162,28 +165,11 @@
   },
   "releaseGithub": {
     "depot": "Pkkls/kick-chat-translator",
-    "http": 200,
-    "tag": "v3.0.1",
-    "publiee": "2026-09-27T16:18:20Z",
-    "assets": [
-      {
-        "nom": "kick-chat-translator-3.0.1-chromium.zip",
-        "octets": 322272
-      },
-      {
-        "nom": "kick-chat-translator-3.0.1-firefox.zip",
-        "octets": 322201
-      },
-      {
-        "nom": "kick-chat-translator-3.0.1-source.zip",
-        "octets": 1593990
-      }
-    ]
+    "http": 403,
+    "note": "reponse inattendue"
   },
   "paquetsContreRelease": {
-    "compares": 0,
-    "ecarts": [],
-    "note": null
+    "note": "reponse inattendue"
   },
   "boutiques": {
     "note": "Lu sur les pages, jamais recopie. Une version de boutique change sans commit : la valeur commitee ici decrit l'instant de la generation et rien d'autre.",
@@ -212,14 +198,15 @@
   "file": {
     "bloques": [
       "**The Persian split is measured but never observed running.** The rule",
+      "**`scripting` on a store update: confirm no prompt.** Chrome documents no",
       "**`node_modules` in the history: the cost is measured, the consequences",
       "**A real chat capture, once, so the frequencies stop being guesses.**",
       "**Emote picker dodge: only the Kick-specific half is still blocked.** The",
       "**Native review of the store text.** 8 languages of 10 on the Chrome side",
       "**Store submissions.** The 2.10.0 archives exist and are published on"
     ],
-    "nbBloques": 6,
+    "nbBloques": 7,
     "nbOuverts": 7,
-    "nbFaits": 102
+    "nbFaits": 104
   }
 }

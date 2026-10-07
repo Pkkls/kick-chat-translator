@@ -424,6 +424,48 @@ reads dist/, so it serialises behind any build. D touches no code.
   "Pause translation", which was true when it was global. "Pause on this channel"
   needs a new string in every UI language, and the native-review item below is
   what keeps new strings honest, so it waits on that rather than on a guess.
+- [x] **The popup knows the channel is paused.** With the pause scoped to a
+  channel, the popup's switch read "on" over a tab that translated nothing. The
+  popup now reads the active tab's URL (host_permissions covers kick.com, so no
+  `tabs` permission and no re-consent) and shows "Paused on this channel" with a
+  Resume button that removes only that slug. Measured before it shipped: the
+  default popup (compose and stats both on by default) is 586px, the row adds
+  56 + 12, so 654px against Chrome's 600px ceiling. The row takes the place of
+  the day's numbers (91px) while the tab is paused: 551px in all ten interface
+  languages. `measure-popup` now measures both states and fails as a mute probe
+  if the paused row is not on screen; putting the numbers back beside the row
+  turns it red at 654px. Unit test mounts the popup in happy-dom: red with the
+  row removed.
+- [x] **A Kick tab open during an install or an update keeps working.** Chrome
+  injects a content script only into pages loaded after an install, and an
+  update cuts off the copy in open pages while leaving it in the DOM. Measured
+  on the fixture: after the update the bar still read "Translating" and the next
+  message was not translated. Every release would have done that to every Kick
+  tab open at that moment. Three parts, each with its own red:
+  1. `onInstalled` re-injects `assets/content.js` into open kick.com tabs
+     (`scripting` permission, justified in the store text). Without it:
+     `mise-a-jour` red.
+  2. The row mark is signed per instance. A 3.0.1 orphan has no way to stop, its
+     MutationObserver was created first, so it marked each new row with the bare
+     id before the new script saw it, and the new script skipped it. Measured
+     with a real update from the published 3.0.1 package (`KT_EXT_AVANT`): red
+     without the signature, green with it.
+  3. At start the script removes a predecessor's bar and language menu (the menu
+     was doubled under the same id), and an orphan of this version and later
+     stops its own observers on the first tick where `chrome.runtime.id` is gone.
+  **The probe lied twice before it measured.** `chrome.runtime.reload()` on a
+  command-line extension leaves it disabled under Playwright, and so does a
+  reload from `chrome://extensions` with developer mode off
+  (`disableReasons.unsupportedDeveloperExtension`). Both runs measured a dead
+  extension, not an update. Developer mode on, then `developerPrivate.reload`:
+  the worker comes back and `onInstalled` runs.
+- [k] **`scripting` on a store update: confirm no prompt.** Chrome documents no
+  install warning for `scripting` on its own, and the unpacked 3.0.1 to this
+  build reload stayed ENABLED, but an unpacked reload is not the store's update
+  path. What is needed: after publishing, check on one machine updated from the
+  store that the extension is still enabled and no "new permissions" banner
+  appeared. A disabled-pending-approval extension across thousands of installs
+  is the failure this guards against.
 - [ ] **`translate-navigation` asserts less than its name promises.** It replaces
   the container wholesale, which the observer's own net rescues, so it stays
   green while every other consequence of a channel switch is broken. It wants the

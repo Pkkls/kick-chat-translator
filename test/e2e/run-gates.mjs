@@ -91,6 +91,14 @@ const GATES = [
   // chaine en pause la retrouve traduite (ligne D) et cette porte rougit ; les
   // 39 autres restent vertes.
   ['nav-monde', 'node', ['test/e2e/nav-monde.mjs']],
+  // Un onglet Kick ouvert pendant une mise a jour doit continuer de traduire,
+  // avec une seule copie de chaque piece posee. Couverture propre, mesuree :
+  // sans la reinjection de onInstalled, le message pose apres la mise a jour
+  // n'est pas traduit et cette porte rougit. Le cas 3.0.1 vers ce build se lance
+  // a la main avec KT_EXT_AVANT (le paquet publie, decompresse) : sans la marque
+  // signee par instance, l'orphelin 3.0.1 marque les lignes avant le nouveau
+  // script et il rougit aussi ; sans le nettoyage, le menu de langue est double.
+  ['mise-a-jour', 'node', ['test/e2e/mise-a-jour.mjs']],
   // Le mode survol, dont la fiche des stores fait un argument chiffre : environ
   // dix fois moins de consommation. L'argument ne tient que si rien ne part
   // avant que la souris passe. Couverture propre, mesuree : court-circuiter

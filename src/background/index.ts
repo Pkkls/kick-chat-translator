@@ -270,4 +270,22 @@ chrome.commands?.onCommand.addListener((command) => {
 chrome.runtime.onInstalled.addListener(() => {
   log.info('Installed / updated');
   void init();
+  void reinjecterOngletsOuverts();
 });
+
+/**
+ * Chrome n'injecte un script de contenu que dans les pages chargees apres
+ * l'installation, et une mise a jour coupe celui des pages deja ouvertes. Sans
+ * ceci, un onglet Kick ouvert pendant une installation ne faisait rien, et
+ * pendant une mise a jour il cessait de traduire en continuant d'afficher
+ * "Translating". Le script tolere de trouver un predecesseur dans la page.
+ */
+async function reinjecterOngletsOuverts(): Promise<void> {
+  const [cs] = chrome.runtime.getManifest().content_scripts ?? [];
+  if (!cs?.js?.length || !cs.matches?.length) return;
+  const tabs = await chrome.tabs.query({ url: cs.matches }).catch(() => []);
+  for (const tab of tabs) {
+    if (tab.id === undefined || tab.discarded) continue;
+    void chrome.scripting.executeScript({ target: { tabId: tab.id }, files: cs.js }).catch(() => undefined);
+  }
+}

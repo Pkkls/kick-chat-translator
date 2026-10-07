@@ -49,6 +49,11 @@ async function main(): Promise<void> {
   if (__KT_METRICS__) mountMetricsBridge();
 
   let settings: Settings = await fetchSettings();
+  // Un predecesseur peut etre la : le script coupe par une mise a jour, dans un
+  // onglet ou le service worker vient de reinjecter celui-ci. Ses pieces ont
+  // perdu leurs ecouteurs, et le montage ci-dessous prendrait le bandeau pour le
+  // sien. Le menu de langue, attache a la page, restait en double sous le meme id.
+  for (const mort of document.querySelectorAll('#kt-floating-bar, #kt-lang-menu')) mort.remove();
   rootLogger.setEnabled(settings.debug);
   // Before anything is drawn. Every label the chat and the bar put on screen
   // reads this, and so do the language names in the chip menu.
@@ -94,7 +99,27 @@ async function main(): Promise<void> {
   const pipeline = new TranslationPipeline(vueLocale());
   const compose = new ComposeController(vueLocale(), (patch) => void patchSettings(patch));
 
+  /**
+   * Vrai, une fois pour toutes, quand l'extension a ete mise a jour sous ce
+   * script : `chrome.runtime.id` disparait et tout appel leve. Le script s'arrete
+   * alors de lui-meme, sans toucher au DOM, ou son successeur reinjecte a deja
+   * pose son propre bandeau sous le meme id.
+   */
+  let orphelin = false;
+  function estOrphelin(): boolean {
+    if (orphelin) return true;
+    if (chrome.runtime?.id) return false;
+    orphelin = true;
+    observer.stop();
+    compose.stop();
+    clearInterval(sondageRoute);
+    barWatcher?.disconnect();
+    themeWatch.disconnect();
+    return true;
+  }
+
   const observer = new ChatObserver((msg) => {
+    if (estOrphelin()) return;
     // Les lignes de la nouvelle chaine peuvent arriver avant que le sondage de
     // l'URL ait vu le changement, jusqu'a ROUTE_POLL_MS plus tard. Traitees avec
     // la vue de la chaine quittee, elles etaient traduites sur une chaine en
@@ -204,8 +229,10 @@ async function main(): Promise<void> {
   // On a fast chat rAF fires every frame (16ms), creating noise. 500ms is calm and
   // still fast enough to re-mount the bar before the user notices.
   let barGuardTimer: ReturnType<typeof setTimeout> | undefined;
+  let barWatcher: MutationObserver | undefined;
   function watchBar(): void {
-    new MutationObserver(() => {
+    barWatcher = new MutationObserver(() => {
+      if (estOrphelin()) return;
       if (barGuardTimer) return;
       barGuardTimer = setTimeout(() => {
         barGuardTimer = undefined;
@@ -214,7 +241,8 @@ async function main(): Promise<void> {
         if (settings.showFloatingBar && !findChatPanel()?.querySelector('#kt-floating-bar'))
           mountBar();
       }, 500);
-    }).observe(document.body, { childList: true, subtree: true });
+    });
+    barWatcher.observe(document.body, { childList: true, subtree: true });
   }
 
   // If the chat panel is present but neither the message list nor the composer can
@@ -317,7 +345,8 @@ async function main(): Promise<void> {
   // de chaines deux fois par seconde. `popstate` reste pour que le retour arriere
   // soit immediat au lieu d'attendre le prochain tour.
   let dernierChemin = location.pathname;
-  setInterval(() => {
+  const sondageRoute = setInterval(() => {
+    if (estOrphelin()) return;
     if (location.pathname === dernierChemin) return;
     dernierChemin = location.pathname;
     attachForRoute();
