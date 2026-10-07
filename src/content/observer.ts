@@ -5,6 +5,7 @@ import {
   extractUsername,
   findAllRows,
   findChatContainer,
+  isShown,
   matchesMessageRow,
   pickInjectionTarget,
 } from './selectors';
@@ -129,10 +130,28 @@ export class ChatObserver {
     this.listObserver.observe(container, { childList: true, subtree: true });
 
     // Detect re-mount of the container (channel switch) at the document level.
+    //
+    // Removal is one way to lose it, hiding is the other: on a channel switch
+    // Kick keeps the previous chat as a hidden copy and never removes it, so a
+    // watcher that only checked `document.contains` stayed on a list that would
+    // never receive another message. Checked at most twice a second, because
+    // reading the layout on every mutation of a fast chat is not free.
+    let lastShownCheck = 0;
     this.containerWatcher = new MutationObserver(() => {
       if (!document.contains(container)) {
         log.debug('container removed, rescanning');
         if (__KT_METRICS__) metrics.count('dom.container.remount');
+        this.reset();
+        return;
+      }
+      const now = Date.now();
+      if (now - lastShownCheck < 500) return;
+      lastShownCheck = now;
+      if (isShown(container)) return;
+      const onScreen = findChatContainer(document);
+      if (onScreen && onScreen !== container && isShown(onScreen)) {
+        log.debug('container hidden, moving to the one on screen');
+        if (__KT_METRICS__) metrics.count('dom.container.hidden');
         this.reset();
       }
     });

@@ -194,6 +194,36 @@ const reprise = await poser('ya volvemos a traducir', 4);
 const A = await naviguer({ vers: '/kt-trois', texte: 'adios amigos hasta luego', index: 5, remplacerConteneur: true });
 const B = await naviguer({ vers: '/kt-quatre', texte: 'hola de nuevo amigos', index: 6, remplacerConteneur: false });
 
+// E. Ce que Kick fait vraiment, observe en direct le 2026-10-07 : l'ancien salon
+// reste dans la page, masque, AVEC ses lignes, et le nouveau arrive devant lui,
+// vide, ses messages un peu plus tard. Le premier conteneur qui a des lignes est
+// alors la copie cachee : l'observateur s'y accrochait et plus rien n'etait
+// traduit jusqu'a un rechargement (0 sur 13 lignes mesure sur un vrai chat).
+await page.evaluate(({ html }) => {
+  history.pushState({}, '', '/kt-cinq');
+  const ancien = document.querySelector('#channel-chatroom');
+  const neuf = document.createElement('div');
+  neuf.id = 'channel-chatroom';
+  neuf.innerHTML =
+    '<div class="no-scrollbar" data-which="decoy"></div>' +
+    '<div class="no-scrollbar" data-which="messages" style="height:600px;overflow:auto"></div>' +
+    '<div contenteditable="true" role="textbox" data-testid="chat-input" class="editor-input" style="min-height:38px"></div>';
+  ancien.style.display = 'none';
+  ancien.before(neuf);
+  window.__ktLigneE = html;
+}, { html: rangee('nos vemos manana amigos', 7) });
+await page.waitForTimeout(1500);
+await page.evaluate(() => {
+  const vivant = [...document.querySelectorAll('#channel-chatroom')].find((s) => s.style.display !== 'none');
+  vivant.querySelector('[data-which="messages"]').insertAdjacentHTML('beforeend', window.__ktLigneE);
+});
+await page.waitForTimeout(9000);
+const E = await page.evaluate((sel) => {
+  const vivant = [...document.querySelectorAll('#channel-chatroom')].find((s) => s.style.display !== 'none');
+  const cible = [...vivant.querySelectorAll('div[data-index]')].find((r) => (r.querySelector('.font-normal')?.textContent ?? '') === 'nos vemos manana amigos');
+  return { traduite: !!cible?.querySelector(sel), barre: !!vivant.querySelector('#kt-floating-bar'), url: location.pathname };
+}, SEL_TR);
+
 await ctx.close();
 fs.rmSync(profile, { recursive: true, force: true });
 
@@ -212,6 +242,7 @@ console.log(`\n## Ce qu un lecteur a sous les yeux\n`);
 console.log(ligne('au chargement', depart));
 console.log(ligne('A. conteneur remplace', A));
 console.log(ligne('B. contenu de la liste change', B));
+console.log(ligne('E. ancien salon garde, masque', E));
 console.log(ligne('pause cliquee, meme chaine', enPause));
 console.log(ligne('reprise cliquee, meme chaine', reprise));
 console.log(ligne('C. chaine suivante apres pause', C));
@@ -226,6 +257,8 @@ if (!A.traduite) fails.push('A : les messages de la nouvelle chaine ne sont plus
 if (!B.traduite) fails.push('B : les messages de la nouvelle chaine ne sont plus traduits');
 if (!A.barre) fails.push('A : la barre a disparu et n est pas remontee');
 if (!B.barre) fails.push('B : la barre a disparu et n est pas remontee');
+if (!E.traduite) fails.push('E : apres un changement de chaine ou Kick garde l ancien salon masque, plus rien n est traduit');
+if (!E.barre) fails.push('E : la barre n est pas dans le salon affiche');
 if (barreApresClic !== 'false') fails.push(`le clic n a pas eteint la barre (dataset.enabled=${barreApresClic})`);
 if (enPause.traduite) fails.push('la pause ne fait rien : la chaine mise en pause traduit encore');
 if (!reprise.traduite) fails.push('la reprise ne repart pas : le bouton eteint mais ne rallume pas');
