@@ -12,9 +12,11 @@ A live chat translator for Kick. Read any stream's chat in your own language, an
 [![CI](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml/badge.svg)](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-[Español](README.es.md) · [日本語](README.ja.md) · [Português](README.pt-BR.md)
+[Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt-BR.md) · [Türkçe](README.tr.md) · [Русский](README.ru.md) · [العربية](README.ar.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [中文](README.zh-CN.md) · [Čeština](README.cs.md)
 
 <img src="screenshots/demo.gif" alt="Spanish chat messages arrive one by one, each with its English translation underneath; then an English reply is typed, a Spanish preview appears above the chat box, and Tab swaps it in" width="360">
+
+[Watch it on a real chat](https://www.youtube.com/watch?v=NoGJeUrwy9o)
 
 </div>
 
@@ -34,6 +36,8 @@ the language the channel broadcasts in, read from Kick itself. Both can be chang
 - On-device translation in Chrome and Edge where the browser offers it: 22 ms instead of 1.6 s, and the text
   never leaves your machine
 - 7TV emotes, bot and user filters, a keyword filter, a glossary for names engines mangle
+- Pause one channel from the chat bar without stopping the others. Switching channels or updating the
+  extension keeps open tabs translating, with no reload
 - Chrome, Brave, Edge and Firefox
 
 | Chat, translated as it scrolls | The toolbar popup |
@@ -168,13 +172,13 @@ npm run dev              # HMR
 Builds are reproducible: the same commit yields byte-identical zips on any machine, checked by building a
 `git archive` of the tag in an empty folder and comparing hashes.
 
-Beyond the unit tests, 39 offline gates load the built extension into a real browser, drive it and assert
+Beyond the unit tests, 41 offline gates load the built extension into a real browser, drive it and assert
 what it does, with the page served locally and the translation engine answered locally. They need
 Playwright, which is deliberately not a dependency: point `UX_KIT` at a folder whose `node_modules` holds it,
 or run `npm i -D playwright`.
 
 ```bash
-node test/e2e/run-gates.mjs --headless                  # all 39, no window
+node test/e2e/run-gates.mjs --headless                  # all 41, no window
 node test/e2e/store-shots-fixture.mjs --lang=ja         # the store screenshots, in one listing language
 node test/e2e/store-shots-fixture.mjs --gif             # English store screenshots, the README images and this GIF
 ```

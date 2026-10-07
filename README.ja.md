@@ -12,9 +12,11 @@ Kick のチャットをリアルタイム翻訳。どの配信のチャットも
 [![CI](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml/badge.svg)](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-[English](README.md) · [Español](README.es.md) · [Português](README.pt-BR.md)
+[English](README.md) · [Español](README.es.md) · [Français](README.fr.md) · [Português](README.pt-BR.md) · [Türkçe](README.tr.md) · [Русский](README.ru.md) · [العربية](README.ar.md) · [한국어](README.ko.md) · [中文](README.zh-CN.md) · [Čeština](README.cs.md)
 
 <img src="screenshots/demo.gif" alt="スペイン語のチャットが一件ずつ届き、それぞれの下に英語の訳が付く。続いて英語の返信を入力すると、チャット欄の上にスペイン語のプレビューが現れ、Tab で置き換わる" width="360">
+
+[実際のチャットで動いている様子を見る](https://www.youtube.com/watch?v=NoGJeUrwy9o)
 
 </div>
 
@@ -28,6 +30,8 @@ Kick のチャットをリアルタイム翻訳。どの配信のチャットも
 - Google は鍵もアカウントも不要ですぐに使えます。品質を上げるなら自分の無料 DeepL キーを。MyMemory と Lingva が予備です
 - ブラウザが提供する場合、Chrome と Edge では端末内で翻訳します。1.6 秒かかるところが 22 ms になり、テキストはマシンの外に出ません
 - 7TV のエモート、ボットとユーザーのフィルター、キーワードフィルター、エンジンが崩す名前のための用語集
+- チャットバーから一つのチャンネルだけを一時停止でき、ほかのチャンネルは止まりません。チャンネルを
+  切り替えても、拡張機能を更新しても、開いているタブは再読み込みなしで翻訳を続けます
 - Chrome、Brave、Edge、Firefox
 
 | 流れるチャットをそのまま翻訳 | ツールバーのポップアップ |
@@ -140,10 +144,10 @@ npm run dev              # HMR
 
 ビルドは再現可能です。同じコミットからはどのマシンでもバイト単位で同一の zip ができます。タグの `git archive` を空のフォルダでビルドしてハッシュを比べて確認しています。
 
-ユニットテストのほかに、ネットワークを使わない 39 のゲートがあります。ビルドした拡張機能を実際のブラウザに読み込んで操作し、その動作を検証します。ページも翻訳エンジンもローカルで応答します。Playwright が必要ですが、意図的に依存関係には入れていません。`UX_KIT` を Playwright の入った `node_modules` を持つフォルダに向けるか、`npm i -D playwright` を実行してください。
+ユニットテストのほかに、ネットワークを使わない 41 のゲートがあります。ビルドした拡張機能を実際のブラウザに読み込んで操作し、その動作を検証します。ページも翻訳エンジンもローカルで応答します。Playwright が必要ですが、意図的に依存関係には入れていません。`UX_KIT` を Playwright の入った `node_modules` を持つフォルダに向けるか、`npm i -D playwright` を実行してください。
 
 ```bash
-node test/e2e/run-gates.mjs --headless                  # 39 すべて、ウィンドウなし
+node test/e2e/run-gates.mjs --headless                  # 41 すべて、ウィンドウなし
 node test/e2e/store-shots-fixture.mjs --lang=ja         # ストアのスクリーンショットを一つの掲載言語で
 node test/e2e/store-shots-fixture.mjs --gif             # 英語のスクリーンショット、README の画像、この GIF
 ```
