@@ -1,9 +1,5 @@
-Die Schreibvorschau verdeckt den Sprach-Chip darunter nicht mehr: Du kannst die Sprache, in der du schreibst, wechseln, während die Vorschau angezeigt wird.
+Die Pause-Taste in der Chat-Leiste pausiert jetzt nur den Kanal, den du gerade schaust. Vorher schaltete sie die Übersetzung auf allen Kanälen und in allen Tabs aus, bis du sie im Popup wieder eingeschaltet hast.
 
-Die Sprachliste aus der oberen Leiste bleibt in ihrem Panel und scrollt, statt bei manchen Seitenlayouts über den Chat zu laufen.
+Ist der Kanal im aktuellen Tab pausiert, zeigt das Popup das an und bietet eine Schaltfläche zum Fortsetzen (Resume).
 
-Chat-Hinweise (Übersetzung kopiert, alle Anbieter ausgefallen, Kontingent erreicht, Anbieter gewechselt) erscheinen jetzt in der Sprache der Oberfläche. Bisher waren sie immer auf Englisch.
-
-In den Einstellungen ist der Tab „Activity“ in den übrigen Oberflächensprachen übersetzt, die Regler für Textgröße und Zeilenabstand nehmen die Akzentfarbe an und lassen sich leichter greifen, und die Chips der lokalen Modelle zeigen die Flagge jeder Sprache.
-
-Klarere Bezeichnungen im Popup und in den Einstellungen: Die Kanal- und Nutzerfilter sprechen von erlaubt und blockiert statt von Whitelist und Blacklist, und die Erweiterung hat überall denselben Namen.
+Ein Kick-Tab, der schon offen war, während die Erweiterung installiert oder aktualisiert wurde, übersetzt weiter. Früher hörte er auf, bis du die Seite neu geladen hast.

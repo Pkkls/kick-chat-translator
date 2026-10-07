@@ -1,9 +1,5 @@
-L'aperçu de rédaction ne cache plus la puce de langue juste en dessous : tu peux changer la langue dans laquelle tu écris pendant que l'aperçu est affiché.
+Le bouton pause de la barre du chat ne met plus en pause que la chaîne que tu regardes. Avant, il coupait la traduction sur toutes les chaînes et dans tous les onglets, jusqu'à ce que tu la réactives depuis le popup.
 
-La liste des langues ouverte depuis la barre du haut reste dans son panneau et défile, au lieu de déborder sur le chat avec certaines mises en page.
+Quand la chaîne de l'onglet en cours est en pause, le popup l'indique et propose un bouton Reprendre.
 
-Les notifications du chat (traduction copiée, tous les fournisseurs indisponibles, quota atteint, changement de fournisseur) s'affichent maintenant dans la langue de l'interface. Elles étaient toujours en anglais.
-
-Dans les réglages, l'onglet Activité est traduit, les curseurs de taille du texte et d'interligne prennent la couleur d'accent et se saisissent plus facilement, et les puces des modèles locaux montrent le drapeau de chaque langue.
-
-Des libellés plus clairs dans le popup et les réglages : les filtres de chaînes et d'utilisateurs disent autorisés et bloqués au lieu de liste blanche et liste noire, et l'extension porte un seul nom partout.
+Un onglet Kick déjà ouvert pendant l'installation ou la mise à jour de l'extension continue de traduire. Avant, il s'arrêtait jusqu'à ce que tu recharges la page.

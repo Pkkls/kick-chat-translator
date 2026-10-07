@@ -242,4 +242,6 @@ export const ru: Record<string, string> = {
   'sent to a provider': 'отправлено поставщику',
   'languages seen in chat': 'языки, замеченные в чате',
   'These are the languages the allowlist in Filters decides between.': 'Это те языки, между которыми решает список в фильтрах.',
+  'Paused on this channel': 'Приостановлено на этом канале',
+  'Resume': 'Возобновить',
 };

@@ -28,6 +28,18 @@ type Callback = (msg: DomMessage) => void;
 
 const PROCESSED_MARK = 'data-kt-id';
 
+/**
+ * Signe la marque de CETTE instance du script.
+ *
+ * Une mise a jour de l'extension laisse l'ancien script dans la page, coupe de
+ * `chrome.runtime` mais toujours observateur. Son MutationObserver a ete cree
+ * le premier, donc il marque chaque nouvelle ligne avant le nouveau script, qui
+ * la prenait pour deja traitee : l'onglet ne traduisait plus rien. Les versions
+ * deja publiees ecrivent l'id nu ; une marque prefixee par instance ne peut pas
+ * leur etre egale.
+ */
+const INSTANCE = Math.random().toString(36).slice(2, 8);
+
 export class ChatObserver {
   private listObserver: MutationObserver | undefined;
   private containerWatcher: MutationObserver | undefined;
@@ -143,14 +155,15 @@ export class ChatObserver {
     const id = buildSyntheticId(row, username, text);
 
     // If the row already carries our id mark AND it matches, we already processed it.
+    const mark = `${INSTANCE}:${id}`;
     const prev = row.getAttribute(PROCESSED_MARK);
-    if (prev === id) return;
+    if (prev === mark) return;
     if (this.seenIds.has(id)) {
-      row.setAttribute(PROCESSED_MARK, id);
+      row.setAttribute(PROCESSED_MARK, mark);
       return;
     }
     this.seenIds.add(id);
-    row.setAttribute(PROCESSED_MARK, id);
+    row.setAttribute(PROCESSED_MARK, mark);
     // Bound memory on long sessions (hours of fast chat).
     if (this.seenIds.size > 4000) this.cap(3000);
 

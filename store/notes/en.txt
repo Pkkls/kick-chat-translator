@@ -1,9 +1,5 @@
-The compose preview no longer covers the language chip under it, so you can change the language you write in while the preview is on screen.
+The pause button on the chat bar now pauses only the channel you are watching. Before, it turned translation off on every channel and in every tab, until you switched it back on in the popup.
 
-The language list opened from the top bar stays inside its panel and scrolls, instead of running over the chat on some page layouts.
+When the channel in your current tab is paused, the popup says so and offers a Resume button.
 
-Chat notices (translation copied, every provider down, quota reached, provider switched) now appear in your interface language. They were always in English.
-
-In the settings, the Activity tab is translated, the text size and line spacing sliders take the accent colour and are easier to grab, and the on-device model chips show each language's flag.
-
-Clearer wording in the popup and the settings: the channel and user filters say allowed and blocked instead of whitelist and blacklist, and the extension has one name everywhere.
+A Kick tab that was already open while the extension was installed or updated keeps translating. It used to stop until you reloaded the page.

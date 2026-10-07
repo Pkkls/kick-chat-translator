@@ -7,7 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [3.0.1] - 2026-09-27
+## [3.0.2] - 2026-10-07
+
+### Fixed
+
+- **The bar's pause turned translation off everywhere.** It wrote the global
+  switch, so pausing one stream stopped every channel in every tab until the
+  popup was found. It now pauses the channel it was clicked on, and a channel
+  stays paused when you come back to it: the new channel's rows could reach
+  the observer before the URL poll saw the switch, and were translated with
+  the view of the channel being left.
+- **A Kick tab open during an install or an update stopped translating** while
+  its bar still read "Translating". The service worker re-injects the content
+  script into open kick.com tabs, the new script clears the bar and language
+  menu its predecessor left, and its row marks are signed so an orphaned 3.0.1
+  script cannot make it skip new messages.
+
+### Added
+
+- The popup says when the channel in the current tab is paused and offers
+  Resume. The row takes the place of the day's numbers while it shows, which
+  keeps the default popup under Chrome's 600px ceiling.
+- The `scripting` permission, for the re-injection above. Justified in the
+  store text.
 
 A design pass over the chat, the popup and the options page, run through the
 UX kit's audit and its gates. The flags on translated lines, the audit's worst

@@ -35,7 +35,7 @@ import { localEngine } from './localEngine';
 import { logPlatform, refresh7TV } from './platform';
 import { withFavorite } from '~/shared/languages';
 import { memoriserLangueChaine } from '~/shared/channelLang';
-import { ROUTE_POLL_MS } from '~/shared/constants';
+import { PAUSED_CHANNELS_MAX, ROUTE_POLL_MS } from '~/shared/constants';
 import { msg as localised, setContentLocale } from './msg';
 
 const log = rootLogger.child('content');
@@ -49,6 +49,11 @@ async function main(): Promise<void> {
   if (__KT_METRICS__) mountMetricsBridge();
 
   let settings: Settings = await fetchSettings();
+  // Un predecesseur peut etre la : le script coupe par une mise a jour, dans un
+  // onglet ou le service worker vient de reinjecter celui-ci. Ses pieces ont
+  // perdu leurs ecouteurs, et le montage ci-dessous prendrait le bandeau pour le
+  // sien. Le menu de langue, attache a la page, restait en double sous le meme id.
+  for (const mort of document.querySelectorAll('#kt-floating-bar, #kt-lang-menu')) mort.remove();
   rootLogger.setEnabled(settings.debug);
   // Before anything is drawn. Every label the chat and the bar put on screen
   // reads this, and so do the language names in the chip menu.
@@ -72,11 +77,55 @@ async function main(): Promise<void> {
     });
   }
 
-  const pipeline = new TranslationPipeline(settings);
-  const compose = new ComposeController(settings, (patch) => void patchSettings(patch));
   let currentSlug: string | undefined;
 
+  /**
+   * Les reglages tels que CETTE chaine les voit.
+   *
+   * `enabled` est l'interrupteur general, celui du popup et de la page d'options.
+   * Le bouton du bandeau est une PAUSE sur un chat : il n'ecrit plus `enabled`,
+   * il ajoute ou retire la chaine courante de `pausedChannels`. Avant, mettre en
+   * pause sur un stream eteignait le produit sur tous les autres, dans tous les
+   * onglets, et durablement.
+   *
+   * Tout ce qui lit `enabled` recoit cette vue : le pipeline, la composition et
+   * le bandeau. Aucun de ces modules n'a eu a changer.
+   */
+  function vueLocale(base: Settings = settings, slug = currentSlug): Settings {
+    if (!slug || !base.pausedChannels.includes(slug)) return base;
+    return { ...base, enabled: false };
+  }
+
+  const pipeline = new TranslationPipeline(vueLocale());
+  const compose = new ComposeController(vueLocale(), (patch) => void patchSettings(patch));
+
+  /**
+   * Vrai, une fois pour toutes, quand l'extension a ete mise a jour sous ce
+   * script : `chrome.runtime.id` disparait et tout appel leve. Le script s'arrete
+   * alors de lui-meme, sans toucher au DOM, ou son successeur reinjecte a deja
+   * pose son propre bandeau sous le meme id.
+   */
+  let orphelin = false;
+  function estOrphelin(): boolean {
+    if (orphelin) return true;
+    if (chrome.runtime?.id) return false;
+    orphelin = true;
+    observer.stop();
+    compose.stop();
+    clearInterval(sondageRoute);
+    barWatcher?.disconnect();
+    themeWatch.disconnect();
+    return true;
+  }
+
   const observer = new ChatObserver((msg) => {
+    if (estOrphelin()) return;
+    // Les lignes de la nouvelle chaine peuvent arriver avant que le sondage de
+    // l'URL ait vu le changement, jusqu'a ROUTE_POLL_MS plus tard. Traitees avec
+    // la vue de la chaine quittee, elles etaient traduites sur une chaine en
+    // pause : la ligne est marquee avant d'arriver ici, donc la remise a zero du
+    // sondage ne la reprenait jamais. Rattraper la route d'abord.
+    if (extractChannelSlug(location.pathname) !== currentSlug) attachForRoute();
     void pipeline.onDomMessage({
       rowElement: msg.rowElement,
       injectionTarget: msg.injectionTarget,
@@ -127,8 +176,17 @@ async function main(): Promise<void> {
           barPolling = false;
           return;
         }
-        mountFloatingBar(host, settings, {
-          onToggle: (enabled) => void patchSettings({ enabled }),
+        mountFloatingBar(host, vueLocale(), {
+          onToggle: (enabled) => {
+            const slug = currentSlug;
+            // Hors d'une chaine il n'y a rien a mettre en pause localement, donc
+            // le bouton retombe sur l'interrupteur general.
+            if (!slug) return void patchSettings({ enabled });
+            const sansElle = settings.pausedChannels.filter((c) => c !== slug);
+            void patchSettings({
+              pausedChannels: enabled ? sansElle : [slug, ...sansElle].slice(0, PAUSED_CHANNELS_MAX),
+            });
+          },
           // Picking on the bar seeds the favourites, the same way picking in
           // the composer already did. That is the whole configuration step for
           // the flag tiles: the three or four languages someone actually
@@ -171,8 +229,10 @@ async function main(): Promise<void> {
   // On a fast chat rAF fires every frame (16ms), creating noise. 500ms is calm and
   // still fast enough to re-mount the bar before the user notices.
   let barGuardTimer: ReturnType<typeof setTimeout> | undefined;
+  let barWatcher: MutationObserver | undefined;
   function watchBar(): void {
-    new MutationObserver(() => {
+    barWatcher = new MutationObserver(() => {
+      if (estOrphelin()) return;
       if (barGuardTimer) return;
       barGuardTimer = setTimeout(() => {
         barGuardTimer = undefined;
@@ -181,7 +241,8 @@ async function main(): Promise<void> {
         if (settings.showFloatingBar && !findChatPanel()?.querySelector('#kt-floating-bar'))
           mountBar();
       }, 500);
-    }).observe(document.body, { childList: true, subtree: true });
+    });
+    barWatcher.observe(document.body, { childList: true, subtree: true });
   }
 
   // If the chat panel is present but neither the message list nor the composer can
@@ -206,11 +267,24 @@ async function main(): Promise<void> {
     }, 12_000);
   }
 
-  function attachForRoute(): void {
+  /**
+   * `force` sert quand le slug n'a pas bouge mais que son verdict, si : sortir
+   * la chaine courante de pause. Sans lui, la sortie anticipee sur
+   * `slug === currentSlug` avalait la reprise.
+   */
+  function attachForRoute(force = false): void {
     const slug = extractChannelSlug(location.pathname);
-    if (slug === currentSlug) return;
+    if (slug === currentSlug && !force) return;
     currentSlug = slug;
     log.debug('route change, channel slug:', slug);
+
+    // Une chaine en pause et une qui ne l'est pas ne donnent pas le meme
+    // `enabled` : le pipeline comme le bandeau doivent l'apprendre avant que la
+    // premiere ligne arrive.
+    const vue = vueLocale(settings, slug);
+    pipeline.updateSettings(vue);
+    compose.updateSettings(vue);
+    updateFloatingBar(vue);
 
     if (!slug) {
       observer.stop();
@@ -271,7 +345,8 @@ async function main(): Promise<void> {
   // de chaines deux fois par seconde. `popstate` reste pour que le retour arriere
   // soit immediat au lieu d'attendre le prochain tour.
   let dernierChemin = location.pathname;
-  setInterval(() => {
+  const sondageRoute = setInterval(() => {
+    if (estOrphelin()) return;
     if (location.pathname === dernierChemin) return;
     dernierChemin = location.pathname;
     attachForRoute();
@@ -389,11 +464,15 @@ async function main(): Promise<void> {
   }
 
   watchSettings((next) => {
-    const wasEnabled = settings.enabled;
+    // Le verdict qui compte est celui de la chaine courante, pas l'interrupteur
+    // general : c'est lui qui decide si l'observateur tourne et ce que le
+    // bandeau affiche.
+    const wasEnabled = vueLocale().enabled;
     const prev = settings;
     settings = next;
-    pipeline.updateSettings(next);
-    compose.updateSettings(next);
+    const vue = vueLocale(next);
+    pipeline.updateSettings(vue);
+    compose.updateSettings(vue);
     // Les trois reglages de lisibilite sont des proprietes sur la racine : les
     // reposer suffit, rien n'est a redessiner ligne par ligne.
     applyTypography(next);
@@ -403,16 +482,16 @@ async function main(): Promise<void> {
     // Ahead of everything that redraws below, so the bar and the chip come back
     // in the language that was just chosen rather than one change late.
     setContentLocale(next.uiLang);
-    updateFloatingBar(next);
+    updateFloatingBar(vue);
     applyShowOriginal(next.showOriginal);
     refreshChip();
 
     // Ordered after updateSettings on purpose: the rows are re-run through the
     // pipeline, which must already hold the new settings when they arrive.
-    if (next.enabled && RERENDER_KEYS.some((k) => prev[k] !== next[k])) retranslateHandledRows();
+    if (vue.enabled && RERENDER_KEYS.some((k) => prev[k] !== next[k])) retranslateHandledRows();
 
-    if (next.enabled && !wasEnabled) attachForRoute();
-    if (!next.enabled && wasEnabled) {
+    if (vue.enabled && !wasEnabled) attachForRoute(true);
+    if (!vue.enabled && wasEnabled) {
       observer.stop();
     }
     if (next.showFloatingBar) mountBar();

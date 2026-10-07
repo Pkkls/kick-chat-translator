@@ -1,9 +1,5 @@
-Yazma önizlemesi artık altındaki dil çipini kapatmıyor: önizleme ekrandayken yazdığınız dili değiştirebilirsiniz.
+Sohbet çubuğundaki duraklatma düğmesi artık yalnızca izlediğiniz kanalı duraklatıyor. Önceden çeviriyi tüm kanallarda ve tüm sekmelerde, siz açılır pencereden yeniden açana kadar kapatıyordu.
 
-Üst çubuktan açılan dil listesi kendi panelinin içinde kalıp kayıyor; bazı sayfa düzenlerinde sohbetin üzerine taşmıyor.
+Geçerli sekmedeki kanal duraklatılmışsa açılır pencere bunu belirtir ve bir Devam et düğmesi sunar.
 
-Sohbet bildirimleri (çeviri kopyalandı, tüm sağlayıcılar çalışmıyor, kota doldu, sağlayıcı değişti) artık arayüz dilinde görünüyor. Önceden hep İngilizceydi.
-
-Ayarlarda Etkinlik sekmesi çevrildi, metin boyutu ve satır aralığı kaydırıcıları vurgu rengini alıyor ve daha kolay tutuluyor, yerel model çipleri de her dilin bayrağını gösteriyor.
-
-Açılır pencerede ve ayarlarda daha net ifadeler: kanal ve kullanıcı filtreleri beyaz liste ve kara liste yerine izin verilen ve engellenen diyor, uzantının da her yerde tek bir adı var.
+Uzantı yüklenirken veya güncellenirken zaten açık olan bir Kick sekmesi çevirmeye devam ediyor. Önceden sayfayı yeniden yükleyene kadar duruyordu.
