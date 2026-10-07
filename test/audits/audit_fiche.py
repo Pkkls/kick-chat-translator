@@ -82,6 +82,18 @@ for perm in list(manifeste.get('permissions', [])) + list(manifeste.get('host_pe
         echecs.append(f'permission livree sans justification dans la fiche : {perm}')
 comptes['permission justifiee'] = justifiees
 
+# La politique de confidentialite publique doit nommer chaque permission que
+# le paquet demande. 3.0.2 a ajoute `scripting` dans le manifeste et la fiche,
+# pas dans PRIVACY.md : rien ne l'a vu avant la sonde preflight.
+confidentialite = lire('PRIVACY.md')
+listees = 0
+for perm in manifeste.get('permissions', []):
+    if f'`{perm}`' in confidentialite:
+        listees += 1
+    else:
+        echecs.append(f'permission livree absente de PRIVACY.md : {perm}')
+comptes['permission dans PRIVACY'] = listees
+
 print('champs comptes :')
 for genre, n in sorted(comptes.items()):
     print(f'  {genre.ljust(22)} {n}')

@@ -31,6 +31,7 @@
     "release:check": "npm run typecheck && npm run lint && npm run test && npm run build",
     "stores:selftest": "node scripts/stores/cws-selftest.mjs && node scripts/stores/amo-selftest.mjs",
     "stores:payloads": "node scripts/stores/payloads.mjs",
+    "stores:preflight": "node scripts/stores/preflight.mjs",
     "stores:verify": "node scripts/stores/verify.mjs",
     "stores:rank": "node scripts/stores/rank.mjs"
   },

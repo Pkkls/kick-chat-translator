@@ -50,6 +50,9 @@ them. Read theirs if you care:
 
 - `storage` — to save your preferences and cache.
 - `alarms` — to keep the service worker alive briefly during bursts of chat.
+- `scripting` — once, when the extension is installed or updated, to load its
+  own content script into kick.com tabs already open, so they keep translating
+  without a reload. It injects nothing else, and nowhere but kick.com.
 - `host_permissions` for kick.com and the translation provider endpoints
   above — to read chat and call the translators.
 
