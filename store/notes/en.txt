@@ -3,3 +3,7 @@ The pause button on the chat bar now pauses only the channel you are watching. B
 When the channel in your current tab is paused, the popup says so and offers a Resume button.
 
 A Kick tab that was already open while the extension was installed or updated keeps translating. It used to stop until you reloaded the page.
+
+Until your first translation, the popup opened outside Kick says to open a channel and offers a button that does.
+
+The texts in the chat, the bar, the popup and the settings carry their accents again in French, Spanish, Portuguese and Turkish.

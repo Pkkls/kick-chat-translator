@@ -1,30 +1,28 @@
 {
-  "genere": "2026-10-07T02:16:58.506Z",
+  "genere": "2026-10-07T02:55:25.849Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase. La version commitee decrit l'etat d'AVANT le commit qui la porte, puisque la fin de passe genere puis commite : git.head y pointe le commit precedent et git.arbrePropre y est faux. Relancer `node .agent/state.mjs` avant de lire, ce que le prompt demande deja en premier.",
   "git": {
     "remotesEnDouble": [],
-    "branche": "feat/ergonomics",
-    "head": "9ffb3e819353f29e29d6e773fd1af5b9fa369caf",
-    "sujet": "Scope the bar's pause to the channel it was clicked on",
+    "branche": "feat/next",
+    "head": "edaad60d73a07e57b5c1dce9a5473aeb170a60f6",
+    "sujet": "Put the accents back in the popup and options strings",
     "arbrePropre": false,
-    "fichiersModifies": 22,
+    "fichiersModifies": 15,
     "dernierTag": "v3.0.1",
-    "decrit": "v3.0.1-9-g9ffb3e8",
+    "decrit": "v3.0.1-17-gedaad60",
     "remotes": {
       "origin": "https://github.com/Pkkls/kick-chat-translator.git"
     },
     "ecarts": {
       "origin": {
-        "derriere": 0,
-        "devant": 0,
-        "aJour": true
+        "note": "pas de origin/feat/next connu localement"
       }
     }
   },
   "versions": {
-    "packageJson": "3.0.1",
-    "distManifest": "3.0.1",
+    "packageJson": "3.0.2",
+    "distManifest": "3.0.2",
     "accordent": true,
     "note": null
   },
@@ -51,6 +49,22 @@
       "versionDuNom": "3.0.0",
       "versionDuManifest": null,
       "accordent": false,
+      "erreur": null
+    },
+    {
+      "fichier": "kick-chat-translator-3.0.2-chromium.zip",
+      "octets": 325040,
+      "versionDuNom": "3.0.2",
+      "versionDuManifest": "3.0.2",
+      "accordent": true,
+      "erreur": null
+    },
+    {
+      "fichier": "kick-chat-translator-3.0.2-firefox.zip",
+      "octets": 324969,
+      "versionDuNom": "3.0.2",
+      "versionDuManifest": "3.0.2",
+      "accordent": true,
       "erreur": null
     }
   ],
@@ -165,11 +179,28 @@
   },
   "releaseGithub": {
     "depot": "Pkkls/kick-chat-translator",
-    "http": 403,
-    "note": "reponse inattendue"
+    "http": 200,
+    "tag": "v3.0.1",
+    "publiee": "2026-09-27T16:18:20Z",
+    "assets": [
+      {
+        "nom": "kick-chat-translator-3.0.1-chromium.zip",
+        "octets": 322272
+      },
+      {
+        "nom": "kick-chat-translator-3.0.1-firefox.zip",
+        "octets": 322201
+      },
+      {
+        "nom": "kick-chat-translator-3.0.1-source.zip",
+        "octets": 1593990
+      }
+    ]
   },
   "paquetsContreRelease": {
-    "note": "reponse inattendue"
+    "compares": 0,
+    "ecarts": [],
+    "note": null
   },
   "boutiques": {
     "note": "Lu sur les pages, jamais recopie. Une version de boutique change sans commit : la valeur commitee ici decrit l'instant de la generation et rien d'autre.",
@@ -190,23 +221,25 @@
     }
   },
   "boutiquesContreVersion": {
-    "versionLocale": "3.0.1",
-    "chrome": "a jour",
-    "amo": "a jour",
+    "versionLocale": "3.0.2",
+    "chrome": "3.0.1 contre 3.0.2 ici",
+    "amo": "3.0.1 contre 3.0.2 ici",
     "note": "Un retard n'est pas un defaut : soumettre est du ressort de kil. Ce champ existe pour qu'on cesse de citer un chiffre de tete."
   },
   "file": {
     "bloques": [
       "**The Persian split is measured but never observed running.** The rule",
+      "**Tab insertion after an update, on kick.com.** `mise-a-jour` now types",
       "**`scripting` on a store update: confirm no prompt.** Chrome documents no",
+      "**The three localised READMEs are behind, in two ways that differ.** Their",
       "**`node_modules` in the history: the cost is measured, the consequences",
       "**A real chat capture, once, so the frequencies stop being guesses.**",
       "**Emote picker dodge: only the Kick-specific half is still blocked.** The",
       "**Native review of the store text.** 8 languages of 10 on the Chrome side",
       "**Store submissions.** The 2.10.0 archives exist and are published on"
     ],
-    "nbBloques": 7,
-    "nbOuverts": 7,
-    "nbFaits": 104
+    "nbBloques": 9,
+    "nbOuverts": 4,
+    "nbFaits": 109
   }
 }

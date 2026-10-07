@@ -3,3 +3,5 @@ Die Pause-Taste in der Chat-Leiste pausiert jetzt nur den Kanal, den du gerade s
 Ist der Kanal im aktuellen Tab pausiert, zeigt das Popup das an und bietet eine Schaltfläche zum Fortsetzen (Resume).
 
 Ein Kick-Tab, der schon offen war, während die Erweiterung installiert oder aktualisiert wurde, übersetzt weiter. Früher hörte er auf, bis du die Seite neu geladen hast.
+
+Solange du noch nichts übersetzt hast, schlägt das Popup außerhalb von Kick vor, einen Kanal zu öffnen, und bietet dafür eine Schaltfläche.
