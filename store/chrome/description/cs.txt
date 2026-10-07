@@ -22,7 +22,7 @@ Přeskočit boty, blokovat uživatele nebo kanály, nebo omezit, které zdrojov�
 
 42 jazyků, včetně písma zprava doleva (arabština, hebrejština, perština), s odděleně vedenými regionálními variantami (pt-BR, zh-TW). Rozhraní samotného rozšíření existuje v 10 jazycích: angličtina, španělština, francouzština, portugalština, turečtina, ruština, arabština, čínština, japonština a korejština.
 
-Žádný účet, žádná analytika, žádný můj server. Rozšíření žádá o úložiště, o časovač, aby překladač zůstal připravený, zatímco se díváte, a o přístup ke kick.com a k překladovým enginům, které může volat: Google, DeepL, MyMemory a Lingva. Čte také stránku vydání na GitHubu, aby vám oznámilo, že existuje novější verze, a s tímto požadavkem neposílá nic. Text vašeho chatu jde jen do enginu, který jste zvolili, a nikam jinam; v režimu v zařízení ani tam.
+Žádný účet, žádná analytika, žádný můj server. Rozšíření žádá o úložiště, o časovač, aby překladač zůstal připravený, zatímco se díváte, a o přístup ke kick.com a k překladovým enginům, které může volat: Google, DeepL, MyMemory a Lingva. Při instalaci a při každé aktualizaci také znovu načte svůj vlastní skript do již otevřených karet Kick, aby dál překládaly bez obnovení stránky. Čte také stránku vydání na GitHubu, aby vám oznámilo, že existuje novější verze, a s tímto požadavkem neposílá nic. Text vašeho chatu jde jen do enginu, který jste zvolili, a nikam jinam; v režimu v zařízení ani tam.
 
 NOVINKY
 

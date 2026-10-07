@@ -1,6 +1,6 @@
 ---
 name: publish-stores
-description: Ship a release to the Chrome Web Store and addons.mozilla.org. A tag vX.Y.Z runs the Release workflow, which builds, checks and publishes through both stores' APIs; store texts live in store/. Covers the versioning rule, the one manual step (Chrome's descriptions), checking what the stores serve, and the manual fallbacks. Use when the user asks to release, upload, publish or ship a version, or to change or check the store listings.
+description: Ship a release to the Chrome Web Store and addons.mozilla.org. A tag vX.Y.Z runs the Release workflow, which builds, checks and publishes through both stores' APIs; store texts live in store/. `npm run stores:preflight` says before the tag what the Chrome dashboard needs by hand (a new permission's justification, changed descriptions) and writes a copy page for it. Covers the versioning rule, the manual dashboard steps, checking what the stores serve, and recovering a store that failed. Use when the user asks to release, upload, publish or ship a version, or to change or check the store listings.
 ---
 
 # Publishing to the stores
@@ -11,8 +11,13 @@ description: Ship a release to the Chrome Web Store and addons.mozilla.org. A ta
    ```bash
    npm run release:check && npm run package:all && npm run stores:payloads -- <scratchpad>/stores
    ```
-2. **Only if a Chrome description changed**: the user pastes `store/chrome/description/<lang>.txt` in the dashboard (`chrome.google.com/webstore/devconsole/<publisher>/<item>/edit`, page "Fiche Store"), language by language, and saves the draft. Nothing else in either listing is manual.
-3. **Tag and push**: `git tag -a vX.Y.Z -m "Release X.Y.Z" && git push origin vX.Y.Z`. The Release workflow (`.github/workflows/release.yml`) checks the tag equals package.json, runs release:check and the store clients' self-tests, builds and packs twice and compares the bytes, makes the source archive, builds the payloads and runs the listing audit, cancels a Chrome submission still in review, uploads and submits to Chrome, releases and lists on AMO, and creates the GitHub release with the notes and checksums. Started by hand (workflow_dispatch) it is a dry run that sends nothing.
+2. **Preflight, then the dashboard if it asks**:
+   ```bash
+   npm run stores:preflight -- --html release/preflight.html
+   ```
+   It compares HEAD with the last tag that is not this version's and lists what no API can do: the Privacy tab justification of each permission added since (from `store/chrome/dashboard/permission-justifications.txt`), and each Chrome description that changed (pasted per language on the "Fiche Store" page). The HTML page holds every text with a copy button: open it, send the user through it, wait for "done". It fails outright when a shipped permission has no justification or is missing from `PRIVACY.md`. "Nothing to do by hand" means the tag can go at once.
+3. **Tag and push**: `git tag -a vX.Y.Z -m "Release X.Y.Z" && git push origin vX.Y.Z`. The Release workflow (`.github/workflows/release.yml`) checks the tag equals package.json, runs release:check and the store clients' self-tests, builds and packs twice and compares the bytes, makes the source archive, builds the payloads and runs the listing audit, cancels a Chrome submission still in review, uploads and submits to Chrome, releases and lists on AMO, and creates the GitHub release with the notes and checksums. Chrome and AMO are independent steps (`continue-on-error`): one store refusing no longer skips the other or the GitHub release, and a final "Stores outcome" step turns the run red and says which store needs what. Started by hand (workflow_dispatch) it is a dry run that sends nothing.
+   **When a store step is red**: Chrome with `INVALID_ITEM_METADATA` means the package is uploaded but not submitted, because the dashboard wants something (see step 2); once the user fixed it, `node scripts/stores/cws.mjs publish`. AMO red: rerun `amo.mjs release` then `amo.mjs listing` by hand, from a clean checkout of the tag, with `git archive --format=zip --prefix=kick-chat-translator-X.Y.Z/ -o release/kick-chat-translator-X.Y.Z-source.zip HEAD` for the source and `stores:payloads` for the notes.
 4. **After approval**: `npm run stores:verify`, also run weekly by the Stores verify workflow, compares what both stores serve with the repository, language by language.
 
 Secrets, in the repository's Actions settings: `CWS_SERVICE_ACCOUNT_JSON`, `CWS_PUBLISHER_ID`, `AMO_JWT_ISSUER`, `AMO_JWT_SECRET`. The same credentials live in `~/.config/kick-chat-translator/` for the scripts run by hand.
@@ -173,3 +178,12 @@ Kept so the next release starts from what happened, not from what was assumed.
 
 - **Chrome detailed descriptions.** The API v2 has five methods (upload, publish, fetchStatus, cancelSubmission, setPublishedDeployPercentage; discovery document read 2026-09-26) and no listing schema. The dashboard refuses Claude in Chrome, the built-in pane refuses to load it, computer use only reads browsers, and the remote-debugging route is denied. The user pastes from the page `payloads.mjs` feeds (`cws-description-XX.txt`), then `cws.mjs publish`; a copy page was published for 2.12.2 at https://claude.ai/artifact/CZ28h6CwWsMeFVjUWFNNwu.
 - **One-time registrations, both done 2026-09-26**: the service account email in the dashboard, and the AMO API key (Mozilla releases it only after the account's email is confirmed through a mailed link).
+
+## Journal: 3.0.2, 2026-10-07
+
+- **A new permission went out without its dashboard justification.** `scripting` was justified in `permission-justifications.txt` and the audit was green, but the text also has to be pasted in the dashboard's Privacy tab, and nothing said so before the tag. Chrome uploaded the package and refused the submission: `INVALID_ITEM_METADATA`, the API giving no detail. Now: `stores:preflight` lists that paste before the tag.
+- **One store's refusal skipped everything after it.** The Chrome step failed, so AMO and the GitHub release never ran; both were sent by hand with the commands above. Now: independent store steps and a final outcome step.
+- **`PRIVACY.md` did not name the new permission.** Now: `audit_fiche.py` fails when a shipped permission is missing from it, and so does preflight.
+- **The Chrome descriptions' permission sentence was wrong** after `scripting` was added, in all eleven languages. Fixed in `store/chrome/description/`; preflight lists them for pasting since they changed.
+- **This skill was not loaded** in a session started outside the repository. A user-level pointer, `~/.claude/skills/publish-stores/SKILL.md`, sends to this file.
+- **Even with the justification pasted, Chrome kept refusing** with the same error: the dashboard's own "why can't I submit" list is the only place that names the missing field. Ask the user to read it rather than retrying `publish`.

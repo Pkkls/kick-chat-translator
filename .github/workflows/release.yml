@@ -17,6 +17,9 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          # preflight compares with the previous tag: it needs the tags and history.
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -46,6 +49,9 @@ jobs:
           git archive --format=zip --prefix="kick-chat-translator-$V/" -o "release/kick-chat-translator-$V-source.zip" HEAD
           node scripts/stores/payloads.mjs "$RUNNER_TEMP/stores"
           python3 test/audits/audit_fiche.py
+          # What this release asks of a person in the Chrome dashboard, in the log
+          # where a refusal would be read. It cannot tell whether it was done.
+          node scripts/stores/preflight.mjs | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Store credentials
         if: github.event_name == 'push'
@@ -58,9 +64,17 @@ jobs:
           printf '%s' "$CWS_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/cws-key.json"
           node -e 'require("fs").writeFileSync(process.env.RUNNER_TEMP + "/amo-api.json", JSON.stringify({ issuer: process.env.AMO_JWT_ISSUER, secret: process.env.AMO_JWT_SECRET }))'
 
+      # Each store is its own step and neither stops the other. In 3.0.2 Chrome
+      # refused the submission (a permission without its justification in the
+      # dashboard), the job stopped there, and AMO and the GitHub release were
+      # skipped and had to be sent by hand. The outcome step below turns the job
+      # red again once everything that could go has gone.
+
       # A submission still in review blocks a new package: this release replaces it.
       - name: Chrome Web Store
+        id: chrome
         if: github.event_name == 'push'
+        continue-on-error: true
         env:
           CWS_SA_KEY: ${{ runner.temp }}/cws-key.json
           CWS_PUBLISHER_ID: ${{ secrets.CWS_PUBLISHER_ID }}
@@ -69,7 +83,9 @@ jobs:
           node scripts/stores/cws.mjs upload "release/kick-chat-translator-$VERSION-chromium.zip" --publish
 
       - name: addons.mozilla.org
+        id: amo
         if: github.event_name == 'push'
+        continue-on-error: true
         env:
           AMO_API_KEY: ${{ runner.temp }}/amo-api.json
         run: |
@@ -85,3 +101,19 @@ jobs:
         with:
           files: release/*.zip
           body_path: ${{ runner.temp }}/release-notes.md
+
+      - name: Stores outcome
+        if: github.event_name == 'push'
+        env:
+          CHROME: ${{ steps.chrome.outcome }}
+          AMO: ${{ steps.amo.outcome }}
+        run: |
+          echo "Chrome Web Store: $CHROME"
+          echo "addons.mozilla.org: $AMO"
+          if [ "$CHROME" != success ]; then
+            echo "::error title=Chrome Web Store::The package may be uploaded but not submitted. INVALID_ITEM_METADATA means the dashboard wants something no API can set (a permission justification, a privacy certification, a listing field). Fix it in the dashboard, then run: node scripts/stores/cws.mjs publish"
+          fi
+          if [ "$AMO" != success ]; then
+            echo "::error title=addons.mozilla.org::Rerun by hand with the artifacts of this tag: node scripts/stores/amo.mjs release <firefox.zip> <source.zip> <amo-notes.json>"
+          fi
+          test "$CHROME" = success && test "$AMO" = success

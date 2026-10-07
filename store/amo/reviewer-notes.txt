@@ -29,6 +29,12 @@ Function on fetched text, no remote script tag, no hosted module. The only
 network calls are the translation engines the user selects, kick.com, and one
 GET to the project's own GitHub releases endpoint for the update notice.
 
+scripting is used in one place, background/index.ts, on runtime.onInstalled:
+it calls scripting.executeScript with the extension's own packaged content
+script file, read from the manifest, on kick.com tabs that were already open.
+Without it an update leaves those tabs with a disconnected script that stops
+translating until a reload. No code string, no other file, no other host.
+
 Minification is esbuild and Vite defaults through @crxjs/vite-plugin. There is
 no obfuscation step.
 

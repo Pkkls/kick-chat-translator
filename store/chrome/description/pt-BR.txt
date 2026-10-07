@@ -22,7 +22,7 @@ Pular bots, bloquear usuários ou canais, ou limitar quais idiomas de origem sã
 
 42 idiomas, incluindo escrita da direita para a esquerda (árabe, hebraico, persa), com as variantes regionais mantidas separadas (pt-BR, zh-TW). A interface da extensão existe em 10: inglês, espanhol, francês, português, turco, russo, árabe, chinês, japonês e coreano.
 
-Sem conta, sem analytics, sem servidor meu. Ela pede armazenamento, um temporizador para o tradutor ficar pronto enquanto você assiste, e acesso à kick.com mais os motores de tradução que pode chamar: Google, DeepL, MyMemory e Lingva. Também lê a página de versões do GitHub para avisar que existe uma mais nova, sem enviar nada nessa requisição. O texto do seu chat vai para o motor que você escolheu e para nenhum outro lugar, e no modo local nem para lá.
+Sem conta, sem analytics, sem servidor meu. Ela pede armazenamento, um temporizador para o tradutor ficar pronto enquanto você assiste, e acesso à kick.com mais os motores de tradução que pode chamar: Google, DeepL, MyMemory e Lingva. Na instalação e a cada atualização, ela também recarrega o próprio script nas abas da Kick já abertas, para que continuem traduzindo sem atualizar a página. Também lê a página de versões do GitHub para avisar que existe uma mais nova, sem enviar nada nessa requisição. O texto do seu chat vai para o motor que você escolheu e para nenhum outro lugar, e no modo local nem para lá.
 
 NOVIDADES
 
