@@ -236,4 +236,6 @@ export const zh: Record<string, string> = {
   'sent to a provider': '发送给提供方',
   'languages seen in chat': '聊天中见到的语言',
   'These are the languages the allowlist in Filters decides between.': '这些就是过滤器里的允许列表所选择的语言。',
+  'Paused on this channel': '已在此频道暂停',
+  'Resume': '继续',
 };

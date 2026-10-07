@@ -241,4 +241,6 @@ export const ja: Record<string, string> = {
   'sent to a provider': '提供元へ送信',
   'languages seen in chat': 'チャットで見た言語',
   'These are the languages the allowlist in Filters decides between.': 'フィルターの許可リストが選ぶのはこれらの言語です。',
+  'Paused on this channel': 'このチャンネルで一時停止中',
+  'Resume': '再開',
 };

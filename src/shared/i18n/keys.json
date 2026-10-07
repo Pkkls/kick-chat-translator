@@ -211,5 +211,7 @@
   "served from cache",
   "sent to a provider",
   "languages seen in chat",
-  "These are the languages the allowlist in Filters decides between."
+  "These are the languages the allowlist in Filters decides between.",
+  "Paused on this channel",
+  "Resume"
 ]

@@ -55,7 +55,7 @@ await new Promise((r) => srv.listen(0, r));
 const port = srv.address().port;
 
 /** A settings object that exercises the tallest popup a real install produces. */
-function shim(locale) {
+function shim([locale, paused]) {
   const noop = { addListener() {}, removeListener() {} };
   const settings = {
     enabled: true, targetLang: 'auto', displayStyle: 'below', showOriginal: true,
@@ -64,6 +64,7 @@ function shim(locale) {
     composeInsertMode: 'insert', popupShowsStats: true, uiLang: locale,
     providerOrder: ['google', 'mymemory', 'lingva'], favoriteLangs: [],
     deeplApiKey: '', deeplPlan: 'free',
+    pausedChannels: paused ? ['kt-pause'] : [],
   };
   const reply = (m) => {
     switch (m?.type) {
@@ -85,25 +86,38 @@ function shim(locale) {
     storage: { sync: { get: async () => ({}), set: async () => {} },
       local: { get: async () => ({}), set: async () => {} }, onChanged: noop },
     i18n: { getUILanguage: () => locale, getMessage: () => '' },
+    // L'onglet actif est une chaine Kick : en pause, le popup ajoute sa ligne
+    // de reprise, qui doit tenir dans le meme plafond.
+    tabs: { query: async () => [{ url: 'https://kick.com/kt-pause' }] },
   };
 }
 
 const browser = await chromium.launch();
 const over = [];
+const muettes = [];
 console.log(`popup height per interface language (budget ${BUDGET}px)`);
-for (const locale of LOCALES) {
+for (const [locale, paused] of LOCALES.flatMap((l) => [[l, false], [l, true]])) {
   const page = await browser.newPage({ viewport: { width: 360, height: 1200 }, colorScheme: 'dark' });
-  await page.addInitScript(shim, locale);
+  await page.addInitScript(shim, [locale, paused]);
   await page.goto(`http://localhost:${port}/src/popup/index.html`);
   await page.waitForTimeout(1300);
   const h = await page.evaluate(() => document.body.scrollHeight);
-  if (h > BUDGET) over.push(`${locale} ${h}px`);
-  console.log(`  ${locale.padEnd(3)} ${String(h).padStart(4)}px  ${h <= BUDGET ? 'ok' : 'OVERFLOWS'}`);
+  // Une sonde qui n'a pas vu la ligne de pause ne mesure pas l'etat en pause.
+  const vuePause = await page.evaluate(() => !!document.querySelector('section')?.querySelector('button'));
+  if (paused && !vuePause) muettes.push(locale);
+  const nom = `${locale}${paused ? ' paused' : ''}`;
+  if (h > BUDGET) over.push(`${nom} ${h}px`);
+  console.log(`  ${nom.padEnd(10)} ${String(h).padStart(4)}px  ${h <= BUDGET ? 'ok' : 'OVERFLOWS'}`);
   await page.close();
 }
 await browser.close();
 srv.close();
 
+if (muettes.length) {
+  console.error(`
+SONDE MUETTE: pas de ligne de pause en ${muettes.join(', ')}, l'etat en pause n'a pas ete mesure.`);
+  process.exit(2);
+}
 if (over.length) {
   console.error(`\nFAIL — ${over.length} language(s) overflow: ${over.join(', ')}`);
   process.exit(1);

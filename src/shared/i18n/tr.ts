@@ -243,4 +243,6 @@ export const tr: Record<string, string> = {
   'sent to a provider': 'sağlayıcıya gönderildi',
   'languages seen in chat': 'sohbette görülen diller',
   'These are the languages the allowlist in Filters decides between.': 'Filtrelerdeki izin listesi bu diller arasında karar verir.',
+  'Paused on this channel': 'Bu kanalda duraklatıldı',
+  'Resume': 'Devam et',
 };

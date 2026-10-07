@@ -237,4 +237,6 @@ export const ko: Record<string, string> = {
   'sent to a provider': '제공자로 전송',
   'languages seen in chat': '채팅에서 본 언어',
   'These are the languages the allowlist in Filters decides between.': '필터의 허용 목록이 고르는 언어들입니다.',
+  'Paused on this channel': '이 채널에서 일시 중지됨',
+  'Resume': '재개',
 };

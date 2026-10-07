@@ -3,6 +3,7 @@ import type { Settings } from '~/shared/settings';
 import { defaultSettings } from '~/shared/settings';
 import { sortedLanguages } from '~/shared/languages';
 import { send } from '~/shared/messages';
+import { extractChannelSlug } from '~/content/kickApi';
 import { I18nProvider } from '~/shared/i18nContext';
 import { makeT, resolveUiLocale, isRtlLocale } from '~/shared/i18n';
 import type { ProviderStatus, UsageStats } from '~/shared/types';
@@ -30,6 +31,11 @@ export function App() {
   const [deepl, setDeepl] = useState<DeeplUsage | undefined>(undefined);
   const [update, setUpdate] = useState<UpdateStatus | undefined>(undefined);
   const [savedAt, setSavedAt] = useState<number | undefined>(undefined);
+  // La chaine de l'onglet actif. Le bandeau met en pause par chaine ; sans ca,
+  // l'interrupteur ci-dessous disait "active" sur un onglet qui ne traduisait
+  // rien. host_permissions couvre kick.com, donc l'URL est lisible sans la
+  // permission "tabs", qui ferait re-approuver la mise a jour a chacun.
+  const [channel, setChannel] = useState<string | undefined>(undefined);
 
   const locale = resolveUiLocale(settings.uiLang);
   // Named for the reader and sorted with their locale's collation. Keyed on the
@@ -40,6 +46,14 @@ export function App() {
 
   useEffect(() => {
     void refresh().catch(() => undefined);
+    void chrome.tabs
+      .query({ active: true, currentWindow: true })
+      .then(([tab]) => {
+        if (!tab?.url) return;
+        const url = new URL(tab.url);
+        if (/(^|\.)kick\.com$/.test(url.hostname)) setChannel(extractChannelSlug(url.pathname));
+      })
+      .catch(() => undefined);
   }, []);
 
   useEffect(() => {
@@ -70,6 +84,8 @@ export function App() {
     }
   }
 
+  const pausedHere = settings.enabled && !!channel && settings.pausedChannels.includes(channel);
+
   function openOptions() {
     void chrome.runtime.openOptionsPage();
   }
@@ -96,6 +112,23 @@ export function App() {
             />
           </div>
         </header>
+
+        {pausedHere && (
+          <section class="kt-card flex items-center justify-between gap-2">
+            <span class="text-xs text-kick-text">{t('Paused on this channel')}</span>
+            <button
+              class="kt-btn"
+              onClick={() =>
+                void patch(
+                  'pausedChannels',
+                  settings.pausedChannels.filter((c) => c !== channel),
+                )
+              }
+            >
+              {t('Resume')}
+            </button>
+          </section>
+        )}
 
         {update?.updateAvailable && (
           <a
@@ -232,7 +265,10 @@ export function App() {
           )}
         </section>
 
-        {settings.popupShowsStats && stats && (
+        {/* A la place de la ligne de pause, pas en plus : avec les deux, le popup
+          par defaut mesure 654px contre 600 de plafond et defile. Les chiffres
+          du jour reviennent a la reprise. */}
+        {settings.popupShowsStats && stats && !pausedHere && (
           <section class="kt-card">
             <span class="kt-label">{t('Today')}</span>
             <StatsBar stats={stats} />

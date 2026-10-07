@@ -239,4 +239,6 @@ export const ar: Record<string, string> = {
   'sent to a provider': 'أُرسلت إلى مزوّد',
   'languages seen in chat': 'لغات ظهرت في الدردشة',
   'These are the languages the allowlist in Filters decides between.': 'هذه هي اللغات التي تختار بينها قائمة المرشّحات.',
+  'Paused on this channel': 'متوقف مؤقتًا على هذه القناة',
+  'Resume': 'استئناف',
 };

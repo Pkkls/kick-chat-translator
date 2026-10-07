@@ -243,4 +243,6 @@ export const fr: Record<string, string> = {
   'sent to a provider': 'envoyes a un fournisseur',
   'languages seen in chat': 'langues vues dans le chat',
   'These are the languages the allowlist in Filters decides between.': 'Ce sont les langues entre lesquelles la liste des Filtres tranche.',
+  'Paused on this channel': 'En pause sur cette chaîne',
+  'Resume': 'Reprendre',
 };
