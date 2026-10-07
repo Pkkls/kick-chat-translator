@@ -24,4 +24,6 @@ Bir sohbet mesajının metni, sadece o, seçtiğin çeviri motoruna gider. Kulla
 
 Firefox, Chrome ve Edge 138+ tarafından sunulan tarayıcı düzeyindeki çeviri API'sini henüz sunmuyor, bu yüzden bu yapı her zaman yukarıdaki motorları kullanır. Mozilla eklerse eklenti onu nasıl kullanacağını zaten biliyor ve çeviriyi çevrimdışı, sınırsız olarak makinende yapacak.
 
+Gerçek bir sohbette çalışırken izleyin: https://www.youtube.com/watch?v=NoGJeUrwy9o
+
 Açık kaynak, MIT: github.com/Pkkls/kick-chat-translator

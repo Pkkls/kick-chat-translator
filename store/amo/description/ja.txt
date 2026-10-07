@@ -24,4 +24,6 @@ Google は鍵もアカウントも要らず、そのまま動きます。無料�
 
 Firefox には、Chrome や Edge 138 以降が備えるブラウザ内蔵の翻訳 API がまだありません。そのためこのビルドは常に上のエンジンを使います。Mozilla が搭載すれば、拡張機能側はすでに使い方を知っているので、通信なし・上限なしで端末内翻訳に切り替わります。
 
+実際のチャットで動いている様子: https://www.youtube.com/watch?v=NoGJeUrwy9o
+
 オープンソース、MIT: github.com/Pkkls/kick-chat-translator

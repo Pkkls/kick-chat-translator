@@ -12,9 +12,11 @@ Un traductor de chat en vivo para Kick. Lee el chat de cualquier stream en tu id
 [![CI](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml/badge.svg)](https://github.com/Pkkls/kick-chat-translator/actions/workflows/ci.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-[English](README.md) · [日本語](README.ja.md) · [Português](README.pt-BR.md)
+[English](README.md) · [Français](README.fr.md) · [Português](README.pt-BR.md) · [Türkçe](README.tr.md) · [Русский](README.ru.md) · [العربية](README.ar.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [中文](README.zh-CN.md) · [Čeština](README.cs.md)
 
 <img src="screenshots/demo.gif" alt="Mensajes de chat en español llegan uno a uno, cada uno con su traducción al inglés debajo; luego se escribe una respuesta en inglés, aparece una vista previa en español sobre la caja de chat y Tab la sustituye" width="360">
+
+[Mírala en un chat real](https://www.youtube.com/watch?v=NoGJeUrwy9o)
 
 </div>
 
@@ -36,6 +38,8 @@ el idioma en que emite el canal, leído de la propia Kick. Ambos se pueden cambi
   texto nunca sale de tu máquina
 - Emotes de 7TV, filtros de bots y usuarios, filtro de palabras clave, un glosario para los nombres que los
   motores destrozan
+- Pausa un canal desde la barra del chat sin detener los demás. Al cambiar de canal o actualizar la
+  extensión, las pestañas abiertas siguen traduciendo, sin recargar
 - Chrome, Brave, Edge y Firefox
 
 | El chat, traducido mientras avanza | La ventana de la barra de herramientas |
@@ -171,13 +175,13 @@ npm run dev              # HMR
 Los builds son reproducibles: el mismo commit da zips idénticos byte a byte en cualquier máquina,
 comprobado construyendo un `git archive` de la etiqueta en una carpeta vacía y comparando los hashes.
 
-Además de los tests unitarios, 39 pruebas sin red cargan la extensión construida en un navegador real, la
+Además de los tests unitarios, 41 pruebas sin red cargan la extensión construida en un navegador real, la
 manejan y comprueban lo que hace, con la página y el motor de traducción servidos en local. Necesitan
 Playwright, que a propósito no es una dependencia: apunta `UX_KIT` a una carpeta cuyo `node_modules` lo
 contenga, o ejecuta `npm i -D playwright`.
 
 ```bash
-node test/e2e/run-gates.mjs --headless                  # las 39, sin ventana
+node test/e2e/run-gates.mjs --headless                  # las 41, sin ventana
 node test/e2e/store-shots-fixture.mjs --lang=es         # las capturas de la tienda, en un idioma de ficha
 node test/e2e/store-shots-fixture.mjs --gif             # capturas en inglés, las imágenes del README y este GIF
 ```

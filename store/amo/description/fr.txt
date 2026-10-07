@@ -24,4 +24,6 @@ Le texte d'un message de chat, et rien d'autre, vers le moteur de traduction que
 
 Firefox n'expose pas encore l'API de traduction intégrée au navigateur que Chrome et Edge 138+ proposent, donc cette version passe toujours par les moteurs ci-dessus. Si Mozilla la livre, l'extension sait déjà s'en servir et traduira sur ta machine, hors ligne et sans limite.
 
+La voir tourner sur un vrai chat : https://www.youtube.com/watch?v=NoGJeUrwy9o
+
 Code source ouvert, MIT : github.com/Pkkls/kick-chat-translator

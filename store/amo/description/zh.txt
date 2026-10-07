@@ -24,4 +24,6 @@ Google 开箱即用，不需要密钥，也不需要账号。加上你自己的�
 
 Firefox 尚未提供 Chrome 和 Edge 138 及以上所暴露的浏览器级翻译 API，因此这个版本始终使用上面的引擎。如果 Mozilla 提供了，扩展已经知道如何使用它，并将在你的机器上离线且无限制地翻译。
 
+在真实聊天中运行的样子：https://www.youtube.com/watch?v=NoGJeUrwy9o
+
 开源，MIT: github.com/Pkkls/kick-chat-translator

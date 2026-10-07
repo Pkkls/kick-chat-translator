@@ -71,6 +71,27 @@ Found while setting it up for 2.12.1 (project `kicktranslator`, account `kicktra
 
 The API does not touch the listing. When a file in `store/chrome/description/` changed, the user pastes it per language in the dashboard, and the Privacy tab only if the manifest's permissions changed (`store/chrome/dashboard/permission-justifications.txt`).
 
+## 1b. Chrome listing, driven from outside the browser: `cws-listing.mjs`
+
+No API sets the listing and no extension may act on the dashboard. `scripts/stores/cws-listing.mjs` speaks the Chrome DevTools Protocol itself, over the WebSocket built into Node, to a browser the user started with debugging on a dedicated profile:
+
+```powershell
+& "C:\Program Files\BraveSoftware\Brave-Browser\Applicationrave.exe" --remote-debugging-port=9222 --user-data-dir="$env:USERPROFILE\.config\kick-chat-translator\cws-browser" --no-first-run <listing URL>
+```
+
+The user signs in by hand, once; the profile stays signed in. Launching that browser is the user's step: the permission classifier refused it from here. The user added the allow rule `Bash(node scripts/stores/cws-listing.mjs:*)`; run the script exactly as `node scripts/stores/cws-listing.mjs <cmd>` from the repository root, never prefixed with `cd`, or the rule does not match and the call is refused.
+
+| command | what | status |
+|---|---|---|
+| `inspect [tab]` | read-only survey of a tab (`edit`, `edit/privacy`) | works |
+| `links` | the dashboard's own tab URLs, so none is guessed | works |
+| `paste [--dry]` | every `store/chrome/description/<lang>.txt`, read back, saved | works: 11/11 on 3.0.2 |
+| `verify` | reload, compare what Chrome kept with the files | works: 11/11 identical |
+| `why` | reads the "why can't I submit" panel the API never explains | works |
+| `justify [--dry\|--nosave]` | Privacy tab justifications from `permission-justifications.txt` | **fields write, save does not persist** (0/4 twice): finish by hand, then `why` |
+
+Languages are matched by the code after the dash in the picker ("anglais – en"), and the dashboard writes `pt-BR` and `zh-CN` with a hyphen. A tab left in the background takes no synthetic click: the script brings it to front first.
+
 ## 2. AMO: through the API
 
 `amo.mjs release` uploads the package with `channel=listed`, waits for validation, creates the version with its source archive (multipart: the API refuses a source in JSON), then sets the release notes and the reviewer notes (JSON: the API refuses them in multipart). `amo.mjs listing` sets the name (the manifest's `extName`), summary and description per locale and reads them back. The devhub spells locales `en-us`, the API `en-US`: the script converts.
@@ -188,3 +209,4 @@ Kept so the next release starts from what happened, not from what was assumed.
 - **This skill was not loaded** in a session started outside the repository. A user-level pointer, `~/.claude/skills/publish-stores/SKILL.md`, sends to this file.
 - **Brave blocks the dashboard too.** Asked to paste the descriptions by driving the menus, Claude in Chrome running in Brave opened the devconsole page and then refused every action on it: "Can't interact with browser-internal or unparseable URLs". The Web Store is protected the same way in every Chromium browser. Do not try again; the copy page from preflight is the answer.
 - **Even with the justification pasted, Chrome kept refusing** with the same error: the dashboard's own "why can't I submit" list is the only place that names the missing field. Ask the user to read it rather than retrying `publish`.
+- **The listing could be driven after all, from outside.** `cws-listing.mjs` pasted and verified the eleven descriptions, which had been stale since 2.12.2 in every language, and read the dashboard's own refusal: the scripting justification had been pasted into the host permission field. The Privacy tab was finished by hand and the user submitted from the dashboard; `cws.mjs status` then read PENDING_REVIEW for 3.0.2.

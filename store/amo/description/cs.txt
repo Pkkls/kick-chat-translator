@@ -24,4 +24,6 @@ Text zprávy z chatu, a nic jiného, jde do překladového enginu, který jste z
 
 Firefox zatím nenabízí překladové API na úrovni prohlížeče, které mají Chrome a Edge 138 a novější, takže tato verze vždy používá enginy výše. Pokud jej Mozilla přidá, rozšíření už ví, jak jej použít, a bude překládat přímo ve vašem zařízení, offline a bez limitů.
 
+Podívejte se, jak běží ve skutečném chatu: https://www.youtube.com/watch?v=NoGJeUrwy9o
+
 Otevřený zdrojový kód, MIT: github.com/Pkkls/kick-chat-translator
