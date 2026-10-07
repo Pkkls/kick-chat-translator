@@ -1,9 +1,5 @@
-A pré-visualização da escrita já não tapa o chip de idioma logo abaixo: pode mudar o idioma em que escreve enquanto a pré-visualização está no ecrã.
+O botão de pausa da barra do chat passa a pausar apenas o canal que está a ver. Antes desligava a tradução em todos os canais e em todos os separadores, até a voltar a ligar no popup.
 
-A lista de idiomas aberta a partir da barra superior fica dentro do seu painel e desliza, em vez de transbordar sobre o chat em certos esquemas de página.
+Quando o canal do separador atual está em pausa, o popup indica-o e oferece um botão Retomar.
 
-Os avisos do chat (tradução copiada, todos os fornecedores em baixo, quota atingida, mudança de fornecedor) aparecem agora no idioma da interface. Antes estavam sempre em inglês.
-
-Nas definições, o separador Atividade está traduzido, os controlos de tamanho do texto e de entrelinha usam a cor de destaque e são mais fáceis de agarrar, e os chips dos modelos locais mostram a bandeira de cada idioma.
-
-Textos mais claros no popup e nas definições: os filtros de canais e de utilizadores dizem permitidos e bloqueados em vez de lista branca e lista negra, e a extensão tem um único nome em todo o lado.
+Um separador do Kick que já estava aberto enquanto a extensão era instalada ou atualizada continua a traduzir. Antes parava até recarregar a página.
