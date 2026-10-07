@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   stays paused when you come back to it: the new channel's rows could reach
   the observer before the URL poll saw the switch, and were translated with
   the view of the channel being left.
+- **Switching channels without a reload stopped translation** until the page
+  was refreshed. Kick keeps the previous chat as a hidden copy with its rows,
+  and the observer bound to that copy. Lists and panels on screen now win, and
+  the observer leaves a container that has been hidden. Measured live: 0 of 13
+  new lines before, 12 of 14 after.
 - **A Kick tab open during an install or an update stopped translating** while
   its bar still read "Translating". The service worker re-injects the content
   script into open kick.com tabs, the new script clears the bar and language

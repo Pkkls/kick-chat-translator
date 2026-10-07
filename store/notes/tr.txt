@@ -4,6 +4,8 @@ Geçerli sekmedeki kanal duraklatılmışsa açılır pencere bunu belirtir ve b
 
 Uzantı yüklenirken veya güncellenirken zaten açık olan bir Kick sekmesi çevirmeye devam ediyor. Önceden sayfayı yeniden yükleyene kadar duruyordu.
 
+Sayfayı yenilemeden başka bir kanala geçtiğinizde çeviri, sayfayı yenileyene kadar duruyordu. Artık ekrandaki sohbeti takip ediyor.
+
 İlk çevirinizi yapana kadar, Kick dışında açılan açılır pencere bir kanal açmayı önerir ve bunun için bir düğme sunar.
 
 Sohbet, çubuk, açılır pencere ve ayarlardaki metinler Türkçe, Fransızca, İspanyolca ve Portekizcede yeniden doğru harflerle yazılıyor.

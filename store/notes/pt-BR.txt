@@ -4,6 +4,8 @@ Quando o canal da aba atual está pausado, o popup mostra isso e oferece um bot�
 
 Uma aba do Kick que já estava aberta enquanto a extensão era instalada ou atualizada continua traduzindo. Antes ela parava até você recarregar a página.
 
+Depois de mudar para outro canal sem recarregar, a tradução parava até você atualizar a página. Agora ela acompanha o chat que você está vendo.
+
 Até a sua primeira tradução, o popup aberto fora da Kick sugere abrir um canal e oferece um botão para isso.
 
 Os textos do chat, da barra, do popup e das configurações voltam a ter acentos em português, espanhol, francês e turco.

@@ -4,6 +4,8 @@ Quand la chaîne de l'onglet en cours est en pause, le popup l'indique et propos
 
 Un onglet Kick déjà ouvert pendant l'installation ou la mise à jour de l'extension continue de traduire. Avant, il s'arrêtait jusqu'à ce que tu recharges la page.
 
+Après un passage sur une autre chaîne sans recharger, la traduction s'arrêtait jusqu'à ce que tu actualises la page. Elle suit maintenant le chat affiché.
+
 Tant que tu n'as rien traduit, le popup ouvert ailleurs que sur Kick t'invite à ouvrir une chaîne et propose un bouton pour le faire.
 
 Les textes du chat, de la barre, du popup et des réglages retrouvent leurs accents en français, en espagnol, en portugais et en turc.
