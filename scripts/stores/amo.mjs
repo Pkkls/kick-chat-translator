@@ -46,7 +46,16 @@ async function call(method, url, body, quiet = false) {
     headers['Content-Type'] = 'application/json';
     body = JSON.stringify(body);
   }
-  const r = await fetch(url, { method, headers, body });
+  let r = await fetch(url, { method, headers, body });
+  // AMO throttles bursts and says when to come back: wait that long, then
+  // retry, a few times at most, with a fresh token since the old one is short.
+  for (let tries = 0; r.status === 429 && tries < 5; tries++) {
+    const wait = Number((await r.text()).match(/available in (\d+)/)?.[1] ?? 30) + 1;
+    console.log(`${method} ${url.replace(API, '')} -> 429, waiting ${wait}s`);
+    await new Promise((ok) => setTimeout(ok, wait * 1000));
+    headers.Authorization = auth();
+    r = await fetch(url, { method, headers, body });
+  }
   const text = await r.text();
   let json;
   try {
@@ -73,7 +82,30 @@ const file = (p) => {
 const [cmd, ...args] = process.argv.slice(2);
 const addon = `${API}/addons/addon/${SLUG}`;
 
-if (cmd === 'status') {
+if (cmd === 'previews') {
+  // previews <dir> <previews.json>: replace the listing's screenshots. The new
+  // images go up first, in order, with their captions; the old ones are
+  // deleted only once all of them are in, so a failure never leaves the page
+  // without screenshots. previews.json maps each file name to its captions.
+  const [dir, spec] = args;
+  if (!dir || !spec) die('usage: amo.mjs previews <dir> <previews.json>');
+  const captions = JSON.parse(fs.readFileSync(spec, 'utf8'));
+  const before = (await call('GET', `${addon}/`, undefined, true)).previews ?? [];
+  const added = [];
+  let position = 1;
+  for (const [name, caption] of Object.entries(captions)) {
+    const fd = new FormData();
+    fd.append('image', file(path.join(dir, name)), name);
+    fd.append('position', String(position++));
+    const p = await call('POST', `${addon}/previews/`, fd);
+    await call('PATCH', `${addon}/previews/${p.id}/`, { caption: localised(caption) }, true);
+    added.push(p.id);
+  }
+  for (const p of before) await call('DELETE', `${addon}/previews/${p.id}/`, undefined, true);
+  const after = (await call('GET', `${addon}/`, undefined, true)).previews ?? [];
+  console.log(`previews: ${before.length} removed, ${added.length} added, ${after.length} on the page`);
+  if (after.length !== added.length || !added.every((id) => after.some((p) => p.id === id))) die('the page does not hold exactly the new previews');
+} else if (cmd === 'status') {
   const a = await call('GET', `${addon}/`);
   const v = a.current_version ?? {};
   console.log(JSON.stringify({ current: v.version, file: v.file?.status, status: a.status }, null, 2));

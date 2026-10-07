@@ -24,4 +24,6 @@ The text of a chat message, and only that, to the translation engine you picked.
 
 Firefox does not yet ship the browser-level translation API that Chrome and Edge 138+ expose, so this build always uses the engines above. If Mozilla ships one, the extension already knows how to use it and will translate on your machine, offline and without limits.
 
+See it running on a real chat: https://www.youtube.com/watch?v=NoGJeUrwy9o
+
 Open source, MIT: github.com/Pkkls/kick-chat-translator

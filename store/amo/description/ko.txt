@@ -24,4 +24,6 @@ Google은 키도 계정도 없이 바로 동작합니다. 무료 DeepL 키를 �
 
 Firefox는 Chrome과 Edge 138 이상이 제공하는 브라우저 수준의 번역 API를 아직 제공하지 않으므로, 이 빌드는 항상 위의 엔진을 사용합니다. Mozilla가 제공하면 확장 프로그램은 이미 사용법을 알고 있으며, 기기에서 오프라인으로 제한 없이 번역하게 됩니다.
 
+실제 채팅에서 작동하는 모습: https://www.youtube.com/watch?v=NoGJeUrwy9o
+
 오픈 소스, MIT: github.com/Pkkls/kick-chat-translator

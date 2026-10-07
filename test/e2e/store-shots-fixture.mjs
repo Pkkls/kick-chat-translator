@@ -44,7 +44,12 @@ if (!SETTINGS[LANG]) {
   console.error(`langue de fiche inconnue : ${LANG}, connues : ${Object.keys(SETTINGS).join(' ')}`);
   process.exit(2);
 }
-const OUT = path.join(HERE, 'store-fixture', LANG);
+// --firefox : les captures de la fiche AMO. Firefox n'a pas l'API de traduction
+// sur l'appareil ; avec elle, la puce "Local" et la section des modeles locaux
+// promettaient aux lecteurs de Firefox ce qu'ils n'auront pas. Chromium coupe
+// ses API integrees au lancement, et l'extension se comporte comme sur Firefox.
+const FIREFOX = process.argv.includes('--firefox');
+const OUT = path.join(HERE, FIREFOX ? 'store-fixture-firefox' : 'store-fixture', LANG);
 
 if (!fs.existsSync(path.join(EXT, 'manifest.json'))) {
   console.error('dist/manifest.json absent. Lancer `npm run build` avant.');
@@ -163,6 +168,7 @@ const ctx = await chromium.launchPersistentContext(profile, {
     `--disable-extensions-except=${EXT}`,
     `--load-extension=${EXT}`,
     '--window-position=-2400,-2400',
+    ...(FIREFOX ? ['--disable-features=TranslationAPI,LanguageDetectionAPI'] : []),
     '--no-first-run',
     '--no-default-browser-check',
   ],
