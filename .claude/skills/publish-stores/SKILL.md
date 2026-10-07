@@ -88,7 +88,7 @@ The user signs in by hand, once; the profile stays signed in. Launching that bro
 | `paste [--dry]` | every `store/chrome/description/<lang>.txt`, read back, saved | works: 11/11 on 3.0.2 |
 | `verify` | reload, compare what Chrome kept with the files | works: 11/11 identical |
 | `why` | reads the "why can't I submit" panel the API never explains | works |
-| `justify [--dry\|--nosave]` | Privacy tab justifications from `permission-justifications.txt` | **fields write, save does not persist** (0/4 twice): finish by hand, then `why` |
+| `justify [--dry|--nosave]` | Privacy tab justifications from `permission-justifications.txt` | fields write correctly (a hand click on Save kept exactly what it typed); the save now waits for the dashboard to confirm and falls back to a DOM click. **Not yet seen saving on its own**: check with `why` the first time |\|--nosave]` | Privacy tab justifications from `permission-justifications.txt` | **fields write, save does not persist** (0/4 twice): finish by hand, then `why` |
 
 Languages are matched by the code after the dash in the picker ("anglais – en"), and the dashboard writes `pt-BR` and `zh-CN` with a hyphen. A tab left in the background takes no synthetic click: the script brings it to front first.
 

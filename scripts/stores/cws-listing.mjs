@@ -426,8 +426,30 @@ async function justify(dry) {
   // Visible only: a hidden copy of the button took the first click and saved nothing.
   const saveFound = await cdp.eval(`(() => { const b = [...document.querySelectorAll('button, [role=button]')].filter((e) => e.getClientRects().length).find((e) => /enregistrer le brouillon|save draft/i.test(e.textContent)); if (!b) return false; b.setAttribute('data-kt-cws', 'save'); return true; })()`);
   if (!saveFound) throw new Error('no visible save button on the Privacy tab');
+  // The fields were right and a person's click on Save kept them, so the
+  // writing works and the save did not land: either the synthetic click
+  // missed the button in the sticky header, or the fixed 4s wait reloaded the
+  // page before the save request finished. Wait for the dashboard to say it
+  // saved, and fall back to the element's own click once.
+  const saved = async () => {
+    for (let i = 0; i < 30; i++) {
+      await sleep(500);
+      const said = await cdp.eval(`(() => {
+        const toast = [...document.querySelectorAll('[role=status], [role=alert], [aria-live]')].map((e) => e.textContent.trim()).find((t) => /enregistr|saved/i.test(t));
+        const b = document.querySelector('[data-kt-cws=save]');
+        return toast || (b && (b.disabled || b.getAttribute('aria-disabled') === 'true') ? 'save button off: nothing left to save' : '');
+      })()`);
+      if (said) return said;
+    }
+    return '';
+  };
   await click(cdp, await cdp.eval(centre('save')));
-  await sleep(4000);
+  let confirmation = await saved();
+  if (!confirmation) {
+    await cdp.eval(`document.querySelector('[data-kt-cws=save]').click()`);
+    confirmation = await saved();
+  }
+  console.log(`save: ${confirmation || 'no confirmation seen in 30s'}`);
   // Read back from the server, not from the field just typed into.
   await cdp.send('Page.navigate', { url: pageUrl('privacy') });
   await sleep(6000);
