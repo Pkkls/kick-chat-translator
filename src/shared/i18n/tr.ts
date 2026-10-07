@@ -245,4 +245,6 @@ export const tr: Record<string, string> = {
   'These are the languages the allowlist in Filters decides between.': 'Filtrelerdeki izin listesi bu diller arasında karar verir.',
   'Paused on this channel': 'Bu kanalda duraklatıldı',
   'Resume': 'Devam et',
+  'Open a Kick channel: its chat is translated as it arrives.': 'Bir Kick kanalı açın: sohbeti mesajlar geldikçe çevrilir.',
+  'Open Kick': "Kick'i aç",
 };

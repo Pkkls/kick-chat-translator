@@ -238,4 +238,6 @@ export const zh: Record<string, string> = {
   'These are the languages the allowlist in Filters decides between.': '这些就是过滤器里的允许列表所选择的语言。',
   'Paused on this channel': '已在此频道暂停',
   'Resume': '继续',
+  'Open a Kick channel: its chat is translated as it arrives.': '打开一个 Kick 频道，聊天消息到达时即会翻译。',
+  'Open Kick': '打开 Kick',
 };

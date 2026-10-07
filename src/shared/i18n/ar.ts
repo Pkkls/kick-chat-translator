@@ -241,4 +241,6 @@ export const ar: Record<string, string> = {
   'These are the languages the allowlist in Filters decides between.': 'هذه هي اللغات التي تختار بينها قائمة المرشّحات.',
   'Paused on this channel': 'متوقف مؤقتًا على هذه القناة',
   'Resume': 'استئناف',
+  'Open a Kick channel: its chat is translated as it arrives.': 'افتح قناة على Kick: تُترجم دردشتها فور وصول الرسائل.',
+  'Open Kick': 'افتح Kick',
 };

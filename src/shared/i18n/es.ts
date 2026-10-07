@@ -247,4 +247,6 @@ export const es: Record<string, string> = {
   'These are the languages the allowlist in Filters decides between.': 'Son los idiomas entre los que decide la lista de Filtros.',
   'Paused on this channel': 'En pausa en este canal',
   'Resume': 'Reanudar',
+  'Open a Kick channel: its chat is translated as it arrives.': 'Abre un canal de Kick: su chat se traduce a medida que llega.',
+  'Open Kick': 'Abrir Kick',
 };
