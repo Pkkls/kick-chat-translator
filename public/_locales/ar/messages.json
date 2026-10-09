@@ -4,7 +4,7 @@
     "description": "Extension and store listing name: the brand, then the query this language types. 45 character limit."
   },
   "extDescription": {
-    "message": "يترجم دردشة Kick المباشرة إلى لغتك أثناء تمريرها، وردودك إلى لغة القناة. Google أو DeepL، بلا حساب.",
+    "message": "مترجم الدردشة المباشرة على Kick، مجاناً: اقرأ دردشة أي بث بلغتك وردّ بلغة القناة. بلا حساب وبلا إعدادات.",
     "description": "Store listing blurb and manifest description. 132 character limit."
   }
 }

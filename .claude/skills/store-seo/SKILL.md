@@ -169,3 +169,10 @@ Things the fixture has to imitate from Kick, each learned by a broken image:
 sent by the API, Chrome descriptions reordered (a keyword hook first, the features, then what's new),
 `keywords.json`, `rank.mjs` in the weekly workflow, the fixture harness localised (55 images) plus a GIF,
 and the READMEs rewritten in 4 languages. Measure the effect with `rank.mjs` once the release is live.
+
+2026-10-09, conversion pass (branch `claude/store-listing-vkyd3t`): aimed at the install rate (85 installs for
+210 first visits, 40.5%), not the ranking. Both descriptions in 11 languages rebuilt as a hook with the generic
+query, a "can't follow the chat?" paragraph, three numbered steps, a "•" feature list, privacy, open source. The
+long "what's new" block left the Chrome descriptions: it went stale with each release and buried the features;
+`notes/` and the GitHub releases carry it. Blurbs and AMO summaries now lead with "free". Measure with the
+dashboards' install/visit ratio a few weeks after it ships, against 40.5%.

@@ -4,7 +4,7 @@
     "description": "Extension and store listing name: the brand, then the query this language types. 45 character limit."
   },
   "extDescription": {
-    "message": "Překládá živý chat na Kicku do vašeho jazyka za běhu a vaše odpovědi do jazyka kanálu. Google nebo DeepL, bez účtu.",
+    "message": "Bezplatný překladač chatu pro Kick: čtěte chat streamu ve svém jazyce a odpovídejte v jazyce kanálu. Bez účtu, bez nastavování.",
     "description": "Store listing blurb and manifest description. 132 character limit."
   }
 }

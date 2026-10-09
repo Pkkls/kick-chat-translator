@@ -1,29 +1,34 @@
-Okuyamadığın bir dilde sohbet akan bir Kick yayını aç. Her mesaj, geldiği anda, hemen altında çevirisini alır. Sohbetin üstündeki yeşil çubuk çalıştığını gösterir.
+Kick Chat Translator, Kick için ücretsiz bir canlı sohbet çevirici. Herhangi bir yayının sohbetini kendi dilinde oku, kanalın dilinde yanıt ver, hepsi doğrudan sohbetin içinde.
 
-Bir yanıt yaz, sohbet kutusunun üstünde kanalın dilinde bir önizleme belirir. Önizlemeye tıkla ya da Tab'a bas, o sürüm yazdığının yerine geçer ve göndermeye hazır olur.
+İngilizce, İspanyolca, Rusça ya da Arapça bir yayın izliyorsun ama sohbeti takip edemiyor musun? Eklentiyi kur, yayını aç: her mesaj geldiği anda hemen altında çevirisiyle görünür. Hesap yok, API anahtarı yok, ayarlanacak bir şey yok.
 
-Ayarlanacak bir şey yok. Gelen sohbet tarayıcının diline çevrilir, yazdıkların da kanalın yayın diline gider, bu bilgi doğrudan Kick'ten okunur. İkisi de ayarlardan değiştirilebilir. Canlı yayınlarda da VOD tekrarlarında da çalışır, 7TV emotelerini anlar.
+NASIL ÇALIŞIR
 
-MOTORLAR
+1. Herhangi bir Kick yayınını aç. Sohbetin üstündeki yeşil çubuk çevirmenin açık olduğunu gösterir.
+2. Her yeni mesajın altında, tarayıcının dilinde çevirisi belirir.
+3. Yanıtını kendi dilinde yaz. Bir önizleme onu kanalın dilinde gösterir: Tab'a bas ya da önizlemeye tıkla, sonra gönder.
 
-Google kutudan çıktığı gibi çalışır, anahtar yok, hesap yok. Kendi ücretsiz DeepL anahtarını ekle (ücretsiz paketleri kart istemeden ayda 1 milyon karakter veriyor), Avrupa dillerinde kalite belirgin şekilde yükselir. DeepL ayrıca kanalın son satırlarını bağlam olarak alır, böylece ifade konuşmaya oturur, ve dilin nezaket kipi varsa o istenir: Japoncada keigo, Fransızcada tu yerine vous. Ücretsiz kotayı uzatmak için DeepL yalnızca ücretsiz motorları gerçekten geçtiği dil çiftlerinde harcanır. MyMemory ve Lingva arkada yedek bekler, bir motor düştüğünde sıradaki devralır. Sıralama senin.
+Kanalın dili doğrudan Kick'ten okunur, iki dil de ayarlardan değiştirilebilir. Canlı yayınlarda da VOD tekrarlarında da çalışır, 7TV emotelerini olduğu gibi bırakır ve arka plandaki sekmelerde kendiliğinden duraklar.
 
-GÖRÜNÜM
+Gerçek bir sohbette çalışırken izle: https://www.youtube.com/watch?v=NoGJeUrwy9o
 
-Çeviri orijinalin altında, onunla aynı satırda, ardında daha küçük italikle, ya da yalnızca üzerine gelince. Üzerine gelme modu sen bir mesajı işaret edene kadar hiçbir şey istemez, bu da hızlı bir sohbette kullanımı yaklaşık 10 kat azaltır.
+NELER SUNUYOR
 
-FİLTRELER
-
-Botları atla, kullanıcıları veya kanalları engelle, ya da hangi kaynak dillerin çevrileceğini sınırla. Emoteler, bahsetmeler, bağlantılar ve emoji yığınları dışarı gönderilmeden önce ayıklanır, yani "kkkkkk" çevirmek için ödeme yapmazsın. Arka plandaki sekmeler kendiliğinden duraklar.
-
-42 dil, sağdan sola yazılanlar dahil (Arapça, İbranice, Farsça), bölgesel varyantlar ayrı tutulur (pt-BR, zh-TW). Eklentinin kendi arayüzü 10 dilde: İngilizce, İspanyolca, Fransızca, Portekizce, Türkçe, Rusça, Arapça, Çince, Japonca ve Korece.
+• 43 dil, sağdan sola yazılanlar dahil (Arapça, İbranice, Farsça), bölgesel varyantlar ayrı tutulur (Brezilya Portekizcesi, Geleneksel Çince).
+• Kurar kurmaz Google Translate ile ücretsiz, anahtar yok, hesap yok.
+• Kendi ücretsiz DeepL anahtarınla Avrupa dillerinde daha iyi çeviri (ayda bir milyon karakter, kart gerekmez). DeepL sohbetin son satırlarını bağlam olarak alır, böylece ifade konuşmaya oturur.
+• Otomatik yedek: bir motor başarısız olursa MyMemory ya da Lingva devralır. Sırayı sen belirlersin.
+• Dört görünüm: mesajın altında, aynı satırda, ardından küçük italikle ya da yalnızca üzerine gelince. Üzerine gelme modu sen bir mesajı işaret edene kadar hiçbir şey çevirmez, bu da hızlı bir sohbette kullanımı yaklaşık on kat azaltır.
+• Filtreler: botları atla, kullanıcıları veya kanalları sustur, seçtiğin bir kelimeyi içeren satırları gizle (!komut spamına karşı işe yarar) ya da yalnızca istediğin dilleri çevir.
+• Emoteler, bahsetmeler, bağlantılar ve emoji spamı gönderilmeden önce ayıklanır, yani "kkkkkk" çevirmek için hiçbir şey harcanmaz.
+• Sana göre ayarla: yazı boyutu, satır aralığı, yazı tipi, vurgu rengi, koyu ya da açık sohbet, kanal başına hatırlanan bir okuma dili, klavye kısayolları.
+• Arayüz 10 dilde: İngilizce, İspanyolca, Fransızca, Portekizce, Türkçe, Rusça, Arapça, Çince, Japonca ve Korece.
 
 TARAYICINDAN NE ÇIKIYOR
 
-Bir sohbet mesajının metni, sadece o, seçtiğin çeviri motoruna gider. Kullanıcı adın değil, kanal değil, kimin ne dediği değil. Yukarıdaki izinlerdeki “site içeriği” satırı bunu kasteder ve kastettiği bundan ibarettir. Hesap yok, analitik yok, bana ait sunucu yok: eklenti Kick ile, seçtiğin motorla ve yeni bir sürüm olduğunu haber vermek için GitHub sürüm sayfasıyla konuşur, o son isteğe hiçbir şey koymadan.
+Bir sohbet mesajının metni, sadece o, seçtiğin çeviri motoruna gider. Kullanıcı adın değil, kanal değil, kimin ne dediği değil. Yukarıdaki izinlerdeki “site içeriği” satırı bunu kasteder ve kastettiği bundan ibarettir. Hesap yok, analitik yok, bana ait sunucu yok: eklenti Kick ile, seçtiğin motorla ve daha yeni bir sürüm olduğunu haber vermek için GitHub sürümler sayfasıyla konuşur, o son isteğe hiçbir şey koymadan.
 
-Firefox, Chrome ve Edge 138+ tarafından sunulan tarayıcı düzeyindeki çeviri API'sini henüz sunmuyor, bu yüzden bu yapı her zaman yukarıdaki motorları kullanır. Mozilla eklerse eklenti onu nasıl kullanacağını zaten biliyor ve çeviriyi çevrimdışı, sınırsız olarak makinende yapacak.
+ÜCRETSİZ VE AÇIK KAYNAK
 
-Gerçek bir sohbette çalışırken izleyin: https://www.youtube.com/watch?v=NoGJeUrwy9o
-
-Açık kaynak, MIT: github.com/Pkkls/kick-chat-translator
+MIT lisansı, kodun her satırı herkese açık: github.com/Pkkls/kick-chat-translator
+Hata bildirimleri ve dil istekleri orada memnuniyetle karşılanır.

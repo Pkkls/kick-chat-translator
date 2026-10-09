@@ -1,29 +1,34 @@
-Tu ouvres un stream Kick où le chat est dans une langue que tu ne lis pas. Chaque message reçoit sa traduction juste en dessous, au fil de l'arrivée. Une barre verte en haut du chat indique que ça tourne.
+Kick Chat Translator est un traducteur de chat en direct gratuit pour Kick. Lis le chat de n'importe quel stream dans ta langue, et réponds dans celle de la chaîne, directement dans le chat.
 
-Tu écris une réponse, un aperçu la montre dans la langue de la chaîne au-dessus de la barre de chat. Clic sur l'aperçu ou Ctrl+Entrée, et cette version remplace ce que tu as tapé dans la boîte de chat, prête à partir.
+Tu regardes un stream en turc, en espagnol, en russe ou en arabe et tu ne suis pas le chat ? Installe l'extension, ouvre le stream, et chaque message affiche sa traduction juste en dessous, au fil de l'arrivée. Pas de compte, pas de clé API, rien à configurer.
 
-Rien à régler. Le chat entrant est traduit vers la langue de ton navigateur, ce que tu écris part dans la langue de diffusion de la chaîne, lue depuis Kick. Les deux se changent dans les réglages. Marche sur les lives comme sur les replays VOD, et gère les emotes 7TV.
+COMMENT ÇA MARCHE
 
-MOTEURS
+1. Ouvre n'importe quel stream Kick. Une barre verte en haut du chat indique que le traducteur est actif.
+2. Chaque nouveau message reçoit sa traduction en dessous, dans la langue de ton navigateur.
+3. Écris ta réponse dans ta langue. Un aperçu la montre dans la langue de la chaîne : appuie sur Tab ou clique dessus, puis envoie.
 
-Google fonctionne d'emblée, sans clé, sans compte. Ajoute ta propre clé DeepL gratuite (leur offre gratuite couvre 1 million de caractères par mois, sans carte) et la qualité monte nettement sur les langues européennes. DeepL reçoit aussi les lignes récentes de la chaîne comme contexte, donc la formulation colle à la conversation, et on lui demande le registre poli quand la langue en a un : keigo en japonais, vouvoiement en français. Pour faire durer un quota gratuit, DeepL n'est dépensé que sur les paires où il bat vraiment les moteurs gratuits. MyMemory et Lingva restent derrière en secours, et quand un moteur tombe le suivant prend le relais. L'ordre est le tien.
-
-AFFICHAGE
-
-Traduction sous l'original, en ligne avec lui, après lui en italique plus petit, ou seulement au survol. Le mode survol ne demande rien tant que tu ne pointes pas un message, ce qui divise l'usage par dix environ sur un chat rapide.
-
-FILTRES
-
-Ignorer les bots, blacklister des utilisateurs ou des chaînes, ou limiter les langues source à traduire. Emotes, mentions, liens et murs d'emoji sont retirés avant tout envoi, tu ne paies pas pour traduire "kkkkkk". Les onglets en arrière-plan se mettent en pause seuls.
-
-42 langues, écriture droite-gauche comprise (arabe, hébreu, persan), variantes régionales gardées distinctes (pt-BR, zh-TW). L'interface de l'extension existe en 10 langues : anglais, espagnol, français, portugais, turc, russe, arabe, chinois, japonais et coréen.
-
-CE QUI SORT DE TON NAVIGATEUR
-
-Le texte d'un message de chat, et rien d'autre, vers le moteur de traduction que tu as choisi. Pas ton pseudo, pas la chaîne, pas qui a dit quoi. C'est ce que désigne la ligne « contenu du site » dans les permissions ci-dessus, et c'est tout ce qu'elle désigne. Pas de compte, pas d'analytics, pas de serveur à moi : l'extension parle à Kick, au moteur que tu as choisi, et à la page des versions GitHub pour te signaler qu'une plus récente existe, sans rien envoyer avec cette dernière requête.
-
-Firefox n'expose pas encore l'API de traduction intégrée au navigateur que Chrome et Edge 138+ proposent, donc cette version passe toujours par les moteurs ci-dessus. Si Mozilla la livre, l'extension sait déjà s'en servir et traduira sur ta machine, hors ligne et sans limite.
+La langue de la chaîne est lue depuis Kick, et les deux langues se changent dans les réglages. Marche sur les lives comme sur les replays VOD, garde les emotes 7TV telles quelles, et se met en pause seule dans les onglets en arrière-plan.
 
 La voir tourner sur un vrai chat : https://www.youtube.com/watch?v=NoGJeUrwy9o
 
-Code source ouvert, MIT : github.com/Pkkls/kick-chat-translator
+CE QUE TU OBTIENS
+
+• 43 langues, écriture de droite à gauche comprise (arabe, hébreu, persan), avec les variantes régionales gardées distinctes (portugais du Brésil, chinois traditionnel).
+• Gratuit dès l'installation avec Google Traduction, sans clé et sans compte.
+• De meilleures langues européennes avec ta propre clé DeepL gratuite (un million de caractères par mois, sans carte). DeepL reçoit les lignes récentes du chat comme contexte, donc la formulation colle à la conversation.
+• Secours automatique : quand un moteur échoue, MyMemory ou Lingva prend le relais. L'ordre, c'est toi qui le choisis.
+• Quatre styles d'affichage : sous le message, sur la même ligne, en petit italique après lui, ou seulement au survol. Le mode survol ne traduit rien tant que tu ne pointes pas un message, ce qui divise l'usage par dix environ sur un chat rapide.
+• Filtres : ignorer les bots, masquer des utilisateurs ou des chaînes, cacher les lignes qui contiennent un mot de ton choix (pratique contre le spam de !commandes), ou ne traduire que les langues que tu veux.
+• Emotes, mentions, liens et murs d'emoji sont retirés avant tout envoi, donc rien n'est dépensé pour traduire "kkkkkk".
+• À ton goût : taille du texte, interligne, police, couleur d'accent, chat sombre ou clair, une langue de lecture retenue par chaîne, raccourcis clavier.
+• Interface en 10 langues : anglais, espagnol, français, portugais, turc, russe, arabe, chinois, japonais et coréen.
+
+CE QUI SORT DE TON NAVIGATEUR
+
+Le texte d'un message de chat, et rien d'autre, va au moteur de traduction que tu as choisi. Pas ton pseudo, pas la chaîne, pas qui a dit quoi. C'est ce que désigne la ligne « contenu du site » dans les permissions ci-dessus, et c'est tout ce qu'elle désigne. Pas de compte, pas d'analytics, pas de serveur à moi : l'extension parle à Kick, au moteur que tu as choisi, et à la page des versions GitHub pour te signaler qu'une version plus récente existe, sans rien envoyer avec cette dernière requête.
+
+GRATUIT ET OPEN SOURCE
+
+Licence MIT, code intégralement public : github.com/Pkkls/kick-chat-translator
+Les signalements de bugs et les demandes de langues y sont les bienvenus.
