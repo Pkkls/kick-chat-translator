@@ -2445,13 +2445,7 @@ export function detectLanguage(text: string): string | undefined {
     if (/^\p{ASCII}+$/u.test(trimmed)) return 'en';
     return undefined;
   }
-  const iso = francToIso2(francCode);
-  // franc nomme aussi `arb` l'ourdou qu'il ne reconnait pas. Mesure, des que la
-  // table a appris `arb` : `بہت اچھا کھیل` sortait `ar`. `arabeOuPersan` avait
-  // deja ecarte cette ligne sur ses lettres ourdoues, et sa reponse vaut ici
-  // aussi, sinon franc reprend ce que le pre-controle a refuse.
-  if (iso === 'ar' && LETTRES_OURDOUES.test(trimmed)) return undefined;
-  return iso;
+  return francToIso2(francCode);
 }
 
 export function isLikelyEnglish(text: string): boolean {
