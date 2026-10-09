@@ -11,9 +11,11 @@
  * place. It stops being invisible the moment they are tracked in a public
  * repository, where the path is both private and useless.
  *
- * Playwright is deliberately NOT a dependency of this project. The CI installs
- * with `npm ci` on two jobs and never runs these gates; adding it would pull
- * browser binaries into both for nothing. So it is looked for, in order:
+ * Playwright is deliberately NOT a dependency of this project. Two CI jobs
+ * install with `npm ci` and never run these gates; adding it would pull browser
+ * binaries into both for nothing. The third, `browser gates`, installs its own
+ * pinned copy outside the repository and points UX_KIT at it. So it is looked
+ * for, in order:
  *
  *   1. $UX_KIT/node_modules/playwright
  *   2. this repository's own node_modules, if someone chose to install it
@@ -53,9 +55,10 @@ const trouve = candidats.find((p) => existsSync(p));
 if (!trouve) {
   console.error('Playwright introuvable, et ces portes en ont besoin.');
   console.error('');
-  console.error("Il n'est pas liste en dependance du projet : le CI installe avec");
-  console.error('npm ci sur deux jobs et ne lance jamais ces portes, donc l ajouter');
-  console.error('tirerait des binaires de navigateur dans les deux pour rien.');
+  console.error("Il n'est pas liste en dependance du projet : deux jobs du CI");
+  console.error('installent avec npm ci sans lancer ces portes, donc l ajouter y');
+  console.error('tirerait des binaires de navigateur pour rien. Le job des portes');
+  console.error('installe sa propre copie et la designe par UX_KIT.');
   console.error('');
   console.error('Trois facons de le fournir :');
   console.error('  echo <dossier contenant node_modules/playwright> > scratchpad/uxkit.path   (persistant, gitignore)');
