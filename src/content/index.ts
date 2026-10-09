@@ -128,7 +128,7 @@ async function main(): Promise<void> {
   let orphelin = false;
   // Declare ici et pose plus bas : `estOrphelin` peut tourner pendant le montage,
   // avant la ligne du sondage, et un `const` y leverait.
-  let sondageRoute: ReturnType<typeof setInterval> | undefined;
+  const sondage: { route?: ReturnType<typeof setInterval> } = {};
   function estOrphelin(): boolean {
     if (orphelin) return true;
     if (chrome.runtime?.id && document.documentElement.getAttribute(ATTR_INSTANCE) === INSTANCE)
@@ -136,7 +136,7 @@ async function main(): Promise<void> {
     orphelin = true;
     observer.stop();
     compose.stop();
-    clearInterval(sondageRoute);
+    clearInterval(sondage.route);
     barWatcher?.disconnect();
     themeWatch.disconnect();
     return true;
@@ -369,7 +369,7 @@ async function main(): Promise<void> {
   // de chaines deux fois par seconde. `popstate` reste pour que le retour arriere
   // soit immediat au lieu d'attendre le prochain tour.
   let dernierChemin = location.pathname;
-  sondageRoute = setInterval(() => {
+  sondage.route = setInterval(() => {
     if (estOrphelin()) return;
     if (location.pathname === dernierChemin) return;
     dernierChemin = location.pathname;
