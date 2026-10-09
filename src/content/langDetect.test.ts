@@ -102,6 +102,27 @@ describe('les langues proposees que rien ne detectait', () => {
     expect(detectLanguage('selamat petang semua apa khabar hari ini di siaran ini')).toBe('ms');
   });
 
+  // Meme trou que le malais : franc-min nomme l'arabe `arb` et la table ne
+  // connaissait que `ara`. Une ligne sans lettre, mot ni article qui tranche
+  // entre arabe et persan arrive jusqu'a franc ; `تمام` en est une.
+  it('detecte l arabe que seul franc reconnait, sous son code arb', () => {
+    expect(detectLanguage('تمام')).toBe('ar');
+    expect(detectLanguage('والله')).toBe('ar');
+    expect(detectLanguage('بطل')).toBe('ar');
+  });
+
+  // Le temoin du garde-fou : franc dit aussi `arb` sur cet ourdou, que
+  // `arabeOuPersan` avait deja refuse sur ses lettres.
+  it('ne rend pas arabe l ourdou que franc appelle arb', () => {
+    expect(detectLanguage('بہت اچھا کھیل')).toBeUndefined();
+  });
+
+  // La reponse vient de franc, donc elle nourrit les filtres et le drapeau mais
+  // ne part pas au moteur comme langue source.
+  it('ne donne pas cet arabe-la comme langue source sure', () => {
+    expect(confidentLanguage('تمام')).toBeUndefined();
+  });
+
   it('detecte l hebreu par son ecriture, que franc-min ne couvre pas', () => {
     expect(detectLanguage('ערב טוב לכולם מה שלומכם היום בשידור החי הזה')).toBe('he');
   });

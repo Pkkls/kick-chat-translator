@@ -148,12 +148,25 @@ reads dist/, so it serialises behind any build. D touches no code.
   a script is a fact about the text, franc's guess is not. Eight laughter forms
   across five writing systems, 草, 草草草, wwwww, ㅋㅋㅋㅋ, 233333, ｗｗｗ, хахаха,
   ههههه, are all dropped by `isNoise` before any of this runs.
-- [ ] **Nothing maps franc's `arb`, its own top answer for Arabic.** franc
-  scores `arb` at 1.00 on an Arabic sentence and `francToIso2` returns
-  undefined, which is the same class as the Malay `zlm` gap a previous pass
-  fixed. It is latent rather than live: the script check answers before franc on
-  anything Arabic-majority, so no measured case reaches it. Written down instead
-  of fixed, because a table entry with no case behind it is a guess.
+- [x] **Nothing maps franc's `arb`, its own top answer for Arabic.** franc
+  scores `arb` at 1.00 on an Arabic sentence and `francToIso2` returned
+  undefined, the same class as the Malay `zlm` gap. It was recorded as latent
+  and it was not: an Arabic line with no letter, word or article that
+  `arabeOuPersan` reads leaves the script check without an answer and falls to
+  franc. Measured 2026-10-09 on 40 Arabic chat lines and 30 Persian: 21 Arabic
+  and 19 Persian reach franc; franc said `arb` on six, five Arabic (`تمام`,
+  `والله`, `بطل`, `تمام تمام`, `تمام وانت`) and one Persian (`اعتراض`, a word
+  both write). Mapped. The Tatoeba matrix moves one line, that same `اعتراض!`,
+  silent to wrong; it stays out of `sl` since franc's answers never feed
+  `confidentLanguage`. Mapping it alone also turned an Urdu witness Arabic
+  (`بہت اچھا کھیل`, franc `arb`), so the Urdu letters that already stop
+  `arabeOuPersan` now stop franc's `ar` too.
+- [ ] **Arabic chat is read as Persian when franc decides.** Same measurement:
+  `مرحبا`, `مرحبا شباب`, `ممتاز`, `منور`, `وش صار`, `شو صار` come out `fa`
+  (franc `pes`), and `تسلم` comes out `ms` (franc `zlm`). Six wrong answers on
+  the commonest Arabic greetings, against `pes` being right on 12 Persian lines
+  of the same set. Not fixed: the cure is Arabic chat words in `MOTS_ARABES`,
+  which feeds `sl`, so it wants its own bench against Persian first.
 - [x] **Chinese never gets a confident source language, alone among the five.**
   ar, ja, ko and ru all come out of `detectByScript` as looked-up facts and go
   to the engine as `sl`; zh is deferred to franc by `if (pct(han)) return

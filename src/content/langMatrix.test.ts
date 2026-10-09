@@ -39,12 +39,20 @@ describe('baseline, 2026-09-21, Tatoeba corpus', () => {
   // it believes the line is already in the reader's language, and that is handed
   // to the on-device engine as a source language on Chrome, where the on-device
   // engine is the default.
+  //
+  // Moved on purpose, 2026-10-09, one line from silent to wrong: the Persian
+  // `اعتراض!`, a word Arabic writes identically, which franc calls `arb` and the
+  // table now maps to `ar`. Before, `arb` mapped to nothing. The same mapping
+  // names `تمام`, `والله`, `بطل` and two more Arabic chat lines out of 21 that
+  // reach franc on the Arabic-script path (`langDetect.test.ts`); on that set
+  // franc said `arb` six times and was right five. One Tatoeba line lost
+  // against five chat lines won, and the loss stays out of `sl`.
   it('detectLanguage is wrong on a fifth of all lines', () => {
-    expect(plain(DETECT.total)).toEqual({ right: 4154, silent: 388, wrong: 498 });
+    expect(plain(DETECT.total)).toEqual({ right: 4154, silent: 387, wrong: 499 });
   });
 
   it('detectLanguage is wrong on a quarter of short lines', () => {
-    expect(plain(DETECT.shortOnly)).toEqual({ right: 1216, silent: 234, wrong: 230 });
+    expect(plain(DETECT.shortOnly)).toEqual({ right: 1216, silent: 233, wrong: 231 });
   });
 });
 

@@ -81,6 +81,14 @@ const FRANC_MAP: Record<string, string> = {
   ukr: 'uk',
   tur: 'tr',
   ara: 'ar',
+  // Le code que franc-min emet reellement pour l'arabe, comme `zlm` pour le
+  // malais plus bas : `ara` est le macrolangage, franc rend `arb`, l'arabe
+  // standard. Le trou n'etait pas latent. Une ligne arabe sans lettre, mot ni
+  // article propre a l'arabe sort de `arabeOuPersan` sans reponse et tombe sur
+  // franc. Mesure sur `تمام`, mot de chat courant : franc `arb`, table
+  // undefined, `detectLanguage` undefined, donc le message partait en langue
+  // inconnue et un filtre de sources restreint a `ar` l'ecartait.
+  arb: 'ar',
   heb: 'he',
   jpn: 'ja',
   kor: 'ko',
