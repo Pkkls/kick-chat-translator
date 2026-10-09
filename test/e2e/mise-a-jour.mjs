@@ -97,10 +97,26 @@ await ctx.route(KICK, async (route) => {
 const page = ctx.pages()[0] ?? (await ctx.newPage());
 await page.goto('https://kick.com/kt-un', { waitUntil: 'domcontentloaded' });
 await page.bringToFront();
-// Attendre la premiere traduction plutot qu'un delai fixe.
+// L'etat d'avant doit etre l'etat monte, pas un instantane du montage. Attendre
+// la premiere traduction ne suffit pas : la pastille et le panneau de saisie
+// arrivent plus tard, et un releve pris avant eux lisait 0, puis le 1 d'apres
+// la mise a jour passait pour un predecesseur qui laisse le sien (vu par la CI
+// de #14, 3 lancements sur 4). Le plancher de 4 s est celui d'origine.
+const montee = Date.now();
 await page
   .waitForSelector('#channel-chatroom div[data-index] :is(.kt-translation, .kt-translation-inline, .kt-translation-replace)', { timeout: 20000 })
   .catch(() => undefined);
+await page
+  .waitForFunction(
+    () =>
+      document.querySelectorAll('#kt-floating-bar').length > 0 &&
+      document.querySelectorAll('[id="kt-lang-chip"]').length > 0 &&
+      document.querySelectorAll('[id="kt-compose-bar"]').length > 0,
+    null,
+    { timeout: 15000 },
+  )
+  .catch(() => undefined);
+await page.waitForTimeout(Math.max(0, 4000 - (Date.now() - montee)));
 
 const SEL_TR = '.kt-translation, .kt-translation-inline, .kt-translation-replace';
 
