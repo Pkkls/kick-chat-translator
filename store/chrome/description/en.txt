@@ -14,7 +14,7 @@ WHAT YOU GET
 
 • 43 languages, right to left included (Arabic, Hebrew, Persian), with regional variants kept apart (Brazilian Portuguese, Traditional Chinese).
 • Free out of the box with Google Translate, no key and no account.
-• Better European languages with your own free DeepL key (a million characters a month, no card). DeepL gets the recent chat lines as context, so the wording fits the conversation.
+• Better European languages with your own DeepL API key. DeepL gets the recent chat lines as context, so the wording fits the conversation.
 • On-device translation in Chrome and Edge 138+ when your computer supports it: offline, unlimited, and the chat never leaves your machine.
 • Automatic fallback: when one engine fails, MyMemory or Lingva takes over. You choose the order.
 • Four display styles: under the message, on the same line, in small italics after it, or only when you hover. Hover mode translates nothing until you point at a message, which cuts usage about ten times on a fast chat.
@@ -25,7 +25,7 @@ WHAT YOU GET
 
 PRIVACY
 
-No account, no analytics, no server of mine. The text of a chat message goes to the translation engine you picked and nowhere else, and with on-device translation it never leaves your computer. Your username and the channel you watch are not sent.
+No account, no analytics, no server of mine. Chat text goes only to the translation engine you picked. With Google, MyMemory or Lingva, that is the text of each message and nothing else. With DeepL, the last few chat lines go along as context, with the names of whoever wrote them, so the translation fits the conversation. The channel you watch is never sent, and with on-device translation nothing leaves your computer.
 
 The permissions, in plain words: storage for your settings and its translation cache; access to kick.com to show translations in the chat; access to the engines it can call (Google, DeepL, MyMemory and Lingva); a wake-up timer so the translator stays ready while you watch; and the right to reload its own script into Kick tabs already open when you install or update it, so they keep translating without a refresh. It also reads the GitHub releases page to tell you when a newer version exists, sending nothing with that request.
 

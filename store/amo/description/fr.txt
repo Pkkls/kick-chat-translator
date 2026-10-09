@@ -16,7 +16,7 @@ CE QUE TU OBTIENS
 
 • 43 langues, écriture de droite à gauche comprise (arabe, hébreu, persan), avec les variantes régionales gardées distinctes (portugais du Brésil, chinois traditionnel).
 • Gratuit dès l'installation avec Google Traduction, sans clé et sans compte.
-• De meilleures langues européennes avec ta propre clé DeepL gratuite (un million de caractères par mois, sans carte). DeepL reçoit les lignes récentes du chat comme contexte, donc la formulation colle à la conversation.
+• De meilleures langues européennes avec ta propre clé API DeepL. DeepL reçoit les lignes récentes du chat comme contexte, donc la formulation colle à la conversation.
 • Secours automatique : quand un moteur échoue, MyMemory ou Lingva prend le relais. L'ordre, c'est toi qui le choisis.
 • Quatre styles d'affichage : sous le message, sur la même ligne, en petit italique après lui, ou seulement au survol. Le mode survol ne traduit rien tant que tu ne pointes pas un message, ce qui divise l'usage par dix environ sur un chat rapide.
 • Filtres : ignorer les bots, masquer des utilisateurs ou des chaînes, cacher les lignes qui contiennent un mot de ton choix (pratique contre le spam de !commandes), ou ne traduire que les langues que tu veux.
@@ -26,7 +26,7 @@ CE QUE TU OBTIENS
 
 CE QUI SORT DE TON NAVIGATEUR
 
-Le texte d'un message de chat, et rien d'autre, va au moteur de traduction que tu as choisi. Pas ton pseudo, pas la chaîne, pas qui a dit quoi. C'est ce que désigne la ligne « contenu du site » dans les permissions ci-dessus, et c'est tout ce qu'elle désigne. Pas de compte, pas d'analytics, pas de serveur à moi : l'extension parle à Kick, au moteur que tu as choisi, et à la page des versions GitHub pour te signaler qu'une version plus récente existe, sans rien envoyer avec cette dernière requête.
+Le texte du chat va uniquement au moteur de traduction que tu as choisi. Avec Google, MyMemory ou Lingva, c'est le texte de chaque message et rien d'autre : pas la chaîne, pas qui l'a dit. Avec DeepL, les dernières lignes du chat partent aussi comme contexte, avec le pseudo de leurs auteurs, pour que la traduction colle à la conversation. C'est ce que désigne la ligne « contenu du site » dans les permissions ci-dessus, et c'est tout ce qu'elle désigne. Pas de compte, pas d'analytics, pas de serveur à moi : l'extension parle à Kick, au moteur que tu as choisi, et à la page des versions GitHub pour te signaler qu'une version plus récente existe, sans rien envoyer avec cette dernière requête.
 
 GRATUIT ET OPEN SOURCE
 

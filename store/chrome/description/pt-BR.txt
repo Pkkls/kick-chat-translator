@@ -14,7 +14,7 @@ O QUE VOCÊ GANHA
 
 • 43 idiomas, incluindo escrita da direita para a esquerda (árabe, hebraico, persa), com as variantes regionais mantidas separadas (português do Brasil, chinês tradicional).
 • Gratuito logo de cara com o Google Tradutor, sem chave e sem conta.
-• Idiomas europeus melhores com sua própria chave gratuita da DeepL (um milhão de caracteres por mês, sem cartão). A DeepL recebe as linhas recentes do chat como contexto, então o texto combina com a conversa.
+• Idiomas europeus melhores com sua própria chave de API da DeepL. A DeepL recebe as linhas recentes do chat como contexto, então o texto combina com a conversa.
 • Tradução no próprio aparelho no Chrome e no Edge 138+, quando o seu computador permite: offline, ilimitada, e o chat nunca sai da sua máquina.
 • Reserva automática: quando um motor falha, o MyMemory ou o Lingva assume. A ordem é você quem escolhe.
 • Quatro estilos de exibição: abaixo da mensagem, na mesma linha, depois dela em itálico menor, ou só ao passar o mouse. O modo ao passar o mouse não traduz nada até você apontar para uma mensagem, o que corta o uso em cerca de dez vezes num chat rápido.
@@ -25,7 +25,7 @@ O QUE VOCÊ GANHA
 
 PRIVACIDADE
 
-Sem conta, sem analytics, sem servidor meu. O texto de uma mensagem do chat vai para o motor de tradução que você escolheu e para nenhum outro lugar, e com a tradução no próprio aparelho ele nem sai do seu computador. Seu nome de usuário e o canal que você assiste não são enviados.
+Sem conta, sem analytics, sem servidor meu. O texto do chat vai só para o motor de tradução que você escolheu. Com Google, MyMemory ou Lingva, é o texto de cada mensagem e nada mais. Com a DeepL, as últimas linhas do chat vão junto como contexto, com os nomes de quem as escreveu, para que a tradução combine com a conversa. O canal que você assiste nunca é enviado, e com a tradução no próprio aparelho nada sai do seu computador.
 
 As permissões, em palavras simples: armazenamento para as suas configurações e o cache de traduções; acesso à kick.com para mostrar as traduções no chat; acesso aos motores que ela pode chamar (Google, DeepL, MyMemory e Lingva); um temporizador para o tradutor ficar pronto enquanto você assiste; e o direito de recarregar o próprio script nas abas da Kick já abertas quando você a instala ou atualiza, para que continuem traduzindo sem atualizar a página. Ela também lê a página de versões do GitHub para avisar quando existe uma versão mais nova, sem enviar nada nessa requisição.
 

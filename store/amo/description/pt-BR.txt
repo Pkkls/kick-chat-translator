@@ -16,7 +16,7 @@ O QUE VOCÊ GANHA
 
 • 43 idiomas, incluindo escrita da direita para a esquerda (árabe, hebraico, persa), com as variantes regionais mantidas separadas (português do Brasil, chinês tradicional).
 • Gratuito logo de cara com o Google Tradutor, sem chave e sem conta.
-• Idiomas europeus melhores com sua própria chave gratuita da DeepL (um milhão de caracteres por mês, sem cartão). A DeepL recebe as linhas recentes do chat como contexto, então o texto combina com a conversa.
+• Idiomas europeus melhores com sua própria chave de API da DeepL. A DeepL recebe as linhas recentes do chat como contexto, então o texto combina com a conversa.
 • Reserva automática: quando um motor falha, o MyMemory ou o Lingva assume. A ordem é você quem escolhe.
 • Quatro estilos de exibição: abaixo da mensagem, na mesma linha, depois dela em itálico menor, ou só ao passar o mouse. O modo ao passar o mouse não traduz nada até você apontar para uma mensagem, o que corta o uso em cerca de dez vezes num chat rápido.
 • Filtros: pular bots, silenciar usuários ou canais, esconder linhas que contenham uma palavra escolhida por você (útil contra spam de !comandos), ou traduzir só os idiomas que você quiser.
@@ -26,7 +26,7 @@ O QUE VOCÊ GANHA
 
 O QUE SAI DO SEU NAVEGADOR
 
-O texto de uma mensagem do chat, e só isso, vai para o motor de tradução que você escolheu. Não o seu nome de usuário, não o canal, não quem disse o quê. É isso que a linha “conteúdo do site” nas permissões acima designa, e é tudo o que ela designa. Não há conta, nem analytics, nem servidor meu: a extensão fala com a Kick, com o motor que você escolheu, e com a página de versões do GitHub para avisar quando existe uma versão mais nova, sem enviar nada nessa última requisição.
+O texto do chat vai só para o motor de tradução que você escolheu. Com Google, MyMemory ou Lingva, é o texto de cada mensagem e nada mais: nem o canal, nem quem disse o quê. Com a DeepL, as últimas linhas do chat vão junto como contexto, com os nomes de quem as escreveu, para que a tradução combine com a conversa. É isso que a linha “conteúdo do site” nas permissões acima designa, e é tudo o que ela designa. Não há conta, nem analytics, nem servidor meu: a extensão fala com a Kick, com o motor que você escolheu, e com a página de versões do GitHub para avisar quando existe uma versão mais nova, sem enviar nada nessa última requisição.
 
 GRATUITO E DE CÓDIGO ABERTO
 

@@ -16,7 +16,7 @@ CO ZÍSKÁTE
 
 • 43 jazyků včetně písma zprava doleva (arabština, hebrejština, perština), s odděleně vedenými regionálními variantami (brazilská portugalština, tradiční čínština).
 • Zdarma hned po instalaci s Google Translate, bez klíče a bez účtu.
-• Lepší evropské jazyky s vlastním bezplatným klíčem DeepL (milion znaků měsíčně, bez karty). DeepL dostává poslední řádky chatu jako kontext, takže formulace sedí do konverzace.
+• Lepší evropské jazyky s vlastním API klíčem DeepL. DeepL dostává poslední řádky chatu jako kontext, takže formulace sedí do konverzace.
 • Automatická záloha: když jeden engine selže, převezme to MyMemory nebo Lingva. Pořadí určujete vy.
 • Čtyři styly zobrazení: pod zprávou, na stejném řádku, za ní menší kurzívou, nebo jen při najetí myší. Režim najetí myší nepřekládá nic, dokud na zprávu neukážete, což v rychlém chatu sníží spotřebu zhruba desetkrát.
 • Filtry: přeskočit boty, ztlumit uživatele nebo kanály, skrýt řádky se slovem podle vaší volby (hodí se proti spamu příkazů typu !command), nebo překládat jen jazyky, které chcete.
@@ -26,7 +26,7 @@ CO ZÍSKÁTE
 
 CO OPOUŠTÍ VÁŠ PROHLÍŽEČ
 
-Text zprávy z chatu, a jen ten, jde do překladového enginu, který jste zvolili. Ne vaše uživatelské jméno, ne kanál, ne kdo co napsal. Právě to znamená řádek „obsah webu“ v oprávněních výše, a nic víc. Žádný účet, žádná analytika, žádný můj server: rozšíření komunikuje s Kickem, s enginem, který jste zvolili, a se stránkou vydání na GitHubu, aby vám oznámilo novější verzi, přičemž s tímto posledním požadavkem neposílá nic.
+Text z chatu jde jen do překladového enginu, který jste zvolili. U Googlu, MyMemory nebo Lingvy je to text každé zprávy a nic jiného: ne kanál, ne kdo co napsal. U DeepL jde jako kontext i několik posledních řádků chatu se jmény těch, kdo je napsali, aby překlad seděl do konverzace. Právě to znamená řádek „obsah webu“ v oprávněních výše, a nic víc. Žádný účet, žádná analytika, žádný můj server: rozšíření komunikuje s Kickem, s enginem, který jste zvolili, a se stránkou vydání na GitHubu, aby vám oznámilo novější verzi, přičemž s tímto posledním požadavkem neposílá nic.
 
 ZDARMA A S OTEVŘENÝM KÓDEM
 

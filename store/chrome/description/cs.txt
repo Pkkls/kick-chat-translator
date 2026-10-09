@@ -14,7 +14,7 @@ CO ZÍSKÁTE
 
 • 43 jazyků včetně písma zprava doleva (arabština, hebrejština, perština), s odděleně vedenými regionálními variantami (brazilská portugalština, tradiční čínština).
 • Zdarma hned po instalaci s Google Translate, bez klíče a bez účtu.
-• Lepší evropské jazyky s vlastním bezplatným klíčem DeepL (milion znaků měsíčně, bez karty). DeepL dostává poslední řádky chatu jako kontext, takže formulace sedí do konverzace.
+• Lepší evropské jazyky s vlastním API klíčem DeepL. DeepL dostává poslední řádky chatu jako kontext, takže formulace sedí do konverzace.
 • Překlad přímo v zařízení v Chrome a Edge 138+, pokud to váš počítač podporuje: offline, bez limitu, a chat nikdy neopustí váš počítač.
 • Automatická záloha: když jeden engine selže, převezme to MyMemory nebo Lingva. Pořadí určujete vy.
 • Čtyři styly zobrazení: pod zprávou, na stejném řádku, za ní menší kurzívou, nebo jen při najetí myší. Režim najetí myší nepřekládá nic, dokud na zprávu neukážete, což v rychlém chatu sníží spotřebu zhruba desetkrát.
@@ -25,7 +25,7 @@ CO ZÍSKÁTE
 
 SOUKROMÍ
 
-Žádný účet, žádná analytika, žádný můj server. Text zprávy z chatu jde do překladového enginu, který jste zvolili, a nikam jinam, a při překladu v zařízení váš počítač vůbec neopustí. Vaše uživatelské jméno ani kanál, který sledujete, se neposílají.
+Žádný účet, žádná analytika, žádný můj server. Text z chatu jde jen do překladového enginu, který jste zvolili. U Googlu, MyMemory nebo Lingvy je to text každé zprávy a nic jiného. U DeepL jde jako kontext i několik posledních řádků chatu se jmény těch, kdo je napsali, aby překlad seděl do konverzace. Kanál, který sledujete, se nikdy neposílá, a při překladu v zařízení nic neopustí váš počítač.
 
 Oprávnění jednoduše řečeno: úložiště pro vaše nastavení a mezipaměť překladů; přístup ke kick.com, aby se překlady zobrazily v chatu; přístup k enginům, které může volat (Google, DeepL, MyMemory a Lingva); časovač, aby překladač zůstal připravený, zatímco se díváte; a právo znovu načíst vlastní skript do již otevřených karet Kick při instalaci nebo aktualizaci, aby dál překládaly bez obnovení stránky. Čte také stránku vydání na GitHubu, aby vám oznámilo novější verzi, a s tímto požadavkem neposílá nic.
 

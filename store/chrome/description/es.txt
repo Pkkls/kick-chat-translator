@@ -14,7 +14,7 @@ QUÉ OBTIENES
 
 • 43 idiomas, incluida la escritura de derecha a izquierda (árabe, hebreo, persa), con las variantes regionales separadas (portugués de Brasil, chino tradicional).
 • Gratis desde el primer momento con Google Translate, sin clave y sin cuenta.
-• Mejores idiomas europeos con tu propia clave gratuita de DeepL (un millón de caracteres al mes, sin tarjeta). DeepL recibe las líneas recientes del chat como contexto, así la redacción encaja con la conversación.
+• Mejores idiomas europeos con tu propia clave de API de DeepL. DeepL recibe las líneas recientes del chat como contexto, así la redacción encaja con la conversación.
 • Traducción en el propio dispositivo en Chrome y Edge 138+ si tu ordenador lo admite: sin conexión, sin límites, y el chat nunca sale de tu máquina.
 • Respaldo automático: cuando un motor falla, MyMemory o Lingva toman el relevo. El orden lo eliges tú.
 • Cuatro estilos de presentación: debajo del mensaje, en la misma línea, en cursiva más pequeña después, o solo al pasar el ratón. El modo al pasar el ratón no traduce nada hasta que apuntas a un mensaje, lo que reduce el uso unas diez veces en un chat rápido.
@@ -25,7 +25,7 @@ QUÉ OBTIENES
 
 PRIVACIDAD
 
-Sin cuenta, sin analíticas, sin servidor mío. El texto de un mensaje de chat va al motor de traducción que elegiste y a ningún otro sitio, y con la traducción en el dispositivo nunca sale de tu ordenador. Tu nombre de usuario y el canal que ves no se envían.
+Sin cuenta, sin analíticas, sin servidor mío. El texto del chat va solo al motor de traducción que elegiste. Con Google, MyMemory o Lingva, es el texto de cada mensaje y nada más. Con DeepL, las últimas líneas del chat van como contexto, con los nombres de quienes las escribieron, así la traducción encaja con la conversación. El canal que ves nunca se envía, y con la traducción en el dispositivo nada sale de tu ordenador.
 
 Los permisos, en pocas palabras: almacenamiento para tus ajustes y su caché de traducciones; acceso a kick.com para mostrar las traducciones en el chat; acceso a los motores que puede llamar (Google, DeepL, MyMemory y Lingva); un temporizador para que el traductor siga listo mientras miras; y el permiso de recargar su propio script en las pestañas de Kick ya abiertas al instalarla o actualizarla, para que sigan traduciendo sin recargar la página. También lee la página de versiones de GitHub para avisarte de que existe una más nueva, sin enviar nada con esa petición.
 

@@ -16,7 +16,7 @@ QUÉ OBTIENES
 
 • 43 idiomas, incluida la escritura de derecha a izquierda (árabe, hebreo, persa), con las variantes regionales separadas (portugués de Brasil, chino tradicional).
 • Gratis desde el primer momento con Google Translate, sin clave y sin cuenta.
-• Mejores idiomas europeos con tu propia clave gratuita de DeepL (un millón de caracteres al mes, sin tarjeta). DeepL recibe las líneas recientes del chat como contexto, así la redacción encaja con la conversación.
+• Mejores idiomas europeos con tu propia clave de API de DeepL. DeepL recibe las líneas recientes del chat como contexto, así la redacción encaja con la conversación.
 • Respaldo automático: cuando un motor falla, MyMemory o Lingva toman el relevo. El orden lo eliges tú.
 • Cuatro estilos de presentación: debajo del mensaje, en la misma línea, en cursiva más pequeña después, o solo al pasar el ratón. El modo al pasar el ratón no traduce nada hasta que apuntas a un mensaje, lo que reduce el uso unas diez veces en un chat rápido.
 • Filtros: omite los bots, silencia usuarios o canales, oculta las líneas que contienen una palabra que tú elijas (útil contra el spam de !comandos) o traduce solo los idiomas que quieras.
@@ -26,7 +26,7 @@ QUÉ OBTIENES
 
 QUÉ SALE DE TU NAVEGADOR
 
-El texto de un mensaje de chat, y solo eso, va al motor de traducción que elegiste. No tu nombre de usuario, no el canal, no quién dijo qué. Eso es lo que designa la línea «contenido del sitio» en los permisos de arriba, y es todo lo que designa. Sin cuenta, sin analíticas, sin servidor mío: la extensión habla con Kick, con el motor que elegiste, y con la página de versiones de GitHub para avisarte de que existe una más nueva, sin enviar nada con esa última petición.
+El texto del chat va solo al motor de traducción que elegiste. Con Google, MyMemory o Lingva, es el texto de cada mensaje y nada más: ni el canal, ni quién lo dijo. Con DeepL, las últimas líneas del chat van como contexto, con los nombres de quienes las escribieron, así la traducción encaja con la conversación. Eso es lo que designa la línea «contenido del sitio» en los permisos de arriba, y es todo lo que designa. Sin cuenta, sin analíticas, sin servidor mío: la extensión habla con Kick, con el motor que elegiste, y con la página de versiones de GitHub para avisarte de que existe una más nueva, sin enviar nada con esa última petición.
 
 GRATIS Y DE CÓDIGO ABIERTO
 

@@ -16,7 +16,7 @@ NELER SUNUYOR
 
 • 43 dil, sağdan sola yazılanlar dahil (Arapça, İbranice, Farsça), bölgesel varyantlar ayrı tutulur (Brezilya Portekizcesi, Geleneksel Çince).
 • Kurar kurmaz Google Translate ile ücretsiz, anahtar yok, hesap yok.
-• Kendi ücretsiz DeepL anahtarınla Avrupa dillerinde daha iyi çeviri (ayda bir milyon karakter, kart gerekmez). DeepL sohbetin son satırlarını bağlam olarak alır, böylece ifade konuşmaya oturur.
+• Kendi DeepL API anahtarınla Avrupa dillerinde daha iyi çeviri. DeepL sohbetin son satırlarını bağlam olarak alır, böylece ifade konuşmaya oturur.
 • Otomatik yedek: bir motor başarısız olursa MyMemory ya da Lingva devralır. Sırayı sen belirlersin.
 • Dört görünüm: mesajın altında, aynı satırda, ardından küçük italikle ya da yalnızca üzerine gelince. Üzerine gelme modu sen bir mesajı işaret edene kadar hiçbir şey çevirmez, bu da hızlı bir sohbette kullanımı yaklaşık on kat azaltır.
 • Filtreler: botları atla, kullanıcıları veya kanalları sustur, seçtiğin bir kelimeyi içeren satırları gizle (!komut spamına karşı işe yarar) ya da yalnızca istediğin dilleri çevir.
@@ -26,7 +26,7 @@ NELER SUNUYOR
 
 TARAYICINDAN NE ÇIKIYOR
 
-Bir sohbet mesajının metni, sadece o, seçtiğin çeviri motoruna gider. Kullanıcı adın değil, kanal değil, kimin ne dediği değil. Yukarıdaki izinlerdeki “site içeriği” satırı bunu kasteder ve kastettiği bundan ibarettir. Hesap yok, analitik yok, bana ait sunucu yok: eklenti Kick ile, seçtiğin motorla ve daha yeni bir sürüm olduğunu haber vermek için GitHub sürümler sayfasıyla konuşur, o son isteğe hiçbir şey koymadan.
+Sohbet metni yalnızca seçtiğin çeviri motoruna gider. Google, MyMemory ya da Lingva ile giden yalnızca her mesajın metnidir, başka hiçbir şey değil: ne kanal ne de mesajı kimin yazdığı. DeepL ile son birkaç sohbet satırı, onları yazanların adlarıyla birlikte bağlam olarak gider, böylece çeviri konuşmaya oturur. Yukarıdaki izinlerdeki “site içeriği” satırı bunu kasteder ve kastettiği bundan ibarettir. Hesap yok, analitik yok, bana ait sunucu yok: eklenti Kick ile, seçtiğin motorla ve daha yeni bir sürüm olduğunu haber vermek için GitHub sürümler sayfasıyla konuşur, o son isteğe hiçbir şey koymadan.
 
 ÜCRETSİZ VE AÇIK KAYNAK
 

@@ -14,7 +14,7 @@ CE QUE TU OBTIENS
 
 • 43 langues, écriture de droite à gauche comprise (arabe, hébreu, persan), avec les variantes régionales gardées distinctes (portugais du Brésil, chinois traditionnel).
 • Gratuit dès l'installation avec Google Traduction, sans clé et sans compte.
-• De meilleures langues européennes avec ta propre clé DeepL gratuite (un million de caractères par mois, sans carte). DeepL reçoit les lignes récentes du chat comme contexte, donc la formulation colle à la conversation.
+• De meilleures langues européennes avec ta propre clé API DeepL. DeepL reçoit les lignes récentes du chat comme contexte, donc la formulation colle à la conversation.
 • Traduction en local dans Chrome et Edge 138+ quand ton ordinateur le permet : hors ligne, illimitée, et le chat ne quitte jamais ta machine.
 • Secours automatique : quand un moteur échoue, MyMemory ou Lingva prend le relais. L'ordre, c'est toi qui le choisis.
 • Quatre styles d'affichage : sous le message, sur la même ligne, en petit italique après lui, ou seulement au survol. Le mode survol ne traduit rien tant que tu ne pointes pas un message, ce qui divise l'usage par dix environ sur un chat rapide.
@@ -25,7 +25,7 @@ CE QUE TU OBTIENS
 
 CONFIDENTIALITÉ
 
-Pas de compte, pas d'analytics, pas de serveur à moi. Le texte d'un message de chat va au moteur de traduction que tu as choisi et nulle part ailleurs, et avec la traduction en local il ne quitte jamais ton ordinateur. Ton pseudo et la chaîne que tu regardes ne sont pas envoyés.
+Pas de compte, pas d'analytics, pas de serveur à moi. Le texte du chat va uniquement au moteur de traduction que tu as choisi. Avec Google, MyMemory ou Lingva, c'est le texte de chaque message et rien d'autre. Avec DeepL, les dernières lignes du chat partent aussi comme contexte, avec le pseudo de leurs auteurs, pour que la traduction colle à la conversation. La chaîne que tu regardes n'est jamais envoyée, et avec la traduction en local rien ne quitte ton ordinateur.
 
 Les permissions, en clair : le stockage pour tes réglages et son cache de traductions ; l'accès à kick.com pour afficher les traductions dans le chat ; l'accès aux moteurs qu'elle peut appeler (Google, DeepL, MyMemory et Lingva) ; un minuteur de réveil pour que le traducteur reste prêt pendant que tu regardes ; et le droit de recharger son propre script dans les onglets Kick déjà ouverts quand tu l'installes ou la mets à jour, pour qu'ils continuent de traduire sans actualiser. Elle lit aussi la page des versions GitHub pour te signaler qu'une version plus récente existe, sans rien envoyer avec cette requête.
 

@@ -16,7 +16,7 @@ WHAT YOU GET
 
 • 43 languages, right to left included (Arabic, Hebrew, Persian), with regional variants kept apart (Brazilian Portuguese, Traditional Chinese).
 • Free out of the box with Google Translate, no key and no account.
-• Better European languages with your own free DeepL key (a million characters a month, no card). DeepL gets the recent chat lines as context, so the wording fits the conversation.
+• Better European languages with your own DeepL API key. DeepL gets the recent chat lines as context, so the wording fits the conversation.
 • Automatic fallback: when one engine fails, MyMemory or Lingva takes over. You choose the order.
 • Four display styles: under the message, on the same line, in small italics after it, or only when you hover. Hover mode translates nothing until you point at a message, which cuts usage about ten times on a fast chat.
 • Filters: skip bots, mute users or channels, hide lines that contain a word you choose (handy against !command spam), or translate only the languages you want.
@@ -26,7 +26,7 @@ WHAT YOU GET
 
 WHAT LEAVES YOUR BROWSER
 
-The text of a chat message, and only that, goes to the translation engine you picked. Not your username, not the channel, not who said what. That is what the "website content" line in the permissions above refers to, and it is the whole of it. There is no account, no analytics and no server of mine: the extension talks to Kick, to the engine you chose, and to the GitHub releases page to tell you when a newer version exists, sending nothing with that last request.
+Chat text goes only to the translation engine you picked. With Google, MyMemory or Lingva, that is the text of each message and nothing else: not the channel, not who said it. With DeepL, the last few chat lines go along as context, with the names of whoever wrote them, so the translation fits the conversation. That is what the "website content" line in the permissions above refers to, and it is the whole of it. There is no account, no analytics and no server of mine: the extension talks to Kick, to the engine you chose, and to the GitHub releases page to tell you when a newer version exists, sending nothing with that last request.
 
 FREE AND OPEN SOURCE
 
