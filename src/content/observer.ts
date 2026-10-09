@@ -39,7 +39,7 @@ const PROCESSED_MARK = 'data-kt-id';
  * deja publiees ecrivent l'id nu ; une marque prefixee par instance ne peut pas
  * leur etre egale.
  */
-const INSTANCE = Math.random().toString(36).slice(2, 8);
+export const INSTANCE = Math.random().toString(36).slice(2, 8);
 
 export class ChatObserver {
   private listObserver: MutationObserver | undefined;

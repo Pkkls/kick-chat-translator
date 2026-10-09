@@ -99,6 +99,8 @@ const GATES = [
   // signee par instance, l'orphelin 3.0.1 marque les lignes avant le nouveau
   // script et il rougit aussi ; sans le nettoyage, le menu de langue est double.
   ['mise-a-jour', 'node', ['test/e2e/mise-a-jour.mjs']],
+  // La meme mise a jour, avec la seconde injection que Firefox fait de lui-meme.
+  ['mise-a-jour-firefox', 'node', ['test/e2e/mise-a-jour.mjs', '--firefox']],
   // Le mode survol, dont la fiche des stores fait un argument chiffre : environ
   // dix fois moins de consommation. L'argument ne tient que si rien ne part
   // avant que la souris passe. Couverture propre, mesuree : court-circuiter

@@ -484,9 +484,26 @@ reads dist/, so it serialises behind any build. D touches no code.
   requests and an empty history), the popup opened outside Kick offers to open
   a channel, at the top, in place of a day of zeros. Russian, the longest,
   wraps to three lines: 567px of 600.
-- [ ] **Re-injection is unverified on Firefox.** `mise-a-jour` runs Chromium
-  only; Playwright's Firefox cannot load the extension. The Firefox build
-  carries the same code.
+- [x] **Re-injection on Firefox left two live copies in every open tab.**
+  Firefox, unlike Chrome, injects the new content script into open tabs on
+  its own after an update, and `onInstalled` then injects it a second time.
+  Both copies have a valid `chrome.runtime`, so the orphan check never split
+  them: each took every message and the second replaced the first's line.
+  Nothing showed in the piece counts (one bar, one chip, one menu), which is
+  why `KT_DOUBLE` read green on Brave. Playwright's Firefox still cannot load
+  the extension, so `mise-a-jour --firefox` replays that sequence on Chromium
+  and counts the copies that sign a new row's `data-kt-id`: 2 before, 1 after.
+  The newest copy now names itself on the root (`data-kt-instance`) and any
+  other stops on its next tick, the route poll at most 500 ms later. CI
+  witness: `index.relais.test.ts` loads the module twice, red without the
+  hand-off. Not measured on a real Firefox: no Firefox in the session that
+  wrote this. The probe's first message now waits for its translation instead
+  of a fixed 4 s, and a silent probe prints what the page held: in a sandbox
+  without internet, 2 runs in 12 came out silent with the row marked and the
+  bar mounted, so the engine answer was what was missing, not the script.
+  Two copies starting within milliseconds also crashed the older one's
+  `main` (`sondageRoute` read before its `const`); witnessed by the second
+  case of the same test.
 - [k] **Tab insertion after an update, on kick.com.** `mise-a-jour` now types
   in the composer across an update from 3.0.1: the preview shows, Enter is not
   blocked, one panel. Insertion itself is not measured: Tab does not replace
