@@ -96,7 +96,27 @@ await ctx.route(KICK, async (route) => {
 
 const page = ctx.pages()[0] ?? (await ctx.newPage());
 await page.goto('https://kick.com/kt-un', { waitUntil: 'domcontentloaded' });
-await page.waitForTimeout(4000);
+await page.bringToFront();
+// L'etat d'avant doit etre l'etat monte, pas un instantane du montage. Attendre
+// la premiere traduction ne suffit pas : la pastille et le panneau de saisie
+// arrivent plus tard, et un releve pris avant eux lisait 0, puis le 1 d'apres
+// la mise a jour passait pour un predecesseur qui laisse le sien (vu par la CI
+// de #14, 3 lancements sur 4). Le plancher de 4 s est celui d'origine.
+const montee = Date.now();
+await page
+  .waitForSelector('#channel-chatroom div[data-index] :is(.kt-translation, .kt-translation-inline, .kt-translation-replace)', { timeout: 20000 })
+  .catch(() => undefined);
+await page
+  .waitForFunction(
+    () =>
+      document.querySelectorAll('#kt-floating-bar').length > 0 &&
+      document.querySelectorAll('[id="kt-lang-chip"]').length > 0 &&
+      document.querySelectorAll('[id="kt-compose-bar"]').length > 0,
+    null,
+    { timeout: 15000 },
+  )
+  .catch(() => undefined);
+await page.waitForTimeout(Math.max(0, 4000 - (Date.now() - montee)));
 
 const SEL_TR = '.kt-translation, .kt-translation-inline, .kt-translation-replace';
 
@@ -107,6 +127,7 @@ async function etat(texte) {
       const cible = rangees.find((r) => (r.querySelector('.font-normal')?.textContent ?? '') === texte);
       return {
         traduite: !!cible?.querySelector(sel),
+        traductions: cible ? cible.querySelectorAll(sel).length : 0,
         bandeaux: document.querySelectorAll('#kt-floating-bar').length,
         // Les autres pieces que le script pose : un predecesseur qui laisse les
         // siennes en double donne une pastille morte a cote de la vivante.
@@ -119,17 +140,52 @@ async function etat(texte) {
   );
 }
 
+/**
+ * Combien de copies VIVANTES du script ont pris la ligne. Chaque copie signe sa
+ * marque `data-kt-id` de son instance, et un MutationObserver du monde de la
+ * page voit les ecritures des mondes isoles. Deux copies vivantes ne se voient
+ * ni au nombre de bandeaux, chacune retire celui de l'autre, ni aux demandes,
+ * le service worker fusionne les demandes identiques : elles traduisent chacune
+ * la ligne et la seconde remplace la premiere. C'est exactement l'etat d'un
+ * onglet Firefox apres une mise a jour, ou le navigateur injecte lui-meme le
+ * nouveau script et `onInstalled` l'injecte une seconde fois.
+ */
+async function copies(texte) {
+  return page.evaluate((texte) => {
+    const r = [...document.querySelectorAll('#channel-chatroom div[data-index]')].find(
+      (x) => (x.querySelector('.font-normal')?.textContent ?? '') === texte,
+    );
+    return new Set((r?.__ktMarques ?? []).map((m) => m.split(':')[0])).size;
+  }, texte);
+}
+
 async function poser(texte, index) {
+  await page.evaluate(() => {
+    if (window.__ktEcoute) return;
+    window.__ktEcoute = new MutationObserver((ms) => {
+      for (const m of ms) {
+        const v = m.target.getAttribute('data-kt-id');
+        if (v) (m.target.__ktMarques ??= []).push(v);
+      }
+    });
+    window.__ktEcoute.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['data-kt-id'] });
+  });
   await page.evaluate(
     ({ html }) =>
       document.querySelector('#channel-chatroom [data-which="messages"]').insertAdjacentHTML('beforeend', html),
     { html: rangee(texte, index) },
   );
   await page.waitForTimeout(8000);
-  return etat(texte);
+  return { ...(await etat(texte)), copies: await copies(texte) };
 }
 
 const avant = await etat('hola amigo que tal');
+const diagMuette = await page.evaluate(() => ({
+  vis: document.visibilityState,
+  marque: document.querySelector('#channel-chatroom div[data-index]')?.getAttribute('data-kt-id') ?? null,
+  instance: document.documentElement.getAttribute('data-kt-instance'),
+  bar: !!document.querySelector('#kt-floating-bar'),
+}));
 
 /**
  * La zone de saisie, avant et apres. L'orphelin 3.0.1 garde son ecouteur de
@@ -219,7 +275,14 @@ console.log('DIAG', JSON.stringify(diag));
 // mesure, l'onglet traduit toujours, avec une seule piece de chaque. Les 0 sur
 // 38 vus ce jour-la venaient de l'onglet pas encore affiche, ou rien n'est
 // traduit par choix (pauseWhenHidden), pas de deux copies qui se battent.
-if (process.env.KT_DOUBLE) {
+//
+// `--firefox` est le meme rejeu, et c'est ce que Firefox fait a chaque mise a
+// jour : il injecte lui-meme le nouveau script dans les onglets ouverts, puis
+// `onInstalled` l'injecte encore. Le Firefox de Playwright ne charge pas
+// d'extension, donc la porte reproduit la sequence sur Chromium. Mesure le
+// 2026-10-09 : sans passation, deux copies vivantes prenaient chaque message
+// (`copies` 2), alors que bandeaux, pastilles et menus restaient a 1.
+if (process.env.KT_DOUBLE || process.argv.includes('--firefox')) {
   const ouvert = ctx.serviceWorkers().at(-1);
   const r = await ouvert.evaluate(async () => {
     const [cs] = chrome.runtime.getManifest().content_scripts;
@@ -240,12 +303,13 @@ fs.rmSync(profile, { recursive: true, force: true });
 fs.rmSync(EXTDIR, { recursive: true, force: true });
 
 if (!avant.traduite) {
+  console.error('DIAG MUETTE', JSON.stringify(diagMuette));
   console.error('SONDE MUETTE: rien n etait traduit avant la mise a jour, la sonde ne mesure rien.');
   process.exit(2);
 }
 
 const ligne = (nom, e) =>
-  `  ${nom.padEnd(28)} traduite ${e.traduite ? 'OUI' : 'NON'}   bandeaux ${e.bandeaux}   pastilles ${e.pastilles}   menus ${e.menus}   composes ${e.composes}`;
+  `  ${nom.padEnd(28)} traduite ${e.traduite ? 'OUI' : 'NON'} (${e.traductions} sur la ligne, ${e.copies ?? '-'} copie)   bandeaux ${e.bandeaux}   pastilles ${e.pastilles}   menus ${e.menus}   composes ${e.composes}`;
 console.log(`\n## Un onglet Kick ouvert pendant une mise a jour\n`);
 console.log(ligne('avant la mise a jour', avant));
 console.log(ligne('message apres la mise a jour', apres));
@@ -264,6 +328,8 @@ if (saisieApres.panneaux !== 1) fails.push(`apres une mise a jour, ${saisieApres
 if (!apres.traduite) fails.push('apres une mise a jour, un onglet deja ouvert ne traduit plus rien');
 for (const k of ['bandeaux', 'pastilles', 'menus', 'composes'])
   if (apres[k] > avant[k]) fails.push(`apres une mise a jour, ${k} : ${avant[k]} avant, ${apres[k]} apres, un predecesseur a laisse le sien`);
+if (apres.copies > 1) fails.push(`apres une mise a jour, ${apres.copies} copies vivantes du script ont traduit le meme message`);
+if (apres.traductions > 1) fails.push(`apres une mise a jour, ${apres.traductions} traductions sur un seul message : deux copies du script vivent dans la page`);
 if (apres.bandeaux !== 1) fails.push(`apres une mise a jour, la page porte ${apres.bandeaux} bandeaux au lieu d un`);
 
 console.log('');

@@ -20,7 +20,7 @@ import {
   updateLocalChip,
   type LocalChipState,
 } from './injector';
-import { ChatObserver } from './observer';
+import { ChatObserver, INSTANCE } from './observer';
 import { mountMetricsBridge } from './metricsBridge';
 import { ComposeController } from './compose';
 import {
@@ -39,6 +39,8 @@ import { PAUSED_CHANNELS_MAX, ROUTE_POLL_MS } from '~/shared/constants';
 import { msg as localised, setContentLocale } from './msg';
 
 const log = rootLogger.child('content');
+/** Le nom de la copie du script qui tient la page. */
+const ATTR_INSTANCE = 'data-kt-instance';
 // One-shot guard so the "Kick DOM changed" warning toast shows at most once per page.
 let domWarned = false;
 
@@ -48,7 +50,24 @@ async function main(): Promise<void> {
   // metrics sink with it. check-strip.ts fails the build if it does not.
   if (__KT_METRICS__) mountMetricsBridge();
 
+  // La copie la plus recente du script tient la page, et elle se nomme sur la
+  // racine avant tout. Les autres s'arretent au premier tour ou elles lisent un
+  // autre nom que le leur (`estOrphelin`).
+  //
+  // Une copie coupee par une mise a jour s'arretait deja, `chrome.runtime.id`
+  // disparu. Restait une copie VIVANTE de trop, et Firefox en fait une a chaque
+  // mise a jour : il injecte lui-meme le nouveau script dans les onglets ouverts,
+  // ce que Chrome ne fait pas, puis `onInstalled` l'injecte une seconde fois.
+  // Mesure sur la porte `mise-a-jour` en rejouant cette seconde injection : deux
+  // copies prenaient chaque message, chacune le traduisait et la seconde
+  // remplacait la premiere, sans rien de visible au decompte des pieces.
+  document.documentElement.setAttribute(ATTR_INSTANCE, INSTANCE);
+
   let settings: Settings = await fetchSettings();
+  // Une copie plus recente s'est nommee pendant que celle-ci attendait ses
+  // reglages : Firefox et `onInstalled` injectent a quelques millisecondes
+  // d'intervalle. Rien n'est encore monte, il n'y a qu'a s'effacer.
+  if (document.documentElement.getAttribute(ATTR_INSTANCE) !== INSTANCE) return;
   // Un predecesseur peut etre la : le script coupe par une mise a jour, dans un
   // onglet ou le service worker vient de reinjecter celui-ci. Ses pieces ont
   // perdu leurs ecouteurs, et le montage ci-dessous prendrait le bandeau pour le
@@ -101,18 +120,23 @@ async function main(): Promise<void> {
 
   /**
    * Vrai, une fois pour toutes, quand l'extension a ete mise a jour sous ce
-   * script : `chrome.runtime.id` disparait et tout appel leve. Le script s'arrete
+   * script : `chrome.runtime.id` disparait et tout appel leve. Ou quand une copie
+   * plus recente s'est nommee sur la racine. Le script s'arrete
    * alors de lui-meme, sans toucher au DOM, ou son successeur reinjecte a deja
    * pose son propre bandeau sous le meme id.
    */
   let orphelin = false;
+  // Declare ici et pose plus bas : `estOrphelin` peut tourner pendant le montage,
+  // avant la ligne du sondage, et un `const` y leverait.
+  const sondage: { route?: ReturnType<typeof setInterval> } = {};
   function estOrphelin(): boolean {
     if (orphelin) return true;
-    if (chrome.runtime?.id) return false;
+    if (chrome.runtime?.id && document.documentElement.getAttribute(ATTR_INSTANCE) === INSTANCE)
+      return false;
     orphelin = true;
     observer.stop();
     compose.stop();
-    clearInterval(sondageRoute);
+    clearInterval(sondage.route);
     barWatcher?.disconnect();
     themeWatch.disconnect();
     return true;
@@ -345,13 +369,14 @@ async function main(): Promise<void> {
   // de chaines deux fois par seconde. `popstate` reste pour que le retour arriere
   // soit immediat au lieu d'attendre le prochain tour.
   let dernierChemin = location.pathname;
-  const sondageRoute = setInterval(() => {
+  sondage.route = setInterval(() => {
     if (estOrphelin()) return;
     if (location.pathname === dernierChemin) return;
     dernierChemin = location.pathname;
     attachForRoute();
   }, ROUTE_POLL_MS);
   window.addEventListener('popstate', () => {
+    if (estOrphelin()) return;
     dernierChemin = location.pathname;
     attachForRoute();
   });
@@ -360,7 +385,7 @@ async function main(): Promise<void> {
   // messages that arrived while hidden are marked (data-kt-id) but never translated.
   // Sweep visible rows that have no translation and re-submit them.
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden || !settings.enabled || !settings.pauseWhenHidden) return;
+    if (document.hidden || !settings.enabled || !settings.pauseWhenHidden || estOrphelin()) return;
     const rows = document.querySelectorAll('#channel-chatroom div[data-index][data-kt-id]');
     let retried = 0;
     for (const row of rows) {
@@ -387,7 +412,7 @@ async function main(): Promise<void> {
       () => {
         if (scrollTimer) clearTimeout(scrollTimer);
         scrollTimer = setTimeout(() => {
-          if (!settings.enabled) return;
+          if (!settings.enabled || estOrphelin()) return;
           const rows = chatContainer.querySelectorAll('div[data-index][data-kt-id]');
           let retried = 0;
           for (const row of rows) {
@@ -464,6 +489,9 @@ async function main(): Promise<void> {
   }
 
   watchSettings((next) => {
+    // Une copie remplacee recoit encore les reglages, et sans ceci un
+    // changement relancerait son observateur et son bandeau.
+    if (estOrphelin()) return;
     // Le verdict qui compte est celui de la chaine courante, pas l'interrupteur
     // general : c'est lui qui decide si l'observateur tourne et ce que le
     // bandeau affiche.
@@ -502,7 +530,7 @@ async function main(): Promise<void> {
   // decisions are made here. It asks, we answer: no subscription, no polling,
   // and nothing leaves this page unless someone opens that tab.
   chrome.runtime.onMessage.addListener((msg: { type?: string }, _sender, sendResponse) => {
-    if (msg?.type !== 'debug.decisions') return false;
+    if (msg?.type !== 'debug.decisions' || estOrphelin()) return false;
     sendResponse({ type: 'debug.decisions', payload: pipeline.recentDecisions() });
     return false;
   });
