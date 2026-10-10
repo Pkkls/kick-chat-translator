@@ -1,27 +1,57 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { cacheKey } from '~/shared/normalize';
 
-const { idb } = vi.hoisted(() => ({ idb: { entries: new Map<string, unknown>(), gets: [] as string[] } }));
-vi.mock('idb-keyval', () => ({
-  createStore: () => ({}),
-  keys: () => Promise.resolve([...idb.entries.keys()].sort()),
-  get: (k: string) => {
-    idb.gets.push(k);
-    return Promise.resolve(idb.entries.get(k));
-  },
-  set: (k: string, v: unknown) => {
-    idb.entries.set(k, v);
-    return Promise.resolve();
-  },
-  del: (k: string) => {
-    idb.entries.delete(k);
-    return Promise.resolve();
-  },
-  clear: () => {
-    idb.entries.clear();
-    return Promise.resolve();
-  },
+const { idb } = vi.hoisted(() => ({
+  idb: { entries: new Map<string, unknown>(), gets: [] as string[], keyLists: 0 },
 }));
+// A key range is a pair of bounds here; the store below filters on it the way
+// IndexedDB does, in key order, so warm() runs against the same contract.
+vi.stubGlobal('IDBKeyRange', {
+  bound: (lower: string, upper: string) => ({ lower, upper }),
+});
+vi.mock('idb-keyval', () => {
+  const inRange = (k: string, r?: { lower: string; upper: string }) =>
+    !r || (k >= r.lower && k <= r.upper);
+  const objectStore = {
+    getAllKeys: (r: { lower: string; upper: string } | undefined, n: number) => ({
+      result: [...idb.entries.keys()]
+        .sort()
+        .filter((k) => inRange(k, r))
+        .slice(0, n),
+    }),
+    getAll: (r: { lower: string; upper: string } | undefined, n: number) => ({
+      result: [...idb.entries.keys()]
+        .sort()
+        .filter((k) => inRange(k, r))
+        .slice(0, n)
+        .map((k) => idb.entries.get(k)),
+    }),
+  };
+  return {
+    createStore: () => (_mode: string, cb: (s: typeof objectStore) => unknown) => cb(objectStore),
+    promisifyRequest: (r: { result: unknown }) => Promise.resolve(r.result),
+    keys: () => {
+      idb.keyLists++;
+      return Promise.resolve([...idb.entries.keys()].sort());
+    },
+    get: (k: string) => {
+      idb.gets.push(k);
+      return Promise.resolve(idb.entries.get(k));
+    },
+    set: (k: string, v: unknown) => {
+      idb.entries.set(k, v);
+      return Promise.resolve();
+    },
+    del: (k: string) => {
+      idb.entries.delete(k);
+      return Promise.resolve();
+    },
+    clear: () => {
+      idb.entries.clear();
+      return Promise.resolve();
+    },
+  };
+});
 
 import { normalizeForKey, TranslationCache, warmTargets } from './cache';
 
@@ -96,11 +126,20 @@ describe('TranslationCache.warm', () => {
     idb.gets.length = 0;
   });
 
-  const entry = (t: string) => ({ translatedText: t, detectedLang: 'es', provider: 'deepl', storedAtMs: Date.now() });
+  const entry = (t: string) => ({
+    translatedText: t,
+    detectedLang: 'es',
+    provider: 'deepl',
+    storedAtMs: Date.now(),
+  });
 
   // get() falls back to storage on a memory miss, so "the value came back" proves
   // nothing about warming. What proves it is that no storage read was needed.
-  async function storageReadsFor(cache: TranslationCache, text: string, lang: string): Promise<string[]> {
+  async function storageReadsFor(
+    cache: TranslationCache,
+    text: string,
+    lang: string,
+  ): Promise<string[]> {
     idb.gets.length = 0;
     await cache.get(text, lang);
     return [...idb.gets];
@@ -131,6 +170,20 @@ describe('TranslationCache.warm', () => {
     expect(await storageReadsFor(cache, 'uno', 'es')).toEqual(['es::uno']);
   });
 
+  // Listing every key of a 15,000-entry store to keep 200 was most of a worker
+  // start. Each language is one bounded range read instead.
+  it('reads ranges, without listing the whole store or reading key by key', async () => {
+    for (let i = 0; i < 50; i++) idb.entries.set(`ar::m${i}`, entry(`a${i}`));
+    for (let i = 0; i < 50; i++) idb.entries.set(`pt::m${i}`, entry(`p${i}`));
+    idb.keyLists = 0;
+    const cache = new TranslationCache(10_000, 60_000);
+    await cache.warm(200, ['pt']);
+    expect(idb.keyLists).toBe(0);
+    expect(idb.gets).toEqual([]);
+    expect(await storageReadsFor(cache, 'm49', 'pt')).toEqual([]);
+    expect(await storageReadsFor(cache, 'm0', 'ar')).toEqual(['ar::m0']);
+  });
+
   it('warms indiscriminately when no target is given', async () => {
     idb.entries.set('ar::x', entry('ax'));
     const cache = new TranslationCache(10_000, 60_000);
@@ -157,7 +210,6 @@ describe('normalizeForKey across letter case', () => {
     expect(normalizeForKey('ışık')).not.toBe(normalizeForKey('isik'));
   });
 });
-
 
 /**
  * Ce que le cache sait dire de lui-meme.
