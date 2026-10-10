@@ -80,6 +80,14 @@ reads dist/, so it serialises behind any build. D touches no code.
   know", lmk as "kkkkk", goat as the animal). `abbreviations.ts` spells them
   out on lines read as English for a non-English reader: 0 left, 0 of 6005
   foreign corpus lines rewritten.
+- [x] **Chrome's on-device engine translated from franc's guess.** It has no
+  auto-detect. franc's non-English guesses name the wrong language on 166 of
+  264 chat lines (Tatoeba 470 of 834), so those lines now go to the cloud;
+  looked-up languages, English guesses and local-only stay on device.
+- [x] **Pruning franc's 102 KB of models to the product's languages: measured,
+  not done.** Every one of its 66 models wins lines on the corpora; the 44
+  outside the product act as the reject class. `only:` halves franc's time
+  (44 to 24 µs) but turns 339 silent lines into 293 wrong ones on Tatoeba.
 - [k] **Native read of the new override wording.** fa, bn and ta above were
   written without a native speaker; the Latin column too, though plainer.
   Probed only into en, fr, es, pt, de, tr, pl and the nine non-Latin targets.
