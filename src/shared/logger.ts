@@ -39,9 +39,12 @@ export class Logger {
 
   private write(level: Level, args: unknown[]): void {
     const tag = `${EXT_PREFIX}[${this.scope}]`;
-    // eslint-disable-next-line no-console
-    const fn = level === 'debug' ? console.debug : console[level];
-    fn(tag, ...args);
+    // Called on `console` rather than taken off it: a detached method loses its
+    // `this`, which unbound-method now reports on the console's typings.
+    /* eslint-disable no-console */
+    if (level === 'debug') console.debug(tag, ...args);
+    else console[level](tag, ...args);
+    /* eslint-enable no-console */
   }
 }
 
