@@ -133,7 +133,22 @@ function stripInlineEmoteNames(text: string): string {
       // the same way. All nine words this rule destroyed in that corpus came
       // from those two alternatives, and dropping them costs no emote: OMEGALUL
       // is still caught by `lul`.
-      .replace(/\b\w+(kiss|wave|hug|love|dab|pog|kek|lul|clap|jam|hype)\d*\b/gi, ' ')
+      //
+      // The suffixes split in two. kiss, pog, clap and hype end almost no word in
+      // any of the 37 languages measured below, and keep the open rule, with a
+      // two-letter stem so that Swedish skiss and French apogee survive.
+      .replace(/\b\w{2,}(kiss|pog|clap|hype)\d*\b/gi, ' ')
+      // lul, kek, jam, hug, love, wave and dab are ordinary word endings, and the
+      // open rule deleted them before translation. Measured on the 30000 most
+      // frequent words of 37 languages (wordfreq), weighted by frequency: 23
+      // words in 10000 of Romanian text, the -ul article (felul, copilul, rolul,
+      // nivelul), 5 in Turkish (erkek), 5 in Latvian (-jam datives), 4 in
+      // Hungarian (gyerekek), 2 to 3 in Indonesian, Malay, Slovenian,
+      // Lithuanian and Portuguese (sejam, vejam). They now strip only when the
+      // name is shouted in capitals, the way OMEGALUL and CATJAM are typed, or
+      // when the stem is one of the emote families that wear these suffixes.
+      .replace(/\b[A-Z0-9]{2,}(LUL|KEK|JAM|HUG|LOVE|WAVE|DAB)\d*\b/g, ' ')
+      .replace(/\b(pepe|peepo|widepeepo|monka|omega|cat|dog|blob)(lul|kek|jam|hug|love|wave|dab)\w*\b/gi, ' ')
       .replace(/\s+/g, ' ')
       .trim()
   );
