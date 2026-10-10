@@ -94,8 +94,18 @@ export function findChatContainer(root: ParentNode = document): Element | null {
   return hidden;
 }
 
-/** Laid out on screen: `display: none` on it or any ancestor leaves no box. */
+/**
+ * Laid out on screen: `display: none` on it or any ancestor leaves no box.
+ *
+ * `checkVisibility` answers the same question from computed style alone.
+ * `getClientRects` needs geometry, so asked while a fast chat keeps the page
+ * dirty it forces a full layout on the spot, and the two watchers that ask
+ * twice a second each did exactly that for as long as the tab was open.
+ * Browsers without it (Firefox before 106) keep the box count.
+ */
 export function isShown(el: Element): boolean {
+  const v = el as Element & { checkVisibility?: () => boolean };
+  if (typeof v.checkVisibility === 'function') return v.checkVisibility();
   return el.getClientRects().length > 0;
 }
 

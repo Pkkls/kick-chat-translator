@@ -90,7 +90,9 @@ async function main(): Promise<void> {
   // has to follow. Watching the root's class and style attributes is enough:
   // every theme system on the site flips one of the two, and the probe is a
   // handful of getComputedStyle calls.
-  const themeWatch = new MutationObserver(() => applyChatScheme(document.body, settings.chatScheme));
+  const themeWatch = new MutationObserver(() =>
+    applyChatScheme(document.body, settings.chatScheme),
+  );
   for (const node of [document.documentElement, document.body]) {
     themeWatch.observe(node, {
       attributes: true,
@@ -175,7 +177,8 @@ async function main(): Promise<void> {
     if (downloading) {
       return { kind: 'downloading', pct: localEngine.progressOf(downloading.src, downloading.tgt) };
     }
-    if (downloadable.length > 0) return { kind: 'download', label: downloadable[0]!.src.toUpperCase() };
+    if (downloadable.length > 0)
+      return { kind: 'download', label: downloadable[0]!.src.toUpperCase() };
     return { kind: 'hidden' };
   }
 
@@ -210,7 +213,9 @@ async function main(): Promise<void> {
             if (!slug) return void patchSettings({ enabled });
             const sansElle = settings.pausedChannels.filter((c) => c !== slug);
             void patchSettings({
-              pausedChannels: enabled ? sansElle : [slug, ...sansElle].slice(0, PAUSED_CHANNELS_MAX),
+              pausedChannels: enabled
+                ? sansElle
+                : [slug, ...sansElle].slice(0, PAUSED_CHANNELS_MAX),
             });
           },
           // Picking on the bar seeds the favourites, the same way picking in
@@ -222,7 +227,13 @@ async function main(): Promise<void> {
             void patchSettings({
               targetLang,
               ...(settings.rememberChannelLang && currentSlug
-                ? { channelLangs: memoriserLangueChaine(settings.channelLangs, currentSlug, targetLang) }
+                ? {
+                    channelLangs: memoriserLangueChaine(
+                      settings.channelLangs,
+                      currentSlug,
+                      targetLang,
+                    ),
+                  }
                 : {}),
               favoriteLangs:
                 targetLang === 'auto'
@@ -383,55 +394,65 @@ async function main(): Promise<void> {
     attachForRoute();
   });
 
-  // Retry on focus: when pauseWhenHidden is ON and the user comes back to this tab,
-  // messages that arrived while hidden are marked (data-kt-id) but never translated.
-  // Sweep visible rows that have no translation and re-submit them.
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden || !settings.enabled || !settings.pauseWhenHidden || estOrphelin()) return;
-    const rows = document.querySelectorAll('#channel-chatroom div[data-index][data-kt-id]');
+  /**
+   * Hand back to the observer every line it marked but never translated.
+   *
+   * A row is marked as soon as the observer sees it, whatever the pipeline then
+   * decides, so a line that arrived while the tab was hidden keeps its mark and
+   * nothing else would look at it again.
+   *
+   * Left alone: a line that carries an artifact, which was dealt with; a line
+   * the pipeline gave a reason for (its tooltip, `markSkipped`), which would get
+   * the same answer again; and a row hidden for a blocked word. What is left is
+   * exactly the lines skipped for the state of the tab, which the pipeline marks
+   * with an empty reason. The sweeps this replaces re-ran every line without an
+   * artifact, so each return to the tab sent the whole visible chat back
+   * through language detection, every English or same-language line included,
+   * to reach the same verdict.
+   */
+  function retryUntranslated(root: ParentNode, why: string): void {
     let retried = 0;
-    for (const row of rows) {
-      // Already has a translation → skip.
+    for (const row of root.querySelectorAll<HTMLElement>('div[data-index][data-kt-id]')) {
+      if (row.style.display === 'none') continue;
       if (row.querySelector(HANDLED_SELECTOR)) continue;
-      // Remove the mark so the observer re-processes it.
+      if (pickInjectionTarget(row).hasAttribute('title')) continue;
       row.removeAttribute('data-kt-id');
       retried++;
     }
-    if (retried > 0) {
-      log.debug(`Tab visible again, retrying ${retried} untranslated rows`);
-      observer.reset();
-      observer.start();
-    }
+    if (retried === 0) return;
+    log.debug(`${why}: retrying ${retried} untranslated rows`);
+    observer.reset();
+    observer.start();
+  }
+
+  // Back on the tab: what arrived while it was hidden was skipped, not lost.
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden || !vueLocale().enabled || !settings.pauseWhenHidden || estOrphelin())
+      return;
+    retryUntranslated(document, 'tab visible again');
   });
 
-  // Prefetch on scroll-stop: when the user scrolls up to read old messages and
-  // pauses, translate any visible rows that don't have a translation yet.
+  // Scroll-stop: rows the reader scrolls back to that were never translated.
+  //
+  // Listened for on the document, in the capture phase, because scroll does
+  // not bubble and the list is not a stable element: the first
+  // `#channel-chatroom .no-scrollbar` on current Kick is not the message list,
+  // and the list is replaced on a channel switch. The listener this replaces
+  // was bound once, at startup, to that first match, and so never fired.
   let scrollTimer: ReturnType<typeof setTimeout> | undefined;
-  const chatContainer = document.querySelector('#channel-chatroom .no-scrollbar');
-  if (chatContainer) {
-    chatContainer.addEventListener(
-      'scroll',
-      () => {
-        if (scrollTimer) clearTimeout(scrollTimer);
-        scrollTimer = setTimeout(() => {
-          if (!settings.enabled || estOrphelin()) return;
-          const rows = chatContainer.querySelectorAll('div[data-index][data-kt-id]');
-          let retried = 0;
-          for (const row of rows) {
-            if (row.querySelector(HANDLED_SELECTOR)) continue;
-            row.removeAttribute('data-kt-id');
-            retried++;
-          }
-          if (retried > 0) {
-            log.debug(`Scroll-stop prefetch: retrying ${retried} untranslated rows`);
-            observer.reset();
-            observer.start();
-          }
-        }, 800);
-      },
-      { passive: true },
-    );
-  }
+  document.addEventListener(
+    'scroll',
+    (e) => {
+      const list = e.target instanceof Element ? e.target : null;
+      if (!list?.closest('#channel-chatroom')) return;
+      if (scrollTimer) clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        if (estOrphelin() || !vueLocale().enabled) return;
+        retryUntranslated(list, 'scroll-stop');
+      }, 800);
+    },
+    { capture: true, passive: true },
+  );
 
   // Note: the "pause when hidden" quota guard lives in the pipeline, which reads
   // document.hidden live per message. The observer stays running (cheap when the

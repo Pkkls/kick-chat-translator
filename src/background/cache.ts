@@ -1,4 +1,4 @@
-import { createStore, get, set, del, keys, clear } from 'idb-keyval';
+import { createStore, get, set, del, keys, clear, promisifyRequest } from 'idb-keyval';
 import { CACHE_DB, CACHE_STORE } from '~/shared/constants';
 import { rootLogger } from '~/shared/logger';
 import { cacheKey, normalizeForKey } from '~/shared/normalize';
@@ -144,21 +144,33 @@ export class TranslationCache {
    */
   async warm(limit = 200, targets: string[] = []): Promise<void> {
     try {
-      const ks = (await keys(store)).filter((k): k is string => typeof k === 'string');
-      let wanted = ks;
-      if (targets.length > 0) {
-        wanted = [];
-        for (const prefix of targets.map((t) => `${t}::`)) {
-          for (const k of ks) if (k.startsWith(prefix)) wanted.push(k);
-          if (wanted.length >= limit) break;
-        }
-      }
-      for (const k of wanted.slice(0, limit)) {
-        const v = await get<CacheEntry>(k, store);
-        if (v) this.mem.set(k, v);
+      // One key range per language, read in one transaction each. This used to
+      // list every key in the store (up to cacheMaxEntries, 15,000 by default)
+      // and then read the 200 it kept one transaction at a time: about 100 ms
+      // of a worker start, measured on 15,000 entries in Chromium, against 3 ms
+      // for the range. The worker now sleeps when no Kick tab is open, so it
+      // starts more often and this is paid on the first line of a session.
+      const ranges =
+        targets.length > 0
+          ? targets.map((t) => IDBKeyRange.bound(`${t}::`, `${t}::\uffff`))
+          : [undefined];
+      let left = limit;
+      for (const range of ranges) {
+        if (left <= 0) break;
+        const [ks, vs] = await store('readonly', (s) =>
+          Promise.all([
+            promisifyRequest(s.getAllKeys(range, left)),
+            promisifyRequest(s.getAll(range, left)),
+          ]),
+        );
+        ks.forEach((k, i) => {
+          if (typeof k === 'string' && vs[i]) this.mem.set(k, vs[i] as CacheEntry);
+        });
+        left -= ks.length;
       }
     } catch (err: unknown) {
       log.warn('warm failed', err);
     }
   }
+
 }
