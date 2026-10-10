@@ -89,10 +89,10 @@ const HOVER_DWELL_MS = 180;
  * sweep can see the line, which is a bookkeeping job, not a label.
  */
 export function armHoverTranslate(target: Element, onHover: () => void): void {
-  // Children walked rather than queried. A ":scope >" selector matches nothing
-  // in the DOM the unit suite runs on, so a guard written that way is correct in
-  // a browser and invisible to every test: this one armed the same row twice and
-  // the suite had no way to say so.
+  // Children walked rather than queried. A ":scope >" selector matched nothing
+  // in the DOM the unit suite ran on before happy-dom 20, so a guard written that
+  // way was correct in a browser and invisible to every test: this one armed the
+  // same row twice and the suite had no way to say so.
   if ([...target.children].some((c) => c.classList.contains(HOVER_CLASS))) return;
   const mark = document.createElement('span');
   mark.className = HOVER_CLASS;
@@ -281,8 +281,8 @@ export function removeAllArtifacts(targetEl: Element): void {
 
 export function showLoading(targetEl: Element): void {
   // Children walked rather than queried, for the same reason armHoverTranslate
-  // does: a ":scope >" selector matches nothing in the DOM the unit suite runs
-  // on, so the guard was right in a browser and untestable everywhere else.
+  // does: a ":scope >" selector matched nothing in the DOM the unit suite ran on
+  // before happy-dom 20, so the guard was right in a browser and untestable.
   for (const child of targetEl.children) {
     if (child.classList.contains(LOADING_CLASS)) return;
   }
