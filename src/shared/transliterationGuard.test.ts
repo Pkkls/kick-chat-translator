@@ -135,6 +135,25 @@ describe('getSemanticOverride', () => {
     expect(getSemanticOverride('hello', 'fr')).toBeUndefined();
   });
 
+  // Google, measured: valeu "it cost", fala "he speaks", yatta "on the yacht",
+  // coucou "cuckoo", and the romaji left as they were.
+  it('covers the few words Google gets wrong into Latin targets too', () => {
+    expect(getSemanticOverride('valeu', 'en')).toBe('thanks');
+    expect(getSemanticOverride('valeu', 'fr')).toBe('merci');
+    expect(getSemanticOverride('fala', 'es')).toBe('hola');
+    expect(getSemanticOverride('yatta', 'de')).toBe('geschafft');
+    expect(getSemanticOverride('coucou', 'en')).toBe('hi');
+    expect(getSemanticOverride('kawaii', 'tl')).toBe('cute');
+    expect(getSemanticOverride('arigatou', 'pt-br')).toBe('obrigado');
+  });
+
+  it('never overrides a word into its own language', () => {
+    expect(getSemanticOverride('valeu', 'pt')).toBeUndefined();
+    expect(getSemanticOverride('valeu', 'pt-br')).toBeUndefined();
+    expect(getSemanticOverride('coucou', 'fr')).toBeUndefined();
+    expect(getSemanticOverride('forza', 'it')).toBeUndefined();
+  });
+
   it('covers romanized Japanese expressions', () => {
     expect(getSemanticOverride('konnichiwa', 'zh')).toBe('你好');
     expect(getSemanticOverride('arigatou', 'ko')).toBe('감사합니다');

@@ -354,6 +354,71 @@ for (const [key, concept] of Object.entries(KEY_CONCEPT)) {
   if (!row) continue;
   for (const [lang, words] of Object.entries(CONCEPTS)) row[lang] ??= words[concept];
 }
+
+// ─── Latin targets, for the words Google gets wrong there too ──────────────
+//
+// The table was for non-Latin targets on the belief that "providers handle
+// those fine". Measured 2026-10-10 on the free Google endpoint into en, fr,
+// es, de, tr and pl: valeu, the Brazilian "thanks", came back as "it cost" in
+// every one, fala ("hey") as "he speaks", yatta as "on the yacht", coucou as
+// "cuckoo", forza as "force", and arigatou, konnichiwa, sugoi, kawaii,
+// ganbatte and umai untouched. Only those rows, and never into the language
+// the word is from.
+type LatinConcept = 'thanks' | 'hello' | 'didIt' | 'great' | 'cute' | 'comeOn';
+
+const LATIN_KEYS: Record<string, { concept: LatinConcept; from?: string }> = {
+  'valeu': { concept: 'thanks', from: 'pt' },
+  'fala': { concept: 'hello', from: 'pt' },
+  'coucou': { concept: 'hello', from: 'fr' },
+  'forza': { concept: 'comeOn', from: 'it' },
+  'yatta': { concept: 'didIt' },
+  'arigatou': { concept: 'thanks' },
+  'konnichiwa': { concept: 'hello' },
+  'sugoi': { concept: 'great' },
+  'umai': { concept: 'great' },
+  'kawaii': { concept: 'cute' },
+  'ganbatte': { concept: 'comeOn' },
+};
+
+/* Order: thanks, hello, didIt, great, cute, comeOn. */
+const LATIN_WORDS: Record<string, [string, string, string, string, string, string]> = {
+  en: ['thanks', 'hi', 'we did it', 'amazing', 'cute', 'come on'],
+  fr: ['merci', 'salut', "on l'a fait", 'génial', 'mignon', 'allez'],
+  es: ['gracias', 'hola', 'lo logramos', 'increíble', 'qué lindo', 'vamos'],
+  pt: ['obrigado', 'oi', 'conseguimos', 'incrível', 'fofo', 'vai'],
+  de: ['danke', 'hi', 'geschafft', 'krass', 'süß', 'los'],
+  it: ['grazie', 'ciao', "ce l'abbiamo fatta", 'fantastico', 'carino', 'forza'],
+  nl: ['bedankt', 'hoi', 'gelukt', 'geweldig', 'schattig', 'kom op'],
+  pl: ['dzięki', 'cześć', 'udało się', 'niesamowite', 'słodkie', 'dawaj'],
+  sv: ['tack', 'hej', 'vi klarade det', 'grymt', 'gulligt', 'kom igen'],
+  cs: ['díky', 'ahoj', 'dokázali jsme to', 'úžasné', 'roztomilé', 'do toho'],
+  sk: ['vďaka', 'ahoj', 'dokázali sme to', 'úžasné', 'zlaté', 'do toho'],
+  ro: ['mersi', 'salut', 'am reușit', 'super', 'drăguț', 'haide'],
+  tr: ['teşekkürler', 'selam', 'başardık', 'harika', 'tatlı', 'hadi'],
+  vi: ['cảm ơn', 'chào', 'làm được rồi', 'đỉnh quá', 'dễ thương', 'cố lên'],
+  id: ['makasih', 'halo', 'berhasil', 'keren', 'lucu', 'ayo'],
+  ms: ['terima kasih', 'hai', 'berjaya', 'hebat', 'comel', 'ayuh'],
+  fi: ['kiitos', 'moi', 'onnistuimme', 'mahtavaa', 'söpö', 'tsemppiä'],
+  no: ['takk', 'hei', 'vi klarte det', 'rått', 'søtt', 'kom igjen'],
+  da: ['tak', 'hej', 'vi klarede det', 'vildt', 'sødt', 'kom så'],
+  hu: ['köszi', 'szia', 'sikerült', 'durva', 'cuki', 'hajrá'],
+  ca: ['gràcies', 'hola', 'ho hem aconseguit', 'increïble', 'que mono', 'som-hi'],
+  sl: ['hvala', 'živjo', 'uspelo nam je', 'super', 'srčkano', 'dajmo'],
+  et: ['aitäh', 'tere', 'saime hakkama', 'vinge', 'armas', 'lähme'],
+  lt: ['ačiū', 'labas', 'pavyko', 'nuostabu', 'miela', 'pirmyn'],
+  lv: ['paldies', 'sveiki', 'izdevās', 'forši', 'mīlīgi', 'aiziet'],
+  tl: ['salamat', 'hi', 'nagawa natin', 'galing', 'cute', 'kaya mo yan'],
+};
+const LATIN_INDEX: Record<LatinConcept, number> = { thanks: 0, hello: 1, didIt: 2, great: 3, cute: 4, comeOn: 5 };
+
+for (const [key, { concept, from }] of Object.entries(LATIN_KEYS)) {
+  const row = OVERRIDES[key];
+  if (!row) continue;
+  for (const [lang, words] of Object.entries(LATIN_WORDS)) {
+    const word = words[LATIN_INDEX[concept]];
+    if (word && lang !== from) row[lang] ??= word;
+  }
+}
 /* eslint-enable @typescript-eslint/naming-convention */
 
 /**
