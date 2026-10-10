@@ -209,15 +209,15 @@ describe('googleProvider per-message fallback', () => {
     // Le coalesceur groupe par langue CIBLE et rien d'autre, donc un lot melange
     // les sources. Le lot heritait de celle du premier message : mesure sur un
     // chat multilingue, une requete portant une ligne japonaise et une ligne
-    // arabe partait avec sl=ja.
-    it('n annonce aucune source quand le lot en melange plusieurs', async () => {
+    // arabe partait avec sl=ja. Chaque langue part maintenant avec la sienne.
+    it('envoie chaque langue source annoncee dans sa propre requete', async () => {
       const vus: string[] = [];
       globalThis.fetch = fetchQuiRetientSl(vus) as unknown as typeof fetch;
       await googleProvider.translateBatch!(
-        [req('1', 'konbanwa minasan', 'ja'), req('2', 'masa alkhayr', 'ar')],
+        [req('1', 'konbanwa minasan', 'ja'), req('2', 'masa alkhayr', 'ar'), req('3', 'oyasumi', 'ja')],
         {} as never,
       );
-      expect(vus).toEqual(['auto']);
+      expect(vus.sort()).toEqual(['ar', 'ja']);
     });
 
     // Le temoin de la limite : un lot d une seule langue doit garder son
@@ -247,5 +247,65 @@ describe('googleProvider per-message fallback', () => {
       );
       expect(vus).toEqual(['yue']);
     });
+  });
+});
+
+/**
+ * Google detects one source for the whole joined text and translates every line
+ * from it, so in a mixed batch the lines of the minority language come back as
+ * sent. Measured on the free endpoint: six English lines and two foreign ones,
+ * 12 of 12 foreign lines returned untouched, each translated correctly alone.
+ */
+describe('googleProvider, lot sans langue annoncee', () => {
+  const originalFetch = globalThis.fetch;
+  afterEach(() => {
+    globalThis.fetch = originalFetch;
+  });
+  const ctx = { deeplApiKey: '', deeplPlan: 'free' as const, deeplBudgetPct: 0, lingvaInstance: '', myMemoryEmail: '', concurrency: 4 };
+
+  /** Joined: translates only the English lines, as Google does on an `en` batch. Alone: translates. */
+  function googleQuiSuitLaMajorite(sent: string[]) {
+    return vi.fn(async (url: unknown) => {
+      const q = new URL(String(url)).searchParams.get('q') ?? '';
+      sent.push(q);
+      const lines = q.split('\n');
+      if (lines.length === 1) {
+        const det = /moje|nikt/.test(q) ? 'pl' : 'en';
+        return new Response(JSON.stringify([[[`FR:${q}`, q, null, null, 1]], null, det]), { status: 200 });
+      }
+      const out = lines.map((l) => (/moje|nikt/.test(l) ? l : `FR:${l}`)).join('\n');
+      return new Response(JSON.stringify([[[out, q, null, null, 1]], null, 'en']), { status: 200 });
+    }) as unknown as typeof fetch;
+  }
+
+  it('redemande seule chaque ligne revenue telle quelle, et seulement celles-la', async () => {
+    const sent: string[] = [];
+    globalThis.fetch = googleQuiSuitLaMajorite(sent);
+    const texts = ['so close', 'moje lacze jest fatalne', 'stream is lagging', 'nikt sie nie spodziewal'];
+    const out = await googleProvider.translateBatch!(
+      texts.map((text, i) => ({ messageId: String(i), text, targetLang: 'fr' })),
+      ctx,
+    );
+    expect(out.map((r) => r.translatedText)).toEqual(texts.map((t) => `FR:${t}`));
+    expect(out.map((r) => r.detectedLang)).toEqual(['en', 'pl', 'en', 'pl']);
+    expect(sent).toEqual([texts.join('\n'), texts[1], texts[3]]);
+  });
+
+  it('garde la reponse du lot quand la seconde demande echoue', async () => {
+    let n = 0;
+    globalThis.fetch = vi.fn(async (url: unknown) => {
+      n += 1;
+      const q = new URL(String(url)).searchParams.get('q') ?? '';
+      if (n > 1) return new Response('', { status: 503 });
+      return new Response(JSON.stringify([[[q.replace('so close', 'si proche'), q, null, null, 1]], null, 'en']), { status: 200 });
+    }) as unknown as typeof fetch;
+    const out = await googleProvider.translateBatch!(
+      [
+        { messageId: '1', text: 'so close', targetLang: 'fr' },
+        { messageId: '2', text: 'moje lacze', targetLang: 'fr' },
+      ],
+      ctx,
+    );
+    expect(out.map((r) => r.translatedText)).toEqual(['si proche', 'moje lacze']);
   });
 });

@@ -86,33 +86,82 @@ async function call(req: TranslationRequest, ctx: ProviderContext): Promise<Prov
   }
 }
 
-// Batch: join texts with \n, Google preserves newlines in output.
+/**
+ * Batch: lines that share a source language travel together, joined with \n.
+ *
+ * Joining is only safe within one language. Google detects ONE source for the
+ * whole joined text and translates every line from it, so a line in another
+ * language comes back untouched. Measured on the free endpoint with chat lines:
+ * on an English stream read in English, six English lines and two foreign ones
+ * per batch, the batch was detected `en` every time and 12 of 12 foreign lines
+ * came back exactly as sent, each one translated correctly on its own. The
+ * content script then drops a line that comes back unchanged, and also drops
+ * one whose detected language is the reader's own, so those lines never
+ * appeared at all. That is the regime batching exists for: a fast chat.
+ *
+ * So lines with a looked-up source language go out grouped by it, each group
+ * with its own `sl`. Lines with no hint still go out joined, since most of a
+ * chat in a Latin language has none, and every line of that group that comes
+ * back unchanged is asked again on its own. A line genuinely in the reader's
+ * language costs one extra request this way; a foreign one is translated
+ * instead of lost.
+ */
 async function batchCall(reqs: TranslationRequest[], ctx: ProviderContext): Promise<ProviderResult[]> {
   if (reqs.length <= 1) {
     const r = await call(reqs[0]!, ctx);
     return [r];
   }
+  const groups = new Map<string, number[]>();
+  reqs.forEach((r, i) => {
+    const key = r.sourceLangHint ?? '';
+    const g = groups.get(key);
+    if (g) g.push(i);
+    else groups.set(key, [i]);
+  });
+  const results = new Array<ProviderResult>(reqs.length);
+  const pool = new ConcurrencyQueue(Math.max(1, ctx.concurrency || 1));
+  const unchanged: number[] = [];
+  await Promise.all(
+    [...groups.entries()].map(([hint, idx]) =>
+      pool.add(async () => {
+        const out = await joinedCall(idx.map((i) => reqs[i]!), ctx);
+        idx.forEach((i, k) => {
+          results[i] = out[k]!;
+          if (!hint && idx.length > 1 && sameText(out[k]!.translatedText, reqs[i]!.text)) unchanged.push(i);
+        });
+      }),
+    ),
+  );
+  if (__KT_METRICS__ && unchanged.length > 0) metrics.count('google.batch.unchanged', unchanged.length);
+  // Asked again on its own, the line gets its own detection too. A failed
+  // second ask keeps the first answer rather than failing the lines that were
+  // translated, which would send the whole batch down the chain again.
+  await Promise.all(
+    unchanged.map((i) =>
+      pool.add(async () => {
+        try {
+          results[i] = await call(reqs[i]!, ctx);
+        } catch {
+          // keep the batch answer
+        }
+      }),
+    ),
+  );
+  return results;
+}
+
+function sameText(a: string, b: string): boolean {
+  return a.trim().toLowerCase() === b.trim().toLowerCase();
+}
+
+/** One request for lines that share a source language, split back per line. */
+async function joinedCall(reqs: TranslationRequest[], ctx: ProviderContext): Promise<ProviderResult[]> {
+  if (reqs.length === 1) return [await call(reqs[0]!, ctx)];
   const joined = reqs.map((r) => r.text).join('\n');
-  // Le lot n'herite pas de la langue source du PREMIER message.
-  //
-  // Le coalesceur groupe par langue CIBLE et rien d'autre, donc un lot melange
-  // les sources : mesure sur un chat multilingue, une requete est partie avec
-  // `sl=ja` en portant une ligne japonaise et une ligne arabe. Or `call` ne
-  // transmet `sl` que lorsqu'on a cherche la langue au lieu de la deviner,
-  // precisement parce qu'un `sl` faux fait traduire depuis la mauvaise langue et
-  // rend soit un texte identique a l'original, soit un texte qui dit autre
-  // chose. Reprendre l'indication du premier message pour tous les autres est la
-  // meme faute par un autre chemin.
-  //
-  // Quand les indications ne concordent pas, on n'en annonce aucune : `auto` est
-  // ce que le moteur recoit deja quand la langue est inconnue, et c'est moins
-  // faux que d'en affirmer une.
-  const indications = new Set(reqs.map((r) => r.sourceLangHint));
-  const fakeReq: TranslationRequest = {
-    ...reqs[0]!,
-    text: joined,
-    sourceLangHint: indications.size === 1 ? reqs[0]!.sourceLangHint : undefined,
-  };
+  // Every line of a group carries the same hint, or none: the group was made
+  // on it. A batch used to inherit the hint of its FIRST message and send a
+  // Japanese and an Arabic line together with `sl=ja`.
+  const fakeReq: TranslationRequest = { ...reqs[0]!, text: joined };
   const result = await call(fakeReq, ctx);
   const lines = result.translatedText.split('\n');
   // If Google merged/split lines differently, fall back to per-item.
