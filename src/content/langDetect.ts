@@ -2410,14 +2410,45 @@ function detectByLookup(trimmed: string): string | undefined {
  */
 export function confidentLanguage(text: string): string | undefined {
   const trimmed = text.trim();
-  return trimmed.length === 0 ? undefined : detectByLookup(trimmed);
+  return trimmed.length === 0 ? undefined : memo(LOOKUP_MEMO, trimmed, detectByLookup);
+}
+
+/**
+ * Both answers are pure functions of the text, and a chat line asks for them
+ * five times: `prepare` runs on the websocket warm pass and again on the DOM
+ * node, each time calling `detectLanguage` then `confidentLanguage`, and the
+ * warm pass asks `confidentLanguage` once more for its source hint. Measured
+ * over the 1120 lines of the 41-language chat corpus, that was 122 microseconds
+ * of detection per line, for one detection's worth of answer (49). A chat at 20
+ * lines a second paid it 20 times a second for as long as the stream ran.
+ *
+ * The memo keeps the last few hundred lines, which covers the gap between the
+ * warm pass and the node landing in the DOM, and the copypasta a chat repeats.
+ * It is bounded so a long stream cannot grow it.
+ */
+const MEMO_MAX = 512;
+const LOOKUP_MEMO = new Map<string, string | undefined>();
+const DETECT_MEMO = new Map<string, string | undefined>();
+
+function memo(
+  table: Map<string, string | undefined>,
+  key: string,
+  compute: (key: string) => string | undefined,
+): string | undefined {
+  if (table.has(key)) return table.get(key);
+  const value = compute(key);
+  if (table.size >= MEMO_MAX) table.delete(table.keys().next().value!);
+  table.set(key, value);
+  return value;
 }
 
 export function detectLanguage(text: string): string | undefined {
   const trimmed = text.trim();
-  if (trimmed.length === 0) return undefined;
+  return trimmed.length === 0 ? undefined : memo(DETECT_MEMO, trimmed, detectUncached);
+}
 
-  const lookedUp = detectByLookup(trimmed);
+function detectUncached(trimmed: string): string | undefined {
+  const lookedUp = memo(LOOKUP_MEMO, trimmed, detectByLookup);
   if (lookedUp) return lookedUp;
 
   // L'arabizi, apres la recherche en table et avant franc.
