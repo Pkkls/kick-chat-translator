@@ -16,11 +16,11 @@ URLs, and `@mentions`) is sent to the translation provider you configure:
 | Provider | Endpoint | Sends |
 |---|---|---|
 | Google Translate | `translate.googleapis.com` | text only |
-| DeepL | `api-free.deepl.com` or `api.deepl.com` | text + your DeepL API key |
+| DeepL | `api-free.deepl.com` or `api.deepl.com` | text + the last few chat lines as context, each with its author's username + your DeepL API key |
 | MyMemory | `api.mymemory.translated.net` | text only |
 | Lingva (configurable) | `lingva.lunar.icu` (or your instance) | text only |
 
-We never send: usernames, channel names, badges, timestamps, your IP (beyond
+Apart from that DeepL context, we never send: usernames, channel names, badges, timestamps, your IP (beyond
 what the browser sends to any HTTP endpoint), or any other metadata.
 
 ## What we store locally

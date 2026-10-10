@@ -1,15 +1,16 @@
 /**
  * Runs the offline gates and reports what each one cost.
  *
- * They are independent: no gate reads what another writes, and the five that
- * bundle with esbuild each own their own output file. Run in series they are
+ * They are independent but for one edge: four gates read the pages snapshot
+ * writes and wait for it (see `apres` below). The five that bundle with
+ * esbuild each own their own output file. Run in series they are
  * eighteen Chromium launches waiting on each other for no reason.
  *
  *   node test/e2e/run-gates.mjs              # all of them, pooled
  *   node test/e2e/run-gates.mjs --jobs 1     # the serial baseline
  *   node test/e2e/run-gates.mjs --only chip-live,rtl-live
  *   node test/e2e/run-gates.mjs --no-build
- *   node test/e2e/run-gates.mjs --headless   # sans ouvrir de fenetre
+ *   node test/e2e/run-gates.mjs --headless   # sans ouvrir de fenetre (le CI)
  *
  * Exit code is the gates': non-zero if any of them failed. Nothing here pipes a
  * gate anywhere or chains it behind &&, which is how a script that threw an
@@ -27,7 +28,7 @@ const ROOT = path.resolve(HERE, '../..');
     they open a browser onto kick.com and are launched by hand. */
 const GATES = [
   ['snapshot', 'node', ['test/e2e/snapshot.mjs']],
-  ['names', 'node', ['test/e2e/names.mjs']],
+  ['names', 'node', ['test/e2e/names.mjs'], { apres: 'snapshot' }],
   ['chip-live', 'node', ['test/e2e/chip-live.mjs']],
   ['chat-live', 'node', ['test/e2e/chat-live.mjs']],
   ['flag-surfaces', 'node', ['test/e2e/flag-surfaces.mjs']],
@@ -36,11 +37,11 @@ const GATES = [
   ['bar-live', 'node', ['test/e2e/bar-live.mjs']],
   ['compose-live', 'node', ['test/e2e/compose-live.mjs']],
   ['rtl-live', 'node', ['test/e2e/rtl-live.mjs']],
-  ['rtl-surfaces', 'node', ['test/e2e/rtl-surfaces.mjs']],
+  ['rtl-surfaces', 'node', ['test/e2e/rtl-surfaces.mjs'], { apres: 'snapshot' }],
   ['reduced-motion', 'node', ['test/e2e/reduced-motion.mjs']],
   ['long-content', 'node', ['test/e2e/long-content.mjs']],
-  ['da-surfaces', 'node', ['test/e2e/da-surfaces.mjs']],
-  ['boundaries', 'node', ['test/e2e/boundaries.mjs']],
+  ['da-surfaces', 'node', ['test/e2e/da-surfaces.mjs'], { apres: 'snapshot' }],
+  ['boundaries', 'node', ['test/e2e/boundaries.mjs'], { apres: 'snapshot' }],
   // Wired late. They existed and asserted and simply were not in this list, so
   // nothing ran them: bar-panel-live was reporting a panel 4px off the left of
   // the window, which turned out to be a real placement bug, for as long as it
@@ -99,6 +100,8 @@ const GATES = [
   // signee par instance, l'orphelin 3.0.1 marque les lignes avant le nouveau
   // script et il rougit aussi ; sans le nettoyage, le menu de langue est double.
   ['mise-a-jour', 'node', ['test/e2e/mise-a-jour.mjs']],
+  // La meme mise a jour, avec la seconde injection que Firefox fait de lui-meme.
+  ['mise-a-jour-firefox', 'node', ['test/e2e/mise-a-jour.mjs', '--firefox']],
   // Le mode survol, dont la fiche des stores fait un argument chiffre : environ
   // dix fois moins de consommation. L'argument ne tient que si rien ne part
   // avant que la souris passe. Couverture propre, mesuree : court-circuiter
@@ -257,12 +260,38 @@ const tGates = Date.now();
 const queue = [...chosen];
 const results = [];
 
+/**
+ * Four gates are not independent after all: names, rtl-surfaces, da-surfaces
+ * and boundaries open the popup.html and options/*.html that snapshot writes.
+ * The pool handed them out before snapshot had finished, so on a fresh clone
+ * they failed on a missing file, and on a used one they quietly measured the
+ * previous build's pages. They now wait for it, and do not run on its failure.
+ */
+const fin = new Map();
+for (const [name] of chosen) {
+  let resolve;
+  const promise = new Promise((r) => (resolve = r));
+  fin.set(name, { promise, resolve, code: null });
+}
+
 async function worker() {
   for (;;) {
-    const next = queue.shift();
-    if (!next) return;
-    const [name, cmd, args] = next;
-    const r = await run(cmd, args);
+    const i = queue.findIndex(
+      ([, , , o]) => !o?.apres || !fin.has(o.apres) || fin.get(o.apres).code !== null,
+    );
+    if (i === -1) {
+      if (!queue.length) return;
+      await Promise.race(queue.map(([, , , o]) => fin.get(o.apres).promise));
+      continue;
+    }
+    const [name, cmd, args, o] = queue.splice(i, 1)[0];
+    const dep = o?.apres && fin.get(o.apres);
+    const r =
+      dep && dep.code !== 0
+        ? { code: 1, ms: 0, out: `${o.apres} a echoue, ses pages ne sont pas fiables` }
+        : await run(cmd, args);
+    fin.get(name).code = r.code;
+    fin.get(name).resolve();
     results.push({ name, ...r });
     process.stdout.write(
       `${r.code === 0 ? 'ok  ' : 'ECHEC'} ${name.padEnd(19)} ${(r.ms / 1000).toFixed(1)}s\n`,

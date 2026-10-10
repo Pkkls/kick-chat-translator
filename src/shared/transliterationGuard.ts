@@ -96,7 +96,6 @@ export function isTransliteration(
 // least one major provider (Google, DeepL).  Each value is the natural
 // chat-register translation, not the formal/dictionary form.
 
-/* eslint-disable @typescript-eslint/naming-convention */
 const OVERRIDES: Record<string, Record<string, string>> = {
   // ── French ────────────────────────────────────────────────────────────────
   'bonjour':          { ja: 'こんにちは', zh: '你好', ko: '안녕하세요', ar: 'مرحبا', ru: 'Привет', th: 'สวัสดี', hi: 'नमस्ते' },
@@ -419,7 +418,6 @@ for (const [key, { concept, from }] of Object.entries(LATIN_KEYS)) {
     if (word && lang !== from) row[lang] ??= word;
   }
 }
-/* eslint-enable @typescript-eslint/naming-convention */
 
 /**
  * Normalize an input string for override lookup: lowercase, strip accents,

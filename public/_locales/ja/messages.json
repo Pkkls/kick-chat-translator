@@ -4,7 +4,7 @@
     "description": "Extension and store listing name: the brand, then the query this language types. 45 character limit."
   },
   "extDescription": {
-    "message": "Kickのライブチャットを流れるそばからあなたの言語に訳し、あなたの返信をチャンネルの言語に訳します。GoogleかDeepL、アカウント不要。",
+    "message": "Kick用の無料ライブチャット翻訳：どの配信のチャットも自分の言語で読み、チャンネルの言語で返信できます。アカウント不要、設定不要。",
     "description": "Store listing blurb and manifest description. 132 character limit."
   }
 }

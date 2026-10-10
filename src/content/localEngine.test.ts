@@ -86,4 +86,37 @@ describe('localEngine', () => {
     off();
     expect(seen).toHaveBeenCalled();
   });
+
+  // Chrome's Translator lists `zh-Hant` beside `zh`. Cut at the hyphen, a zh-tw
+  // reader got simplified characters from the device where the cloud answers zh-TW.
+  it('asks the API for traditional Chinese by its own tag', async () => {
+    const asked: string[] = [];
+    vi.stubGlobal('Translator', {
+      availability: (o: { sourceLanguage: string; targetLanguage: string }) => {
+        asked.push(`${o.sourceLanguage}>${o.targetLanguage}`);
+        return Promise.resolve('available');
+      },
+      create: () => Promise.resolve({ translate: (t: string) => Promise.resolve(t) }),
+    });
+    await localEngine.probe('ja', 'zh-TW');
+    await localEngine.probe('zh-tw', 'uk');
+    await localEngine.probe('ja', 'zh');
+    expect(asked).toEqual(['ja>zh-Hant', 'zh-Hant>uk', 'ja>zh']);
+  });
+
+  it('treats simplified to traditional as a pair, not as the same language', async () => {
+    stubTranslator('downloadable');
+    localEngine.noteSeen('zh', 'zh-tw');
+    await localEngine.probe('zh', 'zh-tw');
+    expect(localEngine.downloadablePairs()).toContainEqual({ src: 'zh', tgt: 'zh-tw' });
+  });
+
+  // The bar filters the offer with `p.tgt === settings.targetLang`, so the pair
+  // has to come back in the caller's codes or a zh-tw reader is never offered it.
+  it('offers a pair in the codes it was seen with', async () => {
+    stubTranslator('downloadable');
+    localEngine.noteSeen('ko', 'zh-tw');
+    await localEngine.probe('ko', 'zh-tw');
+    expect(localEngine.downloadablePairs()).toContainEqual({ src: 'ko', tgt: 'zh-tw' });
+  });
 });

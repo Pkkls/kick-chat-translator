@@ -4,7 +4,7 @@
     "description": "Extension and store listing name: the brand, then the query this language types. 45 character limit."
   },
   "extDescription": {
-    "message": "在 Kick 直播聊天滚动时将其译为你的语言，并把你的回复译为频道的语言。Google 或 DeepL，无需账号。",
+    "message": "免费的 Kick 直播聊天翻译：用你的语言阅读任何直播的聊天，并用频道的语言回复。无需账号，无需设置。",
     "description": "Store listing blurb and manifest description. 132 character limit."
   }
 }

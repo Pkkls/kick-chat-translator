@@ -183,12 +183,29 @@ reads dist/, so it serialises behind any build. D touches no code.
   a script is a fact about the text, franc's guess is not. Eight laughter forms
   across five writing systems, 草, 草草草, wwwww, ㅋㅋㅋㅋ, 233333, ｗｗｗ, хахаха,
   ههههه, are all dropped by `isNoise` before any of this runs.
-- [ ] **Nothing maps franc's `arb`, its own top answer for Arabic.** franc
-  scores `arb` at 1.00 on an Arabic sentence and `francToIso2` returns
-  undefined, which is the same class as the Malay `zlm` gap a previous pass
-  fixed. It is latent rather than live: the script check answers before franc on
-  anything Arabic-majority, so no measured case reaches it. Written down instead
-  of fixed, because a table entry with no case behind it is a guess.
+- [x] **Nothing maps franc's `arb`, its own top answer for Arabic. Kept that
+  way, on measurement.** The gap was not latent: an Arabic line that
+  `arabeOuPersan` cannot read falls to franc, and franc says `arb` on some.
+  Mapped on 2026-10-09 and measured on Tatoeba plus 80 Arabic and Persian chat
+  lines (`LANG_CHAT_AR_FA`, PR #18): five Arabic lines silent to right
+  (`تمام`, `ابداع`, `وحش`, `اهلا`, `اهلا وسهلا`), three Persian silent to
+  wrong (`اعتراض!`, `ممنون`, `نترس`), and an Urdu witness that needed its own
+  guard. The common greetings franc misread (`مرحبا`, `منور`, `شو صار`) are
+  taken by Arabic-only chat words in #18 instead, which move no Persian line.
+  A wrong `ar` hides a Persian line from an Arabic reader; a silent Arabic
+  line goes to the engine, which reads it. Reverted; the reason sits by the
+  table and `langDetect.test.ts` holds `ممنون` and `نترس` silent.
+- [x] **Arabic chat greetings were read as Persian.** `مرحبا`, `منور`,
+  `شو صار` carry no letter or function word of standard Arabic, leave
+  `arabeOuPersan` without an answer, and franc read them `pes`. Measured
+  2026-10-09 on `LANG_CHAT_AR_FA` (40 Arabic dialect chat lines, 40 Persian,
+  hand-written before tuning by the session that then picked the words):
+  Arabic 19 right / 13 silent / 8 wrong (7 of them `fa`) before, 31 / 7 / 2
+  after; Persian 30 / 9 / 1 before and after. Ten Arabic-only chat words
+  (`MOTS_ARABES_CHAT`) feed `detectLanguage` only, not `sl`. Out on purpose:
+  `ممتاز`, `تمام`, `خلاص`, `بس`, which Persian writes too (the corpus carries
+  them as Persian traps). Tatoeba matrix unchanged. Still wanted: real Kick
+  chat in Arabic and Persian to check the words against.
 - [x] **Chinese never gets a confident source language, alone among the five.**
   ar, ja, ko and ru all come out of `detectByScript` as looked-up facts and go
   to the engine as `sl`; zh is deferred to franc by `if (pct(han)) return
@@ -506,9 +523,26 @@ reads dist/, so it serialises behind any build. D touches no code.
   requests and an empty history), the popup opened outside Kick offers to open
   a channel, at the top, in place of a day of zeros. Russian, the longest,
   wraps to three lines: 567px of 600.
-- [ ] **Re-injection is unverified on Firefox.** `mise-a-jour` runs Chromium
-  only; Playwright's Firefox cannot load the extension. The Firefox build
-  carries the same code.
+- [x] **Re-injection on Firefox left two live copies in every open tab.**
+  Firefox, unlike Chrome, injects the new content script into open tabs on
+  its own after an update, and `onInstalled` then injects it a second time.
+  Both copies have a valid `chrome.runtime`, so the orphan check never split
+  them: each took every message and the second replaced the first's line.
+  Nothing showed in the piece counts (one bar, one chip, one menu), which is
+  why `KT_DOUBLE` read green on Brave. Playwright's Firefox still cannot load
+  the extension, so `mise-a-jour --firefox` replays that sequence on Chromium
+  and counts the copies that sign a new row's `data-kt-id`: 2 before, 1 after.
+  The newest copy now names itself on the root (`data-kt-instance`) and any
+  other stops on its next tick, the route poll at most 500 ms later. CI
+  witness: `index.relais.test.ts` loads the module twice, red without the
+  hand-off. Not measured on a real Firefox: no Firefox in the session that
+  wrote this. The probe's first message now waits for its translation instead
+  of a fixed 4 s, and a silent probe prints what the page held: in a sandbox
+  without internet, 2 runs in 12 came out silent with the row marked and the
+  bar mounted, so the engine answer was what was missing, not the script.
+  Two copies starting within milliseconds also crashed the older one's
+  `main` (`sondageRoute` read before its `const`); witnessed by the second
+  case of the same test.
 - [k] **Tab insertion after an update, on kick.com.** `mise-a-jour` now types
   in the composer across an update from 3.0.1: the preview shows, Enter is not
   blocked, one panel. Insertion itself is not measured: Tab does not replace

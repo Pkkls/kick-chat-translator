@@ -34,8 +34,17 @@ function pairKey(src: string, tgt: string): string {
   return `${src}>${tgt}`;
 }
 
+// The Translator API's own tags. Everything else is cut to its primary subtag,
+// so pt-BR asks for `pt`. Traditional Chinese is the one variant the API names
+// (`zh-Hant`, beside `zh`, in Chrome's published list): cut to `zh`, a zh-tw line
+// was translated from the simplified model, and a zh-tw reader got simplified
+// characters back while the cloud path answers zh-TW. No fallback to `zh` when
+// a browser calls zh-Hant unavailable: the cloud then answers in the right script.
+const TRANSLATOR_TAGS: Record<string, string> = { 'zh-tw': 'zh-Hant', 'zh-hant': 'zh-Hant' };
+
 function norm(code: string): string {
-  return code.toLowerCase().split('-')[0] ?? code.toLowerCase();
+  const lower = code.toLowerCase();
+  return TRANSLATOR_TAGS[lower] ?? lower.split('-')[0] ?? lower;
 }
 
 type StateListener = () => void;
@@ -44,7 +53,10 @@ class LocalEngine {
   private state = new Map<string, PairState>();
   private instances = new Map<string, TranslatorInstance>();
   private progress = new Map<string, number>();
-  private seen = new Set<string>();
+  // Keyed by the API's tags, valued with the codes the caller used, so a pair
+  // offered for download carries `zh-tw` back to a caller that compares it with
+  // its own target, not `zh-Hant`.
+  private seen = new Map<string, { src: string; tgt: string }>();
   private listeners = new Set<StateListener>();
 
   present(): boolean {
@@ -78,14 +90,14 @@ class LocalEngine {
     const t = norm(tgt);
     if (!s || s === 'auto' || s === 'und' || s === t) return;
     const key = pairKey(s, t);
-    this.seen.add(key);
+    this.seen.set(key, { src, tgt });
     if (!this.state.has(key)) void this.probe(s, t);
   }
 
   /** True if any seen source language has a downloaded model for this target. */
   hasReadyForTarget(tgt: string): boolean {
     const suffix = `>${norm(tgt)}`;
-    for (const key of this.seen) {
+    for (const key of this.seen.keys()) {
       if (key.endsWith(suffix) && this.state.get(key) === 'available') return true;
     }
     return false;
@@ -94,12 +106,9 @@ class LocalEngine {
   /** Pairs we've seen that could be enabled with one user gesture. */
   downloadablePairs(): { src: string; tgt: string }[] {
     const out: { src: string; tgt: string }[] = [];
-    for (const key of this.seen) {
+    for (const [key, pair] of this.seen) {
       const st = this.state.get(key);
-      if (st === 'downloadable' || st === 'downloading') {
-        const [src, tgt] = key.split('>');
-        if (src && tgt) out.push({ src, tgt });
-      }
+      if (st === 'downloadable' || st === 'downloading') out.push(pair);
     }
     return out;
   }
