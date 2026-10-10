@@ -197,6 +197,19 @@ export function applyShowOriginal(showOriginal: boolean): void {
   document.documentElement.classList.toggle('kt-hide-original', !showOriginal);
 }
 
+/**
+ * `displayStyle`, stamped on the document root while it is `replace`.
+ *
+ * Only the stylesheet reads it: the rule that hides Kick's text under a
+ * replacing translation is scoped to it, so on every other style that
+ * `div:has()` rule matches nothing and the browser stops re-checking it on
+ * each chat mutation. See the comment above the rule in inject.css.
+ */
+export function applyDisplayStyle(style: string): void {
+  if (style === 'replace') document.documentElement.setAttribute('data-kt-display', 'replace');
+  else document.documentElement.removeAttribute('data-kt-display');
+}
+
 /** The faces `translatedFont` can name, minus 'inherit', which is the absence. */
 const FACES: Record<string, string> = {
   system: 'var(--kt-tr-face-system)',

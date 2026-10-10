@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { defaultSettings } from '~/shared/settings';
 import type { Settings } from '~/shared/settings';
 import type { TranslationResult } from '~/shared/types';
-import { HANDLED_SELECTOR, applyShowOriginal, armHoverTranslate, incrementFloatingCount, inject, markSkipped, mountFloatingBar, updateActiveProvider, removeAllArtifacts, showError, showLoading, unmountFloatingBar, updateFloatingBar } from './injector';
+import { HANDLED_SELECTOR, applyDisplayStyle, applyShowOriginal, armHoverTranslate, incrementFloatingCount, inject, markSkipped, mountFloatingBar, updateActiveProvider, removeAllArtifacts, showError, showLoading, unmountFloatingBar, updateFloatingBar } from './injector';
 // Read from disk: vitest runs with CSS processing off, so `?inline` imports
 // resolve to an empty string and would make these assertions pass on anything.
 const injectCss = readFileSync('src/content/inject.css', 'utf8');
@@ -668,6 +668,22 @@ describe('injector artifacts', () => {
         .find((l) => l.includes('div:has(> .kt-translation-replace)'));
       expect(line, 'no hide rule reaches the replace style').toBeDefined();
       expect(line).not.toContain('.kt-hide-original');
+    });
+
+    // A `div:has()` rule with nothing above it is re-checked on every mutation
+    // of Kick's page. Each one is scoped to something on the root, so it costs
+    // nothing until a line could match it.
+    it('scopes every div:has() rule to the root', () => {
+      const lines = injectCss.split('\n').filter((l) => l.includes('div:has('));
+      expect(lines.length).toBeGreaterThan(0);
+      for (const l of lines) expect(l).toMatch(/^(\.kt-hide-original|html\[data-kt-display='replace'\]) /);
+    });
+
+    it('stamps the root only while the style is replace', () => {
+      applyDisplayStyle('replace');
+      expect(document.documentElement.getAttribute('data-kt-display')).toBe('replace');
+      applyDisplayStyle('below');
+      expect(document.documentElement.hasAttribute('data-kt-display')).toBe(false);
     });
   });
 

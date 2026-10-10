@@ -9,6 +9,7 @@ import {
   HANDLED_SELECTOR,
   applyChatScheme,
   applyShowOriginal,
+  applyDisplayStyle,
   applyTypography,
   applyAccent,
   ensureStyles,
@@ -62,6 +63,7 @@ async function main(): Promise<void> {
   ensureStyles();
   applyChatScheme(document.body, settings.chatScheme);
   applyShowOriginal(settings.showOriginal);
+  applyDisplayStyle(settings.displayStyle);
   applyTypography(settings);
   applyAccent(settings.accent);
 
@@ -484,6 +486,7 @@ async function main(): Promise<void> {
     setContentLocale(next.uiLang);
     updateFloatingBar(vue);
     applyShowOriginal(next.showOriginal);
+    applyDisplayStyle(next.displayStyle);
     refreshChip();
 
     // Ordered after updateSettings on purpose: the rows are re-run through the

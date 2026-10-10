@@ -211,10 +211,18 @@
    which CSS cannot reach once it has been overridden: an em-sized emote
    therefore renders 27px here against 24px with the original showing. Named
    rather than hidden, because 3px of drift on emotes that are sized in em is
-   the price of them existing at all, and the px-sized ones do not move. */
+   the price of them existing at all, and the px-sized ones do not move.
+
+   Every one of these rules sits under a class or attribute on the root, and
+   that is about cost, not meaning. A `:has()` rule on a bare div is
+   live on every div of Kick's page, so the browser re-checks it on each
+   mutation anywhere in the chat: measured on the offline chat at 20 messages a
+   second, the unscoped replace rule alone took style recalculation from 66 ms
+   to 249 ms per 10 s, with no line in the replace style on screen. Scoped to
+   the attribute applyDisplayStyle sets, it costs nothing until it can match. */
 .kt-hide-original div:has(> .kt-translation) :is(span.font-normal, .seventv-text-token),
 .kt-hide-original div:has(> .kt-translation-inline) :is(span.font-normal, .seventv-text-token),
-div:has(> .kt-translation-replace) :is(span.font-normal, .seventv-text-token) {
+html[data-kt-display='replace'] div:has(> .kt-translation-replace) :is(span.font-normal, .seventv-text-token) {
   font-size: 0;
   line-height: 0;
   letter-spacing: 0;
@@ -222,7 +230,7 @@ div:has(> .kt-translation-replace) :is(span.font-normal, .seventv-text-token) {
 }
 .kt-hide-original div:has(> .kt-translation) :is(span.font-normal, .seventv-text-token) :is(img, svg, video),
 .kt-hide-original div:has(> .kt-translation-inline) :is(span.font-normal, .seventv-text-token) :is(img, svg, video),
-div:has(> .kt-translation-replace) :is(span.font-normal, .seventv-text-token) :is(img, svg, video) {
+html[data-kt-display='replace'] div:has(> .kt-translation-replace) :is(span.font-normal, .seventv-text-token) :is(img, svg, video) {
   font-size: 1rem;
   line-height: normal;
 }
