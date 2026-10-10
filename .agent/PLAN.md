@@ -64,6 +64,15 @@ reads dist/, so it serialises behind any build. D touches no code.
   anything ending in lul, kek, jam, hug, love, wave or dab. On the 30000 most
   frequent words of 37 languages (wordfreq; et, th, tl absent from it), 309
   words, 23 per 10000 words of Romanian text. Now 2, emote recall 28/31 unchanged.
+- [x] **The override table answered in 7 targets, and Google is wrong far
+  beyond them.** Probed 2026-10-10: valeu came back "it cost" into every
+  target tried, Latin or not; merci and gracias as "mercy" and "grace" in
+  el, bn, ta; bonjour as "good luck" in yue; romaji left as is; zh-tw fell
+  back on the Simplified column. Rows now carry a meaning, nine more non-Latin
+  languages answer all 94 rows, and eleven rows answer the 26 Latin targets.
+- [k] **Native read of the new override wording.** fa, bn and ta above were
+  written without a native speaker; the Latin column too, though plainer.
+  Probed only into en, fr, es, pt, de, tr, pl and the nine non-Latin targets.
 - [x] **Provider language codes.** Google detects `iw` and `zh-CN`, DeepL `NB`:
   normalised. Lingva (lingva-scraper 1.1.0) rejected he, zh-tw, pt-br: mapped.
 

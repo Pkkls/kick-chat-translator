@@ -1,22 +1,24 @@
 {
-  "genere": "2026-10-07T02:55:25.849Z",
+  "genere": "2026-10-10T05:29:42.897Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase. La version commitee decrit l'etat d'AVANT le commit qui la porte, puisque la fin de passe genere puis commite : git.head y pointe le commit precedent et git.arbrePropre y est faux. Relancer `node .agent/state.mjs` avant de lire, ce que le prompt demande deja en premier.",
   "git": {
     "remotesEnDouble": [],
-    "branche": "feat/next",
-    "head": "edaad60d73a07e57b5c1dce9a5473aeb170a60f6",
-    "sujet": "Put the accents back in the popup and options strings",
+    "branche": "claude/translation-quality-wr8p3r",
+    "head": "1c1c3bda41f56d7ef87ca440bb0971078bdbef1a",
+    "sujet": "Translate valeu, fala, yatta and the common romaji into Latin targets too",
     "arbrePropre": false,
-    "fichiersModifies": 15,
-    "dernierTag": "v3.0.1",
-    "decrit": "v3.0.1-17-gedaad60",
+    "fichiersModifies": 1,
+    "dernierTag": "v3.0.2",
+    "decrit": "v3.0.2-19-g1c1c3bd",
     "remotes": {
-      "origin": "https://github.com/Pkkls/kick-chat-translator.git"
+      "origin": "https://github.com/Pkkls/kick-chat-translator"
     },
     "ecarts": {
       "origin": {
-        "note": "pas de origin/feat/next connu localement"
+        "derriere": 0,
+        "devant": 0,
+        "aJour": true
       }
     }
   },
@@ -26,48 +28,7 @@
     "accordent": true,
     "note": null
   },
-  "paquets": [
-    {
-      "fichier": "kick-chat-translator-3.0.0-chromium.zip",
-      "octets": 320917,
-      "versionDuNom": "3.0.0",
-      "versionDuManifest": "3.0.0",
-      "accordent": true,
-      "erreur": null
-    },
-    {
-      "fichier": "kick-chat-translator-3.0.0-firefox.zip",
-      "octets": 320846,
-      "versionDuNom": "3.0.0",
-      "versionDuManifest": "3.0.0",
-      "accordent": true,
-      "erreur": null
-    },
-    {
-      "fichier": "kick-chat-translator-3.0.0-source.zip",
-      "octets": 1565158,
-      "versionDuNom": "3.0.0",
-      "versionDuManifest": null,
-      "accordent": false,
-      "erreur": null
-    },
-    {
-      "fichier": "kick-chat-translator-3.0.2-chromium.zip",
-      "octets": 325040,
-      "versionDuNom": "3.0.2",
-      "versionDuManifest": "3.0.2",
-      "accordent": true,
-      "erreur": null
-    },
-    {
-      "fichier": "kick-chat-translator-3.0.2-firefox.zip",
-      "octets": 324969,
-      "versionDuNom": "3.0.2",
-      "versionDuManifest": "3.0.2",
-      "accordent": true,
-      "erreur": null
-    }
-  ],
+  "paquets": [],
   "portes": {
     "runner": "test/e2e/run-gates.mjs",
     "enumerees": 41,
@@ -179,55 +140,32 @@
   },
   "releaseGithub": {
     "depot": "Pkkls/kick-chat-translator",
-    "http": 200,
-    "tag": "v3.0.1",
-    "publiee": "2026-09-27T16:18:20Z",
-    "assets": [
-      {
-        "nom": "kick-chat-translator-3.0.1-chromium.zip",
-        "octets": 322272
-      },
-      {
-        "nom": "kick-chat-translator-3.0.1-firefox.zip",
-        "octets": 322201
-      },
-      {
-        "nom": "kick-chat-translator-3.0.1-source.zip",
-        "octets": 1593990
-      }
-    ]
+    "http": 403,
+    "note": "reponse inattendue"
   },
   "paquetsContreRelease": {
-    "compares": 0,
-    "ecarts": [],
-    "note": null
+    "note": "reponse inattendue"
   },
   "boutiques": {
     "note": "Lu sur les pages, jamais recopie. Une version de boutique change sans commit : la valeur commitee ici decrit l'instant de la generation et rien d'autre.",
     "chrome": {
       "id": "nkkjmbkmacbdkboijmnhjnblcaiclhni",
-      "http": 200,
-      "version": "3.0.1",
-      "maj": "September 29, 2026",
-      "utilisateurs": 150
+      "note": "requete impossible: TypeError: fetch failed"
     },
     "amo": {
       "slug": "kick-chat-translator",
-      "http": 200,
-      "version": "3.0.1",
-      "relue": "2026-09-27T16:21:15Z",
-      "utilisateurs": 7,
-      "statut": "public"
+      "note": "requete impossible: TypeError: fetch failed"
     }
   },
   "boutiquesContreVersion": {
     "versionLocale": "3.0.2",
-    "chrome": "3.0.1 contre 3.0.2 ici",
-    "amo": "3.0.1 contre 3.0.2 ici",
+    "chrome": null,
+    "amo": null,
     "note": "Un retard n'est pas un defaut : soumettre est du ressort de kil. Ce champ existe pour qu'on cesse de citer un chiffre de tete."
   },
   "file": {
     "bloques": [
+      "**Native read of the new override wording.** fa, bn and ta above were",
       "**The Persian split is measured but never observed running.** The rule",
       "**Tab insertion after an update, on kick.com.** `mise-a-jour` now types",
       "**`scripting` on a store update: confirm no prompt.** Chrome documents no",
@@ -238,8 +176,8 @@
       "**Native review of the store text.** 8 languages of 10 on the Chrome side",
       "**Store submissions.** The 2.10.0 archives exist and are published on"
     ],
-    "nbBloques": 9,
+    "nbBloques": 10,
     "nbOuverts": 4,
-    "nbFaits": 109
+    "nbFaits": 113
   }
 }
