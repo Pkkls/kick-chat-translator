@@ -7,6 +7,7 @@ import { send } from '~/shared/messages';
 import { applyUserGlossary, isSlangOnly } from '~/shared/glossary';
 import { createMetrics } from '~/shared/metrics';
 import { parseKickContent } from './emoteParser';
+import { spellOutAbbreviations } from './abbreviations';
 import { extractMessageText } from './selectors';
 import { confidentLanguage, detectLanguage } from './langDetect';
 import { resolveBrowserLang } from '~/shared/languages';
@@ -39,8 +40,11 @@ export interface IncomingWsMessage {
 }
 
 interface Prepared {
+  /** What goes to the engine: the line's words, abbreviations spelled out when English. */
   real: string;
   detected: string | undefined;
+  /** `confidentLanguage` of the line as written, for the engine's `sl`. */
+  hint: string | undefined;
 }
 
 interface RawResult {
@@ -209,13 +213,21 @@ export class TranslationPipeline {
     //   shouldDropBySourceLang, because it drops on `lang_unknown`, so feeding it
     //   a quieter detector makes it delete MORE for anyone who set an allowlist.
     //   That one needs its semantics rethought, not its input swapped.
-    if (isSameLanguageAsTarget(confidentLanguage(realText), this.effTarget)) {
+    const hint = confidentLanguage(realText);
+    if (isSameLanguageAsTarget(hint, this.effTarget)) {
       return localised('skipSameLang', 'it is already in your language');
     }
     const byLang = shouldDropBySourceLang(detected, this.settings);
     if (byLang) return DROP_REASON[byLang] ?? byLang;
 
-    return { real: realText, detected };
+    // "ngl", "idc", "lmk" reach a reader in another language as they are, or as
+    // something else. Spelled out, the engine translates what was said. Same
+    // English gate as the skip above, so a Polish `w` or a French `l` stays.
+    const real =
+      this.effTarget !== 'en' && detected === 'en' && !hasNonEnglishLetter(realText)
+        ? spellOutAbbreviations(realText)
+        : realText;
+    return { real, detected, hint };
   }
 
   /** Rolling per-channel context (previous lines) for DeepL disambiguation.
@@ -241,7 +253,7 @@ export class TranslationPipeline {
     // Same source hint as the display path. The warm pass usually reaches the
     // worker first, so the answer it caches is the one the reader sees, and a
     // hint makes it cache an answer translated from a guess.
-    const hint = confidentLanguage(prepared.real);
+    const { hint } = prepared;
     try {
       await send({
         type: 'translate',
@@ -272,7 +284,7 @@ export class TranslationPipeline {
     // This line is going to be translated, so drop any reason left on it by the
     // message that used this row before the virtual scroller recycled it.
     this.skip(msg, '');
-    const { real, detected } = prepared;
+    const { real, detected, hint } = prepared;
     const target = this.effTarget;
 
     // ── 0. In-tab memory cache: instant, zero round-trip ──
@@ -326,17 +338,17 @@ export class TranslationPipeline {
     // ── 2. Hover-to-translate: just show a placeholder, translate on hover ──
     if (this.settings.displayStyle === 'hover') {
       armHoverTranslate(msg.injectionTarget, () => {
-        void this.translateAndApply(msg, real, detected);
+        void this.translateAndApply(msg, real, detected, hint);
       });
       return;
     }
 
     // ── 3. Cloud chain (coalesced + batched in the SW) ──
-    void this.translateAndApply(msg, real, detected);
+    void this.translateAndApply(msg, real, detected, hint);
   }
 
   /** Shared cloud translate + apply, used by both normal flow and hover-to-translate. */
-  private async translateAndApply(msg: IncomingDomMessage, real: string, sourceLang?: string): Promise<void> {
+  private async translateAndApply(msg: IncomingDomMessage, real: string, sourceLang?: string, hint?: string): Promise<void> {
     // Subject-dropping languages need more prior dialogue so the engine infers the
     // right person; everything else gets the cheap 2-line window.
     const lines = isContextCritical(sourceLang) ? CONTEXT_LINES_HARD : CONTEXT_LINES;
@@ -352,7 +364,7 @@ export class TranslationPipeline {
     // language, and the result is either dropped for matching the original or
     // shown while saying something else. `sourceLang` still sizes the context
     // window above, where being wrong costs nothing.
-    const outcome = await this.requestCloud(real, this.effTarget, msg.channel, context, false, confidentLanguage(real));
+    const outcome = await this.requestCloud(real, this.effTarget, msg.channel, context, false, hint);
     if (!outcome) {
       showError(msg.injectionTarget, localised('errTranslateFailed', 'Translation failed'), () => void this.forceRetranslate(msg, real));
       return;
