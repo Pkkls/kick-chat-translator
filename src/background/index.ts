@@ -8,7 +8,7 @@ import { TokenBucket } from './queue';
 import { StatsTracker } from './stats';
 import { TranslationCoalescer } from './coalescer';
 import { anyProviderReady, getProviderStatus, setDeeplUsagePct } from './translator';
-import { installKeepalive } from './keepalive';
+import { armKeepalive, installKeepalive, listenKeepalive } from './keepalive';
 import { getUpdateStatus, installUpdateCheck } from './updateChecker';
 import { DEEPL_USAGE_FREE, DEEPL_USAGE_PRO, STORAGE_KEY_SETTINGS } from '~/shared/constants';
 import { getSemanticOverride } from '~/shared/transliterationGuard';
@@ -178,17 +178,23 @@ async function init(): Promise<void> {
   await stats.load();
   await cache.warm(200, warmTargets(resolveTargetLang(settings.targetLang), stats.current().byLang));
   log.info('Service worker initialized');
-  installKeepalive();
+  void installKeepalive();
   installUpdateCheck();
   scheduleDeeplUsageRefresh();
   // Seed the budget pacing on startup.
   if (settings.deeplApiKey) void fetchDeeplUsage();
 }
 
+// Top level, before anything awaits: see listenKeepalive.
+listenKeepalive();
 void init();
 watchSettings(applySettings);
 
-onMessage(async (msg): Promise<RuntimeResponse | void> => {
+onMessage(async (msg, sender): Promise<RuntimeResponse | void> => {
+  // A message from a page means a Kick tab is open, which is what the
+  // keepalive waits for after it cleared itself. The popup and the options
+  // page have no tab and do not need the worker kept warm.
+  if (sender.tab) armKeepalive();
   switch (msg.type) {
     case 'translate': {
       // The worker's own share of the round trip. `leg.roundtrip` on the content
