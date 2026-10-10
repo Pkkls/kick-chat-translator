@@ -679,6 +679,13 @@ describe('injector artifacts', () => {
       for (const l of lines) expect(l).toMatch(/^(\.kt-hide-original|html\[data-kt-display='replace'\]) /);
     });
 
+    it('stamps the root when a replace line is drawn, whoever draws it', () => {
+      applyDisplayStyle('below');
+      inject(document.createElement('div'), result('hola'), settingsWith('replace'));
+      expect(document.documentElement.getAttribute('data-kt-display')).toBe('replace');
+      applyDisplayStyle('below');
+    });
+
     it('stamps the root only while the style is replace', () => {
       applyDisplayStyle('replace');
       expect(document.documentElement.getAttribute('data-kt-display')).toBe('replace');

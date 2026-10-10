@@ -335,6 +335,14 @@ export function inject(
   // whenever this class is present, so the setting no longer needs a second
   // opinion from `showOriginal`.
   const replace = style === 'replace';
+  // The hide rule is scoped to this stamp (see applyDisplayStyle). index.ts
+  // sets it from the settings, and a line drawn in this style sets it too, so a
+  // caller that draws a replace line without going through index.ts, as the
+  // chat-live gate does, still gets the original hidden. Read first: an
+  // attribute write on the root per line is a mutation every observer sees.
+  if (replace && document.documentElement.getAttribute('data-kt-display') !== 'replace') {
+    applyDisplayStyle('replace');
+  }
   const inline = style === 'inline';
   const el = document.createElement(inline || replace ? 'span' : 'div');
   el.className = replace ? TRANS_REPLACE_CLASS : inline ? TRANS_INLINE_CLASS : TRANS_CLASS;
