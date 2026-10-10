@@ -103,7 +103,17 @@ MANIFESTE = 'dist/manifest.json'
 # transporte, la seconde tranche vaut +343 octets.
 # Relevee le 2026-09-25 : le sens des deux barres et les drapeaux dessines sur
 # les badges, plus la touche Tab. Le detail est dans les messages de commit.
-REFERENCE_OCTETS = 258743
+# Relevee le 2026-10-10, de 258_743 a 264_259, en deux tranches :
+#
+#     258_743 -> 263_302   +4559 o   master apres #20 et #21, entrees sous la
+#                                    marge et non relevees, donc non separees
+#     263_302 -> 264_259    +957 o   la table d'abreviations du chat anglais
+#                                    (abbreviations.ts), +559 o en gzip
+#
+# La seconde achete ngl, idc, lmk, goat et vingt-neuf autres ecrits en toutes
+# lettres avant traduction : Google en laissait 952 sur 1386 tels quels dans les
+# 42 langues. La table ne se reduit pas sans retirer des entrees mesurees utiles.
+REFERENCE_OCTETS = 264259
 MARGE = 0.02
 
 if not os.path.exists(CIBLE):
