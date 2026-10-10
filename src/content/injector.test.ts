@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { defaultSettings } from '~/shared/settings';
 import type { Settings } from '~/shared/settings';
 import type { TranslationResult } from '~/shared/types';
-import { HANDLED_SELECTOR, applyShowOriginal, armHoverTranslate, inject, markSkipped, mountFloatingBar, updateActiveProvider, removeAllArtifacts, showError, showLoading, unmountFloatingBar, updateFloatingBar } from './injector';
+import { HANDLED_SELECTOR, applyDisplayStyle, applyShowOriginal, armHoverTranslate, incrementFloatingCount, inject, markSkipped, mountFloatingBar, updateActiveProvider, removeAllArtifacts, showError, showLoading, unmountFloatingBar, updateFloatingBar } from './injector';
 // Read from disk: vitest runs with CSS processing off, so `?inline` imports
 // resolve to an empty string and would make these assertions pass on anything.
 const injectCss = readFileSync('src/content/inject.css', 'utf8');
@@ -306,6 +306,39 @@ describe('injector artifacts', () => {
       expect(pick.querySelector('.kt-flag-jp')).not.toBeNull();
       expect(pick.querySelector('.kt-flag-fr')).toBeNull();
       expect(pick.querySelector('.kt-float-lang-tag')?.textContent).toBe('JA');
+    });
+
+    // The counter and the provider tooltip are updated on every translated
+    // line. Finding the panel on screen means asking for boxes, which forces a
+    // layout right after the line was written: one per message on a fast chat.
+    it('reaches the bar on every line without measuring the page', () => {
+      const host = twoPanels();
+      mountFloatingBar(host, { ...defaultSettings(), enabled: true, targetLang: 'fr' }, barHandlers());
+      const rects = vi.spyOn(Element.prototype, 'getClientRects');
+      const boxes = vi.spyOn(Element.prototype, 'getBoundingClientRect');
+      for (let i = 0; i < 5; i++) {
+        incrementFloatingCount();
+        updateActiveProvider('google');
+      }
+      expect(rects).not.toHaveBeenCalled();
+      expect(boxes).not.toHaveBeenCalled();
+      rects.mockRestore();
+      boxes.mockRestore();
+      // Control: the updates did land, on the live bar.
+      const live = document.querySelectorAll('#kt-floating-bar')[1]!;
+      expect(live.querySelector('.kt-float-count')?.textContent).toBe('· 5');
+      expect((live as HTMLElement).dataset.provider).toBe('google');
+    });
+
+    // A bar Kick's re-render threw away is not the live one any more.
+    it('finds the bar again once the one it knew is gone', () => {
+      const host = twoPanels();
+      mountFloatingBar(host, { ...defaultSettings(), enabled: true, targetLang: 'fr' }, barHandlers());
+      document.querySelectorAll('#kt-floating-bar')[1]!.remove();
+      mountFloatingBar(host, { ...defaultSettings(), enabled: false, targetLang: 'fr' }, barHandlers());
+      incrementFloatingCount();
+      const live = document.querySelectorAll('#kt-floating-bar')[1]!;
+      expect(live.querySelector('.kt-float-count')?.textContent).toBe('· 1');
     });
 
     // Teardown is the one place that stays document wide, so it cannot strand a
@@ -635,6 +668,29 @@ describe('injector artifacts', () => {
         .find((l) => l.includes('div:has(> .kt-translation-replace)'));
       expect(line, 'no hide rule reaches the replace style').toBeDefined();
       expect(line).not.toContain('.kt-hide-original');
+    });
+
+    // A `div:has()` rule with nothing above it is re-checked on every mutation
+    // of Kick's page. Each one is scoped to something on the root, so it costs
+    // nothing until a line could match it.
+    it('scopes every div:has() rule to the root', () => {
+      const lines = injectCss.split('\n').filter((l) => l.includes('div:has('));
+      expect(lines.length).toBeGreaterThan(0);
+      for (const l of lines) expect(l).toMatch(/^(\.kt-hide-original|html\[data-kt-display='replace'\]) /);
+    });
+
+    it('stamps the root when a replace line is drawn, whoever draws it', () => {
+      applyDisplayStyle('below');
+      inject(document.createElement('div'), result('hola'), settingsWith('replace'));
+      expect(document.documentElement.getAttribute('data-kt-display')).toBe('replace');
+      applyDisplayStyle('below');
+    });
+
+    it('stamps the root only while the style is replace', () => {
+      applyDisplayStyle('replace');
+      expect(document.documentElement.getAttribute('data-kt-display')).toBe('replace');
+      applyDisplayStyle('below');
+      expect(document.documentElement.hasAttribute('data-kt-display')).toBe(false);
     });
   });
 

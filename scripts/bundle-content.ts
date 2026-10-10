@@ -22,7 +22,7 @@
 import { build } from 'vite';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, statSync, readdirSync, rmSync } from 'node:fs';
 
 const root = resolve(fileURLToPath(new URL('.', import.meta.url)), '..');
 const ASSETS_DIR = resolve(root, 'dist/assets');
@@ -68,13 +68,15 @@ async function bundleContent(): Promise<void> {
   });
 }
 
-function patchManifest(): void {
+/** Returns the scripts the manifest pointed at before, for `dropOrphans`. */
+function patchManifest(): string[] {
   const mf = JSON.parse(readFileSync(MANIFEST, 'utf8')) as {
     content_scripts?: Array<{ js?: string[] }>;
     web_accessible_resources?: unknown[];
   };
   const cs = mf.content_scripts?.[0];
   if (!cs) throw new Error('[bundle-content] manifest has no content_scripts to patch');
+  const before = (cs.js ?? []).filter((f) => f !== MANIFEST_REF);
   cs.js = [MANIFEST_REF];
   // @crxjs exposes the ESM chunks its loader would have fetched at runtime.
   // Repointing content_scripts at the self-contained bundle above is exactly
@@ -83,6 +85,43 @@ function patchManifest(): void {
   // installed. The source manifest declares nothing web-accessible either.
   delete mf.web_accessible_resources;
   writeFileSync(MANIFEST, `${JSON.stringify(mf, null, 2)}\n`);
+  return before;
+}
+
+/**
+ * Delete the crxjs loader and the content chunk it imported, which nothing
+ * loads once the manifest points at content.js.
+ *
+ * They were still written to dist/ and zipped: 173 KB of a second, unused copy
+ * of the whole content script in every package sent to the stores. A chunk is
+ * only removed when no other file in dist/ names it, so one the popup or the
+ * options page shares with the content tree stays.
+ */
+function dropOrphans(loaders: string[]): void {
+  const dist = resolve(ASSETS_DIR, '..');
+  const files = (dir: string): string[] =>
+    readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory() ? files(resolve(dir, e.name)) : [resolve(dir, e.name)],
+    );
+  for (const loader of loaders) {
+    const path = resolve(dist, loader);
+    if (!existsSync(path)) continue;
+    const chunks = [
+      ...readFileSync(path, 'utf8').matchAll(/getURL\(\s*["'](assets\/[^"']+)["']/g),
+    ].map((m) => m[1]!);
+    rmSync(path);
+    for (const chunk of chunks) {
+      const name = chunk.split('/').pop()!;
+      const chunkPath = resolve(dist, chunk);
+      const named = files(dist).some(
+        (f) =>
+          f !== chunkPath &&
+          /\.(js|html|json|css)$/.test(f) &&
+          readFileSync(f, 'utf8').includes(name),
+      );
+      if (!named && existsSync(chunkPath)) rmSync(chunkPath);
+    }
+  }
 }
 
 function assertClassic(file: string): void {
@@ -97,6 +136,6 @@ await bundleContent();
 const out = resolve(ASSETS_DIR, OUT_NAME);
 if (!existsSync(out)) throw new Error('[bundle-content] content bundle was not emitted');
 assertClassic(out);
-patchManifest();
+dropOrphans(patchManifest());
 const kb = (statSync(out).size / 1024).toFixed(1);
 console.info(`[bundle-content] ${MANIFEST_REF} (${kb} KB, classic IIFE) — manifest repointed`);
