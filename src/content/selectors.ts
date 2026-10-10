@@ -104,8 +104,8 @@ export function findChatContainer(root: ParentNode = document): Element | null {
  * Browsers without it (Firefox before 106) keep the box count.
  */
 export function isShown(el: Element): boolean {
-  const check = (el as Element & { checkVisibility?: () => boolean }).checkVisibility;
-  if (typeof check === 'function') return check.call(el);
+  const v = el as Element & { checkVisibility?: () => boolean };
+  if (typeof v.checkVisibility === 'function') return v.checkVisibility();
   return el.getClientRects().length > 0;
 }
 

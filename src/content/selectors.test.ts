@@ -202,6 +202,8 @@ describe('isShown', () => {
 
   it('falls back on the box count elsewhere', () => {
     const el = document.createElement('div');
+    // The DOM this suite runs on has checkVisibility; Firefox before 106 does not.
+    Object.assign(el, { checkVisibility: undefined });
     const rects = vi.spyOn(el, 'getClientRects').mockReturnValue([{}] as unknown as DOMRectList);
     expect(isShown(el)).toBe(true);
     expect(rects).toHaveBeenCalledTimes(1);
