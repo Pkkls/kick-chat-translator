@@ -45,6 +45,41 @@ reads dist/, so it serialises behind any build. D touches no code.
 
 ## Open
 
+- [x] **A fast chat lost its foreign lines inside the Google batch, and some
+  that survived were shown wrong.** The coalescer joins up to forty lines into
+  one Google request and Google detects one source for the whole of it.
+  Measured 2026-10-10 on the live endpoint, one batch per reader language for
+  all 42 targets, six English corpus lines and two foreign ones: right 5 of 84
+  foreign lines, untouched 41 (dropped by the content script as "came back the
+  same"), garbled 38 and displayed (Danish spelled in hanzi, Hebrew "same thing
+  again" rendered in Dutch as "I think it is fine"). Every one was right alone.
+  Lines now join only with the same looked-up source, else the same franc guess
+  (`langGuess`, never sent as `sl`), else go alone, and unchanged lines in a
+  guessed group are asked again. Replayed: 83 of 84 right, 0 untouched, English
+  majority unchanged at 247 of 252. Cost: 215 requests for those 42 mixed
+  batches against 42. **Superseded the same day**: `translate_a/t` takes each
+  line as its own `q` and detects each one, so a batch is one POST again.
+  Replayed: 84 of 84 foreign and 252 of 252 English lines equal to their
+  translation alone, per-line detection right on 182 of 184, 42 requests; the
+  real `googleProvider` was run once against the live endpoint. Not measured:
+  the same-language scenario on all 42 (the run crashed and Google throttled
+  this IP to about one answer every ten seconds), only en:en, 12 of 12 lost.
+- [x] **The emote-name stripper deleted ordinary words.** The suffix rule took
+  anything ending in lul, kek, jam, hug, love, wave or dab. On the 30000 most
+  frequent words of 37 languages (wordfreq; et, th, tl absent from it), 309
+  words, 23 per 10000 words of Romanian text. Now 2, emote recall 28/31 unchanged.
+- [x] **The override table answered in 7 targets, and Google is wrong far
+  beyond them.** Probed 2026-10-10: valeu came back "it cost" into every
+  target tried, Latin or not; merci and gracias as "mercy" and "grace" in
+  el, bn, ta; bonjour as "good luck" in yue; romaji left as is; zh-tw fell
+  back on the Simplified column. Rows now carry a meaning, nine more non-Latin
+  languages answer all 94 rows, and eleven rows answer the 26 Latin targets.
+- [k] **Native read of the new override wording.** fa, bn and ta above were
+  written without a native speaker; the Latin column too, though plainer.
+  Probed only into en, fr, es, pt, de, tr, pl and the nine non-Latin targets.
+- [x] **Provider language codes.** Google detects `iw` and `zh-CN`, DeepL `NB`:
+  normalised. Lingva (lingva-scraper 1.1.0) rejected he, zh-tw, pt-br: mapped.
+
 
 - [x] **Platform-injected text is settled without a corpus.** The category was
   blocked on a live chat capture. Kick's own i18n payload, inlined in the page

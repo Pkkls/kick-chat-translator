@@ -351,3 +351,13 @@ describe('les langues romanisees dans la detection ordinaire', () => {
     expect(confidentLanguage('privet kak dela segodnya')).toBeUndefined();
   });
 });
+
+describe('detection memo', () => {
+  it('answers the same after its entries have been evicted', () => {
+    const line = 'je ne sais pas pourquoi il fait ca';
+    const first = [detectLanguage(line), confidentLanguage(line)];
+    for (let i = 0; i < 2000; i++) detectLanguage(`filler line number ${i}`);
+    expect([detectLanguage(line), confidentLanguage(line)]).toEqual(first);
+    expect(first[0]).toBe('fr');
+  });
+});

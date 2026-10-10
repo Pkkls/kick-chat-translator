@@ -163,6 +163,11 @@ const REGION_VARIANTS: Record<string, string> = {
   'zh-yue': 'yue',
   nb: 'no',
   nn: 'no',
+  // Google's free endpoint still detects Hebrew as the withdrawn ISO code 'iw',
+  // and Lingva only accepts that one. Unmapped, a Hebrew line carried an "IW"
+  // badge instead of its name and was counted under a language that does not
+  // exist in the stats.
+  iw: 'he',
 };
 
 export function normalizeLang(raw: string): string {

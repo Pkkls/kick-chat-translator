@@ -45,6 +45,15 @@ describe('resolveBrowserLang', () => {
   });
 });
 
+describe('normalizeLang — codes the providers answer with', () => {
+  it('maps Google and DeepL detection codes onto the product table', () => {
+    expect(normalizeLang('iw')).toBe('he');
+    expect(normalizeLang('zh-CN')).toBe('zh');
+    expect(normalizeLang('NB')).toBe('no');
+    expect(normalizeLang('auto')).toBe('auto');
+  });
+});
+
 describe('normalizeLang — regional variants', () => {
   it('keeps supported regional variants distinct', () => {
     expect(normalizeLang('pt-BR')).toBe('pt-br');

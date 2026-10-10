@@ -26,6 +26,7 @@
 // from 'zh' gets this for free; this one does not.
 const NON_LATIN_TARGETS = new Set([
   'ja', 'zh', 'zh-tw', 'yue', 'ko', 'ar', 'ru', 'th', 'hi',
+  'he', 'fa', 'el', 'uk', 'bg', 'bn', 'ta',
 ]);
 
 function isLatinInput(text: string): boolean {
@@ -212,6 +213,211 @@ const OVERRIDES: Record<string, Record<string, string>> = {
   'nice shot':        { ja: 'ナイスショット', zh: '好球', ko: '나이스 샷', ar: 'رمية جيدة', ru: 'Отличный удар', th: 'ยิงเก่ง', hi: 'अच्छा शॉट' },
   'well done':        { ja: 'よくやった', zh: '干得好', ko: '잘했어', ar: 'أحسنت', ru: 'Молодец', th: 'ทำได้ดี', hi: 'बहुत अच्छा' },
 };
+
+// ─── The nine non-Latin targets the table above leaves out ─────────────────
+//
+// Measured 2026-10-10 on the free Google endpoint, 18 table words alone into
+// he, fa, el, uk, bg, bn, ta, zh-tw and yue: valeu came back as "it cost" in
+// all nine, merci and gracias as "mercy" and "grace" in Greek, Bengali and
+// Tamil, bonjour as "honour" in Persian, "friendship" in Bengali and "good
+// luck" in Cantonese, and konnichiwa, arigatou, sugoi and kawaii spelled out
+// phonetically. zh-tw also fell back on the 'zh' column above, so a
+// Traditional reader got Simplified characters.
+//
+// Rather than nine more columns on 90 rows, each row names what it means and
+// each language says it once. A row with no meaning here keeps the base-code
+// fallback it had.
+type Concept =
+  | 'hello' | 'goodMorning' | 'goodAfternoon' | 'goodEvening' | 'goodNight' | 'bye'
+  | 'thanks' | 'please' | 'youreWelcome' | 'sorry' | 'welcome' | 'yes' | 'no' | 'ok'
+  | 'ofCourse' | 'notBad' | 'bravo' | 'great' | 'wellDone' | 'wellPlayed' | 'goodGame'
+  | 'niceShot' | 'congrats' | 'goodLuck' | 'haveFun' | 'letsGo' | 'comeOn' | 'kisses'
+  | 'joking' | 'cute' | 'didIt';
+
+const KEY_CONCEPT: Record<string, Concept> = {
+  'bonjour': 'hello', 'bonsoir': 'goodEvening', 'salut': 'hello', 'coucou': 'hello',
+  'merci': 'thanks', 'au revoir': 'bye', 'bonne nuit': 'goodNight', 'oui': 'yes',
+  'non': 'no', "d'accord": 'ok', 'bien joue': 'wellPlayed', 'bien sur': 'ofCourse',
+  'pas mal': 'notBad', 'bravo': 'bravo', 'genial': 'great', 'bisous': 'kisses',
+  'allez': 'comeOn', 'je rigole': 'joking',
+  'hola': 'hello', 'gracias': 'thanks', 'adios': 'bye', 'buenos dias': 'goodMorning',
+  'buenas noches': 'goodNight', 'buenas tardes': 'goodAfternoon', 'por favor': 'please',
+  'de nada': 'youreWelcome', 'lo siento': 'sorry', 'vamos': 'letsGo',
+  'hello': 'hello', 'goodbye': 'bye', 'bye': 'bye', 'thanks': 'thanks', 'thank you': 'thanks',
+  'please': 'please', 'sorry': 'sorry', 'good morning': 'goodMorning', 'good night': 'goodNight',
+  'good evening': 'goodEvening', 'welcome': 'welcome', 'congratulations': 'congrats',
+  'good luck': 'goodLuck', 'have fun': 'haveFun', 'well played': 'wellPlayed',
+  'good game': 'goodGame', 'lets go': 'letsGo', "let's go": 'letsGo', 'come on': 'comeOn',
+  'obrigado': 'thanks', 'obrigada': 'thanks', 'tchau': 'bye', 'bom dia': 'goodMorning',
+  'boa noite': 'goodNight', 'boa tarde': 'goodAfternoon', 'valeu': 'thanks', 'fala': 'hello',
+  'danke': 'thanks', 'hallo': 'hello', 'guten morgen': 'goodMorning', 'guten abend': 'goodEvening',
+  'gute nacht': 'goodNight', 'bitte': 'please', 'auf wiedersehen': 'bye', 'tschuss': 'bye',
+  'gut gemacht': 'wellDone',
+  'ciao': 'hello', 'grazie': 'thanks', 'arrivederci': 'bye', 'buongiorno': 'goodMorning',
+  'buonasera': 'goodEvening', 'buonanotte': 'goodNight', 'prego': 'youreWelcome',
+  'scusa': 'sorry', 'forza': 'comeOn',
+  'merhaba': 'hello', 'tesekkurler': 'thanks', 'hosgeldiniz': 'welcome', 'iyi geceler': 'goodNight',
+  'bedankt': 'thanks', 'goedemorgen': 'goodMorning', 'goedenacht': 'goodNight',
+  'dziekuje': 'thanks', 'czesc': 'hello', 'dobranoc': 'goodNight',
+  'konnichiwa': 'hello', 'sayonara': 'bye', 'arigatou': 'thanks', 'ganbatte': 'comeOn',
+  'kawaii': 'cute', 'sugoi': 'great', 'umai': 'great', 'yatta': 'didIt',
+  'gg wp': 'goodGame', 'nice shot': 'niceShot', 'well done': 'wellDone',
+};
+
+const CONCEPTS: Record<string, Record<Concept, string>> = {
+  he: {
+    hello: 'היי', goodMorning: 'בוקר טוב', goodAfternoon: 'צהריים טובים', goodEvening: 'ערב טוב',
+    goodNight: 'לילה טוב', bye: 'ביי', thanks: 'תודה', please: 'בבקשה', youreWelcome: 'אין בעד מה',
+    sorry: 'סליחה', welcome: 'ברוכים הבאים', yes: 'כן', no: 'לא', ok: 'בסדר', ofCourse: 'בטח',
+    notBad: 'לא רע', bravo: 'כל הכבוד', great: 'מדהים', wellDone: 'כל הכבוד', wellPlayed: 'שיחקת יפה',
+    goodGame: 'משחק טוב', niceShot: 'זריקה יפה', congrats: 'מזל טוב', goodLuck: 'בהצלחה',
+    haveFun: 'תהנו', letsGo: 'יאללה', comeOn: 'יאללה', kisses: 'נשיקות', joking: 'סתם צוחק',
+    cute: 'חמוד', didIt: 'הצלחנו',
+  },
+  fa: {
+    hello: 'سلام', goodMorning: 'صبح بخیر', goodAfternoon: 'عصر بخیر', goodEvening: 'عصر بخیر',
+    goodNight: 'شب بخیر', bye: 'خداحافظ', thanks: 'ممنون', please: 'لطفاً', youreWelcome: 'خواهش می‌کنم',
+    sorry: 'ببخشید', welcome: 'خوش اومدی', yes: 'آره', no: 'نه', ok: 'باشه', ofCourse: 'البته',
+    notBad: 'بد نیست', bravo: 'آفرین', great: 'عالیه', wellDone: 'آفرین', wellPlayed: 'خوب بازی کردی',
+    goodGame: 'بازی خوبی بود', niceShot: 'شلیک خوبی بود', congrats: 'تبریک', goodLuck: 'موفق باشی',
+    haveFun: 'خوش بگذره', letsGo: 'بزن بریم', comeOn: 'یالا', kisses: 'بوس', joking: 'شوخی کردم',
+    cute: 'بامزه', didIt: 'موفق شدیم',
+  },
+  el: {
+    hello: 'Γεια', goodMorning: 'Καλημέρα', goodAfternoon: 'Καλό απόγευμα', goodEvening: 'Καλησπέρα',
+    goodNight: 'Καληνύχτα', bye: 'Αντίο', thanks: 'Ευχαριστώ', please: 'Παρακαλώ', youreWelcome: 'Τίποτα',
+    sorry: 'Συγγνώμη', welcome: 'Καλώς ήρθες', yes: 'Ναι', no: 'Όχι', ok: 'Εντάξει', ofCourse: 'Φυσικά',
+    notBad: 'Όχι άσχημα', bravo: 'Μπράβο', great: 'Τέλειο', wellDone: 'Μπράβο', wellPlayed: 'Ωραίο παίξιμο',
+    goodGame: 'Καλό παιχνίδι', niceShot: 'Ωραία βολή', congrats: 'Συγχαρητήρια', goodLuck: 'Καλή τύχη',
+    haveFun: 'Καλή διασκέδαση', letsGo: 'Πάμε', comeOn: 'Έλα', kisses: 'Φιλάκια', joking: 'Πλάκα κάνω',
+    cute: 'Χαριτωμένο', didIt: 'Τα καταφέραμε',
+  },
+  uk: {
+    hello: 'Привіт', goodMorning: 'Доброго ранку', goodAfternoon: 'Добрий день', goodEvening: 'Добрий вечір',
+    goodNight: 'Добраніч', bye: 'Бувай', thanks: 'Дякую', please: 'Будь ласка', youreWelcome: 'Нема за що',
+    sorry: 'Вибач', welcome: 'Ласкаво просимо', yes: 'Так', no: 'Ні', ok: 'Гаразд', ofCourse: 'Звісно',
+    notBad: 'Непогано', bravo: 'Браво', great: 'Чудово', wellDone: 'Молодець', wellPlayed: 'Гарно зіграно',
+    goodGame: 'Гарна гра', niceShot: 'Гарний постріл', congrats: 'Вітаю', goodLuck: 'Удачі',
+    haveFun: 'Розважайся', letsGo: 'Погнали', comeOn: 'Давай', kisses: 'Цілую', joking: 'Я жартую',
+    cute: 'Милота', didIt: 'Ура',
+  },
+  bg: {
+    hello: 'Здравей', goodMorning: 'Добро утро', goodAfternoon: 'Добър ден', goodEvening: 'Добър вечер',
+    goodNight: 'Лека нощ', bye: 'Чао', thanks: 'Благодаря', please: 'Моля', youreWelcome: 'Няма защо',
+    sorry: 'Извинявай', welcome: 'Добре дошли', yes: 'Да', no: 'Не', ok: 'Добре', ofCourse: 'Разбира се',
+    notBad: 'Не е зле', bravo: 'Браво', great: 'Супер', wellDone: 'Браво', wellPlayed: 'Добре изиграно',
+    goodGame: 'Добра игра', niceShot: 'Хубав удар', congrats: 'Поздравления', goodLuck: 'Успех',
+    haveFun: 'Забавлявай се', letsGo: 'Хайде', comeOn: 'Хайде', kisses: 'Целувки', joking: 'Шегувам се',
+    cute: 'Сладко', didIt: 'Ура',
+  },
+  bn: {
+    hello: 'হ্যালো', goodMorning: 'সুপ্রভাত', goodAfternoon: 'শুভ অপরাহ্ন', goodEvening: 'শুভ সন্ধ্যা',
+    goodNight: 'শুভ রাত্রি', bye: 'বিদায়', thanks: 'ধন্যবাদ', please: 'দয়া করে', youreWelcome: 'কোনো ব্যাপার না',
+    sorry: 'দুঃখিত', welcome: 'স্বাগতম', yes: 'হ্যাঁ', no: 'না', ok: 'ঠিক আছে', ofCourse: 'অবশ্যই',
+    notBad: 'খারাপ না', bravo: 'সাবাশ', great: 'দারুণ', wellDone: 'সাবাশ', wellPlayed: 'দারুণ খেলেছ',
+    goodGame: 'ভালো খেলা', niceShot: 'দারুণ শট', congrats: 'অভিনন্দন', goodLuck: 'শুভকামনা',
+    haveFun: 'মজা করো', letsGo: 'চলো যাই', comeOn: 'চলো', kisses: 'চুমু', joking: 'মজা করছি',
+    cute: 'মিষ্টি', didIt: 'পেরেছি',
+  },
+  ta: {
+    hello: 'வணக்கம்', goodMorning: 'காலை வணக்கம்', goodAfternoon: 'மதிய வணக்கம்', goodEvening: 'மாலை வணக்கம்',
+    goodNight: 'இனிய இரவு', bye: 'போய் வருகிறேன்', thanks: 'நன்றி', please: 'தயவுசெய்து', youreWelcome: 'பரவாயில்லை',
+    sorry: 'மன்னிக்கவும்', welcome: 'வரவேற்கிறோம்', yes: 'ஆம்', no: 'இல்லை', ok: 'சரி', ofCourse: 'நிச்சயமாக',
+    notBad: 'மோசமில்லை', bravo: 'சபாஷ்', great: 'அருமை', wellDone: 'சபாஷ்', wellPlayed: 'நன்றாக விளையாடினாய்',
+    goodGame: 'நல்ல ஆட்டம்', niceShot: 'நல்ல ஷாட்', congrats: 'வாழ்த்துகள்', goodLuck: 'நல்வாழ்த்துகள்',
+    haveFun: 'மகிழுங்கள்', letsGo: 'போகலாம்', comeOn: 'வா', kisses: 'முத்தங்கள்', joking: 'சும்மா சொன்னேன்',
+    cute: 'அழகு', didIt: 'சாதித்தோம்',
+  },
+  'zh-tw': {
+    hello: '你好', goodMorning: '早安', goodAfternoon: '午安', goodEvening: '晚上好',
+    goodNight: '晚安', bye: '再見', thanks: '謝謝', please: '拜託', youreWelcome: '不客氣',
+    sorry: '對不起', welcome: '歡迎', yes: '是', no: '不', ok: '好的', ofCourse: '當然',
+    notBad: '不錯', bravo: '太棒了', great: '太好了', wellDone: '幹得好', wellPlayed: '打得好',
+    goodGame: '打得好', niceShot: '好球', congrats: '恭喜', goodLuck: '祝你好運',
+    haveFun: '玩得開心', letsGo: '走吧', comeOn: '加油', kisses: '親親', joking: '我開玩笑的',
+    cute: '可愛', didIt: '太好了',
+  },
+  yue: {
+    hello: '你好', goodMorning: '早晨', goodAfternoon: '午安', goodEvening: '晚上好',
+    goodNight: '早唞', bye: '拜拜', thanks: '多謝', please: '唔該', youreWelcome: '唔使客氣',
+    sorry: '對唔住', welcome: '歡迎', yes: '係', no: '唔係', ok: '好啦', ofCourse: '梗係啦',
+    notBad: '唔錯', bravo: '好嘢', great: '正', wellDone: '做得好', wellPlayed: '打得好',
+    goodGame: '打得好', niceShot: '好波', congrats: '恭喜', goodLuck: '祝你好運',
+    haveFun: '玩得開心啲', letsGo: '走啦', comeOn: '加油', kisses: '錫晒', joking: '講笑咋',
+    cute: '好可愛', didIt: '得咗',
+  },
+};
+
+for (const [key, concept] of Object.entries(KEY_CONCEPT)) {
+  const row = OVERRIDES[key];
+  if (!row) continue;
+  for (const [lang, words] of Object.entries(CONCEPTS)) row[lang] ??= words[concept];
+}
+
+// ─── Latin targets, for the words Google gets wrong there too ──────────────
+//
+// The table was for non-Latin targets on the belief that "providers handle
+// those fine". Measured 2026-10-10 on the free Google endpoint into en, fr,
+// es, de, tr and pl: valeu, the Brazilian "thanks", came back as "it cost" in
+// every one, fala ("hey") as "he speaks", yatta as "on the yacht", coucou as
+// "cuckoo", forza as "force", and arigatou, konnichiwa, sugoi, kawaii,
+// ganbatte and umai untouched. Only those rows, and never into the language
+// the word is from.
+type LatinConcept = 'thanks' | 'hello' | 'didIt' | 'great' | 'cute' | 'comeOn';
+
+const LATIN_KEYS: Record<string, { concept: LatinConcept; from?: string }> = {
+  'valeu': { concept: 'thanks', from: 'pt' },
+  'fala': { concept: 'hello', from: 'pt' },
+  'coucou': { concept: 'hello', from: 'fr' },
+  'forza': { concept: 'comeOn', from: 'it' },
+  'yatta': { concept: 'didIt' },
+  'arigatou': { concept: 'thanks' },
+  'konnichiwa': { concept: 'hello' },
+  'sugoi': { concept: 'great' },
+  'umai': { concept: 'great' },
+  'kawaii': { concept: 'cute' },
+  'ganbatte': { concept: 'comeOn' },
+};
+
+/* Order: thanks, hello, didIt, great, cute, comeOn. */
+const LATIN_WORDS: Record<string, [string, string, string, string, string, string]> = {
+  en: ['thanks', 'hi', 'we did it', 'amazing', 'cute', 'come on'],
+  fr: ['merci', 'salut', "on l'a fait", 'génial', 'mignon', 'allez'],
+  es: ['gracias', 'hola', 'lo logramos', 'increíble', 'qué lindo', 'vamos'],
+  pt: ['obrigado', 'oi', 'conseguimos', 'incrível', 'fofo', 'vai'],
+  de: ['danke', 'hi', 'geschafft', 'krass', 'süß', 'los'],
+  it: ['grazie', 'ciao', "ce l'abbiamo fatta", 'fantastico', 'carino', 'forza'],
+  nl: ['bedankt', 'hoi', 'gelukt', 'geweldig', 'schattig', 'kom op'],
+  pl: ['dzięki', 'cześć', 'udało się', 'niesamowite', 'słodkie', 'dawaj'],
+  sv: ['tack', 'hej', 'vi klarade det', 'grymt', 'gulligt', 'kom igen'],
+  cs: ['díky', 'ahoj', 'dokázali jsme to', 'úžasné', 'roztomilé', 'do toho'],
+  sk: ['vďaka', 'ahoj', 'dokázali sme to', 'úžasné', 'zlaté', 'do toho'],
+  ro: ['mersi', 'salut', 'am reușit', 'super', 'drăguț', 'haide'],
+  tr: ['teşekkürler', 'selam', 'başardık', 'harika', 'tatlı', 'hadi'],
+  vi: ['cảm ơn', 'chào', 'làm được rồi', 'đỉnh quá', 'dễ thương', 'cố lên'],
+  id: ['makasih', 'halo', 'berhasil', 'keren', 'lucu', 'ayo'],
+  ms: ['terima kasih', 'hai', 'berjaya', 'hebat', 'comel', 'ayuh'],
+  fi: ['kiitos', 'moi', 'onnistuimme', 'mahtavaa', 'söpö', 'tsemppiä'],
+  no: ['takk', 'hei', 'vi klarte det', 'rått', 'søtt', 'kom igjen'],
+  da: ['tak', 'hej', 'vi klarede det', 'vildt', 'sødt', 'kom så'],
+  hu: ['köszi', 'szia', 'sikerült', 'durva', 'cuki', 'hajrá'],
+  ca: ['gràcies', 'hola', 'ho hem aconseguit', 'increïble', 'que mono', 'som-hi'],
+  sl: ['hvala', 'živjo', 'uspelo nam je', 'super', 'srčkano', 'dajmo'],
+  et: ['aitäh', 'tere', 'saime hakkama', 'vinge', 'armas', 'lähme'],
+  lt: ['ačiū', 'labas', 'pavyko', 'nuostabu', 'miela', 'pirmyn'],
+  lv: ['paldies', 'sveiki', 'izdevās', 'forši', 'mīlīgi', 'aiziet'],
+  tl: ['salamat', 'hi', 'nagawa natin', 'galing', 'cute', 'kaya mo yan'],
+};
+const LATIN_INDEX: Record<LatinConcept, number> = { thanks: 0, hello: 1, didIt: 2, great: 3, cute: 4, comeOn: 5 };
+
+for (const [key, { concept, from }] of Object.entries(LATIN_KEYS)) {
+  const row = OVERRIDES[key];
+  if (!row) continue;
+  for (const [lang, words] of Object.entries(LATIN_WORDS)) {
+    const word = words[LATIN_INDEX[concept]];
+    if (word && lang !== from) row[lang] ??= word;
+  }
+}
 
 /**
  * Normalize an input string for override lookup: lowercase, strip accents,

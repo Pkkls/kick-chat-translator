@@ -1,4 +1,4 @@
-import { GOOGLE_CLIENTS, PROVIDER_ENDPOINTS } from '~/shared/constants';
+import { GOOGLE_CLIENTS, GOOGLE_MULTI_ENDPOINT, PROVIDER_ENDPOINTS } from '~/shared/constants';
 import { ConcurrencyQueue } from '../queue';
 import { createMetrics } from '~/shared/metrics';
 import type { TranslationRequest } from '~/shared/types';
@@ -86,73 +86,134 @@ async function call(req: TranslationRequest, ctx: ProviderContext): Promise<Prov
   }
 }
 
-// Batch: join texts with \n, Google preserves newlines in output.
+/**
+ * Batch: one request, one entry per line, and Google translates and detects
+ * each entry on its own.
+ *
+ * This used to join the lines with \n into one text, and Google detects ONE
+ * source for a text. Measured on the free endpoint with the chat corpora, one
+ * batch per reader language for all 42 targets, six English lines and two
+ * foreign ones each: 5 of 84 foreign lines came back right, 41 untouched (the
+ * content script drops those) and 38 garbled and shown as a translation, such
+ * as Hebrew "same thing again" rendered in Dutch as "I think it is fine".
+ * Splitting the batch by language fixed that at 215 requests for the 42
+ * batches. `translate_a/t` takes the lines as repeated `q` fields and answers
+ * `[translation, detected]` per line (a bare translation when `sl` is given),
+ * so the lines stay apart inside one request: replayed on the same batches,
+ * 84 of 84 foreign lines and 252 of 252 English
+ * lines matched their translation alone, Google's per-line detection was right
+ * on 182 of 184, in 42 requests, one per batch, as before the split.
+ *
+ * A looked-up source is sent as `sl` only when every line shares it.
+ */
 async function batchCall(reqs: TranslationRequest[], ctx: ProviderContext): Promise<ProviderResult[]> {
   if (reqs.length <= 1) {
     const r = await call(reqs[0]!, ctx);
     return [r];
   }
-  const joined = reqs.map((r) => r.text).join('\n');
-  // Le lot n'herite pas de la langue source du PREMIER message.
-  //
-  // Le coalesceur groupe par langue CIBLE et rien d'autre, donc un lot melange
-  // les sources : mesure sur un chat multilingue, une requete est partie avec
-  // `sl=ja` en portant une ligne japonaise et une ligne arabe. Or `call` ne
-  // transmet `sl` que lorsqu'on a cherche la langue au lieu de la deviner,
-  // precisement parce qu'un `sl` faux fait traduire depuis la mauvaise langue et
-  // rend soit un texte identique a l'original, soit un texte qui dit autre
-  // chose. Reprendre l'indication du premier message pour tous les autres est la
-  // meme faute par un autre chemin.
-  //
-  // Quand les indications ne concordent pas, on n'en annonce aucune : `auto` est
-  // ce que le moteur recoit deja quand la langue est inconnue, et c'est moins
-  // faux que d'en affirmer une.
-  const indications = new Set(reqs.map((r) => r.sourceLangHint));
-  const fakeReq: TranslationRequest = {
-    ...reqs[0]!,
-    text: joined,
-    sourceLangHint: indications.size === 1 ? reqs[0]!.sourceLangHint : undefined,
-  };
-  const result = await call(fakeReq, ctx);
-  const lines = result.translatedText.split('\n');
-  // If Google merged/split lines differently, fall back to per-item.
-  //
-  // This was `for (const r of reqs) results.push(await call(r, ctx))`: forty
-  // messages meant forty round trips end to end, each waiting on the one
-  // before, while the concurrency the user set sat unused. Measured on the
-  // fallback path: 40 requests at a peak concurrency of 1.
-  //
-  // Capped rather than unleashed, and capped on the user's own number. The
-  // endpoint soft-bans per IP by answering 200 with an empty payload, so the
-  // fallback firing is already a bad moment to start shouting: the worst case
-  // here stays at the ceiling the dispatcher uses for its own per-item path,
-  // which is a budget this codebase has been living inside all along.
-  if (lines.length !== reqs.length) {
-    // How often this path is taken at all. Bounding its cost was worth doing
-    // whatever the frequency; knowing the frequency is what decides whether the
-    // join-and-split scheme should survive.
+  return multiCall(reqs, ctx);
+}
+
+/** Thrown when the reply does not line up with the request, never seen by the chain. */
+class ShapeError extends Error {}
+
+async function multiWithClient(reqs: TranslationRequest[], client: string, signal?: AbortSignal): Promise<ProviderResult[]> {
+  const first = reqs[0]!;
+  // A source is announced only when every line has the same looked-up one.
+  const hints = new Set(reqs.map((r) => r.sourceLangHint));
+  const sl = hints.size === 1 ? first.sourceLangHint : undefined;
+  const url = new URL(GOOGLE_MULTI_ENDPOINT);
+  url.searchParams.set('client', client);
+  url.searchParams.set('sl', sl ? googleLangCode(sl) : 'auto');
+  url.searchParams.set('tl', googleLangCode(first.targetLang));
+  // POST: forty lines of non-Latin chat percent-encode past what a URL carries.
+  const body = new URLSearchParams();
+  for (const r of reqs) body.append('q', r.text);
+
+  let res: Response;
+  try {
+    res = await fetch(url.toString(), { method: 'POST', body, signal, credentials: 'omit' });
+  } catch (err: unknown) {
+    throw new ProviderError('google', 'network', err instanceof Error ? err.message : 'fetch failed');
+  }
+  if (res.status === 429) throw new ProviderError('google', 'rate_limit', 'Google rate-limited');
+  if (!res.ok) throw new ProviderError('google', `http_${res.status}`, `Google HTTP ${res.status}`);
+
+  let data: unknown;
+  try {
+    data = await res.json();
+  } catch {
+    throw new ProviderError('google', 'rate_limit', 'Google: non-JSON (soft block)');
+  }
+  if (!Array.isArray(data) || data.length === 0) {
+    throw new ProviderError('google', 'rate_limit', 'Google: unexpected payload (soft block)');
+  }
+  if (data.length !== reqs.length) throw new ShapeError(`${data.length} answers for ${reqs.length} lines`);
+  const out = data.map((entry: unknown, i): ProviderResult => {
+    const pair = Array.isArray(entry) ? entry : [entry];
+    if (typeof pair[0] !== 'string') throw new ShapeError(`entry ${i} is not a translation`);
+    // A looked-up language beats Google's guess for the badge: Persian is
+    // looked up from its letters, and Google may still call it Arabic.
+    const detected = reqs[i]!.sourceLangHint ?? (typeof pair[1] === 'string' ? pair[1] : 'auto');
+    return { translatedText: pair[0], detectedLang: detected };
+  });
+  if (out.every((r) => !r.translatedText.trim())) {
+    throw new ProviderError('google', 'rate_limit', 'Google: blank translations (soft block)');
+  }
+  return out;
+}
+
+/** One request for a group of lines, with the client rotation `call` uses. */
+async function multiCall(reqs: TranslationRequest[], ctx: ProviderContext): Promise<ProviderResult[]> {
+  if (reqs.length === 1) return [await call(reqs[0]!, ctx)];
+  let out: ProviderResult[];
+  try {
+    const primary = nextClient();
+    try {
+      out = await multiWithClient(reqs, primary, ctx.signal);
+    } catch (err: unknown) {
+      const fallback = GOOGLE_CLIENTS.find((c) => c !== primary) ?? primary;
+      if (!(err instanceof ProviderError && err.code === 'rate_limit') || fallback === primary) throw err;
+      out = await multiWithClient(reqs, fallback, ctx.signal);
+    }
+  } catch (err: unknown) {
+    if (!(err instanceof ShapeError)) throw err;
+    // How often this path is taken at all decides whether it deserves to exist.
     if (__KT_METRICS__) {
       metrics.count('google.batch.fallback');
       metrics.timing('google.batch.fallback.items', reqs.length);
     }
-    const pool = new ConcurrencyQueue(Math.max(1, ctx.concurrency));
-    // Indexed writes, not pushes. Completion order under concurrency is not
-    // request order, and the dispatcher aligns results to requests by position:
-    // a push would hand every translation to the wrong chat line.
-    const results = new Array<ProviderResult>(reqs.length);
-    await Promise.all(
-      reqs.map((r, i) =>
-        pool.add(async () => {
-          results[i] = await call(r, ctx);
-        }),
-      ),
-    );
-    return results;
+    return perLine(reqs, reqs.map((_, i) => i), ctx, []);
   }
-  return lines.map((line) => ({
-    translatedText: line,
-    detectedLang: result.detectedLang,
-  }));
+  // A blank line among answered ones is asked again alone rather than shown blank.
+  const blank = out.flatMap((r, i) => (r.translatedText.trim() ? [] : [i]));
+  return blank.length > 0 ? perLine(reqs, blank, ctx, out) : out;
+}
+
+/**
+ * Per-line calls, capped on the user's own concurrency.
+ *
+ * The cap matters: this was once `for (const r of reqs) await call(r)`, forty
+ * round trips end to end, measured at 40 requests at a peak concurrency of 1.
+ * Indexed writes, not pushes, or completion order would hand each translation
+ * to the wrong chat line.
+ */
+async function perLine(
+  reqs: TranslationRequest[],
+  which: number[],
+  ctx: ProviderContext,
+  base: ProviderResult[],
+): Promise<ProviderResult[]> {
+  const results = [...base];
+  const pool = new ConcurrencyQueue(Math.max(1, ctx.concurrency || 1));
+  await Promise.all(
+    which.map((i) =>
+      pool.add(async () => {
+        results[i] = await call(reqs[i]!, ctx);
+      }),
+    ),
+  );
+  return results;
 }
 
 export const googleProvider: TranslationProvider = {

@@ -72,6 +72,10 @@ describe('maskProtected / unmaskProtected', () => {
     expect(restored).toContain('@cool.user');
     expect(restored).toContain('https://kick.com/x');
   });
+  // Google's Cantonese answer, verbatim from the free endpoint.
+  it('restores a placeholder the engine padded with spaces', () => {
+    expect(unmaskProtected('⟦ 0 ⟧ 哈哈，我朋友，呢個動作真係好好', ['@el.toro'])).toBe('@el.toro 哈哈，我朋友，呢個動作真係好好');
+  });
   it('is a no-op when there is nothing to protect', () => {
     const { masked, tokens } = maskProtected('bonjour tout le monde');
     expect(masked).toBe('bonjour tout le monde');
