@@ -112,3 +112,23 @@ describe('translateGroup, transliteration cascade', () => {
     if (out?.ok) expect(out.result.translatedText).toBe(KATA);
   });
 });
+
+describe('the detected language comes back in the product codes', () => {
+  const originalFetch = globalThis.fetch;
+  afterEach(() => {
+    globalThis.fetch = originalFetch;
+  });
+
+  // Measured on the free endpoint: a Hebrew line is detected 'iw' and a Chinese
+  // one 'zh-CN'. Neither is a key of the language table, so the badge printed
+  // "IW" and "ZH-CN" instead of the language's name.
+  for (const [google, ours] of [['iw', 'he'], ['zh-CN', 'zh']] as const) {
+    it(`reads Google's ${google} as ${ours}`, async () => {
+      globalThis.fetch = vi.fn(async () =>
+        new Response(JSON.stringify([[['hello', 'x', null, null, 10]], null, google]), { status: 200 }),
+      ) as unknown as typeof fetch;
+      const [out] = await translateGroup([{ messageId: '1', text: 'x', targetLang: 'en' }], settings(['google']), 1);
+      expect(out?.ok && out.result.detectedLang).toBe(ours);
+    });
+  }
+});

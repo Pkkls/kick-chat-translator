@@ -53,6 +53,21 @@ describe('lingvaProvider', () => {
     expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 
+  // Measured against lingva-scraper 1.1.0's languages.json, which the API
+  // validates with: he, zh-tw and pt-br are not keys there, iw, zh_HANT and pt are.
+  it('speaks Lingva codes for Hebrew, Traditional Chinese and Brazilian Portuguese', async () => {
+    const paths: string[] = [];
+    globalThis.fetch = vi.fn(async (url: unknown) => {
+      paths.push(new URL(String(url)).pathname);
+      return reply('x', 'iw');
+    }) as unknown as typeof fetch;
+    await lingvaProvider.translate({ messageId: '1', text: 'hi', targetLang: 'he' }, baseCtx);
+    await lingvaProvider.translate({ messageId: '2', text: 'hi', targetLang: 'zh-tw', sourceLangHint: 'pt-br' }, baseCtx);
+    await lingvaProvider.translate({ messageId: '3', text: 'hi', targetLang: 'pt-br', sourceLangHint: 'zh-tw' }, baseCtx);
+    await lingvaProvider.translate({ messageId: '4', text: 'hi', targetLang: 'en', sourceLangHint: 'yue' }, baseCtx);
+    expect(paths).toEqual(['/api/v1/auto/iw/hi', '/api/v1/pt/zh_HANT/hi', '/api/v1/zh/pt/hi', '/api/v1/auto/en/hi']);
+  });
+
   it('still reports a genuine 400 as a provider failure', async () => {
     globalThis.fetch = vi.fn(
       async () => new Response(JSON.stringify({ error: 'Something else went wrong' }), { status: 400 }),

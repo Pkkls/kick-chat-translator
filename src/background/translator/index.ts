@@ -4,6 +4,7 @@ import { rootLogger } from '~/shared/logger';
 import { createMetrics } from '~/shared/metrics';
 import { decodeHtmlEntities } from '~/shared/decode';
 import { isDeeplPremium, routeForBudget } from '~/shared/langTiers';
+import { normalizeLang } from '~/shared/languages';
 import { isTransliteration } from '~/shared/transliterationGuard';
 import { ConcurrencyQueue } from '../queue';
 import { googleProvider } from './google';
@@ -94,7 +95,10 @@ function ok(req: TranslationRequest, id: CloudProviderId, translatedText: string
     result: {
       messageId: req.messageId,
       translatedText: decodeHtmlEntities(translatedText),
-      detectedLang: detectedLang.toLowerCase(),
+      // Providers answer in their own codes: Google says 'zh-CN' and 'iw', DeepL
+      // 'NB'. The badge, the stats and the same-language check all look codes up
+      // in the product's own table, where those three are not keys.
+      detectedLang: normalizeLang(detectedLang),
       provider: id,
       cached: false,
     },
