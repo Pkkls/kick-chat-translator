@@ -1,23 +1,23 @@
 {
-  "genere": "2026-10-10T08:53:01.322Z",
+  "genere": "2026-10-10T09:18:41.461Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase. La version commitee decrit l'etat d'AVANT le commit qui la porte, puisque la fin de passe genere puis commite : git.head y pointe le commit precedent et git.arbrePropre y est faux. Relancer `node .agent/state.mjs` avant de lire, ce que le prompt demande deja en premier.",
   "git": {
     "remotesEnDouble": [],
     "branche": "claude/translation-quality-wr8p3r",
-    "head": "02675a4f1f80e0dbcb07f7d4f8b9854b80c97d71",
-    "sujet": "Spell out English chat abbreviations before translating for other readers",
-    "arbrePropre": true,
-    "fichiersModifies": 0,
+    "head": "07e828a2a89c066a972334e2e5707de202f88b1a",
+    "sujet": "Merge pull request #23 from Pkkls/claude/extension-optimization-pv81bb",
+    "arbrePropre": false,
+    "fichiersModifies": 3,
     "dernierTag": "v3.0.2",
-    "decrit": "v3.0.2-49-g02675a4",
+    "decrit": "v3.0.2-66-g07e828a",
     "remotes": {
       "origin": "https://github.com/Pkkls/kick-chat-translator"
     },
     "ecarts": {
       "origin": {
         "derriere": 0,
-        "devant": 25,
+        "devant": 7,
         "aJour": false
       }
     }
@@ -76,7 +76,7 @@
       "poids-notes",
       "audit-fiche"
     ],
-    "harnaisSurDisque": 79,
+    "harnaisSurDisque": 80,
     "orphelins": [
       "a11y",
       "anglais-essai",
@@ -87,6 +87,7 @@
       "build-lang-corpus",
       "canto-bench",
       "canto-candidats",
+      "charge-chat",
       "collision-clavier",
       "compose-kick-live",
       "feuille",
@@ -136,7 +137,7 @@
       "unanimite",
       "variante"
     ],
-    "nbOrphelins": 57,
+    "nbOrphelins": 58,
     "note": "Les portes live ouvrent un navigateur sur kick.com et ne sont dans aucun runner. Un orphelin n est pas forcement un defaut ; un orphelin qui couvre du code livre en est un."
   },
   "releaseGithub": {
@@ -179,6 +180,6 @@
     ],
     "nbBloques": 10,
     "nbOuverts": 2,
-    "nbFaits": 117
+    "nbFaits": 119
   }
 }

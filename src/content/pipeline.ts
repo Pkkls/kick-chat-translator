@@ -299,25 +299,39 @@ export class TranslationPipeline {
     if (__KT_METRICS__) metrics.count('cache.mem.miss');
 
     // ── 1. On-device (Chrome; absent on Brave → straight to cloud) ──
+    //
+    // The on-device engine has no auto-detect: it translates from whatever
+    // source it is told. It is told the looked-up language, or franc's guess
+    // when that guess is English. Any other guess goes to the cloud, which
+    // detects per line. Measured on the chat corpus, franc's non-English guesses
+    // name the wrong language on 166 of 264 lines (Tatoeba: 470 of 834):
+    // Danish as Swedish or Dutch, Catalan as Spanish. On device that is a line
+    // translated from a language it is not in, or returned unchanged and
+    // dropped, and a model downloaded for a language nobody wrote. English guesses are kept: nearly
+    // every English line is a guess, 74 of 109 were right on the corpora, more
+    // on a chat that is mostly English. local-only has no cloud, so it keeps
+    // the guess as before.
+    const localSource =
+      hint ?? (detected === 'en' || this.settings.engineMode === 'local-only' ? detected : undefined);
     if (
       this.settings.localEnabled &&
       this.settings.engineMode !== 'cloud-first' &&
-      detected &&
+      localSource &&
       localEngine.present()
     ) {
-      localEngine.noteSeen(detected, target);
-      if (localEngine.isReady(detected, target)) {
+      localEngine.noteSeen(localSource, target);
+      if (localEngine.isReady(localSource, target)) {
         showLoading(msg.injectionTarget);
         const t0 = performance.now();
         try {
-          const translatedText = await localEngine.translate(detected, target, real);
-          this.applyTranslation(msg, real, { translatedText, detectedLang: detected, provider: 'local' }, { store: true });
+          const translatedText = await localEngine.translate(localSource, target, real);
+          this.applyTranslation(msg, real, { translatedText, detectedLang: localSource, provider: 'local' }, { store: true });
           // Seen to painted, on device. `e2e.cloud` in translateAndApply is the
           // same span for the other path, so the two are directly comparable.
           // local-first has been the default since it shipped and nothing has
           // ever measured whether it is the faster one.
           if (__KT_METRICS__) metrics.timing('e2e.local', performance.now() - t0);
-          void send({ type: 'stats.local', payload: { lang: detected, chars: real.length } }).catch(() => undefined);
+          void send({ type: 'stats.local', payload: { lang: localSource, chars: real.length } }).catch(() => undefined);
           return;
         } catch (err: unknown) {
           log.debug('local translate failed, falling back', err);
