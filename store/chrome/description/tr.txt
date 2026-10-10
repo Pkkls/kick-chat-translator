@@ -1,43 +1,35 @@
-Kick için canlı sohbet çevirici: herhangi bir yayının sohbetini kendi dilinde oku, kanalın dilinde yanıt ver.
+Kick Chat Translator, Kick için ücretsiz bir canlı sohbet çevirici. Herhangi bir yayının sohbetini kendi dilinde oku, kanalın dilinde yanıt ver, hepsi doğrudan sohbetin içinde.
 
-Okuyamadığın bir dilde sohbet akan bir Kick yayını aç. Her mesaj, geldiği anda, hemen altında çevirisini alır. Sohbetin üstündeki yeşil çubuk çalıştığını gösterir.
+İngilizce, İspanyolca, Rusça ya da Arapça bir yayın izliyorsun ama sohbeti takip edemiyor musun? Eklentiyi kur, yayını aç: her mesaj geldiği anda hemen altında çevirisiyle görünür. Hesap yok, API anahtarı yok, ayarlanacak bir şey yok.
 
-Bir yanıt yaz, sohbet kutusunun üstünde kanalın dilinde bir önizleme belirir. Önizlemeye tıkla ya da Tab'a bas, o sürüm yazdığının yerine geçer ve göndermeye hazır olur.
+NASIL ÇALIŞIR
 
-Ayarlanacak bir şey yok. Gelen sohbet tarayıcının diline çevrilir, yazdıkların da kanalın yayın diline gider, bu bilgi doğrudan Kick'ten okunur. İkisi de ayarlardan değiştirilebilir. Canlı yayınlarda da VOD tekrarlarında da çalışır, 7TV emotelerini anlar.
+1. Herhangi bir Kick yayınını aç. Sohbetin üstündeki yeşil çubuk çevirmenin açık olduğunu gösterir.
+2. Her yeni mesajın altında, tarayıcının dilinde çevirisi belirir.
+3. Yanıtını kendi dilinde yaz. Bir önizleme onu kanalın dilinde gösterir: Tab'a bas ya da önizlemeye tıkla, sonra gönder.
 
-MOTORLAR
+Kanalın dili doğrudan Kick'ten okunur, iki dil de ayarlardan değiştirilebilir. Canlı yayınlarda da VOD tekrarlarında da çalışır, 7TV emotelerini olduğu gibi bırakır ve arka plandaki sekmelerde kendiliğinden duraklar.
 
-Google kutudan çıktığı gibi çalışır, anahtar yok, hesap yok. Kendi ücretsiz DeepL anahtarını ekle (ücretsiz paketleri kart istemeden ayda 1 milyon karakter veriyor), Avrupa dillerinde kalite belirgin şekilde yükselir. DeepL ayrıca kanalın son satırlarını bağlam olarak alır, böylece ifade konuşmaya oturur, ve dilin nezaket kipi varsa o istenir: Japoncada keigo, Fransızcada tu yerine vous. Ücretsiz kotayı uzatmak için DeepL yalnızca ücretsiz motorları gerçekten geçtiği dil çiftlerinde harcanır. MyMemory ve Lingva arkada yedek bekler, bir motor düştüğünde sıradaki devralır. Sıralama senin.
+NELER SUNUYOR
 
-Chrome ve Edge 138+ ayrıca cihaz üzerinde çeviri yapabilir, donanım elverirse. Model her dil çifti için bir kez iner, sonra her şey yerelde çalışır: çevrimdışı, sınırsız, ve hiçbir sohbet metni makineni terk etmez. Brave ve Firefox bu API'yi henüz sunmuyor, onlar yukarıdaki motorları kullanır.
+• 43 dil, sağdan sola yazılanlar dahil (Arapça, İbranice, Farsça), bölgesel varyantlar ayrı tutulur (Brezilya Portekizcesi, Geleneksel Çince).
+• Kurar kurmaz Google Translate ile ücretsiz, anahtar yok, hesap yok.
+• Kendi DeepL API anahtarınla Avrupa dillerinde daha iyi çeviri. DeepL sohbetin son satırlarını bağlam olarak alır, böylece ifade konuşmaya oturur.
+• Bilgisayarın destekliyorsa Chrome ve Edge 138+ üzerinde cihazda çeviri: çevrimdışı, sınırsız, ve sohbet makineni hiç terk etmez.
+• Otomatik yedek: bir motor başarısız olursa MyMemory ya da Lingva devralır. Sırayı sen belirlersin.
+• Dört görünüm: mesajın altında, aynı satırda, ardından küçük italikle ya da yalnızca üzerine gelince. Üzerine gelme modu sen bir mesajı işaret edene kadar hiçbir şey çevirmez, bu da hızlı bir sohbette kullanımı yaklaşık on kat azaltır.
+• Filtreler: botları atla, kullanıcıları veya kanalları sustur, seçtiğin bir kelimeyi içeren satırları gizle (!komut spamına karşı işe yarar) ya da yalnızca istediğin dilleri çevir.
+• Emoteler, bahsetmeler, bağlantılar ve emoji spamı gönderilmeden önce ayıklanır, yani "kkkkkk" çevirmek için hiçbir şey harcanmaz.
+• Sana göre ayarla: yazı boyutu, satır aralığı, yazı tipi, vurgu rengi, koyu ya da açık sohbet, kanal başına hatırlanan bir okuma dili, klavye kısayolları.
+• Arayüz 10 dilde: İngilizce, İspanyolca, Fransızca, Portekizce, Türkçe, Rusça, Arapça, Çince, Japonca ve Korece.
 
-GÖRÜNÜM
+GİZLİLİK
 
-Çeviri orijinalin altında, onunla aynı satırda, ardında daha küçük italikle, ya da yalnızca üzerine gelince. Üzerine gelme modu sen bir mesajı işaret edene kadar hiçbir şey istemez, bu da hızlı bir sohbette kullanımı yaklaşık 10 kat azaltır.
+Hesap yok, analitik yok, bana ait sunucu yok. Sohbet metni yalnızca seçtiğin çeviri motoruna gider. Google, MyMemory ya da Lingva ile giden yalnızca her mesajın metnidir, başka hiçbir şey değil. DeepL ile son birkaç sohbet satırı, onları yazanların adlarıyla birlikte bağlam olarak gider, böylece çeviri konuşmaya oturur. İzlediğin kanal asla gönderilmez; cihazda çeviride ise hiçbir şey bilgisayarından çıkmaz.
 
-FİLTRELER
+İzinler, açık bir dille: ayarların ve çeviri önbelleği için depolama; çevirileri sohbette göstermek için kick.com erişimi; çağırabileceği motorlara erişim (Google, DeepL, MyMemory ve Lingva); sen izlerken çevirmenin hazır kalması için bir uyandırma zamanlayıcısı; ve kurulumda ya da güncellemede kendi betiğini zaten açık olan Kick sekmelerine yeniden yükleme izni, böylece o sekmeler sayfa yenilenmeden çevirmeye devam eder. Ayrıca daha yeni bir sürüm çıktığında haber vermek için GitHub sürümler sayfasını okur, bu istekle hiçbir şey göndermez.
 
-Botları atla, kullanıcıları veya kanalları engelle, ya da hangi kaynak dillerin çevrileceğini sınırla. Emoteler, bahsetmeler, bağlantılar ve emoji yığınları dışarı gönderilmeden önce ayıklanır, yani "kkkkkk" çevirmek için ödeme yapmazsın. Arka plandaki sekmeler kendiliğinden duraklar.
+ÜCRETSİZ VE AÇIK KAYNAK
 
-42 dil, sağdan sola yazılanlar dahil (Arapça, İbranice, Farsça), bölgesel varyantlar ayrı tutulur (pt-BR, zh-TW). Eklentinin kendi arayüzü 10 dilde: İngilizce, İspanyolca, Fransızca, Portekizce, Türkçe, Rusça, Arapça, Çince, Japonca ve Korece.
-
-Hesap yok, analitik yok, bana ait sunucu yok. Depolama izni ister, sen izlerken çevirmenin hazır kalması için bir uyandırma zamanlayıcısı, ve kick.com ile çağırabileceği çeviri motorlarına erişim: Google, DeepL, MyMemory ve Lingva. Kurulumda ve her güncellemede, açık olan Kick sekmelerine kendi betiğini yeniden yükler; böylece sayfayı yenilemeden çevirmeye devam ederler. Ayrıca daha yeni bir sürüm çıktığını söylemek için GitHub sürümler sayfasını okur, bu istekle hiçbir şey göndermez. Sohbet metnin seçtiğin motora gider, başka hiçbir yere, cihaz üzerinde çalışırken oraya bile gitmez.
-
-YENİLİKLER
-
-Seçtiğiniz bir kelimeyi içeren sohbet satırlarını gizleyin. Anahtar kelimeleri filtre ayarlarına her satıra bir tane olacak şekilde ekleyin: bunlardan birini içeren bir satır, büyük ya da küçük harfle yazılmış olsun, çevrilmek yerine sohbetten kaybolur. Bazı kanalları dolduran !fish gibi bot komutlarına karşı işe yarar.
-
-Uzantının sizin yerinize karar verdiği dokuz şey artık sizin: çevrilen satırın yazı boyutu, satır aralığı ve yazı tipi, bloğunun aldığı boşluk, kontrast ölçülerek belirlenmiş dört vurgu renginden biri, kanalı izlemek yerine koyu ya da açığa sabitlenen sohbet teması, her kanal için hatırlanan bir okuma dili ve iki klavye kısayolu. Her varsayılan, uzantının zaten yaptığı şeydir: siz oynatana kadar hiçbir şey oynamaz.
-
-Tab yazdığınızı çevirisiyle değiştirir. Tuş yalnızca önizleme ekrandayken alınır, boş bir kutu onu asla kaybetmez ve Shift+Tab her zaman gezinme kalır.
-
-Sohbetin üstündeki çubuk başkalarının yazdığını çevirir; alttaki düğme sizin yazdığınızı çevirir. Ekranda hiçbir şey ikisini ayırmıyordu, artık her birinde bir ok bunu söylüyor.
-
-Her çevrilen satırda, iki çubukta ve dil listesinde iki harfli kodlar yerine bayraklar. Dil paneli hangi dilin seçili olduğunu gösteriyor; önceden bunu, üzerine gelmekten ayırt edilemeyen bir zeminde taşıyordu. Ve "Chinese (Taiwan)" artık "Chinese (..." olarak görünmüyor, ki bu "Chinese"den ayırt edilemiyordu.
-
-Ayarlar sayfası her ayarın ne yaptığını gösteriyor: önbellek kaç kayıt tuttuğunu, kanal başına sınır bir şey tutup tutmadığını, dil listesi de her dilin ne kadarını temsil ettiğini söylüyor.
-
-Kantonca 43. dil. Çevirmene bildirilen kaynak dil üç kat daha sık doğru ve yüzde 97 daha az yanlış; 42 dilde 5040 cümle üzerinde ölçüldü, ve artık hiçbir dil tespit edilmeden kalmıyor: yirmi altı tanesi kalıyordu. Tanımlanamayan Kiril Rusça, Arap yazısı da Arapça sayılıyordu; Bulgarca, Ukraynaca ve Farsça kendileri olarak okunuyor. Geleneksel Çince her seferinde basitleştirilmiş okunuyordu.
-
-Açık kaynak, MIT: github.com/Pkkls/kick-chat-translator
+MIT lisansı, kodun her satırı herkese açık: github.com/Pkkls/kick-chat-translator
+Hata bildirimleri ve dil istekleri orada memnuniyetle karşılanır, her sürümde nelerin değiştiği de sürümler sayfasında.

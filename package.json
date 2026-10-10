@@ -2,7 +2,7 @@
   "name": "kick-chat-translator",
   "version": "3.0.2",
   "private": true,
-  "description": "Translates Kick live chat into your language as it scrolls, and your replies into the channel's. Google or DeepL, no account.",
+  "description": "Free live chat translator for Kick: read any stream's chat in your language and reply in the channel's. No account, no setup.",
   "license": "MIT",
   "author": "Pkkls",
   "homepage": "https://github.com/Pkkls/kick-chat-translator",
