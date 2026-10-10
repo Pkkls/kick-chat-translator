@@ -24,6 +24,7 @@ vi.mock('./memcache', () => ({ memCache: { get: () => undefined, set: vi.fn() } 
 import { TranslationPipeline } from './pipeline';
 import { markSkipped, showError, showThrottleIndicator } from './injector';
 import { defaultSettings } from '~/shared/settings';
+import { detectLanguage } from './langDetect';
 
 const JP = 'これはテストメッセージです';
 const wsMsg = (text: string) => ({ id: '1', text, channel: 'chan', username: 'user', isBot: false });
@@ -359,3 +360,29 @@ describe('TranslationPipeline — source language handed to the engine', () => {
     expect(hintOf()).toBe('ko');
   });
 });
+
+/**
+ * franc calls some short foreign lines English, and the English skip deleted
+ * them for English readers: 10 of 1085 foreign lines of the chat corpora.
+ * A letter English does not write vetoes the skip.
+ */
+describe('TranslationPipeline — the English skip', () => {
+  beforeEach(() => {
+    sendMock.mockReset();
+    sendMock.mockResolvedValue({ type: 'translate.result', payload: { ok: false, error: { code: 'x', message: 'x' } } });
+  });
+  const enReader = () => new TranslationPipeline({ ...defaultSettings(), enabled: true, targetLang: 'en', pauseWhenHidden: false });
+
+  it('sends an Italian line franc calls English', async () => {
+    expect(detectLanguage('è troppo forte')).toBe('en');
+    await enReader().onWebSocketMessage(wsMsg('è troppo forte'));
+    expect(sendMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('still skips English', async () => {
+    expect(detectLanguage('i cant believe he did that again')).toBe('en');
+    await enReader().onWebSocketMessage(wsMsg('i cant believe he did that again'));
+    expect(sendMock).not.toHaveBeenCalled();
+  });
+});
+

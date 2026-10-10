@@ -37,6 +37,18 @@ export function shouldDropBySourceLang(detected: string | undefined, settings: S
 const baseLang = (code: string): string => code.toLowerCase().split('-')[0] ?? code.toLowerCase();
 
 /**
+ * A letter English does not write: an accented Latin letter or any other
+ * script. franc calls short lines English often enough that the English skip
+ * deleted foreign chat for English readers: on the chat corpora 10 of 1085
+ * foreign lines, on Tatoeba 25, Italian "è troppo forte" among them. Half of
+ * those carry such a letter (5 and 11), and no English line of either corpus
+ * does, so the letter vetoes the skip at no cost to English chat.
+ */
+export function hasNonEnglishLetter(text: string): boolean {
+  return /(?![A-Za-z])\p{L}/u.test(text);
+}
+
+/**
  * Same language as the target? Compares base languages so regional variants count
  * as a match (pt ≡ pt-BR, zh ≡ zh-TW) — no point translating a message that's
  * already in the reader's language.
