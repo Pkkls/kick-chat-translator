@@ -38,6 +38,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   engine padded the placeholder with spaces.
 - **Traditional Chinese on the device engine came back simplified**: the
   engine is now asked for `zh-Hant`.
+- **The device engine translated from franc's guess**, wrong on 166 of 264
+  chat lines (Danish as Swedish, Catalan as Spanish). Those lines now go to
+  the cloud, which detects per line; looked-up languages and English stay
+  on device.
 - **Firefox ran two content scripts in a tab after an update**, each
   taking every chat message. The newest copy now names itself and the
   other stops.
