@@ -29,6 +29,22 @@ Hesap yok, analitik yok, bana ait sunucu yok. Sohbet metni yalnızca seçtiğin 
 
 İzinler, açık bir dille: ayarların ve çeviri önbelleği için depolama; çevirileri sohbette göstermek için kick.com erişimi; çağırabileceği motorlara erişim (Google, DeepL, MyMemory ve Lingva); sen izlerken çevirmenin hazır kalması için bir uyandırma zamanlayıcısı; ve kurulumda ya da güncellemede kendi betiğini zaten açık olan Kick sekmelerine yeniden yükleme izni, böylece o sekmeler sayfa yenilenmeden çevirmeye devam eder. Ayrıca daha yeni bir sürüm çıktığında haber vermek için GitHub sürümler sayfasını okur, bu istekle hiçbir şey göndermez.
 
+YENİLİKLER
+
+ngl, idc, lmk, wyd ve goat gibi sohbet kısaltmaları çeviriden önce açık yazılıyor; böylece başka dillerde okuyanlar, yazıldığı gibi harfler ya da yanlış bir tahmin yerine anlamını görüyor.
+
+Çevirmenin yanlış anladığı yaygın sohbet kelimeleri artık eklentinin kendi tablosundan, daha fazla dilde çevriliyor: valeu artık "mal oldu", yatta da "yatın üstünde" olarak dönmüyor; merci, gracias veya konnichiwa gibi selamlar İbraniceye, Farsçaya, Yunancaya, Ukraynacaya, Bulgarcaya, Bengalceye, Tamilceye, Geleneksel Çinceye ve Kantoncaya çevriliyor.
+
+Hızlı bir sohbette, paketin geri kalanından farklı bir dilde yazılmış satırlar çevrilmeden dönüyor ve hiç gösterilmiyordu. Artık her satır ayrı ayrı algılanıp çevriliyor.
+
+Daha az kayıp ya da yanlış okunan satır: İtalyanca veya başka bir dildeki kısa bir satır artık İngilizce sanılıp gizlenmiyor, bir emote adı gibi biten sıradan kelimeler (Rumence felul, Türkçe erkek) çeviriden önce silinmiyor, Arapça selamlar Farsça değil Arapça olarak okunuyor ve bir yanıt Kantoncada @bahsetmesini ve bağlantısını koruyor.
+
+Cihazınızda çevrilen Geleneksel Çince artık geleneksel karakterlerle dönüyor.
+
+Tarayıcınız için daha hafif: hiçbir Kick sekmesi açık değilken eklenti artık uyanmıyor ve yoğun bir sohbette mesaj başına daha az kaynak harcıyor.
+
+Firefox: bir güncellemeden sonra bir sekme eklentinin iki kopyasını çalıştırıp her mesajı iki kez çevirebiliyordu. Artık yalnızca biri çalışıyor.
+
 ÜCRETSİZ VE AÇIK KAYNAK
 
 MIT lisansı, kodun her satırı herkese açık: github.com/Pkkls/kick-chat-translator

@@ -1,11 +1,13 @@
-O botão de pausa da barra do chat agora pausa só o canal que você está assistindo. Antes ele desligava a tradução em todos os canais e em todas as abas, até você ligar de novo no popup.
+Abreviações do chat como ngl, idc, lmk, wyd e goat são escritas por extenso antes da tradução, então quem lê em outros idiomas recebe o significado em vez das letras como foram digitadas ou de um palpite errado.
 
-Quando o canal da aba atual está pausado, o popup mostra isso e oferece um botão Retomar.
+Palavras de chat que o tradutor entendia errado agora são traduzidas pela tabela da própria extensão, em mais idiomas: valeu não volta mais como "custou", nem yatta como "no iate", e cumprimentos como merci, gracias ou konnichiwa são traduzidos para hebraico, persa, grego, ucraniano, búlgaro, bengali, tâmil, chinês tradicional e cantonês.
 
-Uma aba do Kick que já estava aberta enquanto a extensão era instalada ou atualizada continua traduzindo. Antes ela parava até você recarregar a página.
+Num chat rápido, as linhas escritas num idioma diferente do resto do lote voltavam sem tradução e nunca apareciam. Agora cada linha é detectada e traduzida sozinha.
 
-Depois de mudar para outro canal sem recarregar, a tradução parava até você atualizar a página. Agora ela acompanha o chat que você está vendo.
+Menos linhas perdidas ou lidas errado: uma linha curta em italiano ou em outro idioma não é mais confundida com inglês e escondida, palavras comuns que terminam como nome de emote (felul em romeno, erkek em turco) não são mais apagadas antes da tradução, cumprimentos em árabe são lidos como árabe e não como persa, e uma resposta mantém sua @menção e seu link em cantonês.
 
-Até a sua primeira tradução, o popup aberto fora da Kick sugere abrir um canal e oferece um botão para isso.
+O chinês tradicional traduzido no seu computador agora volta em caracteres tradicionais.
 
-Os textos do chat, da barra, do popup e das configurações voltam a ter acentos em português, espanhol, francês e turco.
+Mais leve para o seu navegador: a extensão para de acordar quando nenhuma aba do Kick está aberta, e custa menos por mensagem num chat movimentado.
+
+Firefox: depois de uma atualização, uma aba podia rodar duas cópias da extensão e traduzir cada mensagem duas vezes. Agora só uma roda.

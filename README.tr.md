@@ -153,6 +153,22 @@ Hayır. Bağımsız bir açık kaynak projesi, Kick ile bağlantısı yok.
 
 ## Yenilikler
 
+### 3.1.0
+
+ngl, idc, lmk, wyd ve goat gibi sohbet kısaltmaları çeviriden önce açık yazılıyor; böylece başka dillerde okuyanlar, yazıldığı gibi harfler ya da yanlış bir tahmin yerine anlamını görüyor.
+
+Çevirmenin yanlış anladığı yaygın sohbet kelimeleri artık eklentinin kendi tablosundan, daha fazla dilde çevriliyor: valeu artık "mal oldu", yatta da "yatın üstünde" olarak dönmüyor; merci, gracias veya konnichiwa gibi selamlar İbraniceye, Farsçaya, Yunancaya, Ukraynacaya, Bulgarcaya, Bengalceye, Tamilceye, Geleneksel Çinceye ve Kantoncaya çevriliyor.
+
+Hızlı bir sohbette, paketin geri kalanından farklı bir dilde yazılmış satırlar çevrilmeden dönüyor ve hiç gösterilmiyordu. Artık her satır ayrı ayrı algılanıp çevriliyor.
+
+Daha az kayıp ya da yanlış okunan satır: İtalyanca veya başka bir dildeki kısa bir satır artık İngilizce sanılıp gizlenmiyor, bir emote adı gibi biten sıradan kelimeler (Rumence felul, Türkçe erkek) çeviriden önce silinmiyor, Arapça selamlar Farsça değil Arapça olarak okunuyor ve bir yanıt Kantoncada @bahsetmesini ve bağlantısını koruyor.
+
+Cihazınızda çevrilen Geleneksel Çince artık geleneksel karakterlerle dönüyor.
+
+Tarayıcınız için daha hafif: hiçbir Kick sekmesi açık değilken eklenti artık uyanmıyor ve yoğun bir sohbette mesaj başına daha az kaynak harcıyor.
+
+Firefox: bir güncellemeden sonra bir sekme eklentinin iki kopyasını çalıştırıp her mesajı iki kez çevirebiliyordu. Artık yalnızca biri çalışıyor.
+
 Her sürüm, nelerin değiştiği ve arkasındaki ölçümle birlikte:
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) ve [CHANGELOG.md](CHANGELOG.md).
 

@@ -155,6 +155,22 @@ Ne. Je to nezávislý open source projekt, bez vazby na Kick.
 
 ## Novinky
 
+### 3.1.0
+
+Zkratky z chatu jako ngl, idc, lmk, wyd nebo goat se před překladem rozepíšou, takže čtenáři v jiných jazycích dostanou jejich význam místo písmen tak, jak byla napsána, nebo chybného odhadu.
+
+Běžná slova z chatu, kterým překladač rozuměl špatně, se nyní překládají z vlastní tabulky rozšíření, a to do více jazyků: valeu se už nevrací jako „stálo to“, ani yatta jako „na jachtě“, a pozdravy jako merci, gracias nebo konnichiwa se překládají do hebrejštiny, perštiny, řečtiny, ukrajinštiny, bulharštiny, bengálštiny, tamilštiny, tradiční čínštiny a kantonštiny.
+
+V rychlém chatu se řádky napsané v jiném jazyce než zbytek dávky vracely nepřeložené a nikdy se nezobrazily. Nyní se každý řádek rozpozná a přeloží zvlášť.
+
+Méně ztracených nebo špatně přečtených řádků: krátký řádek v italštině nebo jiném jazyce už není považován za angličtinu a skryt, běžná slova končící jako název emote (rumunské felul, turecké erkek) se už před překladem nemažou, arabské pozdravy se čtou jako arabština, ne perština, a odpověď si v kantonštině zachová @zmínku i odkaz.
+
+Tradiční čínština přeložená ve vašem zařízení se nyní vrací v tradičních znacích.
+
+Šetrnější k vašemu prohlížeči: rozšíření se už neprobouzí, když není otevřená žádná karta Kick, a v rušném chatu stojí méně na každou zprávu.
+
+Firefox: po aktualizaci mohla karta spustit dvě kopie rozšíření a překládat každou zprávu dvakrát. Nyní běží jen jedna.
+
 Každé vydání, s tím, co se změnilo, a s měřením za tím:
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) a [CHANGELOG.md](CHANGELOG.md).
 

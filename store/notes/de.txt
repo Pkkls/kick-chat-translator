@@ -1,9 +1,13 @@
-Die Pause-Taste in der Chat-Leiste pausiert jetzt nur den Kanal, den du gerade schaust. Vorher schaltete sie die Übersetzung auf allen Kanälen und in allen Tabs aus, bis du sie im Popup wieder eingeschaltet hast.
+Chat-Abkürzungen wie ngl, idc, lmk, wyd und goat werden vor der Übersetzung ausgeschrieben, damit Leser anderer Sprachen ihre Bedeutung bekommen statt der Buchstaben wie getippt oder einer falschen Vermutung.
 
-Ist der Kanal im aktuellen Tab pausiert, zeigt das Popup das an und bietet eine Schaltfläche zum Fortsetzen (Resume).
+Gängige Chat-Wörter, die der Übersetzer falsch verstand, werden jetzt aus der eigenen Tabelle der Erweiterung übersetzt, in mehr Sprachen: valeu kommt nicht mehr als "es hat gekostet" zurück, yatta nicht mehr als "auf der Jacht", und Grüße wie merci, gracias oder konnichiwa werden ins Hebräische, Persische, Griechische, Ukrainische, Bulgarische, Bengalische, Tamilische, traditionelle Chinesisch und Kantonesische übersetzt.
 
-Ein Kick-Tab, der schon offen war, während die Erweiterung installiert oder aktualisiert wurde, übersetzt weiter. Früher hörte er auf, bis du die Seite neu geladen hast.
+In einem schnellen Chat kamen Zeilen in einer anderen Sprache als der Rest eines Stapels unübersetzt zurück und wurden nie angezeigt. Jetzt wird jede Zeile für sich erkannt und übersetzt.
 
-Nach einem Wechsel zu einem anderen Kanal ohne Neuladen stoppte die Übersetzung, bis du die Seite aktualisiert hast. Jetzt folgt sie dem angezeigten Chat.
+Weniger verlorene oder falsch gelesene Zeilen: eine kurze Zeile auf Italienisch oder in einer anderen Sprache wird nicht mehr für Englisch gehalten und ausgeblendet, gewöhnliche Wörter, die wie ein Emote-Name enden (rumänisch felul, türkisch erkek), werden vor der Übersetzung nicht mehr gelöscht, arabische Grüße werden als Arabisch statt Persisch gelesen, und eine Antwort behält auf Kantonesisch ihre @Erwähnung und ihren Link.
 
-Solange du noch nichts übersetzt hast, schlägt das Popup außerhalb von Kick vor, einen Kanal zu öffnen, und bietet dafür eine Schaltfläche.
+Traditionelles Chinesisch, das auf deinem Gerät übersetzt wird, kommt jetzt in traditionellen Schriftzeichen zurück.
+
+Leichter für deinen Browser: die Erweiterung wacht nicht mehr auf, wenn kein Kick-Tab offen ist, und kostet in einem vollen Chat weniger pro Nachricht.
+
+Firefox: nach einem Update konnte ein Tab zwei Kopien der Erweiterung ausführen und jede Nachricht zweimal übersetzen. Jetzt läuft nur noch eine.

@@ -1,11 +1,13 @@
-O botão de pausa da barra do chat passa a pausar apenas o canal que está a ver. Antes desligava a tradução em todos os canais e em todos os separadores, até a voltar a ligar no popup.
+Abreviaturas do chat como ngl, idc, lmk, wyd e goat são escritas por extenso antes da tradução, pelo que quem lê noutras línguas recebe o significado em vez das letras tal como foram escritas ou de um palpite errado.
 
-Quando o canal do separador atual está em pausa, o popup indica-o e oferece um botão Retomar.
+Palavras de chat que o tradutor percebia mal passam a ser traduzidas pela tabela da própria extensão, em mais línguas: valeu já não volta como "custou", nem yatta como "no iate", e cumprimentos como merci, gracias ou konnichiwa são traduzidos para hebraico, persa, grego, ucraniano, búlgaro, bengali, tâmil, chinês tradicional e cantonês.
 
-Um separador do Kick que já estava aberto enquanto a extensão era instalada ou atualizada continua a traduzir. Antes parava até recarregar a página.
+Num chat rápido, as linhas escritas numa língua diferente do resto do lote voltavam sem tradução e nunca eram mostradas. Agora cada linha é detetada e traduzida sozinha.
 
-Depois de mudar para outro canal sem recarregar, a tradução parava até atualizar a página. Agora acompanha o chat que está a ver.
+Menos linhas perdidas ou mal lidas: uma linha curta em italiano ou noutra língua já não é confundida com inglês e escondida, palavras comuns que terminam como o nome de um emote (felul em romeno, erkek em turco) já não são apagadas antes da tradução, os cumprimentos em árabe são lidos como árabe e não como persa, e uma resposta mantém a @menção e a ligação em cantonês.
 
-Até à sua primeira tradução, o popup aberto fora da Kick sugere abrir um canal e oferece um botão para isso.
+O chinês tradicional traduzido no seu computador volta agora em caracteres tradicionais.
 
-Os textos do chat, da barra, do popup e das definições voltam a ter os seus acentos em português, espanhol, francês e turco.
+Mais leve para o seu navegador: a extensão deixa de acordar quando nenhum separador do Kick está aberto, e custa menos por mensagem num chat movimentado.
+
+Firefox: após uma atualização, um separador podia correr duas cópias da extensão e traduzir cada mensagem duas vezes. Agora só corre uma.
