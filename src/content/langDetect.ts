@@ -1880,6 +1880,52 @@ const LETTRES_ARABES = /[ةىيكإأؤئ]/u;
 const MOTS_ARABES = /(^|[^\p{L}])(أن|لا|هل|هذه|هذا|عن|لم)([^\p{L}]|$)/u;
 const ARTICLE_ARABE = /(^|[^\p{L}])ال\p{L}/u;
 
+/**
+ * LES MOTS DU CHAT ARABE, pour les lignes que rien ci-dessus ne nomme.
+ *
+ * Les salutations les plus courantes d'un chat arabe ne portent ni lettre ni
+ * mot outil de l'arabe standard : `مرحبا`, `منور`, `شو صار`. Elles sortaient
+ * d'ici sans reponse et franc y lisait du PERSAN (`pes`), donc un lecteur
+ * persanophone voyait la salutation sautee comme "deja dans ta langue".
+ * Mesure sur `LANG_CHAT_AR_FA` avant correction : arabe 19 justes, 13 muettes,
+ * 8 fausses, dont 7 rendues `fa`.
+ *
+ * Meme critere (a) que les mots persans : on sait ce que le persan ecrit a la
+ * place, et aucun n'a de vie persane courante.
+ *
+ *   مرحبا  "salut". Le persan dit `سلام` ; son `مرحبا` "bravo" est litteraire.
+ *   صار    "c'est arrive", le `شو صار` / `وش صار` du chat. Le persan ecrit `شد`.
+ *   وش     "quoi" du Golfe. Le persan ecrit `چی`.
+ *   منور   "tu illumines le stream". Le persan dit `خوش اومدی`.
+ *   نورت   meme formule, a la deuxieme personne. Aucun equivalent persan.
+ *   حلو    "beau, bien". Le persan ecrit `خوب` ; son `حلوا` est un dessert.
+ *   مش     la negation egyptienne et levantine. Le persan ecrit `نه`.
+ *   عاش    "bravo, il a vecu". Le persan dit `ایول`.
+ *   تسلم   "merci, que tu sois sauf". Le persan ecrit `تسلیم` avec un ی.
+ *   هلا    "bienvenue". Le persan dit `سلام`.
+ *
+ * DEHORS, et ce sont les pieges du corpus : `ممتاز`, `تمام`, `خلاص` et `بس`.
+ * Le persan les ecrit tous les quatre, `ممتاز بود`, `تمام شد`, `خلاص شدم`,
+ * `بس کن`, et `تمام` et `بس` sont deja dans les lignes persanes de Tatoeba.
+ * `شو` aussi, que le persan emprunte pour "show".
+ *
+ * La reponse n'est PAS sure : elle nourrit les filtres et le drapeau, comme
+ * l'arabizi, et ne part pas au moteur comme `sl`. Le corpus est ecrit a la
+ * main, par qui a choisi les mots ; annoncer `sl=ar` sur cette base n'a pas ete
+ * mesure ailleurs.
+ */
+const MOTS_ARABES_CHAT =
+  /(^|[^\p{L}])(مرحبا|صار|وش|منور|نورت|حلو|مش|عاش|تسلم|هلا)([^\p{L}]|$)/u;
+
+/** Une ligne arabe de chat, en dehors de tout ce que le pre-controle sait lire. */
+function arabeDeChat(text: string): boolean {
+  if (LETTRES_OURDOUES.test(text) || LETTRES_JAWI.test(text) || LETTRES_PERSANES.test(text))
+    return false;
+  const lettres = [...text].filter((c) => /\p{L}/u.test(c));
+  const arabes = lettres.filter((c) => /[\u0600-\u06ff]/u.test(c)).length;
+  return arabes * 2 > lettres.length && MOTS_ARABES_CHAT.test(text);
+}
+
 function arabeOuPersan(text: string): string | undefined {
   if (LETTRES_OURDOUES.test(text)) return undefined;
   if (LETTRES_JAWI.test(text)) return 'ms';
@@ -2438,6 +2484,7 @@ export function detectLanguage(text: string): string | undefined {
   if (romanise) return romanise;
 
   if (isArabizi(trimmed)) return 'ar';
+  if (arabeDeChat(trimmed)) return 'ar';
 
   const francCode = franc(trimmed, { minLength: 3 });
   if (francCode === 'und') {
