@@ -98,8 +98,30 @@ describe('getSemanticOverride', () => {
     expect(getSemanticOverride('Bonjour', 'ja')).toBe('こんにちは');
   });
 
-  it('falls back from zh-tw to zh base', () => {
+  it('answers zh-tw in Traditional characters, not from the Simplified column', () => {
     expect(getSemanticOverride('bonjour', 'zh-tw')).toBe('你好');
+    expect(getSemanticOverride('merci', 'zh-tw')).toBe('謝謝');
+    expect(getSemanticOverride('good luck', 'zh-tw')).toBe('祝你好運');
+  });
+
+  // Measured on the free Google endpoint, each of these came back wrong alone:
+  // valeu as "it cost" in all nine, merci as "mercy" in Greek, Bengali and
+  // Tamil, gracias as "grace" in Persian, bonjour as "good luck" in Cantonese,
+  // konnichiwa and arigatou spelled out phonetically.
+  it('covers the nine non-Latin targets the first table left out', () => {
+    expect(getSemanticOverride('valeu', 'he')).toBe('תודה');
+    expect(getSemanticOverride('gracias', 'fa')).toBe('ممنون');
+    expect(getSemanticOverride('merci', 'el')).toBe('Ευχαριστώ');
+    expect(getSemanticOverride('konnichiwa', 'uk')).toBe('Привіт');
+    expect(getSemanticOverride('arigatou', 'bg')).toBe('Благодаря');
+    expect(getSemanticOverride('merci', 'bn')).toBe('ধন্যবাদ');
+    expect(getSemanticOverride('merci', 'ta')).toBe('நன்றி');
+    expect(getSemanticOverride('bonjour', 'yue')).toBe('你好');
+    for (const key of ['hola', 'au revoir', 'gg wp', 'kawaii', "let's go", 'iyi geceler']) {
+      for (const lang of ['he', 'fa', 'el', 'uk', 'bg', 'bn', 'ta', 'zh-tw', 'yue']) {
+        expect(getSemanticOverride(key, lang), `${key} -> ${lang}`).toBeTruthy();
+      }
+    }
   });
 
   it('returns undefined for unknown expressions', () => {
