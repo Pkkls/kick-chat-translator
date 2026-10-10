@@ -160,6 +160,17 @@ reads dist/, so it serialises behind any build. D touches no code.
   A wrong `ar` hides a Persian line from an Arabic reader; a silent Arabic
   line goes to the engine, which reads it. Reverted; the reason sits by the
   table and `langDetect.test.ts` holds `ممنون` and `نترس` silent.
+- [x] **Arabic chat greetings were read as Persian.** `مرحبا`, `منور`,
+  `شو صار` carry no letter or function word of standard Arabic, leave
+  `arabeOuPersan` without an answer, and franc read them `pes`. Measured
+  2026-10-09 on `LANG_CHAT_AR_FA` (40 Arabic dialect chat lines, 40 Persian,
+  hand-written before tuning by the session that then picked the words):
+  Arabic 19 right / 13 silent / 8 wrong (7 of them `fa`) before, 31 / 7 / 2
+  after; Persian 30 / 9 / 1 before and after. Ten Arabic-only chat words
+  (`MOTS_ARABES_CHAT`) feed `detectLanguage` only, not `sl`. Out on purpose:
+  `ممتاز`, `تمام`, `خلاص`, `بس`, which Persian writes too (the corpus carries
+  them as Persian traps). Tatoeba matrix unchanged. Still wanted: real Kick
+  chat in Arabic and Persian to check the words against.
 - [x] **Chinese never gets a confident source language, alone among the five.**
   ar, ja, ko and ru all come out of `detectByScript` as looked-up facts and go
   to the engine as `sl`; zh is deferred to franc by `if (pct(han)) return
