@@ -11,13 +11,6 @@ export interface TranslationRequest {
   text: string;
   targetLang: string;
   sourceLangHint?: string;
-  /**
-   * The content script's statistical guess at the source, when it has no
-   * looked-up one. Never sent to an engine: a guessed source makes it translate
-   * from the wrong language. It only keeps lines that are probably in different
-   * languages out of the same joined Google request.
-   */
-  langGuess?: string;
   channel?: string;
   /** Surrounding chat lines (untranslated) to disambiguate — DeepL `context`. */
   context?: string;

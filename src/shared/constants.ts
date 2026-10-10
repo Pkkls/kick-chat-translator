@@ -16,6 +16,9 @@ export const PROVIDER_ENDPOINTS = {
 // Keep in sync with host_permissions in manifest.config.ts.
 export const LINGVA_POOL = ['https://lingva.lunar.icu', 'https://lingva.ml'];
 
+// The same host's multi-line endpoint: repeated `q` fields, one answer per line.
+export const GOOGLE_MULTI_ENDPOINT = 'https://translate.googleapis.com/translate_a/t';
+
 // Google web-endpoint client params; rotating helps avoid per-(IP,client) throttling.
 export const GOOGLE_CLIENTS = ['gtx', 'dict-chrome-ex'];
 

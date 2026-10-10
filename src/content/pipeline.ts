@@ -240,9 +240,8 @@ export class TranslationPipeline {
     if (typeof prepared === 'string') return;
     // Same source hint as the display path. The warm pass usually reaches the
     // worker first, so the answer it caches is the one the reader sees, and a
-    // hintless request is the one that rides a mixed-language Google batch.
+    // hint makes it cache an answer translated from a guess.
     const hint = confidentLanguage(prepared.real);
-    const guess = hint ? undefined : prepared.detected;
     try {
       await send({
         type: 'translate',
@@ -252,7 +251,6 @@ export class TranslationPipeline {
           targetLang: this.effTarget,
           channel: msg.channel,
           ...(hint ? { sourceLangHint: hint } : {}),
-          ...(guess ? { langGuess: guess } : {}),
         },
       });
     } catch (err: unknown) {
@@ -354,8 +352,7 @@ export class TranslationPipeline {
     // language, and the result is either dropped for matching the original or
     // shown while saying something else. `sourceLang` still sizes the context
     // window above, where being wrong costs nothing.
-    const hint = confidentLanguage(real);
-    const outcome = await this.requestCloud(real, this.effTarget, msg.channel, context, false, hint, hint ? undefined : sourceLang);
+    const outcome = await this.requestCloud(real, this.effTarget, msg.channel, context, false, confidentLanguage(real));
     if (!outcome) {
       showError(msg.injectionTarget, localised('errTranslateFailed', 'Translation failed'), () => void this.forceRetranslate(msg, real));
       return;
@@ -428,7 +425,6 @@ export class TranslationPipeline {
     context: string,
     noCache: boolean,
     sourceLang?: string,
-    langGuess?: string,
   ): Promise<TranslationOutcome | undefined> {
     try {
       // The whole round trip to the worker and back. Measured against
@@ -443,7 +439,6 @@ export class TranslationPipeline {
           targetLang: target,
           channel,
           ...(sourceLang ? { sourceLangHint: sourceLang } : {}),
-          ...(langGuess ? { langGuess } : {}),
           ...(context ? { context } : {}),
           ...(noCache ? { noCache: true } : {}),
         },

@@ -57,7 +57,11 @@ reads dist/, so it serialises behind any build. D touches no code.
   (`langGuess`, never sent as `sl`), else go alone, and unchanged lines in a
   guessed group are asked again. Replayed: 83 of 84 right, 0 untouched, English
   majority unchanged at 247 of 252. Cost: 215 requests for those 42 mixed
-  batches against 42; a one-language chat still forms one group. Not measured:
+  batches against 42. **Superseded the same day**: `translate_a/t` takes each
+  line as its own `q` and detects each one, so a batch is one POST again.
+  Replayed: 84 of 84 foreign and 252 of 252 English lines equal to their
+  translation alone, per-line detection right on 182 of 184, 42 requests; the
+  real `googleProvider` was run once against the live endpoint. Not measured:
   the same-language scenario on all 42 (the run crashed and Google throttled
   this IP to about one answer every ten seconds), only en:en, 12 of 12 lost.
 - [x] **The emote-name stripper deleted ordinary words.** The suffix rule took
