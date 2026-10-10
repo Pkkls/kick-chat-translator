@@ -112,6 +112,15 @@ describe('TranslationPipeline — websocket warm vs DOM display', () => {
     expect(sendMock).toHaveBeenCalled();
   });
 
+  it('sends the same source hint from the warm pass as from the display path', async () => {
+    const pipeline = makePipeline();
+    await pipeline.onWebSocketMessage(wsMsg(JP));
+    await pipeline.onDomMessage(domMsg(JP));
+    await flush();
+    const hints = sendMock.mock.calls.map((c) => c[0]?.payload?.sourceLangHint as string | undefined);
+    expect(hints).toEqual(['ja', 'ja']);
+  });
+
   it('still skips a message the same user just repeated', async () => {
     const pipeline = makePipeline();
     await pipeline.onDomMessage(domMsg(JP));

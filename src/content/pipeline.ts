@@ -238,10 +238,20 @@ export class TranslationPipeline {
     if (this.settings.engineMode === 'local-only') return;
     const prepared = this.prepare(msg.text, msg, { dedup: false });
     if (typeof prepared === 'string') return;
+    // Same source hint as the display path. The warm pass usually reaches the
+    // worker first, so the answer it caches is the one the reader sees, and a
+    // hintless request is the one that rides a mixed-language Google batch.
+    const hint = confidentLanguage(prepared.real);
     try {
       await send({
         type: 'translate',
-        payload: { messageId: `ws:${msg.id}`, text: prepared.real, targetLang: this.effTarget, channel: msg.channel },
+        payload: {
+          messageId: `ws:${msg.id}`,
+          text: prepared.real,
+          targetLang: this.effTarget,
+          channel: msg.channel,
+          ...(hint ? { sourceLangHint: hint } : {}),
+        },
       });
     } catch (err: unknown) {
       log.debug('ws warmup failed', err);
