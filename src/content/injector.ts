@@ -415,8 +415,29 @@ const FLOAT_LANG_MENU_ID = 'kt-float-lang-menu';
  * mount was fixed. Same resolver as the mount, deliberately not a second
  * mechanism.
  */
+/**
+ * The bar this script mounted last, kept so the per-message updates below do
+ * not have to look for it.
+ *
+ * `findChatPanel` tells the panel on screen from the hidden copy by asking for
+ * its boxes, and asking for boxes right after a translation was written into a
+ * row forces the browser to lay the page out there and then. The counter and
+ * the provider tooltip did that on every translated line, twice: measured on
+ * the offline chat at 20 messages a second, it was 450 ms of the script's
+ * 670 ms and one forced layout per line.
+ *
+ * The bar mounted last is the live one by construction, since `mountBar` only
+ * mounts into the panel on screen. When Kick hides that panel on a channel
+ * switch, the bar guard in index.ts mounts a new one within half a second and
+ * this reference follows it; until then an update lands on a bar nobody sees,
+ * which is what a miss already did.
+ */
+let liveBar: HTMLElement | null = null;
+
 function findBar(): HTMLElement | null {
-  return findChatPanel()?.querySelector<HTMLElement>(`#${FLOAT_ID}`) ?? null;
+  if (liveBar?.isConnected) return liveBar;
+  liveBar = findChatPanel()?.querySelector<HTMLElement>(`#${FLOAT_ID}`) ?? null;
+  return liveBar;
 }
 
 /** Each bar's own painter for its language button, so an update redraws it the one way the mount does. */
@@ -443,6 +464,7 @@ export function mountFloatingBar(container: Element, settings: Settings, h: Floa
 
   const bar = document.createElement('div');
   bar.id = FLOAT_ID;
+  liveBar = bar;
   bar.className = 'kt-float';
 
   const dot = document.createElement('span');
@@ -761,6 +783,7 @@ export function unmountFloatingBar(): void {
   // off screen, scoping this would strand it there for good. Removing every
   // match is what "unmount" means, and it cannot pick the wrong one.
   for (const stale of document.querySelectorAll(`#${FLOAT_ID}`)) stale.remove();
+  liveBar = null;
   // Le panneau n'est plus un enfant de la barre : le retirer avec elle, sinon
   // un remontage par la SPA de Kick en laisse un par passage.
   for (const stale of document.querySelectorAll(`#${FLOAT_LANG_MENU_ID}`)) stale.remove();
