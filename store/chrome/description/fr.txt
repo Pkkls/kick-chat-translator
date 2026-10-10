@@ -26,6 +26,18 @@ Pas de compte, pas d'analytics, pas de serveur à moi. Elle demande le stockage,
 
 NOUVEAUTÉS
 
+Le bouton pause de la barre du chat ne met plus en pause que la chaîne que tu regardes. Avant, il coupait la traduction sur toutes les chaînes et dans tous les onglets, jusqu'à ce que tu la réactives depuis le popup.
+
+Quand la chaîne de l'onglet en cours est en pause, le popup l'indique et propose un bouton Reprendre.
+
+Un onglet Kick déjà ouvert pendant l'installation ou la mise à jour de l'extension continue de traduire. Avant, il s'arrêtait jusqu'à ce que tu recharges la page.
+
+Après un passage sur une autre chaîne sans recharger, la traduction s'arrêtait jusqu'à ce que tu actualises la page. Elle suit maintenant le chat affiché.
+
+Tant que tu n'as rien traduit, le popup ouvert ailleurs que sur Kick t'invite à ouvrir une chaîne et propose un bouton pour le faire.
+
+Les textes du chat, de la barre, du popup et des réglages retrouvent leurs accents en français, en espagnol, en portugais et en turc.
+
 Masque les lignes du chat qui contiennent un mot de ton choix. Ajoute tes mots-clés dans les réglages des filtres, un par ligne : une ligne qui en contient un, en majuscules ou non, disparaît du chat au lieu d'être traduite. Pratique contre les commandes de bots comme !fish qui inondent certaines chaînes.
 
 Neuf choses que l'extension décidait pour toi t'appartiennent : taille du texte, interligne et police de la ligne traduite, l'air autour de son bloc, la couleur d'accent parmi quatre mesurées pour leur contraste, le thème du chat figé en sombre ou en clair au lieu de suivre la chaîne, une langue de lecture retenue par chaîne, et deux raccourcis clavier. Chaque valeur par défaut est ce que l'extension faisait déjà : rien ne bouge tant que tu ne bouges rien.

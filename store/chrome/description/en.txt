@@ -26,6 +26,18 @@ No account, no analytics, no server of mine. It asks for storage, for a wake-up 
 
 WHAT'S NEW
 
+The pause button on the chat bar now pauses only the channel you are watching. Before, it turned translation off on every channel and in every tab, until you switched it back on in the popup.
+
+When the channel in your current tab is paused, the popup says so and offers a Resume button.
+
+A Kick tab that was already open while the extension was installed or updated keeps translating. It used to stop until you reloaded the page.
+
+After switching to another channel without reloading, translation stopped until you refreshed the page. It now follows the chat you are looking at.
+
+Until your first translation, the popup opened outside Kick says to open a channel and offers a button that does.
+
+The texts in the chat, the bar, the popup and the settings carry their accents again in French, Spanish, Portuguese and Turkish.
+
 Hide chat lines that contain a word you choose. Add keywords in the filter settings, one per line: a line containing one, in any case, disappears from the chat instead of being translated. Handy against bot commands like !fish that flood some channels.
 
 Nine things the extension used to decide for you are yours now: text size, line spacing and typeface for the translated line, how much air its block gets, the accent colour out of four measured for contrast, the chat theme pinned dark or light instead of following the channel, a reading language remembered per channel, and two keyboard shortcuts. Every default is what the extension already did, so nothing moves until you move it.

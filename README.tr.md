@@ -153,6 +153,20 @@ Hayır. Bağımsız bir açık kaynak projesi, Kick ile bağlantısı yok.
 
 ## Yenilikler
 
+### 3.0.2
+
+Sohbet çubuğundaki duraklatma düğmesi artık yalnızca izlediğiniz kanalı duraklatıyor. Önceden çeviriyi tüm kanallarda ve tüm sekmelerde, siz açılır pencereden yeniden açana kadar kapatıyordu.
+
+Geçerli sekmedeki kanal duraklatılmışsa açılır pencere bunu belirtir ve bir Devam et düğmesi sunar.
+
+Uzantı yüklenirken veya güncellenirken zaten açık olan bir Kick sekmesi çevirmeye devam ediyor. Önceden sayfayı yeniden yükleyene kadar duruyordu.
+
+Sayfayı yenilemeden başka bir kanala geçtiğinizde çeviri, sayfayı yenileyene kadar duruyordu. Artık ekrandaki sohbeti takip ediyor.
+
+İlk çevirinizi yapana kadar, Kick dışında açılan açılır pencere bir kanal açmayı önerir ve bunun için bir düğme sunar.
+
+Sohbet, çubuk, açılır pencere ve ayarlardaki metinler Türkçe, Fransızca, İspanyolca ve Portekizcede yeniden doğru harflerle yazılıyor.
+
 Her sürüm, nelerin değiştiği ve arkasındaki ölçümle birlikte:
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) ve [CHANGELOG.md](CHANGELOG.md).
 

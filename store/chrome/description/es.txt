@@ -26,6 +26,18 @@ Sin cuenta, sin analíticas, sin servidor mío. Pide almacenamiento, un temporiz
 
 NOVEDADES
 
+El botón de pausa de la barra del chat ahora pausa solo el canal que estás viendo. Antes desactivaba la traducción en todos los canales y en todas las pestañas, hasta que la volvías a activar desde el popup.
+
+Cuando el canal de la pestaña actual está en pausa, el popup lo indica y ofrece un botón Reanudar.
+
+Una pestaña de Kick que ya estaba abierta mientras se instalaba o actualizaba la extensión sigue traduciendo. Antes se detenía hasta que recargabas la página.
+
+Después de cambiar a otro canal sin recargar, la traducción se detenía hasta que actualizabas la página. Ahora sigue el chat que estás viendo.
+
+Hasta tu primera traducción, el popup abierto fuera de Kick te invita a abrir un canal y ofrece un botón para hacerlo.
+
+Los textos del chat, de la barra, del popup y de los ajustes vuelven a llevar sus tildes en español, francés, portugués y turco.
+
 Oculta las líneas del chat que contienen una palabra que tú eliges. Añade tus palabras clave en los ajustes de filtros, una por línea: una línea que contenga una, en mayúsculas o no, desaparece del chat en lugar de traducirse. Útil contra los comandos de bots como !fish que inundan algunos canales.
 
 Nueve cosas que la extensión decidía por ti ahora son tuyas: tamaño del texto, interlineado y tipografía de la línea traducida, el aire alrededor de su bloque, el color de acento entre cuatro medidos por contraste, el tema del chat fijado en oscuro o claro en vez de seguir al canal, un idioma de lectura recordado por canal, y dos atajos de teclado. Cada valor por defecto es lo que la extensión ya hacía: nada se mueve hasta que tú lo muevas.

@@ -154,6 +154,20 @@ No. It is an independent open-source project, not affiliated with Kick.
 
 ## What's new
 
+### 3.0.2
+
+The pause button on the chat bar now pauses only the channel you are watching. Before, it turned translation off on every channel and in every tab, until you switched it back on in the popup.
+
+When the channel in your current tab is paused, the popup says so and offers a Resume button.
+
+A Kick tab that was already open while the extension was installed or updated keeps translating. It used to stop until you reloaded the page.
+
+After switching to another channel without reloading, translation stopped until you refreshed the page. It now follows the chat you are looking at.
+
+Until your first translation, the popup opened outside Kick says to open a channel and offers a button that does.
+
+The texts in the chat, the bar, the popup and the settings carry their accents again in French, Spanish, Portuguese and Turkish.
+
 Every release, with what changed and the measurement behind it:
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) and [CHANGELOG.md](CHANGELOG.md).
 

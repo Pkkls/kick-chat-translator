@@ -156,6 +156,20 @@ Non. C'est un projet open source indépendant, sans lien avec Kick.
 
 ## Nouveautés
 
+### 3.0.2
+
+Le bouton pause de la barre du chat ne met plus en pause que la chaîne que tu regardes. Avant, il coupait la traduction sur toutes les chaînes et dans tous les onglets, jusqu'à ce que tu la réactives depuis le popup.
+
+Quand la chaîne de l'onglet en cours est en pause, le popup l'indique et propose un bouton Reprendre.
+
+Un onglet Kick déjà ouvert pendant l'installation ou la mise à jour de l'extension continue de traduire. Avant, il s'arrêtait jusqu'à ce que tu recharges la page.
+
+Après un passage sur une autre chaîne sans recharger, la traduction s'arrêtait jusqu'à ce que tu actualises la page. Elle suit maintenant le chat affiché.
+
+Tant que tu n'as rien traduit, le popup ouvert ailleurs que sur Kick t'invite à ouvrir une chaîne et propose un bouton pour le faire.
+
+Les textes du chat, de la barre, du popup et des réglages retrouvent leurs accents en français, en espagnol, en portugais et en turc.
+
 Chaque version, avec ce qui a changé et la mesure derrière :
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) et [CHANGELOG.md](CHANGELOG.md).
 

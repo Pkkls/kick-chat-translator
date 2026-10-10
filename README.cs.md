@@ -155,6 +155,20 @@ Ne. Je to nezávislý open source projekt, bez vazby na Kick.
 
 ## Novinky
 
+### 3.0.2
+
+Tlačítko pauzy na liště chatu nyní pozastaví jen kanál, který právě sledujete. Dříve vypnulo překlad na všech kanálech a ve všech kartách, dokud jste ho znovu nezapnuli ve vyskakovacím okně.
+
+Když je kanál v aktuální kartě pozastavený, vyskakovací okno to oznámí a nabídne tlačítko Pokračovat.
+
+Karta Kick, která byla otevřená během instalace nebo aktualizace rozšíření, dál překládá. Dříve se zastavila, dokud jste stránku znovu nenačetli.
+
+Po přepnutí na jiný kanál bez opětovného načtení se překlad zastavil, dokud jste stránku neobnovili. Nyní sleduje chat, který máte před sebou.
+
+Dokud nic nepřeložíte, vyskakovací okno otevřené mimo Kick vás vyzve k otevření kanálu a nabídne tlačítko, které to udělá.
+
+Texty v chatu, na liště, ve vyskakovacím okně a v nastavení mají znovu diakritiku ve francouzštině, španělštině, portugalštině a turečtině.
+
 Každé vydání, s tím, co se změnilo, a s měřením za tím:
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) a [CHANGELOG.md](CHANGELOG.md).
 

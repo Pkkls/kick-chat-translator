@@ -26,6 +26,18 @@ Přeskočit boty, blokovat uživatele nebo kanály, nebo omezit, které zdrojov�
 
 NOVINKY
 
+Tlačítko pauzy na liště chatu nyní pozastaví jen kanál, který právě sledujete. Dříve vypnulo překlad na všech kanálech a ve všech kartách, dokud jste ho znovu nezapnuli ve vyskakovacím okně.
+
+Když je kanál v aktuální kartě pozastavený, vyskakovací okno to oznámí a nabídne tlačítko Pokračovat.
+
+Karta Kick, která byla otevřená během instalace nebo aktualizace rozšíření, dál překládá. Dříve se zastavila, dokud jste stránku znovu nenačetli.
+
+Po přepnutí na jiný kanál bez opětovného načtení se překlad zastavil, dokud jste stránku neobnovili. Nyní sleduje chat, který máte před sebou.
+
+Dokud nic nepřeložíte, vyskakovací okno otevřené mimo Kick vás vyzve k otevření kanálu a nabídne tlačítko, které to udělá.
+
+Texty v chatu, na liště, ve vyskakovacím okně a v nastavení mají znovu diakritiku ve francouzštině, španělštině, portugalštině a turečtině.
+
 Skryjte řádky chatu, které obsahují slovo podle vaší volby. Přidejte klíčová slova do nastavení filtrů, jedno na řádek: řádek, který některé z nich obsahuje, bez ohledu na velikost písmen, z chatu zmizí, místo aby se překládal. Hodí se proti příkazům botů jako !fish, které zaplavují některé kanály.
 
 Devět věcí, o kterých rozšíření rozhodovalo za vás, je teď vašich: velikost textu, řádkování a písmo přeložené řádky, vzduch kolem jejího bloku, barva zvýraznění ze čtyř měřených na kontrast, motiv chatu připnutý na tmavý nebo světlý místo sledování kanálu, jazyk čtení zapamatovaný pro každý kanál a dvě klávesové zkratky. Každá výchozí hodnota je to, co rozšíření dělalo už dřív: nic se nehne, dokud s tím nehnete vy.
