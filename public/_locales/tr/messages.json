@@ -4,7 +4,7 @@
     "description": "Extension and store listing name: the brand, then the query this language types. 45 character limit."
   },
   "extDescription": {
-    "message": "Kick canlı sohbetini akarken kendi dilinize, yanıtlarınızı da kanalın diline çevirir. Google veya DeepL, hesap gerekmez.",
+    "message": "Kick için ücretsiz canlı sohbet çevirici: sohbeti kendi dilinizde okuyun, kanalın dilinde yanıt verin. Hesap ve ayar gerekmez.",
     "description": "Store listing blurb and manifest description. 132 character limit."
   }
 }

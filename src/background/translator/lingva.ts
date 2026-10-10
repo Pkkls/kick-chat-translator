@@ -22,6 +22,15 @@ function instancesFor(ctx: ProviderContext): string[] {
 // front of the public instances commonly cap the request line at 4 KB.
 const MAX_ENCODED_TEXT = 4000;
 
+// Lingva validates codes against its own list (lingva-scraper's languages.json)
+// and answers 400 to the rest, which the chain reads as 'unsupported'. Three of
+// ours are spelled differently there, so Hebrew, Traditional Chinese and
+// Brazilian Portuguese never reached Lingva at all, as target or as source.
+const LINGVA_TARGET: Record<string, string> = { he: 'iw', 'zh-tw': 'zh_HANT', 'pt-br': 'pt' };
+// As a source Lingva folds zh_HANT into zh. Cantonese is in neither list: its
+// lines go out on auto detection rather than not at all.
+const LINGVA_SOURCE: Record<string, string> = { he: 'iw', 'zh-tw': 'zh', 'pt-br': 'pt', yue: 'auto' };
+
 async function call(req: TranslationRequest, ctx: ProviderContext): Promise<ProviderResult> {
   // 'unsupported' is the code the chain cascades on without counting it against
   // the provider's health, which is what this is: Lingva is fine, this one
@@ -36,12 +45,14 @@ async function call(req: TranslationRequest, ctx: ProviderContext): Promise<Prov
   }
 
   const instances = instancesFor(ctx);
-  const source = req.sourceLangHint ?? 'auto';
+  const hint = req.sourceLangHint?.toLowerCase();
+  const source = hint ? (LINGVA_SOURCE[hint] ?? hint) : 'auto';
+  const target = LINGVA_TARGET[req.targetLang.toLowerCase()] ?? req.targetLang;
   let lastErr: ProviderError | undefined;
 
   for (const raw of instances) {
     const base = raw.replace(/\/+$/, '');
-    const url = `${base}/api/v1/${encodeURIComponent(source)}/${encodeURIComponent(req.targetLang)}/${encodedText}`;
+    const url = `${base}/api/v1/${encodeURIComponent(source)}/${encodeURIComponent(target)}/${encodedText}`;
     try {
       const res = await fetch(url, { signal: ctx.signal, credentials: 'omit' });
       if (res.status === 429) throw new ProviderError('lingva', 'rate_limit', 'Lingva: rate-limited');

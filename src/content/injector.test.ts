@@ -846,11 +846,12 @@ describe('hover to translate', () => {
   /**
    * Why that guard walks children instead of asking for `:scope > .marker`.
    *
-   * This DOM returns null for a `:scope` selector that a browser matches, so a
-   * guard written that way is right in production and invisible here: the row
-   * above armed itself twice and nothing in the suite could say so. Asserted
-   * rather than left as a comment, because the day it starts working is the day
-   * someone can go back to the shorter form.
+   * happy-dom 15 returned null for a `:scope` selector that a browser matches,
+   * so a guard written that way was right in production and invisible here: the
+   * row above armed itself twice and nothing in the suite could say so. It was
+   * asserted rather than left as a comment, and happy-dom 20 answers it: the
+   * shorter form would now be seen by the suite, and the walk stays because it
+   * is just as short.
    *
    * `showLoading` carried the same shape and now walks children too, so its
    * guard is asserted below rather than trusted.
@@ -878,13 +879,13 @@ describe('hover to translate', () => {
     expect([...row.children].filter((c) => c.classList.contains('kt-loading'))).toHaveLength(1);
   });
 
-  it('records that this DOM does not answer a scope selector', () => {
+  it('records that this DOM answers a scope selector', () => {
     const row = document.createElement('div');
     const mark = document.createElement('span');
     mark.className = 'kt-hover-armed';
     row.appendChild(mark);
     expect(row.querySelector('.kt-hover-armed')).not.toBeNull();
-    expect(row.querySelector(':scope > .kt-hover-armed')).toBeNull();
+    expect(row.querySelector(':scope > .kt-hover-armed')).toBe(mark);
   });
 
   it('translates when the pointer rests on the line', () => {

@@ -84,6 +84,17 @@ describe('the inline emote-name stripper leaves ordinary words alone', () => {
     'que configuracion usas para el raton',
     'esto es completamente diferente amigo',
     'obrigado pelo armazenamento gratuito',
+    // lul, kek, jam, hug, love, wave and dab end ordinary words. Measured on the
+    // 30000 most frequent words of 37 languages, the open suffix rule deleted 309
+    // of them, 23 in every 10000 words of Romanian text.
+    'felul in care joaca copilul e incredibil',
+    'erkek arkadasi geldi mi',
+    'a gyerekek is nezik',
+    'espero que vejam o jogo e sejam felizes',
+    'jutri se ne strinjam s tabo',
+    'mes ejam majas',
+    'that thug stole the microwave and a glove',
+    'Ta kardab oma isa',
   ];
 
   for (const phrase of intacts) {
@@ -98,5 +109,8 @@ describe('the inline emote-name stripper leaves ordinary words alone', () => {
     );
     expect(parseKickContent('eso fue OMEGALUL de verdad').realText).toBe('eso fue de verdad');
     expect(parseKickContent('mira namedarumajankiss2 ahora').realText).toBe('mira ahora');
+    for (const name of ['CATJAM', 'catjam', 'peepohug', 'peepoLove', 'ezclap', 'omegalul', 'pepejam', 'dogjam']) {
+      expect(parseKickContent(`hola ${name} amigo`).realText).toBe('hola amigo');
+    }
   });
 });

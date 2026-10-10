@@ -102,6 +102,13 @@ describe('les langues proposees que rien ne detectait', () => {
     expect(detectLanguage('selamat petang semua apa khabar hari ini di siaran ini')).toBe('ms');
   });
 
+  // L'inverse du malais, et voulu : franc rend `arb` sur `ممنون`, qui est
+  // persan. La raison et la mesure sont a cote de la table, dans languages.ts.
+  it('ne nomme pas arabe ce que franc seul appelle arb', () => {
+    expect(detectLanguage('ممنون')).toBeUndefined();
+    expect(detectLanguage('نترس')).toBeUndefined();
+  });
+
   it('detecte l hebreu par son ecriture, que franc-min ne couvre pas', () => {
     expect(detectLanguage('ערב טוב לכולם מה שלומכם היום בשידור החי הזה')).toBe('he');
   });
@@ -342,5 +349,15 @@ describe('les langues romanisees dans la detection ordinaire', () => {
 
   it('ne devient pas une langue source sure, le moteur garde la main', () => {
     expect(confidentLanguage('privet kak dela segodnya')).toBeUndefined();
+  });
+});
+
+describe('detection memo', () => {
+  it('answers the same after its entries have been evicted', () => {
+    const line = 'je ne sais pas pourquoi il fait ca';
+    const first = [detectLanguage(line), confidentLanguage(line)];
+    for (let i = 0; i < 2000; i++) detectLanguage(`filler line number ${i}`);
+    expect([detectLanguage(line), confidentLanguage(line)]).toEqual(first);
+    expect(first[0]).toBe('fr');
   });
 });

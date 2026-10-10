@@ -1,29 +1,34 @@
-Open a Kick stream where the chat is in a language you don't read. Each message gets its translation right underneath, as it comes in. A green bar at the top of chat tells you it's running.
+Kick Chat Translator is a free live chat translator for Kick. Read any stream's chat in your own language, and reply in the channel's language, right inside the chat.
 
-Type a reply and a preview shows it in the channel's language above the chat box. Click the preview or press Tab and that version replaces what you typed, ready for you to send.
+Watching a Turkish, Spanish, Russian or Arabic stream and can't follow the chat? Install, open the stream, and every message shows its translation right under it as it arrives. No account, no API key, nothing to set up.
 
-Nothing to set up. Incoming chat is translated into your browser's language, and what you write goes out in whatever the channel broadcasts in, read from Kick itself. Both are overridable in settings. It handles 7TV emotes.
+HOW IT WORKS
 
-ENGINES
+1. Open any Kick stream. A green bar at the top of the chat shows the translator is on.
+2. Each new message gets its translation underneath, in your browser's language.
+3. Type a reply in your own language. A preview shows it in the channel's language: press Tab or click it, then send.
 
-Google works out of the box, no key and no account. Add your own free DeepL key and quality jumps on European languages: their free tier covers a million characters a month without a card. DeepL also receives the recent channel lines as context so the wording fits the conversation, and it is asked for the polite register where the language has one, keigo in Japanese or vous rather than tu in French. To make a free quota last, DeepL is spent only on the pairs where it actually beats the free engines. MyMemory and Lingva sit behind as fallbacks, and when one engine fails the next takes over. You set the order.
-
-DISPLAY
-
-Translation below the original, inline with it, after it in smaller italics, or only when you hover. Hover mode fetches nothing until you point at a message, which cuts usage by roughly ten times on a fast chat.
-
-FILTERS
-
-Skip bots, block users or channels, or limit which source languages get translated at all. Emotes, mentions, links and emoji spam are stripped before anything is sent, so you are not paying to translate "kkkkkk". Background tabs pause themselves.
-
-43 languages, right to left included (Arabic, Hebrew, Persian), with regional variants kept apart (pt-BR, zh-TW). The extension's own interface comes in 10: English, Spanish, French, Portuguese, Turkish, Russian, Arabic, Chinese, Japanese and Korean.
-
-WHAT LEAVES YOUR BROWSER
-
-The text of a chat message, and only that, to the translation engine you picked. Not your username, not the channel, not who said what. That is what the "website content" line in the permissions above refers to, and it is the whole of it. There is no account, no analytics and no server of mine: the extension talks to Kick, to the engine you chose, and to the GitHub releases page to tell you when a newer version exists, sending nothing with that last request.
-
-Firefox does not yet ship the browser-level translation API that Chrome and Edge 138+ expose, so this build always uses the engines above. If Mozilla ships one, the extension already knows how to use it and will translate on your machine, offline and without limits.
+The channel's language is read from Kick itself, and both languages can be changed in settings. Works on live streams and on VOD replays, keeps 7TV emotes as they are, and pauses itself in background tabs.
 
 See it running on a real chat: https://www.youtube.com/watch?v=NoGJeUrwy9o
 
-Open source, MIT: github.com/Pkkls/kick-chat-translator
+WHAT YOU GET
+
+• 43 languages, right to left included (Arabic, Hebrew, Persian), with regional variants kept apart (Brazilian Portuguese, Traditional Chinese).
+• Free out of the box with Google Translate, no key and no account.
+• Better European languages with your own DeepL API key. DeepL gets the recent chat lines as context, so the wording fits the conversation.
+• Automatic fallback: when one engine fails, MyMemory or Lingva takes over. You choose the order.
+• Four display styles: under the message, on the same line, in small italics after it, or only when you hover. Hover mode translates nothing until you point at a message, which cuts usage about ten times on a fast chat.
+• Filters: skip bots, mute users or channels, hide lines that contain a word you choose (handy against !command spam), or translate only the languages you want.
+• Emotes, mentions, links and emoji spam are stripped before anything is sent, so nothing is spent translating "kkkkkk".
+• Make it yours: text size, line spacing, typeface, accent colour, dark or light chat, a reading language remembered per channel, keyboard shortcuts.
+• Interface in 10 languages: English, Spanish, French, Portuguese, Turkish, Russian, Arabic, Chinese, Japanese and Korean.
+
+WHAT LEAVES YOUR BROWSER
+
+Chat text goes only to the translation engine you picked. With Google, MyMemory or Lingva, that is the text of each message and nothing else: not the channel, not who said it. With DeepL, the last few chat lines go along as context, with the names of whoever wrote them, so the translation fits the conversation. That is what the "website content" line in the permissions above refers to, and it is the whole of it. There is no account, no analytics and no server of mine: the extension talks to Kick, to the engine you chose, and to the GitHub releases page to tell you when a newer version exists, sending nothing with that last request.
+
+FREE AND OPEN SOURCE
+
+MIT licence, every line of code public: github.com/Pkkls/kick-chat-translator
+Bug reports and language requests are welcome there.

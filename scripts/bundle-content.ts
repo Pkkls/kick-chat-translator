@@ -62,8 +62,8 @@ async function bundleContent(): Promise<void> {
         name: 'KickChatTranslator',
         fileName: () => OUT_NAME,
       },
-      // Force everything into one file — no code-split, no dynamic import.
-      rollupOptions: { output: { inlineDynamicImports: true } },
+      // One file, no code-split and no dynamic import: Vite 8 builds an iife
+      // library that way on its own, and reports `inlineDynamicImports` as ignored.
     },
   });
 }

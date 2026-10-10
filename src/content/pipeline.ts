@@ -11,7 +11,7 @@ import { extractMessageText } from './selectors';
 import { confidentLanguage, detectLanguage } from './langDetect';
 import { resolveBrowserLang } from '~/shared/languages';
 import { isContextCritical } from '~/shared/langTiers';
-import { hasBlockedKeyword, isNoise, isSameLanguageAsTarget, normalizeElongation, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
+import { hasBlockedKeyword, hasNonEnglishLetter, isNoise, isSameLanguageAsTarget, normalizeElongation, shouldDropBySourceLang, shouldDropByUserOrChannel } from './filters';
 import { HANDLED_SELECTOR, inject, incrementFloatingCount, armHoverTranslate, markSkipped, removeAllArtifacts, showError, showLoading, showThrottleIndicator, showToast, updateActiveProvider } from './injector';
 import { localEngine } from './localEngine';
 import { memCache } from './memcache';
@@ -177,7 +177,7 @@ export class TranslationPipeline {
     // same event: two of them decide here without asking anyone, the third is
     // the service answering after the call was made. Each says which it is, or
     // the Debug tab shows two verdicts for what looks like one case.
-    if (this.settings.ignoreEnglish && this.effTarget === 'en' && detected === 'en') {
+    if (this.settings.ignoreEnglish && this.effTarget === 'en' && detected === 'en' && !hasNonEnglishLetter(realText)) {
       return localised('skipEnglish', 'it looks like English and you asked to skip English');
     }
     // This one deletes the line. It gets the looked-up answer, never the guessed
@@ -238,10 +238,20 @@ export class TranslationPipeline {
     if (this.settings.engineMode === 'local-only') return;
     const prepared = this.prepare(msg.text, msg, { dedup: false });
     if (typeof prepared === 'string') return;
+    // Same source hint as the display path. The warm pass usually reaches the
+    // worker first, so the answer it caches is the one the reader sees, and a
+    // hint makes it cache an answer translated from a guess.
+    const hint = confidentLanguage(prepared.real);
     try {
       await send({
         type: 'translate',
-        payload: { messageId: `ws:${msg.id}`, text: prepared.real, targetLang: this.effTarget, channel: msg.channel },
+        payload: {
+          messageId: `ws:${msg.id}`,
+          text: prepared.real,
+          targetLang: this.effTarget,
+          channel: msg.channel,
+          ...(hint ? { sourceLangHint: hint } : {}),
+        },
       });
     } catch (err: unknown) {
       log.debug('ws warmup failed', err);

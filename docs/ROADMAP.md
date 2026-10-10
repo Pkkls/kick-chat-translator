@@ -124,6 +124,14 @@ depuis le simplifie. Le detecteur les separe correctement depuis cette branche,
 l'API `Translator` de Chrome accepte `zh-Hant` ; c'est la premiere chose a
 mesurer.
 
+> **Fait le 2026-10-09.** La liste publiee par Chrome pour l'API `Translator`
+> nomme `zh-Hant` a cote de `zh`. `localEngine` envoie desormais `zh-Hant` pour
+> `zh-tw`, dans les deux sens, et ne retombe pas sur `zh` si un navigateur le dit
+> indisponible : le nuage repond alors en traditionnel. Le meme passage rend les
+> paires a telecharger dans les codes de l'appelant, sans quoi le bandeau, qui
+> compare `p.tgt` a la langue choisie, ne proposait jamais le modele a un lecteur
+> `zh-tw` ni `pt-br`. Pas mesure sur un vrai Chrome avec modele.
+
 **`ignoreEnglish`.** La decision de ne pas basculer le moteur embarque sur la
 reponse sure reposait sur un taux de silence qui a change d'un facteur
 trente-huit. Le handoff pose lui-meme la condition de reouverture : quand le

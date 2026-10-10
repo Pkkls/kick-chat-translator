@@ -81,6 +81,17 @@ const FRANC_MAP: Record<string, string> = {
   ukr: 'uk',
   tur: 'tr',
   ara: 'ar',
+  // `arb`, le code que franc-min emet reellement pour l'arabe, n'est PAS ici, et
+  // c'est une decision mesuree, pas un oubli comme l'etait `zlm`. franc ne dit
+  // `arb` que sur une ligne arabe sans lettre, mot ni article que
+  // `arabeOuPersan` sache lire, c'est-a-dire la ou l'arabe et le persan
+  // s'ecrivent pareil. Mesure le 2026-10-09 en le mappant : sur Tatoeba et sur
+  // le chat arabe et persan, cinq lignes arabes passaient de muettes a justes
+  // (`تمام`, `ابداع`, `وحش`, `اهلا`, `اهلا وسهلا`) et trois persanes de muettes a
+  // fausses (`اعتراض!`, `ممنون`, `نترس`), plus une ourdoue qu'il fallait
+  // rattraper a part. Une ligne persane lue arabe est cachee a un lecteur
+  // arabophone comme "deja dans sa langue" ; une ligne arabe muette part au
+  // moteur, qui la reconnait seul. La colonne fausse coute plus cher.
   heb: 'he',
   jpn: 'ja',
   kor: 'ko',
@@ -152,6 +163,11 @@ const REGION_VARIANTS: Record<string, string> = {
   'zh-yue': 'yue',
   nb: 'no',
   nn: 'no',
+  // Google's free endpoint still detects Hebrew as the withdrawn ISO code 'iw',
+  // and Lingva only accepts that one. Unmapped, a Hebrew line carried an "IW"
+  // badge instead of its name and was counted under a language that does not
+  // exist in the stats.
+  iw: 'he',
 };
 
 export function normalizeLang(raw: string): string {

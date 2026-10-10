@@ -55,7 +55,11 @@ export function maskProtected(text: string): { masked: string; tokens: string[] 
 
 export function unmaskProtected(text: string, tokens: string[]): string {
   if (tokens.length === 0) return text;
-  return text.replace(/⟦(\d+)⟧/g, (whole, n: string) => tokens[Number(n)] ?? whole);
+  // Spaces tolerated inside the brackets. Measured on the free Google endpoint
+  // with three messages into all 42 other languages: 124 of 126 kept the
+  // placeholder intact, and the two that did not were Cantonese, which came back
+  // as "⟦ 0 ⟧" and left the reader's @mention and link out of the message.
+  return text.replace(/⟦\s*(\d+)\s*⟧/g, (whole, n: string) => tokens[Number(n)] ?? whole);
 }
 
 /**
