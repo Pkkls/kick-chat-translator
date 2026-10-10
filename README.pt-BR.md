@@ -155,6 +155,22 @@ Não. É um projeto independente de código aberto, sem vínculo com a Kick.
 
 ## Novidades
 
+### 3.1.0
+
+Abreviações do chat como ngl, idc, lmk, wyd e goat são escritas por extenso antes da tradução, então quem lê em outros idiomas recebe o significado em vez das letras como foram digitadas ou de um palpite errado.
+
+Palavras de chat que o tradutor entendia errado agora são traduzidas pela tabela da própria extensão, em mais idiomas: valeu não volta mais como "custou", nem yatta como "no iate", e cumprimentos como merci, gracias ou konnichiwa são traduzidos para hebraico, persa, grego, ucraniano, búlgaro, bengali, tâmil, chinês tradicional e cantonês.
+
+Num chat rápido, as linhas escritas num idioma diferente do resto do lote voltavam sem tradução e nunca apareciam. Agora cada linha é detectada e traduzida sozinha.
+
+Menos linhas perdidas ou lidas errado: uma linha curta em italiano ou em outro idioma não é mais confundida com inglês e escondida, palavras comuns que terminam como nome de emote (felul em romeno, erkek em turco) não são mais apagadas antes da tradução, cumprimentos em árabe são lidos como árabe e não como persa, e uma resposta mantém sua @menção e seu link em cantonês.
+
+O chinês tradicional traduzido no seu computador agora volta em caracteres tradicionais.
+
+Mais leve para o seu navegador: a extensão para de acordar quando nenhuma aba do Kick está aberta, e custa menos por mensagem num chat movimentado.
+
+Firefox: depois de uma atualização, uma aba podia rodar duas cópias da extensão e traduzir cada mensagem duas vezes. Agora só uma roda.
+
 Cada versão, com o que mudou e a medição por trás:
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) e [CHANGELOG.md](CHANGELOG.md).
 

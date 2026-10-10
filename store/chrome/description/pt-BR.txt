@@ -29,6 +29,22 @@ Sem conta, sem analytics, sem servidor meu. O texto do chat vai só para o motor
 
 As permissões, em palavras simples: armazenamento para as suas configurações e o cache de traduções; acesso à kick.com para mostrar as traduções no chat; acesso aos motores que ela pode chamar (Google, DeepL, MyMemory e Lingva); um temporizador para o tradutor ficar pronto enquanto você assiste; e o direito de recarregar o próprio script nas abas da Kick já abertas quando você a instala ou atualiza, para que continuem traduzindo sem atualizar a página. Ela também lê a página de versões do GitHub para avisar quando existe uma versão mais nova, sem enviar nada nessa requisição.
 
+NOVIDADES
+
+Abreviações do chat como ngl, idc, lmk, wyd e goat são escritas por extenso antes da tradução, então quem lê em outros idiomas recebe o significado em vez das letras como foram digitadas ou de um palpite errado.
+
+Palavras de chat que o tradutor entendia errado agora são traduzidas pela tabela da própria extensão, em mais idiomas: valeu não volta mais como "custou", nem yatta como "no iate", e cumprimentos como merci, gracias ou konnichiwa são traduzidos para hebraico, persa, grego, ucraniano, búlgaro, bengali, tâmil, chinês tradicional e cantonês.
+
+Num chat rápido, as linhas escritas num idioma diferente do resto do lote voltavam sem tradução e nunca apareciam. Agora cada linha é detectada e traduzida sozinha.
+
+Menos linhas perdidas ou lidas errado: uma linha curta em italiano ou em outro idioma não é mais confundida com inglês e escondida, palavras comuns que terminam como nome de emote (felul em romeno, erkek em turco) não são mais apagadas antes da tradução, cumprimentos em árabe são lidos como árabe e não como persa, e uma resposta mantém sua @menção e seu link em cantonês.
+
+O chinês tradicional traduzido no seu computador agora volta em caracteres tradicionais.
+
+Mais leve para o seu navegador: a extensão para de acordar quando nenhuma aba do Kick está aberta, e custa menos por mensagem num chat movimentado.
+
+Firefox: depois de uma atualização, uma aba podia rodar duas cópias da extensão e traduzir cada mensagem duas vezes. Agora só uma roda.
+
 GRATUITO E DE CÓDIGO ABERTO
 
 Licença MIT, cada linha de código pública: github.com/Pkkls/kick-chat-translator

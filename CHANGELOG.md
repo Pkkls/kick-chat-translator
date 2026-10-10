@@ -7,6 +7,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-10-10
+
+### Added
+
+- **English chat abbreviations are spelled out before translating** for
+  other readers (ngl, idc, lmk, wyd, goat). On 34 chat lines into the 42
+  other languages, 952 of 1386 abbreviations came back as typed; spelled
+  out first, none did.
+- **The override table answers in more languages.** valeu, fala, yatta,
+  coucou, forza and the common romaji are translated into the 26 Latin
+  targets too, and common greetings into Hebrew, Persian, Greek, Ukrainian,
+  Bulgarian, Bengali, Tamil, Traditional Chinese and Cantonese.
+
+### Fixed
+
+- **Lines in another language than the rest of a Google batch came back
+  untranslated** and were dropped. A batch now goes as one multi-line
+  request with each line detected alone: 84 of 84 foreign lines and 252 of
+  252 English lines equal to their translation alone.
+- **The English skip deleted short foreign lines** franc called English
+  (10 of 1085 in the chat corpora). A letter English does not write now
+  vetoes the skip.
+- **The emote-name stripper deleted ordinary words** ending in lul, kek,
+  jam and the like (Romanian felul, Turkish erkek, Portuguese sejam).
+- **Common Arabic chat greetings were read as Persian**, and franc's `arb`
+  was unmapped. Arabic goes from 19 right / 8 wrong to 31 / 2 on the new
+  Arabic/Persian chat corpus, Persian unchanged.
+- **Reply previews lost their @mention and link in Cantonese** when the
+  engine padded the placeholder with spaces.
+- **Traditional Chinese on the device engine came back simplified**: the
+  engine is now asked for `zh-Hant`.
+- **The device engine translated from franc's guess**, wrong on 166 of 264
+  chat lines (Danish as Swedish, Catalan as Spanish). Those lines now go to
+  the cloud, which detects per line; looked-up languages and English stay
+  on device.
+- **Firefox ran two content scripts in a tab after an update**, each
+  taking every chat message. The newest copy now names itself and the
+  other stops.
+- **The DeepL quota and privacy claims in the store texts** were wrong: the
+  500,000-character free plan can no longer be subscribed, and DeepL
+  receives the last chat lines as context with their usernames.
+
+### Changed
+
+- **The service worker sleeps when no Kick tab is open**; the keepalive
+  alarm kept it resident all day.
+- **Less work per chat message**: language detection runs once per line
+  instead of five times (122 to 51 microseconds), the replace-style
+  `:has()` rule is scoped, no layout is forced per translated line, and the
+  unused second copy of the content script is no longer shipped.
+- Toolchain moved to Vite 8, TypeScript 6, ESLint 10 and zod 4. The store
+  listings were rewritten.
+
 ## [3.0.2] - 2026-10-07
 
 ### Fixed

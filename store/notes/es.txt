@@ -1,11 +1,13 @@
-El botón de pausa de la barra del chat ahora pausa solo el canal que estás viendo. Antes desactivaba la traducción en todos los canales y en todas las pestañas, hasta que la volvías a activar desde el popup.
+Las abreviaturas del chat como ngl, idc, lmk, wyd o goat se escriben completas antes de traducir, así que los lectores de otros idiomas reciben su significado en lugar de las letras tal cual o una suposición equivocada.
 
-Cuando el canal de la pestaña actual está en pausa, el popup lo indica y ofrece un botón Reanudar.
+Palabras de chat que el traductor entendía mal ahora se traducen con la tabla propia de la extensión, en más idiomas: valeu ya no vuelve como "costó", ni yatta como "en el yate", y saludos como merci, gracias o konnichiwa se traducen al hebreo, persa, griego, ucraniano, búlgaro, bengalí, tamil, chino tradicional y cantonés.
 
-Una pestaña de Kick que ya estaba abierta mientras se instalaba o actualizaba la extensión sigue traduciendo. Antes se detenía hasta que recargabas la página.
+En un chat rápido, las líneas escritas en un idioma distinto al del resto del lote volvían sin traducir y nunca se mostraban. Ahora cada línea se detecta y se traduce por separado.
 
-Después de cambiar a otro canal sin recargar, la traducción se detenía hasta que actualizabas la página. Ahora sigue el chat que estás viendo.
+Menos líneas perdidas o mal leídas: una línea corta en italiano u otro idioma ya no se toma por inglés y se oculta, las palabras comunes que terminan como el nombre de un emote (felul en rumano, erkek en turco) ya no se borran antes de traducir, los saludos árabes se leen como árabe y no como persa, y una respuesta conserva su @mención y su enlace en cantonés.
 
-Hasta tu primera traducción, el popup abierto fuera de Kick te invita a abrir un canal y ofrece un botón para hacerlo.
+El chino tradicional traducido en tu equipo ahora vuelve en caracteres tradicionales.
 
-Los textos del chat, de la barra, del popup y de los ajustes vuelven a llevar sus tildes en español, francés, portugués y turco.
+Más ligera para tu navegador: la extensión deja de despertarse cuando no hay ninguna pestaña de Kick abierta, y cuesta menos por mensaje en un chat con mucho movimiento.
+
+Firefox: tras una actualización, una pestaña podía ejecutar dos copias de la extensión y traducir cada mensaje dos veces. Ahora solo se ejecuta una.

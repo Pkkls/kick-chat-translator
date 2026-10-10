@@ -1,11 +1,13 @@
-The pause button on the chat bar now pauses only the channel you are watching. Before, it turned translation off on every channel and in every tab, until you switched it back on in the popup.
+Chat abbreviations like ngl, idc, lmk, wyd and goat are spelled out before translation, so readers in other languages get what they mean instead of the letters as typed or a wrong guess.
 
-When the channel in your current tab is paused, the popup says so and offers a Resume button.
+Common chat words the translator got wrong are now translated from the extension's own table, in more languages: valeu no longer comes back as "it cost", nor yatta as "on the yacht", and greetings like merci, gracias or konnichiwa are translated into Hebrew, Persian, Greek, Ukrainian, Bulgarian, Bengali, Tamil, Traditional Chinese and Cantonese.
 
-A Kick tab that was already open while the extension was installed or updated keeps translating. It used to stop until you reloaded the page.
+On a fast chat, lines written in another language than the rest of a batch came back untranslated and were never shown. Each line is now detected and translated on its own.
 
-After switching to another channel without reloading, translation stopped until you refreshed the page. It now follows the chat you are looking at.
+Fewer lines lost or misread: a short Italian or other foreign line is no longer taken for English and hidden, ordinary words that end like an emote name (Romanian felul, Turkish erkek) are no longer deleted before translation, Arabic greetings are read as Arabic and not Persian, and a reply keeps its @mention and link in Cantonese.
 
-Until your first translation, the popup opened outside Kick says to open a channel and offers a button that does.
+Traditional Chinese translated on your device now comes back in traditional characters.
 
-The texts in the chat, the bar, the popup and the settings carry their accents again in French, Spanish, Portuguese and Turkish.
+Lighter on your browser: the extension stops waking up when no Kick tab is open, and costs less per message on a busy chat.
+
+Firefox: after an update, a tab could run two copies of the extension and translate every message twice. Only one runs now.

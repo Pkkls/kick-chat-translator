@@ -1,11 +1,13 @@
-Sohbet çubuğundaki duraklatma düğmesi artık yalnızca izlediğiniz kanalı duraklatıyor. Önceden çeviriyi tüm kanallarda ve tüm sekmelerde, siz açılır pencereden yeniden açana kadar kapatıyordu.
+ngl, idc, lmk, wyd ve goat gibi sohbet kısaltmaları çeviriden önce açık yazılıyor; böylece başka dillerde okuyanlar, yazıldığı gibi harfler ya da yanlış bir tahmin yerine anlamını görüyor.
 
-Geçerli sekmedeki kanal duraklatılmışsa açılır pencere bunu belirtir ve bir Devam et düğmesi sunar.
+Çevirmenin yanlış anladığı yaygın sohbet kelimeleri artık eklentinin kendi tablosundan, daha fazla dilde çevriliyor: valeu artık "mal oldu", yatta da "yatın üstünde" olarak dönmüyor; merci, gracias veya konnichiwa gibi selamlar İbraniceye, Farsçaya, Yunancaya, Ukraynacaya, Bulgarcaya, Bengalceye, Tamilceye, Geleneksel Çinceye ve Kantoncaya çevriliyor.
 
-Uzantı yüklenirken veya güncellenirken zaten açık olan bir Kick sekmesi çevirmeye devam ediyor. Önceden sayfayı yeniden yükleyene kadar duruyordu.
+Hızlı bir sohbette, paketin geri kalanından farklı bir dilde yazılmış satırlar çevrilmeden dönüyor ve hiç gösterilmiyordu. Artık her satır ayrı ayrı algılanıp çevriliyor.
 
-Sayfayı yenilemeden başka bir kanala geçtiğinizde çeviri, sayfayı yenileyene kadar duruyordu. Artık ekrandaki sohbeti takip ediyor.
+Daha az kayıp ya da yanlış okunan satır: İtalyanca veya başka bir dildeki kısa bir satır artık İngilizce sanılıp gizlenmiyor, bir emote adı gibi biten sıradan kelimeler (Rumence felul, Türkçe erkek) çeviriden önce silinmiyor, Arapça selamlar Farsça değil Arapça olarak okunuyor ve bir yanıt Kantoncada @bahsetmesini ve bağlantısını koruyor.
 
-İlk çevirinizi yapana kadar, Kick dışında açılan açılır pencere bir kanal açmayı önerir ve bunun için bir düğme sunar.
+Cihazınızda çevrilen Geleneksel Çince artık geleneksel karakterlerle dönüyor.
 
-Sohbet, çubuk, açılır pencere ve ayarlardaki metinler Türkçe, Fransızca, İspanyolca ve Portekizcede yeniden doğru harflerle yazılıyor.
+Tarayıcınız için daha hafif: hiçbir Kick sekmesi açık değilken eklenti artık uyanmıyor ve yoğun bir sohbette mesaj başına daha az kaynak harcıyor.
+
+Firefox: bir güncellemeden sonra bir sekme eklentinin iki kopyasını çalıştırıp her mesajı iki kez çevirebiliyordu. Artık yalnızca biri çalışıyor.

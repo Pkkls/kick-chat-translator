@@ -29,6 +29,22 @@ No account, no analytics, no server of mine. Chat text goes only to the translat
 
 The permissions, in plain words: storage for your settings and its translation cache; access to kick.com to show translations in the chat; access to the engines it can call (Google, DeepL, MyMemory and Lingva); a wake-up timer so the translator stays ready while you watch; and the right to reload its own script into Kick tabs already open when you install or update it, so they keep translating without a refresh. It also reads the GitHub releases page to tell you when a newer version exists, sending nothing with that request.
 
+WHAT'S NEW
+
+Chat abbreviations like ngl, idc, lmk, wyd and goat are spelled out before translation, so readers in other languages get what they mean instead of the letters as typed or a wrong guess.
+
+Common chat words the translator got wrong are now translated from the extension's own table, in more languages: valeu no longer comes back as "it cost", nor yatta as "on the yacht", and greetings like merci, gracias or konnichiwa are translated into Hebrew, Persian, Greek, Ukrainian, Bulgarian, Bengali, Tamil, Traditional Chinese and Cantonese.
+
+On a fast chat, lines written in another language than the rest of a batch came back untranslated and were never shown. Each line is now detected and translated on its own.
+
+Fewer lines lost or misread: a short Italian or other foreign line is no longer taken for English and hidden, ordinary words that end like an emote name (Romanian felul, Turkish erkek) are no longer deleted before translation, Arabic greetings are read as Arabic and not Persian, and a reply keeps its @mention and link in Cantonese.
+
+Traditional Chinese translated on your device now comes back in traditional characters.
+
+Lighter on your browser: the extension stops waking up when no Kick tab is open, and costs less per message on a busy chat.
+
+Firefox: after an update, a tab could run two copies of the extension and translate every message twice. Only one runs now.
+
 FREE AND OPEN SOURCE
 
 MIT licence, every line of code public: github.com/Pkkls/kick-chat-translator
