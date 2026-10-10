@@ -74,6 +74,12 @@ reads dist/, so it serialises behind any build. D touches no code.
   el, bn, ta; bonjour as "good luck" in yue; romaji left as is; zh-tw fell
   back on the Simplified column. Rows now carry a meaning, nine more non-Latin
   languages answer all 94 rows, and eleven rows answer the 26 Latin targets.
+- [x] **English chat abbreviations reached other readers untranslated.**
+  34 chat lines into the 42 other languages (2026-10-10): 952 of 1386
+  abbreviations came back as typed, some as something else (idc as "I don't
+  know", lmk as "kkkkk", goat as the animal). `abbreviations.ts` spells them
+  out on lines read as English for a non-English reader: 0 left, 0 of 6005
+  foreign corpus lines rewritten.
 - [k] **Native read of the new override wording.** fa, bn and ta above were
   written without a native speaker; the Latin column too, though plainer.
   Probed only into en, fr, es, pt, de, tr, pl and the nine non-Latin targets.

@@ -386,3 +386,27 @@ describe('TranslationPipeline — the English skip', () => {
   });
 });
 
+
+/**
+ * Google leaves "ngl" and "lmk" as they are and reads "idc" as "I don't know".
+ * An English line going to a reader in another language is spelled out first.
+ */
+describe('TranslationPipeline — English chat abbreviations', () => {
+  beforeEach(() => {
+    sendMock.mockReset();
+    sendMock.mockResolvedValue({ type: 'translate.result', payload: { ok: false, error: { code: 'x', message: 'x' } } });
+  });
+  const reader = (targetLang: string) =>
+    new TranslationPipeline({ ...defaultSettings(), enabled: true, targetLang, pauseWhenHidden: false });
+  const sentText = () => (sendMock.mock.calls[0]?.[0] as { payload: { text: string } }).payload.text;
+
+  it('spells them out for a French reader', async () => {
+    await reader('fr').onWebSocketMessage(wsMsg('idc about the score ngl'));
+    expect(sentText()).toBe("I don't care about the score not gonna lie");
+  });
+
+  it('leaves a Polish line alone', async () => {
+    await reader('fr').onWebSocketMessage(wsMsg('był w domu cały dzień'));
+    expect(sentText()).toBe('był w domu cały dzień');
+  });
+});

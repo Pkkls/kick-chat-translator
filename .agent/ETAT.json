@@ -1,24 +1,24 @@
 {
-  "genere": "2026-10-10T05:29:42.897Z",
+  "genere": "2026-10-10T08:53:01.322Z",
   "parQui": ".agent/state.mjs",
   "avertissement": "Genere. Ne pas editer a la main : la prochaine passe ecrase. La version commitee decrit l'etat d'AVANT le commit qui la porte, puisque la fin de passe genere puis commite : git.head y pointe le commit precedent et git.arbrePropre y est faux. Relancer `node .agent/state.mjs` avant de lire, ce que le prompt demande deja en premier.",
   "git": {
     "remotesEnDouble": [],
     "branche": "claude/translation-quality-wr8p3r",
-    "head": "1c1c3bda41f56d7ef87ca440bb0971078bdbef1a",
-    "sujet": "Translate valeu, fala, yatta and the common romaji into Latin targets too",
-    "arbrePropre": false,
-    "fichiersModifies": 1,
+    "head": "02675a4f1f80e0dbcb07f7d4f8b9854b80c97d71",
+    "sujet": "Spell out English chat abbreviations before translating for other readers",
+    "arbrePropre": true,
+    "fichiersModifies": 0,
     "dernierTag": "v3.0.2",
-    "decrit": "v3.0.2-19-g1c1c3bd",
+    "decrit": "v3.0.2-49-g02675a4",
     "remotes": {
       "origin": "https://github.com/Pkkls/kick-chat-translator"
     },
     "ecarts": {
       "origin": {
         "derriere": 0,
-        "devant": 0,
-        "aJour": true
+        "devant": 25,
+        "aJour": false
       }
     }
   },
@@ -31,7 +31,7 @@
   "paquets": [],
   "portes": {
     "runner": "test/e2e/run-gates.mjs",
-    "enumerees": 41,
+    "enumerees": 42,
     "noms": [
       "snapshot",
       "names",
@@ -57,6 +57,7 @@
       "translate-navigation",
       "nav-monde",
       "mise-a-jour",
+      "mise-a-jour-firefox",
       "translate-survol",
       "translate-reglages",
       "translate-seventv",
@@ -177,7 +178,7 @@
       "**Store submissions.** The 2.10.0 archives exist and are published on"
     ],
     "nbBloques": 10,
-    "nbOuverts": 4,
-    "nbFaits": 113
+    "nbOuverts": 2,
+    "nbFaits": 117
   }
 }
