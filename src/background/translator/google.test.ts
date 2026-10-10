@@ -61,7 +61,7 @@ function fakeGoogle(seen: Seen[], answer?: (q: string[], sl: string | null) => u
       seen.push({ method: 'GET', path: 'single', sl, q: [q] });
       return new Response(JSON.stringify([[[`T:${q}`, q, null, null, 1]], null, 'xx']), { status: 200 });
     }
-    const q = new URLSearchParams(String(init?.body ?? '')).getAll('q');
+    const q = (init?.body as URLSearchParams).getAll('q');
     seen.push({ method: init?.method ?? 'GET', path: 't', sl, q });
     const body = answer ? answer(q, sl) : q.map((l) => (sl === 'auto' ? [`T:${l}`, `d:${l.slice(0, 2)}`] : `T:${l}`));
     return new Response(JSON.stringify(body), { status: 200 });
