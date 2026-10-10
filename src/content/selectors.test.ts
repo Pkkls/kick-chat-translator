@@ -1,10 +1,11 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   findChatPanel,
   extractMessageText,
   extractUsername,
   findAllRows,
   findChatContainer,
+  isShown,
   matchesMessageRow,
   pickFirst,
   pickInjectionTarget,
@@ -180,5 +181,29 @@ describe('findChatPanel', () => {
   it('returns null when there is no chat panel at all', () => {
     document.body.innerHTML = '<div></div>';
     expect(findChatPanel(document)).toBeNull();
+  });
+});
+
+// The two container watchers ask this twice a second while the chat runs.
+// Asked through boxes, each question forced a layout of a page the chat keeps
+// dirty; computed style answers it without one.
+describe('isShown', () => {
+  it('asks computed style, not geometry, where the browser can', () => {
+    const el = document.createElement('div');
+    document.body.appendChild(el);
+    const check = vi.fn(() => false);
+    const rects = vi.spyOn(el, 'getClientRects');
+    Object.assign(el, { checkVisibility: check });
+    expect(isShown(el)).toBe(false);
+    expect(check).toHaveBeenCalledTimes(1);
+    expect(rects).not.toHaveBeenCalled();
+    el.remove();
+  });
+
+  it('falls back on the box count elsewhere', () => {
+    const el = document.createElement('div');
+    const rects = vi.spyOn(el, 'getClientRects').mockReturnValue([{}] as unknown as DOMRectList);
+    expect(isShown(el)).toBe(true);
+    expect(rects).toHaveBeenCalledTimes(1);
   });
 });
