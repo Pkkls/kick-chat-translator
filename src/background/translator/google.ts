@@ -90,21 +90,19 @@ async function call(req: TranslationRequest, ctx: ProviderContext): Promise<Prov
  * Batch: lines that share a source language travel together, joined with \n.
  *
  * Joining is only safe within one language. Google detects ONE source for the
- * whole joined text and translates every line from it, so a line in another
- * language comes back untouched. Measured on the free endpoint with chat lines:
- * on an English stream read in English, six English lines and two foreign ones
- * per batch, the batch was detected `en` every time and 12 of 12 foreign lines
- * came back exactly as sent, each one translated correctly on its own. The
- * content script then drops a line that comes back unchanged, and also drops
- * one whose detected language is the reader's own, so those lines never
- * appeared at all. That is the regime batching exists for: a fast chat.
+ * whole joined text and translates every line from it. Measured on the free
+ * endpoint with the chat corpora, one batch per reader language for all 42
+ * targets, six English lines and two foreign ones each: the foreign lines came
+ * back untouched, which the content script drops, or worse, garbled and shown
+ * as a translation. Polish read as Portuguese "moje łącze é uma piada fatal",
+ * Danish spelled out in hanzi, Hebrew "same thing again" rendered in Dutch as
+ * "I think it is fine". The same lines sent alone were all translated right.
  *
- * So lines with a looked-up source language go out grouped by it, each group
- * with its own `sl`. Lines with no hint still go out joined, since most of a
- * chat in a Latin language has none, and every line of that group that comes
- * back unchanged is asked again on its own. A line genuinely in the reader's
- * language costs one extra request this way; a foreign one is translated
- * instead of lost.
+ * So a line joins a request only with lines of the same looked-up source
+ * (sent as `sl`), or failing that of the same guessed one (sent as auto: the
+ * guess only decides who travels together). A line with neither goes alone.
+ * In a joined group without `sl`, a line that comes back unchanged is asked
+ * again on its own, for the guess that put it there may have been wrong.
  */
 async function batchCall(reqs: TranslationRequest[], ctx: ProviderContext): Promise<ProviderResult[]> {
   if (reqs.length <= 1) {
@@ -113,7 +111,7 @@ async function batchCall(reqs: TranslationRequest[], ctx: ProviderContext): Prom
   }
   const groups = new Map<string, number[]>();
   reqs.forEach((r, i) => {
-    const key = r.sourceLangHint ?? '';
+    const key = r.sourceLangHint ? `sl:${r.sourceLangHint}` : r.langGuess ? `guess:${r.langGuess}` : `alone:${i}`;
     const g = groups.get(key);
     if (g) g.push(i);
     else groups.set(key, [i]);
@@ -122,12 +120,13 @@ async function batchCall(reqs: TranslationRequest[], ctx: ProviderContext): Prom
   const pool = new ConcurrencyQueue(Math.max(1, ctx.concurrency || 1));
   const unchanged: number[] = [];
   await Promise.all(
-    [...groups.entries()].map(([hint, idx]) =>
+    [...groups.entries()].map(([key, idx]) =>
       pool.add(async () => {
         const out = await joinedCall(idx.map((i) => reqs[i]!), ctx);
+        const guessed = key.startsWith('guess:') && idx.length > 1;
         idx.forEach((i, k) => {
           results[i] = out[k]!;
-          if (!hint && idx.length > 1 && sameText(out[k]!.translatedText, reqs[i]!.text)) unchanged.push(i);
+          if (guessed && sameText(out[k]!.translatedText, reqs[i]!.text)) unchanged.push(i);
         });
       }),
     ),

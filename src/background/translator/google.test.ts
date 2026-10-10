@@ -37,9 +37,9 @@ describe('googleProvider', () => {
 
     const out = await googleProvider.translateBatch!(
       [
-        { messageId: '1', text: 'one', targetLang: 'es' },
-        { messageId: '2', text: 'two', targetLang: 'es' },
-        { messageId: '3', text: 'three', targetLang: 'es' },
+        { messageId: '1', text: 'one', targetLang: 'es', langGuess: 'en' },
+        { messageId: '2', text: 'two', targetLang: 'es', langGuess: 'en' },
+        { messageId: '3', text: 'three', targetLang: 'es', langGuess: 'en' },
       ],
       { deeplApiKey: '', deeplPlan: 'free', deeplBudgetPct: 0, lingvaInstance: '', myMemoryEmail: '', concurrency: 4 },
     );
@@ -62,8 +62,8 @@ describe('googleProvider', () => {
 
     const out = await googleProvider.translateBatch!(
       [
-        { messageId: '1', text: 'one', targetLang: 'es' },
-        { messageId: '2', text: 'two', targetLang: 'es' },
+        { messageId: '1', text: 'one', targetLang: 'es', langGuess: 'en' },
+        { messageId: '2', text: 'two', targetLang: 'es', langGuess: 'en' },
       ],
       { deeplApiKey: '', deeplPlan: 'free', deeplBudgetPct: 0, lingvaInstance: '', myMemoryEmail: '', concurrency: 4 },
     );
@@ -146,6 +146,7 @@ describe('googleProvider per-message fallback', () => {
       messageId: String(i),
       text: `mensaje ${i}`,
       targetLang: 'en',
+      langGuess: 'es',
     }));
 
     const out = await googleProvider.translateBatch!(reqs, ctx);
@@ -167,6 +168,7 @@ describe('googleProvider per-message fallback', () => {
       messageId: String(i),
       text: `mensaje ${i}`,
       targetLang: 'en',
+      langGuess: 'es',
     }));
 
     const out = await googleProvider.translateBatch!(reqs, ctx);
@@ -278,12 +280,32 @@ describe('googleProvider, lot sans langue annoncee', () => {
     }) as unknown as typeof fetch;
   }
 
+  it('ne joint que les lignes de la meme langue devinee, et envoie seule une ligne sans langue', async () => {
+    const sent: string[] = [];
+    globalThis.fetch = vi.fn(async (url: unknown) => {
+      const q = new URL(String(url)).searchParams.get('q') ?? '';
+      sent.push(q);
+      return new Response(JSON.stringify([[[q.split('\n').map((l) => `T:${l}`).join('\n'), q, null, null, 1]], null, 'en']), { status: 200 });
+    }) as unknown as typeof fetch;
+    const out = await googleProvider.translateBatch!(
+      [
+        { messageId: '1', text: 'so close', targetLang: 'fr', langGuess: 'en' },
+        { messageId: '2', text: 'que golazo', targetLang: 'fr', langGuess: 'es' },
+        { messageId: '3', text: 'stream is lagging', targetLang: 'fr', langGuess: 'en' },
+        { messageId: '4', text: 'ok', targetLang: 'fr' },
+      ],
+      ctx,
+    );
+    expect(sent.sort()).toEqual(['ok', 'que golazo', 'so close\nstream is lagging']);
+    expect(out.map((r) => r.translatedText)).toEqual(['T:so close', 'T:que golazo', 'T:stream is lagging', 'T:ok']);
+  });
+
   it('redemande seule chaque ligne revenue telle quelle, et seulement celles-la', async () => {
     const sent: string[] = [];
     globalThis.fetch = googleQuiSuitLaMajorite(sent);
     const texts = ['so close', 'moje lacze jest fatalne', 'stream is lagging', 'nikt sie nie spodziewal'];
     const out = await googleProvider.translateBatch!(
-      texts.map((text, i) => ({ messageId: String(i), text, targetLang: 'fr' })),
+      texts.map((text, i) => ({ messageId: String(i), text, targetLang: 'fr', langGuess: 'en' })),
       ctx,
     );
     expect(out.map((r) => r.translatedText)).toEqual(texts.map((t) => `FR:${t}`));
@@ -301,8 +323,8 @@ describe('googleProvider, lot sans langue annoncee', () => {
     }) as unknown as typeof fetch;
     const out = await googleProvider.translateBatch!(
       [
-        { messageId: '1', text: 'so close', targetLang: 'fr' },
-        { messageId: '2', text: 'moje lacze', targetLang: 'fr' },
+        { messageId: '1', text: 'so close', targetLang: 'fr', langGuess: 'en' },
+        { messageId: '2', text: 'moje lacze', targetLang: 'fr', langGuess: 'en' },
       ],
       ctx,
     );

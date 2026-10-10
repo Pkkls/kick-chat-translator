@@ -121,6 +121,17 @@ describe('TranslationPipeline — websocket warm vs DOM display', () => {
     expect(hints).toEqual(['ja', 'ja']);
   });
 
+  it('sends its guess, never as the source, when it has no looked-up language', async () => {
+    const pipeline = makePipeline();
+    const line = 'esto se esta poniendo muy interesante';
+    await pipeline.onWebSocketMessage(wsMsg(line));
+    await pipeline.onDomMessage(domMsg(line, 'other'));
+    await flush();
+    const payloads = sendMock.mock.calls.map((c) => c[0]?.payload as { sourceLangHint?: string; langGuess?: string });
+    expect(payloads.map((p) => p.sourceLangHint)).toEqual([undefined, undefined]);
+    expect(payloads.map((p) => p.langGuess)).toEqual(['es', 'es']);
+  });
+
   it('still skips a message the same user just repeated', async () => {
     const pipeline = makePipeline();
     await pipeline.onDomMessage(domMsg(JP));
