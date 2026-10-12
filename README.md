@@ -4,8 +4,8 @@
 
 # Kick Chat Translator
 
-Read any Kick stream's chat in your own language, and reply in the channel's.<br>
-Free, no account, nothing to set up. 43 languages.
+Read any Kick chat in your own language, and reply in the channel's.<br>
+Free, no account, nothing to set up. 43 languages, in the chat and in the extension itself.
 
 **[Add to Chrome, Brave or Edge](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)** &nbsp;·&nbsp; **[Add to Firefox](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
@@ -23,24 +23,33 @@ Free, no account, nothing to set up. 43 languages.
 
 </div>
 
-## What it does
+## How it works
 
-Open a Kick stream where the chat is in a language you don't read. Each message gets its translation right
-underneath as it arrives, on live streams and on VOD replays. Type a reply and a preview shows it in the
-channel's language above the chat box: press Tab or click it, and that version replaces what you typed.
+1. Install it and open any Kick stream. A green bar at the top of the chat says it is on.
+2. Every message gets its translation right underneath as it arrives, in your browser's language. Live
+   streams and VOD replays alike.
+3. Type a reply in your own language. A preview above the chat box shows it in the channel's language:
+   press Tab or click it, and that version replaces what you typed.
 
-There is nothing to set up. Incoming chat goes into your browser's language, and what you write goes out in
-the language the channel broadcasts in, read from Kick itself. Both can be changed in the settings.
+The channel's language is read from Kick itself, so there is nothing to configure. Both languages can be
+changed in the settings, and a reading language can be remembered per channel.
 
-- 43 languages, right-to-left scripts included (Arabic, Hebrew, Persian) and regional variants (Brazilian
-  Portuguese, Traditional Chinese, Cantonese)
-- Google out of the box, with no key and no account. Your own free DeepL key for better quality, MyMemory
-  and Lingva as fallbacks
-- On-device translation in Chrome and Edge where the browser offers it: 22 ms instead of 1.6 s, and the text
-  never leaves your machine
-- 7TV emotes, bot and user filters, a keyword filter, a glossary for names engines mangle
-- Pause one channel from the chat bar without stopping the others. Switching channels or updating the
-  extension keeps open tabs translating, with no reload
+## What you get
+
+- **43 languages**, right to left included (Arabic, Hebrew, Persian), with regional variants kept apart
+  (Brazilian and European Portuguese, Simplified and Traditional Chinese, Cantonese)
+- **The extension speaks them too**: settings, popup and chat bar in all 43, picked from a menu with flags
+- **Free out of the box** with Google Translate. Add your own free DeepL key for better European languages;
+  MyMemory and Lingva take over when an engine fails
+- **On-device translation** in Chrome and Edge where the browser offers it: 22 ms instead of 1.6 s, and
+  the text never leaves your computer
+- **Filters**: skip bots, mute users or channels, hide lines containing a word, translate only the
+  languages you pick
+- **Made for fast chats**: 7TV emotes kept as they are, emoji spam and links stripped before anything is
+  sent, a glossary for names the engines mangle, a translation cache
+- **Four display styles**: under the message, on the same line, in place of it, or only on hover
+- **Pause one channel** from the chat bar without stopping the others. Switching channels or updating the
+  extension keeps open tabs translating, no reload
 - Chrome, Brave, Edge and Firefox
 
 | Chat, translated as it scrolls | The toolbar popup |
@@ -60,8 +69,7 @@ invented and the translations are answered locally, so no real person's handle e
 &nbsp;·&nbsp;
 [Firefox: Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)
 
-Open any Kick stream: the green bar at the top of the chat says it is running. Store copies update
-themselves.
+Store copies update themselves.
 
 <details>
 <summary>Install by hand, from a release zip</summary>
@@ -71,8 +79,9 @@ Download the zip for your browser from [Releases](https://github.com/Pkkls/kick-
 - Chrome, Brave, Edge (`…-chromium.zip`): open `chrome://extensions`, turn on Developer mode, click Load unpacked, pick the folder.
 - Firefox 121+ (`…-firefox.zip`): open `about:debugging#/runtime/this-firefox`, click Load Temporary Add-on, pick `manifest.json`.
 
-A copy installed this way does not update itself. Its icon shows a badge when a newer version exists, and
-the popup links to the store.
+If the store version is installed too, turn it off first, or every message is translated twice. A copy
+installed this way does not update itself: its icon shows a badge when a newer version exists, and the
+popup links to the store.
 
 </details>
 
@@ -97,25 +106,22 @@ the cloud chain takes over and nothing breaks.
 
 Click the gear on the chat bar, or right-click the extension icon and choose Options.
 
-- Target language, and a reading language remembered per channel if you turn it on
-- Provider order, your DeepL key, and the engine mode: on-device first, cloud first, or on-device only
-- Display: below the message (recommended), inline after it, in place of it, or on hover, with the original
-  text and the source language badge optional
-- The language button in the chat's action bar: one click switches between the channel's language and your
-  last pick, press and hold opens the list, typing two letters filters it
-- Compose preview: on or off, its target language, and whether clicking it fills the chat box or copies
-- Filters: skip bots, block users, channels or keywords, restrict source languages
-- Glossary: find and replace pairs applied to translations
-- Budget: DeepL quota share, per-channel rate limit, cache size and lifetime
-- Readability and appearance: text size, line spacing, typeface, accent colour, chat theme
-- Keyboard: Alt+T turns chat translation on or off, Alt+W the compose preview
-- Activity: messages translated, cache hits, every language seen in chat, and why each of the last 50 lines
-  was translated or left alone
-- The extension's own interface, in any of the 43 languages it translates into, picked from a menu with flags
+- **Providers**: engine order, your DeepL key, and the mode: on-device first, cloud first, or on-device only
+- **Display**: target language, display style, original text and language badge, text size, line spacing,
+  typeface, accent colour, chat theme, the compose preview and what clicking it does
+- **Filters**: bots, users, channels, keywords, source languages, and a glossary of replacements
+- **Advanced**: cache size and lifetime, concurrent requests, a per-channel rate limit, backup and restore
+- **Activity**: messages translated, cache hits, every language seen in chat, and why each of the last 50
+  lines was translated or left alone
+- **Keyboard**: Alt+T turns chat translation on or off, Alt+W the compose preview
+- The language button in the chat's action bar: one click switches between the channel's language and
+  your last pick, press and hold opens the list, typing two letters filters it
 
 ## Supported languages
 
 English · French · Spanish · Portuguese · Portuguese (Brazil) · German · Italian · Dutch · Polish · Swedish · Czech · Slovak · Romanian · Russian · Ukrainian · Turkish · Arabic · Hebrew · Japanese · Korean · Chinese (Simplified) · Chinese (Traditional) · Thai · Vietnamese · Indonesian · Hindi · Finnish · Norwegian · Danish · Greek · Hungarian · Bulgarian · Catalan · Slovenian · Estonian · Lithuanian · Latvian · Persian · Bengali · Tamil · Malay · Filipino · Cantonese
+
+Chat is translated into any of them, and the extension's own interface is available in each one.
 
 ## Privacy
 
@@ -143,6 +149,10 @@ spent on the language pairs where it beats the free engines.
 
 **Which display style should I use?**
 Below the message. The other three work, and are still being adjusted.
+
+**Can I use the extension in my language?**
+Yes. It follows your browser's language, and the menu at the top of the settings switches it to any of
+the 43.
 
 **Does it work on VOD replays?**
 Yes, the same way as on live streams.
@@ -180,19 +190,24 @@ npm run dev              # HMR
 Builds are reproducible: the same commit yields byte-identical zips on any machine, checked by building a
 `git archive` of the tag in an empty folder and comparing hashes.
 
-Beyond the unit tests, 41 offline gates load the built extension into a real browser, drive it and assert
+Beyond the unit tests, 42 offline gates load the built extension into a real browser, drive it and assert
 what it does, with the page served locally and the translation engine answered locally. They need
 Playwright, which is deliberately not a dependency: point `UX_KIT` at a folder whose `node_modules` holds it,
 or run `npm i -D playwright`.
 
 ```bash
-node test/e2e/run-gates.mjs --headless                  # all 41, no window
+node test/e2e/run-gates.mjs --headless                  # all 42, no window
 node test/e2e/store-shots-fixture.mjs --lang=ja         # the store screenshots, in one listing language
 node test/e2e/store-shots-fixture.mjs --gif             # English store screenshots, the README images and this GIF
 ```
 
-Stack: Manifest V3, Vite, TypeScript, Preact, Tailwind. The store texts live in [store/](store/), and a
-release is a version tag: CI builds, checks and publishes it to both stores.
+Interface strings live in `src/shared/i18n/` (popup and options, keyed by the English text) and
+`src/content/i18n/` (chat bar, keyed by id with the English text as the fallback), one file per language;
+tests hold every file to the full key set. Store
+texts live in [store/](store/), and a release is a version tag: CI builds, checks and publishes it to both
+stores.
+
+Stack: Manifest V3, Vite, TypeScript, Preact, Tailwind.
 
 ## Related projects
 
