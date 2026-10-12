@@ -153,7 +153,7 @@ if (cmd === 'previews') {
   const plain = (s) => (s ?? '').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
   const a = await call('GET', `${addon}/`, undefined, true);
   const same = Object.keys(sent).filter((l) =>
-    a.name?.[l] === localised(name)[l] && a.summary?.[l] === sent[l] && flat(plain(a.description?.[l])) === flat(localised(description)[l]));
+    a.name?.[l] === localised(name)[l] && a.summary?.[l]?.replace(/‌/g, '') === sent[l].replace(/‌/g, '') && flat(plain(a.description?.[l])) === flat(localised(description)[l]));
   console.log(`fiche : ${same.length}/${Object.keys(sent).length} locales relues identiques`);
   if (same.length !== Object.keys(sent).length) die(`differentes : ${Object.keys(sent).filter((l) => !same.includes(l)).join(' ')}`);
 } else {

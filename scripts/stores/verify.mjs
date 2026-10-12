@@ -61,7 +61,7 @@ for (const [lang, { dir, amo }] of Object.entries(LISTINGS)) {
   if (!amo.length) continue;
   const loc = apiLocale(amo[0]);
   row(a.name?.[loc] === catalog(dir).extName.message, `amo   ${lang.padEnd(5)} nom`);
-  row(squash(a.summary?.[loc]) === squash(store(`amo/summary/${lang}.txt`)), `amo   ${lang.padEnd(5)} resume`);
+  row(squash(a.summary?.[loc]).replace(/‌/g, '') === squash(store(`amo/summary/${lang}.txt`)).replace(/‌/g, ''), `amo   ${lang.padEnd(5)} resume`);
   // AMO renders '1.' lines as a list and drops Persian's zero-width non-joiner.
   const flat = (t) => plain(t).replace(/^\d+\.\s+/gm, '').replace(/[\s‌]+/g, '');
   row(flat(a.description?.[loc]) === flat(store(`amo/description/${lang}.txt`)), `amo   ${lang.padEnd(5)} description`);
