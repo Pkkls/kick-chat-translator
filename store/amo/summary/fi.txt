@@ -1,0 +1,1 @@
+Ilmainen chat kääntäjä Kickille: jokainen viesti käännetään kielellesi sen saapuessa, ja vastauksesi lähtevät kanavan kielellä. Ei tiliä, ei asetuksia. Toimii suorissa lähetyksissä ja VOD:eissa.

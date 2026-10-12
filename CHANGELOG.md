@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **The store listings speak 42 languages instead of 11.** Every Chrome Web
+  Store locale of a language the extension translates into now has its own
+  name, short description and detailed description, and AMO gets 17 more
+  locales (European Portuguese no longer borrows the Brazilian text). The
+  language list lives in `scripts/stores/languages.mjs`, read by every store
+  script.
 - **English chat abbreviations are spelled out before translating** for
   other readers (ngl, idc, lmk, wyd, goat). On 34 chat lines into the 42
   other languages, 952 of 1386 abbreviations came back as typed; spelled

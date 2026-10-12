@@ -1,0 +1,9 @@
+Chat-forkortelser som ngl, idc, lmk, wyd eller goat skrives nå ut før de oversettes, slik at lesere på andre språk får meningen i stedet for bokstavene.
+
+Ord som motorene stadig oversatte feil, som valeu, yatta, coucou, forza og vanlige hilsener, kommer nå fra utvidelsens egen tabell, på mange flere språk.
+
+Ikke flere manglende linjer i en rask chat. En melding skrevet på et annet språk enn de rundt den oversettes for seg i stedet for å bli droppet, og en kort fremmed linje blir ikke lenger forvekslet med engelsk og skjult.
+
+Mer nøyaktig flere steder: arabiske hilsener gjenkjennes som arabisk, tradisjonell kinesisk forblir tradisjonell når den oversettes på enheten din, og et svar beholder @mention og lenke på kantonesisk.
+
+Lettere for nettleseren din: utvidelsen sover når ingen Kick-fane er åpen, og gjør mindre arbeid per melding i en travel chat. I Firefox kan en fane ikke lenger oversette hver melding to ganger etter en oppdatering.

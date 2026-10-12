@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Kick Chat Translator: תרגום צ'אט",
+    "description": "Extension and store listing name: the brand, then the query this language types. 45 character limit."
+  },
+  "extDescription": {
+    "message": "חינם: תרגום צ'אט חי ל-Kick. קראו את הצ'אט של כל שידור בשפה שלכם והשיבו בשפת הערוץ. בלי חשבון ובלי הגדרות.",
+    "description": "Store listing blurb and manifest description. 132 character limit."
+  }
+}

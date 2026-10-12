@@ -1,0 +1,35 @@
+Kick Chat Translator yra nemokamas pokalbių vertėjas, skirtas Kick. Skaityk bet kurios transliacijos pokalbį sava kalba ir atsakyk kanalo kalba tiesiai pokalbyje.
+
+Žiūri turkišką, ispanišką, rusišką ar arabišką transliaciją ir nesupranti pokalbio? Įdiek, atidaryk transliaciją, ir kiekvieno pranešimo vertimas atsiras iškart po juo, vos tik pranešimas atkeliauja. Jokios paskyros, jokio API rakto, nieko nereikia nustatinėti.
+
+KAIP TAI VEIKIA
+
+1. Atidaryk bet kurią Kick transliaciją. Žalia juosta pokalbio viršuje rodo, kad vertėjas įjungtas.
+2. Kiekvienas naujas pranešimas gauna vertimą apačioje, tavo naršyklės kalba.
+3. Parašyk atsakymą sava kalba. Peržiūra parodo jį kanalo kalba: paspausk Tab arba spustelėk ją, tada siųsk.
+
+Kanalo kalba nuskaitoma tiesiai iš Kick, o abi kalbas galima keisti nustatymuose. Veikia tiesioginėse transliacijose ir VOD įrašuose, palieka 7TV emote'us nepakeistus ir pats sustoja foninėse kortelėse.
+
+KĄ GAUNI
+
+• 43 kalbos, įskaitant rašomas iš dešinės į kairę (arabų, hebrajų, persų), o regioniniai variantai laikomi atskirai (Brazilijos portugalų, tradicinė kinų).
+• Nemokamai iškart su Google Translate, be rakto ir be paskyros.
+• Geresnės Europos kalbos su tavo paties DeepL API raktu. DeepL gauna paskutines pokalbio eilutes kaip kontekstą, kad formuluotės tiktų pokalbiui.
+• Vertimas įrenginyje Chrome ir Edge 138+, kai tavo kompiuteris tai palaiko: neprisijungus, be apribojimų, o pokalbis niekada nepalieka tavo kompiuterio.
+• Automatinis atsarginis variantas: kai vienas variklis nepasiteisina, perima MyMemory arba Lingva. Eiliškumą pasirenki pats.
+• Keturi rodymo stiliai: po pranešimu, toje pačioje eilutėje, mažu kursyvu po jo arba tik užvedus pelę. Užvedimo režimas nieko neverčia, kol nenukreipi pelės į pranešimą, todėl greitame pokalbyje naudojimas sumažėja maždaug dešimt kartų.
+• Filtrai: praleisk botus, nutildyk naudotojus ar kanalus, paslėpk eilutes su tavo pasirinktu žodžiu (praverčia prieš !command šlamštą) arba versk tik norimas kalbas.
+• Emote'ai, paminėjimai, nuorodos ir emoji šlamštas pašalinami prieš ką nors siunčiant, todėl "kkkkkk" vertimui nieko neišleidžiama.
+• Pritaikyk sau: teksto dydis, eilučių tarpai, šriftas, akcento spalva, tamsus arba šviesus pokalbis, skaitymo kalba, įsimenama kiekvienam kanalui, spartieji klavišai.
+• Sąsaja 10 kalbų: anglų, ispanų, prancūzų, portugalų, turkų, rusų, arabų, kinų, japonų ir korėjiečių.
+
+PRIVATUMAS
+
+Jokios paskyros, jokios analitikos, jokio savo serverio. Pokalbio tekstas keliauja tik pasirinktam vertimo varikliui. Su Google, MyMemory ar Lingva tai kiekvieno pranešimo tekstas ir daugiau nieko. Su DeepL kartu kaip kontekstas siunčiamos paskutinės pokalbio eilutės su jų autorių vardais, kad vertimas tiktų pokalbiui. Kanalas, kurį žiūri, niekada nesiunčiamas, o su vertimu įrenginyje niekas nepalieka tavo kompiuterio.
+
+Leidimai paprastais žodžiais: saugykla tavo nustatymams ir vertimų talpyklai; prieiga prie kick.com, kad pokalbyje būtų rodomi vertimai; prieiga prie variklių, kuriuos ji gali kviesti (Google, DeepL, MyMemory ir Lingva); pažadinimo laikmatis, kad vertėjas išliktų pasirengęs, kol žiūri; ir teisė iš naujo įkelti savo skriptą į jau atidarytas Kick korteles diegiant ar atnaujinant, kad jos toliau versty be perkrovimo. Ji taip pat skaito GitHub leidimų puslapį, kad praneštų apie naujesnę versiją, su ta užklausa nieko nesiųsdama.
+
+NEMOKAMA IR ATVIRO KODO
+
+MIT licencija, kiekviena kodo eilutė vieša: github.com/Pkkls/kick-chat-translator
+Pranešimai apie klaidas ir kalbų pageidavimai ten laukiami, o kas pasikeitė kiekvienoje versijoje, rasi leidimų puslapyje.

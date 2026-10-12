@@ -1,0 +1,1 @@
+Darmowy tłumacz czatu na żywo dla Kick: każda wiadomość jest tłumaczona na twój język w chwili, gdy się pojawia, a twoje odpowiedzi wychodzą w języku kanału. Bez konta, bez konfiguracji. Działa na streamach i VOD.

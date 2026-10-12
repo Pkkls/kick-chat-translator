@@ -4,7 +4,10 @@
 
 # Kick Chat Translator
 
-Kick için canlı sohbet çevirici. Herhangi bir yayının sohbetini kendi dilinde oku, kanalın dilinde yanıt ver.
+Herhangi bir Kick yayınının sohbetini kendi dilinde oku, kanalın dilinde yanıt ver.<br>
+Ücretsiz, hesap yok, kurulacak bir şey yok. 43 dil.
+
+**[Chrome, Brave veya Edge'e ekle](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)** &nbsp;·&nbsp; **[Firefox'a ekle](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=Chrome%20Web%20Store&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
 [![Chrome kullanıcıları](https://img.shields.io/chrome-web-store/users/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=kullan%C4%B1c%C4%B1lar&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
@@ -153,21 +156,13 @@ Hayır. Bağımsız bir açık kaynak projesi, Kick ile bağlantısı yok.
 
 ## Yenilikler
 
-### 3.1.0
+3.1.0'da:
 
-ngl, idc, lmk, wyd ve goat gibi sohbet kısaltmaları çeviriden önce açık yazılıyor; böylece başka dillerde okuyanlar, yazıldığı gibi harfler ya da yanlış bir tahmin yerine anlamını görüyor.
-
-Çevirmenin yanlış anladığı yaygın sohbet kelimeleri artık eklentinin kendi tablosundan, daha fazla dilde çevriliyor: valeu artık "mal oldu", yatta da "yatın üstünde" olarak dönmüyor; merci, gracias veya konnichiwa gibi selamlar İbraniceye, Farsçaya, Yunancaya, Ukraynacaya, Bulgarcaya, Bengalceye, Tamilceye, Geleneksel Çinceye ve Kantoncaya çevriliyor.
-
-Hızlı bir sohbette, paketin geri kalanından farklı bir dilde yazılmış satırlar çevrilmeden dönüyor ve hiç gösterilmiyordu. Artık her satır ayrı ayrı algılanıp çevriliyor.
-
-Daha az kayıp ya da yanlış okunan satır: İtalyanca veya başka bir dildeki kısa bir satır artık İngilizce sanılıp gizlenmiyor, bir emote adı gibi biten sıradan kelimeler (Rumence felul, Türkçe erkek) çeviriden önce silinmiyor, Arapça selamlar Farsça değil Arapça olarak okunuyor ve bir yanıt Kantoncada @bahsetmesini ve bağlantısını koruyor.
-
-Cihazınızda çevrilen Geleneksel Çince artık geleneksel karakterlerle dönüyor.
-
-Tarayıcınız için daha hafif: hiçbir Kick sekmesi açık değilken eklenti artık uyanmıyor ve yoğun bir sohbette mesaj başına daha az kaynak harcıyor.
-
-Firefox: bir güncellemeden sonra bir sekme eklentinin iki kopyasını çalıştırıp her mesajı iki kez çevirebiliyordu. Artık yalnızca biri çalışıyor.
+- Sohbet argosu (ngl, idc, lmk, wyd, goat) çeviriden önce açık yazılıyor, böylece diğer okuyucular anlamı görüyor
+- Motorların yanlış çevirdiği kelimeler (valeu, yatta, coucou, forza, gündelik selamlar) eklentinin kendi tablosundan geliyor, çok daha fazla dilde
+- Hızlı bir sohbette artık satır kaybolmuyor: yanındakilerden farklı bir dildeki mesaj ayrı çevriliyor, yabancı dildeki kısa satırlar da artık İngilizce sanılmıyor
+- Arapça selamlar Arapça olarak okunuyor, Geleneksel Çince cihazda geleneksel kalıyor, Kantonca yanıtlarda @bahsetmeler korunuyor
+- Daha hafif: hiçbir Kick sekmesi açık değilken uykuda, mesaj başına daha az iş, güncellemeden sonra Firefox'ta çift çeviri yok
 
 Her sürüm, nelerin değiştiği ve arkasındaki ölçümle birlikte:
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) ve [CHANGELOG.md](CHANGELOG.md).

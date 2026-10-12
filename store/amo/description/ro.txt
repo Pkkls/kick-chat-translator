@@ -1,0 +1,34 @@
+Kick Chat Translator este o extensie gratuită de traducere chat live pentru Kick. Citește chatul oricărui stream în limba ta și răspunde în limba canalului, chiar în chat.
+
+Te uiți la un stream în turcă, spaniolă, rusă sau arabă și nu poți urmări chatul? Instalează, deschide streamul și fiecare mesaj își arată traducerea chiar sub el, pe măsură ce apare. Fără cont, fără cheie API, nimic de configurat.
+
+CUM FUNCȚIONEAZĂ
+
+1. Deschide orice stream de pe Kick. O bară verde din partea de sus a chatului arată că traducătorul este pornit.
+2. Fiecare mesaj nou primește traducerea dedesubt, în limba browserului tău.
+3. Scrie un răspuns în limba ta. O previzualizare îl arată în limba canalului: apasă Tab sau fă clic pe ea, apoi trimite.
+
+Limba canalului este citită chiar de la Kick, iar ambele limbi pot fi schimbate din setări. Funcționează pe stream-uri live și pe reluări VOD, lasă emote-urile 7TV neschimbate și se oprește singur în filele din fundal.
+
+Vezi-l în acțiune pe un chat real: https://www.youtube.com/watch?v=NoGJeUrwy9o
+
+CE PRIMEȘTI
+
+• 43 de limbi, inclusiv cele scrise de la dreapta la stânga (arabă, ebraică, persană), cu variantele regionale păstrate separat (portugheza braziliană, chineza tradițională).
+• Gratuit din start cu Google Translate, fără cheie și fără cont.
+• Limbi europene mai bine traduse cu propria ta cheie API DeepL. DeepL primește ultimele rânduri din chat drept context, așa că formularea se potrivește conversației.
+• Rezervă automată: când un motor cedează, preia MyMemory sau Lingva. Tu alegi ordinea.
+• Patru stiluri de afișare: sub mesaj, pe același rând, cu litere italice mici după el sau doar când treci mouse-ul peste el. Modul activat la trecerea mouse-ului nu traduce nimic până nu arăți spre un mesaj, ceea ce reduce consumul de aproximativ zece ori pe un chat rapid.
+• Filtre: ignoră boții, redu la tăcere utilizatori sau canale, ascunde rândurile care conțin un cuvânt ales de tine (util împotriva spamului cu !command) sau tradu doar limbile dorite.
+• Emote-urile, mențiunile, linkurile și spamul de emoji sunt eliminate înainte de a se trimite ceva, așa că nu se consumă nimic pentru a traduce "kkkkkk".
+• Fă-l al tău: mărimea textului, spațierea rândurilor, fontul, culoarea de accent, chat întunecat sau luminos, o limbă de citire reținută pentru fiecare canal, comenzi rapide de la tastatură.
+• Interfață în 10 limbi: engleză, spaniolă, franceză, portugheză, turcă, rusă, arabă, chineză, japoneză și coreeană.
+
+CE IESE DIN BROWSERUL TĂU
+
+Textul din chat ajunge doar la motorul de traducere ales de tine. Cu Google, MyMemory sau Lingva, este textul fiecărui mesaj și nimic altceva: nici canalul, nici cine l-a scris. Cu DeepL, ultimele rânduri din chat merg drept context, împreună cu numele celor care le-au scris, ca traducerea să se potrivească conversației. La asta se referă rândul "conținutul site-ului" din permisiunile de mai sus, și asta este tot. Nu există cont, analitice sau server al meu: extensia vorbește cu Kick, cu motorul ales de tine și cu pagina de versiuni de pe GitHub pentru a te anunța când există o versiune mai nouă, fără a trimite nimic cu această ultimă cerere.
+
+GRATUIT ȘI CU COD SURSĂ DESCHIS
+
+Licență MIT, fiecare linie de cod este publică: github.com/Pkkls/kick-chat-translator
+Rapoartele de erori și cererile de limbi sunt binevenite acolo.

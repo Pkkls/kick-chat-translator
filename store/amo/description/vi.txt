@@ -1,0 +1,34 @@
+Kick Chat Translator là tiện ích dịch chat trực tiếp miễn phí cho Kick. Đọc chat của bất kỳ stream nào bằng ngôn ngữ của bạn, và trả lời bằng ngôn ngữ của kênh ngay trong khung chat.
+
+Xem stream tiếng Thổ Nhĩ Kỳ, Tây Ban Nha, Nga hay Ả Rập mà không theo kịp chat? Cài đặt, mở stream, và mỗi tin nhắn sẽ hiện bản dịch ngay bên dưới ngay khi nó xuất hiện. Không cần tài khoản, không cần API key, không phải thiết lập gì.
+
+CÁCH HOẠT ĐỘNG
+
+1. Mở bất kỳ stream Kick nào. Thanh màu xanh lá ở đầu khung chat cho biết trình dịch đang bật.
+2. Mỗi tin nhắn mới có bản dịch nằm bên dưới, bằng ngôn ngữ của trình duyệt bạn.
+3. Gõ câu trả lời bằng ngôn ngữ của bạn. Bản xem trước hiện bằng ngôn ngữ của kênh: nhấn Tab hoặc bấm vào đó, rồi gửi.
+
+Ngôn ngữ của kênh được đọc thẳng từ Kick, và cả hai ngôn ngữ đều có thể đổi trong phần cài đặt. Hoạt động với stream trực tiếp lẫn bản phát lại VOD, giữ nguyên emote 7TV, và tự tạm dừng ở các tab nền.
+
+Xem tiện ích chạy trên một khung chat thật: https://www.youtube.com/watch?v=NoGJeUrwy9o
+
+BẠN CÓ GÌ
+
+• 43 ngôn ngữ, gồm cả các ngôn ngữ viết từ phải sang trái (Ả Rập, Do Thái, Ba Tư), với các biến thể vùng được tách riêng (tiếng Bồ Đào Nha của Brazil, tiếng Trung phồn thể).
+• Miễn phí ngay khi cài với Google Translate, không cần key, không cần tài khoản.
+• Các ngôn ngữ châu Âu dịch tốt hơn với API key DeepL của riêng bạn. DeepL nhận các dòng chat gần đây làm ngữ cảnh, nên cách dùng từ khớp với cuộc trò chuyện.
+• Tự động dự phòng: khi một công cụ dịch lỗi, MyMemory hoặc Lingva sẽ tiếp quản. Thứ tự do bạn chọn.
+• Bốn kiểu hiển thị: bên dưới tin nhắn, cùng một dòng, chữ nghiêng nhỏ ngay sau tin nhắn, hoặc chỉ khi bạn rê chuột vào. Chế độ rê chuột không dịch gì cho đến khi bạn trỏ vào một tin nhắn, giúp giảm lượng dùng khoảng mười lần trên một khung chat chạy nhanh.
+• Bộ lọc: bỏ qua bot, tắt tiếng người dùng hoặc kênh, ẩn các dòng chứa từ bạn chọn (tiện để chặn spam !command), hoặc chỉ dịch những ngôn ngữ bạn muốn.
+• Emote, lượt nhắc tên, liên kết và spam emoji được loại bỏ trước khi gửi đi bất cứ thứ gì, nên không tốn lượt dịch nào cho "kkkkkk".
+• Tùy chỉnh theo ý bạn: cỡ chữ, khoảng cách dòng, phông chữ, màu nhấn, chat nền tối hoặc sáng, ngôn ngữ đọc được nhớ riêng cho từng kênh, phím tắt.
+• Giao diện có 10 ngôn ngữ: tiếng Anh, Tây Ban Nha, Pháp, Bồ Đào Nha, Thổ Nhĩ Kỳ, Nga, Ả Rập, Trung, Nhật và Hàn.
+
+NHỮNG GÌ RỜI KHỎI TRÌNH DUYỆT CỦA BẠN
+
+Nội dung chat chỉ được gửi đến công cụ dịch mà bạn đã chọn. Với Google, MyMemory hoặc Lingva, đó là nội dung của từng tin nhắn và không có gì khác: không có kênh, không có người viết. Với DeepL, vài dòng chat gần nhất được gửi kèm làm ngữ cảnh, cùng tên người viết, để bản dịch khớp với cuộc trò chuyện. Đó chính là điều mà dòng "nội dung trang web" trong phần quyền ở trên nói đến, và chỉ có vậy. Không có tài khoản, không phân tích dữ liệu và không có máy chủ của tôi: tiện ích chỉ nói chuyện với Kick, với công cụ dịch bạn đã chọn, và với trang GitHub releases để báo cho bạn khi có phiên bản mới, không gửi gì kèm theo yêu cầu cuối cùng đó.
+
+MIỄN PHÍ VÀ MÃ NGUỒN MỞ
+
+Giấy phép MIT, từng dòng mã đều công khai: github.com/Pkkls/kick-chat-translator
+Báo lỗi và yêu cầu thêm ngôn ngữ đều được hoan nghênh ở đó.

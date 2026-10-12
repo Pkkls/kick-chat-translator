@@ -1,0 +1,9 @@
+Chatové zkratky jako ngl, idc, lmk, wyd nebo goat se nyní před překladem rozepisují celé, takže čtenáři v jiných jazycích dostanou jejich význam, ne holá písmena.
+
+Slova, která překladače pořád chápaly špatně, třeba valeu, yatta, coucou, forza a každodenní pozdravy, nyní pocházejí z vlastní tabulky rozšíření, a to v mnohem více jazycích.
+
+Už žádné chybějící řádky v rychlém chatu. Zpráva napsaná jiným jazykem než ty kolem ní se přeloží samostatně, místo aby se zahodila, a krátký cizojazyčný řádek se už nepovažuje za angličtinu a neskryje se.
+
+Přesnější na více místech: arabské pozdravy se poznají jako arabština, tradiční čínština zůstane tradiční, i když se překládá ve vašem zařízení, a odpověď si v kantonštině zachová @zmínku i odkaz.
+
+Šetrnější k vašemu prohlížeči: rozšíření usne, když není otevřená žádná karta Kick, a v rušném chatu udělá na jednu zprávu méně práce. Ve Firefoxu už karta po aktualizaci nemůže překládat každou zprávu dvakrát.

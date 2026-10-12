@@ -1,0 +1,34 @@
+Kick Chat Translator ist ein kostenloser Chat-Übersetzer für Kick. Lies den Chat jedes Streams in deiner eigenen Sprache und antworte direkt im Chat in der Sprache des Kanals.
+
+Du schaust einen türkischen, spanischen, russischen oder arabischen Stream und kannst dem Chat nicht folgen? Installieren, Stream öffnen, und jede Nachricht zeigt ihre Übersetzung direkt darunter an, sobald sie eintrifft. Ohne Konto, ohne API-Schlüssel, ohne Einrichtung.
+
+SO FUNKTIONIERT ES
+
+1. Öffne einen beliebigen Kick-Stream. Eine grüne Leiste oben im Chat zeigt, dass der Übersetzer aktiv ist.
+2. Jede neue Nachricht bekommt ihre Übersetzung darunter, in der Sprache deines Browsers.
+3. Schreib eine Antwort in deiner Sprache. Eine Vorschau zeigt sie in der Sprache des Kanals: Drück Tab oder klick darauf, dann sende sie ab.
+
+Die Sprache des Kanals wird von Kick selbst übernommen, und beide Sprachen lassen sich in den Einstellungen ändern. Funktioniert bei Live-Streams und bei VOD-Wiederholungen, lässt 7TV-Emotes unverändert und pausiert sich selbst in Hintergrund-Tabs.
+
+So sieht es in einem echten Chat aus: https://www.youtube.com/watch?v=NoGJeUrwy9o
+
+DAS BEKOMMST DU
+
+• 43 Sprachen, auch Rechts-nach-links-Sprachen (Arabisch, Hebräisch, Persisch), mit getrennten regionalen Varianten (brasilianisches Portugiesisch, traditionelles Chinesisch).
+• Kostenlos direkt nach der Installation mit Google Translate, ohne Schlüssel und ohne Konto.
+• Bessere europäische Sprachen mit deinem eigenen DeepL-API-Schlüssel. DeepL bekommt die letzten Chatzeilen als Kontext, damit die Formulierung zum Gespräch passt.
+• Automatischer Ersatz: Fällt eine Engine aus, übernimmt MyMemory oder Lingva. Die Reihenfolge bestimmst du.
+• Vier Anzeigearten: unter der Nachricht, in derselben Zeile, kleiner und kursiv dahinter oder nur beim Darüberfahren. Im Hover-Modus wird nichts übersetzt, bis du auf eine Nachricht zeigst, was die Nutzung in einem schnellen Chat etwa um das Zehnfache senkt.
+• Filter: Bots überspringen, Nutzer oder Kanäle stumm schalten, Zeilen mit einem Wort deiner Wahl ausblenden (praktisch gegen !command-Spam) oder nur die gewünschten Sprachen übersetzen.
+• Emotes, Erwähnungen, Links und Emoji-Spam werden vor dem Senden entfernt, damit nichts für die Übersetzung von "kkkkkk" draufgeht.
+• Mach es zu deinem: Textgröße, Zeilenabstand, Schriftart, Akzentfarbe, dunkler oder heller Chat, eine pro Kanal gemerkte Lesesprache, Tastenkürzel.
+• Oberfläche in 10 Sprachen: Englisch, Spanisch, Französisch, Portugiesisch, Türkisch, Russisch, Arabisch, Chinesisch, Japanisch und Koreanisch.
+
+WAS DEINEN BROWSER VERLÄSST
+
+Der Chattext geht nur an die Übersetzungs-Engine, die du gewählt hast. Bei Google, MyMemory oder Lingva ist das der Text jeder Nachricht und sonst nichts: nicht der Kanal, nicht wer geschrieben hat. Bei DeepL gehen die letzten Chatzeilen als Kontext mit, samt den Namen der Schreibenden, damit die Übersetzung zum Gespräch passt. Darauf bezieht sich die Zeile "Website-Inhalte" in den Berechtigungen oben, und das ist alles. Es gibt kein Konto, keine Analyse und keinen Server von mir: Die Erweiterung spricht mit Kick, mit der Engine, die du gewählt hast, und mit der GitHub-Releases-Seite, um dir zu sagen, wenn es eine neuere Version gibt, wobei sie bei dieser letzten Anfrage nichts mitsendet.
+
+KOSTENLOS UND OPEN SOURCE
+
+MIT-Lizenz, jede Codezeile ist öffentlich: github.com/Pkkls/kick-chat-translator
+Fehlerberichte und Sprachwünsche sind dort willkommen.

@@ -4,7 +4,10 @@
 
 # Kick Chat Translator
 
-Un traductor de chat en vivo para Kick. Lee el chat de cualquier stream en tu idioma y responde en el del canal.
+Lee el chat de cualquier stream de Kick en tu idioma y responde en el del canal.<br>
+Gratis, sin cuenta, nada que configurar. 43 idiomas.
+
+**[Añadir a Chrome, Brave o Edge](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)** &nbsp;·&nbsp; **[Añadir a Firefox](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=Chrome%20Web%20Store&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
 [![Usuarios de Chrome](https://img.shields.io/chrome-web-store/users/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=usuarios&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
@@ -157,21 +160,13 @@ No. Es un proyecto independiente de código abierto, sin relación con Kick.
 
 ## Novedades
 
-### 3.1.0
+En la 3.1.0:
 
-Las abreviaturas del chat como ngl, idc, lmk, wyd o goat se escriben completas antes de traducir, así que los lectores de otros idiomas reciben su significado en lugar de las letras tal cual o una suposición equivocada.
-
-Palabras de chat que el traductor entendía mal ahora se traducen con la tabla propia de la extensión, en más idiomas: valeu ya no vuelve como "costó", ni yatta como "en el yate", y saludos como merci, gracias o konnichiwa se traducen al hebreo, persa, griego, ucraniano, búlgaro, bengalí, tamil, chino tradicional y cantonés.
-
-En un chat rápido, las líneas escritas en un idioma distinto al del resto del lote volvían sin traducir y nunca se mostraban. Ahora cada línea se detecta y se traduce por separado.
-
-Menos líneas perdidas o mal leídas: una línea corta en italiano u otro idioma ya no se toma por inglés y se oculta, las palabras comunes que terminan como el nombre de un emote (felul en rumano, erkek en turco) ya no se borran antes de traducir, los saludos árabes se leen como árabe y no como persa, y una respuesta conserva su @mención y su enlace en cantonés.
-
-El chino tradicional traducido en tu equipo ahora vuelve en caracteres tradicionales.
-
-Más ligera para tu navegador: la extensión deja de despertarse cuando no hay ninguna pestaña de Kick abierta, y cuesta menos por mensaje en un chat con mucho movimiento.
-
-Firefox: tras una actualización, una pestaña podía ejecutar dos copias de la extensión y traducir cada mensaje dos veces. Ahora solo se ejecuta una.
+- La jerga del chat (ngl, idc, lmk, wyd, goat) se escribe completa antes de traducir, para que los demás lectores entiendan el significado
+- Las palabras que los motores traducían mal (valeu, yatta, coucou, forza, saludos de todos los días) salen de la tabla propia de la extensión, en muchos más idiomas
+- Ya no se pierden líneas en un chat rápido: un mensaje en un idioma distinto al de los de al lado se traduce por separado, y las líneas cortas en otro idioma ya no se toman por inglés
+- Los saludos árabes se leen como árabe, el chino tradicional se mantiene tradicional en el dispositivo, las @menciones se conservan en las respuestas en cantonés
+- Más ligera: dormida cuando no hay ninguna pestaña de Kick abierta, menos trabajo por mensaje, sin doble traducción en Firefox tras una actualización
 
 Cada versión, con lo que cambió y la medición detrás:
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) y [CHANGELOG.md](CHANGELOG.md).

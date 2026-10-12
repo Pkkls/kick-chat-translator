@@ -1,0 +1,34 @@
+A Kick Chat Translator egy ingyenes élő chat fordító a Kick számára. Olvasd bármely stream chatjét a saját nyelveden, és válaszolj a csatorna nyelvén, közvetlenül a chatben.
+
+Török, spanyol, orosz vagy arab streamet nézel, és nem tudod követni a chatet? Telepítsd, nyisd meg a streamet, és minden üzenet alatt megjelenik a fordítása, ahogy megérkezik. Fiók nélkül, API-kulcs nélkül, semmit nem kell beállítani.
+
+HOGYAN MŰKÖDIK
+
+1. Nyiss meg egy tetszőleges Kick streamet. A chat tetején egy zöld sáv jelzi, hogy a fordító be van kapcsolva.
+2. Minden új üzenet alatt megjelenik a fordítása a böngésződ nyelvén.
+3. Írj választ a saját nyelveden. Egy előnézet megmutatja a csatorna nyelvén: nyomj Tabot vagy kattints rá, aztán küldd el.
+
+A csatorna nyelvét a Kicktől olvassa ki, és mindkét nyelv módosítható a beállításokban. Működik élő adásokban és VOD-visszajátszásokban is, a 7TV emote-okat érintetlenül hagyja, és a háttérben lévő lapokon magától szünetel.
+
+Nézd meg működés közben egy valódi chaten: https://www.youtube.com/watch?v=NoGJeUrwy9o
+
+MIT KAPSZ
+
+• 43 nyelv, a jobbról balra írtakat is beleértve (arab, héber, perzsa), a regionális változatok külön kezelve (brazil portugál, hagyományos kínai).
+• Ingyenes már telepítés után a Google Translate-tel, kulcs és fiók nélkül.
+• Jobb fordítás az európai nyelvekhez a saját DeepL API-kulcsoddal. A DeepL kontextusként megkapja a legutóbbi chatsorokat, így a megfogalmazás illik a beszélgetéshez.
+• Automatikus tartalék: ha egy motor kiesik, a MyMemory vagy a Lingva átveszi a helyét. A sorrendet te választod.
+• Négy megjelenítési stílus: az üzenet alatt, ugyanabban a sorban, apró dőlt betűvel utána, vagy csak ha föléje viszed az egeret. Az egérrel működő mód addig nem fordít semmit, amíg egy üzenetre nem mutatsz, ami gyors chaten nagyjából tizedére csökkenti a használatot.
+• Szűrők: botok kihagyása, felhasználók vagy csatornák némítása, az általad választott szót tartalmazó sorok elrejtése (hasznos a !command spam ellen), vagy csak a kívánt nyelvek fordítása.
+• Az emote-okat, említéseket, linkeket és az emoji spamet a rendszer eltávolítja, mielőtt bármit elküldene, így semmit nem költ arra, hogy a "kkkkkk"-t fordítsa.
+• Tedd a magadévá: szövegméret, sorköz, betűtípus, kiemelőszín, sötét vagy világos chat, csatornánként megjegyzett olvasási nyelv, billentyűparancsok.
+• A felület 10 nyelven érhető el: angol, spanyol, francia, portugál, török, orosz, arab, kínai, japán és koreai.
+
+MI HAGYJA EL A BÖNGÉSZŐDET
+
+A chat szövege csak az általad választott fordítómotorhoz jut el. Google, MyMemory vagy Lingva esetén ez minden üzenet szövege, és semmi más: sem a csatorna, sem az, hogy ki írta. DeepL esetén az utolsó néhány chatsor is megy kontextusként, az íróik nevével együtt, hogy a fordítás illjen a beszélgetéshez. Erre utal fent az engedélyeknél a "weboldal tartalma" sor, és ennyi az egész. Nincs fiók, nincs analitika, és nincs saját szerverem: a bővítmény a Kickkel, az általad választott motorral és a GitHub kiadási oldalával beszél, hogy jelezze, ha új verzió érhető el, és ezzel az utolsó kéréssel semmit nem küld.
+
+INGYENES ÉS NYÍLT FORRÁSKÓDÚ
+
+MIT licenc, a kód minden sora nyilvános: github.com/Pkkls/kick-chat-translator
+Hibajelentéseket és nyelvi kéréseket szívesen fogadunk ott.

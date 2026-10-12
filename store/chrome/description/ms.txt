@@ -1,0 +1,35 @@
+Kick Chat Translator ialah alat terjemah chat langsung percuma untuk Kick. Baca chat mana-mana strim dalam bahasa kamu sendiri, dan balas dalam bahasa saluran itu, terus di dalam chat.
+
+Tengah tonton strim Turki, Sepanyol, Rusia atau Arab tapi tak dapat ikut chat? Pasang, buka strim, dan setiap mesej akan dipaparkan dengan terjemahannya tepat di bawahnya sebaik sahaja ia masuk. Tanpa akaun, tanpa kunci API, tiada apa yang perlu disediakan.
+
+CARA IA BERFUNGSI
+
+1. Buka mana-mana strim Kick. Bar hijau di bahagian atas chat menunjukkan penterjemah sedang aktif.
+2. Setiap mesej baharu mendapat terjemahannya di bawah, dalam bahasa pelayar kamu.
+3. Taip balasan dalam bahasa kamu sendiri. Pratonton memaparkannya dalam bahasa saluran: tekan Tab atau klik padanya, kemudian hantar.
+
+Bahasa saluran dibaca terus daripada Kick, dan kedua-dua bahasa boleh ditukar dalam tetapan. Berfungsi pada strim langsung dan ulang tayang VOD, mengekalkan emote 7TV seperti asal, dan berhenti sendiri dalam tab latar belakang.
+
+APA YANG KAMU DAPAT
+
+• 43 bahasa, termasuk bahasa kanan ke kiri (Arab, Ibrani, Parsi), dengan varian serantau diasingkan (Portugis Brazil, Cina Tradisional).
+• Percuma terus dari awal dengan Google Translate, tanpa kunci dan tanpa akaun.
+• Bahasa Eropah yang lebih baik dengan kunci API DeepL kamu sendiri. DeepL menerima baris chat terkini sebagai konteks, jadi pilihan katanya sesuai dengan perbualan.
+• Terjemahan pada peranti dalam Chrome dan Edge 138+ apabila komputer kamu menyokongnya: luar talian, tanpa had, dan chat tidak pernah keluar dari mesin kamu.
+• Sandaran automatik: apabila satu enjin gagal, MyMemory atau Lingva mengambil alih. Kamu yang tentukan susunannya.
+• Empat gaya paparan: di bawah mesej, pada baris yang sama, dalam huruf condong kecil selepas mesej, atau hanya apabila kamu halakan tetikus. Mod halakan tidak menterjemah apa-apa sehingga kamu menuding pada mesej, yang mengurangkan penggunaan kira-kira sepuluh kali ganda pada chat yang laju.
+• Penapis: langkau bot, senyapkan pengguna atau saluran, sembunyikan baris yang mengandungi perkataan pilihan kamu (berguna untuk spam !command), atau terjemah bahasa yang kamu mahu sahaja.
+• Emote, sebutan, pautan dan spam emoji dibuang sebelum apa-apa dihantar, jadi tiada apa yang dibazirkan untuk menterjemah "kkkkkk".
+• Jadikan milik kamu: saiz teks, jarak baris, jenis huruf, warna aksen, chat gelap atau cerah, bahasa bacaan yang diingat bagi setiap saluran, pintasan papan kekunci.
+• Antara muka dalam 10 bahasa: Inggeris, Sepanyol, Perancis, Portugis, Turki, Rusia, Arab, Cina, Jepun dan Korea.
+
+PRIVASI
+
+Tiada akaun, tiada analitik, tiada pelayan milik saya. Teks chat hanya dihantar kepada enjin terjemahan yang kamu pilih. Dengan Google, MyMemory atau Lingva, itu ialah teks setiap mesej dan tiada yang lain. Dengan DeepL, beberapa baris chat terakhir turut dihantar sebagai konteks, bersama nama penulisnya, supaya terjemahan sesuai dengan perbualan. Saluran yang kamu tonton tidak pernah dihantar, dan dengan terjemahan pada peranti tiada apa-apa yang keluar dari komputer kamu.
+
+Kebenaran, dalam bahasa mudah: storan untuk tetapan dan cache terjemahan; akses ke kick.com untuk memaparkan terjemahan dalam chat; akses ke enjin yang boleh dipanggilnya (Google, DeepL, MyMemory dan Lingva); pemasa kejutan supaya penterjemah sentiasa sedia semasa kamu menonton; dan hak untuk memuatkan semula skripnya sendiri ke dalam tab Kick yang sudah dibuka apabila kamu memasang atau mengemas kininya, supaya ia terus menterjemah tanpa muat semula. Ia juga membaca halaman keluaran GitHub untuk memberitahu kamu apabila versi baharu wujud, tanpa menghantar apa-apa bersama permintaan itu.
+
+PERCUMA DAN SUMBER TERBUKA
+
+Lesen MIT, setiap baris kod terbuka kepada umum: github.com/Pkkls/kick-chat-translator
+Laporan pepijat dan permintaan bahasa dialu-alukan di sana, dan perubahan dalam setiap versi ada di halaman keluaran.

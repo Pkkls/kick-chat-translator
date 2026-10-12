@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Kick Chat Translator: chati tõlkija",
+    "description": "Extension and store listing name: the brand, then the query this language types. 45 character limit."
+  },
+  "extDescription": {
+    "message": "Tasuta chati tõlkija Kickile: loe mis tahes voo chatti oma keeles ja vasta kanali keeles. Konto pole vaja.",
+    "description": "Store listing blurb and manifest description. 132 character limit."
+  }
+}

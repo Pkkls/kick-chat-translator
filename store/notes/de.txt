@@ -1,13 +1,9 @@
-Chat-Abkürzungen wie ngl, idc, lmk, wyd und goat werden vor der Übersetzung ausgeschrieben, damit Leser anderer Sprachen ihre Bedeutung bekommen statt der Buchstaben wie getippt oder einer falschen Vermutung.
+Chat-Abkürzungen wie ngl, idc, lmk, wyd oder goat werden jetzt vor der Übersetzung ausgeschrieben, damit Leser in anderen Sprachen die Bedeutung bekommen statt der Buchstaben.
 
-Gängige Chat-Wörter, die der Übersetzer falsch verstand, werden jetzt aus der eigenen Tabelle der Erweiterung übersetzt, in mehr Sprachen: valeu kommt nicht mehr als "es hat gekostet" zurück, yatta nicht mehr als "auf der Jacht", und Grüße wie merci, gracias oder konnichiwa werden ins Hebräische, Persische, Griechische, Ukrainische, Bulgarische, Bengalische, Tamilische, traditionelle Chinesisch und Kantonesische übersetzt.
+Wörter, bei denen die Engines ständig danebenlagen, etwa valeu, yatta, coucou, forza und alltägliche Grüße, kommen jetzt aus der eigenen Tabelle der Erweiterung, in deutlich mehr Sprachen.
 
-In einem schnellen Chat kamen Zeilen in einer anderen Sprache als der Rest eines Stapels unübersetzt zurück und wurden nie angezeigt. Jetzt wird jede Zeile für sich erkannt und übersetzt.
+Keine fehlenden Zeilen mehr in einem schnellen Chat. Eine Nachricht in einer anderen Sprache als die um sie herum wird einzeln übersetzt, statt verworfen zu werden, und eine kurze fremdsprachige Zeile wird nicht mehr für Englisch gehalten und ausgeblendet.
 
-Weniger verlorene oder falsch gelesene Zeilen: eine kurze Zeile auf Italienisch oder in einer anderen Sprache wird nicht mehr für Englisch gehalten und ausgeblendet, gewöhnliche Wörter, die wie ein Emote-Name enden (rumänisch felul, türkisch erkek), werden vor der Übersetzung nicht mehr gelöscht, arabische Grüße werden als Arabisch statt Persisch gelesen, und eine Antwort behält auf Kantonesisch ihre @Erwähnung und ihren Link.
+Genauer an mehr Stellen: Arabische Grüße werden als Arabisch erkannt, traditionelles Chinesisch bleibt bei der Übersetzung auf deinem Gerät traditionell, und eine Antwort behält ihre @mention und ihren Link auf Kantonesisch.
 
-Traditionelles Chinesisch, das auf deinem Gerät übersetzt wird, kommt jetzt in traditionellen Schriftzeichen zurück.
-
-Leichter für deinen Browser: die Erweiterung wacht nicht mehr auf, wenn kein Kick-Tab offen ist, und kostet in einem vollen Chat weniger pro Nachricht.
-
-Firefox: nach einem Update konnte ein Tab zwei Kopien der Erweiterung ausführen und jede Nachricht zweimal übersetzen. Jetzt läuft nur noch eine.
+Schonender für deinen Browser: Die Erweiterung ruht, wenn kein Kick-Tab offen ist, und macht in einem vollen Chat weniger Arbeit pro Nachricht. In Firefox kann ein Tab nach einem Update nicht mehr jede Nachricht doppelt übersetzen.

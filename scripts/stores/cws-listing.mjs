@@ -21,6 +21,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { LISTINGS, chromeCode } from './languages.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const PORT = Number(process.env.CWS_CDP_PORT ?? 9222);
@@ -146,14 +147,11 @@ async function inspect(tab = 'edit') {
  * The Chrome locale code of each listing language. The dashboard writes
  * "<name> – <code>" with the name in its own interface language ("anglais –
  * en" on a French dashboard), so the code after the dash is what is matched,
- * as a whole word: `fr` must not pick `fr_CA`.
+ * as a whole word: `fr` must not pick `fr_CA`, nor `es` pick `es-419`.
  */
-export const LANG_CODES = {
-  en: 'en', fr: 'fr', es: 'es', 'pt-BR': 'pt-BR', tr: 'tr', ru: 'ru',
-  ar: 'ar', ja: 'ja', ko: 'ko', zh: 'zh-CN', cs: 'cs',
-};
+export const LANG_CODES = Object.fromEntries(Object.keys(LISTINGS).map((l) => [l, chromeCode(l)]));
 /** Source of the in-page test for one option's text. */
-const matcher = (lang) => `((t) => new RegExp('–\\\\s*${LANG_CODES[lang]}(?![A-Za-z_])').test(t))`;
+const matcher = (lang) => `((t) => new RegExp('–\\\\s*${LANG_CODES[lang]}(?![A-Za-z0-9_-])').test(t))`;
 
 /** Runs in the page: the description field, the language picker, the save button. */
 const LOCATE = `(() => {

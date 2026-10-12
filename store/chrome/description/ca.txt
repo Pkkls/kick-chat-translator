@@ -1,0 +1,35 @@
+Kick Chat Translator és un traductor de xat en directe gratuït per a Kick. Llegeix el xat de qualsevol stream en el teu idioma i respon en l'idioma del canal, directament al xat.
+
+Estàs mirant un stream en turc, castellà, rus o àrab i no pots seguir el xat? Instal·la'l, obre el stream i cada missatge mostra la seva traducció just a sota, tan bon punt arriba. Sense compte, sense clau d'API, res a configurar.
+
+COM FUNCIONA
+
+1. Obre qualsevol stream de Kick. Una barra verda a la part superior del xat indica que el traductor està activat.
+2. Cada missatge nou rep la traducció a sota, en l'idioma del teu navegador.
+3. Escriu una resposta en el teu idioma. Una vista prèvia la mostra en l'idioma del canal: prem Tab o fes-hi clic, i després envia-la.
+
+L'idioma del canal es llegeix del mateix Kick, i els dos idiomes es poden canviar a la configuració. Funciona en directes i en repeticions de VOD, deixa els emotes de 7TV tal com són i es posa en pausa a les pestanyes en segon pla.
+
+QUÈ OBTENS
+
+• 43 idiomes, inclosos els d'escriptura de dreta a esquerra (àrab, hebreu, persa), amb les variants regionals separades (portuguès del Brasil, xinès tradicional).
+• Gratuït de sèrie amb Google Translate, sense clau i sense compte.
+• Millors resultats en llengües europees amb la teva pròpia clau d'API de DeepL. DeepL rep les últimes línies del xat com a context, de manera que la redacció encaixa amb la conversa.
+• Traducció al dispositiu a Chrome i Edge 138+ quan l'ordinador ho permet: sense connexió, il·limitada, i el xat no surt mai del teu ordinador.
+• Recurs automàtic: quan un motor falla, hi entra MyMemory o Lingva. Tu tries l'ordre.
+• Quatre estils de visualització: sota el missatge, a la mateixa línia, en cursiva petita a continuació, o només quan hi passes el ratolí per sobre. El mode de passar-hi el ratolí no tradueix res fins que assenyales un missatge, cosa que redueix l'ús unes deu vegades en un xat ràpid.
+• Filtres: ometre bots, silenciar usuaris o canals, amagar les línies que contenen una paraula que triïs (útil contra el spam de !command), o traduir només els idiomes que vulguis.
+• Els emotes, les mencions, els enllaços i el spam d'emojis s'eliminen abans d'enviar res, així que no es gasta res a traduir "kkkkkk".
+• Fes-lo teu: mida del text, interlineat, tipus de lletra, color d'accent, xat fosc o clar, un idioma de lectura recordat per canal, dreceres de teclat.
+• Interfície en 10 idiomes: anglès, castellà, francès, portuguès, turc, rus, àrab, xinès, japonès i coreà.
+
+PRIVADESA
+
+Sense compte, sense analítiques, sense cap servidor meu. El text del xat només va al motor de traducció que has triat. Amb Google, MyMemory o Lingva, és el text de cada missatge i res més. Amb DeepL, les últimes línies del xat hi van com a context, amb els noms de qui les va escriure, perquè la traducció encaixi amb la conversa. El canal que mires no s'envia mai, i amb la traducció al dispositiu res no surt del teu ordinador.
+
+Els permisos, en paraules clares: emmagatzematge per a la teva configuració i la memòria cau de traduccions; accés a kick.com per mostrar les traduccions al xat; accés als motors que pot consultar (Google, DeepL, MyMemory i Lingva); un temporitzador que el desperta perquè el traductor es mantingui a punt mentre mires; i el dret de tornar a carregar el seu propi script a les pestanyes de Kick ja obertes quan l'instal·les o l'actualitzes, perquè continuïn traduint sense refrescar. També llegeix la pàgina de versions de GitHub per avisar-te quan n'hi ha una de més nova, sense enviar res amb aquesta petició.
+
+GRATUÏT I DE CODI OBERT
+
+Llicència MIT, cada línia de codi és pública: github.com/Pkkls/kick-chat-translator
+Els informes d'errors i les peticions d'idiomes són benvinguts allà, i el que ha canviat a cada versió és a la pàgina de versions.

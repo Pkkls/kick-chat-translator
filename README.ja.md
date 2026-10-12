@@ -4,7 +4,10 @@
 
 # Kick Chat Translator
 
-Kick のチャットをリアルタイム翻訳。どの配信のチャットも自分の言語で読み、チャンネルの言語で返信できます。
+Kick のどの配信のチャットも自分の言語で読み、チャンネルの言語で返信できます。<br>
+無料、アカウント不要、設定も不要。43 言語に対応。
+
+**[Chrome、Brave、Edge に追加](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)** &nbsp;·&nbsp; **[Firefox に追加](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=Chrome%20Web%20Store&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
 [![Chrome のユーザー数](https://img.shields.io/chrome-web-store/users/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=users&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
@@ -127,21 +130,13 @@ Kick はときどきチャットの構造を変えます。[issue](https://githu
 
 ## 新機能
 
-### 3.1.0
+3.1.0 の変更点：
 
-ngl、idc、lmk、wyd、goat などのチャット略語は、翻訳の前に正式な形に書き直されるようになりました。ほかの言語の読者には、打たれたままの文字や誤った推測ではなく、その意味が届きます。
-
-翻訳エンジンが誤解していたよく使われるチャット用語は、拡張機能自身の表から、より多くの言語で翻訳されるようになりました。valeu が「費用がかかった」、yatta が「ヨットの上で」と返ることはもうありません。merci、gracias、konnichiwa などのあいさつは、ヘブライ語、ペルシア語、ギリシャ語、ウクライナ語、ブルガリア語、ベンガル語、タミル語、繁体字中国語、広東語に翻訳されます。
-
-流れの速いチャットでは、まとめて送った中でほかと違う言語の行が翻訳されずに返り、表示されませんでした。今は一行ずつ言語を判定して翻訳します。
-
-失われる行や誤読される行が減りました。イタリア語などの短い行が英語と判断されて隠されることはなくなり、エモート名のような語尾を持つ普通の単語（ルーマニア語の felul、トルコ語の erkek）が翻訳前に消されることもなくなりました。アラビア語のあいさつはペルシア語ではなくアラビア語として読まれ、返信は広東語でも @メンションとリンクを保ちます。
-
-端末内で翻訳した繁体字中国語は、繁体字で返るようになりました。
-
-ブラウザへの負担が軽くなりました。Kick のタブが開いていないときは拡張機能が起動しなくなり、にぎやかなチャットでもメッセージごとの負荷が減りました。
-
-Firefox：更新後、ひとつのタブで拡張機能が二重に動き、各メッセージを二回翻訳することがありました。今は一つだけが動きます。
+- チャット略語（ngl、idc、lmk、wyd、goat）は翻訳の前に書き下されるので、ほかの言語の読者にも意味が伝わります
+- 翻訳エンジンが誤訳していた語（valeu、yatta、coucou、forza、日常のあいさつ）は、拡張機能自身の表から、はるかに多くの言語で翻訳されます
+- 流れの速いチャットで行が失われなくなりました。周りと違う言語のメッセージは単独で翻訳され、短い外国語の行も英語と誤判定されません
+- アラビア語のあいさつはアラビア語として読まれ、端末内で翻訳した繁体字中国語は繁体字のまま、広東語の返信でも @メンションを保ちます
+- より軽く：Kick のタブがないときは休止、メッセージごとの処理が減り、Firefox では更新後の二重翻訳がなくなりました
 
 各リリースの変更点とその裏付けの計測は
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) と [CHANGELOG.md](CHANGELOG.md) にあります。
