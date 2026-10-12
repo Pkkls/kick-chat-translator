@@ -146,11 +146,14 @@ if (cmd === 'previews') {
   await call('PATCH', `${addon}/`, { name: localised(name), summary: sent, description: localised(description) });
   // Without `lang`, translated fields come back as {locale: text}: compare them all.
   // AMO serves descriptions with URLs turned into outgoing links, even with
-  // wrap_outgoing_links=false, so the markup is stripped before comparing.
+  // wrap_outgoing_links=false, renders "1." lines as an <ol> (numbers and line
+  // breaks gone) and drops the zero-width non-joiner Persian writes, so the
+  // markup, numbering, ZWNJ and whitespace are set aside before comparing.
+  const flat = (s) => s.replace(/^\d+\.\s+/gm, '').replace(/[\s‌]+/g, '');
   const plain = (s) => (s ?? '').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
   const a = await call('GET', `${addon}/`, undefined, true);
   const same = Object.keys(sent).filter((l) =>
-    a.name?.[l] === localised(name)[l] && a.summary?.[l] === sent[l] && plain(a.description?.[l]) === localised(description)[l]);
+    a.name?.[l] === localised(name)[l] && a.summary?.[l] === sent[l] && flat(plain(a.description?.[l])) === flat(localised(description)[l]));
   console.log(`fiche : ${same.length}/${Object.keys(sent).length} locales relues identiques`);
   if (same.length !== Object.keys(sent).length) die(`differentes : ${Object.keys(sent).filter((l) => !same.includes(l)).join(' ')}`);
 } else {
