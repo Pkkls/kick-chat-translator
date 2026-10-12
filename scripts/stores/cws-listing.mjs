@@ -522,8 +522,32 @@ async function links() {
   cdp.close();
 }
 
+/**
+ * Read-only: what the dashboard says about the draft, and whether it still
+ * offers "Envoyer pour examen". The API's PENDING_REVIEW is not enough: after
+ * a listing change the dashboard kept the button live and kil had to click it.
+ */
+async function status() {
+  const cdp = await Cdp.open();
+  await cdp.send('Page.navigate', { url: `${EDIT_URL}/status` });
+  await sleep(6000);
+  const said = await cdp.eval(`document.body.innerText.split('\\n').map((l) => l.trim()).filter((l) => /examen|review|attente|publi|brouillon|draft|refus|rejet/i.test(l)).slice(0, 10)`);
+  console.log('Etat:', said.join(' | ') || '(nothing about review on the page)');
+  // The button lives on the listing page, not on the status tab.
+  await cdp.send('Page.navigate', { url: EDIT_URL });
+  await sleep(6000);
+  const button = await cdp.eval(`(() => {
+    const b = [...document.querySelectorAll('button, [role=button]')].find((e) => /envoyer pour examen|submit for review/i.test(e.textContent));
+    if (!b) return 'absent';
+    return b.disabled || b.getAttribute('aria-disabled') === 'true' ? 'greyed out' : 'LIVE: the draft is not submitted';
+  })()`);
+  console.log('"Envoyer pour examen":', button);
+  cdp.close();
+}
+
 const cmd = process.argv[2];
 if (cmd === 'links') await links();
+else if (cmd === 'status') await status();
 else if (cmd === 'justify') await justify(process.argv.includes('--dry'));
 else if (cmd === 'why') await why();
 else if (cmd === 'launch') await launch();
@@ -531,6 +555,6 @@ else if (cmd === 'inspect') await inspect(process.argv[3]);
 else if (cmd === 'paste') await paste(process.argv.includes('--dry'));
 else if (cmd === 'verify') await verify();
 else {
-  console.error('usage: cws-listing.mjs launch | inspect | paste [--dry] | verify');
+  console.error('usage: cws-listing.mjs launch | status | inspect | paste [--dry] | verify | why | links');
   process.exit(2);
 }
