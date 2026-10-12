@@ -26,13 +26,15 @@ export function AdvancedSection({ settings, onPatch, stats }: Props) {
     })().catch(() => undefined);
   }, []);
 
-  /** "3 412 entrees, 23 % du plafond". Rien tant que la reponse n'est pas la. */
+  /** "Entrees : 3 412 · plafond atteint a 23 %". Rien tant que la reponse n'est pas la.
+   * Libelle puis nombre : un nombre suivi d'un nom ne s'accorde pas en polonais,
+   * tcheque ou arabe sans regles de pluriel, ce qu'une table cle a cle n'a pas. */
   const remplissage =
     cacheStats === undefined
       ? undefined
-      : `${cacheStats.entries.toLocaleString()} ${t('entries')}, ${Math.round(
+      : `${t('Entries:')} ${cacheStats.entries.toLocaleString()} · ${t('Cap used:')} ${Math.round(
           (cacheStats.entries / Math.max(1, settings.cacheMaxEntries)) * 100,
-        )}% ${t('of the cap')}`;
+        )}%`;
 
   /** L'age de la plus vieille entree gardee en memoire, en heures. */
   const plusVieille =
@@ -138,7 +140,7 @@ export function AdvancedSection({ settings, onPatch, stats }: Props) {
           live={
             reseau === undefined
               ? undefined
-              : `${reseau.toLocaleString()} ${t('requests have gone through this limit')}`
+              : `${t('Requests sent through this limit:')} ${reseau.toLocaleString()}`
           }
           input={
             <input
@@ -162,7 +164,7 @@ export function AdvancedSection({ settings, onPatch, stats }: Props) {
               ? undefined
               : bloques === 0
                 ? t('never reached so far')
-                : `${bloques.toLocaleString()} ${t('messages held back by this cap')}`
+                : `${t('Messages held back by this cap:')} ${bloques.toLocaleString()}`
           }
           input={
             <input

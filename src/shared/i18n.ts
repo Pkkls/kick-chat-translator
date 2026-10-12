@@ -8,25 +8,68 @@
  * to the English key — so the UI is never blank.
  */
 import { UI_MESSAGES } from './i18n.messages';
+import { matchUiLocale } from './uiLocaleMatch';
 
-export const UI_LOCALES = ['en', 'ja', 'fr', 'zh', 'ar', 'ru', 'pt', 'es', 'tr', 'ko'] as const;
+/**
+ * Every language the extension translates into is also an interface language.
+ * `pt` is Brazilian Portuguese (it was the only Portuguese for years, and a
+ * saved `uiLang: 'pt'` keeps meaning it); `pt-pt` is European.
+ */
+export const UI_LOCALES = [
+  'en', 'fr', 'es', 'pt', 'pt-pt', 'de', 'it', 'nl', 'pl', 'sv', 'no', 'da', 'fi', 'cs', 'sk', 'sl', 'hu', 'ro',
+  'ca', 'et', 'lt', 'lv', 'tr', 'vi', 'id', 'ms', 'tl', 'ru', 'uk', 'bg', 'el', 'ar', 'he', 'fa', 'hi', 'bn',
+  'ta', 'th', 'ja', 'ko', 'zh', 'zh-tw', 'yue',
+] as const;
 export type UiLocale = (typeof UI_LOCALES)[number];
 
 /** Native names for the language picker. */
 export const UI_LOCALE_NAMES: Record<UiLocale, string> = {
   en: 'English',
-  ja: '日本語',
   fr: 'Français',
-  zh: '中文',
-  ar: 'العربية',
-  ru: 'Русский',
-  pt: 'Português',
   es: 'Español',
+  pt: 'Português (Brasil)',
+  'pt-pt': 'Português (Portugal)',
+  de: 'Deutsch',
+  it: 'Italiano',
+  nl: 'Nederlands',
+  pl: 'Polski',
+  sv: 'Svenska',
+  no: 'Norsk',
+  da: 'Dansk',
+  fi: 'Suomi',
+  cs: 'Čeština',
+  sk: 'Slovenčina',
+  sl: 'Slovenščina',
+  hu: 'Magyar',
+  ro: 'Română',
+  ca: 'Català',
+  et: 'Eesti',
+  lt: 'Lietuvių',
+  lv: 'Latviešu',
   tr: 'Türkçe',
+  vi: 'Tiếng Việt',
+  id: 'Bahasa Indonesia',
+  ms: 'Bahasa Melayu',
+  tl: 'Filipino',
+  ru: 'Русский',
+  uk: 'Українська',
+  bg: 'Български',
+  el: 'Ελληνικά',
+  ar: 'العربية',
+  he: 'עברית',
+  fa: 'فارسی',
+  hi: 'हिन्दी',
+  bn: 'বাংলা',
+  ta: 'தமிழ்',
+  th: 'ไทย',
+  ja: '日本語',
   ko: '한국어',
+  zh: '简体中文',
+  'zh-tw': '繁體中文',
+  yue: '粵語',
 };
 
-const RTL_LOCALES = new Set<UiLocale>(['ar']);
+const RTL_LOCALES = new Set<UiLocale>(['ar', 'he', 'fa']);
 export function isRtlLocale(locale: UiLocale): boolean {
   return RTL_LOCALES.has(locale);
 }
@@ -44,11 +87,7 @@ export function detectUiLocale(): UiLocale {
     typeof navigator !== 'undefined'
       ? (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language])
       : [];
-  for (const raw of list) {
-    const base = (raw || '').toLowerCase().split('-')[0] ?? '';
-    if (isUiLocale(base)) return base;
-  }
-  return 'en';
+  return (matchUiLocale(list, isUiLocale) as UiLocale | undefined) ?? 'en';
 }
 
 /** Resolve the `uiLang` setting ('auto' or an explicit locale) to a concrete locale. */

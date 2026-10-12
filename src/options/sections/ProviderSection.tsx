@@ -169,7 +169,7 @@ export function ProviderSection({ settings, providers, onPatch }: Props) {
             onInput={(e) => onPatch({ deeplApiKey: (e.target as HTMLInputElement).value.trim() })}
           />
           <p class="text-[11px] text-kick-muted">
-            Free plan: 1,000,000 chars/month. Key ends with <code>:fx</code>. Get one at{' '}
+            {t('Free plan: 1,000,000 characters a month. Free keys end with :fx.')} {t('Get a key:')}{' '}
             <a
               class="text-kick-primary underline"
               href="https://www.deepl.com/pro#developer"
