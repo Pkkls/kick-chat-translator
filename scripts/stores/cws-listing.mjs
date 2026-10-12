@@ -16,7 +16,7 @@
  * signs in by hand, and the profile stays signed in for every later run. This
  * script never types a credential and stops if Google asks for one.
  */
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -196,7 +196,7 @@ async function chooseLanguage(cdp, lang) {
     console.log(lang, JSON.stringify(await cdp.eval(`(() => {
       const p = document.querySelector('[data-kt-cws=picker]');
       const opts = [...document.querySelectorAll('[role=option], mat-option, li')].filter((e) => e.getClientRects().length);
-      return { picker: p?.textContent.trim().slice(0, 40), expanded: p?.getAttribute('aria-expanded'), options: opts.length, first: opts.slice(0, 3).map((o) => o.textContent.trim().slice(0, 30)) };
+      return { picker: p?.textContent.trim().slice(0, 40), expanded: p?.getAttribute('aria-expanded'), options: opts.length, first: opts.filter((o) => /–/.test(o.textContent)).map((o) => o.textContent.trim().slice(0, 30)) };
     })()`)));
   const at = await cdp.eval(`(() => {
     const o = [...document.querySelectorAll('[role=option], mat-option, li')].filter((e) => e.getClientRects().length)
@@ -208,8 +208,18 @@ async function chooseLanguage(cdp, lang) {
   })()`);
   if (!at) return false;
   await click(cdp, at);
-  await sleep(1500);
-  return true;
+  // The picker can switch late: 3.1.0 typed Hindi into the Hebrew listing and
+  // Japanese into the Italian one. Write only once it shows the language.
+  for (let i = 0; i < 20; i++) {
+    await sleep(500);
+    // LOCATE again: the picker may be re-rendered and lose its mark. Its text
+    // ends with the Material icon's ligature ("...– ararrow_drop_down").
+    if (await cdp.eval(`(${LOCATE}, ${is}((document.querySelector('[data-kt-cws=picker]')?.textContent ?? '').replace(/arrow_drop_\\w+|expand_\\w+/g, ' ')))`)) {
+      await sleep(1000);
+      return true;
+    }
+  }
+  return false;
 }
 
 /** Replace the description with real keyboard input, then read it back. */
@@ -220,17 +230,33 @@ async function writeDescription(cdp, text) {
   await cdp.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Delete', code: 'Delete', windowsVirtualKeyCode: 46 });
   await cdp.send('Input.insertText', { text });
   await sleep(300);
-  const back = await cdp.eval(`document.querySelector('[data-kt-cws=desc]').value`);
-  return back.replace(/\r\n/g, '\n').trim() === text.replace(/\r\n/g, '\n').trim();
+  const back = (await cdp.eval(`document.querySelector('[data-kt-cws=desc]').value`)).replace(/\r\n/g, '\n').trim();
+  const want = text.replace(/\r\n/g, '\n').trim();
+  if (back !== want && process.env.CWS_DEBUG) {
+    let i = 0;
+    while (back[i] === want[i]) i++;
+    console.log(`read-back ${back.length} chars, wanted ${want.length}; first difference at ${i}: ${JSON.stringify(back.slice(i, i + 40))} vs ${JSON.stringify(want.slice(i, i + 40))}`);
+  }
+  return back === want;
 }
 
 async function paste(dry) {
   const dir = path.join(ROOT, 'store/chrome/description');
-  const langs = fs.readdirSync(dir).filter((f) => f.endsWith('.txt')).map((f) => f.slice(0, -4));
+  const only = process.env.CWS_LANGS?.split(',');
+  const langs = fs.readdirSync(dir).filter((f) => f.endsWith('.txt')).map((f) => f.slice(0, -4)).filter((l) => !only || only.includes(l));
+  // A draft in review is frozen: every field types, nothing sticks, and the
+  // read-back fails in all languages (3.1.0, 42/42). Ask the API first.
+  if (!dry) {
+    const st = spawnSync(process.execPath, [path.join(ROOT, 'scripts/stores/cws.mjs'), 'status'], { encoding: 'utf8' });
+    if (/"state":\s*"(PENDING_REVIEW|IN_REVIEW)"/.test(st.stdout)) {
+      console.error('A submission is in review and the draft is locked: node scripts/stores/cws.mjs cancel, then paste, then cws.mjs publish.');
+      process.exit(5);
+    }
+  }
   const cdp = await Cdp.open();
   const here = await cdp.eval('location.href');
   if (/accounts\.google\.com/.test(here)) throw new Error('Google is asking for a sign-in: do it by hand, then rerun.');
-  if (!here.startsWith(EDIT_URL)) {
+  if (here.split(/[?#]/)[0] !== EDIT_URL) {
     await cdp.send('Page.navigate', { url: EDIT_URL });
     await sleep(6000);
   }
