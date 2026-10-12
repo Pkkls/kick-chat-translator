@@ -5,7 +5,7 @@
 # Kick Chat Translator
 
 Lis le chat de n'importe quel stream Kick dans ta langue, et réponds dans celle de la chaîne.<br>
-Gratuit, sans compte, rien à configurer. 43 langues.
+Gratuit, sans compte, rien à configurer. 43 langues, dans le chat et dans l'extension elle-même.
 
 **[Ajouter à Chrome, Brave ou Edge](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)** &nbsp;·&nbsp; **[Ajouter à Firefox](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
@@ -23,26 +23,33 @@ Gratuit, sans compte, rien à configurer. 43 langues.
 
 </div>
 
-## Ce que ça fait
+## Comment ça marche
 
-Ouvre un stream Kick dont le chat est dans une langue que tu ne lis pas. Chaque message reçoit sa traduction
-juste en dessous, au fil de l'arrivée, sur les lives comme sur les replays VOD. Écris une réponse et un aperçu
-la montre dans la langue de la chaîne au-dessus de la boîte de chat : appuie sur Tab ou clique dessus, et cette
-version remplace ce que tu as tapé.
+1. Installe-la et ouvre n'importe quel stream Kick. Une barre verte en haut du chat indique qu'elle tourne.
+2. Chaque message reçoit sa traduction juste en dessous dès son arrivée, dans la langue de ton navigateur.
+   Ça marche en live comme en replay (VOD).
+3. Écris une réponse dans ta langue. Un aperçu au-dessus de la boîte de chat la montre dans la langue de la
+   chaîne : appuie sur Tab ou clique dessus, et cette version remplace ce que tu as tapé.
 
-Rien à régler. Le chat entrant est traduit vers la langue de ton navigateur, et ce que tu écris part dans la
-langue de diffusion de la chaîne, lue depuis Kick lui-même. Les deux se changent dans les réglages.
+La langue de la chaîne est lue depuis Kick lui-même, donc rien à configurer. Les deux langues se changent
+dans les réglages, et une langue de lecture peut être retenue par chaîne.
 
-- 43 langues, écritures de droite à gauche comprises (arabe, hébreu, persan) et variantes régionales (portugais
-  du Brésil, chinois traditionnel, cantonais)
-- Google d'emblée, sans clé et sans compte. Ta propre clé DeepL gratuite pour une meilleure qualité, MyMemory
-  et Lingva en secours
-- Traduction en local dans Chrome et Edge quand le navigateur la propose : 22 ms au lieu de 1,6 s, et le texte
-  ne quitte jamais ta machine
-- Emotes 7TV, filtres de bots et d'utilisateurs, filtre de mots-clés, un glossaire pour les noms que les
-  moteurs massacrent
-- Mets une chaîne en pause depuis la barre du chat sans arrêter les autres. Changer de chaîne ou mettre à jour
-  l'extension laisse les onglets ouverts continuer à traduire, sans recharger
+## Ce que tu obtiens
+
+- **43 langues**, écritures de droite à gauche comprises (arabe, hébreu, persan), avec les variantes
+  régionales bien séparées (portugais du Brésil et d'Europe, chinois simplifié et traditionnel, cantonais)
+- **L'extension les parle aussi** : réglages, popup et barre du chat dans les 43, au choix dans un menu avec drapeaux
+- **Gratuit d'emblée** avec Google Traduction. Ajoute ta propre clé DeepL gratuite pour de meilleures langues
+  européennes ; MyMemory et Lingva prennent le relais quand un moteur échoue
+- **Traduction en local** dans Chrome et Edge quand le navigateur la propose : 22 ms au lieu de 1,6 s, et
+  le texte ne quitte jamais ta machine
+- **Filtres** : ignorer les bots, mettre en sourdine des utilisateurs ou des chaînes, masquer les lignes
+  contenant un mot, ne traduire que les langues que tu choisis
+- **Pensée pour les chats rapides** : emotes 7TV laissées telles quelles, spam d'emojis et liens retirés avant
+  tout envoi, un glossaire pour les noms que les moteurs massacrent, un cache de traductions
+- **Quatre styles d'affichage** : sous le message, sur la même ligne, à sa place, ou seulement au survol
+- **Mets une chaîne en pause** depuis la barre du chat sans arrêter les autres. Changer de chaîne ou mettre à
+  jour l'extension laisse les onglets ouverts continuer à traduire, sans recharger
 - Chrome, Brave, Edge et Firefox
 
 | Le chat, traduit au fil du défilement | Le popup de la barre d'outils |
@@ -51,7 +58,7 @@ langue de diffusion de la chaîne, lue depuis Kick lui-même. Les deux se change
 
 | Ce que tu écris, avant de l'envoyer | Choisis une langue, ou laisse-le choisir |
 |---|---|
-| <img src="screenshots/compose.png" alt="La boîte de chat contenant un message en anglais, avec au-dessus un aperçu de la version espagnole qui sera envoyée" width="360"> | <img src="screenshots/languages.png" alt="Une grille avec recherche de drapeaux et de noms de langues, la langue propre de la chaîne en premier" width="360"> |
+| <img src="screenshots/compose.png" alt="La boîte de chat contenant un message en anglais, avec au-dessus un aperçu de la version espagnole qui sera envoyée" width="360"> | <img src="screenshots/languages.png" alt="Une grille avec recherche de drapeaux et de noms de langues, la langue de la chaîne en premier" width="360"> |
 
 <sub>Captures prises sur la version publiée, dans un salon de chat que ce dépôt invente : les pseudos et les
 messages sont fictifs et les traductions sont servies en local, donc aucun pseudo réel ne se retrouve sur cette page.</sub>
@@ -62,8 +69,7 @@ messages sont fictifs et les traductions sont servies en local, donc aucun pseud
 &nbsp;·&nbsp;
 [Firefox : Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)
 
-Ouvre n'importe quel stream Kick : la barre verte en haut du chat indique que ça tourne. Les copies installées
-depuis les stores se mettent à jour toutes seules.
+Les copies des stores se mettent à jour toutes seules.
 
 <details>
 <summary>Installer à la main, depuis un zip de release</summary>
@@ -73,7 +79,8 @@ Télécharge le zip de ton navigateur sur [Releases](https://github.com/Pkkls/ki
 - Chrome, Brave, Edge (`…-chromium.zip`) : ouvre `chrome://extensions`, active le mode développeur, clique sur Charger l'extension non empaquetée, choisis le dossier.
 - Firefox 121+ (`…-firefox.zip`) : ouvre `about:debugging#/runtime/this-firefox`, clique sur Charger un module complémentaire temporaire, choisis `manifest.json`.
 
-Une copie installée ainsi ne se met pas à jour toute seule. Son icône affiche un badge quand une version plus
+Si la version du store est aussi installée, désactive-la d'abord, sinon chaque message est traduit deux fois.
+Une copie installée ainsi ne se met pas à jour toute seule : son icône affiche un badge quand une version plus
 récente existe, et le popup renvoie vers le store.
 
 </details>
@@ -99,25 +106,22 @@ manque, la chaîne cloud prend le relais et rien ne casse.
 
 Clique sur l'engrenage de la barre du chat, ou fais un clic droit sur l'icône de l'extension et choisis Options.
 
-- Langue cible, et une langue de lecture retenue par chaîne si tu l'actives
-- Ordre des moteurs, ta clé DeepL et le mode du moteur : local d'abord, cloud d'abord, ou local uniquement
-- Affichage : sous le message (recommandé), en ligne après lui, à sa place ou au survol, avec le texte original
-  et le badge de la langue source en option
+- **Moteurs** : ordre des moteurs, ta clé DeepL, et le mode : local d'abord, cloud d'abord, ou local uniquement
+- **Affichage** : langue cible, style d'affichage, texte original et badge de langue, taille du texte,
+  interligne, police, couleur d'accent, thème du chat, l'aperçu d'écriture et ce que fait un clic dessus
+- **Filtres** : bots, utilisateurs, chaînes, mots-clés, langues source, et un glossaire de remplacements
+- **Avancé** : taille et durée de vie du cache, requêtes simultanées, limite par chaîne, sauvegarde et restauration
+- **Activité** : messages traduits, succès du cache, chaque langue vue dans le chat, et pourquoi chacune des 50
+  dernières lignes a été traduite ou laissée de côté
+- **Clavier** : Alt+T active ou désactive la traduction du chat, Alt+W l'aperçu d'écriture
 - Le bouton de langue dans la barre d'actions du chat : un clic bascule entre la langue de la chaîne et ton
   dernier choix, un appui long ouvre la liste, taper deux lettres la filtre
-- Aperçu d'écriture : activé ou non, sa langue cible, et si le clic remplit la boîte de chat ou copie
-- Filtres : ignorer les bots, bloquer des utilisateurs, des chaînes ou des mots-clés, restreindre les langues source
-- Glossaire : paires chercher/remplacer appliquées aux traductions
-- Budget : part du quota DeepL, limite par chaîne, taille et durée de vie du cache
-- Lisibilité et apparence : taille du texte, interligne, police, couleur d'accent, thème du chat
-- Clavier : Alt+T active ou désactive la traduction du chat, Alt+W l'aperçu d'écriture
-- Activité : messages traduits, succès du cache, chaque langue vue dans le chat, et pourquoi chacune des 50
-  dernières lignes a été traduite ou laissée de côté
-- L'interface de l'extension, dans l'une des 43 langues vers lesquelles elle traduit, choisie dans un menu avec drapeaux
 
 ## Langues prises en charge
 
 Anglais · Français · Espagnol · Portugais · Portugais (Brésil) · Allemand · Italien · Néerlandais · Polonais · Suédois · Tchèque · Slovaque · Roumain · Russe · Ukrainien · Turc · Arabe · Hébreu · Japonais · Coréen · Chinois (simplifié) · Chinois (traditionnel) · Thaï · Vietnamien · Indonésien · Hindi · Finnois · Norvégien · Danois · Grec · Hongrois · Bulgare · Catalan · Slovène · Estonien · Lituanien · Letton · Persan · Bengali · Tamoul · Malais · Filipino · Cantonais
+
+Le chat se traduit vers n'importe laquelle, et l'interface de l'extension existe dans chacune.
 
 ## Confidentialité
 
@@ -146,6 +150,10 @@ DeepL n'est dépensé que sur les paires de langues où il bat les moteurs gratu
 **Quel style d'affichage choisir ?**
 Sous le message. Les trois autres fonctionnent, et sont encore en cours de réglage.
 
+**Je peux utiliser l'extension dans ma langue ?**
+Oui. Elle suit la langue de ton navigateur, et le menu en haut des réglages la passe dans n'importe laquelle
+des 43.
+
 **Ça marche sur les replays VOD ?**
 Oui, comme sur les lives.
 
@@ -173,28 +181,33 @@ Chaque version, avec ce qui a changé et la mesure derrière :
 git clone https://github.com/Pkkls/kick-chat-translator.git
 cd kick-chat-translator
 npm ci
-npm run release:check    # typecheck, lint, unit tests, build: the gate every package goes through
-npm run build:firefox    # Firefox build, same dist/ folder
-npm run package:all      # both zips, in release/
+npm run release:check    # typecheck, lint, tests unitaires, build : le contrôle par lequel passe chaque paquet
+npm run build:firefox    # build Firefox, dans le même dossier dist/
+npm run package:all      # les deux zips, dans release/
 npm run dev              # HMR
 ```
 
 Les builds sont reproductibles : le même commit donne des zips identiques à l'octet sur n'importe quelle
 machine, vérifié en construisant un `git archive` du tag dans un dossier vide et en comparant les hashs.
 
-En plus des tests unitaires, 41 gates hors ligne chargent l'extension construite dans un vrai navigateur, la
+En plus des tests unitaires, 42 gates hors ligne chargent l'extension construite dans un vrai navigateur, la
 pilotent et vérifient ce qu'elle fait, avec la page servie en local et le moteur de traduction répondu en
 local. Elles ont besoin de Playwright, qui n'est volontairement pas une dépendance : pointe `UX_KIT` vers un
 dossier dont le `node_modules` le contient, ou lance `npm i -D playwright`.
 
 ```bash
-node test/e2e/run-gates.mjs --headless                  # all 41, no window
-node test/e2e/store-shots-fixture.mjs --lang=ja         # the store screenshots, in one listing language
-node test/e2e/store-shots-fixture.mjs --gif             # English store screenshots, the README images and this GIF
+node test/e2e/run-gates.mjs --headless                  # les 42, sans fenêtre
+node test/e2e/store-shots-fixture.mjs --lang=ja         # les captures du store, dans une langue de fiche
+node test/e2e/store-shots-fixture.mjs --gif             # captures du store en anglais, les images du README et ce GIF
 ```
 
-Stack : Manifest V3, Vite, TypeScript, Preact, Tailwind. Les textes des stores vivent dans [store/](store/), et
-une release est un tag de version : la CI la construit, la vérifie et la publie sur les deux stores.
+Les textes de l'interface vivent dans `src/shared/i18n/` (popup et options, indexés par le texte anglais) et
+`src/content/i18n/` (barre du chat, indexés par id avec le texte anglais en repli), un fichier par langue ;
+les tests imposent à chaque fichier le jeu de clés complet. Les textes des stores vivent dans
+[store/](store/), et une release est un tag de version : la CI la construit, la vérifie et la publie sur les
+deux stores.
+
+Stack : Manifest V3, Vite, TypeScript, Preact, Tailwind.
 
 ## Projets liés
 

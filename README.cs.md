@@ -5,7 +5,7 @@
 # Kick Chat Translator
 
 Čtěte chat kteréhokoli streamu na Kicku ve svém jazyce a odpovídejte v jazyce kanálu.<br>
-Zdarma, bez účtu, nic se nenastavuje. 43 jazyků.
+Zdarma, bez účtu, nic se nenastavuje. 43 jazyků, v chatu i v samotném rozšíření.
 
 **[Přidat do Chrome, Brave nebo Edge](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)** &nbsp;·&nbsp; **[Přidat do Firefoxu](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
@@ -23,23 +23,33 @@ Zdarma, bez účtu, nic se nenastavuje. 43 jazyků.
 
 </div>
 
-## Co dělá
+## Jak to funguje
 
-Otevřete stream na Kicku, jehož chat je v jazyce, kterému nerozumíte. Každá zpráva dostane překlad hned pod
-sebou, jakmile dorazí, u živých streamů i u záznamů. Napište odpověď a nad polem chatu se objeví náhled
-v jazyce kanálu: stiskněte Tab nebo na něj klikněte a tato verze nahradí to, co jste napsali.
+1. Nainstalujte rozšíření a otevřete jakýkoli stream na Kicku. Zelená lišta nahoře v chatu ukazuje, že běží.
+2. Každá zpráva dostane překlad hned pod sebou, jakmile dorazí, v jazyce vašeho prohlížeče. U živých
+   streamů i u záznamů.
+3. Odpověď napište ve svém jazyce. Náhled nad polem chatu ji ukáže v jazyce kanálu: stiskněte Tab nebo na něj
+   klikněte a tato verze nahradí to, co jste napsali.
 
-Není co nastavovat. Příchozí chat se překládá do jazyka vašeho prohlížeče a to, co napíšete, odchází v jazyce,
-ve kterém kanál vysílá, zjištěném přímo z Kicku. Obojí lze změnit v nastavení.
+Jazyk kanálu se zjišťuje přímo z Kicku, takže není co nastavovat. Oba jazyky lze změnit v nastavení a jazyk
+čtení si lze nechat zapamatovat pro každý kanál zvlášť.
 
-- 43 jazyků, včetně písem psaných zprava doleva (arabština, hebrejština, perština) a regionálních variant
-  (brazilská portugalština, tradiční čínština, kantonština)
-- Google funguje rovnou, bez klíče a bez účtu. Vlastní bezplatný klíč DeepL pro lepší kvalitu, MyMemory
-  a Lingva jako záloha
-- Překlad přímo v zařízení v Chromu a Edge, pokud ho prohlížeč nabízí: 22 ms místo 1,6 s a text nikdy
+## Co umí
+
+- **43 jazyků**, včetně písem psaných zprava doleva (arabština, hebrejština, perština), s oddělenými
+  regionálními variantami (brazilská a evropská portugalština, zjednodušená a tradiční čínština, kantonština)
+- **Rozšíření jimi mluví i samo**: nastavení, vyskakovací okno i lišta chatu ve všech 43, k výběru
+  z nabídky s vlajkami
+- **Zdarma hned po instalaci** přes Google Translate. Přidejte vlastní bezplatný klíč DeepL pro lepší
+  evropské jazyky; když překladač selže, převezmou to MyMemory a Lingva
+- **Překlad přímo v zařízení** v Chromu a Edge, pokud ho prohlížeč nabízí: 22 ms místo 1,6 s a text nikdy
   neopustí váš počítač
-- Emoty 7TV, filtry botů a uživatelů, filtr klíčových slov, glosář pro jména, která překladače komolí
-- Pozastavte jeden kanál z lišty chatu, aniž byste zastavili ostatní. Při přepnutí kanálu nebo aktualizaci
+- **Filtry**: přeskakovat boty, ztlumit uživatele nebo kanály, skrýt řádky obsahující určité slovo, překládat
+  jen jazyky, které vyberete
+- **Stavěno pro rychlé chaty**: emoty 7TV zůstanou beze změny, spam emoji a odkazy se odstraní dřív, než se
+  cokoli odešle, glosář pro jména, která překladače komolí, a mezipaměť překladů
+- **Čtyři styly zobrazení**: pod zprávou, na stejném řádku, místo ní, nebo jen při najetí myší
+- **Pozastavte jeden kanál** z lišty chatu, aniž byste zastavili ostatní. Při přepnutí kanálu nebo aktualizaci
   rozšíření otevřené karty dál překládají, bez obnovení stránky
 - Chrome, Brave, Edge a Firefox
 
@@ -61,8 +71,7 @@ skutečného člověka.</sub>
 &nbsp;·&nbsp;
 [Firefox: Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)
 
-Otevřete jakýkoli stream na Kicku: zelená lišta nahoře v chatu ukazuje, že rozšíření běží. Kopie z obchodů
-se aktualizují samy.
+Kopie z obchodů se aktualizují samy.
 
 <details>
 <summary>Ruční instalace ze zipu vydání</summary>
@@ -72,6 +81,7 @@ Stáhněte zip pro svůj prohlížeč z [Releases](https://github.com/Pkkls/kick
 - Chrome, Brave, Edge (`…-chromium.zip`): otevřete `chrome://extensions`, zapněte Režim pro vývojáře, klikněte na Načíst rozbalené a vyberte složku.
 - Firefox 121+ (`…-firefox.zip`): otevřete `about:debugging#/runtime/this-firefox`, klikněte na Načíst dočasný doplněk a vyberte `manifest.json`.
 
+Pokud máte nainstalovanou i verzi z obchodu, nejdřív ji vypněte, jinak se každá zpráva přeloží dvakrát.
 Takto nainstalovaná kopie se sama neaktualizuje. Když existuje novější verze, ukáže její ikona odznak
 a vyskakovací okno odkazuje do obchodu.
 
@@ -98,25 +108,24 @@ nerozbije.
 
 Klikněte na ozubené kolo v liště chatu, nebo klikněte pravým tlačítkem na ikonu rozšíření a zvolte Možnosti.
 
-- Cílový jazyk, a pokud ho zapnete, jazyk čtení zapamatovaný pro každý kanál
-- Pořadí poskytovatelů, váš klíč DeepL a režim překladu: nejdřív v zařízení, nejdřív cloud, nebo jen v zařízení
-- Zobrazení: pod zprávou (doporučeno), za ní na stejném řádku, místo ní nebo při najetí myší, s volitelným
-  původním textem a odznakem zdrojového jazyka
+- **Poskytovatelé**: pořadí překladačů, váš klíč DeepL a režim: nejdřív v zařízení, nejdřív cloud, nebo jen
+  v zařízení
+- **Zobrazení**: cílový jazyk, styl zobrazení, původní text a odznak jazyka, velikost textu, řádkování, písmo,
+  barva zvýraznění, motiv chatu, náhled při psaní a co udělá kliknutí na něj
+- **Filtry**: boty, uživatelé, kanály, klíčová slova, zdrojové jazyky a glosář náhrad
+- **Pokročilé**: velikost a životnost mezipaměti, souběžné požadavky, limit rychlosti na kanál, záloha
+  a obnovení
+- **Aktivita**: přeložené zprávy, zásahy mezipaměti, každý jazyk, který se v chatu objevil, a proč byl každý
+  z posledních 50 řádků přeložen nebo ponechán
+- **Klávesnice**: Alt+T zapíná a vypíná překlad chatu, Alt+W náhled při psaní
 - Tlačítko jazyka v liště akcí chatu: jedno kliknutí přepíná mezi jazykem kanálu a vaší poslední volbou,
   podržení otevře seznam, napsání dvou písmen ho filtruje
-- Náhled při psaní: zapnutý nebo vypnutý, jeho cílový jazyk a zda kliknutí vyplní pole chatu, nebo zkopíruje
-- Filtry: přeskakovat boty, blokovat uživatele, kanály nebo klíčová slova, omezit zdrojové jazyky
-- Glosář: dvojice najít a nahradit, použité na překlady
-- Rozpočet: podíl kvóty DeepL, limit rychlosti na kanál, velikost a životnost mezipaměti
-- Čitelnost a vzhled: velikost textu, řádkování, písmo, barva zvýraznění, motiv chatu
-- Klávesnice: Alt+T zapíná a vypíná překlad chatu, Alt+W náhled při psaní
-- Aktivita: přeložené zprávy, zásahy mezipaměti, každý jazyk, který se v chatu objevil, a proč byl každý
-  z posledních 50 řádků přeložen nebo ponechán
-- Vlastní rozhraní rozšíření v kterémkoli ze 43 jazyků, do nichž překládá, vybírané z nabídky s vlajkami
 
 ## Podporované jazyky
 
 angličtina · francouzština · španělština · portugalština · portugalština (Brazílie) · němčina · italština · nizozemština · polština · švédština · čeština · slovenština · rumunština · ruština · ukrajinština · turečtina · arabština · hebrejština · japonština · korejština · čínština (zjednodušená) · čínština (tradiční) · thajština · vietnamština · indonéština · hindština · finština · norština · dánština · řečtina · maďarština · bulharština · katalánština · slovinština · estonština · litevština · lotyština · perština · bengálština · tamilština · malajština · filipínština · kantonština
+
+Chat se překládá do kteréhokoli z nich a vlastní rozhraní rozšíření je dostupné v každém z nich.
 
 ## Soukromí
 
@@ -142,28 +151,31 @@ s kanálem a tím, co jste předtím dělali.
 Přidejte v nastavení bezplatný klíč DeepL. Bezplatný tarif pokrývá milion znaků měsíčně a DeepL se
 používá jen u jazykových dvojic, kde překoná bezplatné překladače.
 
-**Jaký styl zobrazení zvolit?**
-Pod zprávou. Ostatní tři fungují a ještě se dolaďují.
+**Jaký styl zobrazení použít?**
+Pod zprávou. Ostatní tři fungují, ale ještě se ladí.
+
+**Mohu rozšíření používat ve svém jazyce?**
+Ano. Řídí se jazykem vašeho prohlížeče a nabídka nahoře v nastavení ho přepne na kterýkoli ze 43.
 
 **Funguje to i u záznamů?**
 Ano, stejně jako u živých streamů.
 
 **Po aktualizaci Kicku to přestalo fungovat.**
-Kick občas mění, jak je jeho chat postavený. Otevřete [issue](https://github.com/Pkkls/kick-chat-translator/issues)
-a bude to opraveno.
+Kick občas změní, jak je jeho chat postaven. Otevřete [issue](https://github.com/Pkkls/kick-chat-translator/issues)
+a opraví se to.
 
-**Vytváří to Kick?**
-Ne. Je to nezávislý open source projekt, bez vazby na Kick.
+**Vytvořil to Kick?**
+Ne. Je to nezávislý open-source projekt, se službou Kick nijak nesouvisí.
 
-## Novinky
+## Co je nového
 
-V 3.2.0:
+Ve verzi 3.2.0:
 
-- Nastavení, vyskakovací okno i lišta v chatu mluví všemi 43 jazyky, do nichž rozšíření překládá, ne jen 10, přičemž hebrejština a perština jdou zprava doleva jako arabština
-- Deset jazyků, které znalo už dřív, bylo přepsáno tak, aby se četly jako psané přímo v daném jazyce, ne slovo od slova z angličtiny
-- Nabídka jazyka rozhraní ukazuje vlajku každého jazyka a ovládá se klávesnicí
+- Nastavení, vyskakovací okno i lišta chatu mluví všemi 43 jazyky, do kterých rozšíření překládá, ne jen 10, přičemž hebrejština a perština se píšou zprava doleva stejně jako arabština
+- Deset jazyků, kterými mluvilo už dřív, bylo přepsáno tak, aby se četlo, jako by to bylo psané přímo v daném jazyce, ne slovo od slova z angličtiny
+- Nabídka jazyka rozhraní ukazuje vlajku každého jazyka a ovládá se i klávesnicí
 
-Každé vydání, s tím, co se změnilo, a s měřením za tím:
+Každé vydání, s tím, co se změnilo, a měřením, které za tím stojí:
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) a [CHANGELOG.md](CHANGELOG.md).
 
 ## Vývoj
@@ -178,30 +190,34 @@ npm run package:all      # both zips, in release/
 npm run dev              # HMR
 ```
 
-Buildy jsou reprodukovatelné: stejný commit dá na jakémkoli stroji bajtově shodné zipy, což se ověřuje
+Buildy jsou reprodukovatelné: stejný commit dá na jakémkoli stroji bajt po bajtu shodné zipy, což se ověřuje
 sestavením `git archive` značky v prázdné složce a porovnáním hashů.
 
-Kromě jednotkových testů načítá 41 offline bran sestavené rozšíření do skutečného prohlížeče, ovládá ho
-a ověřuje, co dělá, se stránkou servírovanou lokálně a překladačem odpovídajícím lokálně. Potřebují
-Playwright, který záměrně není závislostí: nastavte `UX_KIT` na složku, jejíž `node_modules` ho obsahuje,
-nebo spusťte `npm i -D playwright`.
+Kromě unit testů načítá 42 offline bran sestavené rozšíření do skutečného prohlížeče, ovládá ho a ověřuje, co
+dělá, přičemž stránka se servíruje lokálně a překladač odpovídá lokálně. Potřebují Playwright, který záměrně
+není závislostí: nasměrujte `UX_KIT` na složku, jejíž `node_modules` ho obsahuje, nebo spusťte
+`npm i -D playwright`.
 
 ```bash
-node test/e2e/run-gates.mjs --headless                  # all 41, no window
+node test/e2e/run-gates.mjs --headless                  # all 42, no window
 node test/e2e/store-shots-fixture.mjs --lang=ja         # the store screenshots, in one listing language
 node test/e2e/store-shots-fixture.mjs --gif             # English store screenshots, the README images and this GIF
 ```
 
-Technologie: Manifest V3, Vite, TypeScript, Preact, Tailwind. Texty pro obchody jsou v [store/](store/)
-a vydání je značka verze: CI ho sestaví, zkontroluje a zveřejní v obou obchodech.
+Texty rozhraní jsou v `src/shared/i18n/` (vyskakovací okno a nastavení, klíčem je anglický text)
+a v `src/content/i18n/` (lišta chatu, klíčem je id a anglický text slouží jako záloha), jeden soubor na jazyk;
+testy vyžadují, aby každý soubor obsahoval úplnou sadu klíčů. Texty pro obchody jsou v [store/](store/)
+a vydání je verzovací značka: CI ji sestaví, zkontroluje a publikuje do obou obchodů.
+
+Stack: Manifest V3, Vite, TypeScript, Preact, Tailwind.
 
 ## Související projekty
 
-- [kick-ad-blocker](https://github.com/Pkkls/kick-ad-blocker), blokuje reklamy Kicku před videem i přes něj
-- [kick-core](https://github.com/Pkkls/kick-core), klient realtime brány sdílený těmito rozšířeními
+- [kick-ad-blocker](https://github.com/Pkkls/kick-ad-blocker), blokuje reklamy Kicku před přehráváním i překryvné reklamy
+- [kick-core](https://github.com/Pkkls/kick-core), klient realtime brány sdílený mezi těmito rozšířeními
 - [kickbus](https://github.com/Pkkls/kickbus), oficiální webhooky Kicku předávané lokálním botům přes SSE
-- [kick-drops-miner](https://github.com/Pkkls/kick-drops-miner), aplikace pro Windows, která sbírá čas sledování pro dropy na Kicku
+- [kick-drops-miner](https://github.com/Pkkls/kick-drops-miner), aplikace pro Windows, která posouvá sledování pro dropy na Kicku
 
 ## Licence
 
-MIT. Bez vazby na Kick.
+MIT. Se službou Kick nijak nesouvisí.
