@@ -113,8 +113,7 @@ Clique sur l'engrenage de la barre du chat, ou fais un clic droit sur l'icône d
 - Clavier : Alt+T active ou désactive la traduction du chat, Alt+W l'aperçu d'écriture
 - Activité : messages traduits, succès du cache, chaque langue vue dans le chat, et pourquoi chacune des 50
   dernières lignes a été traduite ou laissée de côté
-- L'interface de l'extension en anglais, espagnol, français, portugais, turc, russe, arabe, chinois, japonais
-  ou coréen
+- L'interface de l'extension, dans l'une des 43 langues vers lesquelles elle traduit, choisie dans un menu avec drapeaux
 
 ## Langues prises en charge
 
@@ -159,13 +158,11 @@ Non. C'est un projet open source indépendant, sans lien avec Kick.
 
 ## Nouveautés
 
-Dans la 3.1.0 :
+Dans la 3.2.0 :
 
-- L'argot du chat (ngl, idc, lmk, wyd, goat) est écrit en toutes lettres avant la traduction, pour que les autres lecteurs en comprennent le sens
-- Les mots que les moteurs traduisaient de travers (valeu, yatta, coucou, forza, salutations courantes) viennent de la table de l'extension, dans beaucoup plus de langues
-- Plus de lignes perdues sur un chat rapide : un message dans une autre langue que ses voisins est traduit seul, et les courtes lignes étrangères ne sont plus prises pour de l'anglais
-- Les salutations arabes sont lues comme de l'arabe, le chinois traditionnel reste traditionnel sur l'appareil, les @mentions sont conservées dans les réponses en cantonais
-- Plus léger : endormie quand aucun onglet Kick n'est ouvert, moins de travail par message, plus de double traduction sur Firefox après une mise à jour
+- Les réglages, la fenêtre de l'icône et la barre du chat parlent les 43 langues vers lesquelles l'extension traduit, et non plus 10, avec l'hébreu et le persan de droite à gauche comme l'arabe
+- Les dix langues déjà parlées ont été réécrites pour se lire comme écrites dans cette langue, pas mot à mot depuis l'anglais
+- Le menu de la langue de l'interface affiche le drapeau de chaque langue et se commande au clavier
 
 Chaque version, avec ce qui a changé et la mesure derrière :
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) et [CHANGELOG.md](CHANGELOG.md).

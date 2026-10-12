@@ -21,7 +21,7 @@ O QUE TENS
 • Filtros: ignorar bots, silenciar utilizadores ou canais, ocultar as linhas que contenham uma palavra à tua escolha (útil contra spam de !command), ou traduzir apenas as línguas que quiseres.
 • Emotes, menções, ligações e spam de emojis são retirados antes de qualquer envio, por isso não se gasta nada a traduzir "kkkkkk".
 • Põe-no à tua maneira: tamanho do texto, espaçamento entre linhas, tipo de letra, cor de destaque, chat escuro ou claro, uma língua de leitura memorizada por canal, atalhos de teclado.
-• Interface em 10 línguas: inglês, espanhol, francês, português, turco, russo, árabe, chinês, japonês e coreano.
+• Interface nas mesmas 43 línguas, incluindo as escritas da direita para a esquerda, escolhida num menu que mostra cada bandeira.
 
 PRIVACIDADE
 

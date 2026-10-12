@@ -1,9 +1,5 @@
-Chat-Abkürzungen wie ngl, idc, lmk, wyd oder goat werden jetzt vor der Übersetzung ausgeschrieben, damit Leser in anderen Sprachen die Bedeutung bekommen statt der Buchstaben.
+Die Erweiterung spricht jetzt deine Sprache. Einstellungen, Popup und die Leiste im Chat sind in alle 43 Sprachen übersetzt, in die sie übersetzt, nicht mehr nur in 10, und Hebräisch und Persisch werden wie Arabisch von rechts nach links gelesen.
 
-Wörter, bei denen die Engines ständig danebenlagen, etwa valeu, yatta, coucou, forza und alltägliche Grüße, kommen jetzt aus der eigenen Tabelle der Erweiterung, in deutlich mehr Sprachen.
+Die zehn Sprachen, die sie schon sprach, wurden neu geschrieben, damit sie natürlich klingen, als wären sie in dieser Sprache verfasst und nicht Wort für Wort aus dem Englischen übersetzt.
 
-Keine fehlenden Zeilen mehr in einem schnellen Chat. Eine Nachricht in einer anderen Sprache als die um sie herum wird einzeln übersetzt, statt verworfen zu werden, und eine kurze fremdsprachige Zeile wird nicht mehr für Englisch gehalten und ausgeblendet.
-
-Genauer an mehr Stellen: Arabische Grüße werden als Arabisch erkannt, traditionelles Chinesisch bleibt bei der Übersetzung auf deinem Gerät traditionell, und eine Antwort behält ihre @mention und ihren Link auf Kantonesisch.
-
-Schonender für deinen Browser: Die Erweiterung ruht, wenn kein Kick-Tab offen ist, und macht in einem vollen Chat weniger Arbeit pro Nachricht. In Firefox kann ein Tab nach einem Update nicht mehr jede Nachricht doppelt übersetzen.
+Das Menü für die Sprache der Oberfläche zeigt die Flagge jeder Sprache und lässt sich auch mit der Tastatur bedienen.

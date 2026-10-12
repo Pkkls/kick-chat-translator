@@ -1,9 +1,5 @@
-Chattslang som ngl, idc, lmk, wyd eller goat skrivs nu ut innan det översätts, så att läsare på andra språk får betydelsen i stället för bokstäverna.
+Tillägget talar nu ditt språk. Inställningarna, popup-fönstret och fältet i chatten är översatta till alla 43 språk som det översätter till, inte bara 10, och hebreiska och persiska läses från höger till vänster, precis som arabiska.
 
-Ord som motorerna hela tiden översatte fel, till exempel valeu, yatta, coucou, forza och vardagliga hälsningar, kommer nu från tilläggets egen tabell, på många fler språk.
+De tio språk som det redan talade har skrivits om så att de låter naturliga, som om de var skrivna på det språket och inte översatta ord för ord från engelska.
 
-Inga fler saknade rader i en snabb chatt. Ett meddelande på ett annat språk än de runt omkring översätts för sig i stället för att tappas, och en kort utländsk rad förväxlas inte längre med engelska och döljs.
-
-Mer träffsäkert på fler ställen: arabiska hälsningar känns igen som arabiska, traditionell kinesiska förblir traditionell när den översätts på din enhet, och ett svar behåller sin @mention och sin länk på kantonesiska.
-
-Lättare för webbläsaren: tillägget vilar när ingen Kick-flik är öppen och gör mindre arbete per meddelande i en livlig chatt. I Firefox kan en flik inte längre översätta varje meddelande två gånger efter en uppdatering.
+Menyn för gränssnittets språk visar varje språks flagga och fungerar också med tangentbordet.

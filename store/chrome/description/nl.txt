@@ -21,7 +21,7 @@ WAT JE KRIJGT
 • Filters: bots overslaan, gebruikers of kanalen dempen, regels met een woord naar keuze verbergen (handig tegen !command-spam), of alleen de talen vertalen die je wilt.
 • Emotes, vermeldingen, links en emoji-spam worden verwijderd voordat er iets wordt verstuurd, zodat er niets wordt besteed aan het vertalen van "kkkkkk".
 • Maak het van jou: tekstgrootte, regelafstand, lettertype, accentkleur, donkere of lichte chat, een leestaal die per kanaal wordt onthouden, sneltoetsen.
-• Interface in 10 talen: Engels, Spaans, Frans, Portugees, Turks, Russisch, Arabisch, Chinees, Japans en Koreaans.
+• Interface in dezelfde 43 talen, ook van rechts naar links, te kiezen in een menu dat elke vlag toont.
 
 PRIVACY
 

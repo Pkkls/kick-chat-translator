@@ -21,7 +21,7 @@ O QUE VOCÊ GANHA
 • Filtros: pular bots, silenciar usuários ou canais, esconder linhas que contenham uma palavra escolhida por você (útil contra spam de !comandos), ou traduzir só os idiomas que você quiser.
 • Emotes, menções, links e enxurradas de emoji são removidos antes de qualquer envio, então nada é gasto traduzindo "kkkkkk".
 • Do seu jeito: tamanho do texto, entrelinha, fonte, cor de destaque, chat escuro ou claro, um idioma de leitura lembrado por canal, atalhos de teclado.
-• Interface em 10 idiomas: inglês, espanhol, francês, português, turco, russo, árabe, chinês, japonês e coreano.
+• Interface nos mesmos 43 idiomas, inclusive os da direita para a esquerda, escolhida num menu que mostra cada bandeira.
 
 PRIVACIDADE
 

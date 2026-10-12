@@ -21,7 +21,7 @@ NELER SUNUYOR
 • Filtreler: botları atla, kullanıcıları veya kanalları sustur, seçtiğin bir kelimeyi içeren satırları gizle (!komut spamına karşı işe yarar) ya da yalnızca istediğin dilleri çevir.
 • Emoteler, bahsetmeler, bağlantılar ve emoji spamı gönderilmeden önce ayıklanır, yani "kkkkkk" çevirmek için hiçbir şey harcanmaz.
 • Sana göre ayarla: yazı boyutu, satır aralığı, yazı tipi, vurgu rengi, koyu ya da açık sohbet, kanal başına hatırlanan bir okuma dili, klavye kısayolları.
-• Arayüz 10 dilde: İngilizce, İspanyolca, Fransızca, Portekizce, Türkçe, Rusça, Arapça, Çince, Japonca ve Korece.
+• Arayüz aynı 43 dilde, sağdan sola yazılanlar dahil, her dilin bayrağını gösteren bir menüden seçiliyor.
 
 GİZLİLİK
 

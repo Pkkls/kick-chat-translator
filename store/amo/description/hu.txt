@@ -22,7 +22,7 @@ MIT KAPSZ
 • Szűrők: botok kihagyása, felhasználók vagy csatornák némítása, az általad választott szót tartalmazó sorok elrejtése (hasznos a !command spam ellen), vagy csak a kívánt nyelvek fordítása.
 • Az emote-okat, említéseket, linkeket és az emoji spamet a rendszer eltávolítja, mielőtt bármit elküldene, így semmit nem költ arra, hogy a "kkkkkk"-t fordítsa.
 • Tedd a magadévá: szövegméret, sorköz, betűtípus, kiemelőszín, sötét vagy világos chat, csatornánként megjegyzett olvasási nyelv, billentyűparancsok.
-• A felület 10 nyelven érhető el: angol, spanyol, francia, portugál, török, orosz, arab, kínai, japán és koreai.
+• A felület ugyanazon a 43 nyelven érhető el, a jobbról balra írottakon is, és egy olyan menüből választható, amely minden nyelv zászlaját mutatja.
 
 MI HAGYJA EL A BÖNGÉSZŐDET
 

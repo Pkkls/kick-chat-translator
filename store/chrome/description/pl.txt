@@ -21,7 +21,7 @@ CO DOSTAJESZ
 • Filtry: pomijanie botów, wyciszanie użytkowników lub kanałów, ukrywanie linijek ze słowem, które wybierzesz (przydatne przeciw spamowi z komendami typu !command), albo tłumaczenie tylko wybranych języków.
 • Emotki, wzmianki, linki i spam emoji są usuwane, zanim cokolwiek zostanie wysłane, więc nic nie jest wydawane na tłumaczenie „kkkkkk”.
 • Dopasuj do siebie: rozmiar tekstu, odstęp między wierszami, krój pisma, kolor akcentu, ciemny lub jasny czat, język czytania zapamiętany osobno dla każdego kanału, skróty klawiszowe.
-• Interfejs w 10 językach: angielskim, hiszpańskim, francuskim, portugalskim, tureckim, rosyjskim, arabskim, chińskim, japońskim i koreańskim.
+• Interfejs w tych samych 43 językach, także pisanych od prawej do lewej, wybierany z menu pokazującego każdą flagę.
 
 PRYWATNOŚĆ
 

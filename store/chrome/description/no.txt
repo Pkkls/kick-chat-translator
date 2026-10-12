@@ -21,7 +21,7 @@ DETTE FÅR DU
 • Filtre: hopp over roboter, demp brukere eller kanaler, skjul linjer som inneholder et ord du velger (praktisk mot !command-spam), eller oversett bare språkene du vil ha.
 • Emotes, omtaler, lenker og emoji-spam fjernes før noe sendes, slik at ingenting brukes på å oversette "kkkkkk".
 • Gjør den til din egen: tekststørrelse, linjeavstand, skrifttype, aksentfarge, mørk eller lys chat, et lesespråk som huskes per kanal, hurtigtaster.
-• Grensesnitt på 10 språk: engelsk, spansk, fransk, portugisisk, tyrkisk, russisk, arabisk, kinesisk, japansk og koreansk.
+• Grensesnitt på de samme 43 språkene, også de som skrives fra høyre til venstre, valgt i en meny som viser hvert flagg.
 
 PERSONVERN
 

@@ -22,7 +22,7 @@ WHAT YOU GET
 • Filters: skip bots, mute users or channels, hide lines that contain a word you choose (handy against !command spam), or translate only the languages you want.
 • Emotes, mentions, links and emoji spam are stripped before anything is sent, so nothing is spent translating "kkkkkk".
 • Make it yours: text size, line spacing, typeface, accent colour, dark or light chat, a reading language remembered per channel, keyboard shortcuts.
-• Interface in 10 languages: English, Spanish, French, Portuguese, Turkish, Russian, Arabic, Chinese, Japanese and Korean.
+• Interface in the same 43 languages, right to left included, picked from a menu that shows each flag.
 
 WHAT LEAVES YOUR BROWSER
 

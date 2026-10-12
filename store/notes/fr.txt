@@ -1,9 +1,5 @@
-Les abréviations du chat comme ngl, idc, lmk, wyd ou goat sont maintenant écrites en entier avant d'être traduites : les lecteurs d'autres langues en reçoivent le sens, pas les lettres.
+L'extension parle maintenant ta langue. Les réglages, la fenêtre de l'icône et la barre du chat sont traduits dans les 43 langues vers lesquelles elle traduit, au lieu de 10, et l'hébreu et le persan se lisent de droite à gauche, comme l'arabe.
 
-Des mots que les moteurs de traduction comprenaient toujours de travers, comme valeu, yatta, coucou, forza et les salutations du quotidien, sont désormais traduits à partir de la table de l'extension, dans beaucoup plus de langues.
+Les dix langues qu'elle parlait déjà ont été réécrites pour se lire naturellement, comme si elles avaient été écrites dans cette langue et non traduites mot à mot de l'anglais.
 
-Fini les lignes manquantes sur un chat rapide. Un message écrit dans une autre langue que celles autour de lui est traduit à part au lieu d'être perdu, et une courte ligne étrangère n'est plus prise pour de l'anglais ni masquée.
-
-Plus précis à plus d'endroits : les salutations arabes sont reconnues comme de l'arabe, le chinois traditionnel reste traditionnel quand la traduction se fait sur ton appareil, et une réponse garde son @mention et son lien en cantonais.
-
-Plus léger pour ton navigateur : l'extension se met en veille quand aucun onglet Kick n'est ouvert et fait moins de travail par message sur un chat chargé. Sur Firefox, un onglet ne peut plus traduire chaque message deux fois après une mise à jour.
+Le menu de la langue de l'interface affiche le drapeau de chaque langue et se commande aussi au clavier.

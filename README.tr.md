@@ -111,8 +111,7 @@ Sohbet çubuğundaki dişliye tıkla, ya da uzantı simgesine sağ tıklayıp Se
 - Klavye: Alt+T sohbet çevirisini açar ya da kapatır, Alt+W yazma önizlemesini
 - Etkinlik: çevrilen mesajlar, önbellek isabetleri, sohbette görülen her dil, ve son 50 satırın her biri neden
   çevrildi ya da bırakıldı
-- Uzantının kendi arayüzü İngilizce, İspanyolca, Fransızca, Portekizce, Türkçe, Rusça, Arapça, Çince,
-  Japonca veya Korece
+- Uzantının kendi arayüzü, çevirdiği 43 dilin herhangi birinde, bayraklı bir menüden seçiliyor
 
 ## Desteklenen diller
 
@@ -156,13 +155,11 @@ Hayır. Bağımsız bir açık kaynak projesi, Kick ile bağlantısı yok.
 
 ## Yenilikler
 
-3.1.0'da:
+3.2.0'da:
 
-- Sohbet argosu (ngl, idc, lmk, wyd, goat) çeviriden önce açık yazılıyor, böylece diğer okuyucular anlamı görüyor
-- Motorların yanlış çevirdiği kelimeler (valeu, yatta, coucou, forza, gündelik selamlar) eklentinin kendi tablosundan geliyor, çok daha fazla dilde
-- Hızlı bir sohbette artık satır kaybolmuyor: yanındakilerden farklı bir dildeki mesaj ayrı çevriliyor, yabancı dildeki kısa satırlar da artık İngilizce sanılmıyor
-- Arapça selamlar Arapça olarak okunuyor, Geleneksel Çince cihazda geleneksel kalıyor, Kantonca yanıtlarda @bahsetmeler korunuyor
-- Daha hafif: hiçbir Kick sekmesi açık değilken uykuda, mesaj başına daha az iş, güncellemeden sonra Firefox'ta çift çeviri yok
+- Ayarlar, açılır pencere ve sohbet çubuğu, eklentinin çevirdiği 43 dilin hepsini konuşuyor, 10 dili değil; İbranice ve Farsça da Arapça gibi sağdan sola okunuyor
+- Zaten konuştuğu on dil, İngilizceden kelime kelime çevrilmiş gibi değil, o dilde yazılmış gibi okunsun diye baştan yazıldı
+- Arayüz dili menüsü her dilin bayrağını gösteriyor ve klavyeyle çalışıyor
 
 Her sürüm, nelerin değiştiği ve arkasındaki ölçümle birlikte:
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) ve [CHANGELOG.md](CHANGELOG.md).

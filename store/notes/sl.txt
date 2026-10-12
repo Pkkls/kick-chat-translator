@@ -1,9 +1,5 @@
-Chat sleng, kot so ngl, idc, lmk, wyd ali goat, se zdaj pred prevodom razpiše, tako da bralci v drugih jezikih dobijo pomen namesto črk.
+Razširitev zdaj govori vaš jezik. Nastavitve, pojavno okno in vrstica v klepetu so prevedeni v vseh 43 jezikov, v katere razširitev prevaja, ne več le v 10, hebrejščina in perzijščina pa se berejo od desne proti levi, tako kot arabščina.
 
-Besede, ki so jih pogoni venomer napačno prevajali, kot so valeu, yatta, coucou, forza in vsakdanji pozdravi, zdaj prihajajo iz lastne tabele razširitve, in to v veliko več jezikih.
+Deset jezikov, ki jih je razširitev znala že prej, je bilo napisanih na novo, da se berejo naravno, kot da bi bili napisani neposredno v tem jeziku in ne dobesedno prevedeni iz angleščine.
 
-Konec manjkajočih vrstic v hitrem chatu. Sporočilo, napisano v drugem jeziku kot tista okoli njega, se prevede samostojno namesto da bi bilo izpuščeno, kratka tuja vrstica pa se ne šteje več za angleščino in se ne skrije.
-
-Natančnejše na več mestih: arabski pozdravi se prepoznajo kot arabščina, tradicionalna kitajščina ostane pri prevajanju v napravi tradicionalna, odgovor v kantonščini pa obdrži @omembo in povezavo.
-
-Prijaznejše do brskalnika: razširitev spi, kadar ni odprt noben zavihek Kick, in pri prometnem chatu opravi manj dela na sporočilo. V brskalniku Firefox zavihek po posodobitvi ne more več prevajati vsakega sporočila dvakrat.
+Meni za jezik vmesnika prikazuje zastavo vsakega jezika in deluje s tipkovnico.

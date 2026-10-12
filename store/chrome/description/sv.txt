@@ -21,7 +21,7 @@ DET HÄR FÅR DU
 • Filter: hoppa över botar, tysta användare eller kanaler, dölj rader som innehåller ett ord du väljer (praktiskt mot !command-spam), eller översätt bara de språk du vill ha.
 • Emotes, omnämnanden, länkar och emoji-spam tas bort innan något skickas, så ingenting går åt till att översätta "kkkkkk".
 • Gör det till ditt: textstorlek, radavstånd, typsnitt, accentfärg, mörk eller ljus chatt, ett språk att läsa på som kommer ihåg varje kanal, kortkommandon.
-• Gränssnitt på 10 språk: engelska, spanska, franska, portugisiska, turkiska, ryska, arabiska, kinesiska, japanska och koreanska.
+• Gränssnitt på samma 43 språk, även de som skrivs från höger till vänster, valt i en meny som visar varje flagga.
 
 INTEGRITET
 

@@ -21,7 +21,7 @@ APA YANG KAMU DAPAT
 • Penapis: langkau bot, senyapkan pengguna atau saluran, sembunyikan baris yang mengandungi perkataan pilihan kamu (berguna untuk spam !command), atau terjemah bahasa yang kamu mahu sahaja.
 • Emote, sebutan, pautan dan spam emoji dibuang sebelum apa-apa dihantar, jadi tiada apa yang dibazirkan untuk menterjemah "kkkkkk".
 • Jadikan milik kamu: saiz teks, jarak baris, jenis huruf, warna aksen, chat gelap atau cerah, bahasa bacaan yang diingat bagi setiap saluran, pintasan papan kekunci.
-• Antara muka dalam 10 bahasa: Inggeris, Sepanyol, Perancis, Portugis, Turki, Rusia, Arab, Cina, Jepun dan Korea.
+• Antara muka dalam 43 bahasa yang sama, termasuk yang ditulis dari kanan ke kiri, dipilih daripada menu yang memaparkan bendera setiap bahasa.
 
 PRIVASI
 

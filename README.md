@@ -111,8 +111,7 @@ Click the gear on the chat bar, or right-click the extension icon and choose Opt
 - Keyboard: Alt+T turns chat translation on or off, Alt+W the compose preview
 - Activity: messages translated, cache hits, every language seen in chat, and why each of the last 50 lines
   was translated or left alone
-- The extension's own interface in English, Spanish, French, Portuguese, Turkish, Russian, Arabic, Chinese,
-  Japanese or Korean
+- The extension's own interface, in any of the 43 languages it translates into, picked from a menu with flags
 
 ## Supported languages
 
@@ -157,13 +156,11 @@ No. It is an independent open-source project, not affiliated with Kick.
 
 ## What's new
 
-In 3.1.0:
+In 3.2.0:
 
-- Chat slang (ngl, idc, lmk, wyd, goat) is spelled out before translation, so other readers get the meaning
-- Words engines got wrong (valeu, yatta, coucou, forza, everyday greetings) come from the extension's own table, in many more languages
-- No more lines lost on a fast chat: a message in another language than its neighbours is translated on its own, and short foreign lines are no longer taken for English
-- Arabic greetings read as Arabic, Traditional Chinese kept traditional on device, @mentions kept in Cantonese replies
-- Lighter: asleep when no Kick tab is open, less work per message, no more double translation on Firefox after an update
+- The settings, the popup and the chat bar speak all 43 languages the extension translates into, not 10, with Hebrew and Persian right to left like Arabic
+- The ten languages it already spoke were rewritten to read as written in that language, not word for word from English
+- The interface language menu shows each language's flag and works with the keyboard
 
 Every release, with what changed and the measurement behind it:
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) and [CHANGELOG.md](CHANGELOG.md).

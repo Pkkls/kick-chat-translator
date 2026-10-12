@@ -21,7 +21,7 @@ KO TU SAŅEMI
 • Filtri: izlaist botus, apklusināt lietotājus vai kanālus, paslēpt rindas ar vārdu, ko izvēlies (noder pret !command surogātpastu), vai tulkot tikai tās valodas, kuras vēlies.
 • Emocijzīmes, pieminējumi, saites un emocijzīmju plūdi tiek izņemti, pirms kaut kas tiek nosūtīts, tāpēc nekas netiek tērēts, tulkojot „kkkkkk“.
 • Pielāgo pēc sevis: teksta izmērs, rindstarpas, burtveidols, akcenta krāsa, tumšs vai gaišs čats, lasīšanas valoda, kas atcerēta katram kanālam, īsinājumtaustiņi.
-• Saskarne 10 valodās: angļu, spāņu, franču, portugāļu, turku, krievu, arābu, ķīniešu, japāņu un korejiešu.
+• Saskarne tajās pašās 43 valodās, arī rakstāmajās no labās uz kreiso pusi, izvēlama no izvēlnes, kurā redzams katras valodas karogs.
 
 PRIVĀTUMS
 

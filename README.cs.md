@@ -112,8 +112,7 @@ Klikněte na ozubené kolo v liště chatu, nebo klikněte pravým tlačítkem n
 - Klávesnice: Alt+T zapíná a vypíná překlad chatu, Alt+W náhled při psaní
 - Aktivita: přeložené zprávy, zásahy mezipaměti, každý jazyk, který se v chatu objevil, a proč byl každý
   z posledních 50 řádků přeložen nebo ponechán
-- Vlastní rozhraní rozšíření v angličtině, španělštině, francouzštině, portugalštině, turečtině, ruštině,
-  arabštině, čínštině, japonštině nebo korejštině
+- Vlastní rozhraní rozšíření v kterémkoli ze 43 jazyků, do nichž překládá, vybírané z nabídky s vlajkami
 
 ## Podporované jazyky
 
@@ -158,13 +157,11 @@ Ne. Je to nezávislý open source projekt, bez vazby na Kick.
 
 ## Novinky
 
-V 3.1.0:
+V 3.2.0:
 
-- Chatové zkratky (ngl, idc, lmk, wyd, goat) se před překladem rozepíšou, takže ostatní čtenáři dostanou jejich význam
-- Slova, která si překladače pletly (valeu, yatta, coucou, forza, běžné pozdravy), se překládají z vlastní tabulky rozšíření, a to do mnohem více jazyků
-- V rychlém chatu se už neztrácejí řádky: zpráva v jiném jazyce než její sousedé se přeloží zvlášť a krátké cizojazyčné řádky se už nepovažují za angličtinu
-- Arabské pozdravy se čtou jako arabština, tradiční čínština přeložená v zařízení zůstává tradiční a @zmínky se zachovají i v kantonských odpovědích
-- Lehčí: bez karty Kick rozšíření spí, na každou zprávu stojí méně práce a ve Firefoxu už po aktualizaci nedochází k dvojímu překladu
+- Nastavení, vyskakovací okno i lišta v chatu mluví všemi 43 jazyky, do nichž rozšíření překládá, ne jen 10, přičemž hebrejština a perština jdou zprava doleva jako arabština
+- Deset jazyků, které znalo už dřív, bylo přepsáno tak, aby se četly jako psané přímo v daném jazyce, ne slovo od slova z angličtiny
+- Nabídka jazyka rozhraní ukazuje vlajku každého jazyka a ovládá se klávesnicí
 
 Každé vydání, s tím, co se změnilo, a s měřením za tím:
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) a [CHANGELOG.md](CHANGELOG.md).

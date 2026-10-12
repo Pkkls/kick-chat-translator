@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.0] - 2026-10-12
+
 ### Added
 
 - **The interface speaks the 43 languages the extension translates into**,

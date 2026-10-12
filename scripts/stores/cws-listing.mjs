@@ -179,7 +179,22 @@ async function click(cdp, { x, y }) {
 }
 
 /** Switch the listing to a language, through the page's own picker. */
+/**
+ * Switch the listing to a language, retried: the picker misses a language at
+ * random (bn, then es, on 3.2.0), so one try made every run a partial one.
+ */
 async function chooseLanguage(cdp, lang) {
+  for (let i = 0; i < 3; i++) {
+    if (await chooseLanguageOnce(cdp, lang)) return true;
+    await cdp.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+    await cdp.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+    await sleep(1000);
+    await cdp.eval(LOCATE);
+  }
+  return false;
+}
+
+async function chooseLanguageOnce(cdp, lang) {
   const is = matcher(lang);
   const native = await cdp.eval(`(() => {
     const p = document.querySelector('[data-kt-cws=picker]');
@@ -291,6 +306,9 @@ async function paste(dry) {
     await sleep(2500);
     done.push(lang);
   }
+  // The last save was cut off by closing at once: vi, zh-TW and zh kept the
+  // old text on 3.2.0 while the run said 42/42.
+  await sleep(5000);
   cdp.close();
   console.log(`${dry ? 'located' : 'pasted and saved'}: ${done.length}/${langs.length} ${done.join(' ')}`);
   if (failed.length) {
