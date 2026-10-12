@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **The interface speaks the 43 languages the extension translates into**,
+  not 10: popup, options (Providers, Display, Filters, Advanced, Activity,
+  About) and the chat bar. European Portuguese, Traditional Chinese and
+  Cantonese have their own text; Hebrew and Persian lay out right to left
+  like Arabic. The browser's language is matched through its variants
+  (pt-BR, zh-Hant-TW, nb, fil, iw).
+- **The interface language menu shows each language's flag**, in a list
+  that works with the keyboard (arrows, Home, End, Enter, Escape).
+
+### Changed
+
+- **The ten existing translations were rewritten** to read as written in
+  that language, not word for word from English: one term per concept,
+  each platform's conventions for buttons and capitalisation, and the
+  chat chip named the same in the chat and in the help text that cites it.
+- **Live counters in Advanced read "Label: number"** instead of "number +
+  word", which no table can make agree in Polish, Czech, Russian or Arabic.
+- **The DeepL free-plan hint was English in every language**; it goes
+  through the catalogue now.
+
 ## [3.1.0] - 2026-10-10
 
 ### Added

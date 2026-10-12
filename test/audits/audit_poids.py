@@ -113,7 +113,14 @@ MANIFESTE = 'dist/manifest.json'
 # La seconde achete ngl, idc, lmk, goat et vingt-neuf autres ecrits en toutes
 # lettres avant traduction : Google en laissait 952 sur 1386 tels quels dans les
 # 42 langues. La table ne se reduit pas sans retirer des entrees mesurees utiles.
-REFERENCE_OCTETS = 264259
+#
+#     264_259 -> 370_248  +105_989 o   les textes du chat dans 33 langues de plus
+#                                      (42 au lieu de 9), +29_316 o en gzip
+#
+# L'interface parle desormais toutes les langues vers lesquelles l'extension
+# traduit. Le catalogue du chat est compile dans le script injecte (msg.ts dit
+# pourquoi : chrome.i18n ne suit pas le reglage uiLang), environ 3 Ko par langue.
+REFERENCE_OCTETS = 370248
 MARGE = 0.02
 
 if not os.path.exists(CIBLE):

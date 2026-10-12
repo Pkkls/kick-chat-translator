@@ -4,6 +4,8 @@ import { defaultSettings } from '~/shared/settings';
 import { send } from '~/shared/messages';
 import { I18nProvider } from '~/shared/i18nContext';
 import { makeT, resolveUiLocale, isRtlLocale, UI_LOCALES, UI_LOCALE_NAMES } from '~/shared/i18n';
+import type { UiLocale } from '~/shared/i18n';
+import { flagClass } from '~/shared/flags';
 import type { ProviderStatus, UsageStats } from '~/shared/types';
 import { ProviderSection } from './sections/ProviderSection';
 import { DisplaySection } from './sections/DisplaySection';
@@ -104,25 +106,7 @@ export function App() {
           </div>
           <div class="ms-auto flex items-center gap-3">
             {savedAt && <span class="text-xs text-kick-primary">{t('saved')}</span>}
-            <select
-              class="rounded border border-kick-stroke bg-kick-surface px-1.5 py-1 text-xs text-kick-text"
-              value={settings.uiLang}
-              onChange={(e) =>
-                void patch({ uiLang: (e.target as HTMLSelectElement).value as Settings['uiLang'] })
-              }
-              /* A title alone is not an accessible name a screen reader relies
-               on; aria-label is. Kept in English on purpose: it names the
-               control you use to leave a language you cannot read. */
-              aria-label="Interface language"
-              title="Interface language"
-            >
-              <option value="auto">Auto</option>
-              {UI_LOCALES.map((l) => (
-                <option key={l} value={l}>
-                  {UI_LOCALE_NAMES[l]}
-                </option>
-              ))}
-            </select>
+            <UiLangPicker value={settings.uiLang} onPick={(v) => void patch({ uiLang: v })} />
           </div>
         </header>
 
@@ -186,5 +170,112 @@ export function App() {
         </main>
       </div>
     </I18nProvider>
+  );
+}
+
+/** The flag of a UI locale: `pt` is the Brazilian interface, `pt-pt` the European one. */
+function uiFlag(l: UiLocale): string | undefined {
+  return flagClass(l === 'pt' ? 'pt-br' : l === 'pt-pt' ? 'pt' : l);
+}
+
+/**
+ * The interface language, as a list with flags: a native <select> cannot draw
+ * them. Labels stay in each language's own name, and the control's name stays
+ * in English on purpose: it is what you use to leave a language you cannot read.
+ */
+function UiLangPicker({ value, onPick }: { value: Settings['uiLang']; onPick: (v: Settings['uiLang']) => void }) {
+  const [open, setOpen] = useState(false);
+  const box = useRef<HTMLDivElement>(null);
+  const list = useRef<HTMLUListElement>(null);
+  const choices = ['auto', ...UI_LOCALES] as Settings['uiLang'][];
+
+  useEffect(() => {
+    if (!open) return;
+    (list.current?.querySelector('[aria-selected="true"]') as HTMLElement | null)?.focus();
+    const away = (e: MouseEvent) => {
+      if (!box.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', away);
+    return () => document.removeEventListener('mousedown', away);
+  }, [open]);
+
+  const pick = (v: Settings['uiLang']) => {
+    onPick(v);
+    setOpen(false);
+    (box.current?.querySelector('button') as HTMLElement | null)?.focus();
+  };
+
+  const onKey = (e: KeyboardEvent) => {
+    const items = [...(list.current?.querySelectorAll<HTMLElement>('[role=option]') ?? [])];
+    const at = items.indexOf(document.activeElement as HTMLElement);
+    const go = (i: number) => items[Math.max(0, Math.min(items.length - 1, i))]?.focus();
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      setOpen(false);
+      (box.current?.querySelector('button') as HTMLElement | null)?.focus();
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      go(at + 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      go(at - 1);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      go(0);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      go(items.length - 1);
+    } else if ((e.key === 'Enter' || e.key === ' ') && at >= 0) {
+      e.preventDefault();
+      pick(choices[at]!);
+    }
+  };
+
+  const label = (l: Settings['uiLang']) => (l === 'auto' ? 'Auto' : UI_LOCALE_NAMES[l]);
+  const flag = (l: Settings['uiLang']) => {
+    const c = l === 'auto' ? undefined : uiFlag(l);
+    return c ? <span class={`${c} shrink-0`} aria-hidden="true" /> : <span class="inline-block w-[1.33em] shrink-0" />;
+  };
+
+  return (
+    <div ref={box} class="relative">
+      <button
+        type="button"
+        class="flex items-center gap-1.5 rounded border border-kick-stroke bg-kick-surface px-1.5 py-1 text-xs text-kick-text"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label="Interface language"
+        title="Interface language"
+        onClick={() => setOpen(!open)}
+      >
+        {flag(value)}
+        <span>{label(value)}</span>
+      </button>
+      {open && (
+        <ul
+          ref={list}
+          role="listbox"
+          aria-label="Interface language"
+          class="absolute end-0 z-30 mt-1 max-h-80 w-52 overflow-y-auto rounded border border-kick-stroke bg-kick-surface py-1 text-xs text-kick-text shadow-lg"
+          onKeyDown={onKey}
+        >
+          {choices.map((l) => (
+            <li
+              key={l}
+              role="option"
+              aria-selected={l === value}
+              tabIndex={-1}
+              class={`flex cursor-pointer items-center gap-2 px-2 py-1 outline-none hover:bg-kick-stroke/40 focus:bg-kick-stroke/60 ${
+                l === value ? 'font-semibold text-kick-primary' : ''
+              }`}
+              onClick={() => pick(l)}
+            >
+              {flag(l)}
+              <span dir="auto">{label(l)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }

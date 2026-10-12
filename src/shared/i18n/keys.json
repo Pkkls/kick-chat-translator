@@ -193,12 +193,12 @@
   "Otherwise the first available provider in your chain answers, or the on-device engine if you enabled it.",
   "The Activity tab shows what each of these steps did for you.",
   "What changed in this version",
-  "entries",
-  "of the cap",
+  "Entries:",
+  "Cap used:",
   "oldest kept in memory:",
-  "requests have gone through this limit",
+  "Requests sent through this limit:",
   "never reached so far",
-  "messages held back by this cap",
+  "Messages held back by this cap:",
   "Maintenance",
   "Nothing picked: every language is translated.",
   "picked: everything else is left alone.",
@@ -215,5 +215,7 @@
   "Paused on this channel",
   "Resume",
   "Open a Kick channel: its chat is translated as it arrives.",
-  "Open Kick"
+  "Open Kick",
+  "Free plan: 1,000,000 characters a month. Free keys end with :fx.",
+  "Get a key:"
 ]

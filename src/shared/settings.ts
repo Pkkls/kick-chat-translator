@@ -143,7 +143,13 @@ export const SettingsSchema = z.object({
   // rather than imported because importing i18n.ts here would pull the whole
   // translation catalogue into the content script bundle, which is deliberately
   // free of it. A test in i18n.test.ts fails if the two lists drift apart.
-  uiLang: z.enum(['auto', 'en', 'ja', 'fr', 'zh', 'ar', 'ru', 'pt', 'es', 'tr', 'ko']).default('auto'),
+  uiLang: z
+    .enum([
+      'auto', 'en', 'fr', 'es', 'pt', 'pt-pt', 'de', 'it', 'nl', 'pl', 'sv', 'no', 'da', 'fi', 'cs', 'sk', 'sl', 'hu',
+      'ro', 'ca', 'et', 'lt', 'lv', 'tr', 'vi', 'id', 'ms', 'tl', 'ru', 'uk', 'bg', 'el', 'ar', 'he', 'fa', 'hi', 'bn',
+      'ta', 'th', 'ja', 'ko', 'zh', 'zh-tw', 'yue',
+    ])
+    .default('auto'),
 
   // Compose preview: translate what *you* type before you send it.
   // Source language is auto-detected; output goes to composeTargetLang.

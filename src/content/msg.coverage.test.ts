@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { CHAT_MESSAGES } from './i18n';
 import { msg, setContentLocale } from './msg';
+import { UI_LOCALES } from '~/shared/i18n';
 
 /**
  * Every key the content script asks msg() for has to exist in every catalogue,
@@ -43,9 +44,9 @@ describe('chat catalogue coverage', () => {
     expect(calls.size).toBeGreaterThan(40);
   });
 
-  it('covers the nine languages the interface offers beyond English', () => {
+  it('covers every language the interface offers beyond English', () => {
     // English is not shipped: it is the fallback at every call site.
-    expect(LOCALES.slice().sort()).toEqual(['ar', 'es', 'fr', 'ja', 'ko', 'pt', 'ru', 'tr', 'zh']);
+    expect(LOCALES.slice().sort()).toEqual(UI_LOCALES.filter((l) => l !== 'en').sort());
   });
 
   it.each(LOCALES)('%s answers for every key the code asks for', (locale) => {
@@ -61,10 +62,10 @@ describe('chat catalogue coverage', () => {
    * A paste of the English text reads as done and ships as a no-op: the reader
    * gets English from a catalogue that promised their language.
    *
-   * Four entries genuinely land on the same string, all of them in the Romance
-   * languages and all of them words those languages share with English. They
-   * are named here rather than waved past, so a fifth has to be argued for
-   * instead of appearing.
+   * Four entries genuinely land on the same string, in languages that share
+   * the word with English: Latin "via", and "Local" where that is the word.
+   * They are named here rather than waved past, so a new one has to be argued
+   * for instead of appearing. German once shipped "Local" here; it is "Lokal".
    *
    * A regex scan over the generated files said there were none of these. It was
    * looking for double quotes, and prettier had rewritten the files to single
@@ -72,9 +73,9 @@ describe('chat catalogue coverage', () => {
    */
   const SHARED_WITH_ENGLISH: Record<string, string[]> = {
     barOptionsTip: ['fr'], // "Options"
-    barVia: ['fr', 'pt', 'es'], // "via", Latin, unchanged
-    localDownload: ['fr', 'pt', 'es'], // "Local (…)"
-    localReady: ['fr', 'pt', 'es'], // "Local"
+    barVia: ['fr', 'pt', 'pt-pt', 'nl', 'sv', 'no', 'da', 'ca', 'id'], // "via", Latin, unchanged
+    localDownload: ['fr', 'pt', 'pt-pt', 'es', 'ro', 'ca'], // "Local (…)"
+    localReady: ['fr', 'pt', 'pt-pt', 'es', 'ro', 'ca'], // "Local"
   };
 
   it.each(LOCALES)('%s left no untranslated copy of the English text', (locale) => {

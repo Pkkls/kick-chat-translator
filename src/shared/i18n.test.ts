@@ -26,9 +26,29 @@ describe('i18n', () => {
     expect(t('unknown zzz key')).toBe('unknown zzz key');
   });
 
-  it('marks only Arabic as RTL', () => {
-    expect(isRtlLocale('ar')).toBe(true);
-    for (const l of UI_LOCALES) if (l !== 'ar') expect(isRtlLocale(l)).toBe(false);
+  it('marks Arabic, Hebrew and Persian as RTL, and nothing else', () => {
+    const rtl = ['ar', 'he', 'fa'];
+    for (const l of UI_LOCALES) expect(isRtlLocale(l), l).toBe(rtl.includes(l));
+  });
+
+  it.each([
+    [['pt-BR'], 'pt'],
+    [['pt-PT'], 'pt-pt'],
+    [['zh-TW'], 'zh-tw'],
+    [['zh-Hant-HK'], 'zh-tw'],
+    [['zh-CN'], 'zh'],
+    [['nb-NO'], 'no'],
+    [['fil'], 'tl'],
+    [['iw'], 'he'],
+    [['xx', 'de-AT'], 'de'],
+  ])('detects %j as %s', (languages, want) => {
+    const nav = globalThis.navigator;
+    Object.defineProperty(globalThis, 'navigator', { value: { languages, language: languages[0] }, configurable: true });
+    try {
+      expect(detectUiLocale()).toBe(want);
+    } finally {
+      Object.defineProperty(globalThis, 'navigator', { value: nav, configurable: true });
+    }
   });
 
   it('resolves the uiLang setting (auto / explicit / invalid)', () => {

@@ -1,5 +1,6 @@
 import { CHAT_MESSAGES } from './i18n';
 import { setUiLocale } from '~/shared/languages';
+import { matchUiLocale } from '~/shared/uiLocaleMatch';
 
 /**
  * A string from the chat's own catalogue.
@@ -40,11 +41,7 @@ function resolve(uiLang: string | undefined): string {
         ? navigator.languages
         : [navigator.language]
       : [];
-  for (const raw of list) {
-    const base = (raw || '').toLowerCase().split('-')[0] ?? '';
-    if (SUPPORTED.has(base)) return base;
-  }
-  return 'en';
+  return matchUiLocale(list, (v) => SUPPORTED.has(v)) ?? 'en';
 }
 
 /**
