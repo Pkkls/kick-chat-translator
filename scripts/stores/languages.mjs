@@ -53,7 +53,7 @@ export const LISTINGS = {
   bg: { dir: 'bg', amo: [] },
   el: { dir: 'el', amo: ['el'] },
   ar: { dir: 'ar', amo: [] },
-  he: { dir: 'he', amo: ['he'] },
+  he: { dir: 'he', amo: ['he'], cws: 'iw' },
   fa: { dir: 'fa', amo: ['fa'] },
   hi: { dir: 'hi', amo: [] },
   bn: { dir: 'bn', amo: [] },
@@ -65,8 +65,8 @@ export const LISTINGS = {
   'zh-TW': { dir: 'zh_TW', amo: ['zh-tw'] },
 };
 
-/** Chrome's page hl and dashboard code for a listing language. */
-export const chromeCode = (lang) => LISTINGS[lang].dir.replace('_', '-');
+/** Chrome's page hl and dashboard code for a listing language; Google still writes Hebrew iw. */
+export const chromeCode = (lang) => LISTINGS[lang].cws ?? LISTINGS[lang].dir.replace('_', '-');
 
 /** The devhub writes en-us, the API wants en-US. */
 export const apiLocale = (l) => l.replace(/-([a-z]+)$/, (_, r) => '-' + r.toUpperCase());
