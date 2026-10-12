@@ -4,7 +4,10 @@
 
 # Kick Chat Translator
 
-Živý překladač chatu pro Kick. Čtěte chat kteréhokoli streamu ve svém jazyce a odpovídejte v jazyce kanálu.
+Čtěte chat kteréhokoli streamu na Kicku ve svém jazyce a odpovídejte v jazyce kanálu.<br>
+Zdarma, bez účtu, nic se nenastavuje. 43 jazyků.
+
+**[Přidat do Chrome, Brave nebo Edge](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)** &nbsp;·&nbsp; **[Přidat do Firefoxu](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=Chrome%20Web%20Store&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
 [![Chrome users](https://img.shields.io/chrome-web-store/users/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=users&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
@@ -155,21 +158,13 @@ Ne. Je to nezávislý open source projekt, bez vazby na Kick.
 
 ## Novinky
 
-### 3.1.0
+V 3.1.0:
 
-Zkratky z chatu jako ngl, idc, lmk, wyd nebo goat se před překladem rozepíšou, takže čtenáři v jiných jazycích dostanou jejich význam místo písmen tak, jak byla napsána, nebo chybného odhadu.
-
-Běžná slova z chatu, kterým překladač rozuměl špatně, se nyní překládají z vlastní tabulky rozšíření, a to do více jazyků: valeu se už nevrací jako „stálo to“, ani yatta jako „na jachtě“, a pozdravy jako merci, gracias nebo konnichiwa se překládají do hebrejštiny, perštiny, řečtiny, ukrajinštiny, bulharštiny, bengálštiny, tamilštiny, tradiční čínštiny a kantonštiny.
-
-V rychlém chatu se řádky napsané v jiném jazyce než zbytek dávky vracely nepřeložené a nikdy se nezobrazily. Nyní se každý řádek rozpozná a přeloží zvlášť.
-
-Méně ztracených nebo špatně přečtených řádků: krátký řádek v italštině nebo jiném jazyce už není považován za angličtinu a skryt, běžná slova končící jako název emote (rumunské felul, turecké erkek) se už před překladem nemažou, arabské pozdravy se čtou jako arabština, ne perština, a odpověď si v kantonštině zachová @zmínku i odkaz.
-
-Tradiční čínština přeložená ve vašem zařízení se nyní vrací v tradičních znacích.
-
-Šetrnější k vašemu prohlížeči: rozšíření se už neprobouzí, když není otevřená žádná karta Kick, a v rušném chatu stojí méně na každou zprávu.
-
-Firefox: po aktualizaci mohla karta spustit dvě kopie rozšíření a překládat každou zprávu dvakrát. Nyní běží jen jedna.
+- Chatové zkratky (ngl, idc, lmk, wyd, goat) se před překladem rozepíšou, takže ostatní čtenáři dostanou jejich význam
+- Slova, která si překladače pletly (valeu, yatta, coucou, forza, běžné pozdravy), se překládají z vlastní tabulky rozšíření, a to do mnohem více jazyků
+- V rychlém chatu se už neztrácejí řádky: zpráva v jiném jazyce než její sousedé se přeloží zvlášť a krátké cizojazyčné řádky se už nepovažují za angličtinu
+- Arabské pozdravy se čtou jako arabština, tradiční čínština přeložená v zařízení zůstává tradiční a @zmínky se zachovají i v kantonských odpovědích
+- Lehčí: bez karty Kick rozšíření spí, na každou zprávu stojí méně práce a ve Firefoxu už po aktualizaci nedochází k dvojímu překladu
 
 Každé vydání, s tím, co se změnilo, a s měřením za tím:
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) a [CHANGELOG.md](CHANGELOG.md).

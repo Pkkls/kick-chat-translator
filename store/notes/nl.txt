@@ -1,0 +1,9 @@
+Chatafkortingen als ngl, idc, lmk, wyd of goat worden nu uitgeschreven voordat ze worden vertaald, zodat lezers in andere talen de betekenis krijgen in plaats van de letters.
+
+Woorden die de engines steeds fout vertaalden, zoals valeu, yatta, coucou, forza en alledaagse groeten, komen nu uit de eigen tabel van de extensie, in veel meer talen.
+
+Geen ontbrekende regels meer in een snelle chat. Een bericht in een andere taal dan de berichten eromheen wordt apart vertaald in plaats van weggelaten, en een korte vreemde regel wordt niet meer voor Engels aangezien en verborgen.
+
+Op meer plaatsen nauwkeuriger: Arabische groeten worden als Arabisch herkend, Traditioneel Chinees blijft traditioneel bij vertaling op je apparaat, en een antwoord behoudt zijn @mention en link in het Kantonees.
+
+Lichter voor je browser: de extensie slaapt als er geen Kick-tabblad open is en doet minder werk per bericht in een drukke chat. In Firefox kan een tabblad na een update niet meer elk bericht twee keer vertalen.

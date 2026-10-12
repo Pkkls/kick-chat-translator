@@ -1,0 +1,35 @@
+Kick Chat Translator ir bezmaksas čata tulkotājs reāllaikā platformai Kick. Lasi jebkuras straumes čatu savā valodā un atbildi kanāla valodā, tieši čatā.
+
+Skaties turku, spāņu, krievu vai arābu straumi un neizproti čatu? Instalē, atver straumi, un katra ziņa uzreiz zem sevis parāda savu tulkojumu, tiklīdz tā ienāk. Bez konta, bez API atslēgas, bez iestatīšanas.
+
+KĀ TAS DARBOJAS
+
+1. Atver jebkuru Kick straumi. Zaļa josla čata augšpusē rāda, ka tulkotājs darbojas.
+2. Katra jauna ziņa zem sevis saņem tulkojumu tavas pārlūkprogrammas valodā.
+3. Uzraksti atbildi savā valodā. Priekšskatījums parāda to kanāla valodā: nospied Tab vai uzklikšķini uz tā, tad sūti.
+
+Kanāla valoda tiek nolasīta no paša Kick, un abas valodas var mainīt iestatījumos. Darbojas tiešraides straumēs un VOD ierakstos, atstāj 7TV emocijzīmes tādas, kādas tās ir, un fona cilnēs pats apstājas.
+
+KO TU SAŅEMI
+
+• 43 valodas, arī rakstāmas no labās uz kreiso pusi (arābu, ivrits, persiešu), ar atsevišķi turētiem reģionālajiem variantiem (Brazīlijas portugāļu, tradicionālā ķīniešu).
+• Bez maksas uzreiz pēc instalēšanas ar Google Translate, bez atslēgas un bez konta.
+• Labākas Eiropas valodas ar savu DeepL API atslēgu. DeepL kā kontekstu saņem pēdējās čata rindas, tāpēc formulējumi iet kopā ar sarunu.
+• Tulkošana ierīcē pārlūkos Chrome un Edge 138+, ja tavs dators to atbalsta: bezsaistē, bez ierobežojuma, un čats nekad neatstāj tavu datoru.
+• Automātiska rezerve: kad viens dzinējs atsakās, pārņem MyMemory vai Lingva. Secību nosaki tu.
+• Četri attēlošanas stili: zem ziņas, tajā pašā rindā, aiz tās mazākā kursīvā vai tikai tad, kad virzi virsū peli. Peles režīms netulko neko, kamēr nenorādi uz ziņu, kas ātrā čatā samazina patēriņu apmēram desmit reizes.
+• Filtri: izlaist botus, apklusināt lietotājus vai kanālus, paslēpt rindas ar vārdu, ko izvēlies (noder pret !command surogātpastu), vai tulkot tikai tās valodas, kuras vēlies.
+• Emocijzīmes, pieminējumi, saites un emocijzīmju plūdi tiek izņemti, pirms kaut kas tiek nosūtīts, tāpēc nekas netiek tērēts, tulkojot „kkkkkk“.
+• Pielāgo pēc sevis: teksta izmērs, rindstarpas, burtveidols, akcenta krāsa, tumšs vai gaišs čats, lasīšanas valoda, kas atcerēta katram kanālam, īsinājumtaustiņi.
+• Saskarne 10 valodās: angļu, spāņu, franču, portugāļu, turku, krievu, arābu, ķīniešu, japāņu un korejiešu.
+
+PRIVĀTUMS
+
+Bez konta, bez analītikas, bez mana servera. Čata teksts nonāk tikai tajā tulkošanas dzinējā, ko izvēlies. Izmantojot Google, MyMemory vai Lingva, tas ir katras ziņas teksts un nekas cits. Izmantojot DeepL, līdzi kā konteksts tiek nosūtītas arī dažas pēdējās čata rindas kopā ar to autoru vārdiem, lai tulkojums atbilstu sarunai. Kanāls, ko skaties, netiek sūtīts nekad, un, tulkojot ierīcē, nekas neatstāj tavu datoru.
+
+Atļaujas vienkāršos vārdos: krātuve taviem iestatījumiem un tulkojumu kešatmiņai; piekļuve kick.com, lai čatā parādītu tulkojumus; piekļuve dzinējiem, ko tas var izsaukt (Google, DeepL, MyMemory un Lingva); modinātājs, lai tulkotājs paliktu gatavs, kamēr skaties; un tiesības instalēšanas vai atjaunināšanas laikā atkārtoti ielādēt savu skriptu jau atvērtajās Kick cilnēs, lai tās turpinātu tulkot bez atsvaidzināšanas. Tas arī nolasa GitHub laidienu lapu, lai paziņotu, ka pieejama jaunāka versija, un ar šo pieprasījumu nesūta neko.
+
+BEZMAKSAS UN AR ATVĒRTO KODU
+
+MIT licence, katra koda rindiņa ir publiska: github.com/Pkkls/kick-chat-translator
+Kļūdu ziņojumi un jaunu valodu pieprasījumi tur ir gaidīti, un to, kas mainījies katrā versijā, vari redzēt laidienu lapā.

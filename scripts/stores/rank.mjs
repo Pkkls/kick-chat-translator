@@ -13,13 +13,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { LISTINGS, apiLocale, chromeCode } from './languages.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const ITEM = 'nkkjmbkmacbdkboijmnhjnblcaiclhni';
 const SLUG = 'kick-chat-translator';
 const KEYWORDS = JSON.parse(fs.readFileSync(path.join(ROOT, 'store/keywords.json'), 'utf8'));
-const HL = { zh: 'zh-CN' };
-const AMO_LANG = { en: 'en-US', es: 'es-ES', zh: 'zh-CN' };
 const UA = { 'User-Agent': 'Mozilla/5.0' };
 
 const text = async (url, hl) => (await fetch(url, { headers: { ...UA, 'Accept-Language': hl } })).text();
@@ -39,7 +38,7 @@ async function amoRank(q, lang) {
 const rows = [];
 for (const [lang, queries] of Object.entries(KEYWORDS)) {
   for (const q of queries) {
-    const [c, a] = await Promise.all([chromeRank(q, HL[lang] ?? lang), amoRank(q, AMO_LANG[lang] ?? lang)]);
+    const [c, a] = await Promise.all([chromeRank(q, chromeCode(lang)), amoRank(q, LISTINGS[lang].amo[0] ? apiLocale(LISTINGS[lang].amo[0]) : lang)]);
     rows.push(`| ${lang} | ${q} | ${c} | ${a} |`);
   }
 }

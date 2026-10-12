@@ -4,7 +4,10 @@
 
 # Kick Chat Translator
 
-Kick 的实时聊天翻译器。用你自己的语言阅读任何直播的聊天，并用频道的语言回复。
+用你自己的语言阅读任何 Kick 直播的聊天，并用频道的语言回复。<br>
+免费，无需账号，无需任何设置。支持 43 种语言。
+
+**[添加到 Chrome、Brave 或 Edge](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)** &nbsp;·&nbsp; **[添加到 Firefox](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=Chrome%20Web%20Store&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
 [![Chrome users](https://img.shields.io/chrome-web-store/users/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=users&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
@@ -140,21 +143,13 @@ Kick 有时会改变聊天的构造方式。提交 [issue](https://github.com/Pk
 
 ## 更新内容
 
-### 3.1.0
+3.1.0 中：
 
-ngl、idc、lmk、wyd、goat 等聊天缩写会在翻译前展开成完整说法，其他语言的读者得到的是它们的意思，而不是原样的字母或错误的猜测。
-
-翻译引擎常常理解错的聊天用语，现在由扩展自带的词表翻译，覆盖的语言也更多：valeu 不再被译成"花费了"，yatta 不再被译成"在游艇上"，merci、gracias、konnichiwa 等问候语会被译成希伯来语、波斯语、希腊语、乌克兰语、保加利亚语、孟加拉语、泰米尔语、繁体中文和粤语。
-
-在刷屏很快的聊天里，与同批其他行语言不同的行会原样返回，从不显示。现在每一行都单独检测语言并翻译。
-
-丢失或误读的行更少了：意大利语或其他语言的短句不再被当成英语而隐藏，结尾像表情名的普通单词（罗马尼亚语 felul、土耳其语 erkek）不再在翻译前被删掉，阿拉伯语问候被识别为阿拉伯语而非波斯语，回复在粤语中也会保留 @提及和链接。
-
-在你的设备上翻译的繁体中文，现在会以繁体字返回。
-
-对浏览器更轻：没有打开 Kick 标签页时扩展不再被唤醒，在热闹的聊天里每条消息的开销也更小。
-
-Firefox：更新后，一个标签页可能同时运行两份扩展，把每条消息翻译两次。现在只运行一份。
+- 聊天缩写（ngl、idc、lmk、wyd、goat）会在翻译前展开，其他语言的读者能看懂意思
+- 翻译引擎常译错的词（valeu、yatta、coucou、forza、日常问候语）改由扩展自带的词表翻译，覆盖更多语言
+- 刷屏很快的聊天不再丢行：与相邻消息语言不同的消息会单独翻译，简短的外语行也不再被当成英语
+- 阿拉伯语问候按阿拉伯语识别，设备上翻译的繁体中文保持繁体，粤语回复中保留 @提及
+- 更轻量：没有 Kick 标签页时休眠，每条消息的工作量更少，Firefox 更新后不再重复翻译
 
 每个版本的变化及其背后的测量：
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) 和 [CHANGELOG.md](CHANGELOG.md)。

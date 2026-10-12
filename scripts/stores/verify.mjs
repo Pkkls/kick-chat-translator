@@ -14,6 +14,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { LISTINGS, apiLocale, chromeCode } from './languages.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version;
@@ -36,10 +37,8 @@ const row = (ok, what, detail = '') => {
   console.log(`${ok ? 'ok  ' : 'DIFF'} ${what}${detail ? ' | ' + detail : ''}`);
 };
 
-// Chrome: store language -> page hl, _locales directory.
-const CHROME = { en: ['en', 'en'], fr: ['fr', 'fr'], es: ['es', 'es'], 'pt-BR': ['pt-BR', 'pt_BR'], tr: ['tr', 'tr'], ru: ['ru', 'ru'],
-  ar: ['ar', 'ar'], ja: ['ja', 'ja'], ko: ['ko', 'ko'], zh: ['zh-CN', 'zh_CN'], cs: ['cs', 'cs'] };
-for (const [lang, [hl, dir]] of Object.entries(CHROME)) {
+for (const [lang, { dir }] of Object.entries(LISTINGS)) {
+  const hl = chromeCode(lang);
   const url = `https://chromewebstore.google.com/detail/${SLUG}/${ITEM}?hl=${hl}`;
   const r = await fetch(url, { headers: { 'Accept-Language': hl, 'User-Agent': 'Mozilla/5.0' } });
   const html = await r.text();
@@ -56,12 +55,12 @@ for (const [lang, [hl, dir]] of Object.entries(CHROME)) {
 }
 
 // AMO: the public API returns every translation when no lang is asked for.
-const AMO = { en: 'en-US', fr: 'fr', tr: 'tr', ja: 'ja', es: 'es-ES', 'pt-BR': 'pt-BR', ru: 'ru', zh: 'zh-CN', ko: 'ko', cs: 'cs' };
 const a = await (await fetch(`https://addons.mozilla.org/api/v5/addons/addon/${SLUG}/`)).json();
 row(a.current_version?.version === VERSION, 'amo   version', `servie ${a.current_version?.version}, depot ${VERSION}`);
-const DIR = { 'pt-BR': 'pt_BR', zh: 'zh_CN' };
-for (const [lang, loc] of Object.entries(AMO)) {
-  row(a.name?.[loc] === catalog(DIR[lang] ?? lang).extName.message, `amo   ${lang.padEnd(5)} nom`);
+for (const [lang, { dir, amo }] of Object.entries(LISTINGS)) {
+  if (!amo.length) continue;
+  const loc = apiLocale(amo[0]);
+  row(a.name?.[loc] === catalog(dir).extName.message, `amo   ${lang.padEnd(5)} nom`);
   row(squash(a.summary?.[loc]) === squash(store(`amo/summary/${lang}.txt`)), `amo   ${lang.padEnd(5)} resume`);
   row(squash(a.description?.[loc]) === squash(store(`amo/description/${lang}.txt`)), `amo   ${lang.padEnd(5)} description`);
 }

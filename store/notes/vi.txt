@@ -1,0 +1,9 @@
+Tiếng lóng trong chat như ngl, idc, lmk, wyd hay goat giờ được viết đầy đủ trước khi dịch, nên người đọc ở ngôn ngữ khác nhận được ý nghĩa thay vì mấy chữ cái.
+
+Những từ mà các công cụ dịch cứ dịch sai, như valeu, yatta, coucou, forza và các lời chào hằng ngày, giờ lấy từ bảng riêng của tiện ích, với nhiều ngôn ngữ hơn hẳn.
+
+Không còn mất dòng trên khung chat chạy nhanh. Tin nhắn viết bằng ngôn ngữ khác với những tin xung quanh được dịch riêng thay vì bị bỏ qua, và một dòng ngoại ngữ ngắn không còn bị nhận nhầm là tiếng Anh rồi bị ẩn đi.
+
+Chính xác hơn ở nhiều chỗ hơn: lời chào tiếng Ả Rập được nhận ra là tiếng Ả Rập, tiếng Trung phồn thể vẫn giữ nguyên là phồn thể khi dịch ngay trên thiết bị của bạn, và câu trả lời giữ nguyên @mention cùng liên kết khi viết bằng tiếng Quảng Đông.
+
+Nhẹ hơn cho trình duyệt: tiện ích ngủ khi không có tab Kick nào đang mở và làm ít việc hơn cho mỗi tin nhắn trên khung chat đông. Trên Firefox, một tab không còn dịch mỗi tin nhắn hai lần sau khi cập nhật.

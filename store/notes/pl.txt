@@ -1,0 +1,9 @@
+Slang z czatu, jak ngl, idc, lmk, wyd czy goat, jest teraz rozwijany przed tłumaczeniem, więc czytelnicy w innych językach dostają znaczenie zamiast liter.
+
+Słowa, które silniki ciągle tłumaczyły źle, takie jak valeu, yatta, coucou, forza i codzienne powitania, pochodzą teraz z własnej tabeli rozszerzenia, w znacznie większej liczbie języków.
+
+Koniec z brakującymi linijkami na szybkim czacie. Wiadomość napisana w innym języku niż te dookoła jest tłumaczona osobno zamiast zostać pominięta, a krótka obca linijka nie jest już brana za angielską i ukrywana.
+
+Większa trafność w kolejnych miejscach: arabskie powitania są rozpoznawane jako arabski, chiński tradycyjny pozostaje tradycyjny przy tłumaczeniu na urządzeniu, a odpowiedź po kantońsku zachowuje @wzmiankę i link.
+
+Lżejsze dla przeglądarki: rozszerzenie śpi, gdy nie jest otwarta żadna karta Kick, i robi mniej pracy na każdą wiadomość na ruchliwym czacie. W przeglądarce Firefox karta nie może już po aktualizacji tłumaczyć każdej wiadomości dwa razy.

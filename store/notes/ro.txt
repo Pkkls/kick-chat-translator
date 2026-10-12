@@ -1,0 +1,9 @@
+Argoul din chat, precum ngl, idc, lmk, wyd sau goat, este acum scris pe litere înainte de traducere, așa că cititorii din alte limbi primesc sensul în loc de litere.
+
+Cuvintele pe care motoarele le greșeau mereu, precum valeu, yatta, coucou, forza și salutările de zi cu zi, vin acum din tabelul propriu al extensiei, în mult mai multe limbi.
+
+Nu mai lipsesc rânduri pe un chat rapid. Un mesaj scris într-o altă limbă decât cele din jur este tradus separat, în loc să fie aruncat, iar un rând scurt în altă limbă nu mai este confundat cu engleza și ascuns.
+
+Mai precis în mai multe situații: salutările în arabă sunt recunoscute ca arabă, chineza tradițională rămâne tradițională când este tradusă pe dispozitiv, iar un răspuns își păstrează @mention și linkul în cantoneză.
+
+Mai ușor pentru browser: extensia doarme când nu este deschisă nicio filă Kick și face mai puțină muncă pe mesaj pe un chat aglomerat. Pe Firefox, o filă nu mai poate traduce fiecare mesaj de două ori după o actualizare.

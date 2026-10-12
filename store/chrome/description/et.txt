@@ -1,0 +1,35 @@
+Kick Chat Translator on tasuta chati tõlkija Kickile. Loe mis tahes voo chatti oma keeles ja vasta kanali keeles, otse chatis.
+
+Vaatad türgi, hispaania, vene või araabia keeles voogu ja chatist ei saa aru? Paigalda, ava voog ning iga sõnumi tõlge ilmub kohe selle alla, niipea kui sõnum saabub. Ei mingit kontot, ei API võtit, pole midagi seadistada.
+
+NII SEE TÖÖTAB
+
+1. Ava mis tahes Kicki voog. Chati ülaosas olev roheline riba näitab, et tõlkija on sees.
+2. Iga uus sõnum saab oma tõlke alla, sinu brauseri keeles.
+3. Kirjuta vastus oma keeles. Eelvaade näitab seda kanali keeles: vajuta Tab või klõpsa sellel ja saada siis ära.
+
+Kanali keel loetakse otse Kickist ning mõlemat keelt saab seadetes muuta. Töötab otse-eetris ja VOD-i kordustel, jätab 7TV emote'id puutumata ning peatab end taustalehtedel.
+
+MIDA SA SAAD
+
+• 43 keelt, sealhulgas paremalt vasakule kirjutatavad (araabia, heebrea, pärsia), regionaalsed variandid hoitakse lahus (Brasiilia portugali, traditsiooniline hiina).
+• Kohe tasuta Google Translate'iga, ilma võtme ja kontota.
+• Paremad Euroopa keeled sinu enda DeepL API võtmega. DeepL saab viimased chati read kontekstiks, et sõnastus sobiks vestlusega.
+• Seadmesisene tõlge Chrome'is ja Edge'is 138+, kui sinu arvuti seda toetab: võrguühenduseta, piiranguteta ning chat ei lahku sinu arvutist.
+• Automaatne varuvariant: kui üks mootor kukub läbi, võtab üle MyMemory või Lingva. Järjekorra valid sina.
+• Neli kuvastiili: sõnumi all, samal real, väikeses kursiivis selle järel või ainult siis, kui hiirega peale lähed. Hover-režiim ei tõlgi midagi enne, kui sõnumile osutad, mis vähendab kasutust kiires chatis umbes kümme korda.
+• Filtrid: jäta botid vahele, vaigista kasutajaid või kanaleid, peida read, mis sisaldavad sinu valitud sõna (kasulik !command-rämpsu vastu), või tõlgi ainult soovitud keeli.
+• Emote'id, mainimised, lingid ja emoji-rämps eemaldatakse enne mis tahes saatmist, nii et "kkkkkk" tõlkimiseks ei kulu midagi.
+• Tee see enda moodi: teksti suurus, reavahe, kirjatüüp, rõhuvärv, tume või hele chat, kanalipõhiselt meelde jääv lugemiskeel, kiirklahvid.
+• Liides 10 keeles: inglise, hispaania, prantsuse, portugali, türgi, vene, araabia, hiina, jaapani ja korea.
+
+PRIVAATSUS
+
+Ei mingit kontot, ei analüütikat, ei oma serverit. Chati tekst läheb ainult sinu valitud tõlkemootorile. Google'i, MyMemory või Lingva puhul on see iga sõnumi tekst ja mitte midagi muud. DeepL-i puhul lähevad kaasa viimased chati read kontekstina koos kirjutajate nimedega, et tõlge sobiks vestlusega. Kanalit, mida vaatad, ei saadeta kunagi ning seadmesisese tõlke puhul ei lahku sinu arvutist midagi.
+
+Load lihtsate sõnadega: salvestusruum sinu seadetele ja tõlkevahemälule; juurdepääs kick.com-ile, et näidata tõlkeid chatis; juurdepääs mootoritele, mida see võib kutsuda (Google, DeepL, MyMemory ja Lingva); ärkamistaimer, et tõlkija püsiks valmis, kui vaatad; ning õigus laadida oma skript uuesti juba avatud Kicki lehtedele paigaldamisel või uuendamisel, et need tõlgiksid edasi ilma lehte värskendamata. Samuti loeb see GitHubi väljalaskelehte, et anda teada uuema versiooni olemasolust, saatmata selle päringuga midagi kaasa.
+
+TASUTA JA AVATUD LÄHTEKOODIGA
+
+MIT-litsents, iga koodirida on avalik: github.com/Pkkls/kick-chat-translator
+Veateated ja keelesoovid on seal teretulnud ning iga versiooni muudatused leiad väljalaskelehelt.

@@ -4,7 +4,10 @@
 
 # Kick Chat Translator
 
-Kick용 실시간 채팅 번역기입니다. 어떤 방송의 채팅이든 자기 언어로 읽고, 채널의 언어로 답할 수 있습니다.
+Kick의 어떤 방송 채팅이든 자기 언어로 읽고, 채널의 언어로 답할 수 있습니다.<br>
+무료, 계정 불필요, 따로 설정할 것도 없습니다. 43개 언어.
+
+**[Chrome, Brave, Edge에 추가](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)** &nbsp;·&nbsp; **[Firefox에 추가](https://addons.mozilla.org/firefox/addon/kick-chat-translator/)**
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=Chrome%20Web%20Store&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
 [![Chrome users](https://img.shields.io/chrome-web-store/users/nkkjmbkmacbdkboijmnhjnblcaiclhni?label=users&color=53fc18)](https://chromewebstore.google.com/detail/kick-chat-translator/nkkjmbkmacbdkboijmnhjnblcaiclhni)
@@ -152,21 +155,13 @@ Kick은 가끔 채팅 구조를 바꿉니다. [이슈](https://github.com/Pkkls/
 
 ## 새 소식
 
-### 3.1.0
+3.1.0에서:
 
-ngl, idc, lmk, wyd, goat 같은 채팅 줄임말을 번역 전에 풀어 씁니다. 다른 언어로 읽는 사람은 입력된 글자 그대로나 잘못된 추측 대신 그 뜻을 받게 됩니다.
-
-번역기가 잘못 알아듣던 흔한 채팅 단어를 이제 확장 프로그램 자체의 표로, 더 많은 언어에서 번역합니다. valeu가 "비용이 들었다"로, yatta가 "요트 위에서"로 돌아오지 않으며, merci, gracias, konnichiwa 같은 인사말이 히브리어, 페르시아어, 그리스어, 우크라이나어, 불가리아어, 벵골어, 타밀어, 번체 중국어, 광둥어로 번역됩니다.
-
-빠른 채팅에서 한 묶음의 나머지와 다른 언어로 쓴 줄은 번역되지 않은 채 돌아와 표시되지 않았습니다. 이제 줄마다 따로 언어를 감지하고 번역합니다.
-
-사라지거나 잘못 읽히는 줄이 줄었습니다. 이탈리아어나 다른 언어의 짧은 줄을 더 이상 영어로 보고 숨기지 않고, 이모트 이름처럼 끝나는 평범한 단어(루마니아어 felul, 튀르키예어 erkek)를 번역 전에 지우지 않으며, 아랍어 인사말은 페르시아어가 아닌 아랍어로 읽고, 답글은 광둥어에서도 @멘션과 링크를 유지합니다.
-
-기기에서 번역한 번체 중국어가 이제 번체자로 돌아옵니다.
-
-브라우저 부담이 줄었습니다. Kick 탭이 열려 있지 않으면 확장 프로그램이 깨어나지 않고, 붐비는 채팅에서도 메시지당 부담이 적습니다.
-
-Firefox: 업데이트 후 한 탭에서 확장 프로그램 두 개가 실행되어 메시지를 두 번씩 번역할 수 있었습니다. 이제 하나만 실행됩니다.
+- 채팅 줄임말(ngl, idc, lmk, wyd, goat)을 번역 전에 풀어 써서, 다른 언어로 읽는 사람도 뜻을 알 수 있습니다
+- 번역 엔진이 틀리던 단어(valeu, yatta, coucou, forza, 일상 인사말)는 확장 프로그램 자체의 표로, 훨씬 더 많은 언어에서 번역합니다
+- 빠른 채팅에서 줄이 사라지지 않습니다. 주변과 다른 언어의 메시지는 따로 번역하고, 짧은 외국어 줄을 영어로 오인하지 않습니다
+- 아랍어 인사말은 아랍어로 읽고, 기기에서 번역한 번체 중국어는 번체자를 유지하며, 광둥어 답글에서도 @멘션을 유지합니다
+- 더 가볍게: Kick 탭이 없으면 잠들고, 메시지당 작업이 줄었으며, Firefox에서 업데이트 후 이중 번역이 사라졌습니다
 
 각 릴리스에서 바뀐 점과 그 뒤의 측정 결과:
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases)와 [CHANGELOG.md](CHANGELOG.md).

@@ -1,13 +1,9 @@
-Las abreviaturas del chat como ngl, idc, lmk, wyd o goat se escriben completas antes de traducir, así que los lectores de otros idiomas reciben su significado en lugar de las letras tal cual o una suposición equivocada.
+Las abreviaturas del chat como ngl, idc, lmk, wyd o goat ahora se escriben completas antes de traducirse, así que los lectores de otros idiomas reciben su significado en lugar de las letras.
 
-Palabras de chat que el traductor entendía mal ahora se traducen con la tabla propia de la extensión, en más idiomas: valeu ya no vuelve como "costó", ni yatta como "en el yate", y saludos como merci, gracias o konnichiwa se traducen al hebreo, persa, griego, ucraniano, búlgaro, bengalí, tamil, chino tradicional y cantonés.
+Las palabras que los motores de traducción seguían entendiendo mal, como valeu, yatta, coucou, forza y los saludos de todos los días, ahora salen de la tabla propia de la extensión, en muchos más idiomas.
 
-En un chat rápido, las líneas escritas en un idioma distinto al del resto del lote volvían sin traducir y nunca se mostraban. Ahora cada línea se detecta y se traduce por separado.
+Se acabaron las líneas que faltaban en un chat rápido. Un mensaje escrito en un idioma distinto al de los que lo rodean se traduce por separado en lugar de descartarse, y una línea corta en otro idioma ya no se confunde con inglés ni se oculta.
 
-Menos líneas perdidas o mal leídas: una línea corta en italiano u otro idioma ya no se toma por inglés y se oculta, las palabras comunes que terminan como el nombre de un emote (felul en rumano, erkek en turco) ya no se borran antes de traducir, los saludos árabes se leen como árabe y no como persa, y una respuesta conserva su @mención y su enlace en cantonés.
+Más preciso en más casos: los saludos en árabe se reconocen como árabe, el chino tradicional sigue siendo tradicional cuando se traduce en tu dispositivo, y una respuesta conserva su @mención y su enlace en cantonés.
 
-El chino tradicional traducido en tu equipo ahora vuelve en caracteres tradicionales.
-
-Más ligera para tu navegador: la extensión deja de despertarse cuando no hay ninguna pestaña de Kick abierta, y cuesta menos por mensaje en un chat con mucho movimiento.
-
-Firefox: tras una actualización, una pestaña podía ejecutar dos copias de la extensión y traducir cada mensaje dos veces. Ahora solo se ejecuta una.
+Más ligera para tu navegador: la extensión se duerme cuando no hay ninguna pestaña de Kick abierta y trabaja menos por mensaje en un chat saturado. En Firefox, una pestaña ya no puede traducir cada mensaje dos veces después de una actualización.

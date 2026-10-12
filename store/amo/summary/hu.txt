@@ -1,0 +1,1 @@
+Ingyenes élő chat fordító a Kick számára: minden üzenet lefordítva érkezik a saját nyelveden, a válaszaid pedig a csatorna nyelvén mennek ki. Fiók és beállítás nélkül. Élő adásokban és VOD-okon is működik.

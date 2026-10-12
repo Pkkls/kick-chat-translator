@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Kick Chat Translator: Tagasalin ng Chat",
+    "description": "Extension and store listing name: the brand, then the query this language types. 45 character limit."
+  },
+  "extDescription": {
+    "message": "Libreng tagasalin ng chat para sa Kick: basahin ang chat ng anumang stream sa wika mo, sumagot sa wika ng channel. Walang account.",
+    "description": "Store listing blurb and manifest description. 132 character limit."
+  }
+}

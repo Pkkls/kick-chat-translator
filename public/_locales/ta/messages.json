@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Kick Chat Translator: அரட்டை மொழிபெயர்ப்பு",
+    "description": "Extension and store listing name: the brand, then the query this language types. 45 character limit."
+  },
+  "extDescription": {
+    "message": "இலவச Kick அரட்டை மொழிபெயர்ப்பு: எந்த ஸ்ட்ரீம் அரட்டையும் உங்கள் மொழியில் படியுங்கள், சேனல் மொழியில் பதிலளியுங்கள். கணக்கு வேண்டாம்.",
+    "description": "Store listing blurb and manifest description. 132 character limit."
+  }
+}

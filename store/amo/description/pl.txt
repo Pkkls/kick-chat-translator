@@ -1,0 +1,34 @@
+Kick Chat Translator to darmowy tłumacz czatu na żywo dla Kick. Czytaj czat każdego streama w swoim języku i odpisuj w języku kanału, prosto w czacie.
+
+Oglądasz stream po turecku, hiszpańsku, rosyjsku albo arabsku i nie nadążasz za czatem? Zainstaluj, otwórz stream, a przy każdej wiadomości od razu pod nią pojawi się tłumaczenie. Bez konta, bez klucza API, bez konfiguracji.
+
+JAK TO DZIAŁA
+
+1. Otwórz dowolny stream na Kick. Zielony pasek u góry czatu pokazuje, że tłumacz działa.
+2. Każda nowa wiadomość dostaje pod spodem tłumaczenie na język twojej przeglądarki.
+3. Napisz odpowiedź w swoim języku. Podgląd pokaże ją w języku kanału: naciśnij Tab albo kliknij podgląd, potem wyślij.
+
+Język kanału jest odczytywany z samego Kick, a oba języki możesz zmienić w ustawieniach. Działa na streamach na żywo i na powtórkach VOD, zostawia emotki 7TV bez zmian i sam się wstrzymuje w kartach w tle.
+
+Zobacz, jak działa na prawdziwym czacie: https://www.youtube.com/watch?v=NoGJeUrwy9o
+
+CO DOSTAJESZ
+
+• 43 języki, także pisane od prawej do lewej (arabski, hebrajski, perski), z osobno traktowanymi wariantami regionalnymi (portugalski brazylijski, chiński tradycyjny).
+• Za darmo od razu po instalacji dzięki Google Translate, bez klucza i bez konta.
+• Lepsze tłumaczenia języków europejskich z własnym kluczem API DeepL. DeepL dostaje ostatnie linijki czatu jako kontekst, więc sformułowania pasują do rozmowy.
+• Automatyczna rezerwa: gdy jeden silnik zawiedzie, przejmuje MyMemory albo Lingva. Kolejność ustalasz ty.
+• Cztery style wyświetlania: pod wiadomością, w tej samej linii, małą kursywą po niej albo tylko po najechaniu myszą. Tryb najechania nie tłumaczy niczego, dopóki nie wskażesz wiadomości, co na szybkim czacie zmniejsza zużycie mniej więcej dziesięciokrotnie.
+• Filtry: pomijanie botów, wyciszanie użytkowników lub kanałów, ukrywanie linijek ze słowem, które wybierzesz (przydatne przeciw spamowi z komendami typu !command), albo tłumaczenie tylko wybranych języków.
+• Emotki, wzmianki, linki i spam emoji są usuwane, zanim cokolwiek zostanie wysłane, więc nic nie jest wydawane na tłumaczenie „kkkkkk”.
+• Dopasuj do siebie: rozmiar tekstu, odstęp między wierszami, krój pisma, kolor akcentu, ciemny lub jasny czat, język czytania zapamiętany osobno dla każdego kanału, skróty klawiszowe.
+• Interfejs w 10 językach: angielskim, hiszpańskim, francuskim, portugalskim, tureckim, rosyjskim, arabskim, chińskim, japońskim i koreańskim.
+
+CO OPUSZCZA TWOJĄ PRZEGLĄDARKĘ
+
+Tekst czatu trafia tylko do silnika tłumaczącego, który wybierzesz. W przypadku Google, MyMemory i Lingva to tekst każdej wiadomości i nic więcej: ani kanał, ani autor. W przypadku DeepL razem z nim idzie kilka ostatnich linijek czatu jako kontekst, wraz z nazwami osób, które je napisały, żeby tłumaczenie pasowało do rozmowy. Do tego odnosi się wiersz „zawartość witryn” w uprawnieniach powyżej i to jest całość. Nie ma konta, analityki ani mojego serwera: rozszerzenie łączy się z Kick, z wybranym przez ciebie silnikiem i ze stroną wydań na GitHubie, żeby dać ci znać o nowszej wersji, a przy tym ostatnim zapytaniu nie wysyła niczego.
+
+ZA DARMO I Z OTWARTYM KODEM
+
+Licencja MIT, każda linijka kodu jest publiczna: github.com/Pkkls/kick-chat-translator
+Zgłoszenia błędów i prośby o nowe języki są tam mile widziane.

@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Kick Chat Translator: pokalbių vertėjas",
+    "description": "Extension and store listing name: the brand, then the query this language types. 45 character limit."
+  },
+  "extDescription": {
+    "message": "Nemokamas pokalbių vertėjas Kick: skaityk bet kurios transliacijos pokalbį savo kalba ir atsakyk kanalo kalba. Be paskyros.",
+    "description": "Store listing blurb and manifest description. 132 character limit."
+  }
+}

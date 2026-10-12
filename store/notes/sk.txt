@@ -1,0 +1,9 @@
+Chatový slang ako ngl, idc, lmk, wyd alebo goat sa teraz pred prekladom rozpíše, takže čitatelia v iných jazykoch dostanú význam namiesto písmen.
+
+Slová, ktoré enginy stále prekladali zle, ako valeu, yatta, coucou, forza a bežné pozdravy, teraz pochádzajú z vlastnej tabuľky rozšírenia, a to v oveľa viacerých jazykoch.
+
+Už žiadne chýbajúce riadky v rýchlom chate. Správa napísaná v inom jazyku než tie okolo sa preloží samostatne namiesto toho, aby sa vynechala, a krátky cudzí riadok sa už nepovažuje za angličtinu a neskrýva sa.
+
+Presnejšie na ďalších miestach: arabské pozdravy sa rozpoznajú ako arabčina, tradičná čínština zostane pri preklade v zariadení tradičná a odpoveď v kantončine si zachová @zmienku aj odkaz.
+
+Šetrnejšie k vášmu prehliadaču: rozšírenie spí, keď nie je otvorená žiadna karta Kick, a v rušnom chate robí na každú správu menej práce. Vo Firefox už karta po aktualizácii nemôže prekladať každú správu dvakrát.

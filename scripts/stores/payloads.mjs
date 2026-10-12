@@ -20,6 +20,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { LISTINGS } from './languages.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const STORE = path.join(ROOT, 'store');
@@ -43,16 +44,18 @@ const read = (rel) => {
 
 // Built from code points so this file never carries the characters it hunts.
 const DASH = new RegExp(`[${String.fromCharCode(0x2013, 0x2014)}]`);
-const DIACRITIC = new RegExp(`[${String.fromCharCode(0xc0)}-${String.fromCharCode(0x17f)}]`);
+// Latin-1 to Extended-B (Romanian ș ț), plus Extended Additional (Vietnamese).
+const DIACRITIC = new RegExp(`[${String.fromCharCode(0xc0)}-${String.fromCharCode(0x24f)}${String.fromCharCode(0x1e00)}-${String.fromCharCode(0x1eff)}]`);
 const CYRILLIC = new RegExp(`[${String.fromCharCode(0x400)}-${String.fromCharCode(0x4ff)}]`);
-const LATIN = new Set(['fr', 'es', 'pt', 'pt-BR', 'tr', 'cs', 'de']);
 
 const check = (label, lang, text) => {
   if (!text) return;
   if (DASH.test(text)) fails.push(`${label}: tiret cadratin ou demi-cadratin`);
-  if (!LATIN.has(lang)) return;
+  const kind = LISTINGS[lang]?.check;
+  if (!kind) return;
   const cyr = text.match(CYRILLIC);
   if (cyr) fails.push(`${label}: lettre cyrillique dans un texte latin, "${text.slice(Math.max(0, cyr.index - 15), cyr.index + 15)}"`);
+  if (kind !== 'accents') return;
   // Per paragraph: one accented header once let six ASCII paragraphs through.
   for (const p of text.split(/\n\s*\n/)) {
     const own = p.replace(/"[^"]*"|«[^»]*»|“[^”]*”/g, '');
@@ -74,28 +77,15 @@ const unwrap = (s) => {
   return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
 };
 
-// store language -> AMO locales. AMO has no Arabic locale. The add-on's default
-// locale is fr: a visitor whose locale has no text sees French, so every
-// variant of a language gets it.
-const LISTING = {
-  en: ['en-us', 'en-gb', 'en-ca'], fr: ['fr'], tr: ['tr'], ja: ['ja'], es: ['es-es', 'es-mx', 'es-ar', 'es-cl'],
-  'pt-BR': ['pt-br', 'pt-pt'], ru: ['ru'], zh: ['zh-cn'], ko: ['ko'], cs: ['cs'],
-};
-const NOTES = {
-  en: ['en-us', 'en-gb', 'en-ca'], fr: ['fr'], es: ['es-es', 'es-mx', 'es-ar', 'es-cl'], pt: ['pt-pt'], 'pt-BR': ['pt-br'],
-  de: ['de'], ru: ['ru'], tr: ['tr'], ja: ['ja'], ko: ['ko'], zh: ['zh-cn'],
-};
-const CHROME = ['en', 'fr', 'es', 'pt-BR', 'tr', 'ru', 'ar', 'ja', 'ko', 'zh', 'cs'];
-
 // The name is the manifest's, so both stores carry the same one per language.
 const extName = (lang) =>
-  JSON.parse(fs.readFileSync(path.join(ROOT, 'public/_locales', { 'pt-BR': 'pt_BR', zh: 'zh_CN' }[lang] ?? lang, 'messages.json'), 'utf8'))
-    .extName.message;
+  JSON.parse(fs.readFileSync(path.join(ROOT, 'public/_locales', LISTINGS[lang].dir, 'messages.json'), 'utf8')).extName.message;
+const ON_AMO = Object.entries(LISTINGS).filter(([, l]) => l.amo.length);
 
 const name = {};
 const summary = {};
 const description = {};
-for (const [lang, locales] of Object.entries(LISTING)) {
+for (const [lang, { amo: locales }] of ON_AMO) {
   const n = extName(lang);
   const s = read(`amo/summary/${lang}.txt`);
   const d = read(`amo/description/${lang}.txt`);
@@ -106,14 +96,14 @@ for (const [lang, locales] of Object.entries(LISTING)) {
 }
 
 const notes = {};
-for (const [lang, locales] of Object.entries(NOTES)) {
+for (const [lang, { amo: locales }] of ON_AMO) {
   const text = unwrap(read(`notes/${lang}.txt`));
   check(`note ${lang}`, lang, text);
   for (const loc of locales) notes[loc] = text;
 }
 
 const cws = {};
-for (const lang of CHROME) {
+for (const lang of Object.keys(LISTINGS)) {
   const text = read(`chrome/description/${lang}.txt`);
   check(`description Chrome ${lang}`, lang, text);
   const v = text.match(/\b\d+\.\d+\.\d+\b/);
@@ -152,5 +142,5 @@ if (fails.length) {
 fs.writeFileSync(path.join(out, 'amo-notes.json'), JSON.stringify({ notes, rev }));
 fs.writeFileSync(path.join(out, 'amo-listing.json'), JSON.stringify({ name, summary, description }));
 for (const [lang, text] of Object.entries(cws)) fs.writeFileSync(path.join(out, `cws-description-${lang}.txt`), text + '\n');
-console.log(`${VERSION} | notes ${Object.keys(notes).length} locales | fiche AMO ${Object.keys(summary).length} locales | fiche Chrome ${CHROME.length} langues | ${toolchain}`);
+console.log(`${VERSION} | notes ${Object.keys(notes).length} locales | fiche AMO ${Object.keys(summary).length} locales | fiche Chrome ${Object.keys(cws).length} langues | ${toolchain}`);
 console.log(`-> ${out}`);

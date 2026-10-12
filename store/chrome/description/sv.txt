@@ -1,0 +1,35 @@
+Kick Chat Translator är en gratis chattöversättare för Kick. Läs chatten i vilken stream som helst på ditt eget språk och svara på kanalens språk, direkt i chatten.
+
+Tittar du på en turkisk, spansk, rysk eller arabisk stream och hänger inte med i chatten? Installera, öppna streamen, så visas varje meddelande med sin översättning precis under, i samma stund som det kommer in. Inget konto, ingen API-nyckel, inget att ställa in.
+
+SÅ HÄR FUNGERAR DET
+
+1. Öppna vilken Kick-stream som helst. Ett grönt fält högst upp i chatten visar att översättaren är på.
+2. Varje nytt meddelande får sin översättning under sig, på webbläsarens språk.
+3. Skriv ett svar på ditt eget språk. En förhandsvisning visar det på kanalens språk: tryck på Tab eller klicka på den och skicka sedan.
+
+Kanalens språk läses av från Kick själv, och båda språken kan ändras i inställningarna. Fungerar på livestreamar och VOD-repriser, låter 7TV-emotes vara som de är och pausar sig själv i bakgrundsflikar.
+
+DET HÄR FÅR DU
+
+• 43 språk, inklusive höger till vänster (arabiska, hebreiska, persiska), med regionala varianter hållna isär (brasiliansk portugisiska, traditionell kinesiska).
+• Gratis direkt med Google Translate, utan nyckel och utan konto.
+• Bättre europeiska språk med din egen DeepL API-nyckel. DeepL får de senaste chattraderna som sammanhang, så formuleringarna passar samtalet.
+• Översättning på enheten i Chrome och Edge 138+ när din dator klarar det: offline, obegränsat, och chatten lämnar aldrig din dator.
+• Automatisk reserv: när en motor strular tar MyMemory eller Lingva över. Du väljer ordningen.
+• Fyra visningsstilar: under meddelandet, på samma rad, i liten kursiv stil efter det, eller bara när du håller muspekaren över. Hovringsläget översätter inget förrän du pekar på ett meddelande, vilket minskar användningen ungefär tio gånger i en snabb chatt.
+• Filter: hoppa över botar, tysta användare eller kanaler, dölj rader som innehåller ett ord du väljer (praktiskt mot !command-spam), eller översätt bara de språk du vill ha.
+• Emotes, omnämnanden, länkar och emoji-spam tas bort innan något skickas, så ingenting går åt till att översätta "kkkkkk".
+• Gör det till ditt: textstorlek, radavstånd, typsnitt, accentfärg, mörk eller ljus chatt, ett språk att läsa på som kommer ihåg varje kanal, kortkommandon.
+• Gränssnitt på 10 språk: engelska, spanska, franska, portugisiska, turkiska, ryska, arabiska, kinesiska, japanska och koreanska.
+
+INTEGRITET
+
+Inget konto, ingen analys, ingen egen server. Chattext går bara till den översättningsmotor du valt. Med Google, MyMemory eller Lingva är det texten i varje meddelande och inget annat. Med DeepL skickas de senaste chattraderna med som sammanhang, tillsammans med namnen på dem som skrev, så att översättningen passar samtalet. Kanalen du tittar på skickas aldrig, och med översättning på enheten lämnar ingenting din dator.
+
+Behörigheterna, med enkla ord: lagring för dina inställningar och översättningscachen; åtkomst till kick.com för att visa översättningar i chatten; åtkomst till de motorer den kan anropa (Google, DeepL, MyMemory och Lingva); en väckningstimer så att översättaren är redo medan du tittar; och rätten att ladda om sitt eget skript i Kick-flikar som redan är öppna när du installerar eller uppdaterar, så att de fortsätter översätta utan omladdning. Den läser också GitHubs releasesida för att tala om när en nyare version finns, utan att skicka något med den förfrågan.
+
+GRATIS OCH ÖPPEN KÄLLKOD
+
+MIT-licens, varje kodrad är offentlig: github.com/Pkkls/kick-chat-translator
+Felrapporter och önskemål om språk är välkomna där, och vad som ändrats i varje version finns på releasesidan.

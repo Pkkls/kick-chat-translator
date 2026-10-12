@@ -1,0 +1,35 @@
+Ang Kick Chat Translator ay isang libreng tagasalin ng chat para sa Kick. Basahin ang chat ng kahit anong stream sa sarili mong wika, at sumagot sa wika ng channel, mismo sa loob ng chat.
+
+Nanonood ka ng Turkish, Spanish, Russian o Arabic na stream pero hindi mo masundan ang chat? I-install, buksan ang stream, at lalabas ang salin ng bawat mensahe sa ilalim nito pagdating nito. Walang account, walang API key, walang kailangang i-set up.
+
+PAANO ITO GUMAGANA
+
+1. Magbukas ng kahit anong Kick stream. Ang berdeng bar sa itaas ng chat ang nagsasabing naka-on ang tagasalin.
+2. Bawat bagong mensahe ay may salin sa ilalim, sa wika ng browser mo.
+3. Mag-type ng sagot sa sarili mong wika. Ipapakita ng preview ito sa wika ng channel: pindutin ang Tab o i-click ito, tapos i-send.
+
+Binabasa mismo mula sa Kick ang wika ng channel, at puwedeng baguhin ang dalawang wika sa settings. Gumagana sa mga live stream at sa mga VOD replay, iniiwan ang mga 7TV emote kung ano ang mga ito, at kusang humihinto sa mga background tab.
+
+ANO ANG MAKUKUHA MO
+
+• 43 wika, kasama ang mga wikang nakasulat mula kanan pakaliwa (Arabic, Hebrew, Persian), at magkahiwalay ang mga rehiyonal na bersyon (Brazilian Portuguese, Traditional Chinese).
+• Libre agad gamit ang Google Translate, walang key at walang account.
+• Mas magandang salin sa mga wika sa Europa gamit ang sarili mong DeepL API key. Nakakakuha ang DeepL ng mga huling linya ng chat bilang konteksto, kaya bagay sa usapan ang mga salita.
+• Pagsasalin sa mismong device sa Chrome at Edge 138+ kapag kaya ito ng computer mo: offline, walang limit, at hindi lumalabas sa makina mo ang chat.
+• Awtomatikong panumbalik: kapag pumalya ang isang engine, MyMemory o Lingva ang pumapalit. Ikaw ang pipili ng pagkakasunod-sunod.
+• Apat na istilo ng pagpapakita: sa ilalim ng mensahe, sa parehong linya, sa maliit na italic pagkatapos ng mensahe, o kapag nag-hover ka lang. Walang isinasalin ang hover mode hangga't hindi mo tinuturo ang isang mensahe, kaya halos sampung beses na mas mababa ang gamit sa mabilis na chat.
+• Mga filter: laktawan ang mga bot, i-mute ang mga user o channel, itago ang mga linyang may salitang pipiliin mo (kapaki-pakinabang laban sa !command spam), o isalin lang ang mga wikang gusto mo.
+• Tinatanggal ang mga emote, mention, link at emoji spam bago ipadala ang kahit ano, kaya walang nasasayang sa pagsasalin ng "kkkkkk".
+• Gawing sa iyo: laki ng text, espasyo ng linya, typeface, accent color, dark o light na chat, wikang binabasa na naaalala kada channel, mga keyboard shortcut.
+• Interface sa 10 wika: English, Spanish, French, Portuguese, Turkish, Russian, Arabic, Chinese, Japanese at Korean.
+
+PRIVACY
+
+Walang account, walang analytics, walang sarili kong server. Sa translation engine lang na pinili mo napupunta ang text ng chat. Sa Google, MyMemory o Lingva, text ng bawat mensahe lang iyon at wala nang iba. Sa DeepL, kasama ang huling ilang linya ng chat bilang konteksto, pati ang mga pangalan ng nagsulat, para bumagay ang salin sa usapan. Hindi kailanman ipinapadala ang channel na pinapanood mo, at sa pagsasalin sa mismong device, walang lumalabas sa computer mo.
+
+Ang mga permiso, sa simpleng salita: storage para sa mga setting mo at sa translation cache nito; access sa kick.com para ipakita ang mga salin sa chat; access sa mga engine na puwede nitong tawagan (Google, DeepL, MyMemory at Lingva); isang wake-up timer para laging handa ang tagasalin habang nanonood ka; at ang karapatang i-reload ang sarili nitong script sa mga Kick tab na bukas na kapag in-install o in-update mo ito, para tuloy ang pagsasalin nang hindi nagre-refresh. Binabasa rin nito ang GitHub releases page para sabihin sa iyo kapag may mas bagong bersyon, nang walang ipinapadalang anuman sa request na iyon.
+
+LIBRE AT OPEN SOURCE
+
+MIT license, bukas sa publiko ang bawat linya ng code: github.com/Pkkls/kick-chat-translator
+Welcome doon ang mga bug report at hiling na wika, at nasa releases page ang mga nagbago sa bawat bersyon.

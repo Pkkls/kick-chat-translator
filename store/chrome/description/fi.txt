@@ -1,0 +1,35 @@
+Kick Chat Translator on ilmainen chat kääntäjä Kickille. Lue minkä tahansa streamin chat omalla kielelläsi ja vastaa kanavan kielellä suoraan chatissa.
+
+Katsotko turkin-, espanjan-, venäjän- tai arabiankielistä streamia etkä pysy chatin mukana? Asenna, avaa stream, ja jokaisen viestin käännös näkyy heti sen alla, kun viesti saapuu. Ei tiliä, ei API-avainta, ei mitään säädettävää.
+
+NÄIN SE TOIMII
+
+1. Avaa mikä tahansa Kick-stream. Chatin yläreunan vihreä palkki kertoo, että kääntäjä on päällä.
+2. Jokainen uusi viesti saa käännöksensä alleen selaimesi kielellä.
+3. Kirjoita vastaus omalla kielelläsi. Esikatselu näyttää sen kanavan kielellä: paina Tab tai klikkaa sitä ja lähetä sitten.
+
+Kanavan kieli luetaan suoraan Kickistä, ja molempia kieliä voi muuttaa asetuksissa. Toimii suorissa lähetyksissä ja VOD-uusinnoissa, jättää 7TV-emotet ennalleen ja pysäyttää itsensä taustavälilehdissä.
+
+MITÄ SAAT
+
+• 43 kieltä, myös oikealta vasemmalle kirjoitettavat (arabia, heprea, persia), ja alueelliset muunnelmat pidetään erillään (brasilianportugali, perinteinen kiina).
+• Ilmainen heti Google Translaten kanssa, ilman avainta ja ilman tiliä.
+• Parempi käännös eurooppalaisille kielille omalla DeepL API -avaimellasi. DeepL saa viimeisimmät chat-rivit asiayhteydeksi, jotta sanavalinnat sopivat keskusteluun.
+• Laitteella tapahtuva käännös Chromessa ja Edgessä 138+, kun tietokoneesi tukee sitä: offline, rajoituksetta, eikä chat poistu koneeltasi.
+• Automaattinen varavaihtoehto: kun yksi moottori pettää, MyMemory tai Lingva ottaa vallan. Järjestyksen valitset itse.
+• Neljä näyttötapaa: viestin alla, samalla rivillä, pienellä kursiivilla sen perässä tai vain kun viet hiiren päälle. Hover-tila ei käännä mitään ennen kuin osoitat viestiä, mikä vähentää käyttöä noin kymmenesosaan nopeassa chatissa.
+• Suodattimet: ohita botit, mykistä käyttäjiä tai kanavia, piilota rivit, joissa on valitsemasi sana (kätevä !command-roskaviestejä vastaan), tai käännä vain haluamasi kielet.
+• Emotet, maininnat, linkit ja emoji-spämmi poistetaan ennen kuin mitään lähetetään, joten "kkkkkk" ei kuluta käännöksiä.
+• Tee siitä omasi: tekstin koko, riviväli, kirjasin, korostusväri, tumma tai vaalea chat, kanavakohtaisesti muistettava lukukieli, pikanäppäimet.
+• Käyttöliittymä 10 kielellä: englanti, espanja, ranska, portugali, turkki, venäjä, arabia, kiina, japani ja korea.
+
+YKSITYISYYS
+
+Ei tiliä, ei analytiikkaa, ei omaa palvelinta. Chatin teksti menee vain valitsemallesi käännösmoottorille. Googlen, MyMemoryn tai Lingvan kanssa se on jokaisen viestin teksti eikä mitään muuta. DeepLin kanssa viimeiset chat-rivit lähtevät mukana asiayhteytenä kirjoittajien nimineen, jotta käännös sopii keskusteluun. Katsomaasi kanavaa ei koskaan lähetetä, eikä laitteella tapahtuvassa käännöksessä mikään poistu tietokoneeltasi.
+
+Käyttöoikeudet selkokielellä: tallennustila asetuksillesi ja käännösvälimuistille; pääsy kick.com-sivustoon käännösten näyttämiseksi chatissa; pääsy moottoreihin, joita se voi kutsua (Google, DeepL, MyMemory ja Lingva); herätysajastin, jotta kääntäjä pysyy valmiina katsoessasi; sekä oikeus ladata oma skriptinsä uudelleen jo avoimiin Kick-välilehtiin asennuksen tai päivityksen yhteydessä, jotta ne jatkavat kääntämistä ilman sivun päivitystä. Se myös lukee GitHubin julkaisusivua kertoakseen, kun uudempi versio on olemassa, eikä lähetä pyynnön mukana mitään.
+
+ILMAINEN JA AVOIN LÄHDEKOODI
+
+MIT-lisenssi, jokainen koodirivi on julkinen: github.com/Pkkls/kick-chat-translator
+Virheraportit ja kielitoiveet ovat tervetulleita sinne, ja jokaisen version muutokset löytyvät julkaisusivulta.

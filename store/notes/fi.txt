@@ -1,0 +1,9 @@
+Chat-slangi kuten ngl, idc, lmk, wyd tai goat avataan nyt auki ennen kääntämistä, jolloin muunkieliset lukijat saavat merkityksen kirjainten sijaan.
+
+Sanat, jotka moottorit käänsivät jatkuvasti väärin, kuten valeu, yatta, coucou, forza ja arkiset tervehdykset, tulevat nyt laajennuksen omasta taulukosta, paljon useammalla kielellä.
+
+Ei enää puuttuvia rivejä nopeassa chatissa. Ympäristöstä poikkeavalla kielellä kirjoitettu viesti käännetään omana yksikkönään sen sijaan, että se jäisi pois, eikä lyhyttä vierasta riviä enää luulla englanniksi ja piiloteta.
+
+Tarkempi useammassa paikassa: arabialaiset tervehdykset tunnistetaan arabiaksi, perinteinen kiina pysyy perinteisenä laitteella käännettäessä, ja vastaus säilyttää @mention-maininnan ja linkin kantoniksi.
+
+Kevyempi selaimelle: laajennus nukkuu, kun mikään Kick-välilehti ei ole auki, ja tekee vähemmän työtä viestiä kohden vilkkaassa chatissa. Firefoxissa välilehti ei enää käännä jokaista viestiä kahdesti päivityksen jälkeen.

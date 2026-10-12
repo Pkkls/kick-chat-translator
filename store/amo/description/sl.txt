@@ -1,0 +1,34 @@
+Kick Chat Translator je brezplačni prevajalnik chata v živo za Kick. Berite chat katerega koli prenosa v svojem jeziku in odgovarjajte v jeziku kanala, kar v chatu.
+
+Gledate turški, španski, ruski ali arabski prenos in ne sledite chatu? Namestite, odprite prenos in vsako sporočilo takoj pod seboj pokaže svoj prevod, ko prispe. Brez računa, brez ključa API, brez nastavljanja.
+
+KAKO DELUJE
+
+1. Odprite poljuben prenos na Kicku. Zelena vrstica na vrhu chata pokaže, da prevajalnik deluje.
+2. Vsako novo sporočilo dobi pod seboj prevod v jezik vašega brskalnika.
+3. Napišite odgovor v svojem jeziku. Predogled ga pokaže v jeziku kanala: pritisnite Tab ali kliknite nanj, nato pošljite.
+
+Jezik kanala se prebere neposredno iz Kicka, oba jezika pa lahko spremenite v nastavitvah. Deluje na prenosih v živo in na posnetkih VOD, čustvenčke 7TV pusti, kakršni so, in se v zavihkih v ozadju samodejno ustavi.
+
+Oglejte si ga na pravem chatu: https://www.youtube.com/watch?v=NoGJeUrwy9o
+
+KAJ DOBITE
+
+• 43 jezikov, tudi tiste, ki se pišejo od desne proti levi (arabščina, hebrejščina, perzijščina), z ločeno obravnavanimi regionalnimi različicami (brazilska portugalščina, tradicionalna kitajščina).
+• Brezplačno takoj po namestitvi z Google Translate, brez ključa in brez računa.
+• Boljši evropski jeziki z lastnim ključem API za DeepL. DeepL dobi zadnje vrstice chata kot kontekst, zato se izrazi prilegajo pogovoru.
+• Samodejna rezerva: ko en pogon odpove, prevzame MyMemory ali Lingva. Vrstni red določite vi.
+• Štirje slogi prikaza: pod sporočilom, v isti vrstici, za njim v manjši kurzivi ali samo ob prehodu miške. Način prehoda miške ne prevaja ničesar, dokler ne pokažete na sporočilo, kar pri hitrem chatu zmanjša porabo približno desetkrat.
+• Filtri: preskakovanje botov, utišanje uporabnikov ali kanalov, skrivanje vrstic z besedo, ki jo izberete (uporabno proti spamu ukazov, kot je !command), ali prevajanje samo jezikov, ki jih želite.
+• Čustvenčki, omembe, povezave in poplave emojijev se odstranijo, preden se karkoli pošlje, zato se nič ne porabi za prevajanje „kkkkkk“.
+• Prilagodite si ga: velikost besedila, razmik med vrsticami, pisava, barva poudarka, temen ali svetel chat, jezik branja, zapomnjen za vsak kanal, bližnjice na tipkovnici.
+• Vmesnik v 10 jezikih: angleščina, španščina, francoščina, portugalščina, turščina, ruščina, arabščina, kitajščina, japonščina in korejščina.
+
+KAJ ZAPUSTI VAŠ BRSKALNIK
+
+Besedilo chata gre samo v prevajalski pogon, ki ste ga izbrali. Pri Googlu, MyMemory ali Lingva je to besedilo vsakega sporočila in nič drugega: ne kanal, ne avtor. Pri DeepL gre kot kontekst zraven tudi nekaj zadnjih vrstic chata z imeni tistih, ki so jih napisali, da se prevod prilega pogovoru. Na to se nanaša vrstica „vsebina spletnih mest“ med zgornjimi dovoljenji in to je vse. Ni računa, analitike ali mojega strežnika: razširitev komunicira s Kickom, s pogonom, ki ste ga izbrali, in s stranjo z izdajami na GitHubu, da vam sporoči, če obstaja novejša različica, pri tej zadnji zahtevi pa ne pošlje ničesar.
+
+BREZPLAČNO IN ODPRTOKODNO
+
+Licenca MIT, vsaka vrstica kode je javna: github.com/Pkkls/kick-chat-translator
+Prijave napak in želje po novih jezikih so tam dobrodošle.

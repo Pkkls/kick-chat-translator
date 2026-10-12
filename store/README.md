@@ -18,7 +18,9 @@ notes/<lang>.txt                release notes of the version being shipped (AMO)
 keywords.json                   the queries each language is tracked on, read by scripts/stores/rank.mjs
 ```
 
-`<lang>` is `en fr es pt-BR tr ru ar ja ko zh cs` (notes add `de` and European `pt`).
+`<lang>` is a key of `scripts/stores/languages.mjs`, which lists the 42 listing languages, their
+`_locales` directory and the AMO locales each one feeds. `amo/` and `notes/` exist only for the
+languages AMO serves.
 The name and the short description Chrome shows under it are not here: they are
 the manifest's `extName` and `extDescription`, in `public/_locales/*/messages.json`,
 and `payloads.mjs` sends the same name to AMO. How they were chosen, and how to
@@ -27,7 +29,7 @@ audit them, is the `store-seo` skill.
 ## Rules
 
 - **No version number in a description.** Chrome's descriptions can only be set
-  by pasting them in the dashboard, eleven languages at a time, so they carry
+  by pasting them in the dashboard (`cws-listing.mjs paste`), one language at a time, so they carry
   nothing that goes stale with a release. What changed goes in `notes/`, which
   AMO shows per version and the GitHub release carries.
 - **Plain text.** Neither store renders Markdown; capitalised lines are the only

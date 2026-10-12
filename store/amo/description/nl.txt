@@ -1,0 +1,34 @@
+Kick Chat Translator is een gratis chat vertaler voor Kick. Lees de chat van elke stream in je eigen taal en reageer in de taal van het kanaal, direct in de chat.
+
+Kijk je naar een Turkse, Spaanse, Russische of Arabische stream en kun je de chat niet volgen? Installeer, open de stream, en elk bericht krijgt direct eronder zijn vertaling zodra het binnenkomt. Geen account, geen API-sleutel, niets om in te stellen.
+
+ZO WERKT HET
+
+1. Open een willekeurige Kick-stream. Een groene balk bovenaan de chat laat zien dat de vertaler aanstaat.
+2. Elk nieuw bericht krijgt zijn vertaling eronder, in de taal van je browser.
+3. Typ een antwoord in je eigen taal. Een voorbeeld toont het in de taal van het kanaal: druk op Tab of klik erop en verstuur het.
+
+De taal van het kanaal wordt van Kick zelf overgenomen, en beide talen kun je in de instellingen wijzigen. Werkt bij livestreams en bij VOD-herhalingen, laat 7TV-emotes zoals ze zijn en pauzeert zichzelf in tabbladen op de achtergrond.
+
+Zie het draaien in een echte chat: https://www.youtube.com/watch?v=NoGJeUrwy9o
+
+WAT JE KRIJGT
+
+• 43 talen, ook van rechts naar links (Arabisch, Hebreeuws, Perzisch), met regionale varianten die apart blijven (Braziliaans Portugees, Traditioneel Chinees).
+• Direct gratis met Google Translate, zonder sleutel en zonder account.
+• Betere Europese talen met je eigen DeepL API-sleutel. DeepL krijgt de laatste chatregels als context, zodat de formulering bij het gesprek past.
+• Automatische terugval: als een engine uitvalt, neemt MyMemory of Lingva het over. De volgorde bepaal je zelf.
+• Vier weergavestijlen: onder het bericht, op dezelfde regel, in kleine cursieve letters erachter, of alleen als je erover heen beweegt. De hovermodus vertaalt niets totdat je naar een bericht wijst, wat het gebruik in een snelle chat ongeveer tien keer verlaagt.
+• Filters: bots overslaan, gebruikers of kanalen dempen, regels met een woord naar keuze verbergen (handig tegen !command-spam), of alleen de talen vertalen die je wilt.
+• Emotes, vermeldingen, links en emoji-spam worden verwijderd voordat er iets wordt verstuurd, zodat er niets wordt besteed aan het vertalen van "kkkkkk".
+• Maak het van jou: tekstgrootte, regelafstand, lettertype, accentkleur, donkere of lichte chat, een leestaal die per kanaal wordt onthouden, sneltoetsen.
+• Interface in 10 talen: Engels, Spaans, Frans, Portugees, Turks, Russisch, Arabisch, Chinees, Japans en Koreaans.
+
+WAT JE BROWSER VERLAAT
+
+De chattekst gaat alleen naar de vertaalengine die je hebt gekozen. Bij Google, MyMemory of Lingva is dat de tekst van elk bericht en verder niets: niet het kanaal, niet wie het schreef. Bij DeepL gaan de laatste chatregels mee als context, met de namen van wie ze schreef, zodat de vertaling bij het gesprek past. Daar verwijst de regel "website-inhoud" in de rechten hierboven naar, en dat is alles. Er is geen account, geen analytics en geen server van mij: de extensie praat met Kick, met de engine die je hebt gekozen, en met de GitHub-releasepagina om je te laten weten wanneer er een nieuwere versie is, waarbij ze bij dat laatste verzoek niets meestuurt.
+
+GRATIS EN OPEN SOURCE
+
+MIT-licentie, elke regel code is openbaar: github.com/Pkkls/kick-chat-translator
+Bugmeldingen en taalverzoeken zijn daar welkom.
