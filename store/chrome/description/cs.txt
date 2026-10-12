@@ -21,7 +21,7 @@ CO ZÍSKÁTE
 • Filtry: přeskočit boty, ztlumit uživatele nebo kanály, skrýt řádky se slovem podle vaší volby (hodí se proti spamu příkazů typu !command), nebo překládat jen jazyky, které chcete.
 • Emotikony, zmínky, odkazy a záplavy emoji se odstraní dřív, než se cokoli odešle, takže se nic nespotřebuje na překlad „kkkkkk“.
 • Přizpůsobte si ho: velikost textu, řádkování, písmo, barva zvýraznění, tmavý nebo světlý chat, jazyk čtení zapamatovaný pro každý kanál, klávesové zkratky.
-• Rozhraní v 10 jazycích: angličtina, španělština, francouzština, portugalština, turečtina, ruština, arabština, čínština, japonština a korejština.
+• Rozhraní ve stejných 43 jazycích včetně těch psaných zprava doleva, vybírané z nabídky, která ukazuje každou vlajku.
 
 SOUKROMÍ
 

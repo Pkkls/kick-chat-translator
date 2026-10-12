@@ -1,9 +1,5 @@
-Chat slang like ngl, idc, lmk, wyd or goat is now spelled out before it is translated, so readers in other languages get the meaning instead of the letters.
+The extension now speaks your language. The settings, the popup and the bar in the chat are translated into all 43 languages it translates into, not 10, and Hebrew and Persian read right to left, like Arabic.
 
-Words the engines kept getting wrong, such as valeu, yatta, coucou, forza and everyday greetings, now come from the extension's own table, in many more languages.
+The ten languages it already spoke were rewritten to read naturally, as if written in that language rather than translated word for word from English.
 
-No more missing lines on a fast chat. A message written in another language than the ones around it is translated on its own instead of being dropped, and a short foreign line is no longer mistaken for English and hidden.
-
-More accurate in more places: Arabic greetings are recognised as Arabic, Traditional Chinese stays traditional when translated on your device, and a reply keeps its @mention and link in Cantonese.
-
-Lighter on your browser: the extension sleeps when no Kick tab is open and does less work per message on a busy chat. On Firefox, a tab can no longer translate every message twice after an update.
+The interface language menu shows each language's flag, and works with the keyboard.

@@ -21,7 +21,7 @@ DET FÅR DU
 • Filtre: spring bots over, gør brugere eller kanaler tavse, skjul linjer med et ord, du vælger (praktisk mod !command-spam), eller oversæt kun de sprog, du vil have.
 • Emotes, omtaler, links og emoji-spam fjernes, før der sendes noget, så der ikke bruges noget på at oversætte "kkkkkk".
 • Gør den til din: tekststørrelse, linjeafstand, skrifttype, accentfarve, mørk eller lys chat, et læsesprog husket pr. kanal, tastaturgenveje.
-• Grænseflade på 10 sprog: engelsk, spansk, fransk, portugisisk, tyrkisk, russisk, arabisk, kinesisk, japansk og koreansk.
+• Grænseflade på de samme 43 sprog, også dem der skrives fra højre mod venstre, valgt i en menu, der viser hvert flag.
 
 PRIVATLIV
 

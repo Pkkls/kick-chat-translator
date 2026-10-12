@@ -21,7 +21,7 @@ YANG KAMU DAPAT
 • Filter: lewati bot, bisukan pengguna atau channel, sembunyikan baris yang memuat kata pilihanmu (berguna melawan spam !command), atau terjemahkan hanya bahasa yang kamu mau.
 • Emote, mention, tautan, dan spam emoji dibuang sebelum apa pun dikirim, jadi tidak ada kuota yang terbuang untuk menerjemahkan "kkkkkk".
 • Atur sesukamu: ukuran teks, jarak baris, jenis huruf, warna aksen, chat gelap atau terang, bahasa baca yang diingat per channel, pintasan keyboard.
-• Antarmuka dalam 10 bahasa: Inggris, Spanyol, Prancis, Portugis, Turki, Rusia, Arab, Mandarin, Jepang, dan Korea.
+• Antarmuka dalam 43 bahasa yang sama, termasuk yang ditulis dari kanan ke kiri, dipilih lewat menu yang menampilkan bendera setiap bahasa.
 
 PRIVASI
 

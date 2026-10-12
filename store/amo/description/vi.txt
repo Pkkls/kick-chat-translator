@@ -22,7 +22,7 @@ BẠN CÓ GÌ
 • Bộ lọc: bỏ qua bot, tắt tiếng người dùng hoặc kênh, ẩn các dòng chứa từ bạn chọn (tiện để chặn spam !command), hoặc chỉ dịch những ngôn ngữ bạn muốn.
 • Emote, lượt nhắc tên, liên kết và spam emoji được loại bỏ trước khi gửi đi bất cứ thứ gì, nên không tốn lượt dịch nào cho "kkkkkk".
 • Tùy chỉnh theo ý bạn: cỡ chữ, khoảng cách dòng, phông chữ, màu nhấn, chat nền tối hoặc sáng, ngôn ngữ đọc được nhớ riêng cho từng kênh, phím tắt.
-• Giao diện có 10 ngôn ngữ: tiếng Anh, Tây Ban Nha, Pháp, Bồ Đào Nha, Thổ Nhĩ Kỳ, Nga, Ả Rập, Trung, Nhật và Hàn.
+• Giao diện có cùng 43 ngôn ngữ, kể cả các ngôn ngữ viết từ phải sang trái, chọn từ một menu hiển thị cờ của từng ngôn ngữ.
 
 NHỮNG GÌ RỜI KHỎI TRÌNH DUYỆT CỦA BẠN
 

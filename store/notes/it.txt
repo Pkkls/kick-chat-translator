@@ -1,9 +1,5 @@
-Lo slang della chat come ngl, idc, lmk, wyd o goat ora viene esteso a parole prima di essere tradotto, così chi legge in un'altra lingua ottiene il significato invece delle lettere.
+L'estensione ora parla la tua lingua. Le impostazioni, il popup e la barra nella chat sono tradotti in tutte le 43 lingue in cui traduce, non più solo 10, e l'ebraico e il persiano si leggono da destra a sinistra, come l'arabo.
 
-Le parole che i motori sbagliavano di continuo, come valeu, yatta, coucou, forza e i saluti di tutti i giorni, ora arrivano dalla tabella interna dell'estensione, in molte più lingue.
+Le dieci lingue che parlava già sono state riscritte perché suonino naturali, come se fossero scritte in quella lingua e non tradotte parola per parola dall'inglese.
 
-Niente più righe mancanti su una chat veloce. Un messaggio scritto in una lingua diversa da quelle intorno viene tradotto a sé invece di essere scartato, e una breve riga straniera non viene più scambiata per inglese e nascosta.
-
-Più preciso in più situazioni: i saluti arabi vengono riconosciuti come arabo, il cinese tradizionale resta tradizionale quando viene tradotto sul dispositivo, e una risposta mantiene la sua @mention e il link in cantonese.
-
-Più leggera per il browser: l'estensione va a riposo quando non c'è nessuna scheda Kick aperta e lavora meno per ogni messaggio su una chat affollata. Su Firefox, una scheda non può più tradurre ogni messaggio due volte dopo un aggiornamento.
+Il menu della lingua dell'interfaccia mostra la bandiera di ogni lingua e si usa anche con la tastiera.

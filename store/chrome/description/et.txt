@@ -21,7 +21,7 @@ MIDA SA SAAD
 • Filtrid: jäta botid vahele, vaigista kasutajaid või kanaleid, peida read, mis sisaldavad sinu valitud sõna (kasulik !command-rämpsu vastu), või tõlgi ainult soovitud keeli.
 • Emote'id, mainimised, lingid ja emoji-rämps eemaldatakse enne mis tahes saatmist, nii et "kkkkkk" tõlkimiseks ei kulu midagi.
 • Tee see enda moodi: teksti suurus, reavahe, kirjatüüp, rõhuvärv, tume või hele chat, kanalipõhiselt meelde jääv lugemiskeel, kiirklahvid.
-• Liides 10 keeles: inglise, hispaania, prantsuse, portugali, türgi, vene, araabia, hiina, jaapani ja korea.
+• Liides samades 43 keeles, sealhulgas paremalt vasakule kirjutatavates, valitav menüüst, mis näitab iga keele lippu.
 
 PRIVAATSUS
 

@@ -22,7 +22,7 @@ DAS BEKOMMST DU
 • Filter: Bots überspringen, Nutzer oder Kanäle stumm schalten, Zeilen mit einem Wort deiner Wahl ausblenden (praktisch gegen !command-Spam) oder nur die gewünschten Sprachen übersetzen.
 • Emotes, Erwähnungen, Links und Emoji-Spam werden vor dem Senden entfernt, damit nichts für die Übersetzung von "kkkkkk" draufgeht.
 • Mach es zu deinem: Textgröße, Zeilenabstand, Schriftart, Akzentfarbe, dunkler oder heller Chat, eine pro Kanal gemerkte Lesesprache, Tastenkürzel.
-• Oberfläche in 10 Sprachen: Englisch, Spanisch, Französisch, Portugiesisch, Türkisch, Russisch, Arabisch, Chinesisch, Japanisch und Koreanisch.
+• Oberfläche in denselben 43 Sprachen, auch von rechts nach links, auswählbar in einem Menü, das jede Flagge zeigt.
 
 WAS DEINEN BROWSER VERLÄSST
 

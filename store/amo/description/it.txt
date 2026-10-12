@@ -22,7 +22,7 @@ COSA OTTIENI
 • Filtri: ignora i bot, silenzia utenti o canali, nascondi le righe che contengono una parola a tua scelta (utile contro lo spam di !command), oppure traduci solo le lingue che vuoi.
 • Emote, menzioni, link e spam di emoji vengono eliminati prima di inviare qualsiasi cosa, così non si spende nulla per tradurre "kkkkkk".
 • Rendilo tuo: dimensione del testo, interlinea, carattere, colore di accento, chat scura o chiara, una lingua di lettura ricordata per canale, scorciatoie da tastiera.
-• Interfaccia in 10 lingue: inglese, spagnolo, francese, portoghese, turco, russo, arabo, cinese, giapponese e coreano.
+• Interfaccia nelle stesse 43 lingue, comprese quelle da destra a sinistra, da scegliere in un menu che mostra ogni bandiera.
 
 COSA ESCE DAL TUO BROWSER
 

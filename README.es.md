@@ -115,8 +115,7 @@ Haz clic en el engranaje de la barra del chat, o clic derecho en el icono de la 
 - Teclado: Alt+T activa o desactiva la traducción del chat, Alt+W la vista previa de redacción
 - Actividad: mensajes traducidos, aciertos de caché, cada idioma visto en el chat, y por qué cada una de las
   últimas 50 líneas se tradujo o no
-- La interfaz de la extensión en inglés, español, francés, portugués, turco, ruso, árabe, chino, japonés o
-  coreano
+- La interfaz de la extensión, en cualquiera de los 43 idiomas a los que traduce, que se elige en un menú con banderas
 
 ## Idiomas
 
@@ -160,13 +159,11 @@ No. Es un proyecto independiente de código abierto, sin relación con Kick.
 
 ## Novedades
 
-En la 3.1.0:
+En la 3.2.0:
 
-- La jerga del chat (ngl, idc, lmk, wyd, goat) se escribe completa antes de traducir, para que los demás lectores entiendan el significado
-- Las palabras que los motores traducían mal (valeu, yatta, coucou, forza, saludos de todos los días) salen de la tabla propia de la extensión, en muchos más idiomas
-- Ya no se pierden líneas en un chat rápido: un mensaje en un idioma distinto al de los de al lado se traduce por separado, y las líneas cortas en otro idioma ya no se toman por inglés
-- Los saludos árabes se leen como árabe, el chino tradicional se mantiene tradicional en el dispositivo, las @menciones se conservan en las respuestas en cantonés
-- Más ligera: dormida cuando no hay ninguna pestaña de Kick abierta, menos trabajo por mensaje, sin doble traducción en Firefox tras una actualización
+- Los ajustes, la ventana emergente y la barra del chat hablan los 43 idiomas a los que traduce la extensión, no 10, con el hebreo y el persa de derecha a izquierda como el árabe
+- Los diez idiomas que ya hablaba se reescribieron para leerse como escritos en ese idioma, no palabra por palabra desde el inglés
+- El menú del idioma de la interfaz muestra la bandera de cada idioma y se maneja con el teclado
 
 Cada versión, con lo que cambió y la medición detrás:
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) y [CHANGELOG.md](CHANGELOG.md).

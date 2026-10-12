@@ -22,7 +22,7 @@ CE PRIMEȘTI
 • Filtre: ignoră boții, redu la tăcere utilizatori sau canale, ascunde rândurile care conțin un cuvânt ales de tine (util împotriva spamului cu !command) sau tradu doar limbile dorite.
 • Emote-urile, mențiunile, linkurile și spamul de emoji sunt eliminate înainte de a se trimite ceva, așa că nu se consumă nimic pentru a traduce "kkkkkk".
 • Fă-l al tău: mărimea textului, spațierea rândurilor, fontul, culoarea de accent, chat întunecat sau luminos, o limbă de citire reținută pentru fiecare canal, comenzi rapide de la tastatură.
-• Interfață în 10 limbi: engleză, spaniolă, franceză, portugheză, turcă, rusă, arabă, chineză, japoneză și coreeană.
+• Interfață în aceleași 43 de limbi, inclusiv cele scrise de la dreapta la stânga, aleasă dintr-un meniu care arată fiecare drapel.
 
 CE IESE DIN BROWSERUL TĂU
 

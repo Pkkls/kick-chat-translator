@@ -1,9 +1,5 @@
-A gíria do chat como ngl, idc, lmk, wyd ou goat passa a ser escrita por extenso antes de ser traduzida, para que quem lê noutras línguas fique com o sentido e não com as letras.
+A extensão passa a falar a tua língua. As definições, o popup e a barra do chat estão traduzidos nas 43 línguas para as quais ela traduz, em vez de 10, e o hebraico e o persa leem-se da direita para a esquerda, como o árabe.
 
-As palavras que os motores continuavam a errar, como valeu, yatta, coucou, forza e as saudações do dia a dia, vêm agora da tabela própria da extensão, em muitas mais línguas.
+As dez línguas que ela já falava foram reescritas para soarem naturais, como se tivessem sido escritas nessa língua e não traduzidas palavra a palavra do inglês.
 
-Acabaram-se as linhas em falta num chat rápido. Uma mensagem escrita noutra língua que não a das que a rodeiam é traduzida por si, em vez de ser deitada fora, e uma linha curta em língua estrangeira já não é confundida com inglês nem ocultada.
-
-Mais preciso em mais situações: as saudações em árabe são reconhecidas como árabe, o chinês tradicional continua tradicional quando é traduzido no teu dispositivo, e uma resposta mantém a @mention e a ligação em cantonês.
-
-Mais leve para o teu navegador: a extensão fica em repouso quando não há nenhum separador do Kick aberto e faz menos trabalho por mensagem num chat movimentado. No Firefox, um separador já não pode traduzir cada mensagem duas vezes depois de uma atualização.
+O menu da língua da interface mostra a bandeira de cada língua e também se usa com o teclado.

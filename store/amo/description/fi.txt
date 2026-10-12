@@ -22,7 +22,7 @@ MITÄ SAAT
 • Suodattimet: ohita botit, mykistä käyttäjiä tai kanavia, piilota rivit, joissa on valitsemasi sana (kätevä !command-roskaviestejä vastaan), tai käännä vain haluamasi kielet.
 • Emotet, maininnat, linkit ja emoji-spämmi poistetaan ennen kuin mitään lähetetään, joten "kkkkkk" ei kuluta käännöksiä.
 • Tee siitä omasi: tekstin koko, riviväli, kirjasin, korostusväri, tumma tai vaalea chat, kanavakohtaisesti muistettava lukukieli, pikanäppäimet.
-• Käyttöliittymä 10 kielellä: englanti, espanja, ranska, portugali, turkki, venäjä, arabia, kiina, japani ja korea.
+• Käyttöliittymä samoilla 43 kielellä, oikealta vasemmalle kirjoitettavat mukaan lukien, valittavissa valikosta, joka näyttää jokaisen lipun.
 
 MITÄ SELAIMESTASI LÄHTEE
 

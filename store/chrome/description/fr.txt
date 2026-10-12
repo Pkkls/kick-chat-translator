@@ -21,7 +21,7 @@ CE QUE TU OBTIENS
 • Filtres : ignorer les bots, masquer des utilisateurs ou des chaînes, cacher les lignes qui contiennent un mot de ton choix (pratique contre le spam de !commandes), ou ne traduire que les langues que tu veux.
 • Emotes, mentions, liens et murs d'emoji sont retirés avant tout envoi, donc rien n'est dépensé pour traduire "kkkkkk".
 • À ton goût : taille du texte, interligne, police, couleur d'accent, chat sombre ou clair, une langue de lecture retenue par chaîne, raccourcis clavier.
-• Interface en 10 langues : anglais, espagnol, français, portugais, turc, russe, arabe, chinois, japonais et coréen.
+• Interface dans les mêmes 43 langues, de droite à gauche comprises, choisie dans un menu qui affiche chaque drapeau.
 
 CONFIDENTIALITÉ
 

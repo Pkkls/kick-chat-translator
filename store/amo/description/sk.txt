@@ -22,7 +22,7 @@ Pozrite si ho v akcii na skutočnom chate: https://www.youtube.com/watch?v=NoGJe
 • Filtre: preskočiť botov, stíšiť používateľov alebo kanály, skryť riadky so slovom podľa vášho výberu (hodí sa proti spamu príkazov typu !command), alebo prekladať len jazyky, ktoré chcete.
 • Emotikony, zmienky, odkazy a záplavy emoji sa odstránia skôr, než sa čokoľvek odošle, takže sa nič nespotrebuje na preklad „kkkkkk“.
 • Prispôsobte si ho: veľkosť textu, riadkovanie, písmo, farba zvýraznenia, tmavý alebo svetlý chat, jazyk čítania zapamätaný pre každý kanál, klávesové skratky.
-• Rozhranie v 10 jazykoch: angličtina, španielčina, francúzština, portugalčina, turečtina, ruština, arabčina, čínština, japončina a kórejčina.
+• Rozhranie v rovnakých 43 jazykoch vrátane tých písaných sprava doľava, vyberané z ponuky, ktorá zobrazuje každú vlajku.
 
 ČO OPÚŠŤA VÁŠ PREHLIADAČ
 

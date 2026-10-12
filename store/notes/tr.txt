@@ -1,9 +1,5 @@
-ngl, idc, lmk, wyd ve goat gibi sohbet kısaltmaları artık çevrilmeden önce açık yazılıyor; böylece başka dillerde okuyanlar harfleri değil, anlamı görüyor.
+Eklenti artık senin dilini konuşuyor. Ayarlar, açılır pencere ve sohbetteki çubuk, eklentinin çevirdiği 43 dilin hepsine çevrildi, 10 dille sınırlı değil; İbranice ve Farsça da Arapça gibi sağdan sola okunuyor.
 
-Çeviri motorlarının sürekli yanlış anladığı valeu, yatta, coucou, forza gibi kelimeler ve gündelik selamlar artık eklentinin kendi tablosundan geliyor, hem de çok daha fazla dilde.
+Eklentinin zaten konuştuğu on dil, İngilizceden kelime kelime çevrilmiş gibi değil, doğrudan o dilde yazılmış gibi doğal okunsun diye baştan yazıldı.
 
-Hızlı bir sohbette eksik satır kalmıyor. Çevresindekilerden farklı bir dilde yazılmış mesaj atılmak yerine ayrı olarak çevriliyor, kısa bir yabancı satır da artık İngilizce sanılıp gizlenmiyor.
-
-Daha fazla yerde daha doğru: Arapça selamlar Arapça olarak tanınıyor, Geleneksel Çince cihazında çevrilirken geleneksel kalıyor ve bir yanıt Kantonca'da @bahsetme ile bağlantısını koruyor.
-
-Tarayıcın için daha hafif: hiçbir Kick sekmesi açık değilken eklenti uykuya geçiyor ve yoğun bir sohbette mesaj başına daha az iş yapıyor. Firefox'ta bir sekme, güncellemeden sonra her mesajı artık iki kez çeviremiyor.
+Arayüz dili menüsü her dilin bayrağını gösteriyor ve klavyeyle de kullanılabiliyor.

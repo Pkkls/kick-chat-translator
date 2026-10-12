@@ -1,9 +1,5 @@
-A chatszleng, mint az ngl, idc, lmk, wyd vagy goat, most kibetűzve kerül fordításra, így a más nyelvű olvasók a jelentést kapják a betűk helyett.
+A bővítmény mostantól a te nyelveden szól. A beállítások, a felugró ablak és a chatben lévő sáv mind a 43 nyelvre le van fordítva, amelyre a bővítmény fordít, nem csak 10-re, a héber és a perzsa pedig jobbról balra olvasható, mint az arab.
 
-Azok a szavak, amelyeket a fordítómotorok folyton elrontottak, például a valeu, yatta, coucou, forza és a hétköznapi köszönések, mostantól a bővítmény saját táblázatából jönnek, sokkal több nyelven.
+A tíz nyelvet, amelyen a bővítmény korábban is szólt, újraírtuk, hogy természetesen olvasódjon, mintha eleve azon a nyelven íródott volna, és ne szó szerint angolból fordították volna.
 
-Nincs több hiányzó sor gyors chaten. A környezetétől eltérő nyelven írt üzenet külön fordítást kap ahelyett, hogy eldobnánk, és egy rövid idegen nyelvű sort már nem néz angolnak a rendszer, hogy elrejtse.
-
-Pontosabb több helyen: az arab köszönéseket arabként ismeri fel, a hagyományos kínai az eszközön futó fordításnál is hagyományos marad, és a válasz kantoniul is megtartja az @mention-t és a linket.
-
-Kíméletesebb a böngészőhöz: a bővítmény alszik, ha nincs nyitva Kick lap, és forgalmas chaten kevesebb munkát végez üzenetenként. Firefoxban egy lap frissítés után már nem fordítja le kétszer az üzeneteket.
+A felület nyelvének menüje megmutatja minden nyelv zászlaját, és billentyűzettel is használható.

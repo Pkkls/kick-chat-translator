@@ -21,7 +21,7 @@ ANO ANG MAKUKUHA MO
 • Mga filter: laktawan ang mga bot, i-mute ang mga user o channel, itago ang mga linyang may salitang pipiliin mo (kapaki-pakinabang laban sa !command spam), o isalin lang ang mga wikang gusto mo.
 • Tinatanggal ang mga emote, mention, link at emoji spam bago ipadala ang kahit ano, kaya walang nasasayang sa pagsasalin ng "kkkkkk".
 • Gawing sa iyo: laki ng text, espasyo ng linya, typeface, accent color, dark o light na chat, wikang binabasa na naaalala kada channel, mga keyboard shortcut.
-• Interface sa 10 wika: English, Spanish, French, Portuguese, Turkish, Russian, Arabic, Chinese, Japanese at Korean.
+• Interface sa parehong 43 wika, kasama ang mga isinusulat mula kanan pakaliwa, na pinipili mula sa menu na nagpapakita ng bandila ng bawat wika.
 
 PRIVACY
 

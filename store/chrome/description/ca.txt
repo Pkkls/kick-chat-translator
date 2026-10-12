@@ -21,7 +21,7 @@ QUÈ OBTENS
 • Filtres: ometre bots, silenciar usuaris o canals, amagar les línies que contenen una paraula que triïs (útil contra el spam de !command), o traduir només els idiomes que vulguis.
 • Els emotes, les mencions, els enllaços i el spam d'emojis s'eliminen abans d'enviar res, així que no es gasta res a traduir "kkkkkk".
 • Fes-lo teu: mida del text, interlineat, tipus de lletra, color d'accent, xat fosc o clar, un idioma de lectura recordat per canal, dreceres de teclat.
-• Interfície en 10 idiomes: anglès, castellà, francès, portuguès, turc, rus, àrab, xinès, japonès i coreà.
+• Interfície en els mateixos 43 idiomes, inclosos els d'escriptura de dreta a esquerra, que es tria des d'un menú que mostra cada bandera.
 
 PRIVADESA
 

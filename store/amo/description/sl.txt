@@ -22,7 +22,7 @@ KAJ DOBITE
 • Filtri: preskakovanje botov, utišanje uporabnikov ali kanalov, skrivanje vrstic z besedo, ki jo izberete (uporabno proti spamu ukazov, kot je !command), ali prevajanje samo jezikov, ki jih želite.
 • Čustvenčki, omembe, povezave in poplave emojijev se odstranijo, preden se karkoli pošlje, zato se nič ne porabi za prevajanje „kkkkkk“.
 • Prilagodite si ga: velikost besedila, razmik med vrsticami, pisava, barva poudarka, temen ali svetel chat, jezik branja, zapomnjen za vsak kanal, bližnjice na tipkovnici.
-• Vmesnik v 10 jezikih: angleščina, španščina, francoščina, portugalščina, turščina, ruščina, arabščina, kitajščina, japonščina in korejščina.
+• Vmesnik v istih 43 jezikih, vključno z jeziki, ki se pišejo od desne proti levi, izbran v meniju, ki prikazuje zastavo vsakega jezika.
 
 KAJ ZAPUSTI VAŠ BRSKALNIK
 

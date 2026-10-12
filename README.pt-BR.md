@@ -113,8 +113,7 @@ Clique na engrenagem da barra do chat, ou clique com o botão direito no ícone 
 - Teclado: Alt+T liga ou desliga a tradução do chat, Alt+W a prévia de escrita
 - Atividade: mensagens traduzidas, acertos do cache, cada idioma visto no chat, e por que cada uma das últimas
   50 linhas foi traduzida ou não
-- A interface da própria extensão em inglês, espanhol, francês, português, turco, russo, árabe, chinês,
-  japonês ou coreano
+- A interface da própria extensão, em qualquer um dos 43 idiomas para os quais ela traduz, escolhida num menu com bandeiras
 
 ## Idiomas
 
@@ -158,13 +157,11 @@ Não. É um projeto independente de código aberto, sem vínculo com a Kick.
 
 ## Novidades
 
-Na 3.1.0:
+Na 3.2.0:
 
-- As gírias do chat (ngl, idc, lmk, wyd, goat) são escritas por extenso antes da tradução, para que os outros leitores entendam o sentido
-- As palavras que os motores traduziam errado (valeu, yatta, coucou, forza, cumprimentos do dia a dia) vêm da tabela da própria extensão, em muito mais idiomas
-- Chega de linhas perdidas num chat rápido: uma mensagem num idioma diferente das vizinhas é traduzida sozinha, e linhas curtas em outro idioma não são mais confundidas com inglês
-- Cumprimentos em árabe são lidos como árabe, o chinês tradicional continua tradicional no dispositivo, as @menções são mantidas nas respostas em cantonês
-- Mais leve: dormindo quando nenhuma aba do Kick está aberta, menos trabalho por mensagem, sem tradução dupla no Firefox depois de uma atualização
+- As configurações, o popup e a barra do chat falam os 43 idiomas para os quais a extensão traduz, não 10, com hebraico e persa da direita para a esquerda como o árabe
+- Os dez idiomas que ela já falava foram reescritos para soar como escritos naquele idioma, não palavra por palavra do inglês
+- O menu de idioma da interface mostra a bandeira de cada idioma e funciona pelo teclado
 
 Cada versão, com o que mudou e a medição por trás:
 [Releases](https://github.com/Pkkls/kick-chat-translator/releases) e [CHANGELOG.md](CHANGELOG.md).

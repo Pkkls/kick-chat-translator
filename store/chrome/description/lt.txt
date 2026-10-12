@@ -21,7 +21,7 @@ KĄ GAUNI
 • Filtrai: praleisk botus, nutildyk naudotojus ar kanalus, paslėpk eilutes su tavo pasirinktu žodžiu (praverčia prieš !command šlamštą) arba versk tik norimas kalbas.
 • Emote'ai, paminėjimai, nuorodos ir emoji šlamštas pašalinami prieš ką nors siunčiant, todėl "kkkkkk" vertimui nieko neišleidžiama.
 • Pritaikyk sau: teksto dydis, eilučių tarpai, šriftas, akcento spalva, tamsus arba šviesus pokalbis, skaitymo kalba, įsimenama kiekvienam kanalui, spartieji klavišai.
-• Sąsaja 10 kalbų: anglų, ispanų, prancūzų, portugalų, turkų, rusų, arabų, kinų, japonų ir korėjiečių.
+• Sąsaja tomis pačiomis 43 kalbomis, įskaitant rašomas iš dešinės į kairę, pasirenkama meniu, kuriame rodoma kiekvienos kalbos vėliava.
 
 PRIVATUMAS
 
