@@ -26,7 +26,7 @@ CO DOSTAJESZ
 
 CO OPUSZCZA TWOJĄ PRZEGLĄDARKĘ
 
-Tekst czatu trafia tylko do silnika tłumaczącego, który wybierzesz. W przypadku Google, MyMemory i Lingva to tekst każdej wiadomości i nic więcej: ani kanał, ani autor. W przypadku DeepL razem z nim idzie kilka ostatnich linijek czatu jako kontekst, wraz z nazwami osób, które je napisały, żeby tłumaczenie pasowało do rozmowy. Do tego odnosi się wiersz „zawartość witryn” w uprawnieniach powyżej i to jest całość. Nie ma konta, analityki ani mojego serwera: rozszerzenie łączy się z Kick, z wybranym przez ciebie silnikiem i ze stroną wydań na GitHubie, żeby dać ci znać o nowszej wersji, a przy tym ostatnim zapytaniu nie wysyła niczego.
+Tekst czatu trafia tylko do silnika tłumaczącego, który wybierzesz. W przypadku Google, MyMemory i Lingva to tekst każdej wiadomości i nic więcej: ani kanał, ani autor. W przypadku DeepL razem z nim idzie kilka ostatnich linijek czatu jako kontekst, wraz z nazwami osób, które je napisały, żeby tłumaczenie pasowało do rozmowy. Do tego odnosi się wiersz „zawartość witryn” w uprawnieniach powyżej i to jest całość. Nie ma konta ani mojego serwera: rozszerzenie łączy się z Kick, z wybranym przez ciebie silnikiem i ze stroną wydań na GitHubie, żeby dać ci znać o nowszej wersji, a przy tym ostatnim zapytaniu nie wysyła niczego. Jeśli zaznaczysz opcjonalny wybór "dane techniczne i dane o interakcjach", wysyła też do Google Analytics codzienne anonimowe zliczenie użytych silników, błędów i szybkości, nigdy twoich wiadomości, nazw ani kanałów.
 
 ZA DARMO I Z OTWARTYM KODEM
 

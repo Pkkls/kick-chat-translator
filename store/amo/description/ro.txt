@@ -26,7 +26,7 @@ CE PRIMEȘTI
 
 CE IESE DIN BROWSERUL TĂU
 
-Textul din chat ajunge doar la motorul de traducere ales de tine. Cu Google, MyMemory sau Lingva, este textul fiecărui mesaj și nimic altceva: nici canalul, nici cine l-a scris. Cu DeepL, ultimele rânduri din chat merg drept context, împreună cu numele celor care le-au scris, ca traducerea să se potrivească conversației. La asta se referă rândul "conținutul site-ului" din permisiunile de mai sus, și asta este tot. Nu există cont, analitice sau server al meu: extensia vorbește cu Kick, cu motorul ales de tine și cu pagina de versiuni de pe GitHub pentru a te anunța când există o versiune mai nouă, fără a trimite nimic cu această ultimă cerere.
+Textul din chat ajunge doar la motorul de traducere ales de tine. Cu Google, MyMemory sau Lingva, este textul fiecărui mesaj și nimic altceva: nici canalul, nici cine l-a scris. Cu DeepL, ultimele rânduri din chat merg drept context, împreună cu numele celor care le-au scris, ca traducerea să se potrivească conversației. La asta se referă rândul "conținutul site-ului" din permisiunile de mai sus, și asta este tot. Nu există cont sau server al meu: extensia vorbește cu Kick, cu motorul ales de tine și cu pagina de versiuni de pe GitHub pentru a te anunța când există o versiune mai nouă, fără a trimite nimic cu această ultimă cerere. Dacă bifezi opțiunea facultativă "date tehnice și de interacțiune", trimite și către Google Analytics o numărare zilnică anonimă a motoarelor folosite, a erorilor și a vitezei, niciodată mesajele, numele sau canalele tale.
 
 GRATUIT ȘI CU COD SURSĂ DESCHIS
 

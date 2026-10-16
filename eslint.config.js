@@ -17,6 +17,10 @@ export default tseslint.config(
       // does not include, so anything landing there fails the whole run: a copy of
       // a source file kept beside a script, or an esbuild bundle a harness wrote.
       'scratchpad/**',
+      // Same reason: local agent workspaces (`.claude/hillclimb/*.ts`), ignored
+      // by git, outside tsconfig, and they turned `npm run release:check` red on
+      // the machine where they exist while CI stayed green.
+      '.claude/**',
       '**/*.js',
       '**/*.cjs',
       '**/*.mjs',

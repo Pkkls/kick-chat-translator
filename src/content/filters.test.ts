@@ -10,9 +10,22 @@ import {
 } from './filters';
 
 describe('shouldDropByUserOrChannel', () => {
-  it('drops common bots when ignoreBots is on', () => {
+  it('drops the Kick bots when ignoreBots is on, whatever the case', () => {
     const s = { ...defaultSettings(), ignoreBots: true };
-    expect(shouldDropByUserOrChannel({ username: 'streamelements', channel: 'foo', isBot: false }, s)).toBe('bot');
+    expect(shouldDropByUserOrChannel({ username: 'BotRix', channel: 'foo', isBot: false }, s)).toBe('bot');
+    expect(shouldDropByUserOrChannel({ username: 'sery_bot', channel: 'foo', isBot: false }, s)).toBe('bot');
+  });
+
+  // Twitch bots: never on Kick, and a viewer named like one was silenced for nothing.
+  it('no longer treats Twitch bot names as bots', () => {
+    const s = { ...defaultSettings(), ignoreBots: true };
+    expect(shouldDropByUserOrChannel({ username: 'nightbot', channel: 'foo', isBot: false }, s)).toBeUndefined();
+  });
+
+  it("drops the user's own bots, and nothing when the option is off", () => {
+    const s = { ...defaultSettings(), ignoreBots: true, extraBots: ['mybot'] };
+    expect(shouldDropByUserOrChannel({ username: 'MyBot', channel: 'foo', isBot: false }, s)).toBe('bot');
+    expect(shouldDropByUserOrChannel({ username: 'MyBot', channel: 'foo', isBot: false }, { ...s, ignoreBots: false })).toBeUndefined();
   });
 
   it('drops blacklisted users', () => {

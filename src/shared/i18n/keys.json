@@ -217,5 +217,15 @@
   "Open a Kick channel: its chat is translated as it arrives.",
   "Open Kick",
   "Free plan: 1,000,000 characters a month. Free keys end with :fx.",
-  "Get a key:"
+  "Get a key:",
+  "Help improve Kick Chat Translator?",
+  "Once a day, anonymous counts: engines used, errors, speed. Never your messages, names or channels.",
+  "No thanks",
+  "Share",
+  "Share anonymous usage statistics",
+  "Ignore chat bots",
+  "Always ignored:",
+  "Other bots to ignore",
+  "one bot name per line",
+  "Work in progress"
 ]

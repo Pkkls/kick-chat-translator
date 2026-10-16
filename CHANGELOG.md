@@ -7,6 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.3.0] - 2026-10-16
+
+### Added
+
+- **Bots: the real Kick ones, plus your own.** "Ignore chat bots" now means
+  BotRix, Fossabot, KickBot, Sery_Bot and Kicklet (it listed StreamElements
+  and Nightbot, Twitch bots that never post on Kick), and a field takes any
+  other bot a channel uses.
+- **The options pages say "Work in progress"** while they are being reworked.
+
+- **Optional anonymous usage statistics, off unless you say yes.** Once a
+  day: translations by engine, provider errors, skipped lines, compose
+  previews and inserts, cloud latency, version, browser and languages.
+  Never message text, names or channels. Chrome asks once in the popup and
+  Options > About can change it; Firefox uses its own data-collection
+  consent and sends nothing before Firefox 140. Sent to GA4 without any new
+  permission. GA property set up and verified with the `ga-usage-stats`
+  skill. Before the tag: check the Chrome dashboard's privacy declaration
+  against `PRIVACY.md`.
+
+### Fixed
+
+- **Tab no longer fights Kick's and 7TV's emote and @mention completion.**
+  While a Kick list is open Tab completes there; with 7TV, Tab completes the
+  word first and inserts the translation only when there was nothing to
+  complete.
+- **Emotes survive a translated message.** They stay where they were typed
+  (one typed between words moves after them) and are kept out of what the
+  engine reads: sent as placeholders they had Chinese come back blank on 7
+  lines out of 36.
+- **Brand and person names are no longer deleted before translation**
+  (iPhone, YouTube, PlayStation, LeBron, McDonald's, xQc): the emote-name
+  filter took every mixed-case word. 7TV emote names typed as text are
+  still removed.
+- **"Hide messages containing" hides what is already on screen.** A keyword
+  only applied to new messages, so adding "!fish" once the chat was full of
+  it left every line there visible.
+- **The Filters lists can be typed in again.** Each box was rewritten on
+  every key: Enter vanished at once, so no second line could be typed, a
+  space split "good game" in two, and the glossary lost its capitals.
+- **The on-device engine is offered again.** With the target language on
+  "Auto", the default, its download chip never showed.
+- **@mentions come back in incoming translations**, so a reply in
+  "replace" display still says who it answers.
+- **The compose preview**: no longer covers Kick's lists or the emote
+  picker, comes back once they close, no longer flashes an older message's
+  translation or offers text that is already in the box, Escape no longer
+  takes the caret out of the box, and a two-line message no longer gains an
+  empty line.
+
+### Changed
+
+- **Filters: the "channels you have watched" list is gone.**
+- **The script injected into each Kick page is 35% smaller** (364.6 KB to
+  236.3 KB): the chat's 42 language tables stay in the background and the
+  page receives only its own.
+
 ## [3.2.0] - 2026-10-12
 
 ### Added

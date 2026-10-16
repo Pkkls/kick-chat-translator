@@ -125,7 +125,7 @@ Le chat se traduit vers n'importe laquelle, et l'interface de l'extension existe
 
 ## Confidentialité
 
-Pas de compte, pas d'analytics, pas de serveur à moi. Les messages du chat vont au moteur de traduction que tu
+Pas de compte, pas de serveur à moi, et pas d'analytics sauf si tu acceptes un comptage quotidien anonyme envoyé à Google Analytics (moteurs utilisés, erreurs, vitesse, jamais tes messages, pseudos ou chaînes). Les messages du chat vont au moteur de traduction que tu
 as choisi et nulle part ailleurs, et en mode local pas même là. Une copie installée depuis un store ne fait
 aucune autre requête. Une copie installée à la main demande à GitHub le dernier tag de release, au plus toutes
 les six heures, pour savoir s'il faut afficher son badge de mise à jour. [Détails](PRIVACY.md)

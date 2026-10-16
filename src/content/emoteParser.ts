@@ -6,6 +6,15 @@ const EMOTE_RE = /\[emote:(\d+):([^\]]+)\]/g;
 const MENTION_RE = /(^|[\s,.!?])@([a-z0-9_]{2,32})/gi;
 const URL_RE = /\bhttps?:\/\/[^\s<>"']+/gi;
 
+/**
+ * An emote name typed as a word (pepeLaugh, catJam, PogChamp): a lowercase
+ * stem of two letters or more then a capital, or a PascalCase emote family.
+ * Shared with the composer, which keeps these out of what the engine reads.
+ * The measurement behind the shape is in stripInlineEmoteNames.
+ */
+export const EMOTE_NAME_RE =
+  /\b(?:[a-z]{2,}[A-Z][a-zA-Z0-9]*|(?:Pepe|Peepo|Pepo|Pepega|Pog|Pause|Feels|Weird|Okay|Monka|Widepeepo)[A-Z][a-zA-Z0-9]*|BibleThump|ResidentSleeper|NotLikeThis|WutFace|DansGame|SeemsGood|HeyGuys|KomodoHype|CoolCat|TriHard|BabyRage)\b/g;
+
 export interface ParsedContent {
   /** Readable text with placeholders (`:emote:`, `[link]`, `@user`). */
   plain: string;
@@ -110,10 +119,20 @@ export function parseKickContent(content: string): ParsedContent {
 function stripInlineEmoteNames(text: string): string {
   return (
     text
-      // Token with mixed case, typically emote names (pepeLaugh, catJam, xqcL3).
-      // The workhorse: 8 of 13 sampled emote names, with brand names as its only
-      // measured cost.
-      .replace(/\b[a-zA-Z]*[a-z][A-Z][a-zA-Z0-9]*\b/g, ' ')
+      // Mixed-case emote names (pepeLaugh, catJam, xqcL3, PogChamp, FeelsBadMan).
+      //
+      // This was every mixed-case word, and the brands it cost were the
+      // sentence: "LeBron is the best player ever" reached the reader as "est
+      // le meilleur joueur de tous les temps", "let's go to McDonald's" as
+      // "allons à 's". Measured on two lists written before the rule, then on
+      // two fresh ones it never saw: the old rule deleted 49 of 50 and 30 of 30
+      // brand and person names (iPhone, YouTube, PlayStation, PayPal, xQc). This
+      // one deletes none, and still removes 50 of 50 and 23 of 29 emote names.
+      // 7TV names start with a lowercase stem of two letters or more (iPhone and
+      // eBay have one); PascalCase ones are taken by family. Kept, an emote name
+      // is mangled by Google 44% of the time (peepoJoyeux), so the six that slip
+      // through cost less than every brand did.
+      .replace(EMOTE_NAME_RE, ' ')
       // A long all-lowercase slug, but only when it carries a digit.
       //
       // This used to be `[a-z]{3,}[a-z0-9]{10,}`: any lowercase word of 13
@@ -152,6 +171,24 @@ function stripInlineEmoteNames(text: string): string {
       .replace(/\s+/g, ' ')
       .trim()
   );
+}
+
+/**
+ * The @mentions of a line, as typed, each once. They never go to the engine
+ * (realText leaves them out), and they used to never come back either: with
+ * "replace" display a reply lost who it answered. The translation now leads
+ * with them.
+ */
+export function mentionsOf(content: string): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const m of content.matchAll(MENTION_RE)) {
+    const user = m[2] ?? '';
+    if (seen.has(user.toLowerCase())) continue;
+    seen.add(user.toLowerCase());
+    out.push(`@${user}`);
+  }
+  return out;
 }
 
 function overlaps(markers: Marker[], start: number, end: number): boolean {

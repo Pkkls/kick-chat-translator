@@ -127,7 +127,7 @@ De chat wordt naar elk van deze talen vertaald, en de interface van de extensie 
 
 ## Privacy
 
-Geen account, geen analytics, geen eigen server. Chatberichten gaan naar de vertaalaanbieder die je hebt
+Geen account, geen server van mij en geen analyses tenzij u zich aanmeldt voor een dagelijkse anonieme telling die naar Google Analytics wordt verzonden (gebruikte motoren, fouten, snelheid, nooit uw berichten, namen of kanalen). Chatberichten gaan naar de vertaalaanbieder die je hebt
 gekozen en nergens anders heen, en in de modus op het apparaat zelfs daar niet. Een kopie uit een store doet
 geen andere verzoeken. Een handmatig geïnstalleerde kopie vraagt GitHub hooguit om de zes uur om de nieuwste
 release-tag, om te weten of de update-badge moet worden getoond. [Details](PRIVACY.md)

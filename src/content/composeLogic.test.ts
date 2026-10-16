@@ -10,7 +10,68 @@ import {
   maskProtected,
   unmaskProtected,
   toucheEchange,
+  morceauxAutourDesEmotes,
+  morceauxPourEditeur,
+  rienAEchanger,
+  motsPourMoteur,
+  remettreEmotes,
 } from './composeLogic';
+
+// L'emote du composer ([emote:id:nom]) traversait la traduction sans masque et
+// le traducteur la jetait : "PogU bonjour" ressortait "こんにちは". Puis, en
+// placeholder, elle rendait le chinois vide 7 fois sur 36 : le moteur ne la voit
+// plus, elle est remise apres coup.
+describe('emotes in your own message', () => {
+  const P = '[emote:37233:PogU]';
+  const K = '[emote:37226:KEKW]';
+
+  it('sends the engine the words only, lines kept', () => {
+    expect(motsPourMoteur(`${P}  bonjour ${K} tout le monde`)).toBe('bonjour tout le monde');
+    expect(motsPourMoteur(`ligne un ${P}\n${K} ligne deux`)).toBe('ligne un\nligne deux');
+    expect(maskProtected(motsPourMoteur(`${P} salut @Pseudo`)).masked).toBe('salut ⟦0⟧');
+  });
+
+  it('puts the emotes back: before stays before, after stays after', () => {
+    expect(remettreEmotes('hello everyone', `${P}  bonjour tout le monde`)).toBe(`${P} hello everyone`);
+    expect(remettreEmotes('hello everyone', `bonjour tout le monde ${P}`)).toBe(`hello everyone ${P}`);
+    expect(remettreEmotes("I'm happy", `${P}${K} je suis content`)).toBe(`${P}${K} I'm happy`);
+    expect(remettreEmotes('hello', 'bonjour')).toBe('hello');
+  });
+
+  it('treats an emote name typed as a word like an emote', () => {
+    expect(motsPourMoteur('regarde ce chat PepePls')).toBe('regarde ce chat'); // what 7TV's Tab writes
+    expect(motsPourMoteur('pepeLaugh trop drole')).toBe('trop drole');
+    expect(remettreEmotes('so funny', 'pepeLaugh trop drole')).toBe('pepeLaugh so funny');
+    expect(remettreEmotes('I bought an iPhone', "j'ai acheté un iPhone")).toBe('I bought an iPhone');
+    expect(decideComposeAction('catJam monkaS', undefined, undefined, 'fr')).toBe('skip-empty');
+  });
+
+  it('moves an emote typed between words after them', () => {
+    expect(remettreEmotes('hello friends how are you', `salut les amis ${K} comment allez vous`)).toBe(
+      `hello friends how are you ${K}`,
+    );
+    expect(morceauxAutourDesEmotes('a b', `${P} a ${K} b`)).toEqual(['', ' a b ', '']);
+  });
+
+  it('never hands the editor its emotes back as words', () => {
+    // The editor keeps the emote nodes; what Tab inserts carries them as markup.
+    const src = `${P} bonjour tout le monde`;
+    expect(morceauxPourEditeur(remettreEmotes('hello everyone', src), src)).toEqual(['', ' hello everyone']);
+    const mid = `salut ${K} les amis`;
+    const parts = morceauxPourEditeur(remettreEmotes('hi friends', mid), mid);
+    expect(parts.join('')).not.toMatch(/\[emote:/);
+    expect(parts).toEqual(['hi friends ', '']);
+  });
+
+  it('sees a translation handed back unchanged as nothing to swap', () => {
+    expect(rienAEchanger(`hello friends ${K}  how are you`, `Hello friends ${K} how are you`)).toBe(true);
+    expect(rienAEchanger('bonjour', 'hello')).toBe(false);
+  });
+
+  it('has nothing to translate when the message is only emotes', () => {
+    expect(decideComposeAction(' [emote:37233:PogU]  [emote:1:KEKW] ', undefined, undefined, 'ja')).toBe('skip-empty');
+  });
+});
 
 describe('decideComposeAction', () => {
   it('skips empty / whitespace-only input', () => {

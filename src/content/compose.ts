@@ -12,6 +12,8 @@
 import type { Settings } from '~/shared/settings';
 import { withFavorite } from '~/shared/languages';
 import { rootLogger } from '~/shared/logger';
+import { refresh7TV } from './platform';
+import { countUsage } from './usage';
 import { createMetrics } from '~/shared/metrics';
 import { send } from '~/shared/messages';
 import { confidentLanguage, detectLanguage } from './langDetect';
@@ -28,11 +30,16 @@ import {
   maskProtected,
   unmaskProtected,
   toucheEchange,
+  sansEmotes,
+  rienAEchanger,
+  motsPourMoteur,
+  remettreEmotes,
 } from './composeLogic';
 import {
   insertIntoComposer,
   isComposePreviewMounted,
   isComposePreviewVisible,
+  isKickSuggestionOpen,
   mountComposePreview,
   readComposerText,
   setComposeTargetLang,
@@ -233,7 +240,11 @@ export class ComposeController {
     // Backspace included, and after Enter sends — so re-evaluate there too: an
     // empty box then resolves to 'skip-empty' and the panel hides.
     composer.addEventListener('keyup', this.onInput);
-    composer.addEventListener('keydown', this.onKeydown);
+    // Capture on window: Kick's own listener on the box runs before a bubbling
+    // one, and blurred the box on Escape before we could stop it (measured).
+    window.addEventListener('keydown', this.onKeydown, true);
+    // Kick's emote picker opens on a click, with no key to wake evaluate().
+    window.addEventListener('click', this.onInput, true);
     mountComposePreview(composer, this.resolveTarget(), {
       onInsert: () => this.handleInsert(),
     });
@@ -253,7 +264,8 @@ export class ComposeController {
     unmountLangChip();
     this.composer?.removeEventListener('input', this.onInput);
     this.composer?.removeEventListener('keyup', this.onInput);
-    this.composer?.removeEventListener('keydown', this.onKeydown);
+    window.removeEventListener('keydown', this.onKeydown, true);
+    window.removeEventListener('click', this.onInput, true);
     this.composer = undefined;
   }
 
@@ -288,13 +300,25 @@ export class ComposeController {
     if (!composer) return;
 
     const raw = readComposerText(composer);
+    // Half-typed emote/mention name: don't translate it, and don't cover Kick's list.
+    // Kick animates the list shut for ~600 ms after a typed space, and no key
+    // follows when the user stops there: look again until it is gone, or the
+    // preview stayed hidden until the next keystroke (measured).
+    if (isKickSuggestionOpen()) {
+      updateComposePreview({ kind: 'hidden' });
+      // Same text after the popup closes must show again, not 'skip-unchanged'.
+      this.lastSource = undefined;
+      this.scheduleEvaluate(); // ponytail: polls every debounce while a list is open, cheap
+      return;
+    }
     const trimmed = raw.trim();
+    const words = sansEmotes(trimmed);
     const target = this.resolveTarget();
-    const detected = trimmed ? detectLanguage(trimmed) : undefined;
+    const detected = words ? detectLanguage(words) : undefined;
     // Looked up rather than guessed. `detected` may carry franc's answer, which is
     // measured at roughly a third correct on short text; this one is undefined
     // unless the language was actually established.
-    const confident = trimmed ? confidentLanguage(trimmed) : undefined;
+    const confident = words ? confidentLanguage(words) : undefined;
 
     const action = decideComposeAction(trimmed, this.lastSource, detected, target);
     if (__KT_METRICS__) metrics.count(`compose.action.${action}`);
@@ -316,23 +340,33 @@ export class ComposeController {
 
     // Instant path: in-tab cache hit, zero network, no spinner.
     const cached = memCache.get(trimmed, target);
+    if (cached && rienAEchanger(trimmed, cached.translatedText)) {
+      this.lastSource = trimmed;
+      updateComposePreview({ kind: 'hidden' });
+      return;
+    }
     if (cached) {
       setComposeThrottle(false);
       this.lastSource = trimmed;
       this.lastTranslation = cached.translatedText;
       updateComposePreview({ kind: 'ready', text: cached.translatedText, provider: cached.provider });
+      countUsage('compose_preview');
       return;
     }
 
     if (!this.limiter.tryAcquire()) {
       log.debug('compose rate-limited, skipping network for now');
       setComposeThrottle(true);
-      return; // keep last preview; next pause will retry as the window slides
+      // Keep the last preview and look again: the user may have stopped typing,
+      // and without a retry nothing would come until their next key.
+      this.scheduleEvaluate(); // ponytail: polls every debounce until the window frees a slot
+      return;
     }
 
     const id = this.seq.next();
-    // Protect @handles and URLs from being translated/mangled in your own message.
-    const { masked, tokens } = maskProtected(trimmed);
+    // Protect @handles and URLs from being translated/mangled in your own message,
+    // and send the words without the emotes (see motsPourMoteur).
+    const { masked, tokens } = maskProtected(motsPourMoteur(trimmed));
     updateComposePreview({ kind: 'loading' });
     try {
       const res = await send({
@@ -361,7 +395,7 @@ export class ComposeController {
 
       if (res.type === 'translate.result' && res.payload.ok) {
         const r = res.payload.result;
-        const finalText = unmaskProtected(r.translatedText, tokens);
+        const finalText = remettreEmotes(unmaskProtected(r.translatedText, tokens), trimmed);
         setComposeThrottle(false);
         memCache.set(trimmed, target, {
           translatedText: finalText,
@@ -369,8 +403,14 @@ export class ComposeController {
           provider: r.provider,
         });
         this.lastSource = trimmed;
+        if (rienAEchanger(trimmed, finalText)) {
+          this.lastTranslation = '';
+          updateComposePreview({ kind: 'hidden' });
+          return;
+        }
         this.lastTranslation = finalText;
         updateComposePreview({ kind: 'ready', text: finalText, provider: r.provider });
+        countUsage('compose_preview');
       } else {
         // No valid translation for the current text (provider failed, or a guard
         // rejected it) — hide rather than leave a stale result from earlier text.
@@ -391,6 +431,7 @@ export class ComposeController {
   private handleInsert(): void {
     if (!this.composer || !this.lastTranslation) return;
     insertIntoComposer(this.composer, this.lastTranslation, this.settings.composeInsertMode);
+    countUsage('compose_insert');
     // The preview did its job — hide it (the synthetic insert doesn't re-fire `input`).
     this.dismiss();
   }
@@ -408,11 +449,33 @@ export class ComposeController {
    */
   private handleKeydown(e: KeyboardEvent): void {
     if (!isComposePreviewVisible()) return;
+    if (!(e.target instanceof Node) || !this.composer?.contains(e.target)) return;
+    // Tab finishes Kick's own `:emote` / `@user` completion, not ours.
+    if (e.key === 'Tab' && isKickSuggestionOpen()) return;
+    // With 7TV, Tab completes ANY word into an emote ("pepe" + Tab gives
+    // "PepePls", no list on screen, measured). So 7TV gets the key first, and
+    // only a Tab that changed nothing inserts the translation. Moving the insert
+    // to Ctrl+Enter instead was tried and is unsafe: before the preview shows,
+    // Kick takes Ctrl+Enter and SENDS the untranslated line (it happened).
+    // Re-detected each time: 7TV loads after us and has7TV() caches.
+    if (e.key === 'Tab' && !e.shiftKey && this.settings.composeInsertKey === 'tab-and-enter' && refresh7TV()) {
+      const composer = this.composer;
+      const before = readComposerText(composer).trim();
+      window.setTimeout(() => {
+        if (readComposerText(composer).trim() === before && isComposePreviewVisible()) this.handleInsert();
+      }, 60);
+      return;
+    }
     if (toucheEchange(e, this.settings.composeInsertKey)) {
       e.preventDefault();
       e.stopPropagation();
       this.handleInsert();
     } else if (e.key === 'Escape') {
+      // Kick blurs the box on Escape: closing our preview must not cost the
+      // user their caret (measured: focus left the composer).
+      e.preventDefault();
+      e.stopPropagation();
+      countUsage('compose_dismiss');
       this.dismiss();
     }
   }

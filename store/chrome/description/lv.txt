@@ -25,7 +25,7 @@ KO TU SAŅEMI
 
 PRIVĀTUMS
 
-Bez konta, bez analītikas, bez mana servera. Čata teksts nonāk tikai tajā tulkošanas dzinējā, ko izvēlies. Izmantojot Google, MyMemory vai Lingva, tas ir katras ziņas teksts un nekas cits. Izmantojot DeepL, līdzi kā konteksts tiek nosūtītas arī dažas pēdējās čata rindas kopā ar to autoru vārdiem, lai tulkojums atbilstu sarunai. Kanāls, ko skaties, netiek sūtīts nekad, un, tulkojot ierīcē, nekas neatstāj tavu datoru.
+Bez konta, bez mana servera un bez analītikas, ja vien nepiekrīti ikdienas anonīmai izmantoto dzinēju, kļūdu un ātruma uzskaitei, nekad tavas ziņas, vārdi vai kanāli. Čata teksts nonāk tikai tajā tulkošanas dzinējā, ko izvēlies. Izmantojot Google, MyMemory vai Lingva, tas ir katras ziņas teksts un nekas cits. Izmantojot DeepL, līdzi kā konteksts tiek nosūtītas arī dažas pēdējās čata rindas kopā ar to autoru vārdiem, lai tulkojums atbilstu sarunai. Kanāls, ko skaties, netiek sūtīts nekad, un, tulkojot ierīcē, nekas neatstāj tavu datoru.
 
 Atļaujas vienkāršos vārdos: krātuve taviem iestatījumiem un tulkojumu kešatmiņai; piekļuve kick.com, lai čatā parādītu tulkojumus; piekļuve dzinējiem, ko tas var izsaukt (Google, DeepL, MyMemory un Lingva); modinātājs, lai tulkotājs paliktu gatavs, kamēr skaties; un tiesības instalēšanas vai atjaunināšanas laikā atkārtoti ielādēt savu skriptu jau atvērtajās Kick cilnēs, lai tās turpinātu tulkot bez atsvaidzināšanas. Tas arī nolasa GitHub laidienu lapu, lai paziņotu, ka pieejama jaunāka versija, un ar šo pieprasījumu nesūta neko.
 

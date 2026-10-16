@@ -102,6 +102,11 @@ export function App() {
             <h1 class="text-2xl font-bold tracking-tight">Kick Chat Translator</h1>
             <p class="text-xs text-kick-muted">
               v{chrome.runtime.getManifest().version} · {t('options & preferences')}
+              {/* kil, 2026-10-16: the options say they are still being reworked
+                  (Filters was redone the same day), the store listings do not. */}
+              <span class="ms-2 rounded border border-kick-stroke px-1.5 py-px text-[10px] uppercase tracking-wider">
+                {t('Work in progress')}
+              </span>
             </p>
           </div>
           <div class="ms-auto flex items-center gap-3">
@@ -166,7 +171,9 @@ export function App() {
               <DebugSection />
             </>
           )}
-          {tab === 'about' && <AboutSection stats={stats} providers={providers} />}
+          {tab === 'about' && (
+            <AboutSection stats={stats} providers={providers} settings={settings} onPatch={patch} />
+          )}
         </main>
       </div>
     </I18nProvider>

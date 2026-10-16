@@ -125,7 +125,7 @@ Chat diterjemahkan ke bahasa mana pun di atas, dan antarmuka ekstensinya sendiri
 
 ## Privasi
 
-Tanpa akun, tanpa analitik, tanpa server milikku. Pesan chat hanya dikirim ke penyedia terjemahan yang kamu pilih
+Tidak ada akun, tidak ada server saya, dan tidak ada analitik kecuali Anda memilih untuk ikut serta dalam penghitungan anonim harian yang dikirim ke Google Analytics (mesin yang digunakan, kesalahan, kecepatan, tidak pernah pesan, nama, atau saluran Anda). Pesan chat hanya dikirim ke penyedia terjemahan yang kamu pilih
 dan tidak ke tempat lain, dan di mode di perangkat bahkan ke sana pun tidak. Salinan dari store tidak membuat permintaan lain. Salinan
 yang dipasang manual menanyakan GitHub tag rilis terbaru, paling sering sekali tiap enam jam, untuk tahu perlu
 menampilkan lencana pembaruan atau tidak. [Detail](PRIVACY.md)

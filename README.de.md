@@ -127,7 +127,7 @@ Der Chat wird in jede davon übersetzt, und die Oberfläche der Erweiterung gibt
 
 ## Datenschutz
 
-Kein Konto, keine Analyse, kein eigener Server. Chatnachrichten gehen an den Übersetzungsanbieter, den du
+Kein Konto, kein eigener Server und keine Analysen, es sei denn, du stimmst einer täglichen anonymen Zählung zu, die an Google Analytics gesendet wird (genutzte Dienste, Fehler, Geschwindigkeit, nie deine Nachrichten, Namen oder Kanäle). Chatnachrichten gehen an den Übersetzungsanbieter, den du
 gewählt hast, und sonst nirgendwohin, und im Modus auf dem Gerät nicht einmal dorthin. Eine aus einem Store
 installierte Kopie stellt keine weiteren Anfragen. Eine von Hand installierte Kopie fragt GitHub höchstens
 alle sechs Stunden nach dem neuesten Release-Tag, um zu wissen, ob sie ihr Update-Abzeichen zeigen soll. [Details](PRIVACY.md)

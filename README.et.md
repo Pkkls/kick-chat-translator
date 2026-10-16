@@ -125,7 +125,7 @@ Vestlust saab tõlkida mis tahes neist ning laienduse enda liides on saadaval ig
 
 ## Privaatsus
 
-Kontot pole, analüütikat pole, minu enda serverit pole. Vestlussõnumid lähevad sinu valitud tõlketeenusele ja
+Ei mingit kontot, minu serverit ega analüüsi, välja arvatud juhul, kui lubate Google Analyticsile saadetava igapäevase anonüümse loenduse (kasutatud mootorid, vead, kiirus, mitte kunagi teie sõnumid, nimed või kanalid). Vestlussõnumid lähevad sinu valitud tõlketeenusele ja
 mujale mitte, ning seadmes tõlkimise režiimis isegi mitte sinna. Poest paigaldatud koopia ei tee muid päringuid. Käsitsi
 paigaldatud koopia küsib GitHubilt viimast release'i silti, kõige rohkem iga kuue tunni järel, et teada, kas
 näidata uuenduse märki. [Üksikasjad](PRIVACY.md)

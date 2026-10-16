@@ -124,7 +124,7 @@ angļu · franču · spāņu · portugāļu · portugāļu (Brazīlija) · vācu
 
 ## Privātums
 
-Bez konta, bez analītikas, bez mana servera. Čata ziņas nonāk tikai pie tevis izvēlētā tulkošanas pakalpojuma un
+Nekāda konta, neviena mana servera un nekādas analīzes, ja vien neizvēlaties ikdienas anonīmu skaitu, kas tiek nosūtīts pakalpojumam Google Analytics (izmantotie dzinēji, kļūdas, ātrums, nekad jūsu ziņojumi, vārdi vai kanāli). Čata ziņas nonāk tikai pie tevis izvēlētā tulkošanas pakalpojuma un
 nekur citur, bet tulkošanas ierīcē režīmā pat ne tur. Veikalā uzstādīta kopija neveic nekādus citus pieprasījumus. Ar
 roku uzstādīta kopija vaicā GitHub pēc jaunākās izlaiduma atzīmes ne biežāk kā reizi sešās stundās, lai zinātu, vai
 rādīt atjauninājuma nozīmīti. [Sīkāk](PRIVACY.md)

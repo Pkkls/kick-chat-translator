@@ -7,6 +7,7 @@ import type {
 } from './types';
 import type { Settings } from './settings';
 import type { UpdateStatus } from './version';
+import type { UsageCounts, UsageEnv } from './usage';
 
 /** One line the pipeline made up its mind about. Kept in memory only, never stored. */
 export interface Decision {
@@ -31,6 +32,12 @@ export type RuntimeMessage =
   | { type: 'deepl.usage' }
   | { type: 'update.status'; force?: boolean }
   | { type: 'debug.decisions' }
+  /** Write a translation around the composer's emotes, see background/lexicalWrite. */
+  | { type: 'compose.write'; parts: string[] }
+  /** Opt-in usage counts from a page, about once a minute (shared/usage.ts). */
+  | { type: 'usage.add'; counts: UsageCounts; env?: UsageEnv }
+  /** The chat catalogue for one locale, kept out of the page script. */
+  | { type: 'i18n.chat'; locale: string }
   | { type: 'ping' };
 
 export type RuntimeResponse =
@@ -42,6 +49,7 @@ export type RuntimeResponse =
   | { type: 'deepl.usage'; payload: { configured: boolean; count: number; limit: number } }
   | { type: 'update.info'; payload: UpdateStatus }
   | { type: 'debug.decisions'; payload: Decision[] }
+  | { type: 'i18n.chat'; payload?: Record<string, string> }
   | { type: 'ack' }
   | { type: 'error'; payload: { message: string } };
 

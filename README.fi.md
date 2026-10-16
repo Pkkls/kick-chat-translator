@@ -125,7 +125,7 @@ Chatin voi kääntää mille tahansa niistä, ja laajennuksen oma käyttöliitty
 
 ## Tietosuoja
 
-Ei tiliä, ei analytiikkaa, ei omaa palvelinta. Chat-viestit menevät valitsemallesi käännöspalvelulle ja
+Ei tiliä, ei palvelintani eikä analytiikkaa, ellet ota käyttöön Google Analyticsille lähetettävää päivittäistä anonyymiä laskua (käytetyt moottorit, virheet, nopeus, ei koskaan viestisi, nimesi tai kanavasi). Chat-viestit menevät valitsemallesi käännöspalvelulle ja
 ei minnekään muualle, ja laitetilassa ei edes sinne. Kaupasta asennettu kopio ei tee muita pyyntöjä. Käsin
 asennettu kopio kysyy GitHubilta uusimman release-tagin korkeintaan kuuden tunnin välein selvittääkseen, pitääkö sen
 näyttää päivitysmerkki. [Lisätiedot](PRIVACY.md)

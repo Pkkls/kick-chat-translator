@@ -9,7 +9,8 @@
  */
 import { getLang } from '~/shared/languages';
 import { flagEl } from '~/shared/flags';
-import { computePanelGeom } from './composeLogic';
+import { computePanelGeom, morceauxPourEditeur } from './composeLogic';
+import { send } from '~/shared/messages';
 import { showToast } from './injector';
 import { msg } from './msg';
 
@@ -40,7 +41,19 @@ let ui: ComposeUi | undefined;
 export function readComposerText(el: HTMLElement): string {
   if (el instanceof HTMLTextAreaElement || el instanceof HTMLInputElement) return el.value;
   // innerText preserves line breaks for multi-line messages; textContent collapses them.
-  return el.innerText ?? el.textContent ?? '';
+  // innerText puts a blank line between Lexical's <p>: one line per paragraph,
+  // or a two-line message came back from Tab with an empty line inside (measured).
+  if (!el.querySelector('img[data-emote-id]')) return (el.innerText ?? el.textContent ?? '').replace(/\n\n/g, '\n');
+  // Kick's emotes are <img data-emote-id data-emote-name> nodes innerText skips, so
+  // a translation written back would drop them. Spell them as Kick's own
+  // [emote:id:name] markup instead; maskProtected keeps it through the translator.
+  // A detached clone has no layout, so innerText is gone: Lexical's <p> are the lines.
+  const clone = el.cloneNode(true) as HTMLElement;
+  for (const img of clone.querySelectorAll<HTMLImageElement>('img[data-emote-id]')) {
+    img.replaceWith(`[emote:${img.dataset.emoteId}:${img.dataset.emoteName || img.alt}]`);
+  }
+  const lines = clone.querySelectorAll('p');
+  return lines.length ? [...lines].map((p) => p.textContent ?? '').join('\n') : (clone.textContent ?? '');
 }
 
 export function mountComposePreview(
@@ -144,6 +157,19 @@ function chipTopAbove(composerTop: number): number | undefined {
   return box.top < composerTop && box.bottom <= composerTop + 8 ? box.top : undefined;
 }
 
+// Kick's own popups over the composer: completion lists (`:emote`, `@user`,
+// `/command`, where Tab completes) and the emote picker, which our preview
+// covered. Always in the DOM, open = has height (measured on kick.com 2026-10-16).
+// 7TV replaces the `:emote` list with its own, which our preview covered too.
+const KICK_SUGGESTION_PANELS =
+  '#chat-emote-suggestion-panel, #chat-mention-panel, #chat-command-suggestion-panel, #chat-emotes-picker-panel, .seventv-autocomplete-list';
+
+export function isKickSuggestionOpen(): boolean {
+  return [...document.querySelectorAll<HTMLElement>(KICK_SUGGESTION_PANELS)].some(
+    (el) => el.getBoundingClientRect().height > 0,
+  );
+}
+
 // Overlays Kick pops up over the composer (emote / emoji picker, autocomplete) that
 // our panel must not overlap. Selector-light + size-gated so it ignores the small
 // toggle buttons and never dodges ordinary chat content.
@@ -185,6 +211,9 @@ export function updateComposePreview(state: ComposeUiState): void {
   switch (state.kind) {
     case 'hidden':
       panel.dataset.state = 'hidden';
+      // Once hidden, the text belongs to a message that is gone: the next
+      // 'loading' would pulse it under a different message (measured).
+      textEl.textContent = '';
       return;
     case 'loading':
       // Keep prior text visible and pulsing while refreshing. On a first
@@ -193,7 +222,8 @@ export function updateComposePreview(state: ComposeUiState): void {
       if (textEl.textContent) ui.reposition();
       return;
     case 'ready':
-      textEl.textContent = state.text;
+      // Emotes read as their name, not as Kick's [emote:id:name] markup.
+      textEl.textContent = state.text.replace(/\[emote:\d+:([^\]\s]+)\]/g, '$1');
       panel.dataset.state = 'ready';
       ui.reposition();
       return;
@@ -295,13 +325,19 @@ export function insertIntoComposer(el: HTMLElement, text: string, mode: 'insert'
       return;
     }
 
-    // Rich contenteditable: select-all so the translation replaces the typed
-    // source, then drive a synthetic insertText that Lexical/React will apply.
     el.focus();
-    selectAllIn(el);
-    el.dispatchEvent(
-      new InputEvent('beforeinput', { inputType: 'insertText', data: text, bubbles: true, cancelable: true }),
-    );
+    // Emotes in the box: a select-all replace would delete them, so the page
+    // world rewrites the editor state around them (background/lexicalWrite).
+    if (el.querySelector('img[data-emote-id]')) {
+      el.dataset.ktComposer = '';
+      // No editor reachable (another layout, a browser without world MAIN): the
+      // plain replace keeps the words, the emotes as [emote:id:name] text.
+      send({ type: 'compose.write', parts: morceauxPourEditeur(text, readComposerText(el)) })
+        .then((r) => r.type === 'ack' || replaceAll(el, text))
+        .catch(() => replaceAll(el, text));
+      return;
+    }
+    replaceAll(el, text);
 
     // Fall back to clipboard only if the box is genuinely unchanged after the
     // editor has had a frame to apply — a lenient check so editor-side transforms
@@ -315,6 +351,15 @@ export function insertIntoComposer(el: HTMLElement, text: string, mode: 'insert'
   } catch {
     copyAndToast(text);
   }
+}
+
+// Rich contenteditable: select-all so the translation replaces the typed
+// source, then drive a synthetic insertText that Lexical/React will apply.
+function replaceAll(el: HTMLElement, text: string): void {
+  selectAllIn(el);
+  el.dispatchEvent(
+    new InputEvent('beforeinput', { inputType: 'insertText', data: text, bubbles: true, cancelable: true }),
+  );
 }
 
 function selectAllIn(el: HTMLElement): void {

@@ -124,7 +124,7 @@ Maisasalin ang chat sa alinman sa mga ito, at may sarili ring interface ng exten
 
 ## Privacy
 
-Walang account, walang analytics, walang server na akin. Sa translation provider na pinili mo lang napupunta ang mga mensahe sa chat
+Walang account, walang server ko, at walang analytics maliban kung mag-opt in ka sa araw-araw na hindi kilalang bilang na ipinadala sa Google Analytics (mga makinang ginamit, mga error, bilis, hindi kailanman ang iyong mga mensahe, pangalan o channel). Sa translation provider na pinili mo lang napupunta ang mga mensahe sa chat
 at wala nang iba, at sa on-device mode ay hindi man lang doon. Walang ibang request ang kopyang galing sa store. Ang
 kopyang mano-manong ininstall ay nagtatanong sa GitHub ng pinakabagong release tag, hanggang isang beses kada anim na oras, para malaman kung
 ipapakita ang update badge. [Mga detalye](PRIVACY.md)

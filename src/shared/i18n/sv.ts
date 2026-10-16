@@ -434,4 +434,14 @@ export const sv: Record<string, string> = {
     'Gratisabonnemang: 1 000 000 tecken per månad. Gratisnycklar slutar på :fx.',
   'Get a key:':
     'Skaffa en nyckel:',
+  "Help improve Kick Chat Translator?": "Vill du hjälpa till att förbättra Kick Chat Translator?",
+  "Once a day, anonymous counts: engines used, errors, speed. Never your messages, names or channels.": "En gång om dagen, anonyma räkningar: använda tjänster, fel, hastighet. Aldrig dina meddelanden, namn eller kanaler.",
+  "No thanks": "Nej tack",
+  "Share": "Dela",
+  "Share anonymous usage statistics": "Dela anonym användningsstatistik",
+  "Ignore chat bots": "Ignorera chattbottar",
+  "Always ignored:": "Ignoreras alltid:",
+  "Other bots to ignore": "Andra bottar att ignorera",
+  "one bot name per line": "ett bottnamn per rad",
+  "Work in progress": "Arbete pågår",
 };

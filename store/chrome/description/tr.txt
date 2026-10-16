@@ -25,7 +25,7 @@ NELER SUNUYOR
 
 GİZLİLİK
 
-Hesap yok, analitik yok, bana ait sunucu yok. Sohbet metni yalnızca seçtiğin çeviri motoruna gider. Google, MyMemory ya da Lingva ile giden yalnızca her mesajın metnidir, başka hiçbir şey değil. DeepL ile son birkaç sohbet satırı, onları yazanların adlarıyla birlikte bağlam olarak gider, böylece çeviri konuşmaya oturur. İzlediğin kanal asla gönderilmez; cihazda çeviride ise hiçbir şey bilgisayarından çıkmaz.
+Hesap yok, bana ait sunucu yok ve sen kabul etmedikçe analitik de yok: kullanılan motorların, hataların ve hızın günlük anonim sayımı, asla mesajların, adların veya kanalların değil. Sohbet metni yalnızca seçtiğin çeviri motoruna gider. Google, MyMemory ya da Lingva ile giden yalnızca her mesajın metnidir, başka hiçbir şey değil. DeepL ile son birkaç sohbet satırı, onları yazanların adlarıyla birlikte bağlam olarak gider, böylece çeviri konuşmaya oturur. İzlediğin kanal asla gönderilmez; cihazda çeviride ise hiçbir şey bilgisayarından çıkmaz.
 
 İzinler, açık bir dille: ayarların ve çeviri önbelleği için depolama; çevirileri sohbette göstermek için kick.com erişimi; çağırabileceği motorlara erişim (Google, DeepL, MyMemory ve Lingva); sen izlerken çevirmenin hazır kalması için bir uyandırma zamanlayıcısı; ve kurulumda ya da güncellemede kendi betiğini zaten açık olan Kick sekmelerine yeniden yükleme izni, böylece o sekmeler sayfa yenilenmeden çevirmeye devam eder. Ayrıca daha yeni bir sürüm çıktığında haber vermek için GitHub sürümler sayfasını okur, bu istekle hiçbir şey göndermez.
 

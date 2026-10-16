@@ -8,7 +8,7 @@ export const es: Record<string, string> = {
   barOptionsTip: 'Opciones',
   barPause: 'Pausar en este canal',
   barResume: 'Reanudar en este canal',
-  barThrottled: 'Límite de velocidad alcanzado, se omiten algunos mensajes',
+  barThrottled: 'Límite de solicitudes alcanzado, se omiten algunos mensajes',
   barVia: '$BASE$ · vía $PROVIDER$',
   chipAuto: 'Idioma del canal',
   chipAutoTip: 'Escribes en el idioma del canal ($LANG$). Haz clic para elegir otro.',

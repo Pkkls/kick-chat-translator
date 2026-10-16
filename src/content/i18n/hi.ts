@@ -46,11 +46,11 @@ export const hi: Record<string, string> = {
   skipPrefix: 'अनुवाद नहीं हुआ: $REASON$',
   skipSame: 'अनुवाद मूल जैसा ही आया',
   skipSameLang: 'यह पहले से आपकी भाषा में है',
-  skipSlang: 'यह सिर्फ़ चैट की स्लैंग है',
+  skipSlang: 'यह सिर्फ़ चैट का स्लैंग है',
   skipTooLong: 'यह तय सीमा से लंबा है',
   toastAllDown: 'सभी अनुवाद सेवाएँ बंद हैं। थोड़ी देर में फिर कोशिश होगी।',
   toastChatNotFound: 'Kick Chat Translator: चैट नहीं मिली। शायद अपडेट की ज़रूरत है।',
   toastCopied: 'अनुवाद कॉपी हो गया। Ctrl+V से पेस्ट करें।',
   toastQuota: '$PROVIDER$ का कोटा पूरा हो गया। अगली सेवा पर जा रहे हैं।',
-  toastSwitched: '$PROVIDER$ पर स्विच किया गया',
+  toastSwitched: '$PROVIDER$ पर स्विच हुआ',
 };

@@ -26,7 +26,7 @@ DAS BEKOMMST DU
 
 WAS DEINEN BROWSER VERLÄSST
 
-Der Chattext geht nur an die Übersetzungs-Engine, die du gewählt hast. Bei Google, MyMemory oder Lingva ist das der Text jeder Nachricht und sonst nichts: nicht der Kanal, nicht wer geschrieben hat. Bei DeepL gehen die letzten Chatzeilen als Kontext mit, samt den Namen der Schreibenden, damit die Übersetzung zum Gespräch passt. Darauf bezieht sich die Zeile "Website-Inhalte" in den Berechtigungen oben, und das ist alles. Es gibt kein Konto, keine Analyse und keinen Server von mir: Die Erweiterung spricht mit Kick, mit der Engine, die du gewählt hast, und mit der GitHub-Releases-Seite, um dir zu sagen, wenn es eine neuere Version gibt, wobei sie bei dieser letzten Anfrage nichts mitsendet.
+Der Chattext geht nur an die Übersetzungs-Engine, die du gewählt hast. Bei Google, MyMemory oder Lingva ist das der Text jeder Nachricht und sonst nichts: nicht der Kanal, nicht wer geschrieben hat. Bei DeepL gehen die letzten Chatzeilen als Kontext mit, samt den Namen der Schreibenden, damit die Übersetzung zum Gespräch passt. Darauf bezieht sich die Zeile "Website-Inhalte" in den Berechtigungen oben, und das ist alles. Es gibt kein Konto und keinen Server von mir: Die Erweiterung spricht mit Kick, mit der Engine, die du gewählt hast, und mit der GitHub-Releases-Seite, um dir zu sagen, wenn es eine neuere Version gibt, wobei sie bei dieser letzten Anfrage nichts mitsendet. Wenn du die optionale Auswahl "Technische und Interaktionsdaten" ankreuzt, sendet sie außerdem einmal täglich eine anonyme Zählung von genutzten Engines, Fehlern und Geschwindigkeit an Google Analytics, nie deine Nachrichten, Namen oder Kanäle.
 
 KOSTENLOS UND OPEN SOURCE
 

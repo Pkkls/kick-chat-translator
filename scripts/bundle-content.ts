@@ -48,6 +48,8 @@ async function bundleContent(): Promise<void> {
       // ships inside content.js, which is what check-strip caught the first time
       // this ran. Keep the two definitions in step.
       __KT_METRICS__: JSON.stringify(process.env.KT_METRICS === '1'),
+      __KT_DEV__: JSON.stringify(process.env.KT_DEV === '1'),
+      __KT_BUILD__: JSON.stringify(new Date().toISOString()),
     },
     logLevel: 'warn',
     build: {

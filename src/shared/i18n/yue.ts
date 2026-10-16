@@ -7,10 +7,10 @@ export const yue: Record<string, string> = {
   'Display': '顯示',
   'Filters': '篩選',
   'Advanced': '進階',
-  'Activity': '動態',
+  'Activity': '活動',
   'About': '關於',
   'Kick Chat Translator listens to chat in real time and translates non-English (or non-target-language) messages right under the original. No tracking, no account, fully open-source.':
-    'Kick Chat Translator 會即時留意聊天室，將非英文（或者唔係目標語言）嘅訊息直接翻譯喺原文下面。唔追蹤、唔使帳戶，完全開源。',
+    'Kick Chat Translator 會即時讀取聊天室，將非英文（或者唔係目標語言）嘅訊息直接翻譯喺原文下面。唔追蹤、唔使帳戶，完全開源。',
   'Links': '連結',
   'GitHub repository': 'GitHub 儲存庫',
   'Privacy policy': '私隱政策',
@@ -33,20 +33,20 @@ export const yue: Record<string, string> = {
   'Verbose console logs': '詳細主控台記錄',
   'Cache max entries': '快取項目上限',
   'Larger = more hits across sessions, more disk space.':
-    '數值愈大，跨工作階段命中愈多，但會佔用更多磁碟空間。',
+    '數值愈大，跨工作階段嘅命中愈多，佔用嘅磁碟空間亦愈多。',
   'Cache TTL (hours)': '快取有效時間（小時）',
   'After this, entries expire.': '過咗呢段時間，項目就會過期。',
   'Concurrent translations': '同時翻譯數量',
   'In-flight provider requests.': '同時向翻譯服務發出嘅請求數量。',
   'Per-channel budget (req/min)': '每個頻道請求上限（次/分鐘）',
   'Hard cap to avoid hammering providers on fast chats.':
-    '硬性上限，避免聊天室刷得好快時令翻譯服務負荷過重。',
+    '硬性上限，避免聊天室刷得好快時令翻譯服務頂唔順。',
   'Clear translation cache': '清除翻譯快取',
   'Reset usage stats': '重設使用統計',
   'Reset all settings to defaults': '將所有設定還原為預設',
   'click again to confirm': '再㩒一次確認',
   '"Reset all settings" restores defaults. Use it if translations stop appearing because a filter (channel allowlist or source-language allowlist) was left active.':
-    '「將所有設定還原為預設」會將全部設定復原做預設值。如果因為頻道允許清單或來源語言允許清單等篩選一直生效，令譯文唔再出現，可以用呢個方法解決。',
+    '「將所有設定還原為預設」會將全部設定還原做預設值。如果因為頻道允許清單或來源語言允許清單等篩選一直生效，令譯文唔再出現，可以用呢個方法解決。',
   'Translation target': '翻譯目標',
   'Display style': '顯示樣式',
   'Compose preview': '輸入預覽',
@@ -54,7 +54,7 @@ export const yue: Record<string, string> = {
   'Auto (your browser language)': '自動（瀏覽器語言）',
   'Auto reads incoming chat in your own language, detected from the browser.':
     '自動按瀏覽器偵測到嘅語言，將收到嘅聊天翻譯成你嘅語言。',
-  'Write my messages in': '我發送訊息用',
+  'Write my messages in': '發送訊息用嘅語言',
   "Auto (the channel's language)": '自動（頻道語言）',
   "Auto detects the channel's broadcast language from Kick. No manual picking.":
     '自動由 Kick 攞頻道嘅直播語言，唔使自己揀。',
@@ -75,13 +75,13 @@ export const yue: Record<string, string> = {
   'Engine': '引擎',
   'on-device:': '裝置端翻譯：',
   'available ✓': '可用 ✓',
-  'not supported in this browser': '此瀏覽器不支援',
+  'not supported in this browser': '呢個瀏覽器唔支援',
   'Strategy': '策略',
   'On-device first, cloud fallback (recommended)': '先用裝置端，雲端後備（建議）',
   'Cloud first, on-device fallback': '先用雲端，裝置端後備',
   'On-device only (no network, no cloud)': '只用裝置端（唔使連網、唔用雲端）',
   'On-device = local Chromium models: unlimited, instant, private, no rate-limit. Each language needs a one-time model download (click a flag below, or the "Local" chip in chat).':
-    '裝置端翻譯用 Chromium 嘅本機模型：無限量、即時、私隱，亦冇頻率限制。每種語言要先下載一次模型（㩒下面嘅旗幟，或者聊天室入面嘅「本機」標籤）。',
+    '裝置端翻譯用 Chromium 嘅本機模型：無限量、即時、私密，亦冇頻率限制。每種語言要先下載一次模型（㩒下面嘅旗幟，或者聊天室入面嘅「本機」標籤）。',
   'Enable on-device translation': '啟用裝置端翻譯',
   'Download models →': '下載模型 →',
   'General': '一般',
@@ -97,7 +97,7 @@ export const yue: Record<string, string> = {
   'User blocklist': '使用者封鎖清單',
   'Cloud fallback chain': '雲端後備次序',
   "Used when on-device is off or a language pair isn't downloaded. Providers are tried in order; failing ones are temporarily skipped (exponential cooldown).":
-    '裝置端翻譯關閉，或者嗰組語言未下載時使用。翻譯服務會按次序逐個試，出錯嘅會暫時略過（冷卻時間會以指數增加）。',
+    '裝置端翻譯關閉，或者對應嘅語言組合未下載時使用。翻譯服務會按次序逐個試，出錯嘅會暫時略過（冷卻時間會以指數增加）。',
   'ok': '正常',
   'down': '異常',
   'Google Translate (free, no key)': 'Google Translate（免費，唔使金鑰）',
@@ -111,9 +111,9 @@ export const yue: Record<string, string> = {
   'Smart budget routing': '智能額度分配',
   'Spend DeepL only on the European languages it clearly wins at; other targets (Japanese, Arabic, Hindi…) use the free engines first, so your DeepL quota lasts much longer.':
     'DeepL 只用喺佢明顯更叻嘅歐洲語言；其他目標語言（日文、阿拉伯文、印地文等）會先用免費引擎，咁你嘅 DeepL 額度就可以用得耐好多。',
-  'Lingva instance': 'Lingva 執行個體',
-  'Custom URL (optional)': '自訂網址（可選）',
-  'Leave blank to use the default public instance.': '留空就會用預設嘅公用執行個體。',
+  'Lingva instance': 'Lingva 伺服器',
+  'Custom URL (optional)': '自訂網址（選填）',
+  'Leave blank to use the default public instance.': '留空就會用預設嘅公用伺服器。',
   '⬆ Update available': '⬆ 有可用更新',
   'Target language': '目標語言',
   'Translate what I type': '翻譯我打嘅內容',
@@ -134,7 +134,7 @@ export const yue: Record<string, string> = {
   'cache': '快取',
   'errors': '錯誤',
   'available': '可用',
-  'unavailable': '無法使用',
+  'unavailable': '用唔到',
   'Backup': '備份',
   'Save your configuration to a JSON file, or restore it on another browser.':
     '將設定儲存成 JSON 檔案，或者喺另一個瀏覽器還原。',
@@ -167,7 +167,7 @@ export const yue: Record<string, string> = {
   'No Kick tab is open. Open a channel, let the chat run, then read again.':
     '冇開啟嘅 Kick 分頁。請先開一個頻道，等聊天室行一陣，再重新讀取。',
   'The open Kick tab has not loaded the extension yet. Reload the tab, then read again.':
-    '已開啟嘅 Kick 分頁仲未載入擴充功能。請重新整理嗰個分頁，再重新讀取。',
+    '已開啟嘅 Kick 分頁仲未載入擴充功能。請重新載入嗰個分頁，再重新讀取。',
   'Nothing recorded yet. Let a chat run for a moment, then read again.':
     '暫時未有任何記錄。請等聊天室行一陣，再重新讀取。',
   'Filter languages': '篩選語言',
@@ -212,7 +212,7 @@ export const yue: Record<string, string> = {
   'Always light': '永遠淺色',
   'Remember a reading language per channel': '每個頻道記住閱讀語言',
   'Kick Chat Translator reads chat as it arrives and puts a translation under each message in the language you read. It also translates what you type before you send it. No account, no tracking, open source.':
-    'Kick Chat Translator 會喺聊天訊息一到就讀取，並喺每則訊息下面顯示你閱讀語言嘅譯文。你發送訊息之前，佢都可以先幫你翻譯。唔使帳戶，唔追蹤，開源。',
+    'Kick Chat Translator 會喺聊天訊息一到就讀取，並喺每則訊息下面，用你睇嘅語言顯示譯文。你發送訊息之前，佢都可以先幫你翻譯。唔使帳戶，唔追蹤，開源。',
   'Version': '版本',
   'Languages': '語言',
   'Providers ready': '可用嘅翻譯服務',
@@ -223,25 +223,25 @@ export const yue: Record<string, string> = {
   'Its language is worked out on the spot, from the script and the words it uses. This answer decides everything after it.':
     '即場根據文字同用詞判斷佢係咩語言。呢個結果會決定之後所有步驟。',
   'Filters run: already in your language, too short, a bot, a language you did not pick.':
-    '跟住行篩選：已經係你嘅語言、太短、機械人、你冇揀嘅語言。',
+    '跟住過一次篩選：已經係你嘅語言、太短、機械人、你冇揀嘅語言。',
   'The cache is asked first, so the same message is never paid for twice.':
     '先查快取，所以同一則訊息唔會重複消耗額度。',
   'Otherwise the first available provider in your chain answers, or the on-device engine if you enabled it.':
     '快取入面冇嘅話，就由次序入面第一個可用嘅翻譯服務翻譯；如果你啟用咗裝置端翻譯，就由裝置端引擎處理。',
   'The Activity tab shows what each of these steps did for you.':
-    '「動態」分頁會顯示以上每個步驟實際做咗啲乜。',
+    '「活動」分頁會顯示以上每個步驟實際做咗啲乜。',
   'What changed in this version': '呢個版本嘅更新內容',
   'Entries:': '項目：',
-  'Cap used:': '已用上限：',
+  'Cap used:': '已用容量：',
   'oldest kept in memory:': '記憶體入面最舊嘅項目：',
-  'Requests sent through this limit:': '受此上限限制的請求：',
+  'Requests sent through this limit:': '受呢個上限限制嘅請求：',
   'never reached so far': '到而家都未達到過',
-  'Messages held back by this cap:': '被此上限擋住的訊息：',
+  'Messages held back by this cap:': '被呢個上限擋住嘅訊息：',
   'Maintenance': '維護',
   'Nothing picked: every language is translated.': '未揀任何語言：所有語言都會翻譯。',
   'picked: everything else is left alone.': '種已揀：其餘語言唔會翻譯。',
   'channels you have watched': '你睇過嘅頻道',
-  'Only here': '只限呢個頻道',
+  'Only here': '只喺呢個頻道翻譯',
   'Never here': '呢個頻道唔翻譯',
   'No key yet, so DeepL is skipped and the chain moves on.':
     '仲未有金鑰，所以會略過 DeepL，繼續用次序入面下一個。',
@@ -260,4 +260,14 @@ export const yue: Record<string, string> = {
   'Free plan: 1,000,000 characters a month. Free keys end with :fx.':
     '免費方案每月 1,000,000 個字元。免費金鑰以 :fx 結尾。',
   'Get a key:': '取得金鑰：',
+  "Help improve Kick Chat Translator?": "幫手改善 Kick Chat Translator？",
+  "Once a day, anonymous counts: engines used, errors, speed. Never your messages, names or channels.": "一日一次，只係匿名統計：用咗邊個引擎、錯誤、速度。永遠唔會傳你嘅訊息、名或者頻道。",
+  "No thanks": "唔使喇，多謝",
+  "Share": "分享",
+  "Share anonymous usage statistics": "分享匿名使用統計",
+  "Ignore chat bots": "唔理聊天機械人",
+  "Always ignored:": "一定唔理：",
+  "Other bots to ignore": "其他要唔理嘅機械人",
+  "one bot name per line": "每行一個機械人名",
+  "Work in progress": "開發中",
 };

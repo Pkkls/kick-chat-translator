@@ -109,6 +109,8 @@ export const SettingsSchema = z.object({
   minTextLength: z.number().int().min(1).max(50).default(MIN_TEXT_LENGTH),
   ignoreEnglish: z.boolean().default(true),
   ignoreBots: z.boolean().default(true),
+  // Bots a channel uses beyond the built-in Kick list (constants KICK_BOTS).
+  extraBots: z.array(z.string()).default([]),
   blacklistUsers: z.array(z.string()).default([]),
   // A line containing one of these is hidden from chat, not just left untranslated.
   blockedKeywords: z.array(z.string()).default([]),
@@ -135,6 +137,11 @@ export const SettingsSchema = z.object({
 
   // UI
   popupShowsStats: z.boolean().default(true),
+  // Opt-in anonymous daily usage statistics (shared/usage.ts). Off until the
+  // user says yes; the popup asks once (usageStatsAsked), the About tab can
+  // change it any time. On Firefox the browser's own data consent decides.
+  usageStats: z.boolean().default(false),
+  usageStatsAsked: z.boolean().default(false),
   // Language of the extension's own UI (options + popup). 'auto' follows the browser.
   // Must list every entry of UI_LOCALES in src/shared/i18n.ts. This is the gate
   // that decides whether a pick can be SAVED, so a locale offered by the picker

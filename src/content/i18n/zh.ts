@@ -1,6 +1,6 @@
 /** Chat and floating-bar strings. This file is the source, edit it by hand; msg.coverage.test.ts holds it to every msg() call. */
 export const zh: Record<string, string> = {
-  barLangDir: '其他观众的聊天，已为你翻译',
+  barLangDir: '其他观众的聊天内容，已为你翻译',
   barOff: '翻译已关闭',
   barOn: '翻译中',
   barOnTip: '正在用 $LANG$ 阅读聊天',

@@ -26,7 +26,7 @@ CO ZÍSKÁTE
 
 CO OPOUŠTÍ VÁŠ PROHLÍŽEČ
 
-Text z chatu jde jen do překladového enginu, který jste zvolili. U Googlu, MyMemory nebo Lingvy je to text každé zprávy a nic jiného: ne kanál, ne kdo co napsal. U DeepL jde jako kontext i několik posledních řádků chatu se jmény těch, kdo je napsali, aby překlad seděl do konverzace. Právě to znamená řádek „obsah webu“ v oprávněních výše, a nic víc. Žádný účet, žádná analytika, žádný můj server: rozšíření komunikuje s Kickem, s enginem, který jste zvolili, a se stránkou vydání na GitHubu, aby vám oznámilo novější verzi, přičemž s tímto posledním požadavkem neposílá nic.
+Text z chatu jde jen do překladového enginu, který jste zvolili. U Googlu, MyMemory nebo Lingvy je to text každé zprávy a nic jiného: ne kanál, ne kdo co napsal. U DeepL jde jako kontext i několik posledních řádků chatu se jmény těch, kdo je napsali, aby překlad seděl do konverzace. Právě to znamená řádek „obsah webu“ v oprávněních výše, a nic víc. Žádný účet a žádný můj server: rozšíření komunikuje s Kickem, s enginem, který jste zvolili, a se stránkou vydání na GitHubu, aby vám oznámilo novější verzi, přičemž s tímto posledním požadavkem neposílá nic. Pokud zaškrtnete volitelnou položku "technická data a data o interakcích", posílá navíc do Google Analytics denní anonymní počet použitých enginů, chyb a rychlosti, nikdy vaše zprávy, jména ani kanály.
 
 ZDARMA A S OTEVŘENÝM KÓDEM
 

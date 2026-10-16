@@ -25,7 +25,7 @@ APA YANG KAMU DAPAT
 
 PRIVASI
 
-Tiada akaun, tiada analitik, tiada pelayan milik saya. Teks chat hanya dihantar kepada enjin terjemahan yang kamu pilih. Dengan Google, MyMemory atau Lingva, itu ialah teks setiap mesej dan tiada yang lain. Dengan DeepL, beberapa baris chat terakhir turut dihantar sebagai konteks, bersama nama penulisnya, supaya terjemahan sesuai dengan perbualan. Saluran yang kamu tonton tidak pernah dihantar, dan dengan terjemahan pada peranti tiada apa-apa yang keluar dari komputer kamu.
+Tiada akaun, tiada pelayan milik saya, dan tiada analitik melainkan anda bersetuju dengan kiraan harian tanpa nama bagi enjin yang digunakan, ralat dan kelajuan, tidak sekali-kali mesej, nama atau saluran anda. Teks chat hanya dihantar kepada enjin terjemahan yang kamu pilih. Dengan Google, MyMemory atau Lingva, itu ialah teks setiap mesej dan tiada yang lain. Dengan DeepL, beberapa baris chat terakhir turut dihantar sebagai konteks, bersama nama penulisnya, supaya terjemahan sesuai dengan perbualan. Saluran yang kamu tonton tidak pernah dihantar, dan dengan terjemahan pada peranti tiada apa-apa yang keluar dari komputer kamu.
 
 Kebenaran, dalam bahasa mudah: storan untuk tetapan dan cache terjemahan; akses ke kick.com untuk memaparkan terjemahan dalam chat; akses ke enjin yang boleh dipanggilnya (Google, DeepL, MyMemory dan Lingva); pemasa kejutan supaya penterjemah sentiasa sedia semasa kamu menonton; dan hak untuk memuatkan semula skripnya sendiri ke dalam tab Kick yang sudah dibuka apabila kamu memasang atau mengemas kininya, supaya ia terus menterjemah tanpa muat semula. Ia juga membaca halaman keluaran GitHub untuk memberitahu kamu apabila versi baharu wujud, tanpa menghantar apa-apa bersama permintaan itu.
 

@@ -1,5 +1,9 @@
-A extensão agora fala o seu idioma. As configurações, o popup e a barra do chat estão traduzidos para os 43 idiomas para os quais ela traduz, em vez de 10, e o hebraico e o persa são lidos da direita para a esquerda, como o árabe.
+Digitar com emotes funciona corretamente agora. Tab completa os emotes e @menções do Kick e 7TV em vez de inserir a tradução, os emotes permanecem na sua mensagem quando ela é traduzida e a visualização não cobre mais as listas do Kick ou o seletor de emotes.
 
-Os dez idiomas que ela já falava foram reescritos para soar naturais, como se tivessem sido escritos naquele idioma e não traduzidos palavra por palavra do inglês.
+As traduções são mais precisas: nomes de marcas e pessoas (iPhone, YouTube, LeBron) não são mais eliminados antes da tradução e as @menções permanecem nas mensagens traduzidas.
 
-O menu de idioma da interface mostra a bandeira de cada idioma e também funciona pelo teclado.
+Os filtros foram reformulados: os bots reais do Kick são ignorados e você pode adicionar os seus próprios, "Ocultar mensagens contendo" agora também oculta o que já está na tela, e as listas podem ser digitadas novamente.
+
+A extensão é mais leve em todas as páginas do Kick, e no Chrome o mecanismo no dispositivo é oferecido novamente quando o idioma de destino está no Auto.
+
+Novo e opcional: estatísticas de uso diário anônimas, desativadas, a menos que você diga sim. Eles nunca contêm suas mensagens, nomes ou canais.

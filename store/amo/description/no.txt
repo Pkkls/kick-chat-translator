@@ -26,7 +26,7 @@ DETTE FÅR DU
 
 HVA SOM FORLATER NETTLESEREN DIN
 
-Chatteksten går bare til oversettelsesmotoren du har valgt. Med Google, MyMemory eller Lingva er det teksten i hver melding og ingenting annet: ikke kanalen, ikke hvem som skrev. Med DeepL følger de siste chatlinjene med som kontekst, sammen med navnene til dem som skrev dem, slik at oversettelsen passer til samtalen. Det er dette linjen "nettstedinnhold" i tillatelsene ovenfor viser til, og det er alt. Det finnes ingen konto, ingen analyse og ingen server fra meg: utvidelsen snakker med Kick, med motoren du valgte, og med GitHub-utgivelsessiden for å si fra når det finnes en nyere versjon, uten å sende noe med den siste forespørselen.
+Chatteksten går bare til oversettelsesmotoren du har valgt. Med Google, MyMemory eller Lingva er det teksten i hver melding og ingenting annet: ikke kanalen, ikke hvem som skrev. Med DeepL følger de siste chatlinjene med som kontekst, sammen med navnene til dem som skrev dem, slik at oversettelsen passer til samtalen. Det er dette linjen "nettstedinnhold" i tillatelsene ovenfor viser til, og det er alt. Det finnes ingen konto og ingen server fra meg: utvidelsen snakker med Kick, med motoren du valgte, og med GitHub-utgivelsessiden for å si fra når det finnes en nyere versjon, uten å sende noe med den siste forespørselen. Hvis du krysser av for det valgfrie "tekniske data og samhandlingsdata", sender den også en daglig anonym telling av brukte motorer, feil og hastighet til Google Analytics, aldri meldingene, navnene eller kanalene dine.
 
 GRATIS OG ÅPEN KILDEKODE
 

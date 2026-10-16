@@ -266,4 +266,14 @@ export const sk: Record<string, string> = {
   'Free plan: 1,000,000 characters a month. Free keys end with :fx.':
     'Plán zadarmo: 1 000 000 znakov mesačne. Kľúče zadarmo končia na :fx.',
   'Get a key:': 'Získať kľúč:',
+  "Help improve Kick Chat Translator?": "Pomôžeš vylepšiť Kick Chat Translator?",
+  "Once a day, anonymous counts: engines used, errors, speed. Never your messages, names or channels.": "Raz denne anonymné počty: použité služby, chyby, rýchlosť. Nikdy tvoje správy, mená ani kanály.",
+  "No thanks": "Nie, vďaka",
+  "Share": "Zdieľať",
+  "Share anonymous usage statistics": "Zdieľať anonymné štatistiky používania",
+  "Ignore chat bots": "Ignorovať chatovacích botov",
+  "Always ignored:": "Vždy ignorovaní:",
+  "Other bots to ignore": "Ďalší boti na ignorovanie",
+  "one bot name per line": "jedno meno bota na riadok",
+  "Work in progress": "Prebiehajúca práca",
 };

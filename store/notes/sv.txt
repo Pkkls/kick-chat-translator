@@ -1,5 +1,9 @@
-Tillägget talar nu ditt språk. Inställningarna, popup-fönstret och fältet i chatten är översatta till alla 43 språk som det översätter till, inte bara 10, och hebreiska och persiska läses från höger till vänster, precis som arabiska.
+Att skriva med emotes fungerar korrekt nu. Tab slutför Kicks och 7TV:s emotes och @omnämnanden istället för att infoga översättningen, emotes stannar i ditt meddelande när det översätts, och förhandsvisningen täcker inte längre Kicks listor eller emoteväljaren.
 
-De tio språk som det redan talade har skrivits om så att de låter naturliga, som om de var skrivna på det språket och inte översatta ord för ord från engelska.
+Översättningar är mer exakta: varumärken och personers namn (iPhone, YouTube, LeBron) tas inte längre bort före översättning, och @omnämnanden stannar kvar i översatta meddelanden.
 
-Menyn för gränssnittets språk visar varje språks flagga och fungerar också med tangentbordet.
+Filtren omarbetades: de riktiga Kick-botarna ignoreras och du kan lägga till dina egna, "Dölj meddelanden som innehåller" döljer nu också det som redan finns på skärmen, och listorna kan skrivas in igen.
+
+Tillägget är lättare på varje Kick-sida, och på Chrome erbjuds motorn på enheten igen när målspråket är på Auto.
+
+Nytt och valfritt: anonym daglig användningsstatistik, avstängd om du inte säger ja. De innehåller aldrig dina meddelanden, namn eller kanaler.

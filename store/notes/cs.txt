@@ -1,5 +1,9 @@
-Rozšíření teď mluví vaším jazykem. Nastavení, vyskakovací okno i lišta v chatu jsou přeložené do všech 43 jazyků, do kterých rozšíření překládá, ne jen do 10, a hebrejština s perštinou se čtou zprava doleva, stejně jako arabština.
+Psaní pomocí emocí nyní funguje správně. Tab doplní Kickovy a 7TV emoce a @zmínky místo vložení překladu, emoce zůstanou ve vaší zprávě, když je přeložena, a náhled již nepokrývá Kickovy seznamy ani výběr emocí.
 
-Deset jazyků, které znalo už dřív, bylo napsáno znovu, aby zněly přirozeně, jako by vznikly přímo v daném jazyce a nebyly přeložené slovo od slova z angličtiny.
+Překlady jsou přesnější: jména značek a lidí (iPhone, YouTube, LeBron) se již před překladem nevynechávají a @zmínky zůstávají v přeložených zprávách.
 
-Nabídka jazyka rozhraní ukazuje vlajku každého jazyka a ovládá se i klávesnicí.
+Filtry byly přepracovány: skuteční Kick boti jsou ignorováni a můžete přidat své vlastní, „Skrýt zprávy obsahující“ nyní také skryje to, co je již na obrazovce, a seznamy lze znovu zadat.
+
+Rozšíření je na každé stránce Kick světlejší a v prohlížeči Chrome se engine na zařízení znovu nabízí, když je cílový jazyk nastaven na Auto.
+
+Nové a volitelné: anonymní denní statistiky využití, pokud neřeknete ano, jsou vypnuté. Nikdy neobsahují vaše zprávy, jména nebo kanály.

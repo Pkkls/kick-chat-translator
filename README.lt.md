@@ -125,7 +125,7 @@ Pokalbį galima versti į bet kurią iš jų, o paties plėtinio sąsaja prieina
 
 ## Privatumas
 
-Jokios paskyros, jokios analitikos, jokio mano serverio. Pokalbio žinutės keliauja pasirinktam vertimo teikėjui ir
+Jokios paskyros, jokio mano serverio ir jokios analizės, nebent pasirinksite kasdienį anoniminį skaičių, siunčiamą į „Google Analytics“ (naudoti varikliai, klaidos, greitis, niekada jūsų pranešimai, vardai ar kanalai). Pokalbio žinutės keliauja pasirinktam vertimo teikėjui ir
 niekur kitur, o režimu įrenginyje net ir ne ten. Iš parduotuvės įdiegta kopija kitų užklausų nesiunčia. Rankiniu būdu
 įdiegta kopija paprašo GitHub naujausios išleidimo žymos, daugiausia kas šešias valandas, kad žinotų, ar
 rodyti atnaujinimo ženklelį. [Išsamiau](PRIVACY.md)

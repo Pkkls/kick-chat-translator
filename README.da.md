@@ -125,7 +125,7 @@ Chatten oversættes til ethvert af dem, og udvidelsens eget interface findes på
 
 ## Privatliv
 
-Ingen konto, ingen analyse, ingen egen server. Chatbeskeder går til den oversættelsesudbyder, du har valgt, og
+Ingen konto, ingen min server og ingen analyser, medmindre du tilmelder dig en daglig anonym optælling sendt til Google Analytics (brugte motorer, fejl, hastighed, aldrig dine beskeder, navne eller kanaler). Chatbeskeder går til den oversættelsesudbyder, du har valgt, og
 ingen andre steder, og i tilstanden på enheden ikke engang dertil. En kopi installeret fra en butik laver ingen
 andre forespørgsler. En manuelt installeret kopi spørger GitHub om det seneste release-tag, højst hver sjette
 time, for at vide, om den skal vise sit opdateringsbadge. [Detaljer](PRIVACY.md)

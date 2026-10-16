@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { Settings } from '~/shared/settings';
 import type { UsageStats } from '~/shared/types';
 import { sortedLanguages } from '~/shared/languages';
@@ -6,6 +6,7 @@ import { resolveUiLocale } from '~/shared/i18n';
 import { useT } from '~/shared/i18nContext';
 import { Check } from '../components/Check';
 import { flagClass } from '~/shared/flags';
+import { KICK_BOTS } from '~/shared/constants';
 
 interface Props {
   settings: Settings;
@@ -14,10 +15,26 @@ interface Props {
   stats?: UsageStats;
 }
 
-function toList(v: string): string[] {
+/**
+ * Names (channels, users, bots): no spaces in a Kick name, so space, comma and
+ * line break all separate; "@" pasted from chat is dropped; case folded.
+ */
+export function toNames(v: string): string[] {
   return v
-    .split(/[\s,\n]+/)
-    .map((s) => s.trim().toLowerCase())
+    .split(/[\s,]+/)
+    .map((s) => s.trim().replace(/^@/, '').toLowerCase())
+    .filter(Boolean);
+}
+
+/**
+ * Keywords and glossary rules: one per LINE, spaces and case kept. Splitting
+ * on spaces too made "good game" two keywords and a glossary rule with a space
+ * unwritable, and lowercasing ate the case of every replacement.
+ */
+export function toLines(v: string): string[] {
+  return v
+    .split('\n')
+    .map((s) => s.trim())
     .filter(Boolean);
 }
 
@@ -56,8 +73,23 @@ export function FilterSection({ settings, onPatch, stats }: Props) {
         <ToggleRow
           checked={settings.ignoreBots}
           onChange={(v) => onPatch({ ignoreBots: v })}
-          label={t('Ignore common bot accounts (StreamElements, Nightbot, …)')}
+          label={t('Ignore chat bots')}
         />
+        {settings.ignoreBots && (
+          <div class="kt-row">
+            <p class="kt-hint">
+              {t('Always ignored:')} {KICK_BOTS.join(', ')}
+            </p>
+            <ListField
+              id="kt-extra-bots"
+              label={t('Other bots to ignore')}
+              placeholder={t('one bot name per line')}
+              value={settings.extraBots}
+              parse={toNames}
+              onCommit={(v) => onPatch({ extraBots: v })}
+            />
+          </div>
+        )}
         <div class="grid grid-cols-[1fr,140px] gap-3 items-start">
           <div>
             <div class="text-sm">{t('Minimum message length')}</div>
@@ -168,63 +200,38 @@ export function FilterSection({ settings, onPatch, stats }: Props) {
 
       <section class="kt-card space-y-3">
         <h2 class="kt-section">{t('Channels & users')}</h2>
-        <ChannelsSeen settings={settings} onPatch={onPatch} stats={stats} />
-        <div class="kt-row">
-          <label class="kt-label" for="kt-whitelist-channels">
-            {t('Channel allowlist (only translate on these)')}
-          </label>
-          <textarea
-            id="kt-whitelist-channels"
-            class="kt-textarea"
-            value={settings.whitelistChannels.join('\n')}
-            placeholder={t('one channel name per line')}
-            onInput={(e) =>
-              onPatch({ whitelistChannels: toList((e.target as HTMLTextAreaElement).value) })
-            }
-          />
-        </div>
-        <div class="kt-row">
-          <label class="kt-label" for="kt-blacklist-channels">
-            {t('Channel blocklist')}
-          </label>
-          <textarea
-            id="kt-blacklist-channels"
-            class="kt-textarea"
-            value={settings.blacklistChannels.join('\n')}
-            placeholder={t('one channel name per line')}
-            onInput={(e) =>
-              onPatch({ blacklistChannels: toList((e.target as HTMLTextAreaElement).value) })
-            }
-          />
-        </div>
-        <div class="kt-row">
-          <label class="kt-label" for="kt-blacklist-users">
-            {t('User blocklist')}
-          </label>
-          <textarea
-            id="kt-blacklist-users"
-            class="kt-textarea"
-            value={settings.blacklistUsers.join('\n')}
-            placeholder={t('one username per line')}
-            onInput={(e) =>
-              onPatch({ blacklistUsers: toList((e.target as HTMLTextAreaElement).value) })
-            }
-          />
-        </div>
-        <div class="kt-row">
-          <label class="kt-label" for="kt-blocked-keywords">
-            {t('Hide messages containing')}
-          </label>
-          <textarea
-            id="kt-blocked-keywords"
-            class="kt-textarea"
-            value={settings.blockedKeywords.join('\n')}
-            placeholder={t('one keyword per line, e.g. !fish')}
-            onInput={(e) =>
-              onPatch({ blockedKeywords: toList((e.target as HTMLTextAreaElement).value) })
-            }
-          />
-        </div>
+        <ListField
+          id="kt-whitelist-channels"
+          label={t('Channel allowlist (only translate on these)')}
+          placeholder={t('one channel name per line')}
+          value={settings.whitelistChannels}
+          parse={toNames}
+          onCommit={(v) => onPatch({ whitelistChannels: v })}
+        />
+        <ListField
+          id="kt-blacklist-channels"
+          label={t('Channel blocklist')}
+          placeholder={t('one channel name per line')}
+          value={settings.blacklistChannels}
+          parse={toNames}
+          onCommit={(v) => onPatch({ blacklistChannels: v })}
+        />
+        <ListField
+          id="kt-blacklist-users"
+          label={t('User blocklist')}
+          placeholder={t('one username per line')}
+          value={settings.blacklistUsers}
+          parse={toNames}
+          onCommit={(v) => onPatch({ blacklistUsers: v })}
+        />
+        <ListField
+          id="kt-blocked-keywords"
+          label={t('Hide messages containing')}
+          placeholder={t('one keyword per line, e.g. !fish')}
+          value={settings.blockedKeywords}
+          parse={toLines}
+          onCommit={(v) => onPatch({ blockedKeywords: v })}
+        />
       </section>
 
       <section class="kt-card space-y-3">
@@ -234,12 +241,14 @@ export function FilterSection({ settings, onPatch, stats }: Props) {
             'Words the engines keep getting wrong for your channels. Each line replaces the left side with the right side, after translating.',
           )}
         </p>
-        <textarea
-          class="kt-textarea"
-          aria-label={t('Glossary')}
-          value={settings.glossary.join('\n')}
+        <ListField
+          id="kt-glossary"
+          label={t('Glossary')}
+          hideLabel
           placeholder={`${t('one rule per line, in the form word→replacement')}\n草→lol\nkusa→lol`}
-          onInput={(e) => onPatch({ glossary: toList((e.target as HTMLTextAreaElement).value) })}
+          value={settings.glossary}
+          parse={toLines}
+          onCommit={(v) => onPatch({ glossary: v })}
         />
       </section>
     </>
@@ -247,70 +256,69 @@ export function FilterSection({ settings, onPatch, stats }: Props) {
 }
 
 /**
- * Les chaines sur lesquelles l'extension a deja traduit, cliquables.
+ * A list typed one entry per line.
  *
- * stats.byChannel etait rempli par quatre appels du worker et lu par personne,
- * pendant qu'on tapait des noms de chaines de memoire dans une zone de texte
- * dont l'exemple etait "some-channel". Reconnaitre plutot que se rappeler.
- *
- * Un bouton par chaine, avec ce qu'elle a coute en messages. Cliquer bascule
- * son appartenance a la liste : le meme geste ajoute et retire, parce qu'une
- * liste ou l'on ajoute d'un clic et retire en editant du texte est pire que
- * deux fois du texte.
+ * The text areas used to be rebuilt from the saved list on every keystroke, so
+ * the line break Enter makes was dropped at once (empty line filtered out) and
+ * no second entry could be typed, a space split "good game" in two, and the
+ * glossary lost its case. The draft now stays as typed while the field has
+ * focus; the parsed list is saved shortly after typing stops and on blur.
  */
-function ChannelsSeen({
-  settings,
-  onPatch,
-  stats,
+function ListField({
+  id,
+  label,
+  placeholder,
+  value,
+  parse,
+  onCommit,
+  hideLabel,
 }: {
-  settings: Settings;
-  onPatch: (p: Partial<Settings>) => void;
-  stats?: UsageStats;
+  id: string;
+  label: string;
+  placeholder: string;
+  value: string[];
+  parse: (v: string) => string[];
+  onCommit: (v: string[]) => void;
+  hideLabel?: boolean;
 }) {
-  const t = useT();
-  const vues = Object.entries(stats?.byChannel ?? {})
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 12);
-  if (vues.length === 0) return null;
-
-  const bascule = (cle: 'whitelistChannels' | 'blacklistChannels', nom: string) => {
-    const liste = settings[cle];
-    onPatch({
-      [cle]: liste.includes(nom) ? liste.filter((c) => c !== nom) : [...liste, nom],
-    } as Partial<Settings>);
+  const saved = value.join('\n');
+  const [draft, setDraft] = useState(saved);
+  const focused = useRef(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  // A change from elsewhere (another tab, a reset) shows up, but never under
+  // the cursor of someone typing.
+  useEffect(() => {
+    if (!focused.current) setDraft(saved);
+  }, [saved]);
+  const commit = (text: string): void => {
+    const next = parse(text);
+    if (next.join('\n') !== saved) onCommit(next);
   };
-
   return (
     <div class="kt-row">
-      <span class="kt-label">{t('channels you have watched')}</span>
-      <ul class="space-y-1">
-        {vues.map(([nom, n]) => {
-          const blanche = settings.whitelistChannels.includes(nom);
-          const noire = settings.blacklistChannels.includes(nom);
-          return (
-            <li key={nom} class="flex items-center gap-2 text-[12px]">
-              <span class="min-w-0 flex-1 truncate text-kick-text">{nom}</span>
-              <span class="shrink-0 tabular-nums text-[11px] text-kick-muted">{n}</span>
-              <button
-                type="button"
-                class={`kt-chip-toggle ${blanche ? 'is-on' : ''}`}
-                aria-pressed={blanche}
-                onClick={() => bascule('whitelistChannels', nom)}
-              >
-                {t('Only here')}
-              </button>
-              <button
-                type="button"
-                class={`kt-chip-toggle ${noire ? 'is-on' : ''}`}
-                aria-pressed={noire}
-                onClick={() => bascule('blacklistChannels', nom)}
-              >
-                {t('Never here')}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+      <label class={hideLabel ? 'sr-only' : 'kt-label'} for={id}>
+        {label}
+      </label>
+      <textarea
+        id={id}
+        class="kt-textarea"
+        value={draft}
+        placeholder={placeholder}
+        onFocus={() => {
+          focused.current = true;
+        }}
+        onInput={(e) => {
+          const text = (e.target as HTMLTextAreaElement).value;
+          setDraft(text);
+          clearTimeout(timer.current);
+          timer.current = setTimeout(() => commit(text), 600);
+        }}
+        onBlur={(e) => {
+          focused.current = false;
+          clearTimeout(timer.current);
+          commit((e.target as HTMLTextAreaElement).value);
+        }}
+      />
     </div>
   );
 }

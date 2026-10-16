@@ -25,7 +25,7 @@ MIT KAPSZ
 
 ADATVÉDELEM
 
-Nincs fiók, nincs analitika, és nincs saját szerverem. A chat szövege csak az általad választott fordítómotorhoz jut el. Google, MyMemory vagy Lingva esetén ez minden üzenet szövege, és semmi más. DeepL esetén az utolsó néhány chatsor is megy kontextusként, az íróik nevével együtt, hogy a fordítás illjen a beszélgetéshez. A nézett csatornát soha nem küldi el, és eszközön futó fordításnál semmi sem hagyja el a számítógépedet.
+Nincs fiók, nincs saját szerverem, és nincs analitika, hacsak nem egyezel bele a használt szolgáltatások, hibák és sebesség napi névtelen számlálásába, soha nem az üzeneteid, neveid vagy csatornáid. A chat szövege csak az általad választott fordítómotorhoz jut el. Google, MyMemory vagy Lingva esetén ez minden üzenet szövege, és semmi más. DeepL esetén az utolsó néhány chatsor is megy kontextusként, az íróik nevével együtt, hogy a fordítás illjen a beszélgetéshez. A nézett csatornát soha nem küldi el, és eszközön futó fordításnál semmi sem hagyja el a számítógépedet.
 
 Az engedélyek egyszerűen elmondva: tárhely a beállításaidhoz és a fordítási gyorsítótárhoz; hozzáférés a kick.com-hoz, hogy a fordítások megjelenjenek a chatben; hozzáférés a hívható motorokhoz (Google, DeepL, MyMemory és Lingva); egy ébresztő időzítő, hogy a fordító kész maradjon, amíg nézel; valamint jog arra, hogy telepítéskor vagy frissítéskor újratöltse saját szkriptjét a már nyitott Kick lapokba, így frissítés nélkül is fordítanak tovább. A GitHub kiadási oldalát is olvassa, hogy jelezze, ha új verzió érhető el, és ezzel a kéréssel semmit nem küld.
 

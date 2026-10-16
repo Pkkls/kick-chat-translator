@@ -1,4 +1,4 @@
-import { CHAT_MESSAGES } from './i18n';
+import { CHAT_LOCALES } from './i18n/codes';
 import { setUiLocale } from '~/shared/languages';
 import { matchUiLocale } from '~/shared/uiLocaleMatch';
 
@@ -19,7 +19,7 @@ import { matchUiLocale } from '~/shared/uiLocaleMatch';
  * msg.coverage.test.ts holds every call and its catalogue entry to each other.
  */
 
-const SUPPORTED = new Set(['en', ...Object.keys(CHAT_MESSAGES)]);
+const SUPPORTED = new Set<string>(['en', ...CHAT_LOCALES]);
 
 /** The catalogue in force. Undefined means English, which needs no table. */
 let table: Record<string, string> | undefined;
@@ -54,9 +54,16 @@ function resolve(uiLang: string | undefined): string {
  */
 export function setContentLocale(uiLang: string | undefined): string {
   const locale = resolve(uiLang);
-  table = CHAT_MESSAGES[locale];
+  // The table itself comes from the worker (loadChatTable), not the bundle.
+  // Until it lands the chat speaks English, which is the fallback anyway.
+  if (locale === 'en') table = undefined;
   setUiLocale(locale);
   return locale;
+}
+
+/** Install the catalogue for the locale setContentLocale chose. */
+export function setChatTable(t: Record<string, string> | undefined): void {
+  table = t;
 }
 
 export function msg(key: string, fallback: string, subs?: string[]): string {

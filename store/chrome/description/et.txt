@@ -25,7 +25,7 @@ MIDA SA SAAD
 
 PRIVAATSUS
 
-Ei mingit kontot, ei analüütikat, ei oma serverit. Chati tekst läheb ainult sinu valitud tõlkemootorile. Google'i, MyMemory või Lingva puhul on see iga sõnumi tekst ja mitte midagi muud. DeepL-i puhul lähevad kaasa viimased chati read kontekstina koos kirjutajate nimedega, et tõlge sobiks vestlusega. Kanalit, mida vaatad, ei saadeta kunagi ning seadmesisese tõlke puhul ei lahku sinu arvutist midagi.
+Ei mingit kontot, ei oma serverit ega analüütikat, kui sa just ei nõustu igapäevase anonüümse loendusega kasutatud teenuste, vigade ja kiiruse kohta, mitte kunagi sinu sõnumid, nimed ega kanalid. Chati tekst läheb ainult sinu valitud tõlkemootorile. Google'i, MyMemory või Lingva puhul on see iga sõnumi tekst ja mitte midagi muud. DeepL-i puhul lähevad kaasa viimased chati read kontekstina koos kirjutajate nimedega, et tõlge sobiks vestlusega. Kanalit, mida vaatad, ei saadeta kunagi ning seadmesisese tõlke puhul ei lahku sinu arvutist midagi.
 
 Load lihtsate sõnadega: salvestusruum sinu seadetele ja tõlkevahemälule; juurdepääs kick.com-ile, et näidata tõlkeid chatis; juurdepääs mootoritele, mida see võib kutsuda (Google, DeepL, MyMemory ja Lingva); ärkamistaimer, et tõlkija püsiks valmis, kui vaatad; ning õigus laadida oma skript uuesti juba avatud Kicki lehtedele paigaldamisel või uuendamisel, et need tõlgiksid edasi ilma lehte värskendamata. Samuti loeb see GitHubi väljalaskelehte, et anda teada uuema versiooni olemasolust, saatmata selle päringuga midagi kaasa.
 

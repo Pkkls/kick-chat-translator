@@ -25,7 +25,7 @@ CE QUE TU OBTIENS
 
 CONFIDENTIALITÉ
 
-Pas de compte, pas d'analytics, pas de serveur à moi. Le texte du chat va uniquement au moteur de traduction que tu as choisi. Avec Google, MyMemory ou Lingva, c'est le texte de chaque message et rien d'autre. Avec DeepL, les dernières lignes du chat partent aussi comme contexte, avec le pseudo de leurs auteurs, pour que la traduction colle à la conversation. La chaîne que tu regardes n'est jamais envoyée, et avec la traduction en local rien ne quitte ton ordinateur.
+Pas de compte, pas de serveur à moi, et pas d'analytics sauf si tu acceptes un comptage quotidien anonyme des moteurs utilisés, des erreurs et de la vitesse, jamais tes messages, pseudos ou chaînes. Le texte du chat va uniquement au moteur de traduction que tu as choisi. Avec Google, MyMemory ou Lingva, c'est le texte de chaque message et rien d'autre. Avec DeepL, les dernières lignes du chat partent aussi comme contexte, avec le pseudo de leurs auteurs, pour que la traduction colle à la conversation. La chaîne que tu regardes n'est jamais envoyée, et avec la traduction en local rien ne quitte ton ordinateur.
 
 Les permissions, en clair : le stockage pour tes réglages et son cache de traductions ; l'accès à kick.com pour afficher les traductions dans le chat ; l'accès aux moteurs qu'elle peut appeler (Google, DeepL, MyMemory et Lingva) ; un minuteur de réveil pour que le traducteur reste prêt pendant que tu regardes ; et le droit de recharger son propre script dans les onglets Kick déjà ouverts quand tu l'installes ou la mets à jour, pour qu'ils continuent de traduire sans actualiser. Elle lit aussi la page des versions GitHub pour te signaler qu'une version plus récente existe, sans rien envoyer avec cette requête.
 

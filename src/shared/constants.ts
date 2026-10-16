@@ -84,6 +84,19 @@ export const STORAGE_KEY_SETTINGS = 'kt.settings.v2';
 export const STORAGE_KEY_DEEPL_KEY = 'kt.deeplKey.v1';
 export const STORAGE_KEY_STATS = 'kt.stats.v1';
 export const STORAGE_KEY_UPDATE = 'kt.update.v1';
+/** The day being counted for the opt-in usage statistics (shared/usage.ts). */
+export const STORAGE_KEY_USAGE = 'kt.usage.v1';
+
+// GA4 Measurement Protocol, for the opt-in daily usage event. Both ship inside
+// the bundle whatever is done, which is how the Measurement Protocol works: the
+// secret only lets someone ADD events to this stream, it reads nothing. Empty
+// means nothing is ever sent.
+// Property "Kick Chat Translator extension" (account "Kick Chat Translator"),
+// web stream 16143972403, secret nicknamed "extension". Created 2026-10-16
+// with the ga-usage-stats skill.
+export const GA_MEASUREMENT_ID = 'G-M3X9D6KZLP';
+export const GA_API_SECRET = 'SeO_Zkk4RKCCB0Iv_SDr1A';
+export const GA_ENDPOINT = 'https://www.google-analytics.com/mp/collect';
 
 // Self-update check: compare the installed version to the latest GitHub release.
 export const GITHUB_REPO = 'Pkkls/kick-chat-translator';
@@ -105,15 +118,15 @@ export const CHROME_STORE_URL = `https://chromewebstore.google.com/detail/kick-c
 export const GITHUB_LATEST_RELEASE_API = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 export const UPDATE_CHECK_TTL_MS = 6 * 60 * 60_000; // 6h
 
-export const COMMON_BOTS = new Set([
-  'streamelements',
-  'nightbot',
-  'fossabot',
-  'moobot',
-  'botrix',
-  'kick',
-  'kickbot',
-]);
+/**
+ * Chat bots that run on Kick, always ignored when "Ignore chat bots" is on.
+ * This list came from the first version as StreamElements, Nightbot and Moobot,
+ * which are Twitch bots and never post on Kick. Kept short on purpose: anything
+ * else a channel uses goes in the user's own list (settings.extraBots), not
+ * here. Shown in the options page as written.
+ */
+export const KICK_BOTS = ['BotRix', 'Fossabot', 'KickBot', 'Sery_Bot', 'Kicklet'] as const;
+export const COMMON_BOTS = new Set<string>(KICK_BOTS.map((b) => b.toLowerCase()));
 
 /** How many languages the composer chip keeps pinned. Four fits 340px; five does not. */
 export const FAVORITE_LANGS_MAX = 4;

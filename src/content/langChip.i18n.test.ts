@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { localName, mountLangChip, unmountLangChip, updateLangChip } from './langChip';
-import { setContentLocale } from './msg';
+import { setChatTable, setContentLocale } from './msg';
 import { CHAT_MESSAGES } from './i18n';
 
 /**
@@ -58,7 +58,7 @@ describe('chip labelling', () => {
     // on `uiLang` now, because chrome.i18n answers in the browser's language and
     // MV3 offers no way to ask it for another, so the setting moved the options
     // page and left the chat where it was.
-    setContentLocale('ja');
+    setChatTable(CHAT_MESSAGES[setContentLocale('ja')]);
     const chip = mount();
     updateLangChip({ mode: 'pinned', code: 'ja', favorites: ['ja'] });
     expect(chip.title).toBe(
@@ -72,7 +72,7 @@ describe('chip labelling', () => {
   // Control: the same two states in English come back as the fallback the code
   // carries, so the test above is reading a table rather than any string at all.
   it('falls back to the English written at the call site', () => {
-    setContentLocale('en');
+    setChatTable(CHAT_MESSAGES[setContentLocale('en')]);
     const chip = mount();
     updateLangChip({ mode: 'auto', code: 'es', favorites: ['ja'] });
     expect(chip.title).toContain("Writing in the channel's language (ES)");

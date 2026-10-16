@@ -25,7 +25,7 @@ WAT JE KRIJGT
 
 PRIVACY
 
-Geen account, geen analytics, geen server van mij. De chattekst gaat alleen naar de vertaalengine die je hebt gekozen. Bij Google, MyMemory of Lingva is dat de tekst van elk bericht en verder niets. Bij DeepL gaan de laatste chatregels mee als context, met de namen van wie ze schreef, zodat de vertaling bij het gesprek past. Het kanaal waar je naar kijkt wordt nooit verstuurd, en bij vertaling op je apparaat verlaat niets je computer.
+Geen account, geen server van mij en geen analytics, tenzij je instemt met een dagelijkse anonieme telling van gebruikte diensten, fouten en snelheid, nooit je berichten, namen of kanalen. De chattekst gaat alleen naar de vertaalengine die je hebt gekozen. Bij Google, MyMemory of Lingva is dat de tekst van elk bericht en verder niets. Bij DeepL gaan de laatste chatregels mee als context, met de namen van wie ze schreef, zodat de vertaling bij het gesprek past. Het kanaal waar je naar kijkt wordt nooit verstuurd, en bij vertaling op je apparaat verlaat niets je computer.
 
 De rechten in gewone woorden: opslag voor je instellingen en de vertaalcache; toegang tot kick.com om vertalingen in de chat te tonen; toegang tot de engines die het kan aanroepen (Google, DeepL, MyMemory en Lingva); een wekker zodat de vertaler klaarstaat terwijl je kijkt; en het recht om zijn eigen script opnieuw te laden in al geopende Kick-tabbladen bij installatie of update, zodat ze blijven vertalen zonder te verversen. Het leest ook de GitHub-releasepagina om je te laten weten wanneer er een nieuwere versie is, en stuurt daarbij niets mee.
 

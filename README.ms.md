@@ -125,7 +125,7 @@ Sembang diterjemah ke mana-mana bahasa di atas, dan antara muka sambungan itu se
 
 ## Privasi
 
-Tanpa akaun, tanpa analitik, tiada pelayan milik saya. Mesej sembang hanya pergi ke penyedia terjemahan yang anda pilih
+Tiada akaun, tiada pelayan saya dan tiada analitis melainkan anda mengikut serta dalam kiraan tanpa nama harian yang dihantar ke Google Analytics (enjin digunakan, ralat, kelajuan, tidak sekali-kali mesej, nama atau saluran anda). Mesej sembang hanya pergi ke penyedia terjemahan yang anda pilih
 dan tidak ke tempat lain, dan dalam mod pada peranti ke situ pun tidak. Salinan dari kedai tidak membuat sebarang permintaan lain. Salinan
 yang dipasang secara manual bertanya GitHub tentang tag keluaran terkini, paling kerap sekali setiap enam jam, untuk tahu sama ada perlu
 memaparkan lencana kemas kini. [Butiran](PRIVACY.md)

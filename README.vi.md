@@ -125,7 +125,7 @@ Chat được dịch sang bất kỳ ngôn ngữ nào trong số đó, và giao 
 
 ## Quyền riêng tư
 
-Không tài khoản, không phân tích hành vi, không có máy chủ nào của tôi. Tin nhắn chat chỉ đến dịch vụ dịch bạn đã chọn
+Không có tài khoản, không có máy chủ của tôi và không có phân tích trừ khi bạn chọn tham gia vào số lượng ẩn danh hàng ngày được gửi tới Google Analytics (công cụ được sử dụng, lỗi, tốc độ, không bao giờ là tin nhắn, tên hoặc kênh của bạn). Tin nhắn chat chỉ đến dịch vụ dịch bạn đã chọn
 và không đi đâu khác, còn ở chế độ dịch trên thiết bị thì đến đó cũng không. Bản cài từ store không gửi yêu cầu nào khác. Bản
 cài thủ công sẽ hỏi GitHub về thẻ phát hành mới nhất, tối đa sáu giờ một lần, để biết có nên
 hiện huy hiệu cập nhật hay không. [Chi tiết](PRIVACY.md)

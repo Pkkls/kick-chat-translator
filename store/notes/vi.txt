@@ -1,5 +1,9 @@
-Tiện ích giờ nói ngôn ngữ của bạn. Phần cài đặt, cửa sổ popup và thanh trong chat đã được dịch sang đủ 43 ngôn ngữ mà tiện ích dịch tới, chứ không còn chỉ 10, và tiếng Do Thái cùng tiếng Ba Tư được đọc từ phải sang trái, như tiếng Ả Rập.
+Tính năng gõ bằng biểu tượng cảm xúc hiện đã hoạt động bình thường. Tab hoàn thành các biểu tượng cảm xúc và @đề cập của Kick và 7TV thay vì chèn bản dịch, các biểu tượng cảm xúc vẫn ở trong tin nhắn của bạn khi nó được dịch và bản xem trước không còn bao gồm danh sách của Kick hoặc bộ chọn biểu tượng cảm xúc.
 
-Mười ngôn ngữ vốn đã có được viết lại để đọc tự nhiên, như thể viết thẳng bằng ngôn ngữ đó chứ không dịch từng chữ từ tiếng Anh.
+Bản dịch chính xác hơn: tên thương hiệu và tên người (iPhone, YouTube, LeBron) không còn bị loại bỏ trước khi dịch và các @đề cập vẫn ở trong tin nhắn đã dịch.
 
-Menu ngôn ngữ giao diện hiển thị cờ của từng ngôn ngữ và dùng được bằng bàn phím.
+Các bộ lọc đã được làm lại: các bot Kick thực sự bị bỏ qua và bạn có thể thêm các bộ lọc của riêng mình, "Ẩn tin nhắn có chứa" giờ đây cũng ẩn những gì đã có trên màn hình và danh sách có thể được nhập lại.
+
+Tiện ích mở rộng nhẹ hơn trên mọi trang Kick và trên Chrome, công cụ trên thiết bị sẽ được cung cấp lại khi ngôn ngữ đích ở chế độ Tự động.
+
+Mới và tùy chọn: số liệu thống kê sử dụng hàng ngày ẩn danh, tắt trừ khi bạn đồng ý. Chúng không bao giờ chứa tin nhắn, tên hoặc kênh của bạn.

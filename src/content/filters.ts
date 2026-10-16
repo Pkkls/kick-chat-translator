@@ -9,10 +9,13 @@ export interface MessageMeta {
 }
 
 export function shouldDropByUserOrChannel(meta: MessageMeta, settings: Settings): string | undefined {
-  if (settings.ignoreBots && (meta.isBot || COMMON_BOTS.has(meta.username))) {
+  const user = foldCase(meta.username);
+  if (
+    settings.ignoreBots &&
+    (meta.isBot || COMMON_BOTS.has(user) || settings.extraBots.some((b) => foldCase(b) === user))
+  ) {
     return 'bot';
   }
-  const user = foldCase(meta.username);
   if (settings.blacklistUsers.some((u) => foldCase(u) === user)) return 'user_blacklisted';
   if (settings.blacklistChannels.includes(meta.channel)) return 'channel_blacklisted';
   if (settings.whitelistChannels.length > 0 && !settings.whitelistChannels.includes(meta.channel)) {

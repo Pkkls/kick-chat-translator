@@ -129,7 +129,7 @@ Chat se překládá do kteréhokoli z nich a vlastní rozhraní rozšíření je
 
 ## Soukromí
 
-Žádný účet, žádná analytika, žádný můj server. Zprávy z chatu jdou k poskytovateli překladu, kterého jste
+Žádný účet, žádný můj server a žádná analytika, pokud nesouhlasíte s denním anonymním počtem odesílaným do Google Analytics (použité enginy, chyby, rychlost, nikdy vaše zprávy, jména ani kanály). Zprávy z chatu jdou k poskytovateli překladu, kterého jste
 zvolili, a nikam jinam, a v režimu v zařízení ani tam. Kopie nainstalovaná z obchodu nedělá žádný další
 požadavek. Kopie nainstalovaná ručně se nejvýš jednou za šest hodin zeptá GitHubu na značku posledního
 vydání, aby věděla, zda ukázat odznak aktualizace. [Podrobnosti](PRIVACY.md)

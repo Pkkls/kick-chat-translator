@@ -15,6 +15,8 @@ export default defineConfig(({ mode }) => ({
   // sink never reaches a shipped bundle. scripts/check-strip.ts enforces it.
   define: {
     __KT_METRICS__: JSON.stringify(process.env.KT_METRICS === '1'),
+    __KT_DEV__: JSON.stringify(process.env.KT_DEV === '1'),
+    __KT_BUILD__: JSON.stringify(new Date().toISOString()),
   },
   build: {
     target: 'es2022',

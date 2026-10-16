@@ -125,7 +125,7 @@ Sohbet bunların herhangi birine çevrilir, uzantının kendi arayüzü de hepsi
 
 ## Gizlilik
 
-Hesap yok, analitik yok, bana ait sunucu yok. Sohbet mesajları seçtiğin çeviri sağlayıcısına gider, başka hiçbir
+Hesap yok, bana ait sunucu yok ve sen kabul etmedikçe analitik de yok: Google Analytics'e günlük anonim bir sayım (kullanılan motorlar, hatalar, hız, asla mesajların, adların veya kanalların değil). Sohbet mesajları seçtiğin çeviri sağlayıcısına gider, başka hiçbir
 yere, cihaz üzerinde modda oraya bile gitmez. Bir mağazadan kurulan kopya başka hiçbir istek yapmaz. Elle
 kurulan kopya, güncelleme rozetini gösterip göstermeyeceğini bilmek için GitHub'dan son release etiketini
 en fazla altı saatte bir sorar. [Ayrıntılar](PRIVACY.md)

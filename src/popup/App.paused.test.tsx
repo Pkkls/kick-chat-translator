@@ -9,7 +9,7 @@ import { defaultSettings } from '~/shared/settings';
  * the row follows the active tab and that Resume writes the right list.
  */
 const sent: unknown[] = [];
-let settings = { ...defaultSettings(), pausedChannels: ['some-channel', 'other'] };
+let settings = { ...defaultSettings(), usageStatsAsked: true, pausedChannels: ['some-channel', 'other'] };
 let stats: Record<string, unknown> = {};
 const usedStats = { totalRequests: 3, totalCacheHits: 0, totalErrors: 0, byLang: {}, byProvider: {}, byChannel: {}, charsSent: 0, todayKey: 'today', history: [] };
 
@@ -49,7 +49,7 @@ const resumeButton = (root: HTMLElement) =>
 describe('popup on a paused channel', () => {
   beforeEach(() => {
     sent.length = 0;
-    settings = { ...defaultSettings(), pausedChannels: ['some-channel', 'other'] };
+    settings = { ...defaultSettings(), usageStatsAsked: true, pausedChannels: ['some-channel', 'other'] };
     stats = usedStats;
   });
   afterEach(() => {
@@ -93,7 +93,7 @@ describe('popup for someone who has translated nothing yet', () => {
   const fresh = { ...usedStats, totalRequests: 0, history: [] };
   beforeEach(() => {
     sent.length = 0;
-    settings = { ...defaultSettings() };
+    settings = { ...defaultSettings(), usageStatsAsked: true };
   });
   afterEach(() => {
     document.body.innerHTML = '';
