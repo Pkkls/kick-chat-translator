@@ -79,6 +79,17 @@ export function morceauxAutourDesEmotes(traduit: string, source: string, re: Reg
 }
 
 /**
+ * What the editor write gets from the text Tab inserts. That text already has
+ * the emotes back in as Kick markup (remettreEmotes), while the editor keeps
+ * its emote nodes: passed as is, every insert typed `[emote:id:name]` out as
+ * words next to the emote it stands for (measured live, compose-scenarios T2).
+ */
+export function morceauxPourEditeur(insere: string, source: string): string[] {
+  const mots = insere.replace(EMOTE_TOKEN_RE, ' ').replace(/ {2,}/g, ' ').trim();
+  return morceauxAutourDesEmotes(mots, source);
+}
+
+/**
  * The same, as one text with the emotes back in, Kick markup and typed names
  * alike: what the preview shows and Tab inserts. The insert then cuts that text
  * on Kick markup only, since only those are nodes in the editor.

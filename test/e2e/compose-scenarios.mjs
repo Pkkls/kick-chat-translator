@@ -15,10 +15,15 @@
  * results are judged on structure (emote kept, text changed, preview closed),
  * never on exact wording, which the engine is free to change.
  *
- *   npm run build && node test/e2e/compose-scenarios.mjs [--only T2,S1] [--headless] [--compte scratchpad/kick-cookies.json]
+ *   npm run build && node test/e2e/compose-scenarios.mjs [--compte scratchpad/kick-cookies.json] [--only T2,S1] [--chaine <slug>]
  *
- * Exit 0 = all green, 1 = a scenario failed, 2 = the page or the extension
- * never came up (environment, not a verdict on the code).
+ * --compte : a signed-in session (cookie export, kept git-ignored); without
+ * it the emote and mention scenarios come out ENV, Kick only opens those
+ * panels for an account. Headed only: headless, Kick serves no /browse.
+ *
+ * Exit 0 = all green (INSTABLE allowed, listed), 1 = a scenario failed twice,
+ * 2 = ENV: the page, the extension or a Kick panel never came up (a verdict on
+ * the environment, not on the code).
  */
 import fs from 'node:fs';
 import os from 'node:os';
@@ -65,6 +70,12 @@ page.keyboard.press = (key, o) => {
   if (/(^|\+)(Enter|NumpadEnter)$/.test(key) && !/^Shift\+Enter$/.test(key)) throw new Error(`touche refusee : ${key}`);
   return press(key, o);
 };
+// type() presses Enter for a newline: same rule.
+const type = page.keyboard.type.bind(page.keyboard);
+page.keyboard.type = (t, o) => {
+  if (/[\r\n]/.test(t)) throw new Error('saut de ligne refuse dans type(), utiliser Shift+Enter');
+  return type(t, o);
+};
 
 async function fin(code, msg) {
   if (msg) console.error(msg);
@@ -77,6 +88,7 @@ async function fin(code, msg) {
 // kept in scratchpad/ (git-ignored). Signed in, a stray Enter would post, so
 // the Enter guard above is then the only thing between a test and the chat.
 const compte = argv.includes('--compte') ? argv[argv.indexOf('--compte') + 1] : null;
+if (compte && !fs.existsSync(compte)) await fin(2, `ENV: fichier de cookies introuvable : ${compte}`);
 if (compte) {
   const SAME = { no_restriction: 'None', lax: 'Lax', strict: 'Strict' };
   await ctx.addCookies(
@@ -101,17 +113,33 @@ const candidats = await page.evaluate(() => {
   return [...vus].slice(0, 5);
 });
 const composer = page.locator('[data-testid="chat-input"], .editor-input[role="textbox"]').first();
+// A channel only counts if French typed there gets a preview: the scenarios
+// assume a target that is not French (and T7 one that is English). A channel
+// that fails this is the environment, not a regression.
+const chaine = argv.includes('--chaine') ? [argv[argv.indexOf('--chaine') + 1]] : null;
 let slug = null;
-for (const c of candidats) {
+for (const c of chaine ?? candidats) {
   await page.goto(`https://kick.com/${c}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
-  if (await composer.waitFor({ timeout: 20000 }).then(() => true, () => false)) {
+  if (!(await composer.waitFor({ timeout: 20000 }).then(() => true, () => false))) continue;
+  if (!(await page.waitForFunction(() => document.getElementById('kt-compose-bar') !== null, null, { timeout: 20000 }).then(() => true, () => false))) continue;
+  await page.waitForTimeout(2000);
+  await composer.click();
+  await page.keyboard.type(phrase(), { delay: 20 });
+  const ok = await page
+    .waitForFunction(() => document.getElementById('kt-compose-bar')?.dataset.state === 'ready', null, { timeout: 20000 })
+    .then(() => true, () => false);
+  await press('Control+a');
+  await press('Backspace');
+  if (ok) {
     slug = c;
     break;
   }
 }
-if (!slug) await fin(2, `ENV: aucun composer sur ${candidats.join(', ') || '(aucune chaine sur /browse)'}.`);
+if (!slug) await fin(2, `ENV: aucune chaine utilisable (composer + apercu) parmi ${(chaine ?? candidats).join(', ') || '(aucune sur /browse)'}.`);
 
-const auth = (await ctx.cookies()).filter((c) => /kick/i.test(c.domain) && /session|token|auth|remember/i.test(c.name));
+// kick_session is Laravel's and anonymous visitors get one too (measured):
+// only session_token, "<user id>|<token>", says someone is signed in.
+const auth = (await ctx.cookies()).filter((c) => /kick/i.test(c.domain) && c.name === 'session_token' && /^\d+%7C|^\d+\|/.test(c.value));
 if (auth.length && !compte) await fin(2, `ENV: cookie d auth Kick present (${auth.map((c) => c.name).join(', ')}) sans --compte, arret.`);
 if (compte && !auth.length) await fin(2, 'ENV: --compte donne mais aucune session Kick n a suivi.');
 const monte = await page.waitForFunction(() => document.getElementById('kt-compose-bar') !== null, null, { timeout: 30000 }).then(() => true, () => false);
@@ -179,7 +207,26 @@ const nb = (s, re) => (s.match(re) ?? []).length;
 
 // ---- the matrix ------------------------------------------------------------
 
-const MENTION = slug.slice(0, 3);
+// Kick suggests only people who chatted lately, the streamer included or not
+// ("No mention results" for a slug prefix, measured): the prefix is read off
+// the panel that a bare "@" opens, once per run.
+let MENTION = null;
+async function mention() {
+  if (!MENTION) {
+    await taper('@');
+    await page.waitForTimeout(1500);
+    const lignes = await page.evaluate(() => document.getElementById('chat-mention-panel')?.innerText.split('\n') ?? []);
+    MENTION = lignes.map((l) => l.trim()).find((l) => /^[A-Za-z0-9_]{3,25}$/.test(l))?.slice(0, 3) ?? null;
+    await press('Backspace');
+    if (!MENTION) throw new Env(`aucun nom propose par le panneau de mentions (${JSON.stringify(lignes.slice(0, 3))})`);
+  }
+  await taper(`@${MENTION}`);
+  if (!(await suggestion())) throw new Env(`pas de panneau de mention pour @${MENTION}`);
+  const vide = await page.evaluate(() => /no mention results/i.test(document.getElementById('chat-mention-panel')?.innerText ?? ''));
+  if (vide) throw new Env(`aucun resultat pour @${MENTION}`);
+  await press('Tab');
+  await page.waitForTimeout(300);
+}
 const SCENARIOS = [
   ['S1', 'emote :pe + Tab : Kick complete, on ne traduit rien', async () => {
     await taper('salut');
@@ -187,11 +234,8 @@ const SCENARIOS = [
     const t = await lire();
     check(nb(t, /\[e:/g) === 1 && t.startsWith('salut'), `attendu "salut [e:..]", lu ${JSON.stringify(t)}`);
   }],
-  ['S2', `@${MENTION} + Tab : Kick complete la mention`, async () => {
-    await taper(`@${MENTION}`);
-    if (!(await suggestion())) throw new Env(`pas de panneau de mention pour @${MENTION}`);
-    await press('Tab');
-    await page.waitForTimeout(300);
+  ['S2', '@abc + Tab : Kick complete la mention', async () => {
+    await mention();
     const t = await lire();
     check(t.length > MENTION.length + 1 && t.toLowerCase().includes(MENTION.toLowerCase()), `mention non completee : ${JSON.stringify(t)}`);
   }],
@@ -260,6 +304,7 @@ const SCENARIOS = [
     const p = 'this stream is really fun tonight';
     await taper(p);
     await page.waitForTimeout(2500);
+    if ((await etat()) === 'ready') throw new Env('la cible n est pas l anglais sur cette chaine, T7 ne s applique pas');
     await press('Tab');
     await page.waitForTimeout(500);
     check((await lire()) === p, `texte modifie : ${JSON.stringify(await lire())}`);
@@ -283,11 +328,8 @@ const SCENARIOS = [
     await page.waitForTimeout(500);
     check((await lire()) === p, `Shift+Tab a modifie le texte : ${JSON.stringify(await lire())}`);
   }],
-  ['T10', `@${MENTION} + emote + phrase + Tab : mention et emote gardees`, async () => {
-    await taper(`@${MENTION}`);
-    if (!(await suggestion())) throw new Env(`pas de panneau de mention pour @${MENTION}`);
-    await press('Tab');
-    await page.waitForTimeout(300);
+  ['T10', '@abc + emote + phrase + Tab : mention et emote gardees', async () => {
+    await mention();
     const nom = (await lire()).trim().replace(/^\[m:|\]$/g, '').replace(/^@/, '');
     await emote();
     const p = phrase();
@@ -313,7 +355,19 @@ const SCENARIOS = [
 
 // ---- run -------------------------------------------------------------------
 
-const res = { ok: 0, ko: 0, env: 0 };
+async function jouer(fn) {
+  await vider();
+  await fn();
+  // Kick's markup typed out as words is never right, whatever the scenario.
+  const fuite = (await lire()).match(/\[emote:\d+:[^\]]*\]/);
+  check(!fuite, `balise emote en texte brut : ${fuite?.[0]}`);
+}
+
+// A KO is played once more before it counts: live Kick and a free translation
+// endpoint fail now and then (measured: T8 and T10 red then green on the next
+// run). Red twice = KO, red then green = INSTABLE, shown but not failing, so a
+// real intermittent bug stays visible without every run crying wolf.
+const res = { ok: 0, ko: 0, env: 0, instable: 0 };
 const t0 = Date.now();
 for (const [id, nom, fn] of SCENARIOS) {
   if (only && !only.has(id)) continue;
@@ -321,20 +375,30 @@ for (const [id, nom, fn] of SCENARIOS) {
   let verdict = 'ok ';
   let detail = '';
   try {
-    await vider();
-    await fn();
-    // Kick's markup typed out as words is never right, whatever the scenario.
-    const fuite = (await lire()).match(/\[emote:\d+:[^\]]*\]/);
-    check(!fuite, `balise emote en texte brut : ${fuite?.[0]}`);
+    await jouer(fn);
     res.ok++;
   } catch (e) {
-    verdict = e instanceof Env ? 'ENV' : 'KO ';
     detail = `\n       ${e.message}`;
-    e instanceof Env ? res.env++ : res.ko++;
+    if (e instanceof Env) {
+      verdict = 'ENV';
+      res.env++;
+    } else {
+      try {
+        await jouer(fn);
+        verdict = 'INS';
+        res.instable++;
+      } catch (e2) {
+        verdict = 'KO ';
+        detail += e2.message === e.message ? ' (x2)' : `\n       puis : ${e2.message}`;
+        res.ko++;
+      }
+    }
   }
   console.log(`${verdict}  ${id.padEnd(4)} ${nom}  ${((Date.now() - t) / 1000).toFixed(1)}s${detail}`);
 }
 await vider().catch(() => {});
-const total = res.ok + res.ko + res.env;
-console.log(`\n${res.ok}/${total} scenarios verts | ${res.ko} KO | ${res.env} ENV | chaine ${slug} | ${((Date.now() - t0) / 1000).toFixed(0)}s`);
+const total = res.ok + res.ko + res.env + res.instable;
+console.log(
+  `\n${res.ok}/${total} scenarios verts | ${res.ko} KO | ${res.instable} INSTABLE | ${res.env} ENV | chaine ${slug} | ${((Date.now() - t0) / 1000).toFixed(0)}s`,
+);
 await fin(res.ko ? 1 : res.env ? 2 : 0);
