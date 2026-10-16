@@ -332,7 +332,11 @@ export function insertIntoComposer(el: HTMLElement, text: string, mode: 'insert'
       el.dataset.ktComposer = '';
       // No editor reachable (another layout, a browser without world MAIN): the
       // plain replace keeps the words, the emotes as [emote:id:name] text.
-      send({ type: 'compose.write', parts: morceauxAutourDesEmotes(text, readComposerText(el)) })
+      // `text` already carries the emotes back as markup (remettreEmotes); the
+      // nodes stay in the editor, so the words go in without it or the markup
+      // is written out as words next to the emote it stands for.
+      const mots = text.replace(/\[emote:\d+:[^\]\s]+\]/g, ' ').replace(/ {2,}/g, ' ').trim();
+      send({ type: 'compose.write', parts: morceauxAutourDesEmotes(mots, readComposerText(el)) })
         .then((r) => r.type === 'ack' || replaceAll(el, text))
         .catch(() => replaceAll(el, text));
       return;
