@@ -25,7 +25,7 @@ KĄ GAUNI
 
 PRIVATUMAS
 
-Jokios paskyros, jokios analitikos, jokio savo serverio. Pokalbio tekstas keliauja tik pasirinktam vertimo varikliui. Su Google, MyMemory ar Lingva tai kiekvieno pranešimo tekstas ir daugiau nieko. Su DeepL kartu kaip kontekstas siunčiamos paskutinės pokalbio eilutės su jų autorių vardais, kad vertimas tiktų pokalbiui. Kanalas, kurį žiūri, niekada nesiunčiamas, o su vertimu įrenginyje niekas nepalieka tavo kompiuterio.
+Jokios paskyros, jokio savo serverio ir jokios analitikos, nebent sutiksi su kasdieniu anoniminiu naudotų paslaugų, klaidų ir greičio skaičiavimu, niekada tavo žinutės, vardai ar kanalai. Pokalbio tekstas keliauja tik pasirinktam vertimo varikliui. Su Google, MyMemory ar Lingva tai kiekvieno pranešimo tekstas ir daugiau nieko. Su DeepL kartu kaip kontekstas siunčiamos paskutinės pokalbio eilutės su jų autorių vardais, kad vertimas tiktų pokalbiui. Kanalas, kurį žiūri, niekada nesiunčiamas, o su vertimu įrenginyje niekas nepalieka tavo kompiuterio.
 
 Leidimai paprastais žodžiais: saugykla tavo nustatymams ir vertimų talpyklai; prieiga prie kick.com, kad pokalbyje būtų rodomi vertimai; prieiga prie variklių, kuriuos ji gali kviesti (Google, DeepL, MyMemory ir Lingva); pažadinimo laikmatis, kad vertėjas išliktų pasirengęs, kol žiūri; ir teisė iš naujo įkelti savo skriptą į jau atidarytas Kick korteles diegiant ar atnaujinant, kad jos toliau versty be perkrovimo. Ji taip pat skaito GitHub leidimų puslapį, kad praneštų apie naujesnę versiją, su ta užklausa nieko nesiųsdama.
 

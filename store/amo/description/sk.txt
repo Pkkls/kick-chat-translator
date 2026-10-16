@@ -26,7 +26,7 @@ Pozrite si ho v akcii na skutočnom chate: https://www.youtube.com/watch?v=NoGJe
 
 ČO OPÚŠŤA VÁŠ PREHLIADAČ
 
-Text z chatu ide len do prekladového enginu, ktorý ste zvolili. Pri Google, MyMemory alebo Lingva je to text každej správy a nič iné: ani kanál, ani autor. Pri DeepL ide ako kontext aj niekoľko posledných riadkov chatu s menami tých, ktorí ich napísali, aby preklad zapadol do konverzácie. Na to sa vzťahuje riadok „obsah webových stránok“ v povoleniach vyššie a je to všetko. Nie je tu žiadny účet, žiadna analytika ani môj server: rozšírenie komunikuje s Kickom, s enginom, ktorý ste zvolili, a so stránkou vydaní na GitHub, aby vám oznámilo novšiu verziu, a pri tejto poslednej požiadavke nič neposiela.
+Text z chatu ide len do prekladového enginu, ktorý ste zvolili. Pri Google, MyMemory alebo Lingva je to text každej správy a nič iné: ani kanál, ani autor. Pri DeepL ide ako kontext aj niekoľko posledných riadkov chatu s menami tých, ktorí ich napísali, aby preklad zapadol do konverzácie. Na to sa vzťahuje riadok „obsah webových stránok“ v povoleniach vyššie a je to všetko. Nie je tu žiadny účet ani môj server: rozšírenie komunikuje s Kickom, s enginom, ktorý ste zvolili, a so stránkou vydaní na GitHub, aby vám oznámilo novšiu verziu, a pri tejto poslednej požiadavke nič neposiela. Ak zaškrtnete voliteľnú položku "technické údaje a údaje o interakcii", posiela navyše do Google Analytics denný anonymný počet použitých enginov, chýb a rýchlosti, nikdy vaše správy, mená ani kanály.
 
 ZADARMO A S OTVORENÝM KÓDOM
 

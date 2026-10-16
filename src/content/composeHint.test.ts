@@ -57,6 +57,6 @@ describe('compose sends the confident one', () => {
   });
 
   it('binds that local to confidentLanguage', () => {
-    expect(source()).toMatch(/const confident\s*=\s*trimmed\s*\?\s*confidentLanguage\(/);
+    expect(source()).toMatch(/const confident\s*=\s*words\s*\?\s*confidentLanguage\(/);
   });
 });

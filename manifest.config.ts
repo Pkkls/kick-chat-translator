@@ -98,7 +98,10 @@ export default defineManifest({
         // Required by AMO for new submissions/versions. The extension transmits chat
         // message text (website content) to the user-selected translation provider —
         // nothing else; no analytics, no accounts. On-device mode transmits nothing.
-        data_collection_permissions: { required: ['websiteContent'] },
+        // technicalAndInteraction: the opt-in daily usage statistics
+        // (src/shared/usage.ts). Mozilla requires it optional, and the install
+        // prompt shows it as a choice the user can leave unticked.
+        data_collection_permissions: { required: ['websiteContent'], optional: ['technicalAndInteraction'] },
       },
     },
   }),

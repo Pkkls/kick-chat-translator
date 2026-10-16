@@ -7,6 +7,7 @@
  */
 import { isNoise, isSameLanguageAsTarget } from './filters';
 import { isSlangOnly } from '~/shared/glossary';
+import { EMOTE_NAME_RE } from './emoteParser';
 
 /** Wait this long after the last keystroke before translating the settled text. */
 export const COMPOSE_DEBOUNCE_MS = 320;
@@ -34,6 +35,75 @@ export function isLinkOrMentionOnly(text: string): boolean {
     .replace(/@\w+/g, ' ')
     .replace(/[\s\p{P}\p{S}]+/gu, '');
   return stripped.length === 0;
+}
+
+// Kick's emote markup, as readComposerText writes the composer's emote images.
+const EMOTE_TOKEN_RE = /\[emote:\d+:[^\]\s]+\]/g;
+// The same, plus emote names typed as words (7TV turns "pepe" + Tab into
+// "PepePls" as plain text). Google mangles those 44% of the time (peepoJoyeux).
+const ANY_EMOTE_RE = new RegExp(`${EMOTE_TOKEN_RE.source}|${EMOTE_NAME_RE.source}`, 'g');
+
+/**
+ * What the engine is asked to translate: the words, without the emotes, line
+ * breaks kept.
+ *
+ * The emotes used to travel as ⟦n⟧ placeholders. Measured on the free Google
+ * endpoint, 12 chat lines x 3 emote positions x 15 targets: Chinese came back
+ * BLANK on 7 of 36 lines, and 213 of 540 lines were worded differently from
+ * the same words sent alone ("quel bon frère vivant" for "direct"). Sent alone,
+ * the words translate exactly as they did before emotes were kept at all.
+ */
+export function motsPourMoteur(text: string): string {
+  return text
+    .replace(ANY_EMOTE_RE, ' ')
+    .split('\n')
+    .map((l) => l.replace(/\s+/g, ' ').trim())
+    .filter(Boolean)
+    .join('\n');
+}
+
+/**
+ * The translated words put back among the composer's emotes: parts[i] goes
+ * before emote i, the last part after the last one. The words take the place
+ * of the first stretch that held words, so an emote typed before them stays
+ * before, one typed after stays after, and one typed between words ends up
+ * after them (the engine reorders words; where "between" falls is unknowable).
+ */
+export function morceauxAutourDesEmotes(traduit: string, source: string, re: RegExp = EMOTE_TOKEN_RE): string[] {
+  const avant = source.split(re);
+  const ou = Math.max(0, avant.findIndex((p) => p.trim() !== ''));
+  const dernier = avant.length - 1;
+  return avant.map((_, i) =>
+    i === ou ? `${i > 0 ? ' ' : ''}${traduit.trim()}${i < dernier ? ' ' : ''}` : '',
+  );
+}
+
+/**
+ * The same, as one text with the emotes back in, Kick markup and typed names
+ * alike: what the preview shows and Tab inserts. The insert then cuts that text
+ * on Kick markup only, since only those are nodes in the editor.
+ */
+export function remettreEmotes(traduit: string, source: string): string {
+  const emotes = source.match(ANY_EMOTE_RE) ?? [];
+  if (emotes.length === 0) return traduit;
+  return morceauxAutourDesEmotes(traduit, source, ANY_EMOTE_RE)
+    .map((p, i) => p + (emotes[i] ?? ''))
+    .join('');
+}
+
+/**
+ * Would Tab change nothing? The engine handed the text back as it was, as it
+ * does for a translation just inserted and read again (measured: the preview
+ * came back with the very words in the box). Case and spacing don't count.
+ */
+export function rienAEchanger(source: string, traduit: string): boolean {
+  const n = (s: string): string => s.replace(/\s+/g, ' ').trim().toLowerCase();
+  return n(source) === n(traduit);
+}
+
+/** The words only: what language detection and the length/noise gates look at. */
+export function sansEmotes(text: string): string {
+  return text.replace(ANY_EMOTE_RE, ' ').replace(/\s+/g, ' ').trim();
 }
 
 // @handles and URLs the translator must leave untouched in YOUR outgoing message.
@@ -80,7 +150,9 @@ export function decideComposeAction(
   target: string,
   minLen: number = COMPOSE_MIN_LEN,
 ): ComposeAction {
-  const t = text.trim();
+  const full = text.trim();
+  // Gates judge the words: an emote-only message has nothing to translate.
+  const t = sansEmotes(full);
   if (t.length === 0) return 'skip-empty';
   if (t.length < minLen) return 'skip-short';
   if (t.length > COMPOSE_MAX_LEN) return 'skip-long';
@@ -89,7 +161,7 @@ export function decideComposeAction(
   // Only skip on a *confident* same-language detection — undefined means "let the
   // provider auto-detect", which is correct for short/ambiguous input.
   if (detected && isSameLanguageAsTarget(detected, target)) return 'skip-same-lang';
-  if (lastTranslated !== undefined && t === lastTranslated.trim()) return 'skip-unchanged';
+  if (lastTranslated !== undefined && full === lastTranslated.trim()) return 'skip-unchanged';
   return 'translate';
 }
 

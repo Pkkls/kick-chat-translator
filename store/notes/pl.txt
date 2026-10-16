@@ -1,5 +1,9 @@
-Rozszerzenie mówi teraz w Twoim języku. Ustawienia, okienko i pasek w czacie są przetłumaczone na wszystkie 43 języki, na które tłumaczy, a nie na 10, a hebrajski i perski czyta się od prawej do lewej, tak jak arabski.
+Pisanie za pomocą emotikonów działa teraz poprawnie. Zakładka uzupełnia emotki i @wzmianki Kick'a i 7TV zamiast wstawiać tłumaczenie, emotikony pozostają w Twojej wiadomości po jej przetłumaczeniu, a podgląd nie obejmuje już list Kick'a ani selektora emotek.
 
-Dziesięć języków, które znało już wcześniej, zostało napisanych od nowa, żeby brzmiały naturalnie, jakby powstały w tym języku, a nie były tłumaczone słowo po słowie z angielskiego.
+Tłumaczenia są dokładniejsze: nazwy marek i osób (iPhone, YouTube, LeBron) nie są już usuwane przed tłumaczeniem, a @wzmianki pozostają w przetłumaczonych wiadomościach.
 
-Menu języka interfejsu pokazuje flagę każdego języka i działa też z klawiatury.
+Filtry zostały przerobione: prawdziwe boty wyrzucające są ignorowane i możesz dodawać własne, opcja „Ukryj wiadomości zawierające” ukrywa teraz także to, co jest już na ekranie, a listy można wpisywać ponownie.
+
+Rozszerzenie jest lżejsze na każdej stronie Kick, a w przeglądarce Chrome silnik na urządzeniu jest ponownie oferowany, gdy język docelowy jest ustawiony na Auto.
+
+Nowość i opcjonalna: anonimowe dzienne statystyki użytkowania, wyłączone, chyba że się zgodzisz. Nigdy nie zawierają Twoich wiadomości, nazw ani kanałów.

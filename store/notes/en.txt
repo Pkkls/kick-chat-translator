@@ -1,5 +1,9 @@
-The extension now speaks your language. The settings, the popup and the bar in the chat are translated into all 43 languages it translates into, not 10, and Hebrew and Persian read right to left, like Arabic.
+Typing with emotes works properly now. Tab completes Kick's and 7TV's emotes and @mentions instead of inserting the translation, emotes stay in your message when it is translated, and the preview no longer covers Kick's lists or the emote picker.
 
-The ten languages it already spoke were rewritten to read naturally, as if written in that language rather than translated word for word from English.
+Translations are more accurate: brand and people names (iPhone, YouTube, LeBron) are no longer dropped before translating, and @mentions stay in translated messages.
 
-The interface language menu shows each language's flag, and works with the keyboard.
+Filters were reworked: the real Kick bots are ignored and you can add your own, "Hide messages containing" now also hides what is already on screen, and the lists can be typed in again.
+
+The extension is lighter on every Kick page, and on Chrome the on-device engine is offered again when the target language is on Auto.
+
+New and optional: anonymous daily usage statistics, off unless you say yes. They never contain your messages, names or channels.

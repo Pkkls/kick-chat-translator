@@ -26,7 +26,7 @@ NELER SUNUYOR
 
 TARAYICINDAN NE ÇIKIYOR
 
-Sohbet metni yalnızca seçtiğin çeviri motoruna gider. Google, MyMemory ya da Lingva ile giden yalnızca her mesajın metnidir, başka hiçbir şey değil: ne kanal ne de mesajı kimin yazdığı. DeepL ile son birkaç sohbet satırı, onları yazanların adlarıyla birlikte bağlam olarak gider, böylece çeviri konuşmaya oturur. Yukarıdaki izinlerdeki “site içeriği” satırı bunu kasteder ve kastettiği bundan ibarettir. Hesap yok, analitik yok, bana ait sunucu yok: eklenti Kick ile, seçtiğin motorla ve daha yeni bir sürüm olduğunu haber vermek için GitHub sürümler sayfasıyla konuşur, o son isteğe hiçbir şey koymadan.
+Sohbet metni yalnızca seçtiğin çeviri motoruna gider. Google, MyMemory ya da Lingva ile giden yalnızca her mesajın metnidir, başka hiçbir şey değil: ne kanal ne de mesajı kimin yazdığı. DeepL ile son birkaç sohbet satırı, onları yazanların adlarıyla birlikte bağlam olarak gider, böylece çeviri konuşmaya oturur. Yukarıdaki izinlerdeki “site içeriği” satırı bunu kasteder ve kastettiği bundan ibarettir. Hesap yok, bana ait sunucu yok: eklenti Kick ile, seçtiğin motorla ve daha yeni bir sürüm olduğunu haber vermek için GitHub sürümler sayfasıyla konuşur, o son isteğe hiçbir şey koymadan. İsteğe bağlı "teknik ve etkileşim verileri" seçeneğini işaretlersen, Google Analytics'e de kullanılan motorların, hataların ve hızın günlük anonim sayımını gönderir, asla mesajlarını, adları veya kanalları değil.
 
 ÜCRETSİZ VE AÇIK KAYNAK
 

@@ -25,7 +25,7 @@ CO ZÍSKÁTE
 
 SOUKROMÍ
 
-Žádný účet, žádná analytika, žádný můj server. Text z chatu jde jen do překladového enginu, který jste zvolili. U Googlu, MyMemory nebo Lingvy je to text každé zprávy a nic jiného. U DeepL jde jako kontext i několik posledních řádků chatu se jmény těch, kdo je napsali, aby překlad seděl do konverzace. Kanál, který sledujete, se nikdy neposílá, a při překladu v zařízení nic neopustí váš počítač.
+Žádný účet, žádný můj server a žádná analytika, pokud nesouhlasíš s denním anonymním počtem použitých služeb, chyb a rychlosti, nikdy tvoje zprávy, jména ani kanály. Text z chatu jde jen do překladového enginu, který jste zvolili. U Googlu, MyMemory nebo Lingvy je to text každé zprávy a nic jiného. U DeepL jde jako kontext i několik posledních řádků chatu se jmény těch, kdo je napsali, aby překlad seděl do konverzace. Kanál, který sledujete, se nikdy neposílá, a při překladu v zařízení nic neopustí váš počítač.
 
 Oprávnění jednoduše řečeno: úložiště pro vaše nastavení a mezipaměť překladů; přístup ke kick.com, aby se překlady zobrazily v chatu; přístup k enginům, které může volat (Google, DeepL, MyMemory a Lingva); časovač, aby překladač zůstal připravený, zatímco se díváte; a právo znovu načíst vlastní skript do již otevřených karet Kick při instalaci nebo aktualizaci, aby dál překládaly bez obnovení stránky. Čte také stránku vydání na GitHubu, aby vám oznámilo novější verzi, a s tímto požadavkem neposílá nic.
 

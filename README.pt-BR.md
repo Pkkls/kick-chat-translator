@@ -126,7 +126,7 @@ O chat é traduzido para qualquer um deles, e a interface da própria extensão 
 
 ## Privacidade
 
-Sem conta, sem analytics, sem servidor próprio. As mensagens do chat vão para o provedor de tradução que você
+Sem conta, sem servidor próprio e sem analytics, a não ser que você aceite uma contagem diária anônima enviada ao Google Analytics (motores usados, erros, velocidade, nunca suas mensagens, nomes ou canais). As mensagens do chat vão para o provedor de tradução que você
 escolheu e para nenhum outro lugar, e no modo dispositivo nem para ele. Uma cópia instalada de uma loja não faz
 nenhuma outra requisição. Uma cópia instalada à mão pergunta ao GitHub a última tag de release, no máximo a
 cada seis horas, para saber se mostra o selo de atualização. [Detalhes](PRIVACY.md)

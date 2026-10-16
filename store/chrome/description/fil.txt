@@ -25,7 +25,7 @@ ANO ANG MAKUKUHA MO
 
 PRIVACY
 
-Walang account, walang analytics, walang sarili kong server. Sa translation engine lang na pinili mo napupunta ang text ng chat. Sa Google, MyMemory o Lingva, text ng bawat mensahe lang iyon at wala nang iba. Sa DeepL, kasama ang huling ilang linya ng chat bilang konteksto, pati ang mga pangalan ng nagsulat, para bumagay ang salin sa usapan. Hindi kailanman ipinapadala ang channel na pinapanood mo, at sa pagsasalin sa mismong device, walang lumalabas sa computer mo.
+Walang account, walang sarili kong server, at walang analytics maliban kung pumayag ka sa araw-araw na anonimong bilang ng mga engine na ginamit, error at bilis, hindi kailanman ang iyong mga mensahe, pangalan o channel. Sa translation engine lang na pinili mo napupunta ang text ng chat. Sa Google, MyMemory o Lingva, text ng bawat mensahe lang iyon at wala nang iba. Sa DeepL, kasama ang huling ilang linya ng chat bilang konteksto, pati ang mga pangalan ng nagsulat, para bumagay ang salin sa usapan. Hindi kailanman ipinapadala ang channel na pinapanood mo, at sa pagsasalin sa mismong device, walang lumalabas sa computer mo.
 
 Ang mga permiso, sa simpleng salita: storage para sa mga setting mo at sa translation cache nito; access sa kick.com para ipakita ang mga salin sa chat; access sa mga engine na puwede nitong tawagan (Google, DeepL, MyMemory at Lingva); isang wake-up timer para laging handa ang tagasalin habang nanonood ka; at ang karapatang i-reload ang sarili nitong script sa mga Kick tab na bukas na kapag in-install o in-update mo ito, para tuloy ang pagsasalin nang hindi nagre-refresh. Binabasa rin nito ang GitHub releases page para sabihin sa iyo kapag may mas bagong bersyon, nang walang ipinapadalang anuman sa request na iyon.
 

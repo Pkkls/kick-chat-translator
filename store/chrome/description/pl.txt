@@ -25,7 +25,7 @@ CO DOSTAJESZ
 
 PRYWATNOŚĆ
 
-Bez konta, bez analityki, bez mojego serwera. Tekst czatu trafia tylko do silnika tłumaczącego, który wybierzesz. W przypadku Google, MyMemory i Lingva to tekst każdej wiadomości i nic więcej. W przypadku DeepL razem z nim idzie kilka ostatnich linijek czatu jako kontekst, wraz z nazwami osób, które je napisały, żeby tłumaczenie pasowało do rozmowy. Kanał, który oglądasz, nigdy nie jest wysyłany, a przy tłumaczeniu na urządzeniu nic nie opuszcza twojego komputera.
+Bez konta, bez mojego serwera i bez analityki, chyba że zgodzisz się na codzienne anonimowe zliczanie użytych silników, błędów i szybkości, nigdy twoich wiadomości, nazw ani kanałów. Tekst czatu trafia tylko do silnika tłumaczącego, który wybierzesz. W przypadku Google, MyMemory i Lingva to tekst każdej wiadomości i nic więcej. W przypadku DeepL razem z nim idzie kilka ostatnich linijek czatu jako kontekst, wraz z nazwami osób, które je napisały, żeby tłumaczenie pasowało do rozmowy. Kanał, który oglądasz, nigdy nie jest wysyłany, a przy tłumaczeniu na urządzeniu nic nie opuszcza twojego komputera.
 
 Uprawnienia po ludzku: pamięć na twoje ustawienia i pamięć podręczną tłumaczeń; dostęp do kick.com, żeby pokazywać tłumaczenia w czacie; dostęp do silników, które może wywoływać (Google, DeepL, MyMemory i Lingva); budzik, dzięki któremu tłumacz pozostaje gotowy, gdy oglądasz; oraz prawo do ponownego wczytania własnego skryptu w już otwartych kartach Kick przy instalacji lub aktualizacji, żeby dalej tłumaczyły bez odświeżania. Odczytuje też stronę wydań na GitHubie, żeby dać ci znać o nowszej wersji, i nie wysyła przy tym niczego.
 

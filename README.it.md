@@ -127,7 +127,7 @@ La chat si traduce in ognuna di queste, e l'interfaccia dell'estensione è dispo
 
 ## Privacy
 
-Nessun account, nessuna analitica, nessun server mio. I messaggi della chat vanno al provider di traduzione
+Nessun account, nessun mio server e nessuna analisi a meno che non accetti un conteggio anonimo giornaliero inviato a Google Analytics (motori utilizzati, errori, velocità, mai i tuoi messaggi, nomi o canali). I messaggi della chat vanno al provider di traduzione
 che hai scelto e da nessun'altra parte, e in modalità sul dispositivo nemmeno lì. Una copia installata da uno
 store non fa altre richieste. Una copia installata a mano chiede a GitHub l'ultimo tag di release, al massimo
 ogni sei ore, per sapere se mostrare il badge di aggiornamento. [Dettagli](PRIVACY.md)

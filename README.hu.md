@@ -127,7 +127,7 @@ A csevegés bármelyikre fordítható, és maga a bővítmény felülete is elé
 
 ## Adatvédelem
 
-Nincs fiók, nincs analitika, nincs saját szerverem. A csevegőüzenetek a kiválasztott fordítószolgáltatóhoz
+Nincs fiók, nincs szerverem és nincs elemzés, hacsak nem engedélyezi a Google Analytics számára elküldött napi névtelen számlálást (használt motorok, hibák, sebesség, soha nem az Ön üzenetei, nevei vagy csatornái). A csevegőüzenetek a kiválasztott fordítószolgáltatóhoz
 mennek, máshová nem, eszközön futó módban oda sem. Az áruházból telepített példány semmilyen más kérést nem
 küld. A kézzel telepített példány legfeljebb hatóránként lekéri a GitHubtól a legfrissebb kiadás címkéjét,
 hogy tudja, megjelenítse-e a frissítési jelvényt. [Részletek](PRIVACY.md)

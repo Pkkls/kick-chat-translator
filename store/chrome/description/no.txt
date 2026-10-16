@@ -25,7 +25,7 @@ DETTE FÅR DU
 
 PERSONVERN
 
-Ingen konto, ingen analyse, ingen server fra meg. Chatteksten går bare til oversettelsesmotoren du har valgt. Med Google, MyMemory eller Lingva er det teksten i hver melding og ingenting annet. Med DeepL følger de siste chatlinjene med som kontekst, sammen med navnene til dem som skrev dem, slik at oversettelsen passer til samtalen. Kanalen du ser på sendes aldri, og med oversettelse på enheten forlater ingenting datamaskinen din.
+Ingen konto, ingen server fra meg og ingen analyse, med mindre du sier ja til en daglig anonym telling av brukte tjenester, feil og hastighet, aldri meldingene, navnene eller kanalene dine. Chatteksten går bare til oversettelsesmotoren du har valgt. Med Google, MyMemory eller Lingva er det teksten i hver melding og ingenting annet. Med DeepL følger de siste chatlinjene med som kontekst, sammen med navnene til dem som skrev dem, slik at oversettelsen passer til samtalen. Kanalen du ser på sendes aldri, og med oversettelse på enheten forlater ingenting datamaskinen din.
 
 Tillatelsene med vanlige ord: lagring for innstillingene dine og oversettelsesbufferen; tilgang til kick.com for å vise oversettelser i chatten; tilgang til motorene den kan kalle (Google, DeepL, MyMemory og Lingva); en vekkeklokke slik at oversetteren er klar mens du ser på; og retten til å laste inn sitt eget skript på nytt i Kick-faner som allerede er åpne, ved installasjon eller oppdatering, slik at de fortsetter å oversette uten å lastes på nytt. Den leser også GitHub-utgivelsessiden for å si fra når det finnes en nyere versjon, og sender ingenting med den forespørselen.
 

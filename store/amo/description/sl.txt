@@ -26,7 +26,7 @@ KAJ DOBITE
 
 KAJ ZAPUSTI VAŠ BRSKALNIK
 
-Besedilo chata gre samo v prevajalski pogon, ki ste ga izbrali. Pri Googlu, MyMemory ali Lingva je to besedilo vsakega sporočila in nič drugega: ne kanal, ne avtor. Pri DeepL gre kot kontekst zraven tudi nekaj zadnjih vrstic chata z imeni tistih, ki so jih napisali, da se prevod prilega pogovoru. Na to se nanaša vrstica „vsebina spletnih mest“ med zgornjimi dovoljenji in to je vse. Ni računa, analitike ali mojega strežnika: razširitev komunicira s Kickom, s pogonom, ki ste ga izbrali, in s stranjo z izdajami na GitHubu, da vam sporoči, če obstaja novejša različica, pri tej zadnji zahtevi pa ne pošlje ničesar.
+Besedilo chata gre samo v prevajalski pogon, ki ste ga izbrali. Pri Googlu, MyMemory ali Lingva je to besedilo vsakega sporočila in nič drugega: ne kanal, ne avtor. Pri DeepL gre kot kontekst zraven tudi nekaj zadnjih vrstic chata z imeni tistih, ki so jih napisali, da se prevod prilega pogovoru. Na to se nanaša vrstica „vsebina spletnih mest“ med zgornjimi dovoljenji in to je vse. Ni računa ali mojega strežnika: razširitev komunicira s Kickom, s pogonom, ki ste ga izbrali, in s stranjo z izdajami na GitHubu, da vam sporoči, če obstaja novejša različica, pri tej zadnji zahtevi pa ne pošlje ničesar. Če označite neobvezno izbiro "tehnični podatki in podatki o interakciji", razširitev v Google Analytics pošlje tudi dnevno anonimno štetje uporabljenih pogonov, napak in hitrosti, nikoli vaših sporočil, imen ali kanalov.
 
 BREZPLAČNO IN ODPRTOKODNO
 

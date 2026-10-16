@@ -25,7 +25,7 @@ DAS BEKOMMST DU
 
 DATENSCHUTZ
 
-Kein Konto, keine Analyse, kein Server von mir. Der Chattext geht nur an die Übersetzungs-Engine, die du gewählt hast. Bei Google, MyMemory oder Lingva ist das der Text jeder Nachricht und sonst nichts. Bei DeepL gehen die letzten Chatzeilen als Kontext mit, samt den Namen der Schreibenden, damit die Übersetzung zum Gespräch passt. Der Kanal, den du schaust, wird nie gesendet, und bei der Übersetzung auf dem Gerät verlässt nichts deinen Computer.
+Kein Konto, kein Server von mir und keine Analyse, außer du stimmst einer täglichen anonymen Zählung von genutzten Diensten, Fehlern und Geschwindigkeit zu, nie deine Nachrichten, Namen oder Kanäle. Der Chattext geht nur an die Übersetzungs-Engine, die du gewählt hast. Bei Google, MyMemory oder Lingva ist das der Text jeder Nachricht und sonst nichts. Bei DeepL gehen die letzten Chatzeilen als Kontext mit, samt den Namen der Schreibenden, damit die Übersetzung zum Gespräch passt. Der Kanal, den du schaust, wird nie gesendet, und bei der Übersetzung auf dem Gerät verlässt nichts deinen Computer.
 
 Die Berechtigungen in einfachen Worten: Speicher für deine Einstellungen und den Übersetzungs-Cache; Zugriff auf kick.com, um Übersetzungen im Chat anzuzeigen; Zugriff auf die Engines, die aufgerufen werden können (Google, DeepL, MyMemory und Lingva); ein Weckzeitgeber, damit der Übersetzer bereit bleibt, während du schaust; und das Recht, sein eigenes Skript bei Installation oder Update in bereits geöffnete Kick-Tabs neu zu laden, damit sie ohne Neuladen weiter übersetzen. Außerdem liest sie die GitHub-Releases-Seite, um dir zu sagen, wenn es eine neuere Version gibt, und sendet dabei nichts mit.
 

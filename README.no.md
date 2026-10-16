@@ -125,7 +125,7 @@ Chatten kan oversettes til hvilket som helst av dem, og utvidelsens eget grenses
 
 ## Personvern
 
-Ingen konto, ingen analyse, ingen server fra min side. Chatmeldinger går til oversettelsestjenesten du valgte og
+Ingen konto, ingen server av meg og ingen analyser med mindre du velger å motta en daglig anonym telling sendt til Google Analytics (motorer brukt, feil, hastighet, aldri meldingene, navnene eller kanalene dine). Chatmeldinger går til oversettelsestjenesten du valgte og
 ingen andre steder, og i enhetsmodus ikke engang dit. En kopi installert fra en butikk gjør ingen andre forespørsler. En
 kopi installert for hånd spør GitHub om siste release-tag, høyst hver sjette time, for å vite om den skal
 vise oppdateringsmerket. [Detaljer](PRIVACY.md)

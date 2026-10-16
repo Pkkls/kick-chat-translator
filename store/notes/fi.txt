@@ -1,5 +1,9 @@
-Laajennus puhuu nyt sinun kieltäsi. Asetukset, ponnahdusikkuna ja chatin palkki on käännetty kaikille 43 kielelle, joille se kääntää, eikä enää vain 10:lle, ja heprea ja persia luetaan oikealta vasemmalle kuten arabia.
+Hymiöillä kirjoittaminen toimii nyt oikein. Välilehti täydentää Kickin ja 7TV:n hymiöt ja @maininnat käännöksen lisäämisen sijaan, hymiöt pysyvät viestissäsi, kun se käännetään, eikä esikatselu enää kata Kickin luetteloita tai hymiövalitsinta.
 
-Kymmenen kieltä, joita se puhui jo ennestään, kirjoitettiin uudelleen niin, että ne kuulostavat luonnollisilta, kuin ne olisi kirjoitettu suoraan sillä kielellä eikä käännetty sana sanalta englannista.
+Käännökset ovat tarkempia: tuotemerkkien ja ihmisten nimiä (iPhone, YouTube, LeBron) ei enää pudoteta ennen käännöstä, ja @maininnat pysyvät käännetyissä viesteissä.
 
-Käyttöliittymän kielivalikko näyttää jokaisen kielen lipun ja toimii myös näppäimistöllä.
+Suodattimet uusittiin: todellisia Kick-botteja ei huomioida ja voit lisätä omia, "Piilota sisältävät viestit" piilottaa nyt myös sen, mikä on jo näytöllä, ja listat voidaan kirjoittaa uudelleen.
+
+Laajennus on kevyempi jokaisella Kick-sivulla, ja Chromessa laitteen sisäistä käännöstä tarjotaan taas, kun kohdekieli on Auto.
+
+Uusi ja valinnainen: anonyymit päivittäiset käyttötilastot pois päältä, ellet sano kyllä. Ne eivät koskaan sisällä viestejäsi, nimiäsi tai kanaviasi.

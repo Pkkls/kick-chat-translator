@@ -1,5 +1,9 @@
-Eklenti artık senin dilini konuşuyor. Ayarlar, açılır pencere ve sohbetteki çubuk, eklentinin çevirdiği 43 dilin hepsine çevrildi, 10 dille sınırlı değil; İbranice ve Farsça da Arapça gibi sağdan sola okunuyor.
+İfadelerle yazmak artık düzgün çalışıyor. Sekme, çeviriyi eklemek yerine Kick'in ve 7TV'nin ifadelerini ve @bahsetmelerini tamamlar, ifadeler çevrildiğinde mesajınızda kalır ve önizleme artık Kick'in listelerini veya ifade seçiciyi kapsamaz.
 
-Eklentinin zaten konuştuğu on dil, İngilizceden kelime kelime çevrilmiş gibi değil, doğrudan o dilde yazılmış gibi doğal okunsun diye baştan yazıldı.
+Çeviriler daha doğru: marka ve kişi adları (iPhone, YouTube, LeBron) artık çeviriden önce atlanmıyor ve @bahisler çevrilmiş mesajlarda kalıyor.
 
-Arayüz dili menüsü her dilin bayrağını gösteriyor ve klavyeyle de kullanılabiliyor.
+Filtreler yeniden düzenlendi: gerçek Kick botları göz ardı edildi ve siz kendi filtrenizi ekleyebilirsiniz, "İçeren mesajları gizle" seçeneği artık ekranda görünenleri de gizler ve listeler yeniden yazılabilir.
+
+Uzantı her Kick sayfasında daha hafiftir ve Chrome'da, hedef dil Otomatik olduğunda cihaz içi motor yeniden sunulur.
+
+Yeni ve isteğe bağlı: anonim günlük kullanım istatistikleri, siz evet demediğiniz sürece kapalı. Hiçbir zaman mesajlarınızı, adlarınızı veya kanallarınızı içermezler.

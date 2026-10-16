@@ -25,7 +25,7 @@ YANG KAMU DAPAT
 
 PRIVASI
 
-Tanpa akun, tanpa analitik, tanpa server milik saya. Teks chat hanya dikirim ke mesin terjemahan yang kamu pilih. Dengan Google, MyMemory, atau Lingva, yang dikirim hanyalah teks tiap pesan dan tidak ada yang lain. Dengan DeepL, beberapa baris chat terakhir ikut dikirim sebagai konteks, lengkap dengan nama penulisnya, supaya terjemahan cocok dengan percakapan. Channel yang kamu tonton tidak pernah dikirim, dan dengan terjemahan di perangkat tidak ada yang keluar dari komputermu.
+Tanpa akun, tanpa server milik saya, dan tanpa analitik kecuali kamu setuju dengan hitungan harian anonim atas mesin yang dipakai, galat, dan kecepatan, tidak pernah pesan, nama, atau channel-mu. Teks chat hanya dikirim ke mesin terjemahan yang kamu pilih. Dengan Google, MyMemory, atau Lingva, yang dikirim hanyalah teks tiap pesan dan tidak ada yang lain. Dengan DeepL, beberapa baris chat terakhir ikut dikirim sebagai konteks, lengkap dengan nama penulisnya, supaya terjemahan cocok dengan percakapan. Channel yang kamu tonton tidak pernah dikirim, dan dengan terjemahan di perangkat tidak ada yang keluar dari komputermu.
 
 Izinnya, dengan bahasa sederhana: storage untuk pengaturan dan cache terjemahannya; akses ke kick.com untuk menampilkan terjemahan di chat; akses ke mesin yang bisa dipanggilnya (Google, DeepL, MyMemory, dan Lingva); timer pembangun supaya penerjemah tetap siap selagi kamu menonton; dan hak untuk memuat ulang skripnya sendiri ke tab Kick yang sudah terbuka saat dipasang atau diperbarui, supaya tetap menerjemahkan tanpa perlu refresh. Ia juga membaca halaman rilis GitHub untuk memberi tahu kalau ada versi lebih baru, tanpa mengirim apa pun bersama permintaan itu.
 

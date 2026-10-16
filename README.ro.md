@@ -129,7 +129,7 @@ Chatul se traduce în oricare dintre ele, iar interfața extensiei însăși est
 
 ## Confidențialitate
 
-Fără cont, fără analytics, fără un server al meu. Mesajele din chat merg la serviciul de traducere ales de tine și
+Niciun cont, nici un server de-al meu și nicio analiză, cu excepția cazului în care vă înscrieți pentru un număr anonim zilnic trimis către Google Analytics (motoare utilizate, erori, viteză, niciodată mesajele, numele sau canalele dvs.). Mesajele din chat merg la serviciul de traducere ales de tine și
 nicăieri altundeva, iar în modul pe dispozitiv nici acolo. O copie instalată dintr-un magazin nu face nicio altă
 cerere. O copie instalată manual întreabă GitHub care e ultimul tag de versiune, cel mult o dată la șase ore, ca
 să știe dacă afișează insigna de actualizare. [Detalii](PRIVACY.md)

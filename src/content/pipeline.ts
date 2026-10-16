@@ -6,9 +6,10 @@ import { rootLogger } from '~/shared/logger';
 import { send } from '~/shared/messages';
 import { applyUserGlossary, isSlangOnly } from '~/shared/glossary';
 import { createMetrics } from '~/shared/metrics';
-import { parseKickContent } from './emoteParser';
+import { mentionsOf, parseKickContent } from './emoteParser';
+import { countUsage } from './usage';
 import { spellOutAbbreviations } from './abbreviations';
-import { extractMessageText } from './selectors';
+import { extractMessageText, findAllRows } from './selectors';
 import { confidentLanguage, detectLanguage } from './langDetect';
 import { resolveBrowserLang } from '~/shared/languages';
 import { isContextCritical } from '~/shared/langTiers';
@@ -108,6 +109,7 @@ export class TranslationPipeline {
    */
   private skip(msg: IncomingDomMessage, reason: string): void {
     markSkipped(msg.injectionTarget, reason);
+    countUsage('skipped');
     if (reason) {
       this.note(msg.text, reason);
       // The Debug tab shows the last 50 one by one, which answers "why was THIS
@@ -124,7 +126,27 @@ export class TranslationPipeline {
   }
 
   updateSettings(next: Settings): void {
+    const before = this.settings;
     this.settings = next;
+    if (before.enabled !== next.enabled || before.blockedKeywords.join('\n') !== next.blockedKeywords.join('\n')) {
+      this.reapplyBlocked();
+    }
+  }
+
+  /**
+   * Hide or show every row already on screen for the current keywords.
+   *
+   * Only new messages went through the check, so a keyword added while the
+   * spam was on screen hid nothing that was there, and neither did the lines
+   * present when the extension attached (measured on a live chat with the
+   * keyword set: 6 to 7 matching lines stayed visible). Typing "!fish" is
+   * what someone does once the chat is already full of it.
+   */
+  reapplyBlocked(root: ParentNode = document): void {
+    for (const row of findAllRows(root)) {
+      const blocked = this.settings.enabled && hasBlockedKeyword(extractMessageText(row), this.settings);
+      (row as HTMLElement).style.display = blocked ? 'none' : '';
+    }
   }
 
   /**
@@ -559,9 +581,10 @@ export class TranslationPipeline {
         provider: result.provider,
       });
     }
+    const mentions = mentionsOf(msg.text);
     const full: TranslationResult = {
       messageId: msg.id,
-      translatedText: tt,
+      translatedText: mentions.length > 0 ? `${mentions.join(' ')} ${tt}` : tt,
       detectedLang: result.detectedLang,
       provider: result.provider,
       cached: false,

@@ -127,7 +127,7 @@ Czat tłumaczy się na każdy z nich, a interfejs samego rozszerzenia jest dost�
 
 ## Prywatność
 
-Bez konta, bez analityki, bez mojego serwera. Wiadomości z czatu trafiają do wybranego dostawcy tłumaczeń
+Żadnego konta, żadnego serwera i żadnych analiz, chyba że zgodzisz się na codzienne anonimowe zliczanie wysyłane do Google Analytics (wykorzystane silniki, błędy, prędkość, nigdy Twoje wiadomości, nazwy i kanały). Wiadomości z czatu trafiają do wybranego dostawcy tłumaczeń
 i nigdzie indziej, a w trybie na urządzeniu nawet tam nie. Kopia zainstalowana ze sklepu nie wysyła żadnych
 innych zapytań. Kopia zainstalowana ręcznie pyta GitHub o tag najnowszego wydania, najwyżej co sześć godzin,
 żeby wiedzieć, czy pokazać plakietkę aktualizacji. [Szczegóły](PRIVACY.md)

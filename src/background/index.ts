@@ -12,6 +12,9 @@ import { armKeepalive, installKeepalive, listenKeepalive } from './keepalive';
 import { getUpdateStatus, installUpdateCheck } from './updateChecker';
 import { DEEPL_USAGE_FREE, DEEPL_USAGE_PRO, STORAGE_KEY_SETTINGS } from '~/shared/constants';
 import { getSemanticOverride } from '~/shared/transliterationGuard';
+import { ecrireAutourDesEmotes } from './lexicalWrite';
+import { CHAT_MESSAGES } from '~/content/i18n';
+import { addUsage, dropUsage, installUsage, recordProviderError, recordTranslation } from './usage';
 import type { ProviderId, TranslationOutcome, TranslationRequest } from '~/shared/types';
 
 const log = rootLogger.child('sw');
@@ -39,6 +42,8 @@ function applySettings(next: Settings): void {
     void chrome.storage.sync.set({ [STORAGE_KEY_SETTINGS]: next });
     log.info('DeepL key detected, auto-added to provider chain as #1');
   }
+  // Consent withdrawn: the day counted so far goes with it.
+  if (settings.usageStats && !next.usageStats) void dropUsage();
   settings = next;
   cache.setConfig(next.cacheMaxEntries, next.cacheTtlHours * 3_600_000);
   for (const b of channelBuckets.values()) {
@@ -187,6 +192,16 @@ async function init(): Promise<void> {
 
 // Top level, before anything awaits: see listenKeepalive.
 listenKeepalive();
+installUsage(
+  () => settings,
+  (on) => void saveSettings({ usageStats: on, usageStatsAsked: true }).then(applySettings),
+);
+// Dev builds only, see the content side in content/index.ts.
+if (__KT_DEV__) {
+  chrome.runtime.onMessage.addListener((m) => {
+    if (m === 'kt-dev-reload') chrome.runtime.reload();
+  });
+}
 void init();
 watchSettings(applySettings);
 
@@ -202,12 +217,26 @@ onMessage(async (msg, sender): Promise<RuntimeResponse | void> => {
       // to wake this worker up. The difference between the two is that cost, and
       // nothing has ever put a number on it.
       const run = (): Promise<TranslationOutcome> => handleTranslate(msg.payload);
+      const started = Date.now();
       const outcome = __KT_METRICS__ ? await metrics.measure('leg.sw.total', run) : await run();
+      // Opt-in usage statistics (no-ops without consent). Budget refusals and a
+      // disabled extension are choices, not failures, so they are not counted.
+      if (outcome.ok) {
+        void recordTranslation(outcome.result.provider, outcome.result.cached, Date.now() - started);
+      } else if (!['disabled', 'channel_budget'].includes(outcome.error.code)) {
+        void recordProviderError();
+      }
       return { type: 'translate.result', payload: outcome };
     }
     case 'stats.local':
       stats.recordRequest('local', msg.payload.lang, msg.payload.chars, false);
+      void recordTranslation('local', false);
       return { type: 'ack' };
+    case 'usage.add':
+      await addUsage(msg.counts, msg.env);
+      return { type: 'ack' };
+    case 'i18n.chat':
+      return { type: 'i18n.chat', payload: CHAT_MESSAGES[msg.locale] };
     case 'settings.get':
       return { type: 'settings', payload: settings };
     case 'settings.set': {
@@ -240,6 +269,17 @@ onMessage(async (msg, sender): Promise<RuntimeResponse | void> => {
       return { type: 'ack' };
     case 'update.status':
       return { type: 'update.info', payload: await getUpdateStatus(msg.force) };
+    case 'compose.write': {
+      const tabId = sender.tab?.id;
+      if (tabId === undefined) return { type: 'error', payload: { message: 'no tab' } };
+      const [res] = await chrome.scripting.executeScript({
+        target: { tabId, frameIds: [sender.frameId ?? 0] },
+        world: 'MAIN',
+        func: ecrireAutourDesEmotes,
+        args: [msg.parts],
+      });
+      return res?.result === true ? { type: 'ack' } : { type: 'error', payload: { message: 'no editor' } };
+    }
     case 'ping':
       return { type: 'ack' };
     default:

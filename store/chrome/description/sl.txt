@@ -25,7 +25,7 @@ KAJ DOBITE
 
 ZASEBNOST
 
-Brez računa, brez analitike, brez mojega strežnika. Besedilo chata gre samo v prevajalski pogon, ki ste ga izbrali. Pri Googlu, MyMemory ali Lingva je to besedilo vsakega sporočila in nič drugega. Pri DeepL gre kot kontekst zraven tudi nekaj zadnjih vrstic chata z imeni tistih, ki so jih napisali, da se prevod prilega pogovoru. Kanal, ki ga gledate, se nikoli ne pošlje, pri prevajanju v napravi pa nič ne zapusti vašega računalnika.
+Brez računa, brez mojega strežnika in brez analitike, razen če privolite v dnevno anonimno štetje uporabljenih storitev, napak in hitrosti, nikoli vaša sporočila, imena ali kanali. Besedilo chata gre samo v prevajalski pogon, ki ste ga izbrali. Pri Googlu, MyMemory ali Lingva je to besedilo vsakega sporočila in nič drugega. Pri DeepL gre kot kontekst zraven tudi nekaj zadnjih vrstic chata z imeni tistih, ki so jih napisali, da se prevod prilega pogovoru. Kanal, ki ga gledate, se nikoli ne pošlje, pri prevajanju v napravi pa nič ne zapusti vašega računalnika.
 
 Dovoljenja po domače: shramba za vaše nastavitve in predpomnilnik prevodov; dostop do kick.com, da se prevodi prikažejo v chatu; dostop do pogonov, ki jih lahko pokliče (Google, DeepL, MyMemory in Lingva); časovnik, da prevajalnik ostane pripravljen, medtem ko gledate; in pravica, da ob namestitvi ali posodobitvi znova naloži svoj skript v že odprte zavihke Kick, tako da prevajajo naprej brez osvežitve strani. Bere tudi stran z izdajami na GitHubu, da vam sporoči, če obstaja novejša različica, pri tej zahtevi pa ne pošlje ničesar.
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseKickContent } from './emoteParser';
+import { mentionsOf, parseKickContent } from './emoteParser';
 
 describe('realText (what we actually translate)', () => {
   it('drops emote-only messages to empty realText', () => {
@@ -112,5 +112,30 @@ describe('the inline emote-name stripper leaves ordinary words alone', () => {
     for (const name of ['CATJAM', 'catjam', 'peepohug', 'peepoLove', 'ezclap', 'omegalul', 'pepejam', 'dogjam']) {
       expect(parseKickContent(`hola ${name} amigo`).realText).toBe('hola amigo');
     }
+  });
+});
+
+// Toute la phrase tenait parfois dans le nom propre : "LeBron is the best player
+// ever" arrivait au lecteur sans LeBron. Les deux listes sont celles des bancs du
+// 2026-10-16 (scratchpad classify-mixedcase / classify-heldout).
+describe('names and brands survive, 7TV emote names do not', () => {
+  it('keeps brand and person names', () => {
+    for (const w of ['iPhone', 'eBay', 'YouTube', 'TikTok', 'PlayStation', 'PayPal', 'LeBron', 'McDonald', 'xQc', 'KaiCenat', 'GitHub', 'ChatGPT']) {
+      expect(parseKickContent(`I saw ${w} today`).realText).toBe(`I saw ${w} today`);
+    }
+  });
+
+  it('removes emote names typed as text', () => {
+    for (const w of ['pepeLaugh', 'catJam', 'monkaS', 'peepoHappy', 'widepeepoHappy', 'modCheck', 'xqcL', 'PogChamp', 'PepeHands', 'FeelsBadMan', 'BibleThump']) {
+      expect(parseKickContent(`so funny ${w} really`).realText).toBe('so funny really');
+    }
+  });
+});
+
+describe('mentionsOf', () => {
+  it('returns each @mention once, as typed', () => {
+    expect(mentionsOf('@Bob merci @alice et @bob')).toEqual(['@Bob', '@alice']);
+    expect(mentionsOf('mail me at a@b.com')).toEqual([]);
+    expect(mentionsOf('no mention here')).toEqual([]);
   });
 });

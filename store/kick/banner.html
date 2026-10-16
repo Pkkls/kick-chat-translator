@@ -1,0 +1,49 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&family=Noto+Sans+Arabic:wght@600&family=Noto+Sans+JP:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a1016;--chip:#111b25;--line:#1f2f3e;--green:#53da7e;--green-ink:#06210f;--text:#eef3f8;--mute:#8b9cb1;
+  --font:Inter,'Noto Sans JP','Noto Sans Arabic',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#000}
+#banner{width:1200px;height:200px;position:relative;overflow:hidden;font-family:var(--font);color:var(--text);
+  background:
+    radial-gradient(260px 120px at 50% 50%,rgba(83,218,126,.22),transparent 70%),
+    radial-gradient(1px 1px at 1px 1px,rgba(255,255,255,.06) 1px,transparent 1.5px) 0 0/12px 12px,
+    var(--bg)}
+/* the beam: every message rides it into the translator and out */
+.beam{position:absolute;left:0;right:0;top:50%;height:2px;transform:translateY(-50%);
+  background:linear-gradient(90deg,transparent,rgba(83,218,126,.25) 30%,var(--green) 50%,rgba(83,218,126,.25) 70%,transparent);
+  box-shadow:0 0 18px 2px rgba(83,218,126,.35)}
+.emo{display:inline-block;width:1.15em;height:1.15em;vertical-align:-.2em}
+.chip{position:absolute;display:flex;align-items:center;gap:7px;white-space:nowrap;padding:5px 11px 5px 6px;border-radius:99px;
+  background:var(--chip);box-shadow:inset 0 0 0 1px var(--line);font-size:12.5px;font-weight:600;color:var(--mute)}
+.chip .flag{width:18px;height:18px}
+.chip .flag img{width:100%;height:100%;display:block}
+.out{background:#0f2418;box-shadow:inset 0 0 0 1px rgba(83,218,126,.55);color:var(--text);font-weight:700;font-size:13.5px}
+.center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:16px;
+  padding:14px 22px 14px 14px;border-radius:20px;background:rgba(10,16,22,.92);box-shadow:inset 0 0 0 1.5px var(--green),0 0 40px rgba(83,218,126,.25)}
+.center img{width:58px;height:58px}
+.name{font-size:12px;font-weight:800;letter-spacing:1.4px;color:var(--green)}
+h1{font-size:27px;line-height:1.05;font-weight:900;letter-spacing:-.6px;margin-top:3px}
+.meta{margin-top:5px;font-size:10.5px;font-weight:700;letter-spacing:.8px;color:var(--mute)}
+</style></head><body>
+<div id="banner"><div class="beam"></div></div>
+<script>
+const tw = e => `https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/${[...e].map(c => c.codePointAt(0).toString(16)).join("-")}.svg`;
+const flag = e => `<span class="flag"><img src="${tw(e)}"></span>`;
+const emo = s => s.replace(/(\S+) (\p{Extended_Pictographic})/gu, (_, w, m) => `<span style="white-space:nowrap">${w} <img class="emo" src="${tw(m)}"></span>`);
+// x, y in px of the 1200x200 canvas; content stays inside y 52..148, the band Kick shows on wide screens
+const IN = [
+  [ 10, 54,"🇹🇷","ne oyundu ama 🔥",.45],[170, 58,"🇪🇸","qué jugada, increíble 🔥",.9],
+  [ -6, 89,"🇸🇦","من أين تبث؟",.4],[150, 90,"🇧🇷","de onde você faz live?",.95],
+  [ 20,123,"🇷🇺","всем GG, до завтра",.45],[185,122,"🇯🇵","みんなGG、また明日 👋",.9],
+];
+const OUT = [[848,58,"what a play, insane 🔥"],[872,90,"where are you streaming from?"],[856,122,"GG everyone, see you tomorrow 👋"]];
+const b = document.getElementById("banner");
+b.insertAdjacentHTML("beforeend",
+  IN.map(([x,y,f,t,o]) => `<div class="chip" style="left:${x}px;top:${y}px;opacity:${o}" dir="${f==="🇸🇦"?"rtl":"ltr"}">${flag(f)}<span>${emo(t)}</span></div>`).join("") +
+  OUT.map(([x,y,t]) => `<div class="chip out" style="left:${x}px;top:${y}px">${flag("🇬🇧")}<span>${emo(t)}</span></div>`).join("") +
+  `<div class="center"><img src="../../public/icons/icon.svg"><div><div class="name">KICK CHAT TRANSLATOR</div><h1>Every chat, your language.</h1><div class="meta">FREE · 40+ LANGUAGES · CHROME · FIREFOX</div></div></div>`);
+</script>
+</body></html>

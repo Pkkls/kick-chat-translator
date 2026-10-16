@@ -25,7 +25,7 @@ MITÄ SAAT
 
 YKSITYISYYS
 
-Ei tiliä, ei analytiikkaa, ei omaa palvelinta. Chatin teksti menee vain valitsemallesi käännösmoottorille. Googlen, MyMemoryn tai Lingvan kanssa se on jokaisen viestin teksti eikä mitään muuta. DeepLin kanssa viimeiset chat-rivit lähtevät mukana asiayhteytenä kirjoittajien nimineen, jotta käännös sopii keskusteluun. Katsomaasi kanavaa ei koskaan lähetetä, eikä laitteella tapahtuvassa käännöksessä mikään poistu tietokoneeltasi.
+Ei tiliä, ei omaa palvelinta eikä analytiikkaa, ellet hyväksy päivittäistä nimetöntä laskentaa käytetyistä palveluista, virheistä ja nopeudesta, ei koskaan viestejäsi, nimiä tai kanavia. Chatin teksti menee vain valitsemallesi käännösmoottorille. Googlen, MyMemoryn tai Lingvan kanssa se on jokaisen viestin teksti eikä mitään muuta. DeepLin kanssa viimeiset chat-rivit lähtevät mukana asiayhteytenä kirjoittajien nimineen, jotta käännös sopii keskusteluun. Katsomaasi kanavaa ei koskaan lähetetä, eikä laitteella tapahtuvassa käännöksessä mikään poistu tietokoneeltasi.
 
 Käyttöoikeudet selkokielellä: tallennustila asetuksillesi ja käännösvälimuistille; pääsy kick.com-sivustoon käännösten näyttämiseksi chatissa; pääsy moottoreihin, joita se voi kutsua (Google, DeepL, MyMemory ja Lingva); herätysajastin, jotta kääntäjä pysyy valmiina katsoessasi; sekä oikeus ladata oma skriptinsä uudelleen jo avoimiin Kick-välilehtiin asennuksen tai päivityksen yhteydessä, jotta ne jatkavat kääntämistä ilman sivun päivitystä. Se myös lukee GitHubin julkaisusivua kertoakseen, kun uudempi versio on olemassa, eikä lähetä pyynnön mukana mitään.
 

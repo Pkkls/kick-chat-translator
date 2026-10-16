@@ -2,6 +2,16 @@ import { useEffect, useState } from 'preact/hooks';
 import type { ProviderStatus, UsageStats } from '~/shared/types';
 import { useT } from '~/shared/i18nContext';
 import { LANGUAGES } from '~/shared/languages';
+import type { Settings } from '~/shared/settings';
+import { Check } from '../components/Check';
+
+const estFirefox = (): boolean => {
+  try {
+    return chrome.runtime.getURL('').startsWith('moz-extension:');
+  } catch {
+    return false;
+  }
+};
 
 /**
  * Ce que cette copie de l'extension est, et ce qu'elle fait chez toi.
@@ -18,12 +28,19 @@ import { LANGUAGES } from '~/shared/languages';
 export function AboutSection({
   stats,
   providers,
+  settings,
+  onPatch,
 }: {
   stats?: UsageStats;
   providers?: ProviderStatus[];
+  settings?: Settings;
+  onPatch?: (p: Partial<Settings>) => void;
 }) {
   const t = useT();
   const [version, setVersion] = useState('');
+  // Firefox decide par sa propre permission de collecte ; avant Firefox 140 elle
+  // n'existe pas et rien n'est envoye, donc l'interrupteur n'a rien a regler.
+  const [statsOffered, setStatsOffered] = useState(!estFirefox());
 
   useEffect(() => {
     try {
@@ -31,7 +48,22 @@ export function AboutSection({
     } catch {
       // Hors extension, par exemple dans un banc de rendu.
     }
+    if (estFirefox()) {
+      void chrome.permissions
+        .getAll()
+        .then((p) => setStatsOffered((p as { data_collection?: string[] }).data_collection !== undefined))
+        .catch(() => setStatsOffered(false));
+    }
   }, []);
+
+  async function changerStats(on: boolean): Promise<void> {
+    if (estFirefox()) {
+      const p = { data_collection: ['technicalAndInteraction'] } as unknown as chrome.permissions.Permissions;
+      const ok = on ? await chrome.permissions.request(p) : await chrome.permissions.remove(p);
+      if (!ok) return;
+    }
+    onPatch?.({ usageStats: on, usageStatsAsked: true });
+  }
 
   const dispo = (providers ?? []).filter((p) => p.available);
   const langues = LANGUAGES.length;
@@ -92,6 +124,22 @@ export function AboutSection({
         </ol>
         <p class="kt-hint">{t('The Activity tab shows what each of these steps did for you.')}</p>
       </section>
+
+      {settings && statsOffered && (
+        <section class="kt-card space-y-3">
+          <div class="kt-setting">
+            <Check
+              checked={settings.usageStats}
+              onChange={(v) => void changerStats(v)}
+              label={t('Share anonymous usage statistics')}
+              hint={t(
+                'Once a day, anonymous counts: engines used, errors, speed. Never your messages, names or channels.',
+              )}
+              reverse
+            />
+          </div>
+        </section>
+      )}
 
       <section class="kt-card space-y-3">
         <h3 class="kt-section">{t('Links')}</h3>

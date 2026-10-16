@@ -1,5 +1,9 @@
-Extensia vorbește acum limba ta. Setările, fereastra popup și bara din chat sunt traduse în toate cele 43 de limbi în care traduce extensia, nu doar în 10, iar ebraica și persana se citesc de la dreapta la stânga, ca araba.
+Tastarea cu emoții funcționează corect acum. Tab completează emotele și @mentiunile lui Kick și 7TV în loc să insereze traducerea, emoțiile rămân în mesajul dvs. când este tradus, iar previzualizarea nu mai acoperă listele lui Kick sau selectorul de emoții.
 
-Cele zece limbi pe care le vorbea deja au fost rescrise ca să sune firesc, ca și cum ar fi scrise direct în limba respectivă, nu traduse cuvânt cu cuvânt din engleză.
+Traducerile sunt mai precise: numele mărcilor și ale persoanelor (iPhone, YouTube, LeBron) nu mai sunt eliminate înainte de traducere, iar @mențiunile rămân în mesajele traduse.
 
-Meniul pentru limba interfeței arată drapelul fiecărei limbi și funcționează de la tastatură.
+Filtrele au fost reproiectate: boții Kick adevărați sunt ignorați și îi puteți adăuga pe ai dvs., „Ascundeți mesajele care conțin” acum ascunde și ceea ce este deja pe ecran, iar listele pot fi introduse din nou.
+
+Extensia este mai ușoară pe fiecare pagină Kick, iar pe Chrome motorul de pe dispozitiv este oferit din nou atunci când limba țintă este pe Auto.
+
+Nou și opțional: statistici anonime de utilizare zilnică, dezactivate dacă nu spui da. Nu conțin niciodată mesajele, numele sau canalele dvs.

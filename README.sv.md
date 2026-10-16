@@ -127,7 +127,7 @@ Chatten översätts till vilket som helst av dem, och tilläggets eget gränssni
 
 ## Integritet
 
-Inget konto, ingen analys, ingen egen server. Chattmeddelanden går till den översättningstjänst du valt och
+Inget konto, ingen min server och ingen analys om du inte väljer att få en daglig anonym räkning som skickas till Google Analytics (använda motorer, fel, hastighet, aldrig dina meddelanden, namn eller kanaler). Chattmeddelanden går till den översättningstjänst du valt och
 ingen annanstans, och i läget på enheten inte ens dit. En kopia installerad från en butik gör inga andra
 förfrågningar. En kopia installerad för hand frågar GitHub efter den senaste release-taggen, högst var sjätte
 timme, för att veta om den ska visa sitt uppdateringsmärke. [Detaljer](PRIVACY.md)

@@ -1,5 +1,9 @@
-De extensie spreekt nu jouw taal. De instellingen, de popup en de balk in de chat zijn vertaald in alle 43 talen waarin ze vertaalt, in plaats van 10, en Hebreeuws en Perzisch lezen van rechts naar links, net als Arabisch.
+Typen met emotes werkt nu naar behoren. Tab voltooit de emotes en @mentions van Kick en 7TV in plaats van de vertaling in te voegen, emotes blijven in je bericht wanneer het vertaald is, en het voorbeeld dekt niet langer de lijsten van Kick of de emotekiezer.
 
-De tien talen die ze al sprak zijn herschreven zodat ze natuurlijk lezen, alsof ze in die taal geschreven zijn en niet woord voor woord uit het Engels vertaald.
+Vertalingen zijn nauwkeuriger: merk- en persoonsnamen (iPhone, YouTube, LeBron) worden niet langer verwijderd voordat ze worden vertaald, en @vermeldingen blijven in vertaalde berichten.
 
-Het menu voor de interfacetaal toont de vlag van elke taal en werkt ook met het toetsenbord.
+De filters zijn herwerkt: de echte Kick-bots worden genegeerd en je kunt je eigen bots toevoegen, "Verberg berichten met" verbergt nu ook wat al op het scherm staat, en de lijsten kunnen opnieuw worden ingetypt.
+
+De extensie is op elke Kick-pagina lichter en in Chrome wordt de on-device-engine opnieuw aangeboden wanneer de doeltaal op Auto staat.
+
+Nieuw en optioneel: anonieme dagelijkse gebruiksstatistieken, uitgeschakeld tenzij u ja zegt. Ze bevatten nooit uw berichten, namen of kanalen.

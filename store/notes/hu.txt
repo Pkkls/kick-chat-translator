@@ -1,5 +1,9 @@
-A bővítmény mostantól a te nyelveden szól. A beállítások, a felugró ablak és a chatben lévő sáv mind a 43 nyelvre le van fordítva, amelyre a bővítmény fordít, nem csak 10-re, a héber és a perzsa pedig jobbról balra olvasható, mint az arab.
+A hangulatjelekkel való gépelés most megfelelően működik. A Tab kiegészíti a Kick és 7TV hangulatjeleit és @említéseit a fordítás beszúrása helyett, a hangulatjelek az üzenetben maradnak, amikor lefordítják, és az előnézet már nem fedi a Kick listáit vagy az emote-választót.
 
-A tíz nyelvet, amelyen a bővítmény korábban is szólt, újraírtuk, hogy természetesen olvasódjon, mintha eleve azon a nyelven íródott volna, és ne szó szerint angolból fordították volna.
+A fordítások pontosabbak: a márka- és személynevek (iPhone, YouTube, LeBron) már nem kerülnek ki a fordítás előtt, és a @említések a lefordított üzenetekben maradnak.
 
-A felület nyelvének menüje megmutatja minden nyelv zászlaját, és billentyűzettel is használható.
+Átdolgozták a szűrőket: az igazi Kick botokat figyelmen kívül hagyják, és felveheti a sajátjait, a "Hide üzenetek elrejtése" most azt is elrejti, ami már a képernyőn van, és a listák újra beírhatók.
+
+A bővítmény minden Kick oldalon könnyebb, a Chrome-ban pedig az eszközön lévő motor ismét elérhető, ha a célnyelv az Auto.
+
+Új és opcionális: névtelen napi használati statisztika, hacsak nem mond igent. Soha nem tartalmazzák az Ön üzeneteit, neveit vagy csatornáit.

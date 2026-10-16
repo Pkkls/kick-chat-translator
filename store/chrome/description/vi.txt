@@ -25,7 +25,7 @@ BẠN CÓ GÌ
 
 QUYỀN RIÊNG TƯ
 
-Không tài khoản, không phân tích dữ liệu, không có máy chủ của tôi. Nội dung chat chỉ được gửi đến công cụ dịch mà bạn đã chọn. Với Google, MyMemory hoặc Lingva, đó là nội dung của từng tin nhắn và không có gì khác. Với DeepL, vài dòng chat gần nhất được gửi kèm làm ngữ cảnh, cùng tên người viết, để bản dịch khớp với cuộc trò chuyện. Kênh bạn đang xem không bao giờ bị gửi đi, và với dịch trên thiết bị thì không có gì rời khỏi máy tính của bạn.
+Không tài khoản, không có máy chủ của tôi, và không phân tích dữ liệu trừ khi bạn đồng ý gửi số liệu ẩn danh mỗi ngày về công cụ đã dùng, lỗi và tốc độ, không bao giờ có tin nhắn, tên hay kênh của bạn. Nội dung chat chỉ được gửi đến công cụ dịch mà bạn đã chọn. Với Google, MyMemory hoặc Lingva, đó là nội dung của từng tin nhắn và không có gì khác. Với DeepL, vài dòng chat gần nhất được gửi kèm làm ngữ cảnh, cùng tên người viết, để bản dịch khớp với cuộc trò chuyện. Kênh bạn đang xem không bao giờ bị gửi đi, và với dịch trên thiết bị thì không có gì rời khỏi máy tính của bạn.
 
 Các quyền, nói đơn giản: storage cho cài đặt và bộ nhớ đệm bản dịch; quyền truy cập kick.com để hiện bản dịch trong chat; quyền truy cập các công cụ dịch mà nó có thể gọi (Google, DeepL, MyMemory và Lingva); một bộ hẹn giờ đánh thức để trình dịch luôn sẵn sàng khi bạn xem; và quyền nạp lại script của chính nó vào các tab Kick đang mở khi bạn cài đặt hoặc cập nhật, để chúng tiếp tục dịch mà không cần tải lại trang. Nó cũng đọc trang GitHub releases để báo cho bạn khi có phiên bản mới, và không gửi gì kèm theo yêu cầu đó.
 

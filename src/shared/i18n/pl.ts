@@ -266,4 +266,14 @@ export const pl: Record<string, string> = {
   'Free plan: 1,000,000 characters a month. Free keys end with :fx.':
     'Plan darmowy: 1 000 000 znaków miesięcznie. Darmowe klucze kończą się na :fx.',
   'Get a key:': 'Zdobądź klucz:',
+  "Help improve Kick Chat Translator?": "Pomożesz ulepszyć Kick Chat Translator?",
+  "Once a day, anonymous counts: engines used, errors, speed. Never your messages, names or channels.": "Raz dziennie anonimowe liczniki: użyte silniki, błędy, szybkość. Nigdy twoje wiadomości, nazwy ani kanały.",
+  "No thanks": "Nie, dzięki",
+  "Share": "Udostępnij",
+  "Share anonymous usage statistics": "Udostępniaj anonimowe statystyki użycia",
+  "Ignore chat bots": "Ignoruj boty czatu",
+  "Always ignored:": "Zawsze ignorowane:",
+  "Other bots to ignore": "Inne boty do ignorowania",
+  "one bot name per line": "jedna nazwa bota na wiersz",
+  "Work in progress": "Prace w toku",
 };

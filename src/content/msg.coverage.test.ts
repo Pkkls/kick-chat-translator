@@ -2,7 +2,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { CHAT_MESSAGES } from './i18n';
-import { msg, setContentLocale } from './msg';
+import { msg, setChatTable, setContentLocale } from './msg';
 import { UI_LOCALES } from '~/shared/i18n';
 
 /**
@@ -117,31 +117,31 @@ describe('chat catalogue coverage', () => {
  */
 describe('the chat follows the uiLang setting', () => {
   it('answers in the language that was set, not the browser one', () => {
-    setContentLocale('ja');
+    setChatTable(CHAT_MESSAGES[setContentLocale('ja')]);
     expect(msg('barOn', 'Translating')).toBe(CHAT_MESSAGES.ja!.barOn);
-    setContentLocale('fr');
+    setChatTable(CHAT_MESSAGES[setContentLocale('fr')]);
     expect(msg('barOn', 'Translating')).toBe(CHAT_MESSAGES.fr!.barOn);
   });
 
   it('falls back to the English argument for a language it does not ship', () => {
-    setContentLocale('en');
+    setChatTable(CHAT_MESSAGES[setContentLocale('en')]);
     expect(msg('barOn', 'Translating')).toBe('Translating');
   });
 
   // Control: without this the two above would pass on a msg() that always
   // returned its fallback, which is exactly the state before this change.
   it('is actually reading a table, not handing back the fallback', () => {
-    setContentLocale('ru');
+    setChatTable(CHAT_MESSAGES[setContentLocale('ru')]);
     expect(msg('barOn', 'Translating')).not.toBe('Translating');
-    setContentLocale('en');
+    setChatTable(CHAT_MESSAGES[setContentLocale('en')]);
   });
 
   it('substitutes placeholders in a catalogue entry as well as in a fallback', () => {
-    setContentLocale('fr');
+    setChatTable(CHAT_MESSAGES[setContentLocale('fr')]);
     const out = msg('flagFrom', 'from $LANG$', ['Japonais']);
     expect(out).toContain('Japonais');
     expect(out).not.toContain('$LANG$');
-    setContentLocale('en');
+    setChatTable(CHAT_MESSAGES[setContentLocale('en')]);
     expect(msg('flagFrom', 'from $LANG$', ['Japanese'])).toBe('from Japanese');
   });
 });

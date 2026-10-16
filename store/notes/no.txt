@@ -1,5 +1,9 @@
-Utvidelsen snakker nå språket ditt. Innstillingene, popup-vinduet og linjen i chatten er oversatt til alle 43 språkene den oversetter til, ikke bare 10, og hebraisk og persisk leses fra høyre til venstre, som arabisk.
+Å skrive med følelser fungerer som det skal nå. Tab fullfører Kicks og 7TVs emotes og @mentions i stedet for å sette inn oversettelsen, emotes blir i meldingen når den oversettes, og forhåndsvisningen dekker ikke lenger Kicks lister eller følelsesvelgeren.
 
-De ti språkene den allerede snakket, er skrevet om slik at de høres naturlige ut, som om de var skrevet på det språket og ikke oversatt ord for ord fra engelsk.
+Oversettelser er mer nøyaktige: merkevare- og personnavn (iPhone, YouTube, LeBron) blir ikke lenger utelatt før oversettelse, og @omtaler forblir i oversatte meldinger.
 
-Menyen for grensesnittspråk viser flagget til hvert språk og fungerer også med tastaturet.
+Filtre ble omarbeidet: de virkelige Kick-robotene blir ignorert og du kan legge til dine egne, "Skjul meldinger som inneholder" skjuler nå også det som allerede er på skjermen, og listene kan skrives inn igjen.
+
+Utvidelsen er lettere på hver Kick-side, og på Chrome tilbys motoren på enheten igjen når målspråket er på Auto.
+
+Nytt og valgfritt: anonym daglig bruksstatistikk, slått av med mindre du sier ja. Den inneholder aldri meldingene, navnene eller kanalene dine.

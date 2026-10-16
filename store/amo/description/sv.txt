@@ -26,7 +26,7 @@ DET HÄR FÅR DU
 
 VAD SOM LÄMNAR DIN WEBBLÄSARE
 
-Chattext går bara till den översättningsmotor du valt. Med Google, MyMemory eller Lingva är det texten i varje meddelande och inget annat: inte kanalen, inte vem som skrev. Med DeepL skickas de senaste chattraderna med som sammanhang, tillsammans med namnen på dem som skrev, så att översättningen passar samtalet. Det är vad raden "webbplatsinnehåll" i behörigheterna ovan syftar på, och det är allt. Det finns inget konto, ingen analys och ingen egen server: tillägget pratar med Kick, med den motor du valt och med GitHubs releasesida för att tala om när en nyare version finns, utan att skicka något med den sista förfrågan.
+Chattext går bara till den översättningsmotor du valt. Med Google, MyMemory eller Lingva är det texten i varje meddelande och inget annat: inte kanalen, inte vem som skrev. Med DeepL skickas de senaste chattraderna med som sammanhang, tillsammans med namnen på dem som skrev, så att översättningen passar samtalet. Det är vad raden "webbplatsinnehåll" i behörigheterna ovan syftar på, och det är allt. Det finns inget konto och ingen egen server: tillägget pratar med Kick, med den motor du valt och med GitHubs releasesida för att tala om när en nyare version finns, utan att skicka något med den sista förfrågan. Om du kryssar i det valfria "teknisk data och interaktionsdata" skickar tillägget också en daglig anonym räkning av använda motorer, fel och hastighet till Google Analytics, aldrig dina meddelanden, namn eller kanaler.
 
 GRATIS OCH ÖPPEN KÄLLKOD
 

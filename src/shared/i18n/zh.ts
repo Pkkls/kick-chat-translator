@@ -5,12 +5,12 @@ export const zh: Record<string, string> = {
   'ready': '就绪',
   'Providers': '翻译服务',
   'Display': '显示',
-  'Filters': '过滤',
+  'Filters': '筛选',
   'Advanced': '高级',
-  'Activity': '动态',
+  'Activity': '活动',
   'About': '关于',
   'Kick Chat Translator listens to chat in real time and translates non-English (or non-target-language) messages right under the original. No tracking, no account, fully open-source.':
-    'Kick Chat Translator 实时监听聊天，把非英语（或非目标语言）的消息直接翻译在原文下方。不追踪，无需账号，完全开源。',
+    'Kick Chat Translator 实时读取聊天，把非英语（或非目标语言）的消息直接翻译在原文下方。不追踪，无需账号，完全开源。',
   'Links': '链接',
   'GitHub repository': 'GitHub 仓库',
   'Privacy policy': '隐私政策',
@@ -46,7 +46,7 @@ export const zh: Record<string, string> = {
   'Reset all settings to defaults': '恢复所有默认设置',
   'click again to confirm': '再点一次确认',
   '"Reset all settings" restores defaults. Use it if translations stop appearing because a filter (channel allowlist or source-language allowlist) was left active.':
-    '“恢复所有默认设置”会把所有设置还原为默认值。如果因为频道白名单或源语言白名单等过滤条件一直生效而不再显示译文，可以用它来解决。',
+    '“恢复所有默认设置”会把所有设置还原为默认值。如果因为频道白名单或源语言白名单等筛选条件一直生效而不再显示译文，可以用它来解决。',
   'Translation target': '翻译目标',
   'Display style': '显示样式',
   'Compose preview': '输入预览',
@@ -54,7 +54,7 @@ export const zh: Record<string, string> = {
   'Auto (your browser language)': '自动（浏览器语言）',
   'Auto reads incoming chat in your own language, detected from the browser.':
     '自动按浏览器检测到的语言，把收到的聊天翻译成你的语言。',
-  'Write my messages in': '我发送消息使用',
+  'Write my messages in': '发送消息使用的语言',
   "Auto (the channel's language)": '自动（频道语言）',
   "Auto detects the channel's broadcast language from Kick. No manual picking.":
     '自动从 Kick 获取频道的直播语言，无需手动选择。',
@@ -148,7 +148,7 @@ export const zh: Record<string, string> = {
   'Preview': '预览',
   'is anyone else seeing this?': '有没有别人也看到了这个？',
   'Whether a Kick tab keeps translating once you look away.':
-    '切走之后，Kick 标签页是否继续翻译。',
+    '切换到其他标签页后，Kick 标签页是否继续翻译。',
   'Reusing past translations, and how hard the engines are pushed on a busy chat. The defaults suit most channels.':
     '是否复用以前的译文，以及聊天很热闹时引擎的负载强度。默认值适合大多数频道。',
   'one channel name per line': '每行一个频道名',
@@ -223,16 +223,16 @@ export const zh: Record<string, string> = {
   'Its language is worked out on the spot, from the script and the words it uses. This answer decides everything after it.':
     '当场根据文字和用词判断它的语言。这个结果决定后面的所有步骤。',
   'Filters run: already in your language, too short, a bot, a language you did not pick.':
-    '接着运行过滤：已是你的语言、太短、机器人、你没有选的语言。',
+    '接着执行筛选：已是你的语言、太短、机器人、你没有选的语言。',
   'The cache is asked first, so the same message is never paid for twice.':
     '先查缓存，所以同一条消息不会重复消耗配额。',
   'Otherwise the first available provider in your chain answers, or the on-device engine if you enabled it.':
     '缓存里没有的话，就由顺序中第一个可用的翻译服务来翻译；如果启用了本地翻译，则由本地引擎处理。',
   'The Activity tab shows what each of these steps did for you.':
-    '“动态”标签页会显示以上每一步的实际效果。',
+    '“活动”标签页会显示以上每一步的实际效果。',
   'What changed in this version': '此版本的更新内容',
   'Entries:': '条目：',
-  'Cap used:': '已用上限：',
+  'Cap used:': '已用容量：',
   'oldest kept in memory:': '内存中最久的条目：',
   'Requests sent through this limit:': '受此上限限制的请求：',
   'never reached so far': '至今从未达到',
@@ -241,7 +241,7 @@ export const zh: Record<string, string> = {
   'Nothing picked: every language is translated.': '未选择任何语言：翻译所有语言。',
   'picked: everything else is left alone.': '种已选：其余语言不翻译。',
   'channels you have watched': '你看过的频道',
-  'Only here': '仅此频道',
+  'Only here': '只在此频道翻译',
   'Never here': '此频道不翻译',
   'No key yet, so DeepL is skipped and the chain moves on.':
     '还没有密钥，所以会跳过 DeepL，继续用顺序中的下一个。',
@@ -251,7 +251,7 @@ export const zh: Record<string, string> = {
   'sent to a provider': '发给翻译服务',
   'languages seen in chat': '聊天中出现的语言',
   'These are the languages the allowlist in Filters decides between.':
-    '“过滤”里的白名单就是在这些语言中进行选择。',
+    '“筛选”里的白名单，就是在这些语言之间做选择。',
   'Paused on this channel': '此频道已暂停',
   'Resume': '继续',
   'Open a Kick channel: its chat is translated as it arrives.':
@@ -260,4 +260,14 @@ export const zh: Record<string, string> = {
   'Free plan: 1,000,000 characters a month. Free keys end with :fx.':
     '免费套餐每月 1,000,000 个字符。免费密钥以 :fx 结尾。',
   'Get a key:': '获取密钥：',
+  "Help improve Kick Chat Translator?": "帮助改进 Kick Chat Translator？",
+  "Once a day, anonymous counts: engines used, errors, speed. Never your messages, names or channels.": "每天一次，只发送匿名统计：使用的引擎、错误、速度。绝不发送你的消息、名称或频道。",
+  "No thanks": "不用了，谢谢",
+  "Share": "分享",
+  "Share anonymous usage statistics": "分享匿名使用统计",
+  "Ignore chat bots": "忽略聊天机器人",
+  "Always ignored:": "始终忽略：",
+  "Other bots to ignore": "其他要忽略的机器人",
+  "one bot name per line": "每行一个机器人名称",
+  "Work in progress": "开发中",
 };

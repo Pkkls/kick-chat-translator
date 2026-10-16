@@ -128,7 +128,7 @@ Klepet se prevaja v kateregakoli od njih, vmesnik same razširitve pa je na volj
 
 ## Zasebnost
 
-Brez računa, brez analitike, brez mojega strežnika. Sporočila iz klepeta gredo k ponudniku prevajanja, ki ste
+Brez računa, brez mojega strežnika in brez analitike, razen če se odločite za dnevno anonimno štetje, poslano v Google Analytics (uporabljeni mehanizmi, napake, hitrost, nikoli vaša sporočila, imena ali kanali). Sporočila iz klepeta gredo k ponudniku prevajanja, ki ste
 ga izbrali, in nikamor drugam, v načinu v napravi pa niti tja ne. Kopija, nameščena iz trgovine, ne pošilja
 nobenih drugih zahtevkov. Ročno nameščena kopija vpraša GitHub za oznako najnovejše izdaje, največ vsakih šest
 ur, da ve, ali naj pokaže značko posodobitve. [Podrobnosti](PRIVACY.md)

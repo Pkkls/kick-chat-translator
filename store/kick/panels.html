@@ -1,0 +1,108 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Noto+Sans+Arabic:wght@500;700;800;900&family=Noto+Sans+JP:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a1016;--surface:#111b25;--chat:#0d151d;--line:#1f2f3e;
+  --green:#53da7e;--green-ink:#06210f;--text:#eef3f8;--mute:#8b9cb1;
+  --font:Inter,'Noto Sans JP','Noto Sans Arabic',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#2a2a2a;display:flex;flex-wrap:wrap;align-items:flex-start;gap:24px;padding:24px;font-family:var(--font)}
+.panel{width:320px;position:relative;overflow:hidden;border-radius:18px;padding:16px 16px 14px;color:var(--text);
+  background:
+    radial-gradient(220px 160px at 100% 0%,rgba(83,218,126,.28),transparent 70%),
+    radial-gradient(1px 1px at 1px 1px,rgba(255,255,255,.06) 1px,transparent 1.5px) 0 0/12px 12px,
+    var(--bg);
+  box-shadow:inset 0 0 0 1px rgba(83,218,126,.35)}
+.emo{display:inline-block;width:1.15em;height:1.15em;vertical-align:-.2em}
+
+/* top bar */
+.top{display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:7px;font-weight:800;font-size:12.5px;letter-spacing:.1px}
+.brand img{width:24px;height:24px}
+.pill{display:flex;align-items:center;gap:6px;padding:4px 10px 4px 5px;border-radius:99px;background:var(--green);color:var(--green-ink);font-weight:800;font-size:12px}
+.pill .flag{width:20px;height:20px}
+
+/* headline */
+h1{margin-top:16px;font-size:30px;line-height:1.08;font-weight:900;letter-spacing:-.6px}
+h1 b{color:var(--green)}
+.sub{margin-top:8px;font-size:13px;line-height:1.45;font-weight:500;color:var(--mute)}
+
+/* chat mock, mirrors the extension's real chat header */
+.chat{margin-top:14px;border-radius:12px;background:var(--chat);box-shadow:inset 0 0 0 1px var(--line);overflow:hidden}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-bottom:1px solid var(--line);font-size:11px;font-weight:700}
+.live{display:flex;align-items:center;gap:6px}
+.live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(83,218,126,.2)}
+.route{display:flex;align-items:center;gap:3px;color:var(--mute)}
+.route .flag{width:16px;height:16px}
+.route .arrow{margin:0 3px;color:var(--green);font-weight:900}
+.msg{display:grid;grid-template-columns:22px 1fr;column-gap:8px;padding:9px 10px}
+.msg+.msg{border-top:1px solid var(--line)}
+.msg .flag{width:22px;height:22px;margin-top:-2px}
+.orig{font-size:11.5px;line-height:1.35;color:var(--mute)}
+.orig .u{font-weight:800;margin-inline-end:4px}
+.tr{margin-top:4px;font-size:14.5px;line-height:1.3;font-weight:700;text-align:start}
+.msg:last-child .tr{color:var(--green)}
+
+/* circular flags cropped from twemoji */
+.flag{display:inline-block;flex:none}
+.flag img{width:100%;height:100%;display:block}
+
+/* footer */
+.langs{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}
+.stack{display:flex}
+.stack{gap:3px}
+.stack .flag{width:20px;height:20px}
+.more{white-space:nowrap;font-size:11.5px;font-weight:700;color:var(--mute)}
+.cta{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;padding:12px;border-radius:12px;background:var(--green);color:var(--green-ink);font-weight:900;font-size:16px}
+.cta svg{width:18px;height:18px}
+.br{margin-top:8px;text-align:center;font-size:10.5px;font-weight:700;letter-spacing:.8px;color:var(--mute)}
+</style></head><body>
+<script>
+const tw = e => `https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/${[...e].map(c => c.codePointAt(0).toString(16)).join("-")}.svg`;
+const flag = e => `<span class="flag"><img src="${tw(e)}"></span>`;
+const emo = s => s.replace(/(\S+) (\p{Extended_Pictographic})/gu, (_, w, m) => `<span style="white-space:nowrap">${w} <img class="emo" src="${tw(m)}"></span>`);
+
+const FLAG = {en:"🇬🇧",es:"🇪🇸",pt:"🇧🇷",fr:"🇫🇷",tr:"🇹🇷",ru:"🇷🇺",ja:"🇯🇵",ar:"🇸🇦"};
+const STACK = ["🇬🇧","🇪🇸","🇧🇷","🇫🇷","🇹🇷","🇷🇺","🇯🇵","🇸🇦"];
+// the same three chat lines in every panel language; each panel shows them arriving from other languages
+const LINES = [
+  {u:"tortuga_veloz",c:"#f5a524",from:["es","tr"],t:{en:"what a play, insane 🔥",es:"qué jugada, increíble 🔥",pt:"que jogada, insano 🔥",fr:"quelle action, c'est fou 🔥",tr:"ne oyundu ama, inanılmaz 🔥",ru:"вот это момент, безумие 🔥",ja:"すごいプレイ、ヤバすぎ 🔥",ar:"يا لها من لعبة، جنون 🔥"}},
+  {u:"pixel_raton",c:"#7cc4ff",from:["pt","ru"],t:{en:"where are you streaming from?",es:"¿desde dónde haces stream?",pt:"de onde você faz live?",fr:"tu streames d'où ?",tr:"nereden yayın yapıyorsun?",ru:"откуда ты стримишь?",ja:"どこから配信してるの？",ar:"من أين تبث؟"}},
+  {u:"nubecita77",c:"#ff8fb1",from:["ja","tr"],t:{en:"GG everyone, see you tomorrow 👋",es:"GG a todos, nos vemos mañana 👋",pt:"GG galera, até amanhã 👋",fr:"GG tout le monde, à demain 👋",tr:"herkese GG, yarın görüşürüz 👋",ru:"всем GG, до завтра 👋",ja:"みんなGG、また明日 👋",ar:"GG للجميع، نراكم غدًا 👋"}},
+];
+const P = {
+ en:{name:"English",h:"The whole chat, in <b>your</b> language.",s:"Every message translated live. You type in English, it's sent in the streamer's language.",more:"40+ languages",cta:"Add it free",br:"FREE · NO ACCOUNT"},
+ es:{name:"Español",h:"Todo el chat, en <b>tu</b> idioma.",s:"Cada mensaje traducido en vivo. Escribes en español y se envía en el idioma del streamer.",more:"40+ idiomas",cta:"Añádela gratis",br:"GRATIS · SIN CUENTA"},
+ pt:{name:"Português",h:"O chat inteiro, no <b>seu</b> idioma.",s:"Cada mensagem traduzida ao vivo. Você escreve em português e vai no idioma do streamer.",more:"40+ idiomas",cta:"Adicione grátis",br:"GRÁTIS · SEM CONTA"},
+ fr:{name:"Français",h:"Tout le chat, dans <b>ta</b> langue.",s:"Chaque message traduit en direct. Tu écris en français, ça part dans la langue du streamer.",more:"40+ langues",cta:"Ajoute-la gratuitement",br:"GRATUIT · SANS COMPTE"},
+ tr:{name:"Türkçe",h:"Tüm sohbet, <b>senin</b> dilinde.",s:"Her mesaj canlı çevrilir. Türkçe yazarsın, yayıncının dilinde gönderilir.",more:"40+ dil",cta:"Ücretsiz ekle",br:"ÜCRETSİZ · HESAP YOK"},
+ ru:{name:"Русский",h:"Весь чат на <b>твоём</b> языке.",s:"Каждое сообщение переводится вживую. Пишешь по-русски, уходит на языке стримера.",more:"40+ языков",cta:"Добавить бесплатно",br:"БЕСПЛАТНО · БЕЗ АККАУНТА"},
+ ja:{name:"日本語",h:"チャット全部を、<br><b>あなたの</b>言語で。",s:"すべてのメッセージをリアルタイム翻訳。日本語で書けば、配信者の言語で送信。",more:"40以上の言語",cta:"無料で追加",br:"無料 · アカウント不要"},
+ ar:{name:"العربية",h:"الدردشة كلها <b>بلغتك</b>.",s:"كل رسالة تُترجم مباشرة. تكتب بالعربية، وتُرسل بلغة الستريمر.",more:"أكثر من 40 لغة",cta:"أضفها مجانًا",br:"مجاني · بدون حساب"},
+};
+const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>';
+
+for (const [k, v] of Object.entries(P)) {
+  const dir = x => x === "ar" ? "rtl" : "ltr";
+  const rows = LINES.map(l => { const f = l.from.find(x => x !== k); return {l, f}; });
+  const el = document.createElement("div");
+  el.className = "panel"; el.id = k; el.lang = k;
+  el.innerHTML = `
+    <div class="top"><div class="brand"><img src="../../public/icons/icon.svg">Kick Chat Translator</div><div class="pill">${flag(FLAG[k])}${v.name}</div></div>
+    <h1 dir="${dir(k)}">${v.h}</h1>
+    <p class="sub" dir="${dir(k)}">${v.s}</p>
+    <div class="chat">
+      <div class="bar"><span class="live">Translating</span><span class="route">${rows.map(r => flag(FLAG[r.f])).join("")}<span class="arrow">→</span>${flag(FLAG[k])}</span></div>
+      ${rows.map(({l, f}) => `<div class="msg">${flag(FLAG[f])}<div>
+        <div class="orig" dir="${dir(f)}"><span class="u" style="color:${l.c}">${l.u}</span>${emo(l.t[f])}</div>
+        <div class="tr" dir="${dir(k)}">${emo(l.t[k])}</div></div></div>`).join("")}
+    </div>
+    <div class="langs"><span class="stack">${STACK.map(flag).join("")}</span><span class="more" dir="${dir(k)}">${v.more}</span></div>
+    <div class="cta">${v.cta} ${ARROW}</div>
+    <div class="br">CHROME · EDGE · BRAVE · FIREFOX</div>`;
+  document.body.append(el);
+}
+</script>
+</body></html>

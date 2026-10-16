@@ -78,7 +78,10 @@ export function App() {
   }
 
   async function patch<K extends keyof Settings>(key: K, value: Settings[K]) {
-    const next: Partial<Settings> = { [key]: value } as Partial<Settings>;
+    await patchMany({ [key]: value } as Partial<Settings>);
+  }
+
+  async function patchMany(next: Partial<Settings>) {
     const res = await send({ type: 'settings.set', payload: next });
     if (res.type === 'settings') {
       setSettings(res.payload);
@@ -135,6 +138,30 @@ export function App() {
             >
               {t('Resume')}
             </button>
+          </section>
+        )}
+
+        {/* Asked once, opt-in. Firefox asks in its own install prompt, and the
+            worker records that answer as usageStatsAsked, so this never shows there. */}
+        {/* Compact on purpose: the popup has a 600px budget (measure-popup) and
+            this takes the stats block's place. Not asked while paused, where
+            there is no block to give up; it waits for the next opening. */}
+        {!settings.usageStatsAsked && !pausedHere && (
+          <section
+            class="kt-card flex items-center gap-2 !py-2"
+            aria-label={t('Help improve Kick Chat Translator?')}
+          >
+            <span class="text-xs text-kick-muted">
+              {t('Once a day, anonymous counts: engines used, errors, speed. Never your messages, names or channels.')}
+            </span>
+            <div class="flex shrink-0 flex-col gap-1">
+              <button class="kt-btn" onClick={() => void patchMany({ usageStats: true, usageStatsAsked: true })}>
+                {t('Share')}
+              </button>
+              <button class="kt-btn-ghost" onClick={() => void patchMany({ usageStats: false, usageStatsAsked: true })}>
+                {t('No thanks')}
+              </button>
+            </div>
           </section>
         )}
 
@@ -285,7 +312,10 @@ export function App() {
         {/* A la place de la ligne de pause, pas en plus : avec les deux, le popup
           par defaut mesure 654px contre 600 de plafond et defile. Les chiffres
           du jour reviennent a la reprise. */}
-        {settings.popupShowsStats && stats && !pausedHere && !firstRun && (
+        {/* The usage question takes the stats block's place the one time it is
+            asked: added on top it pushed the popup past its 600px budget in
+            every language (measure-popup, 685 to 752px). */}
+        {settings.popupShowsStats && stats && !pausedHere && !firstRun && settings.usageStatsAsked && (
           <section class="kt-card">
             <span class="kt-label">{t('Today')}</span>
             <StatsBar stats={stats} />

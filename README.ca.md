@@ -127,7 +127,7 @@ El xat es tradueix a qualsevol d'ells, i la interfície de l'extensió està dis
 
 ## Privadesa
 
-Sense compte, sense analítica, sense servidor propi. Els missatges del xat van al servei de traducció que has
+Cap compte, cap servidor meu i cap anàlisi, tret que opteu per un recompte anònim diari enviat a Google Analytics (motors utilitzats, errors, velocitat, mai els vostres missatges, noms o canals). Els missatges del xat van al servei de traducció que has
 triat i a cap altre lloc, i en mode dispositiu ni tan sols allà. Una còpia instal·lada des d'una botiga no fa
 cap altra petició. Una còpia instal·lada a mà pregunta a GitHub l'última etiqueta de release, com a molt cada
 sis hores, per saber si ha de mostrar la insígnia d'actualització. [Detalls](PRIVACY.md)

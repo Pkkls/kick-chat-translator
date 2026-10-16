@@ -26,7 +26,7 @@ WAT JE KRIJGT
 
 WAT JE BROWSER VERLAAT
 
-De chattekst gaat alleen naar de vertaalengine die je hebt gekozen. Bij Google, MyMemory of Lingva is dat de tekst van elk bericht en verder niets: niet het kanaal, niet wie het schreef. Bij DeepL gaan de laatste chatregels mee als context, met de namen van wie ze schreef, zodat de vertaling bij het gesprek past. Daar verwijst de regel "website-inhoud" in de rechten hierboven naar, en dat is alles. Er is geen account, geen analytics en geen server van mij: de extensie praat met Kick, met de engine die je hebt gekozen, en met de GitHub-releasepagina om je te laten weten wanneer er een nieuwere versie is, waarbij ze bij dat laatste verzoek niets meestuurt.
+De chattekst gaat alleen naar de vertaalengine die je hebt gekozen. Bij Google, MyMemory of Lingva is dat de tekst van elk bericht en verder niets: niet het kanaal, niet wie het schreef. Bij DeepL gaan de laatste chatregels mee als context, met de namen van wie ze schreef, zodat de vertaling bij het gesprek past. Daar verwijst de regel "website-inhoud" in de rechten hierboven naar, en dat is alles. Er is geen account en geen server van mij: de extensie praat met Kick, met de engine die je hebt gekozen, en met de GitHub-releasepagina om je te laten weten wanneer er een nieuwere versie is, waarbij ze bij dat laatste verzoek niets meestuurt. Als je de optionele keuze "technische en interactiegegevens" aanvinkt, stuurt ze ook dagelijks een anonieme telling van gebruikte engines, fouten en snelheid naar Google Analytics, nooit je berichten, namen of kanalen.
 
 GRATIS EN OPEN SOURCE
 

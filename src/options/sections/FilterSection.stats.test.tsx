@@ -109,29 +109,38 @@ describe('FilterSection, wired to what was actually seen', () => {
     expect(pleine.el.textContent).toContain('left alone');
   });
 
-  it('lists the channels watched, with what each one cost', () => {
-    const { el } = mount(stats({ byChannel: { 'un-canal': 2100, autre: 40 } }));
-    expect(el.textContent).toContain('un-canal');
-    expect(el.textContent).toContain('2100');
+  // La liste des chaines regardees a ete retiree a la demande de kil
+  // (2026-10-16) : elle n'apportait rien a qui regle ses filtres.
+  it('no longer lists the channels watched', () => {
+    const { el } = mount(stats({ byChannel: { 'un-canal': 2100 } }));
+    expect(el.textContent).not.toContain('un-canal');
   });
 
-  it('adds a channel to a list with one click', () => {
-    const { el, onPatch } = mount(stats({ byChannel: { 'un-canal': 5 } }));
-    const boutons = [...el.querySelectorAll('.kt-chip-toggle')] as HTMLElement[];
-    boutons[0]!.click();
-    expect(onPatch).toHaveBeenCalledWith({ whitelistChannels: ['un-canal'] });
+  // Avant : la zone etait reecrite depuis la liste enregistree a chaque frappe,
+  // donc Entree disparaissait aussitot et on ne pouvait pas taper une 2e ligne.
+  it('keeps a line break while typing and saves one entry per line', async () => {
+    const { el, onPatch } = mount(stats());
+    const kw = el.querySelector<HTMLTextAreaElement>('#kt-blocked-keywords')!;
+    kw.dispatchEvent(new Event('focus'));
+    kw.value = '!fish\n';
+    kw.dispatchEvent(new Event('input', { bubbles: true }));
+    await new Promise((r) => setTimeout(r, 0));
+    expect(kw.value).toBe('!fish\n');
+    kw.value = '!fish\ngood game';
+    kw.dispatchEvent(new Event('input', { bubbles: true }));
+    kw.dispatchEvent(new Event('blur'));
+    expect(onPatch).toHaveBeenCalledWith({ blockedKeywords: ['!fish', 'good game'] });
   });
 
-  // Le meme geste ajoute et retire. Une liste ou l'on ajoute d'un clic et
-  // retire en editant du texte est pire que deux fois du texte.
-  it('removes it again with the same click', () => {
-    const { el, onPatch } = mount(stats({ byChannel: { 'un-canal': 5 } }), {
-      whitelistChannels: ['un-canal'],
-    });
-    const boutons = [...el.querySelectorAll('.kt-chip-toggle')] as HTMLElement[];
-    expect(boutons[0]!.getAttribute('aria-pressed')).toBe('true');
-    boutons[0]!.click();
-    expect(onPatch).toHaveBeenCalledWith({ whitelistChannels: [] });
+  it('offers the Kick bots and a field for more', () => {
+    const { el, onPatch } = mount(stats());
+    expect(el.textContent).toContain('BotRix');
+    expect(el.textContent).not.toMatch(/StreamElements|Nightbot/);
+    const bots = el.querySelector<HTMLTextAreaElement>('#kt-extra-bots')!;
+    bots.value = '@MyBot, other_bot';
+    bots.dispatchEvent(new Event('input', { bubbles: true }));
+    bots.dispatchEvent(new Event('blur'));
+    expect(onPatch).toHaveBeenCalledWith({ extraBots: ['mybot', 'other_bot'] });
   });
 
   it('draws no channel list before anything has been watched', () => {

@@ -26,7 +26,7 @@ O QUE TENS
 
 O QUE SAI DO TEU NAVEGADOR
 
-O texto do chat vai apenas para o motor de tradução que escolheste. Com o Google, o MyMemory ou o Lingva, é o texto de cada mensagem e mais nada: nem o canal, nem quem a escreveu. Com o DeepL, as últimas linhas do chat seguem como contexto, com os nomes de quem as escreveu, para que a tradução se ajuste à conversa. É a isto que se refere a linha "conteúdo de sites" nas permissões acima, e é tudo. Não há conta, nem análises, nem servidor meu: a extensão comunica com o Kick, com o motor que escolheste e com a página de versões do GitHub para te avisar quando existe uma versão mais recente, sem enviar nada nesse último pedido.
+O texto do chat vai apenas para o motor de tradução que escolheste. Com o Google, o MyMemory ou o Lingva, é o texto de cada mensagem e mais nada: nem o canal, nem quem a escreveu. Com o DeepL, as últimas linhas do chat seguem como contexto, com os nomes de quem as escreveu, para que a tradução se ajuste à conversa. É a isto que se refere a linha "conteúdo de sites" nas permissões acima, e é tudo. Não há conta nem servidor meu: a extensão comunica com o Kick, com o motor que escolheste e com a página de versões do GitHub para te avisar quando existe uma versão mais recente, sem enviar nada nesse último pedido. Se marcares a opção facultativa "dados técnicos e de interação", também envia ao Google Analytics uma contagem diária anónima de motores usados, erros e velocidade, nunca as tuas mensagens, nomes ou canais.
 
 GRATUITO E DE CÓDIGO ABERTO
 

@@ -25,7 +25,7 @@ QUÈ OBTENS
 
 PRIVADESA
 
-Sense compte, sense analítiques, sense cap servidor meu. El text del xat només va al motor de traducció que has triat. Amb Google, MyMemory o Lingva, és el text de cada missatge i res més. Amb DeepL, les últimes línies del xat hi van com a context, amb els noms de qui les va escriure, perquè la traducció encaixi amb la conversa. El canal que mires no s'envia mai, i amb la traducció al dispositiu res no surt del teu ordinador.
+Sense compte, sense cap servidor meu i sense analítiques tret que acceptis un recompte diari anònim dels motors usats, els errors i la velocitat, mai els teus missatges, noms ni canals. El text del xat només va al motor de traducció que has triat. Amb Google, MyMemory o Lingva, és el text de cada missatge i res més. Amb DeepL, les últimes línies del xat hi van com a context, amb els noms de qui les va escriure, perquè la traducció encaixi amb la conversa. El canal que mires no s'envia mai, i amb la traducció al dispositiu res no surt del teu ordinador.
 
 Els permisos, en paraules clares: emmagatzematge per a la teva configuració i la memòria cau de traduccions; accés a kick.com per mostrar les traduccions al xat; accés als motors que pot consultar (Google, DeepL, MyMemory i Lingva); un temporitzador que el desperta perquè el traductor es mantingui a punt mentre mires; i el dret de tornar a carregar el seu propi script a les pestanyes de Kick ja obertes quan l'instal·les o l'actualitzes, perquè continuïn traduint sense refrescar. També llegeix la pàgina de versions de GitHub per avisar-te quan n'hi ha una de més nova, sense enviar res amb aquesta petició.
 

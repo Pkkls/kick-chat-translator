@@ -125,7 +125,8 @@ Chat is translated into any of them, and the extension's own interface is availa
 
 ## Privacy
 
-No account, no analytics, no server of mine. Chat messages go to the translation provider you picked and
+No account, no server of mine, and no analytics unless you opt in to a daily anonymous count sent to Google
+Analytics (engines used, errors, speed, never your messages, names or channels). Chat messages go to the translation provider you picked and
 nowhere else, and in on-device mode not even there. A copy installed from a store makes no other request. A
 copy installed by hand asks GitHub for the latest release tag, at most every six hours, to know whether to
 show its update badge. [Details](PRIVACY.md)

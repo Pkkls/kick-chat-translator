@@ -127,7 +127,7 @@ El chat se traduce a cualquiera de ellos, y la interfaz de la propia extensión 
 
 ## Privacidad
 
-Sin cuenta, sin analítica, sin servidor propio. Los mensajes del chat van al proveedor de traducción que
+Sin cuenta, sin servidor propio y sin analítica salvo que aceptes un recuento diario anónimo enviado a Google Analytics (motores usados, errores, velocidad, nunca tus mensajes, nombres ni canales). Los mensajes del chat van al proveedor de traducción que
 elegiste y a ningún otro sitio, y en modo dispositivo ni siquiera ahí. Una copia instalada desde una tienda
 no hace ninguna otra petición. Una copia instalada a mano pregunta a GitHub la última etiqueta de release, como
 mucho cada seis horas, para saber si mostrar su insignia de actualización. [Detalles](PRIVACY.md)

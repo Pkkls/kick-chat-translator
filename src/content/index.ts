@@ -24,6 +24,8 @@ import {
 import { ChatObserver, INSTANCE } from './observer';
 import { mountMetricsBridge } from './metricsBridge';
 import { ComposeController } from './compose';
+import { setUsageEnabled } from './usage';
+import { localChipState } from './localChip';
 import {
   SELECTORS,
   findChatPanel,
@@ -34,12 +36,50 @@ import {
 import { extractChannelSlug, fetchChannelLangIso } from './kickApi';
 import { localEngine } from './localEngine';
 import { logPlatform, refresh7TV } from './platform';
-import { withFavorite } from '~/shared/languages';
+import { resolveBrowserLang, withFavorite } from '~/shared/languages';
 import { memoriserLangueChaine } from '~/shared/channelLang';
 import { PAUSED_CHANNELS_MAX, ROUTE_POLL_MS } from '~/shared/constants';
-import { msg as localised, setContentLocale } from './msg';
+import { msg as localised, setChatTable, setContentLocale } from './msg';
+import { send } from '~/shared/messages';
+
+/** The chat catalogue for one locale, from the worker (see i18n/codes.ts). */
+async function loadChatTable(locale: string): Promise<void> {
+  if (locale === 'en') return;
+  const r = await send({ type: 'i18n.chat', locale }).catch(() => undefined);
+  if (r?.type === 'i18n.chat') setChatTable(r.payload);
+}
 
 const log = rootLogger.child('content');
+
+// Dev builds only (KT_DEV=1): the page asks for an extension reload, so a
+// local test run can pick up a fresh build without brave://extensions.
+// The page can also read which build is running (data-kt-build), so a test
+// never runs against a stale one.
+if (__KT_DEV__) {
+  document.documentElement.dataset.ktBuild = __KT_BUILD__;
+  // Read or patch settings from a test: the reply lands in data-kt-settings,
+  // so a run can save the real values first and put them back after.
+  window.addEventListener('kt-dev-settings', (e) => {
+    const patch = (e as CustomEvent<string | undefined>).detail;
+    const done = (s: unknown): void => {
+      document.documentElement.dataset.ktSettings = JSON.stringify(s);
+    };
+    if (patch) void send({ type: 'settings.set', payload: JSON.parse(patch) }).then((r) => done(r.type === 'settings' ? r.payload : r));
+    else void send({ type: 'settings.get' }).then((r) => done(r.type === 'settings' ? r.payload : r));
+  });
+  // Probe the catalogue path end to end: worker message, table installed, msg().
+  window.addEventListener('kt-dev-locale', (e) => {
+    const asked = (e as CustomEvent<string>).detail;
+    void loadChatTable(setContentLocale(asked)).then(() => {
+      document.documentElement.dataset.ktMsgProbe = `${asked}:${localised('barOn', 'Translating')}`;
+    });
+  });
+  window.addEventListener('kt-dev-reload', () => {
+    chrome.runtime.sendMessage('kt-dev-reload').catch((e: unknown) => {
+      document.documentElement.dataset.ktReload = String(e);
+    });
+  });
+}
 /** Le nom de la copie du script qui tient la page. */
 const ATTR_INSTANCE = 'data-kt-instance';
 // One-shot guard so the "Kick DOM changed" warning toast shows at most once per page.
@@ -65,6 +105,7 @@ async function main(): Promise<void> {
   document.documentElement.setAttribute(ATTR_INSTANCE, INSTANCE);
 
   let settings: Settings = await fetchSettings();
+  setUsageEnabled(settings.usageStats);
   // Une copie plus recente s'est nommee pendant que celle-ci attendait ses
   // reglages : Firefox et `onInstalled` injectent a quelques millisecondes
   // d'intervalle. Rien n'est encore monte, il n'y a qu'a s'effacer.
@@ -77,7 +118,8 @@ async function main(): Promise<void> {
   rootLogger.setEnabled(settings.debug);
   // Before anything is drawn. Every label the chat and the bar put on screen
   // reads this, and so do the language names in the chip menu.
-  setContentLocale(settings.uiLang);
+  // Awaited: nothing is mounted yet, so the chat never shows English first.
+  await loadChatTable(setContentLocale(settings.uiLang));
 
   ensureStyles();
   applyChatScheme(document.body, settings.chatScheme);
@@ -167,19 +209,8 @@ async function main(): Promise<void> {
 
   // ── On-device chip state ───────────────────────────────────────────
   function computeLocalChip(): LocalChipState {
-    if (!settings.localEnabled || !localEngine.present()) return { kind: 'hidden' };
-    const tgt = settings.targetLang;
-    if (localEngine.hasReadyForTarget(tgt)) return { kind: 'ready' };
-    const downloadable = localEngine.downloadablePairs().filter((p) => p.tgt === tgt);
-    const downloading = downloadable.find(
-      (p) => localEngine.stateOf(p.src, p.tgt) === 'downloading',
-    );
-    if (downloading) {
-      return { kind: 'downloading', pct: localEngine.progressOf(downloading.src, downloading.tgt) };
-    }
-    if (downloadable.length > 0)
-      return { kind: 'download', label: downloadable[0]!.src.toUpperCase() };
-    return { kind: 'hidden' };
+    const tgt = settings.targetLang === 'auto' ? resolveBrowserLang() : settings.targetLang;
+    return localChipState(settings.localEnabled, tgt, localEngine);
   }
 
   function refreshChip(): void {
@@ -242,9 +273,8 @@ async function main(): Promise<void> {
             }),
           onOpenOptions: () => void chrome.runtime.sendMessage({ type: 'open.options' }),
           onEnableLocal: () => {
-            const pairs = localEngine
-              .downloadablePairs()
-              .filter((p) => p.tgt === settings.targetLang);
+            const tgt = settings.targetLang === 'auto' ? resolveBrowserLang() : settings.targetLang;
+            const pairs = localEngine.downloadablePairs().filter((p) => p.tgt === tgt);
             void localEngine.download(pairs.length ? pairs : localEngine.downloadablePairs());
           },
         });
@@ -340,6 +370,7 @@ async function main(): Promise<void> {
     logPlatform();
     observer.reset();
     observer.start();
+    pipeline.reapplyBlocked();
     mountBar();
     // Compose preview self-gates on composeEnabled and finds the composer itself.
     compose.start();
@@ -423,6 +454,7 @@ async function main(): Promise<void> {
     log.debug(`${why}: retrying ${retried} untranslated rows`);
     observer.reset();
     observer.start();
+    pipeline.reapplyBlocked();
   }
 
   // Back on the tab: what arrived while it was hidden was skipped, not lost.
@@ -509,6 +541,7 @@ async function main(): Promise<void> {
     log.debug(`display settings changed: re-running ${rows.length} rows`);
     observer.reset();
     observer.start();
+    pipeline.reapplyBlocked();
   }
 
   watchSettings((next) => {
@@ -521,6 +554,7 @@ async function main(): Promise<void> {
     const wasEnabled = vueLocale().enabled;
     const prev = settings;
     settings = next;
+    setUsageEnabled(next.usageStats);
     const vue = vueLocale(next);
     pipeline.updateSettings(vue);
     compose.updateSettings(vue);
@@ -532,7 +566,7 @@ async function main(): Promise<void> {
     rootLogger.setEnabled(next.debug);
     // Ahead of everything that redraws below, so the bar and the chip come back
     // in the language that was just chosen rather than one change late.
-    setContentLocale(next.uiLang);
+    void loadChatTable(setContentLocale(next.uiLang));
     updateFloatingBar(vue);
     applyShowOriginal(next.showOriginal);
     applyDisplayStyle(next.displayStyle);

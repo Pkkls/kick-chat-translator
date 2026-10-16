@@ -1,5 +1,9 @@
-L'extension parle maintenant ta langue. Les réglages, la fenêtre de l'icône et la barre du chat sont traduits dans les 43 langues vers lesquelles elle traduit, au lieu de 10, et l'hébreu et le persan se lisent de droite à gauche, comme l'arabe.
+Taper avec des émoticônes fonctionne désormais correctement. Tab complète les émotes et @mentions de Kick et 7TV au lieu d'insérer la traduction, les émoticônes restent dans votre message lorsqu'il est traduit et l'aperçu ne couvre plus les listes de Kick ou le sélecteur d'émoticônes.
 
-Les dix langues qu'elle parlait déjà ont été réécrites pour se lire naturellement, comme si elles avaient été écrites dans cette langue et non traduites mot à mot de l'anglais.
+Les traductions sont plus précises : les noms de marques et de personnes (iPhone, YouTube, LeBron) ne sont plus supprimés avant la traduction, et les @mentions restent dans les messages traduits.
 
-Le menu de la langue de l'interface affiche le drapeau de chaque langue et se commande aussi au clavier.
+Les filtres ont été retravaillés : les vrais bots Kick sont ignorés et vous pouvez ajouter les vôtres, "Masquer les messages contenant" masque désormais également ce qui est déjà à l'écran et les listes peuvent être à nouveau saisies.
+
+L'extension est plus légère sur chaque page Kick, et sur Chrome, le moteur sur l'appareil est à nouveau proposé lorsque la langue cible est sur Auto.
+
+Nouveau et facultatif : statistiques d'utilisation quotidiennes anonymes, désactivées sauf si vous dites oui. Ils ne contiennent jamais vos messages, noms ou chaînes.

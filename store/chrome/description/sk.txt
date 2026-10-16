@@ -25,7 +25,7 @@ Jazyk kanála sa načítava priamo z Kicku a oba jazyky sa dajú zmeniť v nasta
 
 SÚKROMIE
 
-Žiadny účet, žiadna analytika, žiadny môj server. Text z chatu ide len do prekladového enginu, ktorý ste zvolili. Pri Google, MyMemory alebo Lingva je to text každej správy a nič iné. Pri DeepL ide ako kontext aj niekoľko posledných riadkov chatu s menami tých, ktorí ich napísali, aby preklad zapadol do konverzácie. Kanál, ktorý sledujete, sa nikdy neposiela, a pri preklade v zariadení nič neopustí váš počítač.
+Žiadny účet, žiadny môj server a žiadna analytika, pokiaľ nesúhlasíš s denným anonymným počtom použitých služieb, chýb a rýchlosti, nikdy tvoje správy, mená ani kanály. Text z chatu ide len do prekladového enginu, ktorý ste zvolili. Pri Google, MyMemory alebo Lingva je to text každej správy a nič iné. Pri DeepL ide ako kontext aj niekoľko posledných riadkov chatu s menami tých, ktorí ich napísali, aby preklad zapadol do konverzácie. Kanál, ktorý sledujete, sa nikdy neposiela, a pri preklade v zariadení nič neopustí váš počítač.
 
 Povolenia jednoducho povedané: úložisko pre vaše nastavenia a vyrovnávaciu pamäť prekladov; prístup ku kick.com, aby sa preklady zobrazili v chate; prístup k enginom, ktoré môže volať (Google, DeepL, MyMemory a Lingva); časovač, aby prekladač zostal pripravený, kým pozeráte; a právo znova načítať vlastný skript do už otvorených kariet Kick pri inštalácii alebo aktualizácii, aby ďalej prekladali bez obnovenia stránky. Číta aj stránku vydaní na GitHub, aby vám oznámilo novšiu verziu, a s touto požiadavkou nič neposiela.
 

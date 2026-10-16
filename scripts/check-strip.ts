@@ -126,6 +126,13 @@ function main(): void {
     return;
   }
 
+  // The dev reload hook lets any page reload the extension: never in a release.
+  const devHits = [...sources].filter(([, src]) => src.includes('kt-dev-reload')).map(([name]) => name);
+  if (process.env.KT_DEV !== '1' && devHits.length > 0) {
+    console.error(`[check-strip] RELEASE BUILD CARRIES THE DEV RELOAD HOOK in ${devHits.join(', ')}`);
+    process.exit(1);
+  }
+
   if (hits.length > 0) {
     console.error(
       `[check-strip] RELEASE BUILD CARRIES INSTRUMENTATION: "${MARKER}" found in\n` +

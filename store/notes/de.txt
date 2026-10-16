@@ -1,5 +1,9 @@
-Die Erweiterung spricht jetzt deine Sprache. Einstellungen, Popup und die Leiste im Chat sind in alle 43 Sprachen übersetzt, in die sie übersetzt, nicht mehr nur in 10, und Hebräisch und Persisch werden wie Arabisch von rechts nach links gelesen.
+Das Tippen mit Emotes funktioniert jetzt ordnungsgemäß. Tab vervollständigt die Emotes und @Erwähnungen von Kick und 7TV, anstatt die Übersetzung einzufügen. Emotes bleiben in Ihrer Nachricht, wenn sie übersetzt wird, und die Vorschau deckt nicht mehr Kicks Listen oder die Emote-Auswahl ab.
 
-Die zehn Sprachen, die sie schon sprach, wurden neu geschrieben, damit sie natürlich klingen, als wären sie in dieser Sprache verfasst und nicht Wort für Wort aus dem Englischen übersetzt.
+Übersetzungen sind genauer: Marken- und Personennamen (iPhone, YouTube, LeBron) werden vor der Übersetzung nicht mehr gelöscht und @Erwähnungen bleiben in übersetzten Nachrichten.
 
-Das Menü für die Sprache der Oberfläche zeigt die Flagge jeder Sprache und lässt sich auch mit der Tastatur bedienen.
+Filter wurden überarbeitet: Die echten Kick-Bots werden ignoriert und Sie können Ihre eigenen hinzufügen. „Nachrichten ausblenden mit“ blendet jetzt auch aus, was bereits auf dem Bildschirm ist, und die Listen können erneut eingegeben werden.
+
+Die Erweiterung ist auf jeder Kick-Seite leichter, und in Chrome wird die Übersetzung auf dem Gerät wieder angeboten, wenn die Zielsprache auf „Auto“ steht.
+
+Neu und optional: Anonyme tägliche Nutzungsstatistik, deaktiviert, sofern Sie nicht „Ja“ sagen. Sie enthalten niemals Ihre Nachrichten, Namen oder Kanäle.

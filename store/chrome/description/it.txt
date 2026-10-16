@@ -25,7 +25,7 @@ COSA OTTIENI
 
 PRIVACY
 
-Nessun account, nessuna analitica, nessun server mio. Il testo della chat va solo al motore di traduzione che hai scelto. Con Google, MyMemory o Lingva è il testo di ogni messaggio e nient'altro. Con DeepL, le ultime righe della chat vanno come contesto, con i nomi di chi le ha scritte, così la traduzione si adatta alla conversazione. Il canale che guardi non viene mai inviato, e con la traduzione sul dispositivo nulla lascia il tuo computer.
+Nessun account, nessun server mio e nessuna analitica, a meno che tu non accetti un conteggio giornaliero anonimo di motori usati, errori e velocità, mai i tuoi messaggi, nomi o canali. Il testo della chat va solo al motore di traduzione che hai scelto. Con Google, MyMemory o Lingva è il testo di ogni messaggio e nient'altro. Con DeepL, le ultime righe della chat vanno come contesto, con i nomi di chi le ha scritte, così la traduzione si adatta alla conversazione. Il canale che guardi non viene mai inviato, e con la traduzione sul dispositivo nulla lascia il tuo computer.
 
 I permessi, in parole semplici: archiviazione per le tue impostazioni e la cache delle traduzioni; accesso a kick.com per mostrare le traduzioni nella chat; accesso ai motori che può chiamare (Google, DeepL, MyMemory e Lingva); un timer di risveglio perché il traduttore resti pronto mentre guardi; e il diritto di ricaricare il proprio script nelle schede Kick già aperte quando lo installi o lo aggiorni, così continuano a tradurre senza ricaricare la pagina. Legge anche la pagina delle versioni su GitHub per avvisarti quando ne esiste una più recente, senza inviare nulla con quella richiesta.
 

@@ -26,7 +26,7 @@ MITÄ SAAT
 
 MITÄ SELAIMESTASI LÄHTEE
 
-Chatin teksti menee vain valitsemallesi käännösmoottorille. Googlen, MyMemoryn tai Lingvan kanssa se on jokaisen viestin teksti eikä mitään muuta: ei kanavaa, ei kirjoittajaa. DeepLin kanssa viimeiset chat-rivit lähtevät mukana asiayhteytenä kirjoittajien nimineen, jotta käännös sopii keskusteluun. Tähän viittaa yllä olevien käyttöoikeuksien rivi "verkkosivuston sisältö", eikä muuta ole. Ei ole tiliä, analytiikkaa eikä omaa palvelinta: laajennus keskustelee Kickin, valitsemasi moottorin ja GitHubin julkaisusivun kanssa kertoakseen, kun uudempi versio on olemassa, eikä viimeksi mainitun pyynnön mukana lähde mitään.
+Chatin teksti menee vain valitsemallesi käännösmoottorille. Googlen, MyMemoryn tai Lingvan kanssa se on jokaisen viestin teksti eikä mitään muuta: ei kanavaa, ei kirjoittajaa. DeepLin kanssa viimeiset chat-rivit lähtevät mukana asiayhteytenä kirjoittajien nimineen, jotta käännös sopii keskusteluun. Tähän viittaa yllä olevien käyttöoikeuksien rivi "verkkosivuston sisältö", eikä muuta ole. Ei ole tiliä eikä omaa palvelinta: laajennus keskustelee Kickin, valitsemasi moottorin ja GitHubin julkaisusivun kanssa kertoakseen, kun uudempi versio on olemassa, eikä viimeksi mainitun pyynnön mukana lähde mitään. Jos valitset vapaaehtoisen kohdan "tekniset ja vuorovaikutustiedot", laajennus lähettää myös Google Analyticsiin päivittäisen nimettömän laskennan käytetyistä moottoreista, virheistä ja nopeudesta, ei koskaan viestejäsi, nimiä tai kanavia.
 
 ILMAINEN JA AVOIN LÄHDEKOODI
 

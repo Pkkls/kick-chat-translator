@@ -26,7 +26,7 @@ MIT KAPSZ
 
 MI HAGYJA EL A BÖNGÉSZŐDET
 
-A chat szövege csak az általad választott fordítómotorhoz jut el. Google, MyMemory vagy Lingva esetén ez minden üzenet szövege, és semmi más: sem a csatorna, sem az, hogy ki írta. DeepL esetén az utolsó néhány chatsor is megy kontextusként, az íróik nevével együtt, hogy a fordítás illjen a beszélgetéshez. Erre utal fent az engedélyeknél a "weboldal tartalma" sor, és ennyi az egész. Nincs fiók, nincs analitika, és nincs saját szerverem: a bővítmény a Kickkel, az általad választott motorral és a GitHub kiadási oldalával beszél, hogy jelezze, ha új verzió érhető el, és ezzel az utolsó kéréssel semmit nem küld.
+A chat szövege csak az általad választott fordítómotorhoz jut el. Google, MyMemory vagy Lingva esetén ez minden üzenet szövege, és semmi más: sem a csatorna, sem az, hogy ki írta. DeepL esetén az utolsó néhány chatsor is megy kontextusként, az íróik nevével együtt, hogy a fordítás illjen a beszélgetéshez. Erre utal fent az engedélyeknél a "weboldal tartalma" sor, és ennyi az egész. Nincs fiók, és nincs saját szerverem: a bővítmény a Kickkel, az általad választott motorral és a GitHub kiadási oldalával beszél, hogy jelezze, ha új verzió érhető el, és ezzel az utolsó kéréssel semmit nem küld. Ha bejelölöd a választható "technikai és interakciós adatok" lehetőséget, a Google Analyticsnek is elküld naponta egy névtelen számlálást a használt motorokról, hibákról és sebességről, soha nem az üzeneteidet, neveidet vagy csatornáidat.
 
 INGYENES ÉS NYÍLT FORRÁSKÓDÚ
 

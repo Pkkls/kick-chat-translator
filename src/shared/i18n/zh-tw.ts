@@ -7,10 +7,10 @@ export const zh_tw: Record<string, string> = {
   'Display': '顯示',
   'Filters': '篩選',
   'Advanced': '進階',
-  'Activity': '動態',
+  'Activity': '活動',
   'About': '關於',
   'Kick Chat Translator listens to chat in real time and translates non-English (or non-target-language) messages right under the original. No tracking, no account, fully open-source.':
-    'Kick Chat Translator 會即時監看聊天室，把非英文（或非目標語言）的訊息直接翻譯在原文下方。不追蹤、不需要帳號，完全開放原始碼。',
+    'Kick Chat Translator 會即時讀取聊天室，把非英文（或非目標語言）的訊息直接翻譯在原文下方。不追蹤、不需要帳號，完全開放原始碼。',
   'Links': '連結',
   'GitHub repository': 'GitHub 儲存庫',
   'Privacy policy': '隱私權政策',
@@ -54,7 +54,7 @@ export const zh_tw: Record<string, string> = {
   'Auto (your browser language)': '自動（瀏覽器語言）',
   'Auto reads incoming chat in your own language, detected from the browser.':
     '自動依瀏覽器偵測到的語言，把收到的聊天內容翻譯成你的語言。',
-  'Write my messages in': '我發送訊息使用',
+  'Write my messages in': '送出訊息使用的語言',
   "Auto (the channel's language)": '自動（頻道語言）',
   "Auto detects the channel's broadcast language from Kick. No manual picking.":
     '自動從 Kick 取得頻道的實況語言，不用手動選擇。',
@@ -111,9 +111,9 @@ export const zh_tw: Record<string, string> = {
   'Smart budget routing': '智慧額度分配',
   'Spend DeepL only on the European languages it clearly wins at; other targets (Japanese, Arabic, Hindi…) use the free engines first, so your DeepL quota lasts much longer.':
     'DeepL 只用在它明顯更擅長的歐洲語言；其他目標語言（日文、阿拉伯文、印地文等）優先使用免費引擎，你的 DeepL 額度就能用得久很多。',
-  'Lingva instance': 'Lingva 執行個體',
+  'Lingva instance': 'Lingva 伺服器',
   'Custom URL (optional)': '自訂網址（選填）',
-  'Leave blank to use the default public instance.': '留空會使用預設的公用執行個體。',
+  'Leave blank to use the default public instance.': '留空會使用預設的公用伺服器。',
   '⬆ Update available': '⬆ 有可用的更新',
   'Target language': '目標語言',
   'Translate what I type': '翻譯我輸入的內容',
@@ -176,7 +176,7 @@ export const zh_tw: Record<string, string> = {
   'Move down': '下移',
   'Remove': '移除',
   'Settings sections': '設定區段',
-  'Show the quick language button in chat': '在聊天室顯示語言快捷按鈕',
+  'Show the quick language button in chat': '在聊天室顯示快速語言按鈕',
   'Usage': '使用情況',
   'most translated languages': '翻譯最多的語言',
   'Translate the chat': '翻譯聊天室',
@@ -229,10 +229,10 @@ export const zh_tw: Record<string, string> = {
   'Otherwise the first available provider in your chain answers, or the on-device engine if you enabled it.':
     '快取裡沒有的話，就由順序中第一個可用的翻譯服務來翻譯；如果啟用了裝置端翻譯，則由裝置端引擎處理。',
   'The Activity tab shows what each of these steps did for you.':
-    '「動態」分頁會顯示以上每個步驟的實際成果。',
+    '「活動」分頁會顯示以上每個步驟的實際成果。',
   'What changed in this version': '這個版本的更新內容',
   'Entries:': '項目：',
-  'Cap used:': '已用上限：',
+  'Cap used:': '已用容量：',
   'oldest kept in memory:': '記憶體中最久的項目：',
   'Requests sent through this limit:': '受此上限限制的請求：',
   'never reached so far': '至今從未達到',
@@ -241,7 +241,7 @@ export const zh_tw: Record<string, string> = {
   'Nothing picked: every language is translated.': '未選擇任何語言：翻譯所有語言。',
   'picked: everything else is left alone.': '種已選：其餘語言不翻譯。',
   'channels you have watched': '你看過的頻道',
-  'Only here': '僅限此頻道',
+  'Only here': '只在此頻道翻譯',
   'Never here': '此頻道不翻譯',
   'No key yet, so DeepL is skipped and the chain moves on.':
     '還沒有金鑰，所以會略過 DeepL，繼續使用順序中的下一個。',
@@ -260,4 +260,14 @@ export const zh_tw: Record<string, string> = {
   'Free plan: 1,000,000 characters a month. Free keys end with :fx.':
     '免費方案每月 1,000,000 個字元。免費金鑰以 :fx 結尾。',
   'Get a key:': '取得金鑰：',
+  "Help improve Kick Chat Translator?": "協助改善 Kick Chat Translator？",
+  "Once a day, anonymous counts: engines used, errors, speed. Never your messages, names or channels.": "每天一次，只傳匿名統計：使用的引擎、錯誤、速度。絕不傳送你的訊息、名稱或頻道。",
+  "No thanks": "不用了，謝謝",
+  "Share": "分享",
+  "Share anonymous usage statistics": "分享匿名使用統計",
+  "Ignore chat bots": "忽略聊天機器人",
+  "Always ignored:": "一律忽略：",
+  "Other bots to ignore": "其他要忽略的機器人",
+  "one bot name per line": "每行一個機器人名稱",
+  "Work in progress": "開發中",
 };
