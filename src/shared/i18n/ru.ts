@@ -220,7 +220,7 @@ export const ru: Record<string, string> = {
   'Free plan: 1,000,000 characters a month. Free keys end with :fx.': 'Бесплатный тариф: 1 000 000 символов в месяц. Бесплатные ключи заканчиваются на :fx.',
   'Get a key:': 'Получить ключ:',
   "Help improve Kick Chat Translator?": "Поможете улучшить Kick Chat Translator?",
-  "Once a day, anonymous counts: engines used, errors, speed. Never your messages, names or channels.": "Раз в день анонимные счётчики: использованные сервисы, ошибки, скорость. Никогда ваши сообщения, имена или каналы.",
+  "Once a day, anonymous counts: engines used, errors, speed. Never your messages, names or channels.": "Раз в день, анонимно: сервисы, ошибки, скорость. Без ваших сообщений, имён и каналов.",
   "No thanks": "Нет, спасибо",
   "Share": "Поделиться",
   "Share anonymous usage statistics": "Делиться анонимной статистикой использования",
