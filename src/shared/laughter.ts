@@ -160,6 +160,8 @@ const FORMES: FormeDeRire[] = [
     motif: /^(?:x+d+|(?:xd){2,})$/i,
   },
   { motif: /^ke+k+(?:w)?$/i },
+  { motif: /^(?=[ha]*h[ha]*h)(?=[ha]*a[ha]*a)[ha]{6,}$/i },
+  { motif: /^(?=[ja]*j[ja]*j)(?=[ja]*a[ja]*a)[ja]{6,}$/i, langue: 'es' },
   { motif: /^u?wu$|^owo$/i },
 ];
 
@@ -290,6 +292,10 @@ export const LAUGHTER_NOTES: Readonly<Record<string, string>> = {
     'rofl, rolling on the floor laughing, borrowed into many languages',
   '^ke+k+(?:w)?$':
     'kek and kekw, from streaming chat',
+  '^(?=[ha]*h[ha]*h)(?=[ha]*a[ha]*a)[ha]{6,}$':
+    'hahaha mistyped: hahhahahahahahha, AHAHAAHAH. Measured reaching the engine on live Kick chat (2026-10-17). Six letters minimum, no word is made of h and a alone',
+  '^(?=[ja]*j[ja]*j)(?=[ja]*a[ja]*a)[ja]{6,}$':
+    'Spanish jajaja mistyped: jJAAJAJJA. Same live capture, same six-letter floor',
   '^u?wu$|^owo$':
     'uwu and owo',
 };
