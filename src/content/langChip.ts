@@ -576,8 +576,12 @@ export function mountLangChip(composer: HTMLElement, state: ChipState, h: ChipHa
     chip.removeEventListener('keydown', onKey);
   });
 
-  // Column the user last picked with Left/Right, kept across Up/Down.
+  // Column the user last picked with Left/Right, kept across Up/Down. Only
+  // while the focus is where the last arrow put it: a click or a focus set by
+  // code starts from the tile's own column (chip-live caught Down from the
+  // third column landing on the first).
   let wantCol = 0;
+  let movedTo: HTMLElement | undefined;
   const onMenuKey = (e: KeyboardEvent): void => {
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
       // Read off the DOM in grid order, rows and the visible separator alike,
@@ -593,9 +597,12 @@ export function mountLangChip(composer: HTMLElement, state: ChipState, h: ChipHa
         MENU_COLS,
       );
       const i = rows.indexOf(document.activeElement as HTMLElement);
-      const r = gridMove(lines, i < 0 ? 0 : i, e.key, wantCol);
+      const from = i < 0 ? 0 : i;
+      if (rows[from] !== movedTo) wantCol = lines.find((l) => l.includes(from))!.indexOf(from);
+      const r = gridMove(lines, from, e.key, wantCol);
       wantCol = r.col;
-      rows[r.to]?.focus();
+      movedTo = rows[r.to];
+      movedTo?.focus();
     } else if (e.key === 'Escape') {
       e.preventDefault();
       close(); // close() brings the focus back
