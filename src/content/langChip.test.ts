@@ -221,6 +221,18 @@ describe('interaction', () => {
     expect(groups).toContain('all');
   });
 
+  it('Down from a lone favourite lands on the first language of the full list', () => {
+    const { composer } = makeComposerRow();
+    mountLangChip(composer, state({ favorites: ['fr'] }), noop);
+    document.querySelector<HTMLElement>('#kt-lang-chip')!.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }),
+    );
+    const menu = document.querySelector<HTMLElement>('#kt-lang-menu')!;
+    menu.querySelector<HTMLElement>('.kt-chip-row[data-group="fav"]')!.focus();
+    menu.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    expect(document.activeElement).toBe(menu.querySelector('.kt-chip-row[data-group="all"]'));
+  });
+
   it('a language never appears twice, favourite or not', () => {
     const { composer } = makeComposerRow();
     mountLangChip(composer, state({ favorites: ['fr'] }), noop);
